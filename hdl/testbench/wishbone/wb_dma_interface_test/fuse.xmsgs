@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="HDLCompiler" num="746" delta="unknown" >"../../../ip_cores/general-cores/modules/genrams/genram_pkg.vhd" Line 50: Range is empty (null range)
+</msg>
+
+<msg type="fatal" file="Simulator" num="0" delta="unknown" srcfile="/build/xfndry10/O.87xd/env/Jobs/Simulator/Compiler/common/src/CompilerAssert.h" srcline="40" srcrcs="1.45" >Internal Compiler Error in file <arg fmt="%s" index="1">../src/VhdlDecl.cpp</arg> at line <arg fmt="%d" index="2">3154</arg>
+</msg>
+
+</messages>
+

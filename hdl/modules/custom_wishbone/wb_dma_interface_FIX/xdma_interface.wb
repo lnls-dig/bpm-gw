@@ -1,0 +1,116 @@
+-- Description of the wishbone interface for the wb_dma_interface core
+
+peripheral {
+   name = "Wishbone DMA Streaming Interface";
+   description = "Simple Wishbone DMA interface for peripherals which want to stream data to a DMA";
+   -- Prefix for all generated ports
+   prefix = "dma_iface";
+   -- Name of the vhdl entity to be generated
+   hdl_entity = "wb_dma_interface_port";
+   
+   -- Control Register
+   reg {
+      name = "Control/Status register";
+      prefix = "ctl";
+      
+      field {
+         name = "Start Transaction";
+         description = "write 1: starts the DMA transaction.\
+         write 0: no effect";
+         
+         prefix = "start";
+         -- Pulse to start
+         type = MONOSTABLE;		
+         clock = "data_clk_i";
+         access_bus = READ_WRITE;
+         access_dev = READ_ONLY;
+      };
+      
+      field {
+         name = "DMA complete";
+         description = "read 1: the DMA has completed the transaction\
+         read 0: DMA transaction still in progress";
+         prefix = "done";
+         type = BIT;
+         access_bus = READ_ONLY;
+         access_dev = WRITE_ONLY;
+      };
+
+      field {
+         name = "DMA overflow";
+         description = "read 1: the DMA overflow detected\
+         read 0: No overflow detected";
+         prefix = "done";
+         type = BIT;
+         access_bus = READ_ONLY;
+         access_dev = WRITE_ONLY;
+      };
+	};
+
+   -- Data Count Register
+   reg {
+      name = "Transaction Counter";
+      prefix = "tr_cntr";
+      
+      field {
+         --name = "";
+         description = "Stores the the words to be transfered to DMA";
+         --prefix = "";
+			   type = SLV;
+			   size = 32;
+         clock = "data_clk_i";
+         access_bus = WRITE_ONLY;
+         access_dev = READ_ONLY;
+      };     
+	};
+
+  -- Bus = Read, Core = Write (Core -> Bus)
+	fifo_reg {
+		size = 256;
+		direction = CORE_TO_BUS;
+		prefix = "fifo_out";
+		name = "FIFO DMA synchronization";
+		description = "Data to to be written to DMA";
+		flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+		flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+    mode = PIPELINE;
+
+		field {
+			name = "Output FIFO data value";
+			description = "Value of data word synchronized to the core clock";
+			--prefix = "";
+			type = SLV;
+			size = 32;
+      clock = "dma_clk_i";
+		};
+	
+		field {
+			name = "Transaction Last Data";
+			description = "0: Current entry is not the last transaction data\
+										 1: Current entry is the last transaction data";
+			prefix = "last";
+			type = BIT;
+      clock = "dma_clk_i";
+		};
+	};
+
+  -- Bus = Write, Core = Read (Bus -> Core)
+  fifo_reg {
+    size = 256;
+		direction = BUS_TO_CORE;
+		prefix = "fifo_in";
+		name = "FIFO input synchronization";
+		flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+		flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+    mode = PIPELINE;
+
+		field {
+			name = "Input FIFO data value";
+			description = "Value of data word synchronized to the core clock";
+			--prefix = "";
+			type = SLV;
+			size = 32;
+      clock = "data_clk_i";
+		};
+	};
+};

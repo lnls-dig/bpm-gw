@@ -1,0 +1,15 @@
+Running: /opt/Xilinx/13.4/ISE_DS/ISE/bin/lin64/unwrapped/fuse work.wb_dma_interface_tb -intstyle ise -incremental -o isim_proj 
+ISim O.87xd (signature 0x8ddf5b5d)
+Number of CPUs detected in this system: 4
+Turning on mult-threading, number of parallel sub-compilation jobs: 8 
+Starting static elaboration
+WARNING:HDLCompiler:746 - "../../../ip_cores/general-cores/modules/genrams/genram_pkg.vhd" Line 50: Range is empty (null range)
+Completed static elaboration
+Fuse Memory Usage: 100984 KB
+Fuse CPU Usage: 1090 ms
+Compiling package standard
+Compiling package std_logic_1164
+Compiling package numeric_std
+Compiling package genram_pkg
+Compiling package wishbone_pkg
+FATAL_ERROR:Simulator:CompilerAssert.h:40:1.45 - Internal Compiler Error in file ../src/VhdlDecl.cpp at line 3154   Process will terminate. For technical support on this issue, please open a WebCase with this project attached at http://www.xilinx.com/support.
