@@ -3,93 +3,94 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
-use work.wb_fmc150_pkg.all;
 use work.wb_stream_pkg.all;
 
-entity wb_fmc150 is
+entity xwb_fmc150 is
 generic
 (
+    g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
+    g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_packet_size                           : natural := 32
-);
-port
-(
-    rst_n_i                                 : in std_logic;
-    clk_sys_i                               : in std_logic;
-    clk_100Mhz_i                            : in std_logic;
-    clk_200Mhz_i                            : in std_logic;
-    
-    -----------------------------
-    -- Wishbone signals
-    -----------------------------
-
-    wb_slv_i                                : t_wishbone_slave_in;
-    wb_slv_o                                : t_wishbone_slave_out;
-    
-    -----------------------------
-    -- External ports
-    -----------------------------
+);      
+port        
+(       
+    rst_n_i                                      : in std_logic;
+    clk_sys_i                                    : in std_logic;
+    clk_100Mhz_i                                 : in std_logic;
+    clk_200Mhz_i                                 : in std_logic;
+            
+    -----------------------------       
+    -- Wishbone signals     
+    -----------------------------       
+        
+    wb_slv_i                                    : t_wishbone_slave_in;
+    wb_slv_o                                    : t_wishbone_slave_out;
+            
+    -----------------------------       
+    -- External ports       
+    -----------------------------       
     --Clock/Data connection to ADC on FMC150 (ADS62P49)
-    adc_clk_ab_p_i                          : in  std_logic;
-    adc_clk_ab_n_i                          : in  std_logic;
-    adc_cha_p_i                             : in  std_logic_vector(6 downto 0);
-    adc_cha_n_i                             : in  std_logic_vector(6 downto 0);
-    adc_chb_p_i                             : in  std_logic_vector(6 downto 0);
-    adc_chb_n_i                             : in  std_logic_vector(6 downto 0);
-
+    adc_clk_ab_p_i                              : in  std_logic;
+    adc_clk_ab_n_i                              : in  std_logic;
+    adc_cha_p_i                                 : in  std_logic_vector(6 downto 0);
+    adc_cha_n_i                                 : in  std_logic_vector(6 downto 0);
+    adc_chb_p_i                                 : in  std_logic_vector(6 downto 0);
+    adc_chb_n_i                                 : in  std_logic_vector(6 downto 0);
+        
     --Clock/Data connection to DAC on FMC150 (DAC3283)
-    dac_dclk_p_o                            : out std_logic;
-    dac_dclk_n_o                            : out std_logic;
-    dac_data_p_o                            : out std_logic_vector(7 downto 0);
-    dac_data_n_o                            : out std_logic_vector(7 downto 0);
-    dac_frame_p_o                           : out std_logic;
-    dac_frame_n_o                           : out std_logic;
-    txenable_o                              : out std_logic;
-    
-    --Clock/Trigger connection to FMC150
-    clk_to_fpga_p_i                         : in  std_logic;
-    clk_to_fpga_n_i                         : in  std_logic;
-    ext_trigger_p_i                         : in  std_logic;
-    ext_trigger_n_i                         : in  std_logic;
-    
-    -- Control signals from/to FMC150
-    --Serial Peripheral Interface (SPI)
-    spi_sclk_o                              : out std_logic; -- Shared SPI clock line
-    spi_sdata_o                             : out std_logic; -- Shared SPI data line
+    dac_dclk_p_o                                : out std_logic;
+    dac_dclk_n_o                                : out std_logic;
+    dac_data_p_o                                : out std_logic_vector(7 downto 0);
+    dac_data_n_o                                : out std_logic_vector(7 downto 0);
+    dac_frame_p_o                               : out std_logic;
+    dac_frame_n_o                               : out std_logic;
+    txenable_o                                  : out std_logic;
             
-    -- ADC specific signals     
-    adc_n_en_o                              : out std_logic; -- SPI chip select
-    adc_sdo_i                               : in  std_logic; -- SPI data out
-    adc_reset_o                             : out std_logic; -- SPI reset
+    --Clock/Trigger connection to FMC150        
+    clk_to_fpga_p_i                             : in  std_logic;
+    clk_to_fpga_n_i                             : in  std_logic;
+    ext_trigger_p_i                             : in  std_logic;
+    ext_trigger_n_i                             : in  std_logic;
             
-    -- CDCE specific signals        
-    cdce_n_en_o                             : out std_logic; -- SPI chip select
-    cdce_sdo_i                              : in  std_logic; -- SPI data out
-    cdce_n_reset_o                          : out std_logic;
-    cdce_n_pd_o                             : out std_logic;
-    cdce_ref_en_o                           : out std_logic;
-    cdce_pll_status_i                       : in  std_logic;
-            
-    -- DAC specific signals     
-    dac_n_en_o                              : out std_logic; -- SPI chip select
-    dac_sdo_i                               : in  std_logic; -- SPI data out
-            
-    -- Monitoring specific signals      
-    mon_n_en_o                              : out std_logic; -- SPI chip select
-    mon_sdo_i                               : in  std_logic; -- SPI data out
-    mon_n_reset_o                           : out std_logic;
-    mon_n_int_i                             : in  std_logic;
+    -- Control signals from/to FMC150       
+    --Serial Peripheral Interface (SPI)     
+    spi_sclk_o                                  : out std_logic; -- Shared SPI clock line
+    spi_sdata_o                                 : out std_logic; -- Shared SPI data line
+                    
+    -- ADC specific signals             
+    adc_n_en_o                                  : out std_logic; -- SPI chip select
+    adc_sdo_i                                   : in  std_logic; -- SPI data out
+    adc_reset_o                                 : out std_logic; -- SPI reset
+                    
+    -- CDCE specific signals                
+    cdce_n_en_o                                 : out std_logic; -- SPI chip select
+    cdce_sdo_i                                  : in  std_logic; -- SPI data out
+    cdce_n_reset_o                              : out std_logic;
+    cdce_n_pd_o                                 : out std_logic;
+    cdce_ref_en_o                               : out std_logic;
+    cdce_pll_status_i                           : in  std_logic;
+                    
+    -- DAC specific signals             
+    dac_n_en_o                                  : out std_logic; -- SPI chip select
+    dac_sdo_i                                   : in  std_logic; -- SPI data out
+                    
+    -- Monitoring specific signals              
+    mon_n_en_o                                  : out std_logic; -- SPI chip select
+    mon_sdo_i                                   : in  std_logic; -- SPI data out
+    mon_n_reset_o                               : out std_logic;
+    mon_n_int_i                                 : in  std_logic;
                 
     --FMC Present status            
-    prsnt_m2c_l_i                           : in  std_logic;
+    prsnt_m2c_l_i                               : in  std_logic;
     
     -- Wishbone Streaming Interface Source
-    wbs_source_i                                : t_wbs_source_in;
-    wbs_source_o                                : t_wbs_source_out;
+    wbs_source_i                                : in t_wbs_source_in;
+    wbs_source_o                                : out t_wbs_source_out
 );
 
-end wb_fmc150;
+end xwb_fmc150;
 
-architecture rtl of wb_fmc150 is
+architecture rtl of xwb_fmc150 is
 
     component wb_fmc150
     generic
@@ -209,18 +210,18 @@ begin
         -- Wishbone signals
         -----------------------------
 
-        wb_adr_i                                => wb_adr_i,  
-        wb_dat_i                                => wb_dat_i,  
-        wb_dat_o                                => wb_dat_o,  
-        wb_sel_i                                => wb_sel_i,  
-        wb_we_i                                 => wb_we_i,   
-        wb_cyc_i                                => wb_cyc_i,  
-        wb_stb_i                                => wb_stb_i,  
-        wb_ack_o                                => wb_ack_o,  
-        wb_err_o                                => wb_err_o,  
-        wb_rty_o                                => wb_rty_o,  
-        wb_stall_o                              => wb_stall_o,
-        
+        wb_adr_i                                => wb_slave_i.adr,  
+        wb_dat_i                                => wb_slave_i.dat,  
+        wb_dat_o                                => wb_slave_o.dat,  
+        wb_sel_i                                => wb_slave_i.sel,  
+        wb_we_i                                 => wb_slave_i.we,   
+        wb_cyc_i                                => wb_slave_i.cyc,  
+        wb_stb_i                                => wb_slave_i.stb,  
+        wb_ack_o                                => wb_slave_o.ack,  
+        wb_err_o                                => wb_slave_o.err,  
+        wb_rty_o                                => wb_slave_o.rty,  
+        wb_stall_o                              => wb_slave_o.stall,
+
         -----------------------------
         -- External ports
         -----------------------------
@@ -266,8 +267,8 @@ begin
         cdce_pll_status_i                       => cdce_pll_status_i
                                                 
         -- DAC specific signals                
-        dac_n_en_o                              => dac_n_en_o,-- SPI chip select
-        dac_sdo_i                               => dac_sdo_i,  -- SPI data out
+        dac_n_en_o                              => dac_n_en_o,  -- SPI chip select
+        dac_sdo_i                               => dac_sdo_i,   -- SPI data out
                                                 
         -- Monitoring specific signals          
         mon_n_en_o                              => mon_n_en_o,    -- SPI chip select
@@ -279,44 +280,19 @@ begin
         prsnt_m2c_l_i                           => prsnt_m2c_l_i,
         
         -- Wishbone Streaming Interface Source
-        wbs_adr_o                               => wbs_adr_o,  
-        wbs_dat_o                               => wbs_dat_o,  
-        wbs_cyc_o                               => wbs_cyc_o,  
-        wbs_stb_o                               => wbs_stb_o,  
-        wbs_we_o                                => wbs_we_o,   
-        wbs_sel_o                               => wbs_sel_o,  
+        wbs_adr_o                               => wbs_source_o.adr,  
+        wbs_dat_o                               => wbs_source_o.dat,  
+        wbs_cyc_o                               => wbs_source_o.cyc,  
+        wbs_stb_o                               => wbs_source_o.stb,  
+        wbs_we_o                                => wbs_source_o.we,   
+        wbs_sel_o                               => wbs_source_o.sel,  
                                                   
-        wbs_ack_i                               => wbs_ack_i,  
-        wbs_stall_i                             => wbs_stall_i,
-        wbs_err_i                               => wbs_err_i,  
-        wbs_rty_i                               => wbs_rty_i  
+        wbs_ack_i                               => wbs_source_i.ack,
+        wbs_stall_i                             => wbs_source_i.stall,
+        wbs_err_i                               => wbs_source_i.err,  
+        wbs_rty_i                               => wbs_source_i.rty  
     );
-    end component;
     
-    wbs_source_i.ack                                <= wbs_ack_i; 
-    wbs_source_i.stall                              <= wbs_stall_i;
-    wbs_source_i.err                                <= wbs_err_i;  
-    wbs_source_i.rty                                <= wbs_rty_i; 
-    
-    wbs_source_o.adr                                <= wbs_adr_o;
-    wbs_source_o.dat                                <= wbs_dat_o;
-    wbs_source_o.cyc                                <= wbs_cyc_o;
-    wbs_source_o.stb                                <= wbs_stb_o;
-    wbs_source_o.we                                 <= wbs_we_o;
-    wbs_source_o.sel                                <= wbs_sel_o;
-    
-    wb_slave_i.cyc                                  <= wb_cyc_i;
-    wb_slave_i.stb                                  <= wb_stb_i;
-    wb_slave_i.adr                                  <= wb_adr_i;
-    wb_slave_i.sel                                  <= wb_sel_i;
-    wb_slave_i.we                                   <= wb_we_i;
-    wb_slave_i.dat                                  <= wb_dat_i;
-
-    wb_slave_o.ack                                  <= wb_ack_o;
-    wb_slave_o.err                                  <= wb_err_o;
-    wb_slave_o.rty                                  <= wb_rty_o;
-    wb_slave_o.stall                                <= wb_stall_o;
-    wb_slave_o.int                                  <= '0';
-    wb_slave_o.dat                                  <= wb_dat_o;
+    wb_slave_o.int                              <= '0';
 
 end rtl;

@@ -1,0 +1,748 @@
+INFO:    Simulation tool: isim
+[hdlmake2 0.02710]: LoadTopManifest
+[hdlmake2 0.02716]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test
+[hdlmake2 0.02722]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test
+[hdlmake2 0.02795]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/Manifest.py
+[hdlmake2 0.02847]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl
+[hdlmake2 0.02851]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl
+[hdlmake2 0.02857]: SFF> /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/wb_fmc150_tb.vhd
+[hdlmake2 0.03034]: /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/wb_fmc150_tb.vhd provides []
+[hdlmake2 0.03036]: /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/wb_fmc150_tb.vhd requires [('work', 'wishbone_pkg'), ('work', 'wb_stream_pkg'), ('work', 'custom_wishbone_pkg')]
+[hdlmake2 0.03107]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/Manifest.py
+[hdlmake2 0.03160]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone
+[hdlmake2 0.03164]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone
+[hdlmake2 0.03169]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common
+[hdlmake2 0.03172]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common
+[hdlmake2 0.03192]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores
+[hdlmake2 0.03195]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores
+[hdlmake2 0.03201]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope
+[hdlmake2 0.03203]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope
+[hdlmake2 0.03275]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/Manifest.py
+[hdlmake2 0.03334]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream
+[hdlmake2 0.03337]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream
+[hdlmake2 0.03343]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
+[hdlmake2 0.03348]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
+[hdlmake2 0.03354]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd
+[hdlmake2 0.03501]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd provides [('work', 'custom_wishbone_pkg')]
+[hdlmake2 0.03502]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.03572]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/Manifest.py
+[hdlmake2 0.03625]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.03702]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd provides [('work', 'wb_stream_pkg')]
+[hdlmake2 0.03703]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd requires []
+[hdlmake2 0.03706]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd
+[hdlmake2 0.03828]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd provides []
+[hdlmake2 0.03829]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd requires [('work', 'genram_pkg'), ('work', 'wb_stream_pkg')]
+[hdlmake2 0.03832]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd
+[hdlmake2 0.03931]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd provides []
+[hdlmake2 0.03933]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd requires [('work', 'genram_pkg'), ('work', 'wb_stream_pkg')]
+[hdlmake2 0.04004]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/Manifest.py
+[hdlmake2 0.04065]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc
+[hdlmake2 0.04069]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc
+[hdlmake2 0.04075]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150
+[hdlmake2 0.04079]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150
+[hdlmake2 0.04085]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist
+[hdlmake2 0.04088]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist
+[hdlmake2 0.04100]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd
+[hdlmake2 0.04255]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd provides []
+[hdlmake2 0.04256]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd requires [('work', 'wb_stream_pkg')]
+[hdlmake2 0.04259]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd
+[hdlmake2 0.04393]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd provides []
+[hdlmake2 0.04395]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd requires [('work', 'wb_stream_pkg')]
+[hdlmake2 0.04397]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd
+[hdlmake2 0.04454]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd provides [('work', 'fmc150_wbgen2_pkg')]
+[hdlmake2 0.04454]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd requires []
+[hdlmake2 0.04458]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd
+[hdlmake2 0.04625]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd provides []
+[hdlmake2 0.04626]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd requires [('work', 'fmc150_wbgen2_pkg')]
+[hdlmake2 0.04629]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd
+[hdlmake2 0.04764]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd provides []
+[hdlmake2 0.04765]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd requires [('work', 'wb_stream_pkg')]
+[hdlmake2 0.04837]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/Manifest.py
+[hdlmake2 0.04888]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd
+[hdlmake2 0.04943]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd provides []
+[hdlmake2 0.04944]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd requires []
+[hdlmake2 0.04946]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd
+[hdlmake2 0.04981]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd provides [('work', 'adc_pkg')]
+[hdlmake2 0.04982]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd requires []
+[hdlmake2 0.04985]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd
+[hdlmake2 0.05036]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd provides []
+[hdlmake2 0.05037]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd requires []
+[hdlmake2 0.05108]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/Manifest.py
+[hdlmake2 0.05170]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd
+[hdlmake2 0.05374]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd provides []
+[hdlmake2 0.05377]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd requires []
+[hdlmake2 0.05380]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd
+[hdlmake2 0.05581]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd provides []
+[hdlmake2 0.05582]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd requires []
+[hdlmake2 0.05586]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd
+[hdlmake2 0.05810]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd provides []
+[hdlmake2 0.05811]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd requires []
+[hdlmake2 0.05814]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd
+[hdlmake2 0.06007]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd provides []
+[hdlmake2 0.06008]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd requires []
+[hdlmake2 0.06011]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd
+[hdlmake2 0.06070]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd provides []
+[hdlmake2 0.06071]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd requires [('work', 'adc_pkg')]
+[hdlmake2 0.06075]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd
+[hdlmake2 0.06175]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd provides []
+[hdlmake2 0.06176]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd requires []
+[hdlmake2 0.06179]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd
+[hdlmake2 0.06348]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd provides [('work', 'fmc150_pkg')]
+[hdlmake2 0.06349]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd requires []
+[hdlmake2 0.06353]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd
+[hdlmake2 0.06543]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd provides []
+[hdlmake2 0.06544]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd requires []
+[hdlmake2 0.06547]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd
+[hdlmake2 0.06656]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd provides []
+[hdlmake2 0.06657]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd requires []
+[hdlmake2 0.06661]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd
+[hdlmake2 0.06806]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd provides []
+[hdlmake2 0.06808]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd requires [('work', 'fmc150_pkg')]
+[hdlmake2 0.06812]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd
+[hdlmake2 0.06886]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd provides []
+[hdlmake2 0.06887]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd requires []
+[hdlmake2 0.06960]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/Manifest.py
+[hdlmake2 0.07018]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc
+[hdlmake2 0.07022]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc
+[hdlmake2 0.07027]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc
+[hdlmake2 0.07030]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc
+[hdlmake2 0.07033]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc
+[hdlmake2 0.07106]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/Manifest.py
+[hdlmake2 0.07164]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch
+[hdlmake2 0.07167]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch
+[hdlmake2 0.07174]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd
+[hdlmake2 0.07199]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd provides [('work', 'custom_common_pkg')]
+[hdlmake2 0.07199]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd requires []
+[hdlmake2 0.07270]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/Manifest.py
+[hdlmake2 0.07315]: SFF> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd
+[hdlmake2 0.07342]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd provides []
+[hdlmake2 0.07343]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd requires []
+[hdlmake2 0.07419]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/Manifest.py
+[hdlmake2 0.07469]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common
+[hdlmake2 0.07473]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common
+[hdlmake2 0.07480]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams
+[hdlmake2 0.07482]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams
+[hdlmake2 0.07488]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone
+[hdlmake2 0.07491]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone
+[hdlmake2 0.07562]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/Manifest.py
+[hdlmake2 0.07630]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.07767]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd provides [('work', 'gencores_pkg')]
+[hdlmake2 0.07768]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.07770]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd
+[hdlmake2 0.07883]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd provides []
+[hdlmake2 0.07885]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.07888]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhd
+[hdlmake2 0.07974]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhd provides []
+[hdlmake2 0.07975]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.07978]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhd
+[hdlmake2 0.08030]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhd provides []
+[hdlmake2 0.08031]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08034]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhd
+[hdlmake2 0.08082]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhd provides []
+[hdlmake2 0.08084]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08088]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd
+[hdlmake2 0.08235]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd provides []
+[hdlmake2 0.08237]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08240]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhd
+[hdlmake2 0.08278]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhd provides []
+[hdlmake2 0.08279]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhd requires []
+[hdlmake2 0.08283]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhd
+[hdlmake2 0.08381]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhd provides []
+[hdlmake2 0.08382]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhd requires []
+[hdlmake2 0.08386]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhd
+[hdlmake2 0.08442]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhd provides []
+[hdlmake2 0.08443]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhd requires []
+[hdlmake2 0.08447]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd
+[hdlmake2 0.08521]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd provides []
+[hdlmake2 0.08522]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd requires [('work', 'genram_pkg'), ('work', 'gencores_pkg')]
+[hdlmake2 0.08526]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd
+[hdlmake2 0.08593]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd provides []
+[hdlmake2 0.08595]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08599]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhd
+[hdlmake2 0.08650]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhd provides []
+[hdlmake2 0.08651]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08656]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhd
+[hdlmake2 0.08690]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhd provides []
+[hdlmake2 0.08691]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhd requires []
+[hdlmake2 0.08695]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_wfifo.vhd
+[hdlmake2 0.08772]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_wfifo.vhd provides []
+[hdlmake2 0.08773]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_wfifo.vhd requires [('work', 'gencores_pkg')]
+[hdlmake2 0.08845]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/Manifest.py
+[hdlmake2 0.09108]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx
+[hdlmake2 0.09114]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx
+[hdlmake2 0.09120]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6
+[hdlmake2 0.09123]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6
+[hdlmake2 0.09131]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub
+[hdlmake2 0.09134]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub
+[hdlmake2 0.09143]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.09243]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd provides [('work', 'genram_pkg')]
+[hdlmake2 0.09244]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd requires []
+[hdlmake2 0.09247]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd
+[hdlmake2 0.09345]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd provides [('work', 'memory_loader_pkg')]
+[hdlmake2 0.09346]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.09349]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd
+[hdlmake2 0.09431]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd provides []
+[hdlmake2 0.09432]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.09505]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/Manifest.py
+[hdlmake2 0.09560]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd
+[hdlmake2 0.09650]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd provides []
+[hdlmake2 0.09651]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd requires [('work', 'genram_pkg'), ('work', 'memory_loader_pkg')]
+[hdlmake2 0.09654]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd
+[hdlmake2 0.09754]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd provides []
+[hdlmake2 0.09755]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd requires [('work', 'genram_pkg'), ('work', 'memory_loader_pkg')]
+[hdlmake2 0.09758]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd
+[hdlmake2 0.09873]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd provides []
+[hdlmake2 0.09874]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd requires [('work', 'genram_pkg'), ('work', 'memory_loader_pkg')]
+[hdlmake2 0.09877]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd
+[hdlmake2 0.09963]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd provides []
+[hdlmake2 0.09964]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.10036]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/Manifest.py
+[hdlmake2 0.10098]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhd
+[hdlmake2 0.10284]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhd provides []
+[hdlmake2 0.10285]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.10288]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhd
+[hdlmake2 0.10438]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhd provides []
+[hdlmake2 0.10439]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.10511]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/Manifest.py
+[hdlmake2 0.10572]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhd
+[hdlmake2 0.10590]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhd provides []
+[hdlmake2 0.10591]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhd requires []
+[hdlmake2 0.10662]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/Manifest.py
+[hdlmake2 0.10725]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge
+[hdlmake2 0.10728]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge
+[hdlmake2 0.10735]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master
+[hdlmake2 0.10737]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master
+[hdlmake2 0.10744]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master
+[hdlmake2 0.10746]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master
+[hdlmake2 0.10752]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout
+[hdlmake2 0.10755]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout
+[hdlmake2 0.10761]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram
+[hdlmake2 0.10763]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram
+[hdlmake2 0.10769]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port
+[hdlmake2 0.10772]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port
+[hdlmake2 0.10778]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer
+[hdlmake2 0.10781]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer
+[hdlmake2 0.10787]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart
+[hdlmake2 0.10790]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart
+[hdlmake2 0.10796]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic
+[hdlmake2 0.10799]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic
+[hdlmake2 0.10805]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi
+[hdlmake2 0.10808]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi
+[hdlmake2 0.10815]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar
+[hdlmake2 0.10817]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar
+[hdlmake2 0.10823]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32
+[hdlmake2 0.10826]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32
+[hdlmake2 0.10832]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter
+[hdlmake2 0.10837]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter
+[hdlmake2 0.10843]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader
+[hdlmake2 0.10846]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader
+[hdlmake2 0.10853]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing
+[hdlmake2 0.10855]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing
+[hdlmake2 0.10861]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma
+[hdlmake2 0.10864]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma
+[hdlmake2 0.10870]: Looking for manifest in /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2
+[hdlmake2 0.10873]: *** found manifest for module /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2
+[hdlmake2 0.10880]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.11282]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd provides [('work', 'wishbone_pkg')]
+[hdlmake2 0.11283]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd requires [('work', 'genram_pkg')]
+[hdlmake2 0.11355]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/Manifest.py
+[hdlmake2 0.11405]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd
+[hdlmake2 0.11517]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd provides []
+[hdlmake2 0.11519]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd requires [('work', 'wishbone_pkg'), ('work', 'gencores_pkg')]
+[hdlmake2 0.11522]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd
+[hdlmake2 0.11568]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd provides []
+[hdlmake2 0.11569]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.11641]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/Manifest.py
+[hdlmake2 0.11690]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd
+[hdlmake2 0.11775]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd provides []
+[hdlmake2 0.11776]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd requires [('work', 'wishbone_pkg'), ('work', 'gencores_pkg')]
+[hdlmake2 0.11779]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd
+[hdlmake2 0.11830]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd provides []
+[hdlmake2 0.11831]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.11834]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v
+[hdlmake2 0.12017]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/Manifest.py
+[hdlmake2 0.12070]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd
+[hdlmake2 0.12316]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd provides []
+[hdlmake2 0.12317]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd requires []
+[hdlmake2 0.12320]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd
+[hdlmake2 0.12475]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd provides []
+[hdlmake2 0.12476]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd requires []
+[hdlmake2 0.12479]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd
+[hdlmake2 0.12634]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd provides []
+[hdlmake2 0.12635]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd requires []
+[hdlmake2 0.12638]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd
+[hdlmake2 0.12711]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd provides []
+[hdlmake2 0.12712]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.12716]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd
+[hdlmake2 0.12763]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd provides []
+[hdlmake2 0.12764]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.12836]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/Manifest.py
+[hdlmake2 0.12882]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd
+[hdlmake2 0.12962]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd provides []
+[hdlmake2 0.12964]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.13034]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/Manifest.py
+[hdlmake2 0.13079]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd
+[hdlmake2 0.13163]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd provides []
+[hdlmake2 0.13164]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd requires [('work', 'wishbone_pkg'), ('work', 'genram_pkg')]
+[hdlmake2 0.13236]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/Manifest.py
+[hdlmake2 0.13282]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd
+[hdlmake2 0.13404]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd provides []
+[hdlmake2 0.13405]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd requires [('work', 'wishbone_pkg'), ('work', 'gencores_pkg')]
+[hdlmake2 0.13408]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd
+[hdlmake2 0.13457]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd provides []
+[hdlmake2 0.13459]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.13530]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/Manifest.py
+[hdlmake2 0.13578]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd
+[hdlmake2 0.13655]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd provides []
+[hdlmake2 0.13656]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.13659]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd
+[hdlmake2 0.13702]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd provides []
+[hdlmake2 0.13704]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.13780]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/Manifest.py
+[hdlmake2 0.13837]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd
+[hdlmake2 0.13930]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd provides []
+[hdlmake2 0.13931]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd requires []
+[hdlmake2 0.13933]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd
+[hdlmake2 0.14009]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd provides []
+[hdlmake2 0.14010]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd requires []
+[hdlmake2 0.14013]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd
+[hdlmake2 0.14052]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd provides []
+[hdlmake2 0.14053]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd requires []
+[hdlmake2 0.14056]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd
+[hdlmake2 0.14204]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd provides []
+[hdlmake2 0.14205]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd requires [('work', 'uart_wbgen2_pkg')]
+[hdlmake2 0.14208]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd
+[hdlmake2 0.14257]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd provides [('work', 'uart_wbgen2_pkg')]
+[hdlmake2 0.14258]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd requires []
+[hdlmake2 0.14261]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd
+[hdlmake2 0.14393]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd provides []
+[hdlmake2 0.14394]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd requires [('work', 'wishbone_pkg'), ('work', 'genram_pkg'), ('work', 'uart_wbgen2_pkg')]
+[hdlmake2 0.14398]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd
+[hdlmake2 0.14456]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd provides []
+[hdlmake2 0.14457]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.14530]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/Manifest.py
+[hdlmake2 0.14584]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd
+[hdlmake2 0.14635]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd provides []
+[hdlmake2 0.14636]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd requires []
+[hdlmake2 0.14639]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd
+[hdlmake2 0.15658]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd provides []
+[hdlmake2 0.15659]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd requires [('work', 'wbgen2_pkg')]
+[hdlmake2 0.15663]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd
+[hdlmake2 0.15806]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd provides []
+[hdlmake2 0.15808]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.15811]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd
+[hdlmake2 0.15861]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd provides []
+[hdlmake2 0.15862]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.15936]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/Manifest.py
+[hdlmake2 0.15991]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v
+[hdlmake2 0.16023]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.v
+[hdlmake2 0.16075]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.v
+[hdlmake2 0.16135]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd
+[hdlmake2 0.16197]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd provides []
+[hdlmake2 0.16198]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.16202]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd
+[hdlmake2 0.16248]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd provides []
+[hdlmake2 0.16249]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.16322]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/Manifest.py
+[hdlmake2 0.16371]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd
+[hdlmake2 0.16422]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd provides []
+[hdlmake2 0.16423]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.16425]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd
+[hdlmake2 0.16595]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd provides []
+[hdlmake2 0.16596]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.16599]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd
+[hdlmake2 0.16683]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd provides []
+[hdlmake2 0.16684]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.16756]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/Manifest.py
+[hdlmake2 0.16834]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd
+[hdlmake2 0.17121]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd provides []
+[hdlmake2 0.17122]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.17125]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.v
+[hdlmake2 0.31157]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_mc_arithmetic.v
+[hdlmake2 0.31224]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.v
+[hdlmake2 0.31248]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_adder.v
+[hdlmake2 0.31281]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_addsub.v
+[hdlmake2 0.31306]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.v
+[hdlmake2 0.31326]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.v
+[hdlmake2 0.31352]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_ram.v
+[hdlmake2 0.31388]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_shifter.v
+[hdlmake2 0.31423]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/lm32_multiplier.v
+[hdlmake2 0.31457]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.v
+[hdlmake2 0.31547]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/Manifest.py
+[hdlmake2 0.31597]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd
+[hdlmake2 0.31698]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd provides []
+[hdlmake2 0.31700]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.31774]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/Manifest.py
+[hdlmake2 0.31826]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd
+[hdlmake2 0.32028]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd provides []
+[hdlmake2 0.32029]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd requires [('work', 'wishbone_pkg'), ('work', 'gencores_pkg'), ('work', 'xldr_wbgen2_pkg')]
+[hdlmake2 0.32032]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd
+[hdlmake2 0.32108]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd provides []
+[hdlmake2 0.32109]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.32112]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd
+[hdlmake2 0.32171]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd provides [('work', 'xldr_wbgen2_pkg')]
+[hdlmake2 0.32173]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd requires [('work', 'wbgen2_pkg')]
+[hdlmake2 0.32176]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhd
+[hdlmake2 0.32358]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhd provides []
+[hdlmake2 0.32359]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhd requires [('work', 'xldr_wbgen2_pkg'), ('work', 'wbgen2_pkg')]
+[hdlmake2 0.32432]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/Manifest.py
+[hdlmake2 0.32478]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd
+[hdlmake2 0.32555]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd provides []
+[hdlmake2 0.32556]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd requires [('work', 'wishbone_pkg'), ('work', 'gencores_pkg')]
+[hdlmake2 0.32629]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/Manifest.py
+[hdlmake2 0.32675]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd
+[hdlmake2 0.32794]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd provides []
+[hdlmake2 0.32796]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd requires [('work', 'wishbone_pkg')]
+[hdlmake2 0.32867]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/Manifest.py
+[hdlmake2 0.32920]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd
+[hdlmake2 0.32976]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd provides []
+[hdlmake2 0.32977]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd requires [('work', 'wbgen2_pkg')]
+[hdlmake2 0.32980]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd
+[hdlmake2 0.33074]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd provides []
+[hdlmake2 0.33076]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd requires [('work', 'wbgen2_pkg')]
+[hdlmake2 0.33079]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd
+[hdlmake2 0.33138]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd provides []
+[hdlmake2 0.33139]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd requires [('work', 'genram_pkg'), ('work', 'wbgen2_pkg')]
+[hdlmake2 0.33143]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd
+[hdlmake2 0.33203]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd provides []
+[hdlmake2 0.33204]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd requires [('work', 'wbgen2_pkg')]
+[hdlmake2 0.33207]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.33270]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd provides [('work', 'wbgen2_pkg')]
+[hdlmake2 0.33271]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd requires []
+[hdlmake2 0.33345]: Parsing manifest file: /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope/Manifest.py
+[hdlmake2 0.33394]: SFF> /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope/chipscope_icon.ngc
+[hdlmake2 0.33397]: SFF> /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope/chipscope_ila.ngc
+INFO:    Generating ISE Simulation (ISim) makefile for simulation.
+[hdlmake2 0.36352]: /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/wb_fmc150_tb.vhd
+[hdlmake2 0.36362]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36366]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36369]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd
+[hdlmake2 0.36371]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd
+[hdlmake2 0.36377]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36378]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd
+[hdlmake2 0.36379]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36380]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd
+[hdlmake2 0.36386]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36389]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36390]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd
+[hdlmake2 0.36396]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36399]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36401]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd
+[hdlmake2 0.36404]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36405]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd
+[hdlmake2 0.36408]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd
+[hdlmake2 0.36409]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd
+[hdlmake2 0.36410]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd
+[hdlmake2 0.36414]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd
+[hdlmake2 0.36415]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd
+[hdlmake2 0.36415]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd
+[hdlmake2 0.36416]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd
+[hdlmake2 0.36417]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd
+[hdlmake2 0.36418]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd
+[hdlmake2 0.36419]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd
+[hdlmake2 0.36419]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd
+[hdlmake2 0.36420]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd
+[hdlmake2 0.36424]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd
+[hdlmake2 0.36425]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd
+[hdlmake2 0.36426]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd
+[hdlmake2 0.36427]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd
+[hdlmake2 0.36427]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd
+[hdlmake2 0.36428]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd
+[hdlmake2 0.36433]: --> /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd
+[hdlmake2 0.36434]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd
+[hdlmake2 0.36434]: /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd
+[hdlmake2 0.36435]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36442]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36443]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd
+[hdlmake2 0.36448]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36449]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhd
+[hdlmake2 0.36454]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36455]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhd
+[hdlmake2 0.36460]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36461]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhd
+[hdlmake2 0.36466]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36467]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd
+[hdlmake2 0.36472]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36473]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhd
+[hdlmake2 0.36474]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhd
+[hdlmake2 0.36474]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhd
+[hdlmake2 0.36475]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd
+[hdlmake2 0.36481]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36486]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36487]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd
+[hdlmake2 0.36492]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36493]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhd
+[hdlmake2 0.36498]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36499]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhd
+[hdlmake2 0.36500]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_wfifo.vhd
+[hdlmake2 0.36505]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36506]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36507]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd
+[hdlmake2 0.36513]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36514]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd
+[hdlmake2 0.36520]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36521]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36527]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36528]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd
+[hdlmake2 0.36534]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36540]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd
+[hdlmake2 0.36541]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd
+[hdlmake2 0.36547]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36553]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd
+[hdlmake2 0.36554]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd
+[hdlmake2 0.36561]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36568]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd
+[hdlmake2 0.36569]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd
+[hdlmake2 0.36575]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36576]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhd
+[hdlmake2 0.36582]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36583]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhd
+[hdlmake2 0.36589]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36590]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhd
+[hdlmake2 0.36591]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd
+[hdlmake2 0.36597]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36602]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36603]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd
+[hdlmake2 0.36610]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36611]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd
+[hdlmake2 0.36617]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36621]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36623]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd
+[hdlmake2 0.36629]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36630]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd
+[hdlmake2 0.36631]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd
+[hdlmake2 0.36631]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd
+[hdlmake2 0.36632]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd
+[hdlmake2 0.36638]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36639]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd
+[hdlmake2 0.36646]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36647]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd
+[hdlmake2 0.36653]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36654]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd
+[hdlmake2 0.36660]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36666]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36667]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd
+[hdlmake2 0.36673]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36678]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36679]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd
+[hdlmake2 0.36686]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36687]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd
+[hdlmake2 0.36694]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36695]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd
+[hdlmake2 0.36701]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36702]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd
+[hdlmake2 0.36703]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd
+[hdlmake2 0.36703]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd
+[hdlmake2 0.36704]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd
+[hdlmake2 0.36712]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd
+[hdlmake2 0.36714]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd
+[hdlmake2 0.36714]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd
+[hdlmake2 0.36720]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36726]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36735]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd
+[hdlmake2 0.36736]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd
+[hdlmake2 0.36742]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36743]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd
+[hdlmake2 0.36744]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd
+[hdlmake2 0.36754]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36755]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd
+[hdlmake2 0.36761]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36762]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd
+[hdlmake2 0.36768]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36769]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd
+[hdlmake2 0.36775]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36776]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd
+[hdlmake2 0.36783]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36784]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd
+[hdlmake2 0.36790]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36791]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd
+[hdlmake2 0.36797]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36798]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd
+[hdlmake2 0.36804]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36805]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd
+[hdlmake2 0.36812]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36813]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd
+[hdlmake2 0.36820]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36821]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd
+[hdlmake2 0.36827]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36832]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36841]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd
+[hdlmake2 0.36842]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd
+[hdlmake2 0.36848]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36849]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd
+[hdlmake2 0.36859]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36860]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhd
+[hdlmake2 0.36870]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd
+[hdlmake2 0.36879]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36880]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd
+[hdlmake2 0.36887]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36892]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd
+[hdlmake2 0.36893]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd
+[hdlmake2 0.36899]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd
+[hdlmake2 0.36900]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd
+[hdlmake2 0.36910]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36911]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd
+[hdlmake2 0.36921]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36922]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd
+[hdlmake2 0.36928]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd
+[hdlmake2 0.36937]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36939]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd
+[hdlmake2 0.36948]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36949]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd
+[hdlmake2 0.36954]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v
+[hdlmake2 0.36955]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v
+[hdlmake2 0.36960]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37002]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37005]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37017]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37019]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.v
+[hdlmake2 0.37022]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37058]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37061]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37072]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37073]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.v
+[hdlmake2 0.37077]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37113]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v
+[hdlmake2 0.37116]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37127]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
+[hdlmake2 0.37128]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.v
+[hdlmake2 0.37129]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_mc_arithmetic.v
+[hdlmake2 0.37132]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37196]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37197]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.v
+[hdlmake2 0.37198]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_adder.v
+[hdlmake2 0.37201]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37263]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37265]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_addsub.v
+[hdlmake2 0.37268]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37331]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37332]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.v
+[hdlmake2 0.37333]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.v
+[hdlmake2 0.37336]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37399]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37400]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_ram.v
+[hdlmake2 0.37403]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37465]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37466]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_shifter.v
+[hdlmake2 0.37469]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37530]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
+[hdlmake2 0.37531]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/lm32_multiplier.v
+[hdlmake2 0.37535]: SFF> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/../../src/lm32_include.v
+[hdlmake2 0.37597]: --> /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/../../src/lm32_include.v
+[hdlmake2 0.37599]: /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.v
+[hdlmake2 0.38482]: 0 /home/lerwys/Repos/bpm-sw/hdl/testbench/wishbone/wb_fmc150_test/wb_fmc150_tb.vhdTrue
+[hdlmake2 0.38483]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhdTrue
+[hdlmake2 0.38483]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhdTrue
+[hdlmake2 0.38484]: 0 /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope/chipscope_icon.ngcTrue
+[hdlmake2 0.38484]: 0 /home/lerwys/Repos/bpm-sw/hdl/platform/virtex6/chipscope/chipscope_ila.ngcTrue
+[hdlmake2 0.38485]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhdTrue
+[hdlmake2 0.38485]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhdTrue
+[hdlmake2 0.38486]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhdTrue
+[hdlmake2 0.38486]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhdTrue
+[hdlmake2 0.38487]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhdTrue
+[hdlmake2 0.38487]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhdTrue
+[hdlmake2 0.38488]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhdTrue
+[hdlmake2 0.38488]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhdTrue
+[hdlmake2 0.38489]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhdTrue
+[hdlmake2 0.38489]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhdTrue
+[hdlmake2 0.38490]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhdTrue
+[hdlmake2 0.38490]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhdTrue
+[hdlmake2 0.38491]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhdTrue
+[hdlmake2 0.38491]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhdTrue
+[hdlmake2 0.38491]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhdTrue
+[hdlmake2 0.38492]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhdTrue
+[hdlmake2 0.38492]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhdTrue
+[hdlmake2 0.38493]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhdTrue
+[hdlmake2 0.38493]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhdTrue
+[hdlmake2 0.38494]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhdTrue
+[hdlmake2 0.38494]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhdTrue
+[hdlmake2 0.38495]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngcTrue
+[hdlmake2 0.38495]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngcTrue
+[hdlmake2 0.38496]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngcTrue
+[hdlmake2 0.38496]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngcTrue
+[hdlmake2 0.38497]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngcTrue
+[hdlmake2 0.38497]: 0 /home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhdTrue
+[hdlmake2 0.38498]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhdTrue
+[hdlmake2 0.38498]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhdTrue
+[hdlmake2 0.38499]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhdTrue
+[hdlmake2 0.38499]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhdTrue
+[hdlmake2 0.38501]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhdTrue
+[hdlmake2 0.38501]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhdTrue
+[hdlmake2 0.38502]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhdTrue
+[hdlmake2 0.38502]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhdTrue
+[hdlmake2 0.38503]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhdTrue
+[hdlmake2 0.38503]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhdTrue
+[hdlmake2 0.38504]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhdTrue
+[hdlmake2 0.38504]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhdTrue
+[hdlmake2 0.38505]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhdTrue
+[hdlmake2 0.38505]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_wfifo.vhdTrue
+[hdlmake2 0.38506]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhdTrue
+[hdlmake2 0.38506]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhdTrue
+[hdlmake2 0.38507]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhdTrue
+[hdlmake2 0.38507]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhdTrue
+[hdlmake2 0.38508]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhdTrue
+[hdlmake2 0.38508]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhdTrue
+[hdlmake2 0.38509]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhdTrue
+[hdlmake2 0.38509]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhdTrue
+[hdlmake2 0.38509]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhdTrue
+[hdlmake2 0.38510]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhdTrue
+[hdlmake2 0.38510]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhdTrue
+[hdlmake2 0.38511]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhdTrue
+[hdlmake2 0.38511]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhdTrue
+[hdlmake2 0.38512]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhdTrue
+[hdlmake2 0.38512]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhdTrue
+[hdlmake2 0.38513]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.vTrue
+[hdlmake2 0.38513]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhdTrue
+[hdlmake2 0.38514]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhdTrue
+[hdlmake2 0.38514]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhdTrue
+[hdlmake2 0.38515]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhdTrue
+[hdlmake2 0.38515]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhdTrue
+[hdlmake2 0.38516]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhdTrue
+[hdlmake2 0.38516]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhdTrue
+[hdlmake2 0.38518]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhdTrue
+[hdlmake2 0.38518]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhdTrue
+[hdlmake2 0.38519]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhdTrue
+[hdlmake2 0.38519]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhdTrue
+[hdlmake2 0.38520]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhdTrue
+[hdlmake2 0.38520]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhdTrue
+[hdlmake2 0.38521]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhdTrue
+[hdlmake2 0.38521]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhdTrue
+[hdlmake2 0.38522]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhdTrue
+[hdlmake2 0.38522]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhdTrue
+[hdlmake2 0.38523]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhdTrue
+[hdlmake2 0.38523]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhdTrue
+[hdlmake2 0.38524]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhdTrue
+[hdlmake2 0.38524]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhdTrue
+[hdlmake2 0.38525]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhdTrue
+[hdlmake2 0.38525]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.vTrue
+[hdlmake2 0.38525]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.vTrue
+[hdlmake2 0.38526]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.vTrue
+[hdlmake2 0.38526]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhdTrue
+[hdlmake2 0.38527]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhdTrue
+[hdlmake2 0.38527]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhdTrue
+[hdlmake2 0.38528]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhdTrue
+[hdlmake2 0.38528]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhdTrue
+[hdlmake2 0.38529]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhdTrue
+[hdlmake2 0.38529]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.vTrue
+[hdlmake2 0.38530]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_mc_arithmetic.vTrue
+[hdlmake2 0.38530]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.vTrue
+[hdlmake2 0.38531]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_adder.vTrue
+[hdlmake2 0.38531]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_addsub.vTrue
+[hdlmake2 0.38532]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.vTrue
+[hdlmake2 0.38532]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.vTrue
+[hdlmake2 0.38533]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_ram.vTrue
+[hdlmake2 0.38533]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_shifter.vTrue
+[hdlmake2 0.38534]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/lm32_multiplier.vTrue
+[hdlmake2 0.38535]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.vTrue
+[hdlmake2 0.38535]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhdTrue
+[hdlmake2 0.38536]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhdTrue
+[hdlmake2 0.38536]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhdTrue
+[hdlmake2 0.38537]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhdTrue
+[hdlmake2 0.38537]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhdTrue
+[hdlmake2 0.38538]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhdTrue
+[hdlmake2 0.38538]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhdTrue
+[hdlmake2 0.38539]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhdTrue
+[hdlmake2 0.38539]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhdTrue
+[hdlmake2 0.38540]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhdTrue
+[hdlmake2 0.38540]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhdTrue
+[hdlmake2 0.38541]: 0 /home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhdTrue

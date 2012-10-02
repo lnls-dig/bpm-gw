@@ -3,12 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
-use work.wb_fmc150_pkg.all;
+--use work.wb_fmc150_pkg.all;
 use work.wb_stream_pkg.all;
 
 entity wb_fmc150 is
 generic
 (
+    g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
+    g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_packet_size                           : natural := 32
 );
 port
@@ -112,15 +114,15 @@ architecture rtl of wb_fmc150 is
     -----------------------------------------------------------------------------------------------
     -- IP / user logic interface signals
     -----------------------------------------------------------------------------------------------
-	--signal s_adc_dout         			: std_logic_vector(31 downto 0);
-    --signal s_clk_adc         			: std_logic;
+    -- wb_fmc150 reg structure
     signal regs_in                      : t_fmc150_out_registers;
     signal regs_out                     : t_fmc150_in_registers;
     
+    -- Stream nterface structure
     signal wbs_stream_out               : t_wbs_source_out;
     signal wbs_stream_in                : t_wbs_source_in;
     
-    -- FMC 150 testbench
+    -- FMC 150 testbench signals
     signal cdce_pll_status              : std_logic;
     signal s_mmcm_adc_locked            : std_logic;
     
@@ -138,35 +140,16 @@ architecture rtl of wb_fmc150 is
     signal s_bytesel                    : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
     signal s_dreq                       : std_logic;
     
+    -- Wishbone adapter structures
+    signal wb_out                       : t_wishbone_slave_out;
+    signal wb_in                        : t_wishbone_slave_in;
+
+    signal resized_addr                 : std_logic_vector(c_wishbone_address_width-1 downto 0);
+    
 begin
-
-
-	-- Glue logic
-	--adc_dout_o <= s_adc_dout;
-	--clk_adc_o <= s_clk_adc;
-
     -----------------------------------------------------------------------------------------------
     -- BUS / IP interface
     ----------------------------------------------------------------------------------------------- 
-	
-    --s_clk_out_pulse_sync(0) <= clk_100Mhz;
-    
-    --gen_pulse_register_sync :  for i in 0 to (C_SLV_DWIDTH/2)-1 generate
-    --
-    --    cmp_adc_delay_update : pulse2pulse
-    --    port map
-    --    (
-    --        in_clk      => Bus2IP_Clk,                                  
-    --        out_clk     => s_clk_out_pulse_sync(i),
-    --        rst         => not Bus2IP_Resetn,
-    --        pulsein     => s_registers(FLAGS_PULSE_0)(i),
-    --        inbusy      => open,
-    --        pulseout    => s_pulse_register_sync(i)
-    --    );
-    --
-    --end generate;
-    --
-    --s_adc_delay_update <= s_pulse_register_sync(0);
     
     cmp_fmc150_testbench: fmc150_testbench
     port map
@@ -236,19 +219,50 @@ begin
     regs_out.flgs_out_pll_status_i                  <= cdce_pll_status;
     regs_out.flgs_out_adc_clk_locked_i              <= s_mmcm_adc_locked;
     
+    -- Pipelined <--> Classic cycles / Word <--> Byte address granularity
+    -- conversion
+    cmp_adapter : wb_slave_adapter
+    generic map (
+        g_master_use_struct                         => true,
+        g_master_mode                               => PIPELINED,
+        g_master_granularity                        => WORD,
+        g_slave_use_struct                          => false,
+        g_slave_mode                                => g_interface_mode,
+        g_slave_granularity                         => g_address_granularity)
+    port map (  
+        clk_sys_i                                   => clk_sys_i,
+        rst_n_i                                     => rst_n_i,
+        master_i                                    => wb_out,
+        master_o                                    => wb_in,
+        sl_adr_i                                    => resized_addr,
+        sl_dat_i                                    => wb_dat_i,
+        sl_sel_i                                    => wb_sel_i,
+        sl_cyc_i                                    => wb_cyc_i,
+        sl_stb_i                                    => wb_stb_i,
+        sl_we_i                                     => wb_we_i,
+        sl_dat_o                                    => wb_dat_o,
+        sl_ack_o                                    => wb_ack_o,
+        sl_stall_o                                  => wb_stall_o
+    );
+    
+    resized_addr(2 downto 0)                        <= wb_adr_i(2 downto 0);
+    resized_addr(c_wishbone_address_width-1 downto 3) 
+                                                    <= (others => '0');
+    
+    -- Register Bank / Wishbone Interface
     cmp_wb_fmc150_port : wb_fmc150_port 
     port map (
         rst_n_i                                     => rst_n_i,
         clk_sys_i                                   => clk_sys_i,
-        wb_adr_i                                    => wb_adr_i,
-        wb_dat_i                                    => wb_dat_i,
-        wb_dat_o                                    => wb_dat_o,
-        wb_cyc_i                                    => wb_cyc_i,
-        wb_sel_i                                    => wb_sel_i,
-        wb_stb_i                                    => wb_stb_i,
-        wb_we_i                                     => wb_we_i,
-        wb_ack_o                                    => wb_ack_o,
-        wb_stall_o                                  => wb_stall_o,
+        wb_adr_i                                    => wb_in.adr(2 downto 0),
+        wb_dat_i                                    => wb_in.dat,
+        wb_dat_o                                    => wb_out.dat,
+        wb_cyc_i                                    => wb_in.cyc,
+        wb_sel_i                                    => wb_in.sel,
+        wb_stb_i                                    => wb_in.stb,
+        wb_we_i                                     => wb_in.we,
+        wb_ack_o                                    => wb_out.ack,
+        wb_stall_o                                  => wb_out.stall,
         clk_100Mhz                                  => clk_100_i,
         regs_i                                      => regs_out,
         regs_o                                      => regs_in
@@ -277,7 +291,6 @@ begin
     s_addr                                          <= (others => '0');
     s_data                                          <= s_adc_dout;
     s_dvalid                                        <= cdce_pll_status and s_mmcm_adc_locked;
-    
     
     p_gen_sof_eof : process(s_clk_adc, rst_n_i)
     begin

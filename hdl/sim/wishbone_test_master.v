@@ -71,7 +71,6 @@ module WB_TEST_MASTER;
       begin
 	 wb_monitor_bus = onoff;
       end
-
    endtask // monitor_bus
    
    task rw_generic;
