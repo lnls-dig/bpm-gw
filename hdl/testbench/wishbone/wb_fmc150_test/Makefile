@@ -343,6 +343,7 @@ work/wb_fmc150_tb/.wb_fmc150_tb_vhd: wb_fmc150_tb.vhd work/wb_fmc150_tb/.wb_fmc1
 
 work/wb_fmc150_tb/.wb_fmc150_tb: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
+work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 
@@ -352,7 +353,8 @@ work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd: ../../../modules/custom_wishb
 
 
 work/custom_wishbone_pkg/.custom_wishbone_pkg: \
-work/wishbone_pkg/.wishbone_pkg_vhd
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wb_stream_pkg/.wb_stream_pkg_vhd
 
 work/custom_common_pkg/.custom_common_pkg_vhd: ../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
@@ -392,7 +394,10 @@ work/wb_fmc150/.wb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/wb_fmc
 
 
 work/wb_fmc150/.wb_fmc150: \
-work/wb_stream_pkg/.wb_stream_pkg_vhd
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
+work/wb_stream_pkg/.wb_stream_pkg_vhd \
+work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 
 work/xwb_fmc150/.xwb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd work/xwb_fmc150/.xwb_fmc150
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
@@ -400,7 +405,9 @@ work/xwb_fmc150/.xwb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/xwb_
 
 
 work/xwb_fmc150/.xwb_fmc150: \
-work/wb_stream_pkg/.wb_stream_pkg_vhd
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wb_stream_pkg/.wb_stream_pkg_vhd \
+work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd: ../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd work/xfmc150_regs_pkg/.xfmc150_regs_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 

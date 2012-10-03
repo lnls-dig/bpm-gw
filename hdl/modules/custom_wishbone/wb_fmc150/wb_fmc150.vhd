@@ -1,17 +1,29 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 library work;
---use work.wb_fmc150_pkg.all;
+-- Main Wishbone Definitions
+use work.wishbone_pkg.all;
+-- Custom Wishbone Modules
+use work.custom_wishbone_pkg.all;
+-- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
+-- Register Bank
+use work.fmc150_wbgen2_pkg.all;
+
+-- FIX. Synchorinze the assynchronous clock at deassertion1
+-- FIX. Sel byte select in wb_source_out
+-- FIX. Test SOF and EOF in wb_source_out at the same sycle. Should work.
 
 entity wb_fmc150 is
 generic
 (
     g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
-    g_packet_size                           : natural := 32
+    g_packet_size                           : natural := 32;
+    g_sim                                   : boolean := false
 );
 port
 (
@@ -57,10 +69,10 @@ port
     txenable_o                              : out std_logic;
     
     --Clock/Trigger connection to FMC150
-    clk_to_fpga_p_i                         : in  std_logic;
-    clk_to_fpga_n_i                         : in  std_logic;
-    ext_trigger_p_i                         : in  std_logic;
-    ext_trigger_n_i                         : in  std_logic;
+    --clk_to_fpga_p_i                         : in  std_logic;
+    --clk_to_fpga_n_i                         : in  std_logic;
+    --ext_trigger_p_i                         : in  std_logic;
+    --ext_trigger_n_i                         : in  std_logic;
     
     -- Control signals from/to FMC150
     --Serial Peripheral Interface (SPI)
@@ -111,6 +123,9 @@ end wb_fmc150;
 
 architecture rtl of wb_fmc150 is
 
+    -- Constants
+    constant c_counter_size               : natural := f_ceil_log2(g_packet_size);
+
     -----------------------------------------------------------------------------------------------
     -- IP / user logic interface signals
     -----------------------------------------------------------------------------------------------
@@ -123,14 +138,15 @@ architecture rtl of wb_fmc150 is
     signal wbs_stream_in                : t_wbs_source_in;
     
     -- FMC 150 testbench signals
-    signal cdce_pll_status              : std_logic;
+    --signal cdce_pll_status              : std_logic;
     signal s_mmcm_adc_locked            : std_logic;
     
-    signal s_adc_dout                   : std_logic;
+    signal s_adc_dout                   : std_logic_vector(31 downto 0);
     signal s_clk_adc                    : std_logic;
+    signal s_fmc150_rst                 : std_logic;
     
     -- Streaming control signals
-    signal s_wbs_packet_counter         : unsigned;
+    signal s_wbs_packet_counter         : unsigned(c_counter_size-1 downto 0);
     signal s_addr                       : std_logic_vector(c_wbs_address_width-1 downto 0);
     signal s_data                       : std_logic_vector(c_wbs_data_width-1 downto 0);
     signal s_dvalid                     : std_logic;
@@ -146,57 +162,181 @@ architecture rtl of wb_fmc150 is
 
     signal resized_addr                 : std_logic_vector(c_wishbone_address_width-1 downto 0);
     
+    -- Components
+    -- Bank Register / Wishbone Interface
+    component wb_fmc150_port
+      port (
+        rst_n_i                                  : in     std_logic;
+        clk_sys_i                                : in     std_logic;
+        wb_adr_i                                 : in     std_logic_vector(2 downto 0);
+        wb_dat_i                                 : in     std_logic_vector(31 downto 0);
+        wb_dat_o                                 : out    std_logic_vector(31 downto 0);
+        wb_cyc_i                                 : in     std_logic;
+        wb_sel_i                                 : in     std_logic_vector(3 downto 0);
+        wb_stb_i                                 : in     std_logic;
+        wb_we_i                                  : in     std_logic;
+        wb_ack_o                                 : out    std_logic;
+        wb_stall_o                               : out    std_logic;
+        clk_100Mhz_i                             : in     std_logic;
+        clk_wb_i                                 : in     std_logic;
+        regs_i                                   : in     t_fmc150_in_registers;
+        regs_o                                   : out    t_fmc150_out_registers
+      );
+    end component;
+    
+    -- Top FMC150 component
+    component fmc150_testbench
+    generic(
+        g_sim                   : boolean := false
+    );
+    port
+    (
+        rst                     : in  std_logic;
+        clk_100Mhz              : in  std_logic;
+        clk_200Mhz              : in  std_logic;
+        adc_clk_ab_p            : in  std_logic;
+        adc_clk_ab_n            : in  std_logic;
+        adc_cha_p               : in  std_logic_vector(6 downto 0);
+        adc_cha_n               : in  std_logic_vector(6 downto 0);
+        adc_chb_p               : in  std_logic_vector(6 downto 0);
+        adc_chb_n               : in  std_logic_vector(6 downto 0);
+        dac_dclk_p              : out std_logic;
+        dac_dclk_n              : out std_logic;
+        dac_data_p              : out std_logic_vector(7 downto 0);
+        dac_data_n              : out std_logic_vector(7 downto 0);
+        dac_frame_p             : out std_logic;
+        dac_frame_n             : out std_logic;
+        txenable                : out std_logic;
+        --clk_to_fpga_p           : in  std_logic;
+        --clk_to_fpga_n           : in  std_logic;
+        --ext_trigger_p           : in  std_logic;
+        --ext_trigger_n           : in  std_logic;
+        spi_sclk                : out std_logic;
+        spi_sdata               : out std_logic;
+        rd_n_wr                 : in    std_logic;
+        addr                    : in    std_logic_vector(15 downto 0);
+        idata                   : in    std_logic_vector(31 downto 0);
+        odata                   : out   std_logic_vector(31 downto 0);
+        busy                    : out   std_logic;
+        cdce72010_valid         : in    std_logic;
+        ads62p49_valid          : in    std_logic;
+        dac3283_valid           : in    std_logic;
+        amc7823_valid           : in    std_logic;
+        external_clock          : in    std_logic;
+        adc_n_en                : out   std_logic;
+        adc_sdo                 : in    std_logic;
+        adc_reset               : out   std_logic;
+        cdce_n_en               : out   std_logic;
+        cdce_sdo                : in    std_logic;
+        cdce_n_reset            : out   std_logic;
+        cdce_n_pd               : out   std_logic;
+        ref_en                  : out   std_logic;
+        pll_status              : in    std_logic;
+        dac_n_en                : out   std_logic;
+        dac_sdo                 : in    std_logic;
+        mon_n_en                : out   std_logic;
+        mon_sdo                 : in    std_logic;
+        mon_n_reset             : out   std_logic;
+        mon_n_int               : in    std_logic;
+        prsnt_m2c_l             : in  std_logic;
+        adc_delay_update_i      : in  std_logic;
+        adc_str_cntvaluein_i    : in  std_logic_vector(4 downto 0);
+        adc_cha_cntvaluein_i    : in  std_logic_vector(4 downto 0);
+        adc_chb_cntvaluein_i    : in  std_logic_vector(4 downto 0);
+        adc_str_cntvalueout_o   : out std_logic_vector(4 downto 0);
+        adc_dout_o              : out std_logic_vector(31 downto 0);
+        clk_adc_o               : out std_logic;
+        mmcm_adc_locked_o       : out std_logic
+
+    );
+    end component;
+    
+    -- Generate bit with probability of '1' equals to 'prob'
+    procedure gen_valid(prob : real; variable seed1, seed2 : inout positive; 
+        signal result : out std_logic) 
+    is
+      variable rand: real;                           -- Random real-number value in range 0 to 1.0
+    begin
+        uniform(seed1, seed2, rand);                                   -- generate random number
+        --int_rand := integer(trunc(rand*4096.0));                       -- rescale to 0..4096, find integer part
+        --stim := std_logic_vector(to_unsigned(int_rand, stim'LENGTH));  -- convert to std_logic_vector
+        
+        if (rand > prob) then
+            result <= '1';
+        else
+            result <= '0';
+        end if;        
+    end procedure;
+    
+    -- Generate std_logic_vector
+    procedure gen_data(size : positive; variable seed1, seed2 : inout positive; 
+        signal result : out std_logic_vector)
+    is
+      variable rand : real;                           -- Random real-number value in range 0 to 1.0
+      variable int_rand : integer;                    -- Random integer value in range 0..2^c_wbs_data_width
+      variable stim : std_logic_vector(c_wbs_data_width-1 downto 0);  -- Random c_wbs_data_width-1 bit stimulus
+    begin
+        uniform(seed1, seed2, rand);                                   -- generate random number
+        int_rand := integer(trunc(rand*real(2**16)));    -- rescale to 0..2^c_wbs_data_width, find integer part
+        stim := std_logic_vector(to_unsigned(int_rand, stim'length));  -- convert to std_logic_vector
+        
+        result <= stim(size-1 downto 0);
+    end procedure;
+    
 begin
     -----------------------------------------------------------------------------------------------
     -- BUS / IP interface
     ----------------------------------------------------------------------------------------------- 
-    
+
     cmp_fmc150_testbench: fmc150_testbench
+    generic map(
+        g_sim                   => g_sim
+    )
     port map
     (
-        rst                     => rst,
-        clk_100Mhz              => clk_100Mhz,
-        clk_200Mhz              => clk_200Mhz,
+        rst                     => s_fmc150_rst,
+        clk_100Mhz              => clk_100Mhz_i,
+        clk_200Mhz              => clk_200Mhz_i,
 
-        adc_clk_ab_p            => adc_clk_ab_p,
-        adc_clk_ab_n            => adc_clk_ab_n,
-        adc_cha_p               => adc_cha_p,
-        adc_cha_n               => adc_cha_n,
-        adc_chb_p               => adc_chb_p,
-        adc_chb_n               => adc_chb_n,
-        dac_dclk_p              => dac_dclk_p,
-        dac_dclk_n              => dac_dclk_n,
-        dac_data_p              => dac_data_p,
-        dac_data_n              => dac_data_n,
-        dac_frame_p             => dac_frame_p,
-        dac_frame_n             => dac_frame_n,
-        txenable                => txenable,
-        clk_to_fpga_p           => clk_to_fpga_p,
-        clk_to_fpga_n           => clk_to_fpga_n,
-        ext_trigger_p           => ext_trigger_p,
-        ext_trigger_n           => ext_trigger_n,
-        spi_sclk                => spi_sclk,
-        spi_sdata               => spi_sdata,
-        adc_n_en                => adc_n_en,
-        adc_sdo                 => adc_sdo,
-        adc_reset               => adc_reset,
-        cdce_n_en               => cdce_n_en,
-        cdce_sdo                => cdce_sdo,
-        cdce_n_reset            => cdce_n_reset,
-        cdce_n_pd               => cdce_n_pd,
-        ref_en                  => cdce_ref_en,
-        dac_n_en                => dac_n_en,
-        dac_sdo                 => dac_sdo,
-        mon_n_en                => mon_n_en,
-        mon_sdo                 => mon_sdo,
-        mon_n_reset             => mon_n_reset,
-        mon_n_int               => mon_n_int,
+        adc_clk_ab_p            => adc_clk_ab_p_i,
+        adc_clk_ab_n            => adc_clk_ab_n_i,
+        adc_cha_p               => adc_cha_p_i,   
+        adc_cha_n               => adc_cha_n_i,   
+        adc_chb_p               => adc_chb_p_i,   
+        adc_chb_n               => adc_chb_n_i,   
+        dac_dclk_p              => dac_dclk_p_o, 
+        dac_dclk_n              => dac_dclk_n_o, 
+        dac_data_p              => dac_data_p_o, 
+        dac_data_n              => dac_data_n_o, 
+        dac_frame_p             => dac_frame_p_o,
+        dac_frame_n             => dac_frame_n_o,
+        txenable                => txenable_o,   
+        --clk_to_fpga_p           => clk_to_fpga_p_i,
+        --clk_to_fpga_n           => clk_to_fpga_n_i,
+        --ext_trigger_p           => ext_trigger_p_i,
+        --ext_trigger_n           => ext_trigger_n_i,
+        spi_sclk                => spi_sclk_o,    
+        spi_sdata               => spi_sdata_o,   
+        adc_n_en                => adc_n_en_o,    
+        adc_sdo                 => adc_sdo_i,     
+        adc_reset               => adc_reset_o,   
+        cdce_n_en               => cdce_n_en_o,   
+        cdce_sdo                => cdce_sdo_i,    
+        cdce_n_reset            => cdce_n_reset_o,
+        cdce_n_pd               => cdce_n_pd_o,  
+        ref_en                  => cdce_ref_en_o, 
+        dac_n_en                => dac_n_en_o,    
+        dac_sdo                 => dac_sdo_i,     
+        mon_n_en                => mon_n_en_o,    
+        mon_sdo                 => mon_sdo_i,     
+        mon_n_reset             => mon_n_reset_o, 
+        mon_n_int               => mon_n_int_i,   
 
-        pll_status              => cdce_pll_status,--regs_out.flgs_out_pll_status_i,
+        pll_status              => cdce_pll_status_i, --cdce_pll_status,--regs_out.flgs_out_pll_status_i,
         mmcm_adc_locked_o       => s_mmcm_adc_locked,--regs_out.flgs_out_adc_clk_locked_i,
         odata                   => regs_out.data_out_i,--s_odata,
         busy                    => regs_out.flgs_out_spi_busy_i,--s_busy,
-        prsnt_m2c_l             => regs_out.flgs_out_fmc_prst_i,--prsnt_m2c_l,
+        prsnt_m2c_l             => prsnt_m2c_l_i,--regs_out.flgs_out_fmc_prst_i,--prsnt_m2c_l,
        
         rd_n_wr                 => regs_in.flgs_in_spi_rw_o, --s_registers(FLAGS_IN_0)(FLAGS_IN_0_SPI_RW),
         addr                    => regs_in.addr_o, --s_registers(ADDR)(15 downto 0),
@@ -216,7 +356,9 @@ begin
         clk_adc_o               => s_clk_adc
     );
     
-    regs_out.flgs_out_pll_status_i                  <= cdce_pll_status;
+    s_fmc150_rst                                    <= not rst_n_i;
+    
+    --regs_out.flgs_out_pll_status_i                  <= cdce_pll_status;
     regs_out.flgs_out_adc_clk_locked_i              <= s_mmcm_adc_locked;
     
     -- Pipelined <--> Classic cycles / Word <--> Byte address granularity
@@ -228,7 +370,8 @@ begin
         g_master_granularity                        => WORD,
         g_slave_use_struct                          => false,
         g_slave_mode                                => g_interface_mode,
-        g_slave_granularity                         => g_address_granularity)
+        g_slave_granularity                         => g_address_granularity
+    )
     port map (  
         clk_sys_i                                   => clk_sys_i,
         rst_n_i                                     => rst_n_i,
@@ -263,14 +406,16 @@ begin
         wb_we_i                                     => wb_in.we,
         wb_ack_o                                    => wb_out.ack,
         wb_stall_o                                  => wb_out.stall,
-        clk_100Mhz                                  => clk_100_i,
+        clk_100Mhz_i                                => clk_100Mhz_i,
+        clk_wb_i                                    => clk_sys_i,
         regs_i                                      => regs_out,
         regs_o                                      => regs_in
     );
     
+    -- This stream source is in ADC clock domain
     cmp_wb_source_if : xwb_stream_source
     port map(
-        clk_i                                       => clk_sys_i,
+        clk_i                                       => s_clk_adc,
         rst_n_i                                     => rst_n_i,
 
         -- Wishbone Fabric Interface I/O
@@ -284,20 +429,60 @@ begin
         sof_i                                       => s_sof,    
         eof_i                                       => s_eof,    
         error_i                                     => s_error, 
-        bytesel_i                                   => s_bytesel,
+        -- For now, just pick the LSB bit of s_bytesel
+        bytesel_i                                   => s_bytesel(0),
         dreq_o                                      => s_dreq   
     );
     
-    s_addr                                          <= (others => '0');
-    s_data                                          <= s_adc_dout;
-    s_dvalid                                        <= cdce_pll_status and s_mmcm_adc_locked;
+    s_addr                                          <= (others => '0');     
+    
+    -- Simulation / Syntesis Only consructs. Is there a better way to do it?
+    gen_stream_data : if (g_sim = false) generate
+        s_data                                          <= s_adc_dout(c_wbs_data_width-1 downto 0);
+    end generate; 
+    
+    gen_stream_data_sim : if (g_sim = true) generate
+        p_gen_data_sim : process--(s_clk_adc, rst_n_i)
+            variable seed1, seed2: positive;               -- Seed values for random generator
+        begin
+            seed1                                       := 432566;
+            seed2                                       := 211; 
+            s_data                                      <= (others => '0');
+            -- Wait until the next valid clock edge
+            wait until rst_n_i = '1' and rising_edge(s_clk_adc);
+            l_generate_data: loop 
+                gen_data(c_wbs_data_width, seed1, seed2, s_data);
+                wait until rising_edge(s_clk_adc);
+            end loop;                
+        end process;
+    end generate; 
+    
+    gen_stream_valid : if (g_sim = false) generate
+        s_dvalid                                        <= cdce_pll_status_i and s_mmcm_adc_locked;
+     end generate; 
+    
+    gen_stream_valid_sim : if (g_sim = true) generate
+        p_gen_valid_sim : process--(s_clk_adc, rst_n_i)
+            variable seed1, seed2: positive;               -- Seed values for random generator
+        begin
+            seed1                                       := 67632;
+            seed2                                       := 3234; 
+            s_dvalid                                    <= '0';
+            -- Wait until the next valid clock edge
+            wait until rst_n_i = '1' and rising_edge(s_clk_adc);
+            l_generate_valid: loop 
+                gen_valid(0.5, seed1, seed2, s_dvalid);
+                wait until rising_edge(s_clk_adc);
+            end loop;                
+        end process;
+    end generate; 
     
     p_gen_sof_eof : process(s_clk_adc, rst_n_i)
     begin
         if rst_n_i = '0' then
             s_sof <= '0';
             s_eof <= '0';
-            s_wbs_packet_counter <= 0;
+            s_wbs_packet_counter <= (others => '0');
         elsif rising_edge(s_clk_adc) then
             -- Defaults assignments
             s_sof <= '0';
@@ -306,20 +491,20 @@ begin
             -- Finish current transaction
             if(s_wbs_packet_counter = g_packet_size) then
                 s_eof <= '1';
-                s_wbs_packet_counter <= 0;
-            elsif (s_wbs_packet_counter = 0) then
+                s_wbs_packet_counter <= (others => '0');
+            elsif (s_wbs_packet_counter = to_unsigned(0, c_counter_size)) then
                    s_sof <= '1';     
             end if;
                 
             -- Increment counter if data is valid
-            if s_dvalid then
+            if s_dvalid = '1' then
                 s_wbs_packet_counter <= s_wbs_packet_counter + 1;
             end if;
         end if;   
     end process;
     
     s_error                                         <= '0';
-    bytesel_i                                       <= (others => '1');
+    s_bytesel                                       <= (others => '1');
     
     wbs_adr_o                                       <= wbs_stream_out.adr;
     wbs_dat_o                                       <= wbs_stream_out.dat;
@@ -327,7 +512,9 @@ begin
     wbs_stb_o                                       <= wbs_stream_out.cyc;
     wbs_we_o                                        <= wbs_stream_out.we;
     wbs_sel_o                                       <= wbs_stream_out.sel;
-    
+    wb_err_o                                        <= '0';
+    wb_rty_o                                        <= '0';
+        
     wbs_stream_in.ack                               <= wbs_ack_i;  
     wbs_stream_in.stall                             <= wbs_stall_i;
     wbs_stream_in.err                               <= wbs_err_i;  

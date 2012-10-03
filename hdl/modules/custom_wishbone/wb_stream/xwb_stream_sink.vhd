@@ -66,9 +66,9 @@ entity xwb_stream_sink is
     dreq_i                                      : in  std_logic
     );
 
-end xwb_fabric_sink;
+end xwb_stream_sink;
 
-architecture rtl of xwb_fabric_sink is
+architecture rtl of xwb_stream_sink is
 
     constant c_logic_width                        : integer := 4;
     constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + 4;
@@ -138,7 +138,7 @@ begin  -- rtl
   we <= '1' when fin(c_logic_range) /= "0000" and full = '0' else '0';
   rd <= q_valid and dreq_i and not post_sof;
 
-  U_FIFO : generic_shiftreg_fifo
+  cmp_fifo : generic_shiftreg_fifo
     generic map (
       g_data_width => c_fifo_width,
       g_size       => c_fifo_depth
@@ -173,7 +173,7 @@ begin  -- rtl
 
   sof_o     <= post_sof and rd_d0;
   dvalid_o  <= post_dvalid and rd_d0;
-  error_o   <= '1' when rd_d0 = '1' and (post_addr = std_logic_vector(c_WRF_STATUS)) and (f_unmarshall_wrf_status(post_data).error = '1') else '0';
+  error_o   <= '1' when rd_d0 = '1' and (post_addr = std_logic_vector(c_WBS_STATUS)) and (f_unmarshall_wbs_status(post_data).error = '1') else '0';
   eof_o     <= fout_reg(c_logic_start+2) and rd_d0;
   bytesel_o <= fout_reg(c_logic_start+1);
   data_o    <= post_data;
@@ -239,7 +239,7 @@ architecture wrapper of wb_stream_sink is
   
 begin  -- wrapper
 
-  U_Wrapped_Sink : xwb_stream_sink
+  cmp_stream_sink_wrapper : xwb_stream_sink
     port map (
       clk_i     => clk_i,
       rst_n_i   => rst_n_i,

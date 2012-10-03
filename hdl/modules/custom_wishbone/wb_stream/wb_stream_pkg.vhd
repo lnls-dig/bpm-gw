@@ -18,10 +18,10 @@ package wb_stream_pkg is
   subtype t_wbs_byte_select is
     std_logic_vector((c_wbs_data_width/8)-1 downto 0);
 
-  constant c_WRF_DATA   : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(0, c_wbs_address_width);
-  constant c_WRF_OOB    : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(1, c_wbs_address_width);
-  constant c_WRF_STATUS : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(2, c_wbs_address_width);
-  constant c_WRF_USER   : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(3, c_wbs_address_width);
+  constant c_WBS_DATA   : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(0, c_wbs_address_width);
+  constant c_WBS_OOB    : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(1, c_wbs_address_width);
+  constant c_WBS_STATUS : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(2, c_wbs_address_width);
+  constant c_WBS_USER   : unsigned(c_wbs_address_width-1 downto 0) := to_unsigned(3, c_wbs_address_width);
 
   --constant c_WRF_OOB_TYPE_RX : std_logic_vector(3 downto 0) := "0000";
   --constant c_WRF_OOB_TYPE_TX : std_logic_vector(3 downto 0) := "0001";
@@ -79,13 +79,13 @@ package wb_stream_pkg is
   constant cc_dummy_wbs_sel : std_logic_vector(c_wbs_data_width/8-1 downto 0) :=
     (others => 'X');
 
-  constant c_dummy_src_in : t_wbs_source_in :=
+  constant cc_dummy_src_in : t_wbs_source_in :=
     ('0', '0', '0', '0');
-  constant c_dummy_snk_in : t_wbs_sink_in :=
+  constant cc_dummy_snk_in : t_wbs_sink_in :=
     (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
     
     -- Components
-        component xwb_stream_source
+    component xwb_stream_source
     port (
         clk_i                                       : in std_logic;
         rst_n_i                                     : in std_logic;
@@ -130,9 +130,7 @@ package wb_stream_pkg is
 end wb_stream_pkg;
 
 package body wb_stream_pkg is  
-
-    
-    
+  
   function f_marshall_wbs_status(stat : t_wbs_status_reg)
     return std_logic_vector 
   is

@@ -10,6 +10,9 @@ use work.adc_pkg.all;
 
 
 entity fmc150_adc_if is
+generic (
+    g_sim               : boolean := false
+);
 port
 (
     clk_200MHz_i        : in  std_logic;
@@ -47,18 +50,27 @@ architecture rtl of fmc150_adc_if is
     signal s_adc_chb_sdr            : std_logic_vector(13 downto 0);
    
 begin
-    -- ADC data strobe (channel A and B) with adjustable delay
-    cmp_adc_str: strobe_lvds
-    port map
-    (
-        clk_ctrl_i => clk_100MHz_i,
-        strobe_p_i => str_p_i,
-        strobe_n_i => str_n_i,
-        strobe_o => s_adc_str_dly,
-        ctrl_delay_update_i => delay_update_i,
-        ctrl_delay_value_i => str_cntvalue_i,
-        ctrl_delay_value_o => str_cntvalue_o
-    );    
+
+    -- Synthesis Only!
+    gen_adc_clk : if (g_sim = false) generate
+        -- ADC data strobe (channel A and B) with adjustable delay
+        cmp_adc_str: strobe_lvds
+        port map
+        (
+            clk_ctrl_i => clk_100MHz_i,
+            strobe_p_i => str_p_i,
+            strobe_n_i => str_n_i,
+            strobe_o => s_adc_str_dly,
+            ctrl_delay_update_i => delay_update_i,
+            ctrl_delay_value_i => str_cntvalue_i,
+            ctrl_delay_value_o => str_cntvalue_o
+        );   
+    end generate;
+    
+    -- Simulation Only!
+    gen_adc_clk_sim : if (g_sim = true) generate
+        s_adc_str_dly <= str_p_i and str_n_i;
+    end generate;
     
 	-- s_adc_str_dly is a regional clock driven by BUFR.
 	-- Must go through a BUFG before other components (BPM DDC)

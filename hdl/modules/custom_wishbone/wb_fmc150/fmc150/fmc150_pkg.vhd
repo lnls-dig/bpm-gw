@@ -70,6 +70,9 @@ package fmc150_pkg is
     end component;
     
     component fmc150_adc_if is
+    generic (
+        g_sim           : boolean := false
+    );
     port
     (
         clk_200MHz_i    : in    std_logic;

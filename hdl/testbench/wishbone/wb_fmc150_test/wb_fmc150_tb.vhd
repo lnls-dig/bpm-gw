@@ -3,9 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
+-- Main Wishbone Definitions
 use work.wishbone_pkg.all;
+-- Custom Wishbone Modules
 use work.custom_wishbone_pkg.all;
+-- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
+-- Register Bank
+use work.fmc150_wbgen2_pkg.all;
 
 entity wb_fmc150_tb is          
 end wb_fmc150_tb;
@@ -16,6 +21,8 @@ architecture sim of wb_fmc150_tb is
 	constant c_100mhz_clk_period		    : time := 10.00 ns;
     -- 200.00 MHz clock
     constant c_200mhz_clk_period		    : time := 5.00 ns;
+    -- 61.44 MHz clock
+    constant c_61_44mhz_clk_period		    : time := 16.00 ns;
 	constant c_sim_time						: time := 10000.00 ns;
 	
 	signal g_end_simulation          		: boolean   := false; -- Set to true to halt the simulation
@@ -30,12 +37,15 @@ architecture sim of wb_fmc150_tb is
     signal wb_slv_in                        : t_wishbone_slave_in := cc_dummy_slave_in;
     signal wb_slv_out                       : t_wishbone_slave_out;
     
-    signal wbs_src_in                       : t_wbs_source_in := c_dummy_src_in;
+    signal wbs_src_in                       : t_wbs_source_in := cc_dummy_src_in;
     signal wbs_src_out                      : t_wbs_source_out;
     
     -- Dummy signals
     constant cc_dummy_bit                   : std_logic := '0';
-    constant cc_dummy_slv                   : std_logic_vector := '0';
+    
+    -- Simulation signals
+    signal s_adc_clk_ab_p                   : std_logic := '0';
+    signal s_adc_clk_ab_n                   : std_logic := '0';
     
     -- Generate dummy (0) values
     function f_zeros(size : integer)
@@ -67,6 +77,19 @@ begin  -- sim
 		end loop;
 		wait;  -- simulation stops here
 	end process;
+    
+    p_61_44mhz_clk_gen : process
+	begin
+		while g_end_simulation = false loop
+			wait for c_61_44mhz_clk_period/2;
+            s_adc_clk_ab_p <= not s_adc_clk_ab_p; 
+            s_adc_clk_ab_n <= not s_adc_clk_ab_n; 
+			wait for c_61_44mhz_clk_period/2;
+            s_adc_clk_ab_p <= not s_adc_clk_ab_p; 
+            s_adc_clk_ab_n <= not s_adc_clk_ab_n; 	
+		end loop;
+		wait;  -- simulation stops here
+	end process;
 	
 	p_main_simulation : process
 	begin
@@ -81,12 +104,13 @@ begin  -- sim
 	end process;
 
     cmp_dut : xwb_fmc150 
-    --generic map
-    --(
+    generic map
+    (
         --g_interface_mode                        => PIPELINED,
         --g_address_granularity                   => WORD,
         --g_packet_size                           => 32
-    --);      
+        g_sim                                        => true
+    )      
     port map     
     (       
         rst_n_i                                      => rst_n_i,
@@ -105,8 +129,8 @@ begin  -- sim
         -- External ports       
         -----------------------------       
         --Clock/Data connection to ADC on FMC150 (ADS62P49)
-        adc_clk_ab_p_i                              => '0',
-        adc_clk_ab_n_i                              => '0',
+        adc_clk_ab_p_i                              => s_adc_clk_ab_p,
+        adc_clk_ab_n_i                              => s_adc_clk_ab_n,
         adc_cha_p_i                                 => f_zeros(7),
         adc_cha_n_i                                 => f_zeros(7),
         adc_chb_p_i                                 => f_zeros(7),
@@ -122,10 +146,10 @@ begin  -- sim
         txenable_o                                  => open,
                 
         --Clock/Trigger connection to FMC150        
-        clk_to_fpga_p_i                             => '0',
-        clk_to_fpga_n_i                             => '0',
-        ext_trigger_p_i                             => '0',
-        ext_trigger_n_i                             => '0',
+        --clk_to_fpga_p_i                             => cc_dummy_bit,
+        --clk_to_fpga_n_i                             => cc_dummy_bit,
+        --ext_trigger_p_i                             => cc_dummy_bit,
+        --ext_trigger_n_i                             => cc_dummy_bit,
                 
         -- Control signals from/to FMC150       
         --Serial Peripheral Interface (SPI)     
@@ -134,29 +158,29 @@ begin  -- sim
                         
         -- ADC specific signals             
         adc_n_en_o                                  => open, -- SPI chip select
-        adc_sdo_i                                   => '0', -- SPI data out
+        adc_sdo_i                                   => cc_dummy_bit, -- SPI data out
         adc_reset_o                                 => open, -- SPI reset
                         
         -- CDCE specific signals                
         cdce_n_en_o                                 => open, -- SPI chip select
-        cdce_sdo_i                                  =>'0', -- SPI data out
+        cdce_sdo_i                                  => cc_dummy_bit, -- SPI data out
         cdce_n_reset_o                              => open,
         cdce_n_pd_o                                 => open,
         cdce_ref_en_o                               => open,
-        cdce_pll_status_i                           => '0',
+        cdce_pll_status_i                           => cc_dummy_bit,
                         
         -- DAC specific signals             
         dac_n_en_o                                  => open, -- SPI chip select
-        dac_sdo_i                                   => '0', -- SPI data out
+        dac_sdo_i                                   => cc_dummy_bit, -- SPI data out
                         
         -- Monitoring specific signals              
         mon_n_en_o                                  => open, -- SPI chip select
-        mon_sdo_i                                   => '0', -- SPI data out
+        mon_sdo_i                                   => cc_dummy_bit, -- SPI data out
         mon_n_reset_o                               => open,
-        mon_n_int_i                                 => '0',
+        mon_n_int_i                                 => cc_dummy_bit,
                     
         --FMC Present status            
-        prsnt_m2c_l_i                               => '0',
+        prsnt_m2c_l_i                               => cc_dummy_bit,
         
         -- Wishbone Streaming Interface Source
         wbs_source_i                                => wbs_src_in,

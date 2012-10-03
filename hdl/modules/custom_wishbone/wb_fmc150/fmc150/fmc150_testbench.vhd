@@ -8,8 +8,10 @@ use unisim.vcomponents.all;
 library work;
 use work.fmc150_pkg.all;
 
-
 entity fmc150_testbench is
+generic(
+    g_sim                   : boolean := false
+);
 port
 (
     rst                     : in  std_logic;
@@ -28,10 +30,10 @@ port
     dac_frame_p             : out std_logic;
     dac_frame_n             : out std_logic;
     txenable                : out std_logic;
-    clk_to_fpga_p           : in  std_logic;
-    clk_to_fpga_n           : in  std_logic;
-    ext_trigger_p           : in  std_logic;
-    ext_trigger_n           : in  std_logic;
+    --clk_to_fpga_p           : in  std_logic;
+    --clk_to_fpga_n           : in  std_logic;
+    --ext_trigger_p           : in  std_logic;
+    --ext_trigger_n           : in  std_logic;
     spi_sclk                : out std_logic;
     spi_sdata               : out std_logic;
     rd_n_wr                 : in    std_logic;
@@ -113,116 +115,140 @@ architecture rtl of fmc150_testbench is
     signal dac_din_d            : std_logic_vector(15 downto 0);
     
     signal adc_str_fbin, adc_str_out, adc_str_2x_out, adc_str_fbout    : std_logic;
+    
+    -- simulation only
+    signal toggle_ff_q          : std_logic := '0';
 begin
 
-    -- I/O delay control
-    cmp_idelayctrl : idelayctrl
-    port map
-    (
-        rst    => rst,
-        refclk => clk_200MHz,
-        rdy    => open
-    );
+    -- Synthesis Only
+    gen_clk : if (g_sim = false) generate
+        -- I/O delay control
+        cmp_idelayctrl : idelayctrl
+        port map
+        (
+            rst    => rst,
+            refclk => clk_200MHz,
+            rdy    => open
+        );
 
-    -- ADC Clock PLL
-    cmp_mmcm_adc : MMCM_ADV
-    generic map
-    (
-        BANDWIDTH            => "OPTIMIZED",
-        CLKOUT4_CASCADE      => FALSE,
-        CLOCK_HOLD           => FALSE,
-        COMPENSATION         => "ZHOLD",
-        STARTUP_WAIT         => FALSE,
-        DIVCLK_DIVIDE        => 1,
-        --CLKFBOUT_MULT_F      => 16.000,
-		CLKFBOUT_MULT_F      => 8.000,
-        CLKFBOUT_PHASE       => 0.000,
-        CLKFBOUT_USE_FINE_PS => FALSE,
-        --CLKOUT0_DIVIDE_F     => 16.000,
-		CLKOUT0_DIVIDE_F     => 8.000,
-        CLKOUT0_PHASE        => 0.000,
-        CLKOUT0_DUTY_CYCLE   => 0.500,
-        CLKOUT0_USE_FINE_PS  => FALSE,
-        --CLKOUT1_DIVIDE       => 8,
-		CLKOUT1_DIVIDE       => 4,
-        CLKOUT1_PHASE        => 0.000,
-        CLKOUT1_DUTY_CYCLE   => 0.500,
-        CLKOUT1_USE_FINE_PS  => FALSE,
-		-- 61.44 MHZ input clock
-        --CLKIN1_PERIOD        => 16.276,
-		-- 122.88 MHZ input clock
-		CLKIN1_PERIOD        => 8.138,
-        REF_JITTER1          => 0.010
-    )
-    port map
-    (
-        -- Output clocks
-        CLKFBOUT            => adc_str_fbout,
-        CLKFBOUTB           => open,
-        CLKOUT0             => adc_str_out,
-        CLKOUT0B            => open,
-        CLKOUT1             => adc_str_2x_out,
-        CLKOUT1B            => open,
-        CLKOUT2             => open,
-        CLKOUT2B            => open,
-        CLKOUT3             => open,
-        CLKOUT3B            => open,
-        CLKOUT4             => open,
-        CLKOUT5             => open,
-        CLKOUT6             => open,
-        -- Input clock control
-        CLKFBIN             => adc_str_fbin,
-        CLKIN1              => adc_str,
-        CLKIN2              => '0',
-        -- Tied to always select the primary input clock
-        CLKINSEL            => '1',
-        -- Ports for dynamic reconfiguration
-        DADDR               => (others => '0'),
-        DCLK                => '0',
-        DEN                 => '0',
-        DI                  => (others => '0'),
-        DO                  => open,
-        DRDY                => open,
-        DWE                 => '0',
-        -- Ports for dynamic phase shift
-        PSCLK               => '0',
-        PSEN                => '0',
-        PSINCDEC            => '0',
-        PSDONE              => open,
-        -- Other control and status signals
-        LOCKED              => mmcm_adc_locked,
-        CLKINSTOPPED        => open,
-        CLKFBSTOPPED        => open,
-        PWRDWN              => '0',
-        RST                 => rst
-    );
+        -- ADC Clock PLL
+        cmp_mmcm_adc : MMCM_ADV
+        generic map
+        (
+            BANDWIDTH            => "OPTIMIZED",
+            CLKOUT4_CASCADE      => FALSE,
+            CLOCK_HOLD           => FALSE,
+            COMPENSATION         => "ZHOLD",
+            STARTUP_WAIT         => FALSE,
+            DIVCLK_DIVIDE        => 1,
+            --CLKFBOUT_MULT_F      => 16.000,
+            CLKFBOUT_MULT_F      => 8.000,
+            CLKFBOUT_PHASE       => 0.000,
+            CLKFBOUT_USE_FINE_PS => FALSE,
+            --CLKOUT0_DIVIDE_F     => 16.000,
+            CLKOUT0_DIVIDE_F     => 8.000,
+            CLKOUT0_PHASE        => 0.000,
+            CLKOUT0_DUTY_CYCLE   => 0.500,
+            CLKOUT0_USE_FINE_PS  => FALSE,
+            --CLKOUT1_DIVIDE       => 8,
+            CLKOUT1_DIVIDE       => 4,
+            CLKOUT1_PHASE        => 0.000,
+            CLKOUT1_DUTY_CYCLE   => 0.500,
+            CLKOUT1_USE_FINE_PS  => FALSE,
+            -- 61.44 MHZ input clock
+            --CLKIN1_PERIOD        => 16.276,
+            -- 122.88 MHZ input clock
+            CLKIN1_PERIOD        => 8.138,
+            REF_JITTER1          => 0.010
+        )
+        port map
+        (
+            -- Output clocks
+            CLKFBOUT            => adc_str_fbout,
+            CLKFBOUTB           => open,
+            CLKOUT0             => adc_str_out,
+            CLKOUT0B            => open,
+            CLKOUT1             => adc_str_2x_out,
+            CLKOUT1B            => open,
+            CLKOUT2             => open,
+            CLKOUT2B            => open,
+            CLKOUT3             => open,
+            CLKOUT3B            => open,
+            CLKOUT4             => open,
+            CLKOUT5             => open,
+            CLKOUT6             => open,
+            -- Input clock control
+            CLKFBIN             => adc_str_fbin,
+            CLKIN1              => adc_str,
+            CLKIN2              => '0',
+            -- Tied to always select the primary input clock
+            CLKINSEL            => '1',
+            -- Ports for dynamic reconfiguration
+            DADDR               => (others => '0'),
+            DCLK                => '0',
+            DEN                 => '0',
+            DI                  => (others => '0'),
+            DO                  => open,
+            DRDY                => open,
+            DWE                 => '0',
+            -- Ports for dynamic phase shift
+            PSCLK               => '0',
+            PSEN                => '0',
+            PSINCDEC            => '0',
+            PSDONE              => open,
+            -- Other control and status signals
+            LOCKED              => mmcm_adc_locked,
+            CLKINSTOPPED        => open,
+            CLKFBSTOPPED        => open,
+            PWRDWN              => '0',
+            RST                 => rst
+        );
+        
+        -- Global clock buffers for "cmp_mmcm_adc" instance
+        cmp_clkf_bufg : BUFG
+        port map
+        (
+            O => adc_str_fbin,
+            I => adc_str_fbout
+        );
+        
+        cmp_adc_str_out_bufg : BUFG
+        port map
+        (
+            O => clk_adc,
+            I => adc_str_out
+        );
+        
+        cmp_adc_str_2x_out_bufg : BUFG
+        port map
+        (
+            O => clk_adc_2x,
+            I => adc_str_2x_out
+        );
+    end generate;
     
-    -- Global clock buffers for "cmp_mmcm_adc" instance
-    cmp_clkf_bufg : BUFG
-    port map
-    (
-        O => adc_str_fbin,
-        I => adc_str_fbout
-    );
+    -- Double clock circuit. only for SIMULATION!
+    -- See Xilinx "six easy pieces" paper from Peter Alfke
+    gen_clk_sim : if (g_sim = true) generate
     
-    cmp_adc_str_out_bufg : BUFG
-    port map
-    (
-        O => clk_adc,
-        I => adc_str_out
-    );
-    
-    cmp_adc_str_2x_out_bufg : BUFG
-    port map
-    (
-        O => clk_adc_2x,
-        I => adc_str_2x_out
-    );
+        clk_adc                 <= adc_str;
+        clk_adc_2x              <= adc_str xor not toggle_ff_q;
+        
+        p_gen_clk2x_sim : process(clk_adc_2x)
+        begin
+            if rising_edge(clk_adc_2x) then
+                toggle_ff_q <= not toggle_ff_q;
+            end if;
+        end process;
+    end generate;
     
     clk_adc_o <= clk_adc;--adc_str;
     
     -- ADC Interface
     cmp_adc_if : fmc150_adc_if
+    generic map(
+        g_sim               => g_sim
+    )
     port map
     (
         clk_200MHz_i        => clk_200MHz,

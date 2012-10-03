@@ -28,12 +28,12 @@ entity xwb_stream_source is
     dreq_o                                      : out std_logic
     );
 
-end xwb_fabric_source;
+end xwb_stream_source;
 
-architecture rtl of xwb_fabric_source is
+architecture rtl of xwb_stream_source is
 
   constant c_logic_width                        : integer := 4;
-  constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + 4;
+  constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + c_logic_width;
   constant c_fifo_depth                         : integer := 32;  
   constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
   
@@ -57,7 +57,7 @@ architecture rtl of xwb_fabric_source is
 
   signal post_dvalid, post_eof, post_bytesel, post_sof : std_logic;
 
-  signal err_status : t_wrf_status_reg;
+  signal err_status : t_wbs_status_reg;
   signal cyc_int    : std_logic;
   
 begin  -- rtl
@@ -70,13 +70,13 @@ begin  -- rtl
   we <= sof_i or eof_i or error_i or dvalid_i;
 
   pre_dvalid <= dvalid_i or error_i;
-  pre_data   <= data_i when (error_i = '0') else f_marshall_wrf_status(err_status);
-  pre_addr   <= addr_i when (error_i = '0') else std_logic_vector(c_WRF_STATUS);
+  pre_data   <= data_i when (error_i = '0') else f_marshall_wbs_status(err_status);
+  pre_addr   <= addr_i when (error_i = '0') else std_logic_vector(c_WBS_STATUS);
   pre_eof    <= error_i or eof_i;
 
   fin <= sof_i & pre_eof & bytesel_i & pre_dvalid & pre_addr & pre_data;
 
-  U_FIFO : generic_shiftreg_fifo
+  cmp_fifo : generic_shiftreg_fifo
     generic map (
       g_data_width => c_fifo_width,
       g_size       => c_fifo_depth
@@ -158,8 +158,8 @@ entity wb_stream_source is
 
 end wb_stream_source;
 
-architecture wrapper of wb_fabric_source is
-  component xwb_fabric_source
+architecture wrapper of wb_stream_source is
+  component xwb_stream_source
     port (
       clk_i     : in  std_logic;
       rst_n_i   : in  std_logic;
@@ -180,7 +180,7 @@ architecture wrapper of wb_fabric_source is
   
 begin  -- wrapper
 
-  U_Wrapped_Source : xwb_fabric_source
+  cmp_stream_source_wrapper : xwb_stream_source
     port map (
       clk_i     => clk_i,
       rst_n_i   => rst_n_i,
@@ -193,7 +193,8 @@ begin  -- wrapper
       eof_i     => eof_i,
       error_i   => error_i,
       bytesel_i => bytesel_i,
-      dreq_o    => dreq_o);
+      dreq_o    => dreq_o
+    );
 
   src_cyc_o <= src_out.cyc;
   src_stb_o <= src_out.stb;

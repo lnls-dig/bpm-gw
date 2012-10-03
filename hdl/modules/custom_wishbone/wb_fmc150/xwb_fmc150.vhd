@@ -3,6 +3,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
+-- Main Wishbone Definitions
+use work.wishbone_pkg.all;
+-- Custom Wishbone Modules
+use work.custom_wishbone_pkg.all;
+-- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
 
 entity xwb_fmc150 is
@@ -10,7 +15,8 @@ generic
 (
     g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
-    g_packet_size                           : natural := 32
+    g_packet_size                           : natural := 32;
+    g_sim                                   : boolean := false
 );      
 port        
 (       
@@ -23,8 +29,8 @@ port
     -- Wishbone signals     
     -----------------------------       
         
-    wb_slv_i                                    : t_wishbone_slave_in;
-    wb_slv_o                                    : t_wishbone_slave_out;
+    wb_slv_i                                    : in t_wishbone_slave_in;
+    wb_slv_o                                    : out t_wishbone_slave_out;
             
     -----------------------------       
     -- External ports       
@@ -47,10 +53,10 @@ port
     txenable_o                                  : out std_logic;
             
     --Clock/Trigger connection to FMC150        
-    clk_to_fpga_p_i                             : in  std_logic;
-    clk_to_fpga_n_i                             : in  std_logic;
-    ext_trigger_p_i                             : in  std_logic;
-    ext_trigger_n_i                             : in  std_logic;
+    --clk_to_fpga_p_i                             : in  std_logic;
+    --clk_to_fpga_n_i                             : in  std_logic;
+    --ext_trigger_p_i                             : in  std_logic;
+    --ext_trigger_n_i                             : in  std_logic;
             
     -- Control signals from/to FMC150       
     --Serial Peripheral Interface (SPI)     
@@ -95,7 +101,10 @@ architecture rtl of xwb_fmc150 is
     component wb_fmc150
     generic
     (
-        g_packet_size                           : natural := 32
+        g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
+        g_address_granularity                   : t_wishbone_address_granularity := WORD;
+        g_packet_size                           : natural := 32;
+        g_sim                                   : boolean := false
     );
     port
     (
@@ -141,10 +150,10 @@ architecture rtl of xwb_fmc150 is
         txenable_o                              : out std_logic;
         
         --Clock/Trigger connection to FMC150
-        clk_to_fpga_p_i                         : in  std_logic;
-        clk_to_fpga_n_i                         : in  std_logic;
-        ext_trigger_p_i                         : in  std_logic;
-        ext_trigger_n_i                         : in  std_logic;
+        --clk_to_fpga_p_i                         : in  std_logic;
+        --clk_to_fpga_n_i                         : in  std_logic;
+        --ext_trigger_p_i                         : in  std_logic;
+        --ext_trigger_n_i                         : in  std_logic;
         
         -- Control signals from/to FMC150
         --Serial Peripheral Interface (SPI)
@@ -197,9 +206,12 @@ begin
     cmp_wb_fmc150 : wb_fmc150
     generic map
     (
-        g_packet_size                           => g_packet_size
-    );
-    port
+        g_interface_mode                        => g_interface_mode,     
+        g_address_granularity                   => g_address_granularity,
+        g_packet_size                           => g_packet_size,
+        g_sim                                   => g_sim   
+    )
+    port map
     (
         rst_n_i                                 => rst_n_i,     
         clk_sys_i                               => clk_sys_i,   
@@ -210,17 +222,17 @@ begin
         -- Wishbone signals
         -----------------------------
 
-        wb_adr_i                                => wb_slave_i.adr,  
-        wb_dat_i                                => wb_slave_i.dat,  
-        wb_dat_o                                => wb_slave_o.dat,  
-        wb_sel_i                                => wb_slave_i.sel,  
-        wb_we_i                                 => wb_slave_i.we,   
-        wb_cyc_i                                => wb_slave_i.cyc,  
-        wb_stb_i                                => wb_slave_i.stb,  
-        wb_ack_o                                => wb_slave_o.ack,  
-        wb_err_o                                => wb_slave_o.err,  
-        wb_rty_o                                => wb_slave_o.rty,  
-        wb_stall_o                              => wb_slave_o.stall,
+        wb_adr_i                                => wb_slv_i.adr,  
+        wb_dat_i                                => wb_slv_i.dat,  
+        wb_dat_o                                => wb_slv_o.dat,  
+        wb_sel_i                                => wb_slv_i.sel,  
+        wb_we_i                                 => wb_slv_i.we,   
+        wb_cyc_i                                => wb_slv_i.cyc,  
+        wb_stb_i                                => wb_slv_i.stb,  
+        wb_ack_o                                => wb_slv_o.ack,  
+        wb_err_o                                => wb_slv_o.err,  
+        wb_rty_o                                => wb_slv_o.rty,  
+        wb_stall_o                              => wb_slv_o.stall,
 
         -----------------------------
         -- External ports
@@ -243,10 +255,10 @@ begin
         txenable_o                              => txenable_o,   
                                                 
         --Clock/Trigger connection to FMC150    
-        clk_to_fpga_p_i                         => clk_to_fpga_p_i,
-        clk_to_fpga_n_i                         => clk_to_fpga_n_i,
-        ext_trigger_p_i                         => ext_trigger_p_i,
-        ext_trigger_n_i                         => ext_trigger_n_i,
+        --clk_to_fpga_p_i                         => clk_to_fpga_p_i,
+        --clk_to_fpga_n_i                         => clk_to_fpga_n_i,
+        --ext_trigger_p_i                         => ext_trigger_p_i,
+        --ext_trigger_n_i                         => ext_trigger_n_i,
                                                 
         -- Control signals from/to FMC150       
         --Serial Peripheral Interface (SPI)     
@@ -254,17 +266,17 @@ begin
         spi_sdata_o                             => spi_sdata_o, -- Shared SPI data line
                                                 
         -- ADC specific signals                 
-        adc_n_en_o                              => adc_n_en_o  -- SPI chip select
-        adc_sdo_i                               => adc_sdo_i   -- SPI data out
-        adc_reset_o                             => adc_reset_o -- SPI reset
+        adc_n_en_o                              => adc_n_en_o,  -- SPI chip select
+        adc_sdo_i                               => adc_sdo_i,   -- SPI data out
+        adc_reset_o                             => adc_reset_o, -- SPI reset
                                                 
         -- CDCE specific signals                
-        cdce_n_en_o                             => cdce_n_en_o       -- SPI chip select
-        cdce_sdo_i                              => cdce_sdo_i        -- SPI data out
-        cdce_n_reset_o                          => cdce_n_reset_o   
-        cdce_n_pd_o                             => cdce_n_pd_o      
-        cdce_ref_en_o                           => cdce_ref_en_o    
-        cdce_pll_status_i                       => cdce_pll_status_i
+        cdce_n_en_o                             => cdce_n_en_o,       -- SPI chip select
+        cdce_sdo_i                              => cdce_sdo_i,        -- SPI data out
+        cdce_n_reset_o                          => cdce_n_reset_o,   
+        cdce_n_pd_o                             => cdce_n_pd_o,      
+        cdce_ref_en_o                           => cdce_ref_en_o,    
+        cdce_pll_status_i                       => cdce_pll_status_i,
                                                 
         -- DAC specific signals                
         dac_n_en_o                              => dac_n_en_o,  -- SPI chip select
@@ -293,6 +305,6 @@ begin
         wbs_rty_i                               => wbs_source_i.rty  
     );
     
-    wb_slave_o.int                              <= '0';
+    wb_slv_o.int                                <= '0';
 
 end rtl;
