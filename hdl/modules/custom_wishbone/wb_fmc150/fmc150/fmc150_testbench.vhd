@@ -10,7 +10,7 @@ use work.fmc150_pkg.all;
 
 entity fmc150_testbench is
 generic(
-    g_sim                   : boolean := false
+    g_sim                   : integer := 0
 );
 port
 (
@@ -19,10 +19,18 @@ port
     clk_200Mhz              : in  std_logic;
     adc_clk_ab_p            : in  std_logic;
     adc_clk_ab_n            : in  std_logic;
+    -- Start Simulation Only!
+    sim_adc_clk_i           : in std_logic;
+    sim_adc_clk2x_i         : in std_logic;
+    -- End of Simulation Only!
     adc_cha_p               : in  std_logic_vector(6 downto 0);
     adc_cha_n               : in  std_logic_vector(6 downto 0);
     adc_chb_p               : in  std_logic_vector(6 downto 0);
     adc_chb_n               : in  std_logic_vector(6 downto 0);
+    -- Start Simulation Only!
+    sim_adc_cha_data_i      : in std_logic_vector(13 downto 0);
+    sim_adc_chb_data_i      : in std_logic_vector(13 downto 0);
+    -- End of Simulation Only!
     dac_dclk_p              : out std_logic;
     dac_dclk_n              : out std_logic;
     dac_data_p              : out std_logic_vector(7 downto 0);
@@ -118,10 +126,11 @@ architecture rtl of fmc150_testbench is
     
     -- simulation only
     signal toggle_ff_q          : std_logic := '0';
+    signal toggle_ff_d          : std_logic := '0';
 begin
 
     -- Synthesis Only
-    gen_clk : if (g_sim = false) generate
+    gen_clk : if (g_sim = 0) generate
         -- I/O delay control
         cmp_idelayctrl : idelayctrl
         port map
@@ -228,18 +237,9 @@ begin
     end generate;
     
     -- Double clock circuit. only for SIMULATION!
-    -- See Xilinx "six easy pieces" paper from Peter Alfke
-    gen_clk_sim : if (g_sim = true) generate
-    
-        clk_adc                 <= adc_str;
-        clk_adc_2x              <= adc_str xor not toggle_ff_q;
-        
-        p_gen_clk2x_sim : process(clk_adc_2x)
-        begin
-            if rising_edge(clk_adc_2x) then
-                toggle_ff_q <= not toggle_ff_q;
-            end if;
-        end process;
+    gen_clk_sim : if (g_sim = 1) generate
+        clk_adc <= sim_adc_clk_i;
+        clk_adc_2x <= sim_adc_clk2x_i;
     end generate;
     
     clk_adc_o <= clk_adc;--adc_str;
@@ -276,21 +276,28 @@ begin
 --    p_extend_adc_output : process (clk_adc)
 --    begin
 --        if (rising_edge(clk_adc)) then
-    p_extend_adc_output : process (adc_str)
-    begin
-        if (rising_edge(adc_str)) then
-            -- Left justify the data of both channels on 16-bits
-            adc_dout_a <= adc_cha_sdr(13) & adc_cha_sdr(13) & adc_cha_sdr;
-            adc_dout_b <= adc_chb_sdr(13) & adc_chb_sdr(13) & adc_chb_sdr;
+    gen_data : if (g_sim = 0) generate
+        p_extend_adc_output : process (adc_str)
+        begin
+            if (rising_edge(adc_str)) then
+                -- Left justify the data of both channels on 16-bits
+                adc_dout_a <= adc_cha_sdr(13) & adc_cha_sdr(13) & adc_cha_sdr;
+                adc_dout_b <= adc_chb_sdr(13) & adc_chb_sdr(13) & adc_chb_sdr;
 
---            adc_dout_a <= std_logic_vector(unsigned(adc_dout_a)+1);
---            adc_dout_b <= std_logic_vector(unsigned(adc_dout_b)-1);
-        end if;
-    end process;
+    --            adc_dout_a <= std_logic_vector(unsigned(adc_dout_a)+1);
+    --            adc_dout_b <= std_logic_vector(unsigned(adc_dout_b)-1);
+            end if;
+        end process;
+    end generate;
+    
+    gen_data_sim : if (g_sim = 1) generate
+        adc_dout_a <= sim_adc_cha_data_i(13) & sim_adc_cha_data_i(13) & sim_adc_cha_data_i;
+        adc_dout_b <= sim_adc_chb_data_i(13) & sim_adc_chb_data_i(13) & sim_adc_chb_data_i;
+    end generate;  
     
     adc_dout_o <= adc_dout_a & adc_dout_b;
     --adc_dout_o <= dac_din_c & dac_din_d;
-    
+         
     -- DAC Interface
     cmp_dac_if : fmc150_dac_if
     port map

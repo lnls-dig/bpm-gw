@@ -6,14 +6,16 @@
 // Created        : Tue Mar 23 12:19:36 2010
 // Standard       : Verilog 2001
 //
+// Modified by Lucas Russo <lucas.russo@lnls.br>
+// date: 04/10/2012
 
-
+`include "defines.v"
 // Default values of certain WB parameters.
 
 // Bus clock period
 `ifndef WB_CLOCK_PERIOD
 `define WB_CLOCK_PERIOD 100
-`define WB_RESET_DELAY (3*`WB_CLOCK_PERIOD)
+`define WB_RESET_DELAY (4*`WB_CLOCK_PERIOD)
 `endif
 
 // Widths of wishbone address/data/byte select
@@ -32,8 +34,8 @@ module WB_TEST_MASTER;
    reg [`WB_ADDRESS_BUS_WIDTH - 1 : 0] wb_addr = 0;
    reg [`WB_DATA_BUS_WIDTH - 1 : 0]    wb_data_o = 0;
    reg [`WB_BWSEL_WIDTH - 1 : 0]       wb_bwsel = 0;
-   wire [`WB_DATA_BUS_WIDTH -1 : 0]       wb_data_i;
-   wire wb_ack;
+   wire [`WB_DATA_BUS_WIDTH -1 : 0]    wb_data_i;
+   wire wb_ack_i;
    reg 	wb_cyc = 0;
    reg 	wb_stb = 0;
    reg 	wb_we = 0;
@@ -123,8 +125,8 @@ module WB_TEST_MASTER;
 
 	 #(`WB_CLOCK_PERIOD-1);
 	 
-	 if(wb_ack == 0) begin
-	    while(wb_ack == 0) begin @(posedge wb_clk); end
+	 if(wb_ack_i == 0) begin
+	    while(wb_ack_i == 0) begin @(posedge wb_clk); end
 	 end
 
 	 data_o = wb_data_i;
@@ -180,12 +182,10 @@ module WB_TEST_MASTER;
 
 // bus monitor   
    always@(posedge wb_clk) begin
-      if(wb_monitor_bus && wb_cyc && wb_stb && wb_ack)begin
+      if(wb_monitor_bus && wb_cyc && wb_stb && wb_ack_i)begin
 	 if(wb_we) $display("ACK-Write: addr %x wdata %x bwsel %b", wb_addr, wb_data_o, wb_bwsel);
 	 else $display("ACK-Read: addr %x rdata %x", wb_addr, wb_data_i);
       end
    end
-
-
    
 endmodule

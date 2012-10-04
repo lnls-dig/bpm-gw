@@ -31,6 +31,16 @@ port
         
     wb_slv_i                                    : in t_wishbone_slave_in;
     wb_slv_o                                    : out t_wishbone_slave_out;
+    
+    -----------------------------
+    -- Simulation Only ports
+    -----------------------------
+    sim_adc_clk_i                           : in std_logic;
+    sim_adc_clk2x_i                         : in std_logic;
+                
+    sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
+    sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
+    sim_adc_data_valid                      : in std_logic;
             
     -----------------------------       
     -- External ports       
@@ -128,6 +138,16 @@ architecture rtl of xwb_fmc150 is
         wb_err_o                                : out std_logic;
         wb_rty_o                                : out std_logic;
         wb_stall_o                              : out std_logic;
+        
+        -----------------------------
+        -- Simulation Only ports
+        -----------------------------
+        sim_adc_clk_i                           : in std_logic;
+        sim_adc_clk2x_i                         : in std_logic;
+                    
+        sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_data_valid                      : in std_logic;
         
         -----------------------------
         -- External ports
@@ -233,6 +253,15 @@ begin
         wb_err_o                                => wb_slv_o.err,  
         wb_rty_o                                => wb_slv_o.rty,  
         wb_stall_o                              => wb_slv_o.stall,
+        
+        -- Start Simulation Only!
+        sim_adc_clk_i                           => sim_adc_clk_i,  
+        sim_adc_clk2x_i                         => sim_adc_clk2x_i,
+
+        sim_adc_cha_data_i                      => sim_adc_cha_data_i,
+        sim_adc_chb_data_i                      => sim_adc_chb_data_i,
+        sim_adc_data_valid                      => sim_adc_data_valid,
+        -- End of Simulation Only!   
 
         -----------------------------
         -- External ports
@@ -240,10 +269,11 @@ begin
         --Clock/Data connection to ADC on FMC150 (ADS62P49)
         adc_clk_ab_p_i                          => adc_clk_ab_p_i,
         adc_clk_ab_n_i                          => adc_clk_ab_n_i,
+        
         adc_cha_p_i                             => adc_cha_p_i,   
         adc_cha_n_i                             => adc_cha_n_i,   
         adc_chb_p_i                             => adc_chb_p_i,   
-        adc_chb_n_i                             => adc_chb_n_i,   
+        adc_chb_n_i                             => adc_chb_n_i,  
 
         --Clock/Data connection to DAC on FMC150 (DAC3283)
         dac_dclk_p_o                            => dac_dclk_p_o, 

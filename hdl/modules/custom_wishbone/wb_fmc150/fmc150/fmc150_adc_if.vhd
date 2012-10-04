@@ -11,7 +11,7 @@ use work.adc_pkg.all;
 
 entity fmc150_adc_if is
 generic (
-    g_sim               : boolean := false
+    g_sim               : integer := 0
 );
 port
 (
@@ -52,7 +52,7 @@ architecture rtl of fmc150_adc_if is
 begin
 
     -- Synthesis Only!
-    gen_adc_clk : if (g_sim = false) generate
+    gen_adc_clk : if (g_sim = 0) generate
         -- ADC data strobe (channel A and B) with adjustable delay
         cmp_adc_str: strobe_lvds
         port map
@@ -68,7 +68,7 @@ begin
     end generate;
     
     -- Simulation Only!
-    gen_adc_clk_sim : if (g_sim = true) generate
+    gen_adc_clk_sim : if (g_sim = 1) generate
         s_adc_str_dly <= str_p_i and str_n_i;
     end generate;
     

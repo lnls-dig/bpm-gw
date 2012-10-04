@@ -101,7 +101,7 @@ package wb_stream_pkg is
         sof_i                                       : in  std_logic;
         eof_i                                       : in  std_logic;
         error_i                                     : in  std_logic;
-        bytesel_i                                   : in  std_logic;
+        bytesel_i                                   : in  std_logic_vector((c_wbs_data_width/8)-1 downto 0);
         dreq_o                                      : out std_logic
     );
     end component;
@@ -122,7 +122,7 @@ package wb_stream_pkg is
         sof_o                                   : out std_logic;
         eof_o                                   : out std_logic;
         error_o                                 : out std_logic;
-        bytesel_o                               : out std_logic;
+        bytesel_o                               : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
         dreq_i                                  : in  std_logic
     );
     end component;

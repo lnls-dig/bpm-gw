@@ -71,7 +71,7 @@ package fmc150_pkg is
     
     component fmc150_adc_if is
     generic (
-        g_sim           : boolean := false
+        g_sim           : integer := 0
     );
     port
     (

@@ -41,6 +41,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 use work.genram_pkg.all;
 use work.wb_stream_pkg.all;
@@ -62,34 +63,61 @@ entity xwb_stream_sink is
     sof_o                                       : out std_logic;
     eof_o                                       : out std_logic;
     error_o                                     : out std_logic;
-    bytesel_o                                   : out std_logic;
+    bytesel_o                                   : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
     dreq_i                                      : in  std_logic
     );
 
 end xwb_stream_sink;
 
 architecture rtl of xwb_stream_sink is
+  -- FIFO ranges
+  constant c_data_lsb                           : natural := 0;
+  constant c_data_msb                           : natural := c_data_lsb + c_wbs_data_width - 1;
 
-    constant c_logic_width                        : integer := 4;
-    constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + 4;
-    constant c_fifo_depth                         : integer := 32;  
-    constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
+  constant c_addr_lsb                           : natural := c_data_msb + 1;
+  constant c_addr_msb                           : natural := c_addr_lsb + c_wbs_address_width -1;
+  
+  constant c_valid_bit                          : natural := c_addr_msb + 1;
+  
+  constant c_sel_lsb                            : natural := c_valid_bit + 1;
+  constant c_sel_msb                            : natural := c_sel_lsb + (c_wbs_data_width/8) - 1;
+
+  constant c_eof_bit                            : natural := c_sel_msb + 1;
+  constant c_sof_bit                            : natural := c_eof_bit + 1;
+  
+  alias c_logic_lsb                             is c_valid_bit;
+  alias c_logic_msb                             is c_sof_bit;
+  constant c_logic_width                        : integer := c_sof_bit - c_valid_bit + 1;
+  
+  constant c_fifo_width                         : integer := c_sof_bit - c_data_lsb + 1;
+  constant c_fifo_depth                         : integer := 32;  
+  
+  constant c_logic_zeros                        : std_logic_vector(c_logic_msb downto c_logic_lsb)
+                := std_logic_vector(to_unsigned(0, c_logic_width));
+
+    --constant c_logic_width                        : integer := 4;
+    --constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + 4;
+    --constant c_fifo_depth                         : integer := 32;  
+    --constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
     
-    subtype c_logic_range is natural range c_wbs_address_width+c_wbs_data_width+c_logic_width-1 downto
-                                                    c_wbs_address_width+c_wbs_data_width;  
-    subtype c_data_range is natural range c_wbs_data_width-1 downto 0;
-    subtype c_addr_range is natural range c_wbs_address_width-1+c_wbs_data_width downto c_wbs_data_width;
+    --subtype c_logic_range is natural range c_wbs_address_width+c_wbs_data_width+c_logic_width-1 downto
+--                                               c_wbs_address_width+c_wbs_data_width;  
+    --subtype c_data_range is natural range c_wbs_data_width-1 downto 0;
+    --subtype c_addr_range is natural range c_wbs_address_width-1+c_wbs_data_width downto c_wbs_data_width;
             
-    signal q_valid, full, we, rd                  : std_logic;
-    signal fin, fout, fout_reg                    : std_logic_vector(c_fifo_width-1 downto 0);
-    signal cyc_d0, rd_d0                          : std_logic;
-
-    signal pre_sof, pre_eof, pre_bytesel, pre_dvalid : std_logic;
-    signal post_sof, post_dvalid                     : std_logic;
-    signal post_addr                                 : std_logic_vector(c_wbs_address_width-1 downto 0);
-    signal post_data                                 : std_logic_vector(c_wbs_data_width-1 downto 0);
-
-    signal snk_out : t_wbs_sink_out;
+  signal q_valid, full, we, rd                  : std_logic;
+  signal fin, fout, fout_reg                    : std_logic_vector(c_fifo_width-1 downto 0);
+  signal cyc_d0, rd_d0                          : std_logic;
+  
+  signal pre_sof, pre_eof, pre_dvalid           : std_logic;
+  signal pre_bytesel                            : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+  signal post_sof, post_dvalid                  : std_logic;
+  signal post_addr                              : std_logic_vector(c_wbs_address_width-1 downto 0);
+  signal post_data                              : std_logic_vector(c_wbs_data_width-1 downto 0);
+  signal post_eof                               : std_logic;
+  signal post_bytesel                            : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+  
+  signal snk_out : t_wbs_sink_out;
   
 begin  -- rtl
 
@@ -111,12 +139,13 @@ begin  -- rtl
 
   pre_sof     <= snk_i.cyc and not cyc_d0;  -- sof
   pre_eof     <= not snk_i.cyc and cyc_d0;  -- eof
-  pre_bytesel <= not snk_i.sel(0);      -- bytesel
+  --pre_bytesel <= not snk_i.sel(0);      -- bytesel
+  pre_bytesel <= snk_i.sel;                 -- bytesel
   pre_dvalid  <= snk_i.stb and snk_i.we and snk_i.cyc and not snk_out.stall;  -- data valid
 
-  fin(c_data_range) <= snk_i.dat;
-  fin(c_addr_range) <= snk_i.adr;
-  fin(c_logic_range) <= pre_sof & pre_eof & pre_bytesel & pre_dvalid;
+  fin(c_data_msb downto c_data_lsb) <= snk_i.dat;
+  fin(c_addr_msb downto c_addr_lsb) <= snk_i.adr;
+  fin(c_logic_msb downto c_logic_lsb) <= pre_sof & pre_eof & pre_bytesel & pre_dvalid;
 
   snk_out.stall <= full or (snk_i.cyc and not cyc_d0);
   snk_out.err   <= '0';
@@ -135,7 +164,9 @@ begin  -- rtl
 
   snk_o <= snk_out;
 
-  we <= '1' when fin(c_logic_range) /= "0000" and full = '0' else '0';
+  -- FIX. Review the comparison fin(c_logic_msb downto c_logic_lsb) /= c_logic_zeros
+  we <= '1' when fin(c_logic_msb downto c_logic_lsb) /= c_logic_zeros
+                and full = '0' else '0';
   rd <= q_valid and dreq_i and not post_sof;
 
   cmp_fifo : generic_shiftreg_fifo
@@ -165,17 +196,38 @@ begin  -- rtl
     end if;
   end process;
 
-  post_data <= fout_reg(c_data_range);
-  post_addr <= fout_reg(c_addr_range);
-  post_sof  <= fout_reg(c_logic_start+3) and rd_d0; --and q_valid;
-
-  post_dvalid <= fout_reg(c_logic_start);
+  -- Output fifo registers only when valid
+  --p_post_regs : process(fout_reg, q_valid)
+  --begin
+  --  if q_valid = '1' then
+  --    post_data <= fout_reg(c_data_msb downto c_data_lsb);
+  --    post_addr <= fout_reg(c_addr_msb downto c_addr_lsb);
+  --    post_sof  <= fout_reg(c_sof_bit); --and rd_d0; --and q_valid;
+  --    post_dvalid <= fout_reg(c_valid_bit);
+  --    post_eof <= fout_reg(c_eof_bit);-- and rd_d0;
+  --    post_bytesel <= fout_reg(c_sel_msb downto c_sel_lsb);
+  --  else 
+  --    post_data <= (others => '0');
+  --    post_addr <= (others => '0');
+  --    post_sof  <= '0';
+  --    post_dvalid <= '0';
+  --    post_eof <= '0';
+  --    post_bytesel <= (others => '0');
+  --  end if;
+  --end process;
+  
+  post_sof  <= fout_reg(c_sof_bit) and rd_d0; --and q_valid;
+  post_dvalid <= fout_reg(c_valid_bit);
+  post_eof <= fout_reg(c_eof_bit);
+  post_bytesel <= fout_reg(c_sel_msb downto c_sel_lsb);
+  post_data <= fout_reg(c_data_msb downto c_data_lsb);
+  post_addr <= fout_reg(c_addr_msb downto c_addr_lsb);
 
   sof_o     <= post_sof and rd_d0;
   dvalid_o  <= post_dvalid and rd_d0;
   error_o   <= '1' when rd_d0 = '1' and (post_addr = std_logic_vector(c_WBS_STATUS)) and (f_unmarshall_wbs_status(post_data).error = '1') else '0';
-  eof_o     <= fout_reg(c_logic_start+2) and rd_d0;
-  bytesel_o <= fout_reg(c_logic_start+1);
+  eof_o     <= post_eof and rd_d0;
+  bytesel_o <= post_bytesel;
   data_o    <= post_data;
   addr_o    <= post_addr;
 

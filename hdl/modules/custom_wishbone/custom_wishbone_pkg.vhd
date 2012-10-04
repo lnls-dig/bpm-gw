@@ -140,6 +140,16 @@ package custom_wishbone_pkg is
         wb_stall_o                                  : out std_logic;
         
         -----------------------------
+        -- Simulation Only ports
+        -----------------------------
+        sim_adc_clk_i                           : in std_logic;
+        sim_adc_clk2x_i                         : in std_logic;
+                
+        sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_data_valid                      : in std_logic;
+        
+        -----------------------------
         -- External ports
         -----------------------------
         --Clock/Data connection to ADC on FMC150 (ADS62P49)
@@ -232,6 +242,16 @@ package custom_wishbone_pkg is
             
         wb_slv_i                                    : in t_wishbone_slave_in;
         wb_slv_o                                    : out t_wishbone_slave_out;
+        
+        -----------------------------
+        -- Simulation Only ports
+        -----------------------------
+        sim_adc_clk_i                           : in std_logic;
+        sim_adc_clk2x_i                         : in std_logic;
+                
+        sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
+        sim_adc_data_valid                      : in std_logic;
                 
         -----------------------------       
         -- External ports       

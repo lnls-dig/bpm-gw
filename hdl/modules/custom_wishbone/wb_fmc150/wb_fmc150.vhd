@@ -1,7 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
 
 library work;
 -- Main Wishbone Definitions
@@ -12,9 +11,9 @@ use work.custom_wishbone_pkg.all;
 use work.wb_stream_pkg.all;
 -- Register Bank
 use work.fmc150_wbgen2_pkg.all;
+-- Reset Synch
+use work.custom_common_pkg.all;
 
--- FIX. Synchorinze the assynchronous clock at deassertion1
--- FIX. Sel byte select in wb_source_out
 -- FIX. Test SOF and EOF in wb_source_out at the same sycle. Should work.
 
 entity wb_fmc150 is
@@ -23,7 +22,7 @@ generic
     g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_packet_size                           : natural := 32;
-    g_sim                                   : boolean := false
+    g_sim                                   : integer := 0
 );
 port
 (
@@ -47,6 +46,16 @@ port
     wb_err_o                                : out std_logic;
     wb_rty_o                                : out std_logic;
     wb_stall_o                              : out std_logic;
+    
+    -----------------------------
+    -- Simulation Only ports
+    -----------------------------
+    sim_adc_clk_i                           : in std_logic;
+    sim_adc_clk2x_i                         : in std_logic;
+                
+    sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
+    sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
+    sim_adc_data_valid                      : in std_logic;
     
     -----------------------------
     -- External ports
@@ -143,6 +152,7 @@ architecture rtl of wb_fmc150 is
     
     signal s_adc_dout                   : std_logic_vector(31 downto 0);
     signal s_clk_adc                    : std_logic;
+    signal rst_n_adc                    : std_logic;
     signal s_fmc150_rst                 : std_logic;
     
     -- Streaming control signals
@@ -187,7 +197,7 @@ architecture rtl of wb_fmc150 is
     -- Top FMC150 component
     component fmc150_testbench
     generic(
-        g_sim                   : boolean := false
+        g_sim                   : integer := 0
     );
     port
     (
@@ -196,10 +206,18 @@ architecture rtl of wb_fmc150 is
         clk_200Mhz              : in  std_logic;
         adc_clk_ab_p            : in  std_logic;
         adc_clk_ab_n            : in  std_logic;
+        -- Start Simulation Only!
+        sim_adc_clk_i           : in std_logic;
+        sim_adc_clk2x_i         : in std_logic;
+        -- End of Simulation Only!
         adc_cha_p               : in  std_logic_vector(6 downto 0);
         adc_cha_n               : in  std_logic_vector(6 downto 0);
         adc_chb_p               : in  std_logic_vector(6 downto 0);
         adc_chb_n               : in  std_logic_vector(6 downto 0);
+        -- Start Simulation Only!
+        sim_adc_cha_data_i      : in std_logic_vector(13 downto 0);
+        sim_adc_chb_data_i      : in std_logic_vector(13 downto 0);
+        -- End of Simulation Only!
         dac_dclk_p              : out std_logic;
         dac_dclk_n              : out std_logic;
         dac_data_p              : out std_logic_vector(7 downto 0);
@@ -251,38 +269,6 @@ architecture rtl of wb_fmc150 is
     );
     end component;
     
-    -- Generate bit with probability of '1' equals to 'prob'
-    procedure gen_valid(prob : real; variable seed1, seed2 : inout positive; 
-        signal result : out std_logic) 
-    is
-      variable rand: real;                           -- Random real-number value in range 0 to 1.0
-    begin
-        uniform(seed1, seed2, rand);                                   -- generate random number
-        --int_rand := integer(trunc(rand*4096.0));                       -- rescale to 0..4096, find integer part
-        --stim := std_logic_vector(to_unsigned(int_rand, stim'LENGTH));  -- convert to std_logic_vector
-        
-        if (rand > prob) then
-            result <= '1';
-        else
-            result <= '0';
-        end if;        
-    end procedure;
-    
-    -- Generate std_logic_vector
-    procedure gen_data(size : positive; variable seed1, seed2 : inout positive; 
-        signal result : out std_logic_vector)
-    is
-      variable rand : real;                           -- Random real-number value in range 0 to 1.0
-      variable int_rand : integer;                    -- Random integer value in range 0..2^c_wbs_data_width
-      variable stim : std_logic_vector(c_wbs_data_width-1 downto 0);  -- Random c_wbs_data_width-1 bit stimulus
-    begin
-        uniform(seed1, seed2, rand);                                   -- generate random number
-        int_rand := integer(trunc(rand*real(2**16)));    -- rescale to 0..2^c_wbs_data_width, find integer part
-        stim := std_logic_vector(to_unsigned(int_rand, stim'length));  -- convert to std_logic_vector
-        
-        result <= stim(size-1 downto 0);
-    end procedure;
-    
 begin
     -----------------------------------------------------------------------------------------------
     -- BUS / IP interface
@@ -300,10 +286,18 @@ begin
 
         adc_clk_ab_p            => adc_clk_ab_p_i,
         adc_clk_ab_n            => adc_clk_ab_n_i,
+        -- Start Simulation Only!
+        sim_adc_clk_i           => sim_adc_clk_i,  
+        sim_adc_clk2x_i         => sim_adc_clk2x_i,
+        -- End of Simulation Only!
         adc_cha_p               => adc_cha_p_i,   
         adc_cha_n               => adc_cha_n_i,   
         adc_chb_p               => adc_chb_p_i,   
-        adc_chb_n               => adc_chb_n_i,   
+        adc_chb_n               => adc_chb_n_i, 
+        -- Start Simulation Only!
+        sim_adc_cha_data_i      => sim_adc_cha_data_i,
+        sim_adc_chb_data_i      => sim_adc_chb_data_i,
+        -- End of Simulation Only!  
         dac_dclk_p              => dac_dclk_p_o, 
         dac_dclk_n              => dac_dclk_n_o, 
         dac_data_p              => dac_data_p_o, 
@@ -412,11 +406,20 @@ begin
         regs_o                                      => regs_in
     );
     
+    -- Reset synchronization with ADC clock domain
+    cmp_reset_adc_synch : reset_synch
+	port map(
+		clk_i     		                            => s_clk_adc,
+		arst_n_i		                            => rst_n_i,
+		rst_n_o      		                        => rst_n_adc
+	);
+    
     -- This stream source is in ADC clock domain
     cmp_wb_source_if : xwb_stream_source
     port map(
         clk_i                                       => s_clk_adc,
-        rst_n_i                                     => rst_n_i,
+        --rst_n_i                                     => rst_n_i,
+        rst_n_i                                     => rst_n_adc,
 
         -- Wishbone Fabric Interface I/O
         src_i                                       => wbs_stream_in,
@@ -430,56 +433,60 @@ begin
         eof_i                                       => s_eof,    
         error_i                                     => s_error, 
         -- For now, just pick the LSB bit of s_bytesel
-        bytesel_i                                   => s_bytesel(0),
+        bytesel_i                                   => s_bytesel,
         dreq_o                                      => s_dreq   
     );
     
     s_addr                                          <= (others => '0');     
     
     -- Simulation / Syntesis Only consructs. Is there a better way to do it?
-    gen_stream_data : if (g_sim = false) generate
+    --gen_stream_data : if (g_sim = 0) generate
         s_data                                          <= s_adc_dout(c_wbs_data_width-1 downto 0);
-    end generate; 
+    --end generate; 
     
-    gen_stream_data_sim : if (g_sim = true) generate
-        p_gen_data_sim : process--(s_clk_adc, rst_n_i)
-            variable seed1, seed2: positive;               -- Seed values for random generator
-        begin
-            seed1                                       := 432566;
-            seed2                                       := 211; 
-            s_data                                      <= (others => '0');
-            -- Wait until the next valid clock edge
-            wait until rst_n_i = '1' and rising_edge(s_clk_adc);
-            l_generate_data: loop 
-                gen_data(c_wbs_data_width, seed1, seed2, s_data);
-                wait until rising_edge(s_clk_adc);
-            end loop;                
-        end process;
-    end generate; 
+    --gen_stream_data_sim : if (g_sim = 1) generate
+    --    p_gen_data_sim : process--(s_clk_adc, rst_n_i)
+    --        variable seed1, seed2: positive;               -- Seed values for random generator
+    --    begin
+    --        seed1                                       := 432566;
+    --        seed2                                       := 211; 
+    --        s_data                                      <= (others => '0');
+    --        -- Wait until reset completion (synch with adc clock domain)
+    --        wait until rst_n_adc = '1';
+    --        l_generate_data: loop 
+    --            gen_data(c_wbs_data_width, seed1, seed2, s_data);
+    --            wait until rising_edge(s_clk_adc);
+    --        end loop;                
+    --    end process;
+    --end generate; 
     
-    gen_stream_valid : if (g_sim = false) generate
+    gen_stream_valid : if (g_sim = 0) generate
         s_dvalid                                        <= cdce_pll_status_i and s_mmcm_adc_locked;
      end generate; 
-    
-    gen_stream_valid_sim : if (g_sim = true) generate
-        p_gen_valid_sim : process--(s_clk_adc, rst_n_i)
-            variable seed1, seed2: positive;               -- Seed values for random generator
-        begin
-            seed1                                       := 67632;
-            seed2                                       := 3234; 
-            s_dvalid                                    <= '0';
-            -- Wait until the next valid clock edge
-            wait until rst_n_i = '1' and rising_edge(s_clk_adc);
-            l_generate_valid: loop 
-                gen_valid(0.5, seed1, seed2, s_dvalid);
-                wait until rising_edge(s_clk_adc);
-            end loop;                
-        end process;
+     
+    gen_stream_valid_sim : if (g_sim = 1) generate
+        s_dvalid                                        <= sim_adc_data_valid;
     end generate; 
+    
+    --gen_stream_valid_sim : if (g_sim = 1) generate
+    --    p_gen_valid_sim : process--(s_clk_adc, rst_n_i)
+    --        variable seed1, seed2: positive;               -- Seed values for random generator
+    --    begin
+    --        seed1                                       := 67632;
+    --        seed2                                       := 3234; 
+    --        s_dvalid                                    <= '0';
+    --        -- Wait until reset completion (synch with adc clock domain)
+    --        wait until rst_n_adc = '1';
+    --        l_generate_valid: loop 
+    --            gen_valid(0.5, seed1, seed2, s_dvalid);
+    --            wait until rising_edge(s_clk_adc);
+    --        end loop;                
+    --    end process;
+    --end generate; 
     
     p_gen_sof_eof : process(s_clk_adc, rst_n_i)
     begin
-        if rst_n_i = '0' then
+        if rst_n_adc = '0' then
             s_sof <= '0';
             s_eof <= '0';
             s_wbs_packet_counter <= (others => '0');
@@ -489,9 +496,9 @@ begin
             s_eof <= '0';
             
             -- Finish current transaction
-            if(s_wbs_packet_counter = g_packet_size) then
+            if(s_wbs_packet_counter = g_packet_size-1) then
                 s_eof <= '1';
-                s_wbs_packet_counter <= (others => '0');
+                --s_wbs_packet_counter <= (others => '0');
             elsif (s_wbs_packet_counter = to_unsigned(0, c_counter_size)) then
                    s_sof <= '1';     
             end if;

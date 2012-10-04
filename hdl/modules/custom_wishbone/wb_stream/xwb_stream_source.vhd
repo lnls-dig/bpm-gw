@@ -24,41 +24,58 @@ entity xwb_stream_source is
     sof_i                                       : in  std_logic;
     eof_i                                       : in  std_logic;
     error_i                                     : in  std_logic;
-    bytesel_i                                   : in  std_logic;
+    bytesel_i                                   : in  std_logic_vector((c_wbs_data_width/8)-1 downto 0);
     dreq_o                                      : out std_logic
     );
 
 end xwb_stream_source;
 
 architecture rtl of xwb_stream_source is
+  -- FIFO ranges
+  constant c_data_lsb                           : natural := 0;
+  constant c_data_msb                           : natural := c_data_lsb + c_wbs_data_width - 1;
 
-  constant c_logic_width                        : integer := 4;
-  constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + c_logic_width;
+  constant c_addr_lsb                           : natural := c_data_msb + 1;
+  constant c_addr_msb                           : natural := c_addr_lsb + c_wbs_address_width -1;
+  
+  constant c_valid_bit                          : natural := c_addr_msb + 1;
+  
+  constant c_sel_lsb                            : natural := c_valid_bit + 1;
+  constant c_sel_msb                            : natural := c_sel_lsb + (c_wbs_data_width/8) - 1;
+
+  constant c_eof_bit                            : natural := c_sel_msb + 1;
+  constant c_sof_bit                            : natural := c_eof_bit + 1;
+
+  constant c_logic_width                        : integer := c_sof_bit - c_valid_bit + 1;
+  constant c_fifo_width                         : integer := c_sof_bit - c_data_lsb + 1;
   constant c_fifo_depth                         : integer := 32;  
-  constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
+  --constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
   
   -- FIX. Workaround to vhdl limitation
-  constant almost_all_ones                             : std_logic_vector((c_wbs_data_width/8)-2 downto 0) := (others => '1');
+  --constant almost_all_ones                             : std_logic_vector((c_wbs_data_width/8)-2 downto 0) := (others => '1');
   
   -- FIFO out range
-  subtype c_logic_range is natural range c_wbs_address_width+c_wbs_data_width+c_logic_width-1 downto
-                                                  c_wbs_address_width+c_wbs_data_width;  
-  subtype c_data_range is natural range c_wbs_data_width-1 downto 0;
-  subtype c_addr_range is natural range c_wbs_address_width-1+c_wbs_data_width downto c_wbs_data_width;
+  --subtype c_logic_range is natural range c_wbs_address_width+c_wbs_data_width+c_logic_width-1 downto
+  --                                                c_wbs_address_width+c_wbs_data_width;  
+  --subtype c_data_range is natural range c_wbs_data_width-1 downto 0;
+  --subtype c_addr_range is natural range c_wbs_address_width-1+c_wbs_data_width downto c_wbs_data_width;
   --subtype c_sel_range is natural range c_wbs_address_width+c_wbs_data_width+(c_wbs_address_width/8)-1 downto c_wbs_address_width+c_wbs_data_width;
 
-  signal q_valid, full, we, rd, rd_d0 : std_logic;
-  signal fin, fout                    : std_logic_vector(c_fifo_width-1 downto 0);
+  signal q_valid, full, we, rd, rd_d0           : std_logic;
+  signal fin, fout                              : std_logic_vector(c_fifo_width-1 downto 0);
 
-  signal pre_dvalid : std_logic;
-  signal pre_eof    : std_logic;
-  signal pre_data   : std_logic_vector(c_wbs_data_width-1 downto 0);
-  signal pre_addr   : std_logic_vector(c_wbs_address_width-1 downto 0);
+  signal pre_dvalid                             : std_logic;
+  signal pre_eof                                : std_logic;
+  signal pre_data                               : std_logic_vector(c_wbs_data_width-1 downto 0);
+  signal pre_addr                               : std_logic_vector(c_wbs_address_width-1 downto 0);
 
-  signal post_dvalid, post_eof, post_bytesel, post_sof : std_logic;
+  signal post_dvalid, post_eof, post_sof        : std_logic;
+  signal post_bytesel                           : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+  signal post_data                              : std_logic_vector(c_wbs_data_width-1 downto 0);
+  signal post_adr                               : std_logic_vector(c_wbs_address_width-1 downto 0);
 
-  signal err_status : t_wbs_status_reg;
-  signal cyc_int    : std_logic;
+  signal err_status                             : t_wbs_status_reg;
+  signal cyc_int                                : std_logic;
   
 begin  -- rtl
 
@@ -92,10 +109,33 @@ begin  -- rtl
       q_valid_o     => q_valid
     );
 
-  post_sof    <= fout(c_logic_start+3);
-  post_eof    <= fout(c_logic_start+2);
-  post_dvalid <= fout(c_logic_start);
-
+  -- Output fifo registers only when valid
+  --p_post_regs : process(fout, q_valid)
+  --begin
+  --  if q_valid = '1' then
+  --    post_sof <= fout(c_sof_bit);
+  --    post_eof <= fout(c_eof_bit);
+  --    post_dvalid <= fout(c_valid_bit);
+  --    post_bytesel <= fout(c_sel_msb downto c_sel_lsb);
+  --    post_data <= fout(c_data_msb downto c_data_lsb);
+  --    post_adr <= fout(c_addr_msb downto c_addr_lsb);
+  --  else 
+  --    post_sof <= '0';
+  --    post_eof <= '0';
+  --    post_dvalid <= '0';
+  --    post_bytesel <= (others => '0');
+  --    post_data <= (others => '0');
+  --    post_adr <= (others => '0');
+  --  end if;
+  --end process;
+  
+  post_sof    <= fout(c_sof_bit);
+  post_eof    <= fout(c_eof_bit);
+  post_dvalid <= fout(c_valid_bit);
+  post_bytesel <= fout(c_sel_msb downto c_sel_lsb);
+  post_data <= fout(c_data_msb downto c_data_lsb);
+  post_adr <= fout(c_addr_msb downto c_addr_lsb);
+  
   p_gen_cyc : process(clk_i)
   begin
     if rising_edge(clk_i) then
@@ -116,9 +156,10 @@ begin  -- rtl
   src_o.cyc <= cyc_int or post_sof;
   src_o.we  <= '1';
   src_o.stb <= post_dvalid and q_valid;
-  src_o.sel <= almost_all_ones & not fout(c_logic_start+1);
-  src_o.dat <= fout(c_data_range);
-  src_o.adr <= fout(c_addr_range);
+  --src_o.sel <= almost_all_ones & not fout(c_sel_bit);
+  src_o.sel <= post_bytesel;
+  src_o.dat <= post_data;--fout(c_data_msb downto c_data_lsb);
+  src_o.adr <= post_adr;--fout(c_addr_msb downto c_addr_lsb);
   
 end rtl;
 
