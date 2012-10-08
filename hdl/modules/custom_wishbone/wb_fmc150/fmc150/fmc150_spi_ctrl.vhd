@@ -33,6 +33,9 @@ library unisim;
 library work;
 
 entity fmc150_spi_ctrl is
+generic(
+    g_sim           : integer := 0
+);
 port (
 
   -- VIO command interface
@@ -91,7 +94,8 @@ architecture fmc150_spi_ctrl_syn of fmc150_spi_ctrl is
 component cdce72010_ctrl is
 generic (
   START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+  g_sim                   : integer := 0
 );
 port (
   rst             : in  std_logic;
@@ -124,7 +128,8 @@ end component;
 component ads62p49_ctrl is
 generic (
   START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+  g_sim           : integer := 0
 );
 port (
   rst             : in  std_logic;
@@ -153,7 +158,8 @@ end component;
 component dac3283_ctrl is
 generic (
   START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+  g_sim           : integer := 0
 );
 port (
   rst             : in  std_logic;
@@ -180,7 +186,8 @@ end component;
 component amc7823_ctrl is
 generic (
   START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+  g_sim           : integer := 0
 );
 port (
   rst             : in  std_logic;
@@ -311,7 +318,8 @@ end process;
 cdce72010_ctrl_inst : cdce72010_ctrl
 generic map (
   START_ADDR      => x"0000000",
-  STOP_ADDR       => x"FFFFFFF"
+  STOP_ADDR       => x"FFFFFFF",
+  g_sim           => g_sim
 )
 port map (
   rst             => rst,
@@ -346,7 +354,8 @@ port map (
 ads62p49_ctrl_inst : ads62p49_ctrl
 generic map (
   START_ADDR      => x"0000000",
-  STOP_ADDR       => x"FFFFFFF"
+  STOP_ADDR       => x"FFFFFFF",
+  g_sim           => g_sim
 )
 port map (
   rst             => rst,
@@ -377,7 +386,8 @@ port map (
 dac3283_ctrl_inst : dac3283_ctrl
 generic map (
   START_ADDR      => x"0000000",
-  STOP_ADDR       => x"FFFFFFF"
+  STOP_ADDR       => x"FFFFFFF",
+  g_sim           => g_sim
 )
 port map (
   rst             => rst,
@@ -406,7 +416,8 @@ port map (
 amc7823_ctrl_inst : amc7823_ctrl
 generic map (
   START_ADDR      => x"0000000",
-  STOP_ADDR       => x"FFFFFFF"
+  STOP_ADDR       => x"FFFFFFF",
+  g_sim           => g_sim
 )
 port map (
   rst             => rst,

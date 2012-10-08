@@ -31,7 +31,8 @@ library ieee;
 entity cdce72010_ctrl is
 generic (
   START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+  STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+  g_sim           : integer := 0
 );
 port (
   rst             : in  std_logic;
@@ -182,6 +183,7 @@ begin
 -- Generate serial clock (max 20MHz)
 ----------------------------------------------------------------------------------------------------
 
+gen_serial_clk : if (g_sim = 0) generate
 process (clk)
   -- Divide by 2^4 = 16, CLKmax = 16 x 20MHz = 320MHz
   variable clk_div : std_logic_vector(3 downto 0) := (others => '0');
@@ -195,6 +197,13 @@ begin
     serial_clk <= sclk_ext;
   end if;
 end process;
+end generate;
+
+-- Do not divide clock. Improve simulation speed.
+gen_serial_clk_sim : if (g_sim = 1) generate
+    serial_clk <= clk;
+end generate;
+
 
 ----------------------------------------------------------------------------------------------------
 -- Stellar Command Interface

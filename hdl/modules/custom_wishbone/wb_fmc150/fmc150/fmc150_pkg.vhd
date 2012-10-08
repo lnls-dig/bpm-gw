@@ -115,6 +115,9 @@ package fmc150_pkg is
     end component fmc150_dac_if;
 
     component fmc150_testbench is
+    generic(
+        g_sim                   : integer := 0
+    );
     port (
         rst                     : in    std_logic;
         clk_100Mhz              : in    std_logic;
@@ -194,6 +197,9 @@ package fmc150_pkg is
     -- THIRD-PARTY CODE 
     --------------------
     component fmc150_spi_ctrl is
+    generic(
+        g_sim                   : integer := 0
+    );
     port
     (
         rd_n_wr          : in    std_logic;
@@ -232,7 +238,8 @@ package fmc150_pkg is
     component cdce72010_ctrl is
     generic (
       START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+      g_sim           : integer := 0
     );
     port (
       rst             : in  std_logic;
@@ -265,7 +272,8 @@ package fmc150_pkg is
     component ads62p49_ctrl is
     generic (
       START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+      g_sim           : integer := 0
     );
     port (
       rst             : in  std_logic;
@@ -294,7 +302,8 @@ package fmc150_pkg is
     component dac3283_ctrl is
     generic (
       START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+      g_sim           : integer := 0
     );
     port (
       rst             : in  std_logic;
@@ -321,7 +330,8 @@ package fmc150_pkg is
     component amc7823_ctrl is
     generic (
       START_ADDR      : std_logic_vector(27 downto 0) := x"0000000";
-      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF"
+      STOP_ADDR       : std_logic_vector(27 downto 0) := x"00000FF";
+      g_sim           : integer := 0
     );
     port (
       rst             : in  std_logic;
@@ -352,7 +362,8 @@ package fmc150_pkg is
     generic
     (
       START_ADDR           : std_logic_vector(27 downto 0) := x"0000000";
-      STOP_ADDR            : std_logic_vector(27 downto 0) := x"00000FF"
+      STOP_ADDR            : std_logic_vector(27 downto 0) := x"00000FF";
+      g_sim           : integer := 0
     );
     port
     (

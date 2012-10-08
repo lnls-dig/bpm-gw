@@ -330,6 +330,9 @@ begin
     
     -- FMC150 control (SPI and direct signals)
     cmp_fmc150_ctrl : fmc150_spi_ctrl
+    generic map(
+      g_sim                   => g_sim
+    )
     port map
     (
         rst             => rst,

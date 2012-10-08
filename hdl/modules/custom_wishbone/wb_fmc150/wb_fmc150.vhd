@@ -19,7 +19,7 @@ use work.custom_common_pkg.all;
 entity wb_fmc150 is
 generic
 (
-    g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
+    g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_packet_size                           : natural := 32;
     g_sim                                   : integer := 0
@@ -487,21 +487,21 @@ begin
     p_gen_sof_eof : process(s_clk_adc, rst_n_i)
     begin
         if rst_n_adc = '0' then
-            s_sof <= '0';
-            s_eof <= '0';
+            --s_sof <= '0';
+            --s_eof <= '0';
             s_wbs_packet_counter <= (others => '0');
         elsif rising_edge(s_clk_adc) then
             -- Defaults assignments
-            s_sof <= '0';
-            s_eof <= '0';
+            --s_sof <= '0';
+            --s_eof <= '0';
             
             -- Finish current transaction
-            if(s_wbs_packet_counter = g_packet_size-1) then
-                s_eof <= '1';
-                --s_wbs_packet_counter <= (others => '0');
-            elsif (s_wbs_packet_counter = to_unsigned(0, c_counter_size)) then
-                   s_sof <= '1';     
-            end if;
+            --if(s_wbs_packet_counter = g_packet_size-1) then
+            --    s_eof <= '1';
+            --    --s_wbs_packet_counter <= (others => '0');
+            --elsif (s_wbs_packet_counter = to_unsigned(0, c_counter_size)) then
+            --       s_sof <= '1';     
+            --end if;
                 
             -- Increment counter if data is valid
             if s_dvalid = '1' then
@@ -509,6 +509,10 @@ begin
             end if;
         end if;   
     end process;
+    
+    -- Generate SOF and EOF signals based on counter
+    s_sof <= '1' when s_wbs_packet_counter = to_unsigned(0, c_counter_size) else '0';
+    s_eof <= '1' when s_wbs_packet_counter = g_packet_size-1 else '0';
     
     s_error                                         <= '0';
     s_bytesel                                       <= (others => '1');
