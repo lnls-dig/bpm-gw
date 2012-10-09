@@ -7,6 +7,65 @@ software.
 
 Folder Hierarchy organization:
 
-TODO
+*
+|
+|--  hdl:
+|    |   HDL (Verilog/VHDL) cores related to the BPM.
+|    |  
+|    |-- ip_cores:
+|    |    |   Third party reusable modules, primarily Open hardware 
+|    |    |     modules (http://www.ohwr.org).
+|    |    |-- etherbone-core:
+|    |    |       Connects two Wishbone Busses, either a true hardware bus
+|    |    |        or emulated software bus, throught Ethernet.
+|    |    |-- general-cores: 
+|    |            General reusable modules.
+|    |-- modules:
+|    |   |   Modules specific to BPM hardware.
+|    |   |-- custom_common:
+|    |   |      Common (reusable) modules to BPM hardware and possibly 
+|    |   |       to other designs.
+|    |   |-- custom_wishbone:
+|    |           Wishbone modules to BPM hardware.
+|    |-- platform:
+|    |       Platform-specific code, such as xilinx chipscope wrappers.
+|    |-- sim:
+|    |       Generic simulation files, reusable Bus Functional Modules (BFM),
+|    |         constants definitions.
+|    |-- syn:
+|    |       Synthesis specific files (user constraints files and top design 
+|    |         specification)
+|    |-- testbench:
+|    |       Testbenches for modules and top level designs. May use modules
+|    |         defined elsewhere (specific within the 'sim" directory)
+|    |-- top:
+|            Top design modules.      
+|-- sw:
+        Software related to the BPM.
+==========================================================
 
+Simulation instructions:
+
+  -> Go to a testbench directory. It must have a top manifest file:
+    cd /hdl/testbench/path_to_testbench
+  
+  -> Run the following commands. You must have hdlmake2 command available
+      in your PATH environment variable.
+      
+      hdlmake2 --make-isim
+      make fuse TOP_MODULE=<top_level_testbench_module_without_the_extension>
+      ./isim_proj -view wave.wcfg -tclbatch isim_cmd -gui
+      
+==========================================================
+
+Synthesis instructions:
+
+  -> Go to a syn directory. It must have a top manifest file:
+    cd /hdl/top/path_to_top_design
+  
+  -> Run the following commands. You must have hdlmake2 command available
+      in your PATH environment variable.
+      
+      hdlmake2 --make-ise --ise-proj
+      make
 ==========================================================
