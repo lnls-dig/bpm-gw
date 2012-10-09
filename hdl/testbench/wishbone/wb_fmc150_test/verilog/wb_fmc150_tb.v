@@ -28,16 +28,18 @@ module wb_fmc150_tb;
   reg s_adc_data_valid;
   
   // Wishbone signals
-  //reg
   
   // Local definitions
   localparam adc_data_max = (2**`ADC_DATA_WIDTH)-1;
   localparam adc_gen_threshold = 0.5;
   // Word (32-bit) granularity
   localparam g_granularity = 4;
+  // After reset delay
+  localparam g_after_reset_delay = 4;
   
   // Internal registers
   reg zero_bit = 1'b0;
+  reg spi_busy;
   reg [`WB_ADDRESS_BUS_WIDTH-1:0] data_out;
   
   // Clock and Reset
@@ -63,10 +65,10 @@ module wb_fmc150_tb;
   //reg 	                              wb_clk = 1;
   
   // Wiswhbone Master
-  WB_TEST_MASTER cmp_wb_master();
+  WB_TEST_MASTER cmp_wb_master(.wb_clk(s_clk_sys));
   
-  // Enable cmp_wb_master verbosity and bus monitoring 
   initial begin
+    // Enable cmp_wb_master verbosity and bus monitoring 
     // Enable verbose mode
     wb_fmc150_tb.cmp_wb_master.verbose(1);
     // Enable monitor bus
@@ -77,15 +79,55 @@ module wb_fmc150_tb;
     s_adc_chb_data <= 'h0;
     s_adc_data_valid <= 'h0; 
     
-    #(`CLK_SYS_PERIOD);
+    // Wait next clock cycle
+    @(posedge s_clk_sys);
     
+    // Wait until reset is done
+    while (!rstn) begin
+      $display("@%0d: Waiting for reset completion.", $time);
+      @(posedge s_clk_sys);
+    end
+    
+    $display("@%0d: Reset done!", $time);
+
+    // wait a few cycles before stimulus. Synchronizer chains needs to 
+    // update...
+    //#(g_after_reset_delay * `CLK_SYS_PERIOD);
+    repeat (g_after_reset_delay) begin
+      @(posedge s_clk_sys);
+    end
+    
+    $display("@%0d: Initializing FMC150 chips...", $time);
+    
+    // Waits until FMC150 chips are done initializing
+    fmc150_spi_busy(spi_busy);
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    
+    while (spi_busy) begin
+      fmc150_spi_busy(spi_busy);
+      // Wait for chips to be initialized...
+      repeat (128) begin
+        @(posedge s_clk_sys);
+      end
+      //$display(".");
+    end
+    
+    $display("@%0d, FMC150 chips initialized!", $time);
+
+    // Wait next clock cycle
+    @(posedge s_clk_sys);
     // Write some values to FMC150 registers
+    $display("----------------------------------");
+    $display("@%0d, Writing 32'h682C0290 to FMC150_CS_CDCE72010...", $time);
+    $display("----------------------------------");
     write_fmc150_reg(`FMC150_CS_CDCE72010, 32'h0, 32'h682C0290);
-    
-    // Long Delay as the cores have a "long" delay to output the data
-    #(128 * `CLK_SYS_PERIOD);
-        
+    // Wait next clock cycle
+    @(posedge s_clk_sys);
     // Read some values to FMC150 registers
+    $display("----------------------------------");
+    $display("@%0d, Reading FMC150_CS_CDCE72010...", $time);
+    $display("----------------------------------");
     read_fmc150_reg(`FMC150_CS_CDCE72010, 32'h0, data_out);
   end
   
@@ -260,16 +302,19 @@ module wb_fmc150_tb;
       wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_IN, aux_val);
       // This bits do not make sense for this register
       //aux_val[`WB_DATA_BUS_WIDTH - 1 : 2] = 'h0;
-      #(`CLK_SYS_PERIOD);
+      //#(`CLK_SYS_PERIOD);
+      @(posedge s_clk_sys);
       // Write SPI RW bit to write op
       wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_FLGS_IN,
         aux_val & ~`FMC150_FLGS_IN_SPI_RW);
       // Write internal chip addr
       wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_ADDR, addr_i);
-      #(`CLK_SYS_PERIOD);
+      //#(`CLK_SYS_PERIOD);
+      @(posedge s_clk_sys);
       // Write internal chip data
       wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_DATA_IN, data_i);
-      #(`CLK_SYS_PERIOD);
+      //#(`CLK_SYS_PERIOD);
+      @(posedge s_clk_sys);
       
       // Read currently CS field
       wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_CS, aux_val);
@@ -277,10 +322,12 @@ module wb_fmc150_tb;
       //aux_val[`WB_DATA_BUS_WIDTH - 1 : 4] = 'h0;
       // Toggle Chipselect field
       aux_val = aux_val ^ cs_i;
-      #(`CLK_SYS_PERIOD);
+      //#(`CLK_SYS_PERIOD);
+      @(posedge s_clk_sys);
       // Write chipselect to correspondent field
       wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_CS, aux_val);   
-      #(`CLK_SYS_PERIOD);
+      //#(`CLK_SYS_PERIOD);
+      @(posedge s_clk_sys);
   end
   endtask // write_fmc150_reg
   
@@ -319,52 +366,75 @@ module wb_fmc150_tb;
     output [`WB_DATA_BUS_WIDTH - 1 : 0] data_o;
   begin : read_fmc150_reg_body
     reg [`WB_DATA_BUS_WIDTH - 1 : 0] aux_val;
+    reg spi_busy;
 
-      // Verify if busy bit is set
-      wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_OUT, aux_val);
-      aux_val = aux_val & `FMC150_FLGS_OUT_SPI_BUSY;
-      #(`CLK_SYS_PERIOD);
-      
-      // Busy loop until spi is not busy
-      //while (aux_val) begin
-      //  wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_OUT, aux_val);
-      //  aux_val = aux_val & `FMC150_FLGS_OUT_SPI_BUSY;
-      //  #(`CLK_SYS_PERIOD);
-      //end
-      
-      if (aux_val) begin
-        $display("SPI is busy!");
-        $finish;
-      end
-
-      // Read SPI RW bit
-      wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_IN, aux_val);
-      #(`CLK_SYS_PERIOD);
-      // Write SPI RW bit to read op
-      wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_FLGS_IN,
-        aux_val | `FMC150_FLGS_IN_SPI_RW);
-        
-      // Write internal chip addr
-      wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_ADDR, addr_i);
-      #(`CLK_SYS_PERIOD);
-      
-      // Read currently CS field
-      wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_CS, aux_val);
-      // This bits do not make sense for this register
-      //aux_val[`WB_DATA_BUS_WIDTH - 1 : 4] = 'h0;
-      // Toggle Chipselect field
-      aux_val = aux_val ^ cs_i;
-      #(`CLK_SYS_PERIOD);
-      // Write chipselect to correspondent field
-      wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_CS, aux_val);   
-      #(`CLK_SYS_PERIOD);
-      
-      // Read data
-      wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_DATA_OUT, aux_val);   
-      #(`CLK_SYS_PERIOD);
-      
-      data_o = aux_val;
+    //wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_OUT, aux_val);
+    //aux_val = aux_val & `FMC150_FLGS_OUT_SPI_BUSY;
+    //#(`CLK_SYS_PERIOD);
+    // Verify if busy bit is set
+    fmc150_spi_busy(spi_busy);
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    
+    // Busy loop until spi is not busy
+    //while (aux_val) begin
+    //  wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_OUT, aux_val);
+    //  aux_val = aux_val & `FMC150_FLGS_OUT_SPI_BUSY;
+    //  #(`CLK_SYS_PERIOD);
+    //end
+    
+    if (spi_busy) begin
+      $display("SPI is busy!");
+      $finish;
     end
+
+    // Read SPI RW bit
+    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_IN, aux_val);
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    // Write SPI RW bit to read op
+    wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_FLGS_IN,
+      aux_val | `FMC150_FLGS_IN_SPI_RW);
+      
+    // Write internal chip addr
+    wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_ADDR, addr_i);
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    
+    // Read currently CS field
+    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_CS, aux_val);
+    // This bits do not make sense for this register
+    //aux_val[`WB_DATA_BUS_WIDTH - 1 : 4] = 'h0;
+    // Toggle Chipselect field
+    aux_val = aux_val ^ cs_i;
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    // Write chipselect to correspondent field
+    wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_CS, aux_val);   
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    
+    // Read data
+    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_DATA_OUT, aux_val);   
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    
+    data_o = aux_val;
+  end
+  endtask
+  
+  task fmc150_spi_busy;
+    output reg spi_busy;
+  begin : fmc150_spi_busy_body
+    reg [`WB_DATA_BUS_WIDTH - 1 : 0] aux_val;
+    // Verify if busy bit is set
+    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_OUT, aux_val);
+    //aux_val = aux_val & `FMC150_FLGS_OUT_SPI_BUSY;
+    //#(`CLK_SYS_PERIOD);
+    @(posedge s_clk_sys);
+    // output spi busy bit
+    spi_busy = aux_val[`FMC150_FLGS_OUT_SPI_BUSY_OFFSET];
+  end
   endtask
     
 endmodule

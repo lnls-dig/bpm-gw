@@ -29,7 +29,9 @@
 
 `define WB_BWSEL_WIDTH ((`WB_DATA_BUS_WIDTH + 7) / 8)
 
-module WB_TEST_MASTER;
+module WB_TEST_MASTER(
+  wb_clk
+);
 // these signals make the WB bus, which can be accessed from outside the module
   reg [`WB_ADDRESS_BUS_WIDTH - 1 : 0] wb_addr = 0;
   reg [`WB_DATA_BUS_WIDTH - 1 : 0]    wb_data_o = 0;
@@ -39,9 +41,9 @@ module WB_TEST_MASTER;
   reg 	wb_cyc = 0;
   reg 	wb_stb = 0;
   reg 	wb_we = 0;
-  reg 	wb_rst = 0;
-  reg 	wb_clk = 1;
-  
+  //reg 	wb_rst = 0;
+  //reg 	wb_clk = 1;
+  input wb_clk;  
   
   reg wb_tb_verbose = 1;
   reg wb_monitor_bus = 1;
@@ -51,12 +53,13 @@ module WB_TEST_MASTER;
   // ready signal. 1 indicates that WB_TEST unit is initialized and ready for commands
   reg ready = 0;
   
+  // Generated outside this module
   // generate the WB bus clock
-  always #(`WB_CLOCK_PERIOD/2) wb_clk <= ~wb_clk;
+  //always #(`WB_CLOCK_PERIOD/2) wb_clk <= ~wb_clk;
   
   // generate the reset and ready signals
   initial begin
-    #(`WB_RESET_DELAY) wb_rst <= 1;
+    //#(`WB_RESET_DELAY) wb_rst <= 1;
     #(`WB_CLOCK_PERIOD*2) ready <= 1;
   end
   
@@ -90,8 +93,8 @@ module WB_TEST_MASTER;
             $time, (size==1?"byte":((size==2)?"short":"int")), 
             addr, data_i);
       else // !rw 
-      $display("@%0d: WB read %s: addr %x",
-          $time, (size==1?"byte":((size==2)?"short":"int")), 
+        $display("@%0d: WB read %s: addr %x",
+            $time, (size==1?"byte":((size==2)?"short":"int")), 
           addr);
     end // wb_tb_verbose
     

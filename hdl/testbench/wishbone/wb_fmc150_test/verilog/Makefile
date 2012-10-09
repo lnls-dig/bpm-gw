@@ -76,6 +76,11 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd \
+../../../../modules/custom_wishbone/wb_fmc150/sim/ads62p49_init_mem.vhd \
+../../../../modules/custom_wishbone/wb_fmc150/sim/amc7823_init_mem.vhd \
+../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_ext.vhd \
+../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
+../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
 ../../../../modules/custom_common/reset_synch/reset_synch.vhd \
 ../../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/common/gc_crc_gen.vhd \
@@ -170,6 +175,11 @@ work/fmc150_spi_ctrl/.fmc150_spi_ctrl_vhd \
 work/fmc150_stellar_cmd/.fmc150_stellar_cmd_vhd \
 work/fmc150_testbench/.fmc150_testbench_vhd \
 work/pulse2pulse/.pulse2pulse_vhd \
+work/ads62p49_init_mem/.ads62p49_init_mem_vhd \
+work/amc7823_init_mem/.amc7823_init_mem_vhd \
+work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
+work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
+work/dac3283_init_mem/.dac3283_init_mem_vhd \
 work/reset_synch/.reset_synch_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/gc_crc_gen/.gc_crc_gen_vhd \
@@ -561,6 +571,46 @@ work/pulse2pulse/.pulse2pulse_vhd: ../../../../modules/custom_wishbone/wb_fmc150
 
 
 work/pulse2pulse/.pulse2pulse:
+		@mkdir -p $(dir $@) && touch $@
+
+work/ads62p49_init_mem/.ads62p49_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/ads62p49_init_mem.vhd work/ads62p49_init_mem/.ads62p49_init_mem
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/ads62p49_init_mem/.ads62p49_init_mem:
+		@mkdir -p $(dir $@) && touch $@
+
+work/amc7823_init_mem/.amc7823_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/amc7823_init_mem.vhd work/amc7823_init_mem/.amc7823_init_mem
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/amc7823_init_mem/.amc7823_init_mem:
+		@mkdir -p $(dir $@) && touch $@
+
+work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_ext.vhd work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext:
+		@mkdir -p $(dir $@) && touch $@
+
+work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd work/cdce72010_init_mem_int/.cdce72010_init_mem_int
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/cdce72010_init_mem_int/.cdce72010_init_mem_int:
+		@mkdir -p $(dir $@) && touch $@
+
+work/dac3283_init_mem/.dac3283_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd work/dac3283_init_mem/.dac3283_init_mem
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/dac3283_init_mem/.dac3283_init_mem:
 		@mkdir -p $(dir $@) && touch $@
 
 work/reset_synch/.reset_synch_vhd: ../../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
