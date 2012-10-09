@@ -363,7 +363,7 @@ package fmc150_pkg is
     (
       START_ADDR           : std_logic_vector(27 downto 0) := x"0000000";
       STOP_ADDR            : std_logic_vector(27 downto 0) := x"00000FF";
-      g_sim           : integer := 0
+      g_sim                : integer := 0
     );
     port
     (

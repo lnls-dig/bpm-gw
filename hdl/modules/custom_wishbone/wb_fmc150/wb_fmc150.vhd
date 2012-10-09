@@ -188,7 +188,7 @@ architecture rtl of wb_fmc150 is
         wb_ack_o                                 : out    std_logic;
         wb_stall_o                               : out    std_logic;
         clk_100Mhz_i                             : in     std_logic;
-        clk_wb_i                                 : in     std_logic;
+        --clk_wb_i                                 : in     std_logic;
         regs_i                                   : in     t_fmc150_in_registers;
         regs_o                                   : out    t_fmc150_out_registers
       );
@@ -401,7 +401,7 @@ begin
         wb_ack_o                                    => wb_out.ack,
         wb_stall_o                                  => wb_out.stall,
         clk_100Mhz_i                                => clk_100Mhz_i,
-        clk_wb_i                                    => clk_sys_i,
+        --clk_wb_i                                    => clk_sys_i,
         regs_i                                      => regs_out,
         regs_o                                      => regs_in
     );
@@ -409,7 +409,7 @@ begin
     -- Reset synchronization with ADC clock domain
     cmp_reset_adc_synch : reset_synch
 	port map(
-		clk_i     		                            => s_clk_adc,
+		clk_i     		                          => s_clk_adc,
 		arst_n_i		                            => rst_n_i,
 		rst_n_o      		                        => rst_n_adc
 	);
@@ -440,25 +440,7 @@ begin
     s_addr                                          <= (others => '0');     
     
     -- Simulation / Syntesis Only consructs. Is there a better way to do it?
-    --gen_stream_data : if (g_sim = 0) generate
-        s_data                                          <= s_adc_dout(c_wbs_data_width-1 downto 0);
-    --end generate; 
-    
-    --gen_stream_data_sim : if (g_sim = 1) generate
-    --    p_gen_data_sim : process--(s_clk_adc, rst_n_i)
-    --        variable seed1, seed2: positive;               -- Seed values for random generator
-    --    begin
-    --        seed1                                       := 432566;
-    --        seed2                                       := 211; 
-    --        s_data                                      <= (others => '0');
-    --        -- Wait until reset completion (synch with adc clock domain)
-    --        wait until rst_n_adc = '1';
-    --        l_generate_data: loop 
-    --            gen_data(c_wbs_data_width, seed1, seed2, s_data);
-    --            wait until rising_edge(s_clk_adc);
-    --        end loop;                
-    --    end process;
-    --end generate; 
+    s_data                                          <= s_adc_dout(c_wbs_data_width-1 downto 0);
     
     gen_stream_valid : if (g_sim = 0) generate
         s_dvalid                                        <= cdce_pll_status_i and s_mmcm_adc_locked;
@@ -467,42 +449,15 @@ begin
     gen_stream_valid_sim : if (g_sim = 1) generate
         s_dvalid                                        <= sim_adc_data_valid;
     end generate; 
-    
-    --gen_stream_valid_sim : if (g_sim = 1) generate
-    --    p_gen_valid_sim : process--(s_clk_adc, rst_n_i)
-    --        variable seed1, seed2: positive;               -- Seed values for random generator
-    --    begin
-    --        seed1                                       := 67632;
-    --        seed2                                       := 3234; 
-    --        s_dvalid                                    <= '0';
-    --        -- Wait until reset completion (synch with adc clock domain)
-    --        wait until rst_n_adc = '1';
-    --        l_generate_valid: loop 
-    --            gen_valid(0.5, seed1, seed2, s_dvalid);
-    --            wait until rising_edge(s_clk_adc);
-    --        end loop;                
-    --    end process;
-    --end generate; 
-    
+
+    -- generate SOF and EOF signals
     p_gen_sof_eof : process(s_clk_adc, rst_n_i)
     begin
         if rst_n_adc = '0' then
             --s_sof <= '0';
             --s_eof <= '0';
             s_wbs_packet_counter <= (others => '0');
-        elsif rising_edge(s_clk_adc) then
-            -- Defaults assignments
-            --s_sof <= '0';
-            --s_eof <= '0';
-            
-            -- Finish current transaction
-            --if(s_wbs_packet_counter = g_packet_size-1) then
-            --    s_eof <= '1';
-            --    --s_wbs_packet_counter <= (others => '0');
-            --elsif (s_wbs_packet_counter = to_unsigned(0, c_counter_size)) then
-            --       s_sof <= '1';     
-            --end if;
-                
+        elsif rising_edge(s_clk_adc) then           
             -- Increment counter if data is valid
             if s_dvalid = '1' then
                 s_wbs_packet_counter <= s_wbs_packet_counter + 1;

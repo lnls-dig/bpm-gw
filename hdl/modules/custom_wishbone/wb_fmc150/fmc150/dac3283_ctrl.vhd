@@ -27,6 +27,10 @@ library ieee;
   use ieee.std_logic_arith.all;
   use ieee.std_logic_misc.all;
   use ieee.std_logic_unsigned.all;
+  
+-- Memoryies NGC
+library UNISIM;
+use UNISIM.vcomponents.all;
 
 entity dac3283_ctrl is
 generic (
@@ -143,6 +147,7 @@ signal inst_reg       : std_logic_vector(4 downto 0);
 signal data_reg       : std_logic_vector(7 downto 0);
 
 signal sh_counter     : integer;
+signal sh_counter_gen : integer;
 signal shifting       : std_logic;
 signal read_n_write   : std_logic;
 signal ncs_int        : std_logic;
@@ -306,6 +311,14 @@ port map
 ----------------------------------------------------------------------------------------------------
 -- Serial interface state-machine
 ----------------------------------------------------------------------------------------------------
+-- Speedup simulation execution
+--gen_sh_counter : if (g_sim = 0) generate
+    sh_counter_gen <= shift_reg'length-data_reg'length-1; --total length minus data bytes;
+--end generate;
+
+--gen_sh_counter_sim : if (g_sim = 1) generate
+--    sh_counter_gen <= 1;
+--end generate;
 
 process (rst, serial_clk)
 begin
@@ -329,7 +342,8 @@ begin
     case sh_state is
 
       when idle =>
-        sh_counter <= shift_reg'length-data_reg'length-1; --total length minus data bytes;
+        sh_counter <= sh_counter_gen;
+        
         -- Accept every instruction
         if (inst_reg_val = '1' or init_reg = '1') then
           shifting     <= '1';

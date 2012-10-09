@@ -181,6 +181,7 @@ peripheral {
       };         
 	};
     
+    -- I don't think the below is true anymore. Check!
     -- The following registers are within the clk_100Mhz_i domain.
     -- Therefore, in order to read it from the bus, we need
     -- to synchronize them to clk_wb_i (wishbone control clock) domain.
@@ -197,10 +198,9 @@ peripheral {
          name = "Data out from FMC150";
          description = "Data from internal chip register";
          --prefix = "data";
-	     type = SLV;
+	       type = SLV;
          size = 32;
-         --clock = "clk_100Mhz";
-         clock = "clk_wb_i";
+         --clock = "clk_wb_i";
          access_bus = READ_ONLY;
          access_dev = WRITE_ONLY;
       };       
@@ -216,9 +216,8 @@ peripheral {
          description = "read 1: spi busy.\
             read 0: spi idle";
          prefix = "spi_busy";
-	     type = BIT;
-         --clock = "clk_100Mhz";
-         clock = "clk_wb_i";
+	       type = BIT;
+         --clock = "clk_wb_i";
          access_bus = READ_ONLY;
          access_dev = WRITE_ONLY;
       };      
@@ -240,9 +239,8 @@ peripheral {
          description = "read 1: FPGA ADC PLL locked.\
             read 0: FPGA ADC PLL not locked";
          prefix = "adc_clk_locked";
-	     type = BIT;
-         --clock = "clk_100Mhz";
-         clock = "clk_wb_i";
+         type = BIT;
+         --clock = "clk_wb_i";
          access_bus = READ_ONLY;
          access_dev = WRITE_ONLY;
       };  
@@ -261,6 +259,3 @@ peripheral {
 	};
 
 };
-
-
-
