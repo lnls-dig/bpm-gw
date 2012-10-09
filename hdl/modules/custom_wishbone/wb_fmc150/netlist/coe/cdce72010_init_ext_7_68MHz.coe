@@ -1,0 +1,36 @@
+;******************************************************************
+;** CECE72010 Initialization                                     **
+;******************************************************************
+;** The register settings allows the clock signals derived from  **
+;** an external 7.68MHz                                          **
+;**                                                              **
+;** 7.68MHz ext clock.                                           **
+;** Use with Libera RF & clock generator.                        **
+;**   RF = 291.840MHz, MCf = 7.680MHz, H = 38                    **
+;**   DDS = 3.072MHz -> Phase increment = 2048d                  **
+;**                                                              **
+;******************************************************************
+;
+; This .COE file specifies initialization values for a block
+; memory of depth=16, and width=32.
+; Values are specified in hexadecimal format:
+; 28 MSB = data, 4 LSB = address.
+;
+; Loading from ROM stops when address 0xC has been processed.
+; therefore this register must be the last entry in this file.
+;
+memory_initialization_radix=16;
+memory_initialization_vector=
+682C0290,
+68840041,
+83860002,
+68400003,
+E9800004,
+68000005,
+68000006,
+83800017,
+68000098,
+68000049,
+007C003A,
+8000050B,
+0000180C;
