@@ -137,7 +137,7 @@ module wb_fmc150_tb;
   (
     .rst_n_i                                  (rstn),                  
     .clk_sys_i                                (s_clk_sys),                   
-    .clk_100Mhz_i                             (s_clk_100mhz),                
+    //.clk_100Mhz_i                             (s_clk_100mhz),                
     .clk_200Mhz_i                             (s_clk_200mhz),               
     
     //-----------------------------
@@ -390,19 +390,25 @@ module wb_fmc150_tb;
 
     // Read SPI RW bit
     wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_FLGS_IN, aux_val);
+    $display("Read ADDR_FMC150_FLGS_IN: %b", aux_val);
     //#(`CLK_SYS_PERIOD);
     @(posedge s_clk_sys);
     // Write SPI RW bit to read op
     wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_FLGS_IN,
       aux_val | `FMC150_FLGS_IN_SPI_RW);
+    $display("Wrire ADDR_FMC150_FLGS_IN: %b", aux_val | `FMC150_FLGS_IN_SPI_RW);
+      
+    @(posedge s_clk_sys);
       
     // Write internal chip addr
     wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_ADDR, addr_i);
+    $display("Write ADDR_FMC150_ADDR: %b", addr_i);
     //#(`CLK_SYS_PERIOD);
     @(posedge s_clk_sys);
     
     // Read currently CS field
     wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_CS, aux_val);
+    $display("Read ADDR_FMC150_CS: %b", aux_val);
     // This bits do not make sense for this register
     //aux_val[`WB_DATA_BUS_WIDTH - 1 : 4] = 'h0;
     // Toggle Chipselect field
@@ -410,12 +416,14 @@ module wb_fmc150_tb;
     //#(`CLK_SYS_PERIOD);
     @(posedge s_clk_sys);
     // Write chipselect to correspondent field
-    wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_CS, aux_val);   
+    wb_fmc150_tb.cmp_wb_master.write32(`ADDR_FMC150_CS, aux_val);  
+    $display("Write ADDR_FMC150_CS: %b", aux_val); 
     //#(`CLK_SYS_PERIOD);
     @(posedge s_clk_sys);
     
     // Read data
-    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_DATA_OUT, aux_val);   
+    wb_fmc150_tb.cmp_wb_master.read32(`ADDR_FMC150_DATA_OUT, aux_val); 
+    $display("Read ADDR_FMC150_DATA_OUT: %b", aux_val); 
     //#(`CLK_SYS_PERIOD);
     @(posedge s_clk_sys);
     
@@ -423,6 +431,7 @@ module wb_fmc150_tb;
   end
   endtask
   
+  // Check if SPI is busy  
   task fmc150_spi_busy;
     output reg spi_busy;
   begin : fmc150_spi_busy_body
@@ -436,6 +445,22 @@ module wb_fmc150_tb;
     spi_busy = aux_val[`FMC150_FLGS_OUT_SPI_BUSY_OFFSET];
   end
   endtask
+  
+  // Update iodelay (TODO)
+  
+  // C Code correspondent:
+  //
+  //int update_fmc150_adc_delay(u8 adc_strobe_delay, u8 adc_cha_delay, u8 adc_chb_delay)
+  //{
+  //  u32 aux_value;
+  //
+  //  aux_value = (u32)adc_strobe_delay + (((u32)adc_cha_delay) << 8) + (((u32)adc_chb_delay) << 16);
+  //
+  //  XIo_Out32(FMC150_BASEADDR+OFFSET_FMC150_ADC_DELAY*0x4, aux_value);
+  //  XIo_Out32(FMC150_BASEADDR+OFFSET_FMC150_FLAGS_PULSE_0*0x4, 0x1);
+  //
+  //  return SUCCESS;
+  //}
     
 endmodule
 
