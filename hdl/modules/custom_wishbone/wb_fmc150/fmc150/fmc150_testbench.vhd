@@ -150,25 +150,29 @@ begin
             COMPENSATION         => "ZHOLD",
             STARTUP_WAIT         => FALSE,
             DIVCLK_DIVIDE        => 1,
-            --CLKFBOUT_MULT_F      => 16.000,
-            CLKFBOUT_MULT_F      => 8.000,
+            CLKFBOUT_MULT_F      => 16.000,
+            --CLKFBOUT_MULT_F      => 8.000,
             CLKFBOUT_PHASE       => 0.000,
             CLKFBOUT_USE_FINE_PS => FALSE,
-            --CLKOUT0_DIVIDE_F     => 16.000,
-            CLKOUT0_DIVIDE_F     => 8.000,
+            CLKOUT0_DIVIDE_F     => 16.000,
+            --CLKOUT0_DIVIDE_F     => 8.000,
             CLKOUT0_PHASE        => 0.000,
             CLKOUT0_DUTY_CYCLE   => 0.500,
             CLKOUT0_USE_FINE_PS  => FALSE,
-            --CLKOUT1_DIVIDE       => 8,
-            CLKOUT1_DIVIDE       => 4,
+            CLKOUT1_DIVIDE       => 8,
+            --CLKOUT1_DIVIDE       => 4,
             CLKOUT1_PHASE        => 0.000,
             CLKOUT1_DUTY_CYCLE   => 0.500,
             CLKOUT1_USE_FINE_PS  => FALSE,
             -- 61.44 MHZ input clock
-            --CLKIN1_PERIOD        => 16.276,
+            CLKIN1_PERIOD        => 16.276,
             -- 122.88 MHZ input clock
-            CLKIN1_PERIOD        => 8.138,
-            REF_JITTER1          => 0.010
+            --CLKIN1_PERIOD        => 8.138,
+            REF_JITTER1          => 0.010,
+            -- Not used. Just to bypass Xilinx errors
+            -- Just input 61.44 MHz input clock
+            CLKIN2_PERIOD        => 16.276,
+            REF_JITTER2          => 0.010
         )
         port map
         (
@@ -251,7 +255,7 @@ begin
     )
     port map
     (
-        clk_200MHz_i        => clk_200MHz,
+        --clk_200MHz_i        => clk_200MHz,
         clk_100MHz_i        => clk_100MHz,
         rst_i               => mmcm_adc_locked,
         str_p_i             => adc_clk_ab_p,

@@ -16,13 +16,13 @@ generic
     g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_packet_size                           : natural := 32;
-    g_sim                                   : boolean := false
+    g_sim                                   : integer := 0
 );      
 port        
 (       
     rst_n_i                                      : in std_logic;
     clk_sys_i                                    : in std_logic;
-    clk_100Mhz_i                                 : in std_logic;
+    --clk_100Mhz_i                                 : in std_logic;
     clk_200Mhz_i                                 : in std_logic;
             
     -----------------------------       
@@ -35,12 +35,12 @@ port
     -----------------------------
     -- Simulation Only ports
     -----------------------------
-    sim_adc_clk_i                           : in std_logic;
-    sim_adc_clk2x_i                         : in std_logic;
-                
-    sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
-    sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
-    sim_adc_data_valid                      : in std_logic;
+    sim_adc_clk_i                               : in std_logic;
+    sim_adc_clk2x_i                             : in std_logic;
+
+    sim_adc_cha_data_i                          : in std_logic_vector(13 downto 0);
+    sim_adc_chb_data_i                          : in std_logic_vector(13 downto 0);
+    sim_adc_data_valid                          : in std_logic;
             
     -----------------------------       
     -- External ports       
@@ -99,6 +99,10 @@ port
     --FMC Present status            
     prsnt_m2c_l_i                               : in  std_logic;
     
+    -- ADC output signals
+    adc_dout_o                                  : out std_logic_vector(31 downto 0);
+    clk_adc_o                                   : out std_logic;
+    
     -- Wishbone Streaming Interface Source
     wbs_source_i                                : in t_wbs_source_in;
     wbs_source_o                                : out t_wbs_source_out
@@ -107,120 +111,6 @@ port
 end xwb_fmc150;
 
 architecture rtl of xwb_fmc150 is
-
-    component wb_fmc150
-    generic
-    (
-        g_interface_mode                        : t_wishbone_interface_mode      := PIPELINED;
-        g_address_granularity                   : t_wishbone_address_granularity := WORD;
-        g_packet_size                           : natural := 32;
-        g_sim                                   : boolean := false
-    );
-    port
-    (
-        rst_n_i                                 : in std_logic;
-        clk_sys_i                               : in std_logic;
-        clk_100Mhz_i                            : in std_logic;
-        clk_200Mhz_i                            : in std_logic;
-        
-        -----------------------------
-        -- Wishbone signals
-        -----------------------------
-
-        wb_adr_i                                : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
-        wb_dat_i                                : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
-        wb_dat_o                                : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-        wb_sel_i                                : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
-        wb_we_i                                 : in  std_logic := '0';
-        wb_cyc_i                                : in  std_logic := '0';
-        wb_stb_i                                : in  std_logic := '0';
-        wb_ack_o                                : out std_logic;
-        wb_err_o                                : out std_logic;
-        wb_rty_o                                : out std_logic;
-        wb_stall_o                              : out std_logic;
-        
-        -----------------------------
-        -- Simulation Only ports
-        -----------------------------
-        sim_adc_clk_i                           : in std_logic;
-        sim_adc_clk2x_i                         : in std_logic;
-                    
-        sim_adc_cha_data_i                      : in std_logic_vector(13 downto 0);
-        sim_adc_chb_data_i                      : in std_logic_vector(13 downto 0);
-        sim_adc_data_valid                      : in std_logic;
-        
-        -----------------------------
-        -- External ports
-        -----------------------------
-        --Clock/Data connection to ADC on FMC150 (ADS62P49)
-        adc_clk_ab_p_i                          : in  std_logic;
-        adc_clk_ab_n_i                          : in  std_logic;
-        adc_cha_p_i                             : in  std_logic_vector(6 downto 0);
-        adc_cha_n_i                             : in  std_logic_vector(6 downto 0);
-        adc_chb_p_i                             : in  std_logic_vector(6 downto 0);
-        adc_chb_n_i                             : in  std_logic_vector(6 downto 0);
-
-        --Clock/Data connection to DAC on FMC150 (DAC3283)
-        dac_dclk_p_o                            : out std_logic;
-        dac_dclk_n_o                            : out std_logic;
-        dac_data_p_o                            : out std_logic_vector(7 downto 0);
-        dac_data_n_o                            : out std_logic_vector(7 downto 0);
-        dac_frame_p_o                           : out std_logic;
-        dac_frame_n_o                           : out std_logic;
-        txenable_o                              : out std_logic;
-        
-        --Clock/Trigger connection to FMC150
-        --clk_to_fpga_p_i                         : in  std_logic;
-        --clk_to_fpga_n_i                         : in  std_logic;
-        --ext_trigger_p_i                         : in  std_logic;
-        --ext_trigger_n_i                         : in  std_logic;
-        
-        -- Control signals from/to FMC150
-        --Serial Peripheral Interface (SPI)
-        spi_sclk_o                              : out std_logic; -- Shared SPI clock line
-        spi_sdata_o                             : out std_logic; -- Shared SPI data line
-                
-        -- ADC specific signals     
-        adc_n_en_o                              : out std_logic; -- SPI chip select
-        adc_sdo_i                               : in  std_logic; -- SPI data out
-        adc_reset_o                             : out std_logic; -- SPI reset
-                
-        -- CDCE specific signals        
-        cdce_n_en_o                             : out std_logic; -- SPI chip select
-        cdce_sdo_i                              : in  std_logic; -- SPI data out
-        cdce_n_reset_o                          : out std_logic;
-        cdce_n_pd_o                             : out std_logic;
-        cdce_ref_en_o                           : out std_logic;
-        cdce_pll_status_i                       : in  std_logic;
-                
-        -- DAC specific signals     
-        dac_n_en_o                              : out std_logic; -- SPI chip select
-        dac_sdo_i                               : in  std_logic; -- SPI data out
-                
-        -- Monitoring specific signals      
-        mon_n_en_o                              : out std_logic; -- SPI chip select
-        mon_sdo_i                               : in  std_logic; -- SPI data out
-        mon_n_reset_o                           : out std_logic;
-        mon_n_int_i                             : in  std_logic;
-                    
-        --FMC Present status            
-        prsnt_m2c_l_i                           : in  std_logic;
-        
-        -- Wishbone Streaming Interface Source
-        wbs_adr_o                               : out std_logic_vector(c_wbs_address_width-1 downto 0);
-        wbs_dat_o                               : out std_logic_vector(c_wbs_data_width-1 downto 0);
-        wbs_cyc_o                               : out std_logic;
-        wbs_stb_o                               : out std_logic;
-        wbs_we_o                                : out std_logic;
-        wbs_sel_o                               : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
-        
-        wbs_ack_i                               : in std_logic;
-        wbs_stall_i                             : in std_logic;
-        wbs_err_i                               : in std_logic;
-        wbs_rty_i                               : in std_logic
-    );
-    end component;
-    
 begin
 
     cmp_wb_fmc150 : wb_fmc150
@@ -235,7 +125,7 @@ begin
     (
         rst_n_i                                 => rst_n_i,     
         clk_sys_i                               => clk_sys_i,   
-        clk_100Mhz_i                            => clk_100Mhz_i,
+        --clk_100Mhz_i                            => clk_100Mhz_i,
         clk_200Mhz_i                            => clk_200Mhz_i,
         
         -----------------------------
@@ -320,6 +210,10 @@ begin
                                                 
         --FMC Present status                    
         prsnt_m2c_l_i                           => prsnt_m2c_l_i,
+        
+        -- ADC output signals
+        adc_dout_o                              => adc_dout_o,
+        clk_adc_o                               => clk_adc_o,
         
         -- Wishbone Streaming Interface Source
         wbs_adr_o                               => wbs_source_o.adr,  

@@ -15,7 +15,7 @@ generic (
 );
 port
 (
-    clk_200MHz_i        : in  std_logic;
+    --clk_200MHz_i        : in  std_logic;
     clk_100MHz_i        : in  std_logic;
     rst_i               : in  std_logic;
     cha_p_i             : in  std_logic_vector(6 downto 0);

@@ -705,7 +705,41 @@ fmc150_flgs_out_spi_busy_i
 
 </td>
 <td  class="td_pblock_right">
+fmc150_flgs_out_pll_status_i
+</td>
+<td  class="td_arrow_right">
+&larr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 fmc150_flgs_out_adc_clk_locked_i
+</td>
+<td  class="td_arrow_right">
+&larr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc150_flgs_out_fmc_prst_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -2782,14 +2816,14 @@ FLGS_OUT
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+FMC_PRST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 ADC_CLK_LOCKED
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+PLL_STATUS
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 SPI_BUSY
@@ -2802,9 +2836,17 @@ SPI_BUSY
 </b>[<i>read-only</i>]: SPI Busy
 <br>read 1: spi busy.<br>            read 0: spi idle
 <li><b>
+PLL_STATUS
+</b>[<i>read-only</i>]: CDCE72010 PLL Status
+<br>read 1: PLL locked.<br>            read 0: PLL not locked
+<li><b>
 ADC_CLK_LOCKED
 </b>[<i>read-only</i>]: FPGA ADC clock locked
 <br>read 1: FPGA ADC PLL locked.<br>            read 0: FPGA ADC PLL not locked
+<li><b>
+FMC_PRST
+</b>[<i>read-only</i>]: FMC present
+<br>read 1: FMC present.<br>            read 0: FMC not present
 </ul>
 
 

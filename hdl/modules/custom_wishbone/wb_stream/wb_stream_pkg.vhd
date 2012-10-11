@@ -84,48 +84,48 @@ package wb_stream_pkg is
   constant cc_dummy_snk_in : t_wbs_sink_in :=
     (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
     
-    -- Components
-    component xwb_stream_source
-    port (
-        clk_i                                       : in std_logic;
-        rst_n_i                                     : in std_logic;
+  -- Components
+  component xwb_stream_source
+  port (
+    clk_i                                   : in std_logic;
+    rst_n_i                                 : in std_logic;
+  
+    -- Wishbone Fabric Interface I/O  
+    src_i                                   : in  t_wbs_source_in;
+    src_o                                   : out t_wbs_source_out;
+  
+    -- Decoded & buffered logic 
+    addr_i                                  : in  std_logic_vector(c_wbs_address_width-1 downto 0);
+    data_i                                  : in  std_logic_vector(c_wbs_data_width-1 downto 0);
+    dvalid_i                                : in  std_logic;
+    sof_i                                   : in  std_logic;
+    eof_i                                   : in  std_logic;
+    error_i                                 : in  std_logic;
+    bytesel_i                               : in  std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+    dreq_o                                  : out std_logic
+  );
+  end component;
+  
+  component xwb_stream_sink
+  port (
+    clk_i                                   : in std_logic;
+    rst_n_i                                 : in std_logic;
 
-        -- Wishbone Fabric Interface I/O
-        src_i                                       : in  t_wbs_source_in;
-        src_o                                       : out t_wbs_source_out;
+    -- Wishbone Fabric Interface I/O
+    snk_i                                   : in  t_wbs_sink_in;
+    snk_o                                   : out t_wbs_sink_out;
 
-        -- Decoded & buffered logic
-        addr_i                                      : in  std_logic_vector(c_wbs_address_width-1 downto 0);
-        data_i                                      : in  std_logic_vector(c_wbs_data_width-1 downto 0);
-        dvalid_i                                    : in  std_logic;
-        sof_i                                       : in  std_logic;
-        eof_i                                       : in  std_logic;
-        error_i                                     : in  std_logic;
-        bytesel_i                                   : in  std_logic_vector((c_wbs_data_width/8)-1 downto 0);
-        dreq_o                                      : out std_logic
-    );
-    end component;
-    
-    component xwb_stream_sink
-    port (
-        clk_i                                   : in std_logic;
-        rst_n_i                                 : in std_logic;
-
-        -- Wishbone Fabric Interface I/O
-        snk_i                                   : in  t_wbs_sink_in;
-        snk_o                                   : out t_wbs_sink_out;
-
-        -- Decoded & buffered fabric
-        addr_o                                  : out std_logic_vector(c_wbs_address_width-1 downto 0);
-        data_o                                  : out std_logic_vector(c_wbs_data_width-1 downto 0);
-        dvalid_o                                : out std_logic;
-        sof_o                                   : out std_logic;
-        eof_o                                   : out std_logic;
-        error_o                                 : out std_logic;
-        bytesel_o                               : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
-        dreq_i                                  : in  std_logic
-    );
-    end component;
+    -- Decoded & buffered fabric
+    addr_o                                  : out std_logic_vector(c_wbs_address_width-1 downto 0);
+    data_o                                  : out std_logic_vector(c_wbs_data_width-1 downto 0);
+    dvalid_o                                : out std_logic;
+    sof_o                                   : out std_logic;
+    eof_o                                   : out std_logic;
+    error_o                                 : out std_logic;
+    bytesel_o                               : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+    dreq_i                                  : in  std_logic
+  );
+  end component;
 
 end wb_stream_pkg;
 

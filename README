@@ -69,3 +69,12 @@ Synthesis instructions:
       hdlmake2 --make-ise --ise-proj
       make
 ==========================================================
+
+Know Issues:
+
+wb_fmc150/sim/: This folder containts behavioral simulation models
+for memories (ROMs). However, the xilinx initialization file (.mif)
+paths are absolute to a specific machine! You either have to change
+the path to match your machine or figure a way to specifies a relative
+path (specifiying only the name of the mif file does not work as the 
+simulator is not called within this folder).

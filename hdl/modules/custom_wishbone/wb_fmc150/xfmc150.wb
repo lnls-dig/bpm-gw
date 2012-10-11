@@ -21,7 +21,7 @@ peripheral {
          --prefix = "start";
          -- Pulse to start
          type = MONOSTABLE;		
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };
@@ -38,7 +38,7 @@ peripheral {
          write 0: read from SPI";
          prefix = "spi_rw";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };     
@@ -49,7 +49,7 @@ peripheral {
          write 0: internal clock for ADC";
          prefix = "ext_clk";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };     
@@ -66,7 +66,7 @@ peripheral {
          --prefix = "addr";
 	     type = SLV;
          size = 16;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };       
@@ -83,7 +83,7 @@ peripheral {
          --prefix = "data";
 	     type = SLV;
          size = 32;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };       
@@ -100,7 +100,7 @@ peripheral {
             write 0: no effect";
          prefix = "cdce72010";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };      
@@ -111,7 +111,7 @@ peripheral {
             write 0: no effect";
          prefix = "ads62p49";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };  
@@ -122,7 +122,7 @@ peripheral {
          write 0: no effect";
          prefix = "dac3283";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };  
@@ -133,7 +133,7 @@ peripheral {
          write 0: no effect";
          prefix = "amc7823";
 	     type = BIT;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };   
@@ -151,7 +151,7 @@ peripheral {
 	     type = SLV;
          size = 5;
          align = 8;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };   
@@ -163,7 +163,7 @@ peripheral {
 	     type = SLV;
          size = 5;
          align = 8;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };     
@@ -175,7 +175,7 @@ peripheral {
 	     type = SLV;
          size = 5;
          align = 8;
-         clock = "clk_100Mhz_i";
+         --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;
       };         
@@ -222,17 +222,17 @@ peripheral {
          access_dev = WRITE_ONLY;
       };      
 
-      --field {
-      --   name = "CDCE72010 PLL Status";
-      --   description = "read 1: PLL locked.\
-      --      read 0: PLL not locked";
-      --   prefix = "pll_status";
-	  --   type = BIT;
-      --   --clock = "clk_100Mhz";
-      --   clock = "clk_wb_i";
-      --   access_bus = READ_ONLY;
-      --   access_dev = WRITE_ONLY;
-      --};  
+      field {
+         name = "CDCE72010 PLL Status";
+         description = "read 1: PLL locked.\
+            read 0: PLL not locked";
+         prefix = "pll_status";
+         type = BIT;
+         --clock = "clk_100Mhz";
+         --clock = "clk_wb_i";
+         access_bus = READ_ONLY;
+         access_dev = WRITE_ONLY;
+      };  
 
       field {
          name = "FPGA ADC clock locked";
@@ -245,17 +245,17 @@ peripheral {
          access_dev = WRITE_ONLY;
       };  
 
-      --field {
-      --   name = "FMC present";
-      --   description = "read 1: FMC present.\
-      --      read 0: FMC not present";
-      --   prefix = "fmc_prst";
-	  --   type = BIT;
-      --   --clock = "clk_100Mhz";
-      --   clock = "clk_wb_i";
-      --   access_bus = READ_ONLY;
-      --   access_dev = WRITE_ONLY;
-      --};   
+      field {
+         name = "FMC present";
+         description = "read 1: FMC present.\
+            read 0: FMC not present";
+         prefix = "fmc_prst";
+         type = BIT;
+         --clock = "clk_100Mhz";
+         --clock = "clk_wb_i";
+         access_bus = READ_ONLY;
+         access_dev = WRITE_ONLY;
+      };   
 	};
 
 };
