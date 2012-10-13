@@ -3,4 +3,55 @@
 Folder containing all o the BPM FPGA firmware, testbenches 
 and related test software
 
-==========================================================
+===============================================
+
+The project makes use (directly or indirectly) of tools and projects
+developed by CERN and others:
+
+hdl-make:
+	http://www.ohwr.org/projects/hdl-make
+etherbone-core:
+	http://www.ohwr.org/projects/etherbone-core
+wishbone-gen:
+	http://www.ohwr.org/projects/wishbone-gen
+platform-independent core collection: 
+	http://www.ohwr.org/projects/general-cores
+software for white-rabbit:
+  http://www.ohwr.org/projects/wrpc-sw
+
+===============================================
+
+The project modifies some tools in order to supply some specific needs:
+
+Modified hdl-make tool in order to allow simulation with ISim Xilinx Simulator
+
+hdl-make2:
+  https://github.com/lerwys/hdl-make2
+
+===============================================
+
+This repository makes use of git submodules, located at 'ip_cores' folder:
+	ip_cores/general-cores
+	ip_cores/etherbone-core
+
+To clone the whole repository use the following command:
+
+	$ git clone --recursive git://github.com/lerwys/bpm-sw.git (read only)
+	or
+	$ git clone --recursive git@github.com:lerwys/bpm-sw.git (read+write)
+
+For older versions of Git (<1.6.5), use the following:
+
+	$ git clone git://github.com/lerwys/bpm-sw.git
+	or
+	$ git clone git@github.com:lerwys/bpm-sw.git
+
+	$ git submodule init
+	$ git submodule update
+
+To update each submodule within this project use:
+
+	$ git submodule foreach git rebase origin master
+
+===============================================
+
