@@ -657,7 +657,7 @@ begin
   cmp_chipscope_ila_1 : chipscope_ila
   port map (
       CONTROL                     => CONTROL1,
-      CLK                         => clk_adc,
+      CLK                         => clk_sys,--clk_adc,
       TRIG0                       => TRIG_ILA1_0,
       TRIG1                       => TRIG_ILA1_1,
       TRIG2                       => TRIG_ILA1_2,

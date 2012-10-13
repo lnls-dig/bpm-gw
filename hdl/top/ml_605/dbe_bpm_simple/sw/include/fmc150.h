@@ -3,7 +3,7 @@
 
 #include "inttypes.h"
 #include "board.h"
-#include "wb_fmc150.h"
+#include "hw/wb_fmc150.h"
 
 /* Type definitions */
 typedef volatile struct FMC150_WB * fmc150_t;

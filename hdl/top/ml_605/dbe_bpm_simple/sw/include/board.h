@@ -5,8 +5,8 @@
 /****************************/
 /*    General Definitions   */
 /****************************/
-/* 100 MHz ??? */
-#define CPU_CLOCK 1000000
+/* CPU Clock frequency in hertz */
+#define CPU_CLOCK 100000000ULL
 
 /*************************/
 /*    Base addresses     */
@@ -26,7 +26,8 @@
 
 /* Simple UART definitions */
 #define BASE_UART_ADDR 0x20000600
-#define UART_BAUDRATE 9600
+/* UART Baud Rate */
+#define UART_BAUDRATE 115200ULL
 
 /* Simple LED GPIO definitions */
 #define BASE_LEDS_ADDR 0x20000700
