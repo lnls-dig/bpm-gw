@@ -1,0 +1,27 @@
+To run this testbench example with ISim:
+
+1 - hdlmake2 --make-isim
+2 - make
+3 - make fuse TOP_MODULE=<top_module_name_without_extension>
+		[FUSE_OUTPUT=<simulation_executable_name>]
+4 - ./<isim_project_name> --gui
+	or
+5 - ./isim_proj --gui
+
+To clean the generated files:
+
+1 - make clean
+
+===============================================
+
+This example testbench is needs more testing as it did not compile 
+with ISim. Fatal Error occured: 
+
+"FATAL_ERROR:Simulator:CompilerAssert.h:40:1.45 - Internal Compiler Error
+in file ../src/VhdlDecl.cpp at line 3154   Process will terminate. For
+technical support on this issue, please open a WebCase with this project
+attached at http://www.xilinx.com/support.
+FATAL_ERROR:Simulator:CompilerAssert.h:40:1.45 - Internal Compiler Error
+in file ../src/VhdlDecl.cpp at line 3154   Process will terminate. For
+technical support on this issue, please open a WebCase with this project
+attached at http://www.xilinx.com/support."

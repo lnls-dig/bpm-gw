@@ -30,7 +30,7 @@ library ieee;
   use ieee.std_logic_misc.all;
   use ieee.std_logic_unsigned.all;
   
--- Memoryies NGC
+-- Memories NGC
 library UNISIM;
 use UNISIM.vcomponents.all;
 
