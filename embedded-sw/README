@@ -1,0 +1,16 @@
+==========================================================
+
+Repository containing (primarily) code for LM32 soft-core processor.
+
+Folder Hierarchy orgranization and general structure based on:
+
+-----------------------------------------------
+SOFTWARE FOR WHITE RABBIT
+Manager: Grzegorz Daniluk
+Developer: Alessandro Rubini, Aurelio Colosimo, Tomasz Wlostowski,
+Wesley W. Terpstra 
+-----------------------------------------------
+
+available at http://www.ohwr.org/projects/wrpc-sw from
+
+==========================================================
