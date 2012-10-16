@@ -51,10 +51,22 @@ Simulation instructions:
   
   -> Run the following commands. You must have hdlmake2 command available
       in your PATH environment variable.
-      
-      hdlmake2 --make-isim
-      make fuse TOP_MODULE=<top_level_testbench_module_without_the_extension>
-      ./isim_proj -view wave.wcfg -tclbatch isim_cmd -gui
+    
+	-> Create the (ISim) simualation makefile
+
+1 - hdlmake2 --make-isim
+
+	-> Compile the project
+
+2 - make
+
+	-> Create the simulation executable elf file
+
+3 - make fuse TOP_MODULE=<top_level_testbench_module_without_the_extension>
+
+	-> Execute the simulation with GUI and aditional commands
+
+4 - ./isim_proj -view wave.wcfg -tclbatch isim_cmd -gui
       
 ==========================================================
 
@@ -66,8 +78,17 @@ Synthesis instructions:
   -> Run the following commands. You must have hdlmake2 command available
       in your PATH environment variable.
       
-      hdlmake2 --make-ise --ise-proj
-      make
+	-> Create the synthesis makefile and an ISE project
+
+1 - hdlmake2 --make-ise --ise-proj
+
+	-> Compile the source files locally
+
+2 - make local
+
+	-> Load the generated .bit file with iMPACT
+
+3 - impact
 ==========================================================
 
 Know Issues:
