@@ -184,6 +184,29 @@ signal read_byte_val  : std_logic;
 signal data_read_val  : std_logic;
 signal data_read      : std_logic_vector(27 downto 0);
 
+-- Memory type
+--type mem is array (0 to 15) of std_logic_vector(31 downto 0);
+
+-- Constant memory
+--constant cdce72010_init_mem : mem := (
+--  0  => x"683C0350",
+--  1  => x"68000021",
+--  2  => x"83040002",
+--  3  => x"68000003",
+--  4  => x"E9800004",
+--  5  => x"68000005",
+--  6  => x"68000006",
+--  7  => x"83800017",
+--  8  => x"68000098",
+--  9  => x"68050CC9",
+--  10 => x"05FC270A",
+--  11 => x"0000040B",
+--  12 => x"0000180C",
+--  13 => x"00000000",
+--  14 => x"00000000",
+--  15 => x"00000000"
+--);
+
 begin
 
 ----------------------------------------------------------------------------------------------------
@@ -350,7 +373,7 @@ port map
 ----------------------------------------------------------------------------------------------------
 -- Speedup simulation execution
 --gen_sh_counter : if (g_sim = 0) generate
-    sh_counter_gen <= shift_reg'length-data_reg'length-1; --total length minus data bytes;
+    sh_counter_gen <= shift_reg'length-1; --total length
 --end generate;
 
 --gen_sh_counter_sim : if (g_sim = 1) generate
@@ -508,6 +531,31 @@ port map (
   douta => init_data_int
 );
 
+  --p_mem_init : process (serial_clk)
+  --begin
+  --  if rising_edge(serial_clk) then
+  --    case init_address is
+  --      when "0000" => init_data_int <= cdce72010_init_mem(0);
+  --      when "0001" => init_data_int <= cdce72010_init_mem(1);
+  --      when "0010" => init_data_int <= cdce72010_init_mem(2);
+  --      when "0011" => init_data_int <= cdce72010_init_mem(3);
+  --      when "0100" => init_data_int <= cdce72010_init_mem(4);
+  --      when "0101" => init_data_int <= cdce72010_init_mem(5);
+  --      when "0110" => init_data_int <= cdce72010_init_mem(6);
+  --      when "0111" => init_data_int <= cdce72010_init_mem(7);
+  --      when "1000" => init_data_int <= cdce72010_init_mem(8);
+  --      when "1001" => init_data_int <= cdce72010_init_mem(9);
+  --      when "1010" => init_data_int <= cdce72010_init_mem(10);
+  --      when "1011" => init_data_int <= cdce72010_init_mem(11);
+  --      when "1100" => init_data_int <= cdce72010_init_mem(12);
+  --      when "1101" => init_data_int <= cdce72010_init_mem(13);
+  --      when "1110" => init_data_int <= cdce72010_init_mem(14);
+  --      when "1111" => init_data_int <= cdce72010_init_mem(15);
+  --      when others => init_data_int <= x"00000000";
+  --    end case;
+  --  end if;
+  --end process;
+
 ----------------------------------------------------------------------------------------------------
 -- Initialization memory for external clock source
 ----------------------------------------------------------------------------------------------------
@@ -522,6 +570,7 @@ port map (
 -- Select between internal clock or external clock initialisation
 ----------------------------------------------------------------------------------------------------
 init_data <= init_data_ext when external_clock = '1' else init_data_int;
+--init_data <= init_data_int;
 
 ----------------------------------------------------------------------------------------------------
 -- Capture data in on rising edge SCLK

@@ -1,3 +1,21 @@
+------------------------------------------------------------------------------
+-- Title      : Wishbone FMC150
+-- Project    : DBE-BPM
+------------------------------------------------------------------------------
+-- Author     : Lucas Maziero Russo
+-- Company    : LNLS-DIG
+-- Created    : 2012-10-17
+-- Last update: yyyy-mm-dd
+-- Platform   : FPGA-generic
+-- Standard   : VHDL'87
+-------------------------------------------------------------------------------
+-- Description: Wishbone interface with FMC150 ADC board from 4DSP.
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author          Description
+-- 2012-10-17  1.0      lucas.russo        Created
+-------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -269,7 +287,6 @@ architecture rtl of wb_fmc150 is
         adc_dout_o                          : out std_logic_vector(31 downto 0);
         clk_adc_o                           : out std_logic;
         mmcm_adc_locked_o                   : out std_logic
-
     );
     end component;
     
@@ -467,7 +484,7 @@ begin
     end generate; 
 
     -- generate SOF and EOF signals
-    p_gen_sof_eof : process(s_clk_adc, rst_n_i)
+    p_gen_sof_eof : process(s_clk_adc, rst_n_adc)
     begin
         if rst_n_adc = '0' then
             --s_sof <= '0';

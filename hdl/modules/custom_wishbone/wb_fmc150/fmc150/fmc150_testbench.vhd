@@ -78,7 +78,6 @@ port
     adc_dout_o              : out std_logic_vector(31 downto 0);
     clk_adc_o               : out std_logic;
     mmcm_adc_locked_o       : out std_logic
-
 );
 end fmc150_testbench;
 
