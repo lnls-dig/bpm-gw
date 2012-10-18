@@ -24,7 +24,6 @@ entity dbe_bpm_simple_top is
     -----------------------------------------
     -- Clocking pins
     -----------------------------------------
-    --clk100_i 						          : in std_logic;
     sys_clk_p_i						          : in std_logic;
     sys_clk_n_i						          : in std_logic;
     
@@ -116,7 +115,8 @@ architecture rtl of dbe_bpm_simple_top is
 	constant c_slaves 				        : natural := 7;			-- LED, Button, Dual-port memory, UART, DMA control port, FMC150
   -- Number of masters
 	constant c_masters 				        : natural := 4;			-- LM32 master. Data + Instruction, DMA read+write master
-	constant c_dpram_size 			      : natural := 16384; -- in 32-bit words (64KB)
+	--constant c_dpram_size 			      : natural := 16384; -- in 32-bit words (64KB)
+  constant c_dpram_size 			      : natural := 22528; -- in 32-bit words (64KB)
   
   -- Number of source/sink Wishbone stream components
   constant c_sinks                  : natural := 1;
@@ -126,8 +126,8 @@ architecture rtl of dbe_bpm_simple_top is
 	constant c_leds_num_pins 		      : natural := 8;
 	constant c_buttons_num_pins 	    : natural := 8;
 
-	-- Counter width. It willl count up to 2^27 clock cycles
-	--constant c_counter_width		: natural := 27;
+	-- Counter width. It willl count up to 2^32 clock cycles
+	constant c_counter_width		: natural := 32;
 
 	-- WB SDB (Self describing bus) layout
 	constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
@@ -166,10 +166,11 @@ architecture rtl of dbe_bpm_simple_top is
 	-- Clocks and resets signals
 	signal locked 					          : std_logic;
 	signal clk_sys_rstn 			        : std_logic;
+  signal clk_adc_rstn 			        : std_logic;
 
 	-- Only one clock domain
-	signal reset_clks 				        : std_logic_vector(0 downto 0);
-	signal reset_rstn 				        : std_logic_vector(0 downto 0);
+	signal reset_clks 				        : std_logic_vector(1 downto 0);
+	signal reset_rstn 				        : std_logic_vector(1 downto 0);
   
   -- 200 Mhz clocck for iodelatctrl
   signal clk_200mhz                 : std_logic;
@@ -196,9 +197,9 @@ architecture rtl of dbe_bpm_simple_top is
 	--signal r_reset : std_logic;
 
 	-- Counter signal
-	--signal s_counter				: unsigned(c_counter_width-1 downto 0);
+	signal s_counter				      : unsigned(c_counter_width-1 downto 0);
 	-- 100MHz period or 1 second
-	--constant s_counter_full			: integer := 100000000;
+	constant s_counter_full			  : integer := 100000000;
   
   -- FMC150 signals
   signal clk_adc                    : std_logic;
@@ -297,8 +298,12 @@ begin
 		locked_o					              => locked		-- '1' when the PLL has locked
 	);
   
-	-- Reset synchronization. Hold reset line until few locked cycles have passed 
+	-- Reset synchronization. Hold reset line until few locked cycles have passed.
+  -- Is this a safe approach to ADC reset domain?
 	cmp_reset : gc_reset
+  generic map(
+    g_clocks                        => 2    -- CLK_SYS + CLK_ADC 
+  )
 	port map(
 		free_clk_i 					            => sys_clk_gen,
 		locked_i   					            => locked,
@@ -307,7 +312,9 @@ begin
 	);
 
 	reset_clks(0)  <= clk_sys;
+  reset_clks(1)  <= clk_adc;
 	clk_sys_rstn   <= reset_rstn(0);
+  clk_adc_rstn   <= reset_rstn(1);
   
   -- The top-most Wishbone B.4 crossbar
 	cmp_interconnect : xwb_sdb_crossbar
@@ -369,7 +376,7 @@ begin
 	cmp_ram : xwb_dpram
 	generic map(
 		g_size                  	      => c_dpram_size, -- must agree with sw/target/lm32/ram.ld:LENGTH / 4
-		g_init_file             	      => "../../top/ml_605/dbe_bpm_simple/sw/main.ram",
+		g_init_file             	      => "../../../embedded-sw/dbe.ram",--"../../top/ml_605/dbe_bpm_simple/sw/main.ram",
 		g_must_have_init_file   	      => true,
 		g_slave1_interface_mode 	      => PIPELINED,
 		g_slave2_interface_mode 	      => PIPELINED,
@@ -518,22 +525,21 @@ begin
 		slave_i 					              => cbar_master_o(5),
 		slave_o 					              => cbar_master_i(5),
 		desc_o  					              => open,	-- Not implemented
-
+  
 		--gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
-
+  
 		gpio_out_o 					            => s_leds,
 		--gpio_out_o 				            => open,
 		gpio_in_i 					            => s_leds,
 		gpio_oen_o 					            => open
   );
 
-	--leds_o						<= x"55";
 	leds_o <= s_leds;
 
-	--p_test_leds : process (clk_sys)
+	--p_test_leds : process (clk_adc)
 	--begin
-	--	if rising_edge(clk_sys) then
-	--		if clk_sys_rstn = '0' then
+	--	if rising_edge(clk_adc) then
+	--		if clk_adc_rstn = '0' then
 	--			s_counter			<= (others => '0');
 	--			s_leds				<= x"55";
 	--		else
@@ -657,7 +663,7 @@ begin
   cmp_chipscope_ila_1 : chipscope_ila
   port map (
       CONTROL                     => CONTROL1,
-      CLK                         => clk_sys,--clk_adc,
+      CLK                         => clk_adc,
       TRIG0                       => TRIG_ILA1_0,
       TRIG1                       => TRIG_ILA1_1,
       TRIG2                       => TRIG_ILA1_2,

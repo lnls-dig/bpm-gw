@@ -65,15 +65,13 @@ NET "sys_clk_p_i" LOC = J9;
 ################################################################################
 # Clock constraints
 ################################################################################
-NET "ADC_CLK_AB_P_I" TNM_NET = ADC_CLK_AB_P_I;
-NET "ADC_CLK_AB_N_I" TNM_NET = ADC_CLK_AB_N_I;
+NET "ADC_CLK_AB_P_I" TNM_NET = ADC_CLK_AB_P;
 
 #NET "CLK_TO_FPGA_P" TNM_NET = CLK_TO_FPGA_P;
 #TIMESPEC TS_CLK_TO_FPGA_P = PERIOD "CLK_TO_FPGA_P" 246 MHz HIGH 50%;
 #NET "EXT_TRIGGER_P" TNM_NET = EXT_TRIGGER_P;
 #TIMESPEC TS_EXT_TRIGGER_P = PERIOD "EXT_TRIGGER_P" 246 MHz HIGH 50%;
 NET "ADC_CLK_AB_P_I" CLOCK_DEDICATED_ROUTE = FALSE;
-NET "ADC_CLK_AB_N_I" CLOCK_DEDICATED_ROUTE = FALSE;
 
 ################################################################################
 # FMC signals (FMC150 on ML605, LPC site)
@@ -162,57 +160,59 @@ NET "TXENABLE_O" LOC="B33";
 # Clock Constraints
 ################################################################################
 NET "adc_clk_ab_n_i" TNM_NET = adc_clk_ab_n_i;
-TIMESPEC TS_adc_clk_ab_n_i = PERIOD "adc_clk_ab_n_i" 61.44 MHz HIGH 50%;
+TIMESPEC TS_adc_clk_ab_n_i = PERIOD "adc_clk_ab_n_i" 16.276 ns HIGH 50%;
+#TIMESPEC TS_adc_clk_ab_n_i = PERIOD "adc_clk_ab_n_i" 61.44 MHz HIGH 50%;
 #TIMESPEC TS_adc_clk_ab_n_i = PERIOD "adc_clk_ab_n_i" 122.88 MHz HIGH 50%;
 #TIMESPEC TS_adc_clk_ab_n_i = PERIOD "adc_clk_ab_n_i" 98.304 MHz HIGH 50%;
 NET "adc_clk_ab_p_i" TNM_NET = adc_clk_ab_p_i;
-TIMESPEC TS_adc_clk_ab_p_i = PERIOD "adc_clk_ab_p_i" 61.44 MHz HIGH 50%;
+TIMESPEC TS_adc_clk_ab_p_i = PERIOD "adc_clk_ab_p_i" 16.276 ns HIGH 50%;
+#TIMESPEC TS_adc_clk_ab_p_i = PERIOD "adc_clk_ab_p_i" 61.44 MHz HIGH 50%;
 #TIMESPEC TS_adc_clk_ab_p_i = PERIOD "adc_clk_ab_p_i" 122.88 MHz HIGH 50%;
 #TIMESPEC TS_adc_clk_ab_p_i = PERIOD "adc_clk_ab_p_i" 98.304 MHz HIGH 50%;
 
 ################################################################################
 # Timing Constraints
 ################################################################################
-INST "adc_cha_n_i<0>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<1>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<2>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<3>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<4>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<5>" TNM = TMN_fmc150_adc_cha_n_i;
-INST "adc_cha_n_i<6>" TNM = TMN_fmc150_adc_cha_n_i;
-TIMEGRP "TMN_fmc150_adc_cha_n_i" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_n_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_cha_n_i" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_n_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_cha_n_i" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_n_i" RISING;
-INST "adc_cha_p_i<0>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<1>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<2>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<3>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<4>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<5>" TNM = TMN_fmc150_adc_cha_p_i;
-INST "adc_cha_p_i<6>" TNM = TMN_fmc150_adc_cha_p_i;
-TIMEGRP "TMN_fmc150_adc_cha_p_i" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_p_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_cha_p_i" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_p_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_cha_p_i" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_p_i" RISING;
-INST "adc_chb_n_i<0>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<1>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<2>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<3>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<4>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<5>" TNM = TMN_fmc150_adc_chb_n_i;
-INST "adc_chb_n_i<6>" TNM = TMN_fmc150_adc_chb_n_i;
-TIMEGRP "TMN_fmc150_adc_chb_n_i" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_n_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_chb_n_i" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_n_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_chb_n_i" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_n_i" RISING;
-INST "adc_chb_p_i<0>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<1>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<2>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<3>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<4>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<5>" TNM = TMN_fmc150_adc_chb_p_i;
-INST "adc_chb_p_i<6>" TNM = TMN_fmc150_adc_chb_p_i;
-TIMEGRP "TMN_fmc150_adc_chb_p_i" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_p_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_chb_p_i" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_p_i" RISING;
-#TIMEGRP "TMN_fmc150_adc_chb_p_i" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_p_i" RISING;
+INST "adc_cha_n_i<0>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<1>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<2>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<3>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<4>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<5>" TNM = TMN_fmc150_adc_cha_n;
+INST "adc_cha_n_i<6>" TNM = TMN_fmc150_adc_cha_n;
+TIMEGRP "TMN_fmc150_adc_cha_n" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_n_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_cha_n" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_n_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_cha_n" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_n_i" RISING;
+INST "adc_cha_p_i<0>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<1>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<2>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<3>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<4>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<5>" TNM = TMN_fmc150_adc_cha_p;
+INST "adc_cha_p_i<6>" TNM = TMN_fmc150_adc_cha_p;
+TIMEGRP "TMN_fmc150_adc_cha_p" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_p_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_cha_p" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_p_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_cha_p" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_p_i" RISING;
+INST "adc_chb_n_i<0>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<1>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<2>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<3>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<4>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<5>" TNM = TMN_fmc150_adc_chb_n;
+INST "adc_chb_n_i<6>" TNM = TMN_fmc150_adc_chb_n;
+TIMEGRP "TMN_fmc150_adc_chb_n" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_n_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_chb_n" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_n_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_chb_n" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_n_i" RISING;
+INST "adc_chb_p_i<0>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<1>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<2>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<3>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<4>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<5>" TNM = TMN_fmc150_adc_chb_p;
+INST "adc_chb_p_i<6>" TNM = TMN_fmc150_adc_chb_p;
+TIMEGRP "TMN_fmc150_adc_chb_p" OFFSET = IN 8.138 ns VALID 16.276 ns BEFORE "adc_clk_ab_p_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_chb_p" OFFSET = IN 4.069 ns VALID 8.138 ns BEFORE "adc_clk_ab_p_i" RISING;
+#TIMEGRP "TMN_fmc150_adc_chb_p" OFFSET = IN 5.087 ns VALID 10.173 ns BEFORE "adc_clk_ab_p_i" RISING;
 
 ################################################################################
 # Crossing Clock Domain FIFO Constraints
