@@ -54,8 +54,8 @@ Folder Hierarchy organization:
 |         via PCIe.
 |
 |-- embedded-sw (based on the original project by Alessandrio Rubini and others
-|    |            <http://www.ohwr.org/projects/wrpc-sw>):
-|    |   Embedded software that runs inside the LM32 softcore processor.
+     |            <http://www.ohwr.org/projects/wrpc-sw>):
+     |   Embedded software that runs inside the LM32 softcore processor.
      |  
      |-- arch: 
      |       Architecture specific code, like linker scripts and boot code.
