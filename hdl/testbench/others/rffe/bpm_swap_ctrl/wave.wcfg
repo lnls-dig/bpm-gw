@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="./isim.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="numeric_std" />
+            <top_module name="rf_ch_swap_tb" />
+            <top_module name="std_logic_1164" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/rf_ch_swap_tb/clk_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/rst_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst_i</obj_property>
+      <obj_property name="ObjectShortName">rst_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/en_swap_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">en_swap_i</obj_property>
+      <obj_property name="ObjectShortName">en_swap_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/mode_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">mode_i[1:0]</obj_property>
+      <obj_property name="ObjectShortName">mode_i[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/uut/s_ctrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_ctrl[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_ctrl[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/ctrl_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ctrl_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl_o[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/en_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">en_period</obj_property>
+      <obj_property name="ObjectShortName">en_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/uut/g_direct" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">g_direct[7:0]</obj_property>
+      <obj_property name="ObjectShortName">g_direct[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rf_ch_swap_tb/uut/g_inverted" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">g_inverted[7:0]</obj_property>
+      <obj_property name="ObjectShortName">g_inverted[7:0]</obj_property>
+   </wvobject>
+</wave_config>
