@@ -10,10 +10,10 @@ int dma_init(void)
   //if (BASE_DMA){
     // get first dma device found
     dma = (dma_t *)dma_devl->devices->base;//BASE_DMA;
-    return 1;
+    return 0;
   }
 
-  return 0;
+  return -1;
 }
 
 /* DMA user interface definition */

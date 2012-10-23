@@ -17,11 +17,11 @@ int uart_init(void)
     // get first uart device found
     uart = (uart_t *)uart_devl->devices->base;//BASE_UART;
 	  uart->BCR = CALC_BAUD(UART_BAUDRATE);
-    return 1;
+    return 0;
   }
 
   // return error in case none uart device found
-  return 0;
+  return -1;
 }
 
 void uart_write_byte(int b)
@@ -37,6 +37,10 @@ void uart_write_string(char *s)
 	while (*s)
 		uart_write_byte(*(s++));
 }
+
+// See http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html
+// for the __attribute__ explanation
+int puts(const char *s) __attribute__((alias("uart_write_string")));
 
 int uart_poll(void)
 {

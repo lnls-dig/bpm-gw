@@ -13,6 +13,7 @@ int mprintf(char const *format, ...);
 int uart_init(void);
 void uart_write_byte(int b);
 void uart_write_string(char *s);
+int puts(const char *s);
 int uart_poll(void);
 int uart_read_byte(void);
 

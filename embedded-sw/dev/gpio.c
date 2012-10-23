@@ -10,10 +10,10 @@ int gpio_init(void)
   //if (BASE_GPIO){
     // get first gpio device found
     gpio = (gpio_t *)gpio_devl->devices->base;//BASE_GPIO;
-    return 1;
+    return 0;
   }
 
-  return 0;
+  return -1;
 }
 
 /* GPIO user interface definition */

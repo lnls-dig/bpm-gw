@@ -27,7 +27,10 @@ CFLAGS =
 #-include $(CURDIR)/include/generated/autoconf.h
 
 CFLAGS_MEMMGR = -DDEBUG_MEMMGR_FATAL=1	\
-								-DDEBUG_MEMMGR_SUPPORT_STATS=1
+								-DDEBUG_MEMMGR_SUPPORT_STATS=1 \
+								-DPOOL_SIZE=1024
+
+CFLAGS_DEBUG = -DFMC150_DEBUG=1
 
 #CFLAGS_PTPD  = -ffreestanding \
 #	-DPTPD_FREESTANDING \
@@ -70,7 +73,7 @@ include dev/dev.mk
 include boards/boards.mk
 
 CFLAGS += $(CFLAGS_PLATFORM) $(CFLAGS_EB) $(INCLUDE_DIRS) \
-					$(CFLAGS_MEMMGR) -ffunction-sections -fdata-sections	\
+					$(CFLAGS_MEMMGR) $(CFLAGS_DEBUG) -ffunction-sections -fdata-sections	\
 					-Os
 
 LDFLAGS = $(LDFLAGS_PLATFORM) \
@@ -84,30 +87,40 @@ OUTPUT = dbe
 
 REVISION=$(shell git describe --dirty --always)
 
-all: tools dbe
+all: tools $(OUTPUT).ram $(OUTPUT).vhd
 
-dbe: $(OBJS)
-	echo "const char *build_revision = \"$(REVISION)\";" > revision.c
-	echo "const char *build_date = __DATE__ \" \" __TIME__;" >> revision.c
-	ln -sf ../boards/$(BOARD)/board.h include/board.h
-	$(CC) $(CFLAGS) -c revision.c
+.PHONY: all tools clean
+
+$(OUTPUT).elf: $(OBJS)
+	$(CC) $(CFLAGS) -DGIT_REVISION=\"$(REVISION)\" -c revision.c
 	$(SIZE) -t $(OBJS)
-	${CC} -o $(OUTPUT).elf revision.o $(OBJS) $(LDFLAGS)
-	${OBJCOPY} -O binary $(OUTPUT).elf $(OUTPUT).bin
+	${CC} -o $@ revision.o $(OBJS) $(LDFLAGS)
 	${OBJDUMP} -d $(OUTPUT).elf > $(OUTPUT)_disasm.S
-	cd tools; $(MAKE)
-	./tools/genraminit $(OUTPUT).bin 0 > $(OUTPUT).ram
-	./tools/genramvhd -s 90112 $(OUTPUT).bin > $(OUTPUT).vhd
+	$(SIZE) $@
+
+%.bin: %.elf
+	${OBJCOPY} -O binary $^ $@
+
+%.ram: tools %.bin
+	./tools/genraminit $*.bin 0 > $@
+
+%.vhd: tools %.bin
+	./tools/genramvhd -s 90112 $*.bin > $@
+
+#$(OBJS): include/board.h
+
+#include/board.h:
+#	ln -sf ../boards/$(BOARD)/board.h include/board.h
 
 clean:
-	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram
+	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S
 	make clean -C tools
 
 %.o:		%.c
-	$(CC) $(CFLAGS) $(INCLUDE_DIR) $(LIB_DIR) -c $^ -o $@
+	${CC} $(CFLAGS) $(INCLUDE_DIR) $(LIB_DIR) -c $*.c -o $@
 
 tools:
-	make -C tools
+	$(MAKE) -C tools
 
 # following targets from Makefile.kconfig
 #silentoldconfig:

@@ -3,17 +3,22 @@
 
 #include "hw/wb_fmc150.h"
 
+// Number of CDCE72010 registers
+#define CDCE72010_NUMREGS 13
+
+// Global definitions
+extern uint32_t cdce72010_regs[CDCE72010_NUMREGS];
+
 /* Type definitions */
 typedef volatile struct FMC150_WB fmc150_t;
 
 /* FMC150 user interface */
-void fmc150_init(void);
-/* DMA user interface */
-/*int read_is_addr(dma_t dma);
-void write_is_addr(dma_t dma, int addr);
-int read_strd(dma_t dma);
-void write_strd(dma_t dma, int strd);
-int read_tr_count(dma_t dma);*/
+int fmc150_init(void);
+int fmc150_poll(void);
+
+void update_fmc150_adc_delay(uint8_t adc_strobe_delay, uint8_t adc_cha_delay, uint8_t adc_chb_delay);
+int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data);
+int write_fmc150_register(uint32_t cs, uint32_t addr, uint32_t data);
       
 #endif
         

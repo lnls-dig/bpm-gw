@@ -1,6 +1,6 @@
 #include "gpio.h"     // GPIO device funtions
 #include "dma.h"      // DMA device functions
-//#include "fmc150.h"	// FMC150 device functions
+#include "fmc150.h"		// FMC150 device functions
 #include "uart.h"     // UART device functions
 #include "memmgr.h"   // memory pool functions
 #include "board.h"		// board definitions
@@ -12,11 +12,6 @@
 #define LED_DELAY (100000000/4/5)
 #define UART_DELAY (100000000/4/5)
 #define NUM_LED_BLINK 16
-
-static inline int delay(int x)
-{
-  while(x--) asm volatile("nop");
-}
 
 /* Placeholder for IRQ vector */
 void _irq_entry(void){}
@@ -30,25 +25,25 @@ int dbe_init(void)
   sdb_find_devices();
 
   // Initialize specific components
-  if(!uart_init())
-    return 0;
+  if(uart_init() == -1)
+    return -1;
 
-  if(!dma_init())
-    return 0;
+  if(dma_init() == -1)
+    return -1;
 
-  if(!gpio_init())
-    return 0;
+  if(gpio_init() == -1)
+    return -1;
 
-  return 1;
+  return 0;
 }
 
 void print_header(void)
 {
-	mprintf("--------------------------------------\n");
+	mprintf("---------------------------------------\n");
   mprintf("|       DBE EXAMPLE APPLICATION       |\n\n");
   mprintf("| This application aims to demostrate |\n");
   mprintf("| the capabilities of the DBE project |\n");
-	mprintf("--------------------------------------\n\n");
+	mprintf("---------------------------------------\n\n");
 }
 
 void memmgr_test(void)
@@ -56,20 +51,21 @@ void memmgr_test(void)
   /* Simple Memory Pool Test */
   char *p = (char *)memmgr_alloc(100*sizeof(char));
   
-  mprintf("------------------------------\n");
-  mprintf("      Memory pool test        \n");
+  mprintf("---------------------------------------\n");
+  mprintf("      		Memory pool test        			\n");
+	mprintf("---------------------------------------\n\n");
   
   if(p){
-    strncpy(p, "This is a dynamic allocated string with memory pool\n\n");
+    strcpy(p, "This is a dynamic allocated string with memory pool\n\n");
     mprintf(p);
-    mprintf("Test passed!\n");
+    mprintf("\tTest passed!\n");
   }
   else
-    mprintf("Test failed. Could not allocate memory!\n");
+    mprintf("\tTest failed. Could not allocate memory!\n");
     
   memmgr_print_stats();
       
-  mprintf("------------------------------\n");
+  mprintf("---------------------------------------\n");
   
   memmgr_free(p);
 }
@@ -79,10 +75,10 @@ void leds_test(void)
   /* Simple LEDs test */
   int i;
 
-  mprintf("------------------------------\n");
-  mprintf("          Led test            \n\n");
-  mprintf("testing LEDs...\n");
-  mprintf("------------------------------\n");
+  mprintf("---------------------------------------\n");
+  mprintf("\tLed test\n");
+  mprintf("---------------------------------------\n\n");
+  mprintf("\tTesting LEDs...\n");
 	/* Rotate the LEDs  */
 	for (i = 0; i < NUM_LED_BLINK; ++i){
 		// Set led at position i
@@ -107,8 +103,12 @@ void leds_test(void)
 
 void fmc150_test()
 {
-  
-  
+  mprintf("---------------------------------------\n");
+  mprintf("\tFMC150 test\n");
+  mprintf("---------------------------------------\n\n");
+	mprintf("\tTesting FMC150 CDCE72010 regs...\n");
+	init_cdce72010(); 
+	mprintf("Done!\n");
 }
 
 int main(void)
@@ -117,11 +117,11 @@ int main(void)
   char *p;
 
   // Board initialization
-  if(!board_init())
+  if(board_init() == -1)
     return -1;
 
   // General initialization
-  if(!dbe_init()){
+  if(dbe_init() == -1){
     mprintf("Error initializing DBE Board! Exiting...\n");
     return -1;
   }

@@ -15,4 +15,6 @@
 int board_init();
 int board_update();
 
+int delay(int x);
+
 #endif
