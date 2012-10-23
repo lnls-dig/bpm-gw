@@ -27,31 +27,3 @@ Modified hdl-make tool in order to allow simulation with ISim Xilinx Simulator
 
 hdl-make2:
   https://github.com/lerwys/hdl-make2
-
-===============================================
-
-This repository makes use of git submodules, located at 'ip_cores' folder:
-	ip_cores/general-cores
-	ip_cores/etherbone-core
-
-To clone the whole repository use the following command:
-
-	$ git clone --recursive git://github.com/lerwys/bpm-sw.git (read only)
-	or
-	$ git clone --recursive git@github.com:lerwys/bpm-sw.git (read+write)
-
-For older versions of Git (<1.6.5), use the following:
-
-	$ git clone git://github.com/lerwys/bpm-sw.git
-	or
-	$ git clone git@github.com:lerwys/bpm-sw.git
-
-	$ git submodule init
-	$ git submodule update
-
-To update each submodule within this project use:
-
-	$ git submodule foreach git rebase origin master
-
-===============================================
-
