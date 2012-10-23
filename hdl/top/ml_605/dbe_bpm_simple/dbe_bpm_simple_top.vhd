@@ -400,7 +400,7 @@ begin
   cmp_xwb_fmc150 : xwb_fmc150
   generic map(
     g_interface_mode                => CLASSIC,
-    g_address_granularity           => WORD
+    g_address_granularity           => BYTE
     --g_packet_size                           => 32,
     --g_sim                                   => 0
   )     

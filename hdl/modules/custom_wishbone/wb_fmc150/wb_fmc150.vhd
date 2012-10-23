@@ -32,8 +32,6 @@ use work.fmc150_wbgen2_pkg.all;
 -- Reset Synch
 use work.custom_common_pkg.all;
 
--- FIX. Test SOF and EOF in wb_source_out at the same sycle. Should work.
-
 entity wb_fmc150 is
 generic
 (
