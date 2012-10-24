@@ -2,6 +2,10 @@
 #include "inttypes.h"
 #include "fmc150.h"
 
+// Delay in number of processor clock cycles
+#define SPI_DELAY 300
+#define SPI_BUSY_MAX_TRIES 10
+
 /* Register values for cdce72010 */
 uint32_t cdce72010_regs[CDCE72010_NUMREGS] = {
 //internal reference clock. Default config.
@@ -159,7 +163,7 @@ void update_fmc150_adc_delay(uint8_t adc_strobe_delay, uint8_t adc_cha_delay, ui
 }
 
 /* Check if 150 is busy */
-int fmc150_poll(void)
+int fmc150_spi_busy(void)
 {
   return fmc150->FLGS_OUT & FMC150_FLGS_OUT_SPI_BUSY;  
 }
@@ -167,7 +171,7 @@ int fmc150_poll(void)
 int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data)
 {
 	// Test if SPI interface is busy
-	if (!fmc150_poll())
+	if (fmc150_spi_busy())
 		return -1;
 
 	// Set bit to read from SPI
@@ -179,8 +183,8 @@ int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data)
 	// Toggle chipselect
 	fmc150->CS ^= cs;	
 
-	// Sleeps 10*4 processor cycles. Is that enough? */
-	delay(10);
+	// Sleeps SPI_DELAY*4 processor cycles. Is that enough? */
+	delay(SPI_DELAY);
 
 	// Get data from register
 	*data = fmc150->DATA_OUT;
@@ -191,7 +195,7 @@ int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data)
 int write_fmc150_register(uint32_t cs, uint32_t addr, uint32_t data)
 {
 	// Test if SPI interface is busy
-	if (!fmc150_poll())
+	if (fmc150_spi_busy())
 		return -1;
 
 	// Set bit to write from SPI
@@ -209,33 +213,62 @@ int write_fmc150_register(uint32_t cs, uint32_t addr, uint32_t data)
 	return 0;
 }
 
+static int fmc150_spi_busy_loop()
+{
+	int i = 0;
+
+	for(i = 0; i < SPI_BUSY_MAX_TRIES; ++i){
+		if(!fmc150_spi_busy())
+			break;
+
+		delay(SPI_DELAY);
+	}
+
+	// return error (-1) if max tries reached
+	if (i == SPI_BUSY_MAX_TRIES)		
+		return -1;
+	else
+		return 0;
+}
+
 int init_cdce72010()
 {
 	int i;
 	uint32_t reg;
 
 	/* Write regs to cdce72010 statically */
-	for(i = 0; i < CDCE72010_NUMREGS; ++i){
-		if (!fmc150_poll())
+  // Do not write the last register, as it is Read-only
+	for(i = 0; i < CDCE72010_NUMREGS-1; ++i){
+		if(fmc150_spi_busy_loop() < 0){
+			dbg_print("init_cdce72010: max SPI tries excceded!\n");
 			return -1;
+		}
 
-//#ifdef FMC150_DEBUG
-		mprintf("init_cdce72010: writing data: %08X at byte offset: %08X\n", cdce72010_regs[i], i*0x4);
-//#endif
+		dbg_print("init_cdce72010: writing data: 0x%x at register addr: 0x%x\n", cdce72010_regs[i], i);
 		
-		// This core is byte addressed , hence the i*0x4
-		write_fmc150_register(FMC150_CS_CDCE72010, i*0x4, cdce72010_regs[i]);
+		// The CDCE72010 chip word addressed , hence the i
+		write_fmc150_register(FMC150_CS_CDCE72010, i, cdce72010_regs[i]);
 
-//#ifdef FMC150_DEBUG
 		// Do a write-read cycle in order to ensure that we wrote the correct value
-		delay(20);
+    delay(SPI_DELAY);
 
-		if (!fmc150_poll())
-			return -1;
+		if(fmc150_spi_busy_loop() < 0){
+      dbg_print("init_cdce72010: max SPI tries excceded!\n");
+      return -1;
+		}
 
-		read_fmc150_register(FMC150_CS_CDCE72010, i*0x4, &reg);
-		mprintf("init_cdce72010: reading data: %08X at byte offset: %08X\n", reg, i*0x4);
-//#endif
+		// The CDCE72010 chip word addressed , hence the i
+    read_fmc150_register(FMC150_CS_CDCE72010, i, &reg);
+    dbg_print("init_cdce72010: reading data: 0x%x at register addr: 0x%x\n", reg, i);
+
+		// Check if value written is the same of the value just read
+    if(cdce72010_regs[i] != reg){
+      dbg_print("init_cdce72010: error: data written (0x%x) != data read (0x%x)!\n",
+        cdce72010_regs[i], reg);
+      return -1;
+    }
+
+		delay(SPI_DELAY);
 	}
 
 	return 0;

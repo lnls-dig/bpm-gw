@@ -56,8 +56,11 @@ void memmgr_print_stats()
 {
     #ifdef DEBUG_MEMMGR_SUPPORT_STATS
     mem_header_t* p;
-
-    mprintf("---- Memory manager stats ----\n");
+    
+    mprintf("-------------------------------------------\n");
+    mprintf("|          Memory manager stats           |\n");
+    mprintf("-------------------------------------------\n\n");
+    
     mprintf("pool: free_pos = %u (%u bytes left)\n\n", 
             pool_free_pos, POOL_SIZE - pool_free_pos);
 
@@ -89,7 +92,6 @@ void memmgr_print_stats()
         mprintf("empty\n");
     }
     
-    mprintf("------------------------------\n");
     #endif // DEBUG_MEMMGR_SUPPORT_STATS
 }
 

@@ -179,9 +179,10 @@ static struct dev_list *find_device_all(unsigned int devid)
 
 void sdb_print_devices(void)
 {
-	mprintf("------- SDB memory map -------\n");
+  mprintf("-------------------------------------------\n");
+  mprintf("|             SDB memory map              |\n");
+	mprintf("-------------------------------------------\n\n");
 	print_devices_deep(0, SDB_ADDRESS);
-	mprintf("------------------------------\n");
 }
 
 void sdb_find_devices(void)
