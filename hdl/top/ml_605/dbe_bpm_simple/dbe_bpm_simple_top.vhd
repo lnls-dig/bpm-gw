@@ -127,7 +127,10 @@ architecture rtl of dbe_bpm_simple_top is
 	constant c_buttons_num_pins 	    : natural := 8;
 
 	-- Counter width. It willl count up to 2^32 clock cycles
-	constant c_counter_width		: natural := 32;
+	constant c_counter_width		      : natural := 32;
+  
+  -- Number of reset clock cycles (FF)
+  constant c_button_rst_width       : natural := 255;
 
 	-- WB SDB (Self describing bus) layout
 	constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
@@ -167,6 +170,14 @@ architecture rtl of dbe_bpm_simple_top is
 	signal locked 					          : std_logic;
 	signal clk_sys_rstn 			        : std_logic;
   signal clk_adc_rstn 			        : std_logic;
+  
+  signal rst_button_sys_pp			    : std_logic;
+  signal rst_button_adc_pp			    : std_logic;
+  
+  signal rst_button_sys             : std_logic;
+  signal rst_button_adc             : std_logic;
+  signal rst_button_sys_n           : std_logic;
+  signal rst_button_adc_n           : std_logic;
 
 	-- Only one clock domain
 	signal reset_clks 				        : std_logic_vector(1 downto 0);
@@ -197,9 +208,9 @@ architecture rtl of dbe_bpm_simple_top is
 	--signal r_reset : std_logic;
 
 	-- Counter signal
-	signal s_counter				      : unsigned(c_counter_width-1 downto 0);
+	signal s_counter				          : unsigned(c_counter_width-1 downto 0);
 	-- 100MHz period or 1 second
-	constant s_counter_full			  : integer := 100000000;
+	constant s_counter_full			      : integer := 100000000;
   
   -- FMC150 signals
   signal clk_adc                    : std_logic;
@@ -288,7 +299,7 @@ begin
 		sys_clk_o					              => sys_clk_gen
 	);
 
-	-- Obtain core locking!
+	-- Obtain core locking and generate necessary clocks
 	cmp_sys_pll_inst : sys_pll
 	port map (
 		rst_i						                => '0',
@@ -310,11 +321,59 @@ begin
 		clks_i     					            => reset_clks,
 		rstn_o     					            => reset_rstn
 	);
+  
+  -- Generate button reset synchronous to each clock domain
+  -- Detect button positive edge of clk_sys
+  cmp_button_sys_ffs : gc_sync_ffs 
+  port map (
+    clk_i                           => clk_sys,
+    rst_n_i                         => '1',
+    data_i                          => sys_rst_button_i,
+    ppulse_o                        => rst_button_sys_pp
+  );
+  
+  -- Detect button positive edge of clk_adc
+  cmp_button_adc_ffs : gc_sync_ffs 
+  port map (
+    clk_i                           => clk_adc,
+    rst_n_i                         => '1',
+    data_i                          => sys_rst_button_i,
+    ppulse_o                        => rst_button_adc_pp
+  );
+  
+  -- Generate the reset signal based on positive edge 
+  -- of synched sys_rst_button_i
+  cmp_button_sys_rst : gc_extend_pulse   
+  generic map (
+    g_width                         => c_button_rst_width
+  )
+  port map(
+    clk_i                           => clk_sys,
+    rst_n_i                         => '1',
+    pulse_i                         => rst_button_sys_pp,
+    extended_o                      => rst_button_sys
+  );
+  
+  -- Generate the reset signal based on positive edge 
+  -- of synched sys_rst_button_i
+  cmp_button_adc_rst : gc_extend_pulse   
+  generic map (
+    g_width                         => c_button_rst_width
+  )
+  port map(
+    clk_i                           => clk_adc,
+    rst_n_i                         => '1',
+    pulse_i                         => rst_button_adc_pp,
+    extended_o                      => rst_button_adc
+  );
+  
+  rst_button_sys_n                  <= not rst_button_sys;
+  rst_button_adc_n                  <= not rst_button_adc;
 
-	reset_clks(0)  <= clk_sys;
-  reset_clks(1)  <= clk_adc;
-	clk_sys_rstn   <= reset_rstn(0);
-  clk_adc_rstn   <= reset_rstn(1);
+	reset_clks(0)                     <= clk_sys;
+  reset_clks(1)                     <= clk_adc;
+	clk_sys_rstn                      <= reset_rstn(0) and rst_button_sys_n;
+  clk_adc_rstn                      <= reset_rstn(1) and rst_button_adc_n;
   
   -- The top-most Wishbone B.4 crossbar
 	cmp_interconnect : xwb_sdb_crossbar
@@ -338,7 +397,7 @@ begin
 	);
   
 	-- The LM32 is master 0+1
-	lm32_rstn  <= clk_sys_rstn and not sys_rst_button_i;
+	lm32_rstn                         <= clk_sys_rstn;
 
 	cmp_lm32 : xwb_lm32
 	generic map(
@@ -645,12 +704,14 @@ begin
   -- FMC150 master control output (slave input) control signals
   -- Partial decoding. Thus, only the LSB part of address matters to
   -- a specific slave core
-  TRIG_ILA0_2(10 downto 0)          <= cbar_master_o(3).cyc &
+  TRIG_ILA0_2(16 downto 0)          <= cbar_master_o(3).cyc &
                                       cbar_master_o(3).stb &
-                                      cbar_master_o(3).adr(3 downto 0) &
+                                      cbar_master_o(3).adr(9 downto 0) &
                                       cbar_master_o(3).sel &
                                       cbar_master_o(3).we;
-  TRIG_ILA0_2(31 downto 11)         <= (others => '0');
+                                      
+  --TRIG_ILA0_2(31 downto 11)         <= (others => '0');
+  TRIG_ILA0_2(31 downto 17)         <= (others => '0');
                                       
   -- FMC150 master control input (slave output) control signals
   TRIG_ILA0_3(4 downto 0)           <= cbar_master_i(3).ack &
@@ -682,7 +743,7 @@ begin
                                       wbs_src_o(0).adr(3 downto 0) &
                                       wbs_src_o(0).sel &
                                       wbs_src_o(0).we;
-  TRIG_ILA1_1(31 downto 11)         <= (others => '0');
+  TRIG_ILA1_1(31 downto 11)       <= (others => '0');
                                       
   -- FMC150 master control input (slave output) stream signals
   TRIG_ILA1_2(3 downto 0)         <= wbs_src_i(0).ack &
@@ -690,4 +751,5 @@ begin
                                       wbs_src_i(0).rty &
                                       wbs_src_i(0).stall;
   TRIG_ILA1_2(31 downto 4)        <= (others => '0');
+  TRIG_ILA1_3(31 downto 0)        <= (others => '0');
 end rtl;

@@ -401,7 +401,7 @@ begin
         rst_n_i                             => rst_n_i,
         master_i                            => wb_out,
         master_o                            => wb_in,
-        sl_adr_i                            => resized_addr,
+        sl_adr_i                            => wb_adr_i,--resized_addr,
         sl_dat_i                            => wb_dat_i,
         sl_sel_i                            => wb_sel_i,
         sl_cyc_i                            => wb_cyc_i,
@@ -412,9 +412,9 @@ begin
         sl_stall_o                          => wb_stall_o
     );
     
-    resized_addr(2 downto 0)                <= wb_adr_i(2 downto 0);
-    resized_addr(c_wishbone_address_width-1 downto 3) 
-                                            <= (others => '0');
+    --resized_addr(2 downto 0)                <= wb_adr_i(2 downto 0);
+    --resized_addr(c_wishbone_address_width-1 downto 3) 
+    --                                       <= (others => '0');
     
     -- Register Bank / Wishbone Interface
     cmp_wb_fmc150_port : wb_fmc150_port 
