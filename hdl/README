@@ -27,3 +27,20 @@ Modified hdl-make tool in order to allow simulation with ISim Xilinx Simulator
 
 hdl-make2:
   https://github.com/lerwys/hdl-make2
+
+===================================
+PCIe firmware
+===================================
+All cores were updated & regenerated with a ISE 14.3 software.
+Synthesis and simulation were tested with ISE 14.3.
+
+1. Synthesis
+   Go to syn/pcie/ directory. Run 'hdlmake' followed with 'make'.
+
+2. Simulation
+   Go to testbench/pcie/ directory.
+Set HOST_PLATFORM, in case of Linux it's either 'lin' or 'lin64'.
+Run 'hdlmake'.
+In generated Makefile, set TOP_MODULE to 'tf64_pcie_axi'.
+Run 'make && make fuse'.
+To get ISim window, run generated simulation with 'isim_proj -gui'

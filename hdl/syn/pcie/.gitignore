@@ -1,0 +1,8 @@
+#editor temporary files
+*~
+#html reports
+*.html
+#generated bitstream & report
+*.bit
+*.bgn
+

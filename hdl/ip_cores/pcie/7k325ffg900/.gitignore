@@ -1,0 +1,15 @@
+#editor temporary files
+*~
+#Coregen stuff
+*.log
+*.txt
+*.asy
+*.vho
+*.gise
+*.tcl
+*.ncf
+*.sym
+*/example_design/
+*/implement/
+*/simulation/
+
