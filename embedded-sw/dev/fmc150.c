@@ -145,8 +145,8 @@ fmc150_t *fmc150;
 int fmc150_init(void)
 {
   if (fmc150_devl->devices){
-  //if (BASE_GPIO){
-    // get first gpio device found
+  //if (BASE_FMC150){
+    // get first fmc150 device found
     fmc150 = (fmc150_t *)fmc150_devl->devices->base;//BASE_FMC150;
     return 0;
   }
@@ -231,6 +231,8 @@ static int fmc150_spi_busy_loop()
 		return 0;
 }
 
+// TODO: implement a register structure and associate permissions
+// (RO, RW, WO)
 int init_cdce72010()
 {
 	int i;
@@ -238,7 +240,7 @@ int init_cdce72010()
 
 	/* Write regs to cdce72010 statically */
   // Do not write the last register, as it is Read-only
-	for(i = 0; i < CDCE72010_NUMREGS-1; ++i){
+	for(i = 0; i < CDCE72010_NUMREGS; ++i){
 		if(fmc150_spi_busy_loop() < 0){
 			dbg_print("init_cdce72010: max SPI tries excceded!\n");
 			return -1;
