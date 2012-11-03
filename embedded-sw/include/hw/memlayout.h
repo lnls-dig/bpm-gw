@@ -10,19 +10,19 @@
 //#define NUM_GPIO_DEVS 2
 
 /* Simple device nodes for supporting various instances
-  of the same component */
+	of the same component */
 struct dev_node{
-  unsigned char *base;
-  struct dev_node *next;
+	unsigned char *base;
+	struct dev_node *next;
 };
 
 /* List of devices of the same kind (same devid).
-  Note the use of flexible array member. Space is allocated
-  only when instanciated */
+	Note the use of flexible array member. Space is allocated
+	only when instanciated */
 struct dev_list{
-  unsigned int devid;
-  //unsigned int size;
-  struct dev_node *devices;
+	unsigned int devid;
+	//unsigned int size;
+	struct dev_node *devices;
 };
 
 /* Automate the address peripheral discover. use SDB */
@@ -44,7 +44,7 @@ void sdb_find_devices(void);
 void sdb_print_devices(void);
 
 /*************************/
-/*    Base addresses     */
+/*		Base addresses		 */
 /*************************/
 
 /* RAM Definitions */

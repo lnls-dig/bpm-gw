@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 	while (!feof(f)) {
 		fread(x, 1, 4, f);
 		printf("write %x %02X%02X%02X%02X\n", i++, x[0], x[1], x[2],
-		       x[3]);
+					 x[3]);
 	}
 
 	for (; i < n;) {

@@ -37,7 +37,7 @@ void ipv4_init(const char *if_name)
 	saddr.family = PTPD_SOCK_RAW_ETHERNET;
 
 	ipv4_socket = ptpd_netif_create_socket(PTPD_SOCK_RAW_ETHERNET,
-					       0, &saddr);
+								 0, &saddr);
 }
 
 static int bootp_retry = 0;
@@ -50,7 +50,7 @@ void ipv4_poll(void)
 	int len;
 
 	if ((len = ptpd_netif_recvfrom(ipv4_socket, &addr,
-				       buf, sizeof(buf), 0)) > 0) {
+							 buf, sizeof(buf), 0)) > 0) {
 		if (needIP)
 			process_bootp(buf, len - 14);
 
@@ -78,7 +78,7 @@ void getIP(unsigned char *IP)
 void setIP(unsigned char *IP)
 {
 	volatile unsigned int *eb_ip =
-	    (unsigned int *)(BASE_ETHERBONE_CFG + EB_IPV4);
+			(unsigned int *)(BASE_ETHERBONE_CFG + EB_IPV4);
 	unsigned int ip;
 
 	memcpy(myIP, IP, 4);

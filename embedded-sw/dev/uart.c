@@ -1,27 +1,26 @@
 #include <inttypes.h>
 
-#include "board.h"    // Board definitions: UART device structure
-#include "uart.h"     // UART device functions
+#include "board.h"		// Board definitions: UART device structure
+#include "uart.h"		 // UART device functions
 
 #define CALC_BAUD(baudrate) \
-    ( ((( (unsigned long long)baudrate * 8ULL) << (16 - 7)) + \
-      (CPU_CLOCK >> 8)) / (CPU_CLOCK >> 7) )
+		( ((( (unsigned long long)baudrate * 8ULL) << (16 - 7)) + \
+			(CPU_CLOCK >> 8)) / (CPU_CLOCK >> 7) )
 
 // Global UART handler.
 uart_t *uart;
 
 int uart_init(void)
 {
-  if (uart_devl->devices){
-  //if (BASE_UART){
-    // get first uart device found
-    uart = (uart_t *)uart_devl->devices->base;//BASE_UART;
-	  uart->BCR = CALC_BAUD(UART_BAUDRATE);
-    return 0;
-  }
+	if (uart_devl->devices){
+		// get first uart device found
+		uart = (uart_t *)uart_devl->devices->base;//BASE_UART;
+		uart->BCR = CALC_BAUD(UART_BAUDRATE);
+		return 0;
+	}
 
-  // return error in case none uart device found
-  return -1;
+	// return error in case none uart device found
+	return -1;
 }
 
 void uart_write_byte(int b)

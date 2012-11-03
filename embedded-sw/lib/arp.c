@@ -28,7 +28,7 @@ void arp_init(const char *if_name)
 	saddr.family = PTPD_SOCK_RAW_ETHERNET;
 
 	arp_socket = ptpd_netif_create_socket(PTPD_SOCK_RAW_ETHERNET,
-					      0, &saddr);
+								0, &saddr);
 }
 
 static int process_arp(uint8_t * buf, int len)
@@ -43,7 +43,7 @@ static int process_arp(uint8_t * buf, int len)
 	/* Is it ARP request targetting our IP? */
 	getIP(myIP);
 	if (buf[ARP_OPER + 0] != 0 ||
-	    buf[ARP_OPER + 1] != 1 || memcmp(buf + ARP_TPA, myIP, 4))
+			buf[ARP_OPER + 1] != 1 || memcmp(buf + ARP_TPA, myIP, 4))
 		return 0;
 
 	memcpy(hisMAC, buf + ARP_SHA, 6);
@@ -82,7 +82,7 @@ void arp_poll(void)
 		return;		/* can't do ARP w/o an address... */
 
 	if ((len = ptpd_netif_recvfrom(arp_socket,
-				       &addr, buf, sizeof(buf), 0)) > 0)
+							 &addr, buf, sizeof(buf), 0)) > 0)
 		if ((len = process_arp(buf, len)) > 0)
 			ptpd_netif_sendto(arp_socket, &addr, buf, len, 0);
 }

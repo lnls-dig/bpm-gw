@@ -1,10 +1,10 @@
 #include "hw/memlayout.h"
-#include "memmgr.h"       // malloc clone (memory pool)
+#include "memmgr.h"			 // malloc clone (memory pool)
 
 #define SDB_INTERCONNET 0x00
-#define SDB_DEVICE      0x01
-#define SDB_BRIDGE      0x02
-#define SDB_EMPTY       0xFF
+#define SDB_DEVICE			0x01
+#define SDB_BRIDGE			0x02
+#define SDB_EMPTY			 0xFF
 
 typedef struct pair64 {
 	uint32_t high;
@@ -60,7 +60,7 @@ typedef union sdb_record {
 } sdb_record_t;
 
 static unsigned char *find_device_deep(unsigned int base, unsigned int sdb,
-				       unsigned int devid)
+							 unsigned int devid)
 {
 	sdb_record_t *record = (sdb_record_t *) sdb;
 	int records = record->interconnect.sdb_records;
@@ -69,16 +69,16 @@ static unsigned char *find_device_deep(unsigned int base, unsigned int sdb,
 	for (i = 0; i < records; ++i, ++record) {
 		if (record->empty.record_type == SDB_BRIDGE) {
 			unsigned char *out =
-			    find_device_deep(base +
-					     record->bridge.sdb_component.
-					     addr_first.low,
-					     record->bridge.sdb_child.low,
-					     devid);
+					find_device_deep(base +
+							 record->bridge.sdb_component.
+							 addr_first.low,
+							 record->bridge.sdb_child.low,
+							 devid);
 			if (out)
 				return out;
 		}
 		if (record->empty.record_type == SDB_DEVICE &&
-		    record->device.sdb_component.product.device_id == devid) {
+				record->device.sdb_component.product.device_id == devid) {
 			break;
 		}
 	}
@@ -91,53 +91,48 @@ static unsigned char *find_device_deep(unsigned int base, unsigned int sdb,
 }
 
 static void find_device_deep_all_rec(struct dev_node **dev, unsigned int base, 
-                unsigned int sdb, unsigned int devid)
+								unsigned int sdb, unsigned int devid)
 {
-  sdb_record_t *record = (sdb_record_t *) sdb;
+	sdb_record_t *record = (sdb_record_t *) sdb;
 	int records = record->interconnect.sdb_records;
 	int i;
-  // Number of devices found
-  //int devices_count = 0;
 
 	for (i = 0; i < records; ++i, ++record) {
 		if (record->empty.record_type == SDB_BRIDGE) {
-      find_device_deep_all_rec(dev, base +
-          record->bridge.sdb_component.
-		      addr_first.low,
-          record->bridge.sdb_child.low,
-          devid);
-			//if (base_dev_addr)
-			//	return base_dev_addr;
+			find_device_deep_all_rec(dev, base +
+					record->bridge.sdb_component.
+					addr_first.low,
+					record->bridge.sdb_child.low,
+					devid);
 		}
 		if (record->empty.record_type == SDB_DEVICE &&
-		    record->device.sdb_component.product.device_id == devid) {
-			//break;
-      // Alloc new node device
-      *dev = (struct dev_node *)memmgr_alloc(sizeof(struct dev_node));
-      (*dev)->base = (unsigned char *)(base +
-				 record->device.sdb_component.addr_first.low);
-      // Ensure a null pointer on end of list
-      (*dev)->next = 0;
-      // Pass new node address
-      dev = &(*dev)->next;
+				record->device.sdb_component.product.device_id == devid) {
+			// Alloc new node device
+			*dev = (struct dev_node *)memmgr_alloc(sizeof(struct dev_node));
+			(*dev)->base = (unsigned char *)(base +
+					record->device.sdb_component.addr_first.low);
+			// Ensure a null pointer on end of list
+			(*dev)->next = 0;
+			// Pass new node address
+			dev = &(*dev)->next;
 		}
 	}
 }
 
 static struct dev_list *find_device_deep_all(unsigned int base, unsigned int sdb,
-				       unsigned int devid)
+							 unsigned int devid)
 {
-  // Device structure list
-  struct dev_list *dev = (struct dev_list *)memmgr_alloc(sizeof(struct dev_list));
+	// Device structure list
+	struct dev_list *dev = (struct dev_list *)memmgr_alloc(sizeof(struct dev_list));
 
-  // Initialize structure
-  dev->devid = devid;
-  dev->devices = 0;
+	// Initialize structure
+	dev->devid = devid;
+	dev->devices = 0;
 
-  // Fill device list with the appropriate nodes
-  find_device_deep_all_rec(&(dev->devices), base, sdb, devid);
+	// Fill device list with the appropriate nodes
+	find_device_deep_all_rec(&(dev->devices), base, sdb, devid);
 
-  return dev;
+	return dev;
 }
 
 static void print_devices_deep(unsigned int base, unsigned int sdb)
@@ -150,9 +145,9 @@ static void print_devices_deep(unsigned int base, unsigned int sdb)
 	for (i = 0; i < records; ++i, ++record) {
 		if (record->empty.record_type == SDB_BRIDGE)
 			print_devices_deep(base +
-					   record->bridge.sdb_component.
-					   addr_first.low,
-					   record->bridge.sdb_child.low);
+						 record->bridge.sdb_component.
+						 addr_first.low,
+						 record->bridge.sdb_child.low);
 
 		if (record->empty.record_type != SDB_DEVICE)
 			continue;
@@ -179,34 +174,25 @@ static struct dev_list *find_device_all(unsigned int devid)
 
 void sdb_print_devices(void)
 {
-  mprintf("-------------------------------------------\n");
-  mprintf("|             SDB memory map              |\n");
+	mprintf("-------------------------------------------\n");
+	mprintf("|						 SDB memory map							|\n");
 	mprintf("-------------------------------------------\n\n");
 	print_devices_deep(0, SDB_ADDRESS);
 }
 
 void sdb_find_devices(void)
 {
-  //BASE_DMA = find_device(0xcababa56);
-  //BASE_DMA = (unsigned char *)0x20000400;
-  //BASE_FMA150 = find_device(0xf8c150c1);
-  //BASE_FMA150 = (unsigned char *)0x20000500;
-  //BASE_UART = find_device(0x8a5719ae);
-  //BASE_UART = (unsigned char *)0x20000600;
-  //BASE_GPIO = find_device(0x35aa6b95);
-  //BASE_GPIO = (unsigned char *)0x20000700;
+	//BASE_DMA = find_device(0xcababa56);
+	//BASE_DMA = (unsigned char *)0x20000400;
+	//BASE_FMA150 = find_device(0xf8c150c1);
+	//BASE_FMA150 = (unsigned char *)0x20000500;
+	//BASE_UART = find_device(0x8a5719ae);
+	//BASE_UART = (unsigned char *)0x20000600;
+	//BASE_GPIO = find_device(0x35aa6b95);
+	//BASE_GPIO = (unsigned char *)0x20000700;
 
-  dma_devl = find_device_all(0xcababa56);
-  fmc150_devl = find_device_all(0xf8c150c1);
-  uart_devl = find_device_all(0x8a5719ae);
-  gpio_devl = find_device_all(0x35aa6b95);
-
-	//BASE_MINIC =         find_device(0xab28633a);
-	//BASE_EP =            find_device(0x650c2d4f);
-	//BASE_SOFTPLL =       find_device(0x65158dc0);
-	//BASE_PPS_GEN =       find_device(0xde0d8ced);
-	//BASE_SYSCON =        find_device(0xff07fc47);
-	//BASE_UART =          find_device(0xe2d13d04);
-	//BASE_ONEWIRE =       find_device(0x779c5443);
-	//BASE_ETHERBONE_CFG = find_device(0x68202b22);
+	dma_devl = find_device_all(0xcababa56);
+	fmc150_devl = find_device_all(0xf8c150c1);
+	uart_devl = find_device_all(0x8a5719ae);
+	gpio_devl = find_device_all(0x35aa6b95);
 }

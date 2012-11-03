@@ -4,7 +4,7 @@
 #include <hw/memlayout.h>
 
 /****************************/
-/*    General Definitions   */
+/*		General Definitions	 */
 /****************************/
 /* CPU Clock frequency in hertz */
 #define CPU_CLOCK 100000000ULL

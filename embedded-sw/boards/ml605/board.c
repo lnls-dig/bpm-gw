@@ -4,18 +4,18 @@
 
 int board_init()
 {
-  return 0;
+	return 0;
 }
 
 int board_update()
 {
-  return 0;
+	return 0;
 }
 
-/* 	Each loop iteration takes 4 cycles.
-* 	It runs at 100MHz (LM32 clock).
+/*	 Each loop iteration takes 4 cycles.
+*	 It runs at 100MHz (LM32 clock).
 */
 int delay(int x)
 {
-  while(x--) asm volatile("nop");
+	while(x--) asm volatile("nop");
 }

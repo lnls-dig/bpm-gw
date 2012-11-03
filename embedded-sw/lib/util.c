@@ -7,15 +7,15 @@
 
 /* cut from libc sources */
 
-#define 	YEAR0   1900
-#define 	EPOCH_YR   1970
-#define 	SECS_DAY   (24L * 60L * 60L)
-#define 	LEAPYEAR(year)   (!((year) % 4) && (((year) % 100) || !((year) % 400)))
-#define 	YEARSIZE(year)   (LEAPYEAR(year) ? 366 : 365)
-#define 	FIRSTSUNDAY(timp)   (((timp)->tm_yday - (timp)->tm_wday + 420) % 7)
-#define 	FIRSTDAYOF(timp)   (((timp)->tm_wday - (timp)->tm_yday + 420) % 7)
-#define 	TIME_MAX   ULONG_MAX
-#define 	ABB_LEN   3
+#define	 YEAR0	 1900
+#define	 EPOCH_YR	 1970
+#define	 SECS_DAY	 (24L * 60L * 60L)
+#define	 LEAPYEAR(year)	 (!((year) % 4) && (((year) % 100) || !((year) % 400)))
+#define	 YEARSIZE(year)	 (LEAPYEAR(year) ? 366 : 365)
+#define	 FIRSTSUNDAY(timp)	 (((timp)->tm_yday - (timp)->tm_wday + 420) % 7)
+#define	 FIRSTDAYOF(timp)	 (((timp)->tm_wday - (timp)->tm_yday + 420) % 7)
+#define	 TIME_MAX	 ULONG_MAX
+#define	 ABB_LEN	 3
 
 static const char *_days[] = {
 	"Sun", "Mon", "Tue", "Wed",

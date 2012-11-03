@@ -58,7 +58,7 @@ uint32_t cdce72010_regs[CDCE72010_NUMREGS] = {
 // DDS = 3.072MHz -> Phase increment = 2048d
 	0x682C0290,
 	0x68840041,
-	0x83860002, 	//divide by 5
+	0x83860002,	 //divide by 5
 	//0x83840002,		//divide by 4
 	0x68400003,
 	0xE9800004,
@@ -144,28 +144,27 @@ fmc150_t *fmc150;
 
 int fmc150_init(void)
 {
-  if (fmc150_devl->devices){
-  //if (BASE_FMC150){
-    // get first fmc150 device found
-    fmc150 = (fmc150_t *)fmc150_devl->devices->base;//BASE_FMC150;
-    return 0;
-  }
+	if (fmc150_devl->devices){
+		// get first gpio device found
+		fmc150 = (fmc150_t *)fmc150_devl->devices->base;//BASE_FMC150;
+		return 0;
+	}
 
-  return -1; 
+	return -1; 
 }
 
 void update_fmc150_adc_delay(uint8_t adc_strobe_delay, uint8_t adc_cha_delay, uint8_t adc_chb_delay)
 {
-  fmc150->ADC_DLY = (uint32_t) FMC150_ADC_DLY_STR_W(adc_strobe_delay) + 
+	fmc150->ADC_DLY = (uint32_t) FMC150_ADC_DLY_STR_W(adc_strobe_delay) + 
 										(uint32_t) FMC150_ADC_DLY_CHA_W(adc_cha_delay) + 
 										(uint32_t) FMC150_ADC_DLY_CHB_W(adc_chb_delay); 
-  fmc150->FLGS_PULSE = 0x1;
+	fmc150->FLGS_PULSE = 0x1;
 }
 
 /* Check if 150 is busy */
 int fmc150_spi_busy(void)
 {
-  return fmc150->FLGS_OUT & FMC150_FLGS_OUT_SPI_BUSY;  
+	return fmc150->FLGS_OUT & FMC150_FLGS_OUT_SPI_BUSY;	
 }
 
 int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data)
@@ -239,8 +238,8 @@ int init_cdce72010()
 	uint32_t reg;
 
 	/* Write regs to cdce72010 statically */
-  // Do not write the last register, as it is Read-only
-	for(i = 0; i < CDCE72010_NUMREGS; ++i){
+	// Do not write the last register, as it is Read-only
+	for(i = 0; i < CDCE72010_NUMREGS-1; ++i){
 		if(fmc150_spi_busy_loop() < 0){
 			dbg_print("init_cdce72010: max SPI tries excceded!\n");
 			return -1;
@@ -248,27 +247,27 @@ int init_cdce72010()
 
 		dbg_print("init_cdce72010: writing data: 0x%x at register addr: 0x%x\n", cdce72010_regs[i], i);
 		
-		// The CDCE72010 chip word addressed , hence the i
+		// The CDCE72010 chip word addressed , hence the "i" addressing index
 		write_fmc150_register(FMC150_CS_CDCE72010, i, cdce72010_regs[i]);
 
 		// Do a write-read cycle in order to ensure that we wrote the correct value
-    delay(SPI_DELAY);
+		delay(SPI_DELAY);
 
 		if(fmc150_spi_busy_loop() < 0){
-      dbg_print("init_cdce72010: max SPI tries excceded!\n");
-      return -1;
+			dbg_print("init_cdce72010: max SPI tries excceded!\n");
+			return -1;
 		}
 
-		// The CDCE72010 chip word addressed , hence the i
-    read_fmc150_register(FMC150_CS_CDCE72010, i, &reg);
-    dbg_print("init_cdce72010: reading data: 0x%x at register addr: 0x%x\n", reg, i);
+		// The CDCE72010 chip word addressed , hence the "i" addressing index
+		read_fmc150_register(FMC150_CS_CDCE72010, i, &reg);
+		dbg_print("init_cdce72010: reading data: 0x%x at register addr: 0x%x\n", reg, i);
 
 		// Check if value written is the same of the value just read
-    if(cdce72010_regs[i] != reg){
-      dbg_print("init_cdce72010: error: data written (0x%x) != data read (0x%x)!\n",
-        cdce72010_regs[i], reg);
-      return -1;
-    }
+		if(cdce72010_regs[i] != reg){
+			dbg_print("init_cdce72010: error: data written (0x%x) != data read (0x%x)!\n",
+				cdce72010_regs[i], reg);
+			return -1;
+		}
 
 		delay(SPI_DELAY);
 	}

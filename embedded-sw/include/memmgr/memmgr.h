@@ -2,7 +2,7 @@
 // Statically-allocated memory manager
 //
 // by Eli Bendersky (eliben@gmail.com)
-//  
+//	
 // This code is in the public domain.
 //----------------------------------------------------------------
 // Modified by Lucas Russo <lucas.russo@lnls.br>
@@ -30,41 +30,41 @@
 // memory manager:
 //
 // DEBUG_MEMMGR_FATAL
-//    Allow printing out a message when allocations fail
+//		Allow printing out a message when allocations fail
 //
 // DEBUG_MEMMGR_SUPPORT_STATS
-//    Allow printing out of stats in function 
-//    memmgr_print_stats When this is disabled, 
-//    memmgr_print_stats does nothing.
+//		Allow printing out of stats in function 
+//		memmgr_print_stats When this is disabled, 
+//		memmgr_print_stats does nothing.
 //
 // Note that in production code on an embedded system 
 // you'll probably want to keep those undefined, because
 // they cause printf to be called.
 //
 // POOL_SIZE
-//    Size of the pool for new allocations. This is 
-//    effectively the heap size of the application, and can 
-//    be changed in accordance with the available memory 
-//    resources.
+//		Size of the pool for new allocations. This is 
+//		effectively the heap size of the application, and can 
+//		be changed in accordance with the available memory 
+//		resources.
 //
 // MIN_POOL_ALLOC_QUANTAS
-//    Internally, the memory manager allocates memory in
-//    quantas roughly the size of two ulong objects. To
-//    minimize pool fragmentation in case of multiple allocations
-//    and deallocations, it is advisable to not allocate
-//    blocks that are too small.
-//    This flag sets the minimal ammount of quantas for 
-//    an allocation. If the size of a ulong is 4 and you
-//    set this flag to 16, the minimal size of an allocation
-//    will be 4 * 2 * 16 = 128 bytes
-//    If you have a lot of small allocations, keep this value
-//    low to conserve memory. If you have mostly large 
-//    allocations, it is best to make it higher, to avoid 
-//    fragmentation.
+//		Internally, the memory manager allocates memory in
+//		quantas roughly the size of two ulong objects. To
+//		minimize pool fragmentation in case of multiple allocations
+//		and deallocations, it is advisable to not allocate
+//		blocks that are too small.
+//		This flag sets the minimal ammount of quantas for 
+//		an allocation. If the size of a ulong is 4 and you
+//		set this flag to 16, the minimal size of an allocation
+//		will be 4 * 2 * 16 = 128 bytes
+//		If you have a lot of small allocations, keep this value
+//		low to conserve memory. If you have mostly large 
+//		allocations, it is best to make it higher, to avoid 
+//		fragmentation.
 //
 // Notes:
 // 1. This memory manager is *not thread safe*. Use it only
-//    for single thread/task applications.
+//		for single thread/task applications.
 // 
 
 //#ifndef DEBUG_MEMMGR_FATAL

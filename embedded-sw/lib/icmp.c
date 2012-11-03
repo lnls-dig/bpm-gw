@@ -68,8 +68,8 @@ int process_icmp(uint8_t * buf, int len)
 	// No need to copy payload; we modified things in-place
 
 	sum =
-	    ipv4_checksum((unsigned short *)(buf + ICMP_TYPE),
-			  (hisBodyLen + 4 + 1) / 2);
+			ipv4_checksum((unsigned short *)(buf + ICMP_TYPE),
+				(hisBodyLen + 4 + 1) / 2);
 	buf[ICMP_CHECKSUM + 0] = sum >> 8;
 	buf[ICMP_CHECKSUM + 1] = sum & 0xff;
 
