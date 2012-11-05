@@ -1,0 +1,95 @@
+#######################################################################
+# This are constraints specific to Curtis Wright FMC516 board
+#######################################################################
+
+#######################################################################
+# Data Constraints (ISLA216P)
+#######################################################################
+
+NET "adc_ch0_p_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_0_Input;
+NET "adc_ch0_n_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_0_Input;
+.
+.
+.
+
+NET "adc_ch1_p_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_1_Input;
+NET "adc_ch1_n_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_1_Input;
+.
+.
+.
+
+NET "adc_ch2_p_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_2_Input;
+NET "adc_ch2_n_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_2_Input;
+.
+.
+.
+
+NET "adc_ch3_p_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_3_Input;
+NET "adc_ch3_n_i[0]" LOC = ??? | IOSTANDARD = LVDS_25 | TNM = ADC_DATA_3_Input;
+.
+.
+.
+
+#######################################################################
+# ADC Clock Constraints (ISLA216P)
+#######################################################################
+ 
+NET "adc_clk_ch0_p_i" TNM_NET = ADC_CLK_0_P;
+TIMESPEC ADC_CLK_0_P = PERIOD "ADC_CLK_0_P" 250 MHz HIGH 50 %;
+
+NET "adc_clk_ch1_p_i" TNM_NET = ADC_CLK_1_P;
+TIMESPEC ADC_CLK_1_P = PERIOD "ADC_CLK_1_P" 250 MHz HIGH 50 %;
+
+NET "adc_clk_ch2_p_i" TNM_NET = ADC_CLK_2_P;
+TIMESPEC ADC_CLK_2_P = PERIOD "ADC_CLK_2_P" 250 MHz HIGH 50 %;
+
+NET "adc_clk_ch3_p_i" TNM_NET = ADC_CLK_3_P;
+TIMESPEC ADC_CLK_3_P = PERIOD "ADC_CLK_3_P" 250 MHz HIGH 50 %;
+
+#######################################################################
+# ADC Data <-> Clocks Constraints (ISLA216P)
+#
+# From the data sheet (page 11)
+#
+#Output Clock to Data Propagation Delay (LVDS Mode): 
+# tdc Rising/Falling Edge -0.1 (min) 0.16 (typ) 0.5 (max) ns
+#
+#Constraint recommended by an Intersil Employee
+#
+#TIMEGRP "datain18_p_group" OFFSET = IN -200 ps VALID 1200 ps BEFORE "clkin18_p" RISING;
+#
+#This is setup for a 250MHz clock (4ns period).  The ISLA216P25 specifies
+# tDC as -0.1 to +0.5ps.  The constraint adds an additional 100ps to each side
+# to account for potential skew due to the pcb.  So, the tDC ends up being -0.2
+# to 0.6ps.  The value after IN in the constraint equal tDC min (-200ps). 
+# The  value after VALID = Period/2 + tDC min – tDC max (4000ps/2 + -200ps –
+# 600ps = 1200ps).  (The period is divided by two because the data is DDR.)
+#
+#
+#         OFFSET
+#        +---+ 
+#
+#             --------      --------       
+# CLK         |      |      |      |      |
+#                    --------      --------
+#        --------------------------------
+# DATA   |      ||      ||      ||      |
+#        --------------------------------
+#
+#        +------+        
+#         VALID
+#
+#######################################################################
+
+TIMEGRP "ADC_DATA_0_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_0_P" RISING;
+TIMEGRP "ADC_DATA_0_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_0_P" FALLING;
+
+TIMEGRP "ADC_DATA_1_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_1_P" RISING;
+TIMEGRP "ADC_DATA_1_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_1_P" FALLING;
+
+TIMEGRP "ADC_DATA_2_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_2_P" RISING;
+TIMEGRP "ADC_DATA_2_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_2_P" FALLING;
+
+TIMEGRP "ADC_DATA_3_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_3_P" RISING;
+TIMEGRP "ADC_DATA_3_Input" OFFSET = IN -200 ps VALID 1200 ps BEFORE "ADC_CLK_3_P" FALLING;
+

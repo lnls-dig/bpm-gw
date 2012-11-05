@@ -5,6 +5,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.wishbone_pkg.all;
+
 package wb_stream_pkg is
   -- Must be at least 2 bits wide
   constant c_wbs_address_width      : integer := 4;
@@ -71,6 +74,8 @@ package wb_stream_pkg is
 
   function f_marshall_wbs_status (stat  : t_wbs_status_reg) return std_logic_vector;
   function f_unmarshall_wbs_status(stat : std_logic_vector) return t_wbs_status_reg;
+  
+  function f_packet_size(packet_size : natural) return natural;
   
   constant cc_dummy_wbs_addr : std_logic_vector(c_wbs_address_width-1 downto 0):=
     (others => 'X');
@@ -157,5 +162,21 @@ package body wb_stream_pkg is
     tmp.match_class := stat(15 downto 8);
     return tmp;
   end;
+       
+  function f_packet_size(packet_size : natural)
+    return natural
+  is
+    variable result  : natural;
+  begin
+    result := f_ceil_log2(packet_size);
+    
+    -- Avoid returning 0 as the couter must have a
+    -- positive value (>1)
+    if result = 0 then
+      result := 1;      
+    end if;
+    
+    return result;
+  end f_packet_size;
 
 end wb_stream_pkg;

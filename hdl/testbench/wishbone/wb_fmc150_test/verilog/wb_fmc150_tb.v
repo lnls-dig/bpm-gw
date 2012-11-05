@@ -133,7 +133,7 @@ module wb_fmc150_tb;
   
   // FMC150 device under test. Classic wishbone interface as the Wishbone Master
   // Interface does not talk PIPELINED cycles yet.
-  wb_fmc150  #(.g_sim(1)) cmp_wb_fmc150_dut
+  wb_fmc150  #(.g_packet_size(2), .g_sim(1)) cmp_wb_fmc150_dut
   (
     .rst_n_i                                  (rstn),                  
     .clk_sys_i                                (s_clk_sys),                   

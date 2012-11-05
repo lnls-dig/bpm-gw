@@ -1,19 +1,18 @@
 ------------------------------------------------------------------------------
--- Title      : Wishbone FMC150
--- Project    : DBE-BPM
+-- Title      : Wishbone FMC150 ADC interface
 ------------------------------------------------------------------------------
 -- Author     : Lucas Maziero Russo
--- Company    : LNLS-DIG
--- Created    : 2012-10-17
--- Last update: yyyy-mm-dd
+-- Company    : CNPEM LNLS-DIG
 -- Platform   : FPGA-generic
--- Standard   : VHDL'87
 -------------------------------------------------------------------------------
 -- Description: Wishbone interface with FMC150 ADC board from 4DSP.
 -------------------------------------------------------------------------------
+-- Copyright (c) 2012 CNPEM
+-- Licensed under GNU Lesser General Public License (LGPL) v3.0
+-------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author          Description
--- 2012-10-17  1.0      lucas.russo        Created
+-- Date        Version  Author                Description
+-- 2012-10-17  1.0      lucas.russo           Created 
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -151,10 +150,10 @@ port
 end wb_fmc150;
 
 architecture rtl of wb_fmc150 is
-
+    
     -- Constants
-    constant c_counter_size                 : natural := f_ceil_log2(g_packet_size);
-
+    constant c_counter_size                 : natural := f_packet_size(g_packet_size);
+    
     -----------------------------------------------------------------------------------------------
     -- IP / user logic interface signals
     -----------------------------------------------------------------------------------------------
@@ -287,6 +286,8 @@ architecture rtl of wb_fmc150 is
         mmcm_adc_locked_o                   : out std_logic
     );
     end component;
+
+
     
 begin
     -----------------------------------------------------------------------------------------------
