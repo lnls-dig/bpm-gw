@@ -26,10 +26,10 @@ use unisim.vcomponents.all;
 library work;
 use work.genram_pkg.all;
 
-entity fmc516_adc_iface is
+entity fmc516_adc_data is
 generic
 (
-    g_num_adc_bits                          : natural := 16;
+    g_adc_bits                          		: natural := 16;
     g_default_adc_data_delay               	: natural := 0;
     g_sim                                   : integer := 0
 );
@@ -43,8 +43,8 @@ port
     -----------------------------
     
     -- DDR ADC data channels.
-    adc_data_p_i														: in std_logic_vector(g_num_adc_bits/2 - 1 downto 0);
-    adc_data_n_i														: in std_logic_vector(g_num_adc_bits/2 - 1 downto 0);
+    adc_data_p_i														: in std_logic_vector(g_adc_bits/2 - 1 downto 0);
+    adc_data_n_i														: in std_logic_vector(g_adc_bits/2 - 1 downto 0);
 
     -----------------------------
     -- Input Clocks from fmc516_adc_clk signals
@@ -64,25 +64,26 @@ port
     -----------------------------
     -- ADC output signals.
     -----------------------------
-    adc_data_o															: out std_logic_vector(g_num_adc_bits-1 downto 0);
-    adc_clk_o																: out std_logic;
+    adc_data_o															: out std_logic_vector(g_adc_bits-1 downto 0);
+    adc_data_valid_o												: out std_logic;
+    adc_clk_o																: out std_logic
 );
 
-end fmc516_adc_iface;
+end fmc516_adc_data;
 
-architecture rtl of fmc516_adc_iface is
+architecture rtl of fmc516_adc_data is
 
-  alias c_num_adc_bits                      is g_num_adc_bits;
+  alias c_adc_bits                      		is g_adc_bits;
   -- Small fifo depth. This FIFO is intended just to cross phase-mismatched
   -- clock domains (BUFR -> BUFG), but frequency locked
   constant async_fifo_size									: natural := 4;
 
   -- ADC data signals
-  signal adc_data_ddr_ibufds								: std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-  signal adc_data_ddr_dly										: std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-  signal adc_data_sdr												: std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal adc_data_ff												: std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal adc_data_bufg_sync									: std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal adc_data_ddr_ibufds								: std_logic_vector(c_adc_bits/2 - 1 downto 0);
+  signal adc_data_ddr_dly										: std_logic_vector(c_adc_bits/2 - 1 downto 0);
+  signal adc_data_sdr												: std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_ff												: std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_bufg_sync									: std_logic_vector(c_adc_bits-1 downto 0);
 
   -- FIFO signals
   signal adc_fifo_full											: std_logic;
@@ -99,7 +100,7 @@ begin
   -- ADC data signal datapath
   -----------------------------
 
-  gen_adc_data : for i in 0 to (c_num_adc_bits/2)-1 generate
+  gen_adc_data : for i in 0 to (c_adc_bits/2)-1 generate
     -- Diferential Clock Buffers for adc input
     cmp_ibufds_adc_data : ibufds
     generic map
@@ -152,7 +153,7 @@ begin
 			q2 																		=> adc_data_sdr(2*i+1),
 			c  																		=> adc_clk_bufio_i,
 			ce 																		=> '1',
-			d  																		=> s_adc_ddr_dly(i),
+			d  																		=> adc_data_ddr_dly(i),
 			r  																		=> '0',
 			s  																		=> '0'
 		);
@@ -175,8 +176,8 @@ begin
 	-- a clock domain crossing.
 	cmp_adc_data_async_fifo	: generic_async_fifo
   generic map(
-    g_data_width 														=> c_num_adc_bits,
-    g_size       														=> async_fifo_size,
+    g_data_width 														=> c_adc_bits,
+    g_size       														=> async_fifo_size
 	)
   port map(
 		rst_n_i 																=> sys_rst_n_i,

@@ -60,15 +60,14 @@ port
 	-----------------------------
 	-- MMCM general signals
 	-----------------------------
-	mmcm_adc_locked_o                       	: out std_logic;
+	mmcm_adc_locked_o                       	: out std_logic
 );
 
-end fmc516_adc_iface;
+end fmc516_adc_clk;
 
 architecture rtl of fmc516_adc_clk is
 
   constant c_num_adc_channels               : natural := 4;
-  alias c_num_adc_bits                      is g_num_adc_bits;
 
   -- Clock and reset signals
   signal adc_clk_ibufgds                		: std_logic;
