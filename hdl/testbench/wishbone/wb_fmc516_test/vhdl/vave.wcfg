@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="./isim.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="custom_common_pkg" />
+            <top_module name="custom_wishbone_pkg" />
+            <top_module name="fifo_generator_v6_1_comp" />
+            <top_module name="fmc150_wbgen2_pkg" />
+            <top_module name="genram_pkg" />
+            <top_module name="math_real" />
+            <top_module name="numeric_std" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_signed" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="textio" />
+            <top_module name="vcomponents" />
+            <top_module name="vital_primitives" />
+            <top_module name="vital_timing" />
+            <top_module name="vpkg" />
+            <top_module name="wb_fmc516_tb" />
+            <top_module name="wb_stream_pkg" />
+            <top_module name="wishbone_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/wb_fmc516_tb/g_end_simulation" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">g_end_simulation</obj_property>
+      <obj_property name="ObjectShortName">g_end_simulation</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_100mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_100mhz</obj_property>
+      <obj_property name="ObjectShortName">clk_100mhz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_200mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_200mhz</obj_property>
+      <obj_property name="ObjectShortName">clk_200mhz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_sys" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_sys</obj_property>
+      <obj_property name="ObjectShortName">clk_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/sys_rst_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_rst_n</obj_property>
+      <obj_property name="ObjectShortName">sys_rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wb_slv_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wb_slv_in</obj_property>
+      <obj_property name="ObjectShortName">wb_slv_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wb_slv_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wb_slv_out</obj_property>
+      <obj_property name="ObjectShortName">wb_slv_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wbs_src_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_src_in</obj_property>
+      <obj_property name="ObjectShortName">wbs_src_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wbs_src_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_src_out</obj_property>
+      <obj_property name="ObjectShortName">wbs_src_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_clk</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_ch0_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_ch0_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_ch0_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_ch1_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_ch1_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_ch1_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_ch2_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_ch2_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_ch2_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_ch3_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_ch3_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_ch3_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/s_sim_adc_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sim_adc_valid</obj_property>
+      <obj_property name="ObjectShortName">s_sim_adc_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/c_100mhz_clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">c_100mhz_clk_period</obj_property>
+      <obj_property name="ObjectShortName">c_100mhz_clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/c_200mhz_clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">c_200mhz_clk_period</obj_property>
+      <obj_property name="ObjectShortName">c_200mhz_clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/c_sim_adc_clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">c_sim_adc_clk_period</obj_property>
+      <obj_property name="ObjectShortName">c_sim_adc_clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/c_sim_time" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">c_sim_time</obj_property>
+      <obj_property name="ObjectShortName">c_sim_time</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cc_zero_bit" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cc_zero_bit</obj_property>
+      <obj_property name="ObjectShortName">cc_zero_bit</obj_property>
+   </wvobject>
+</wave_config>
