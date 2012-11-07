@@ -8,6 +8,18 @@ use work.wb_stream_pkg.all;
 package custom_wishbone_pkg is
 
   --------------------------------------------------------------------
+  -- Type definitions
+  --------------------------------------------------------------------
+  -- generic type 
+  type t_clock_values_array is array (natural range <>) of real;
+
+  --------------------------------------------------------------------
+  -- Constants
+  --------------------------------------------------------------------
+  constant dummy_clocks : t_clock_values_array(3 downto 0) :=
+          (3 => 0.0, 2 => 0.0, 1 => 4.0, 0 => 0.0);
+
+  --------------------------------------------------------------------
   -- Components
   --------------------------------------------------------------------
     
@@ -19,7 +31,7 @@ package custom_wishbone_pkg is
     -- Asynchronous Reset signal        
     arst_n_i						   	                  : in std_logic;
                 
-        -- Write Domain Clock               
+    -- Write Domain Clock               
     dma_clk_i             		                : in  std_logic;
     --dma_valid_o             		   	        : out std_logic;
     --dma_data_o              		   	        : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
@@ -329,6 +341,7 @@ package custom_wishbone_pkg is
   (
     g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
+    g_adc_clock_period_values               : t_clock_values_array(3 downto 0);
     g_use_clock_chains                      : std_logic_vector(3 downto 0) := "0010";
     g_use_data_chains                       : std_logic_vector(3 downto 0) := "1111";    
     g_packet_size                           : natural := 32;
@@ -338,7 +351,6 @@ package custom_wishbone_pkg is
   (
     sys_clk_i                               : in std_logic;
     sys_rst_n_i                             : in std_logic;
-    --clk_100Mhz_i                            : in std_logic;
     sys_clk_200Mhz_i                        : in std_logic;
     
     -----------------------------
@@ -356,18 +368,6 @@ package custom_wishbone_pkg is
     wb_err_o                                : out std_logic;
     wb_rty_o                                : out std_logic;
     wb_stall_o                              : out std_logic;
-    
-    -----------------------------
-    -- Simulation Only ports
-    -----------------------------
-    sim_adc_clk_i                           : in std_logic;
-    --sim_adc_clk2x_i                         : in std_logic;
-                
-    sim_adc_ch0_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch1_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch2_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch3_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_data_valid_i                    : in std_logic;
     
     -----------------------------
     -- External ports

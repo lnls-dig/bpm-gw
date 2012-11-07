@@ -29,44 +29,45 @@ use work.genram_pkg.all;
 entity fmc516_adc_data is
 generic
 (
-    g_adc_bits                          		: natural := 16;
-    g_default_adc_data_delay               	: natural := 0;
-    g_sim                                   : integer := 0
+  g_adc_bits                          		  : natural := 16;
+  g_default_adc_data_delay               	  : natural := 0;
+  g_sim                                     : integer := 0
 );
 port
 (
-    sys_clk_i                               : in std_logic;
-    sys_rst_n_i                             : in std_logic;
-    
-    -----------------------------
-    -- External ports
-    -----------------------------
-    
-    -- DDR ADC data channels.
-    adc_data_p_i														: in std_logic_vector(g_adc_bits/2 - 1 downto 0);
-    adc_data_n_i														: in std_logic_vector(g_adc_bits/2 - 1 downto 0);
-
-    -----------------------------
-    -- Input Clocks from fmc516_adc_clk signals
-    -----------------------------
-		adc_clk_bufio_i                        	: in std_logic;
-		adc_clk_bufr_i                        	: in std_logic;    
-		adc_clk_bufg_i                        	: in std_logic;
-		
-    -----------------------------
-    -- ADC Data Delay signals.
-    -----------------------------
-    -- Pulse this to update the delay value
-    adc_data_dly_pulse_i										: in std_logic;
-    adc_data_dly_val_i  										: in std_logic_vector(4 downto 0);
-    adc_data_dly_val_o  										: out std_logic_vector(4 downto 0);
-    
-    -----------------------------
-    -- ADC output signals.
-    -----------------------------
-    adc_data_o															: out std_logic_vector(g_adc_bits-1 downto 0);
-    adc_data_valid_o												: out std_logic;
-    adc_clk_o																: out std_logic
+  sys_clk_i                                 : in std_logic;
+  sys_rst_n_i                               : in std_logic;
+  
+  -----------------------------
+  -- External ports
+  -----------------------------
+  
+  -- DDR ADC data channels.
+  adc_data_p_i														  : in std_logic_vector(g_adc_bits/2 - 1 downto 0);
+  adc_data_n_i														  : in std_logic_vector(g_adc_bits/2 - 1 downto 0);
+  
+  -----------------------------
+  -- Input Clocks from fmc516_adc_clk signals
+  -----------------------------
+  adc_clk_bufio_i                        	  : in std_logic;
+  adc_clk_bufr_i                        	  : in std_logic;    
+  adc_clk_bufg_i                        	  : in std_logic;
+  adc_clk_bufg_rst_n_i										  : in std_logic;
+  
+  -----------------------------
+  -- ADC Data Delay signals.
+  -----------------------------
+  -- Pulse this to update the delay value
+  adc_data_dly_pulse_i										  : in std_logic;
+  adc_data_dly_val_i  										  : in std_logic_vector(4 downto 0);
+  adc_data_dly_val_o  										  : out std_logic_vector(4 downto 0);
+  
+  -----------------------------
+  -- ADC output signals.
+  -----------------------------
+  adc_data_o															  : out std_logic_vector(g_adc_bits-1 downto 0);
+  adc_data_valid_o												  : out std_logic;
+  adc_clk_o																  : out std_logic
 );
 
 end fmc516_adc_data;
@@ -79,21 +80,24 @@ architecture rtl of fmc516_adc_data is
   constant async_fifo_size									: natural := 4;
 
   -- ADC data signals
-  signal adc_data_ddr_ibufds								: std_logic_vector(c_adc_bits/2 - 1 downto 0);
-  signal adc_data_ddr_dly										: std_logic_vector(c_adc_bits/2 - 1 downto 0);
-  signal adc_data_sdr												: std_logic_vector(c_adc_bits-1 downto 0);
-  signal adc_data_ff												: std_logic_vector(c_adc_bits-1 downto 0);
-  signal adc_data_bufg_sync									: std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_ddr_ibufds                : std_logic_vector(c_adc_bits/2 - 1 downto 0);
+  signal adc_data_ddr_dly                   : std_logic_vector(c_adc_bits/2 - 1 downto 0);
+  signal adc_data_sdr                       : std_logic_vector(c_adc_bits-1 downto 0);
+  -- (* IOB = TRUE *)
+  --attribute IOB : string
+  --attribute IOB of adc_data_ff: signal is "TRUE";
+  signal adc_data_ff                        : std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_bufg_sync                 : std_logic_vector(c_adc_bits-1 downto 0);
 
   -- FIFO signals
-  signal adc_fifo_full											: std_logic;
-  signal adc_fifo_wr												: std_logic;
-  signal adc_fifo_rd												: std_logic;
-  signal adc_fifo_empty											: std_logic;
+  signal adc_fifo_full                      : std_logic;
+  signal adc_fifo_wr                        : std_logic;
+  signal adc_fifo_rd                        : std_logic;
+  signal adc_fifo_empty                     : std_logic;
 
 	-- Valid ADC signals
-	signal adc_data_valid											: std_logic;  
-	signal adc_data_valid_d1									: std_logic;
+	signal adc_data_valid                     : std_logic;  
+	signal adc_data_valid_d1                  : std_logic;
 begin
 
   -----------------------------
@@ -103,59 +107,53 @@ begin
   gen_adc_data : for i in 0 to (c_adc_bits/2)-1 generate
     -- Diferential Clock Buffers for adc input
     cmp_ibufds_adc_data : ibufds
-    generic map
-    (
-      IOSTANDARD                           	=> "LVDS_25",
+    generic map(
+      IOSTANDARD                            => "LVDS_25",
       DIFF_TERM                             => TRUE
     )
-    port map
-    (
-      i																			=> adc_data_p_i(i),
-      ib																		=> adc_data_n_i(i),
-      o																			=> adc_data_ddr_ibufds(i)
+    port map(
+      i	                                    => adc_data_p_i(i),
+      ib                                    => adc_data_n_i(i),
+      o	                                    => adc_data_ddr_ibufds(i)
     );
 
     cmp_iodelay_adc_data : iodelaye1
-    generic map
-    (
-			IDELAY_TYPE														=> "VAR_LOADABLE",
-			IDELAY_VALUE													=> g_default_adc_data_delay,
-			SIGNAL_PATTERN												=> "DATA",
-			DELAY_SRC															=> "I"
+    generic map(
+			IDELAY_TYPE                           => "VAR_LOADABLE",
+			IDELAY_VALUE                          => g_default_adc_data_delay,
+			SIGNAL_PATTERN                        => "DATA",
+			DELAY_SRC                             => "I"
     )	
-    port map	
-    (	
-			idatain     													=> adc_data_ddr_ibufds(i),
-			dataout     													=> adc_data_ddr_dly(i),
-			c           													=> sys_clk_i,
-			ce          													=> '0',
-			inc         													=> '0',
-			datain      													=> '0',
-			odatain     													=> '0',
-			clkin       													=> '0',
-			rst         													=> adc_data_dly_pulse_i,
-			cntvaluein  													=> adc_data_dly_val_i,
-			cntvalueout 													=> adc_data_dly_val_o,
-			cinvctrl    													=> '0',
-			t           													=> '1'
+    port map	(	
+			idatain                               => adc_data_ddr_ibufds(i),
+			dataout                               => adc_data_ddr_dly(i),
+			c                                     => sys_clk_i,
+			ce                                    => '0',
+			inc                                   => '0',
+			datain                                => '0',
+			odatain                               => '0',
+			clkin                                 => '0',
+			rst                                   => adc_data_dly_pulse_i,
+			cntvaluein                            => adc_data_dly_val_i,
+			cntvalueout                           => adc_data_dly_val_o,
+			cinvctrl                              => '0',
+			t                                     => '1'
     );
 
 		-- DDR to SDR. This component is clocked with BUFIO clock for
 		-- maximum performance
 		cmp_iddr : iddr
-		generic map
-		(
-			DDR_CLK_EDGE 													=> "SAME_EDGE_PIPELINED"
+		generic map(
+			DDR_CLK_EDGE                          => "SAME_EDGE_PIPELINED"
 		)
-		port map
-		(
-			q1 																		=> adc_data_sdr(2*i),
-			q2 																		=> adc_data_sdr(2*i+1),
-			c  																		=> adc_clk_bufio_i,
-			ce 																		=> '1',
-			d  																		=> adc_data_ddr_dly(i),
-			r  																		=> '0',
-			s  																		=> '0'
+		port map(
+			q1                                    => adc_data_sdr(2*i),
+			q2                                    => adc_data_sdr(2*i+1),
+			c                                     => adc_clk_bufio_i,
+			ce                                    => '1',
+			d                                     => adc_data_ddr_dly(i),
+			r                                     => '0',
+			s                                     => '0'
 		);
   
   end generate;
@@ -202,19 +200,19 @@ begin
   -- Just delay the valid adc_fifo_rd signal as the fifo takes
   -- one clock cycle, after it has registered adc_fifo_rd, to output
   -- data on q_o port
-  p_gen_valid : process (adc_clk_bufg_i, sys_rst_n_i)
+  p_gen_valid : process (adc_clk_bufg_i, adc_clk_bufg_rst_n_i)
   begin
-		if sys_rst_n_i = '0' then
-			adc_data_valid <= '0';
-		elsif rising_edge (adc_clk_bufg_i) then
-			adc_data_valid <= adc_fifo_rd;
-			adc_data_valid_d1 <= adc_data_valid;
-		end if;
-	end process;
+    if sys_rst_n_i = '0' then
+      adc_data_valid <= '0';
+    elsif rising_edge (adc_clk_bufg_i) then
+      adc_data_valid <= adc_fifo_rd;
+      adc_data_valid_d1 <= adc_data_valid;
+    end if;
+  end process;
 
   -- Convenient signal for adc capture in later FPGA logic
-	adc_clk_o 																<= adc_clk_bufg_i;
-	adc_data_o																<= adc_data_bufg_sync;
-	adc_data_valid_o													<= adc_data_valid_d1;
+  adc_clk_o 																<= adc_clk_bufg_i;
+  adc_data_o																<= adc_data_bufg_sync;
+  adc_data_valid_o													<= adc_data_valid_d1;
 
 end rtl;

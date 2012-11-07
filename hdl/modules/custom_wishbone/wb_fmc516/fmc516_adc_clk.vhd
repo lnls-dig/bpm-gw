@@ -26,8 +26,10 @@ use unisim.vcomponents.all;
 entity fmc516_adc_clk is
 generic
 (
-	g_default_adc_clk_delay                		: natural := 0;
-	g_sim                                   	: integer := 0
+	-- This genric must be specified
+  g_adc_clock_period												: real;
+  g_default_adc_clk_delay                		: natural := 0;
+  g_sim                                   	: integer := 0
 );
 port
 (
@@ -93,13 +95,11 @@ begin
   -- Diferential Clock Buffers (IBUFGDS = IBUFDS)
   -- IBUFGDS is just a different name for IBUFDS
   cmp_ibufgds_clk : ibufgds
-  generic map
-  (
+  generic map(
     IOSTANDARD                              => "LVDS_25",
     DIFF_TERM                               => TRUE
   )
-  port map
-  (
+  port map(
     i  																			=> adc_clk_p_i,
     ib 																			=> adc_clk_n_i,
     o  																			=> adc_clk_ibufgds
@@ -115,17 +115,15 @@ begin
   --
   -- HIGH_PERFORMANCE_MODE = TRUE reduces the output
   -- jitter on exchange of increase power dissipation
-  cmp_ibufgds_clk1_iodelay : iodelaye1
-  generic map
-  (
+  cmp_ibufgds_clk_iodelay : iodelaye1
+  generic map(
     IDELAY_TYPE                             => "VAR_LOADABLE",
     IDELAY_VALUE                            => g_default_adc_clk_delay,
     SIGNAL_PATTERN                          => "CLOCK",
     HIGH_PERFORMANCE_MODE                   => TRUE,
     DELAY_SRC                               => "I"
   )
-  port map
-  (
+  port map(
     idatain                                 => adc_clk_ibufgds,
     dataout                                 => adc_clk_ibufgds_dly,
     c                                       => sys_clk_i,
@@ -144,7 +142,7 @@ begin
   -- BUFIO (better switching characteristics than BUFR and BUFG).
   -- It can be used just inside ILOGIC blocks resources, such as
   -- an IDDR block.
-  cmp_adc_clk1_bufio : bufio
+  cmp_adc_clk_bufio : bufio
   port map (
     O                                       => adc_clk_bufio,
     I                                       => adc_clk_ibufgds_dly
@@ -153,24 +151,21 @@ begin
   -- BUFR (better switching characteristics than BUFG).
   -- It can drive logic elements (block ram, CLB, DSP tiles,
   -- etc) up to 6 clock regions.
-  cmp_adc_clk1_bufr : bufr  
-	generic map
-	(
-		SIM_DEVICE 	=> "VIRTEX6",
-		BUFR_DIVIDE => "BYPASS"
-	)
-	port map 
-	(
-		clr  	                                  => '0',
-		ce 	 	                                  => '1',
-		i 		                                  => adc_clk_ibufgds_dly,
-		o 		                                  => adc_clk_bufr
-	);
+  cmp_adc_clk_bufr : bufr  
+  generic map(
+    SIM_DEVICE 	=> "VIRTEX6",
+    BUFR_DIVIDE => "BYPASS"
+  )
+  port map (
+    clr                                     => '0',
+    ce                                      => '1',
+    i                                       => adc_clk_ibufgds_dly,
+    o                                       => adc_clk_bufr
+  );
 
   -- ADC Clock PLL
-  cmp_mmcm_adc_clk1 : MMCM_ADV
-  generic map
-  (
+  cmp_mmcm_adc_clk : MMCM_ADV
+  generic map(
       BANDWIDTH                             => "OPTIMIZED",
       CLKOUT4_CASCADE                       => FALSE,
       CLOCK_HOLD                            => FALSE,
@@ -180,27 +175,26 @@ begin
       --COMPENSATION         => "ZHOLD",
       STARTUP_WAIT                          => FALSE,
       DIVCLK_DIVIDE                         => 1,
-      CLKFBOUT_MULT_F                       => 16.000,
+      CLKFBOUT_MULT_F                       => 5.000,
       CLKFBOUT_PHASE                        => 0.000,
       CLKFBOUT_USE_FINE_PS                  => FALSE,
-      CLKOUT0_DIVIDE_F                      => 8.000,
+      CLKOUT0_DIVIDE_F                      => 5.000,
       CLKOUT0_PHASE                         => 0.000,
       CLKOUT0_DUTY_CYCLE                    => 0.500,
       CLKOUT0_USE_FINE_PS                   => FALSE,
-      CLKOUT1_DIVIDE                        => 16,
-      CLKOUT1_PHASE                         => 0.000,
-      CLKOUT1_DUTY_CYCLE                    => 0.500,
-      CLKOUT1_USE_FINE_PS                   => FALSE,
+      --CLKOUT1_DIVIDE                        => 5,
+      --CLKOUT1_PHASE                         => 0.000,
+      --CLKOUT1_DUTY_CYCLE                    => 0.500,
+      --CLKOUT1_USE_FINE_PS                   => FALSE,
       -- 250 MHZ input clock
-      CLKIN1_PERIOD                         => 4.0,
+      CLKIN1_PERIOD                         => g_adc_clock_period,
       REF_JITTER1                           => 0.010,
       -- Not used. Just to bypass Xilinx errors
       -- Just input 250 MHz input clock
-      CLKIN2_PERIOD                         => 4.0,
+      CLKIN2_PERIOD                         => g_adc_clock_period,
       REF_JITTER2                           => 0.010
   )
-  port map
-  (
+  port map(
       -- Output clocks
       CLKFBOUT                              => adc_clk_fbout,
       CLKFBOUTB                             => open,
@@ -243,19 +237,17 @@ begin
   );
   
   -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
-  cmp_clkf_bufg : BUFG
-  port map
-  (
+  cmp_adc_clk_fb_bufg : BUFG
+  port map(
     O                                       => adc_clk_fbin,
     I                                       => adc_clk_fbout
   );
 
   -- Global clock buffer for FPGA logic
-  cmp_adc_str_out_bufg : BUFG
-  port map
-  (
-		O                                       => adc_clk_bufg,
-		I                                       => adc_clk_mmcm_out
+  cmp_adc_out_bufg : BUFG
+  port map(
+    O                                       => adc_clk_bufg,
+    I                                       => adc_clk_mmcm_out
   );
 
 	-- Output clocks

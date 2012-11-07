@@ -20,7 +20,7 @@ peripheral {
          
          --prefix = "start";
          -- Pulse to start
-         type = MONOSTABLE;		
+         type = MONOSTABLE;
          --clock = "clk_100Mhz_i";
          access_bus = READ_WRITE;
          access_dev = READ_ONLY;

@@ -1,0 +1,5 @@
+work/
+fifo_generator*/
+isim_proj
+*.xmsgs
+*.ini

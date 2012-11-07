@@ -37,6 +37,7 @@ generic
 (
     g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                   : t_wishbone_address_granularity := WORD;
+    g_adc_clock_period_values               : t_clock_values_array(3 downto 0) := dummy_clocks;     
     g_use_clock_chains                      : std_logic_vector(3 downto 0) := "0010";
     g_use_data_chains                       : std_logic_vector(3 downto 0) := "1111";
     g_adc_bits                              : natural := 16;
@@ -65,18 +66,6 @@ port
     wb_err_o                                : out std_logic;
     wb_rty_o                                : out std_logic;
     wb_stall_o                              : out std_logic;
-    
-    -----------------------------
-    -- Simulation Only ports
-    -----------------------------
-    sim_adc_clk_i                           : in std_logic;
-    --sim_adc_clk2x_i                         : in std_logic;
-                
-    sim_adc_ch0_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch1_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch2_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_ch3_data_i                      : in std_logic_vector(15 downto 0);
-    sim_adc_data_valid_i                    : in std_logic;
     
     -----------------------------
     -- External ports
@@ -125,10 +114,10 @@ port
     sys_spi_cs_adc4_n_o                     : out std_logic;  -- SPI ADC CS channel 3 
     
     -- External Trigger To/From FMC
-    ext_trig_p_i                            : in std_logic; 
-    ext_trig_n_i                            : in std_logic; 
-    ext_trig_p_o                            : out std_logic;
-    ext_trig_n_o                            : out std_logic;
+    m2c_trig_p_i                            : in std_logic; 
+    m2c_trig_n_i                            : in std_logic; 
+    c2m_trig_p_o                            : out std_logic;
+    c2m_trig_n_o                            : out std_logic;
     
     -- LMK (National Semiconductor) is the clock and distribution IC.
     -- SPI interface?
@@ -158,16 +147,19 @@ port
     fmc_prsnt_m2c_l_i                       : in  std_logic;
     
     -----------------------------
-    -- ADC output signals. Continuous flow. Mostly used for debug
+    -- ADC output signals. Continuous flow
     -----------------------------
-    --adc_out_data_o                          : out std_logic_vector(63 downto 0);
-    --adc_out_clk_o                           : out std_logic;
     adc_clk_o                               : out std_logic;
     adc_data_ch0_o                          : out std_logic_vector(15 downto 0);
     adc_data_ch1_o                          : out std_logic_vector(15 downto 0);
     adc_data_ch2_o                          : out std_logic_vector(15 downto 0);
     adc_data_ch3_o                          : out std_logic_vector(15 downto 0);
     adc_data_valid_o                        : out std_logic;
+
+    -----------------------------
+    -- General ADC output signals
+    -----------------------------
+    trig_hw_o                               : out std_logic;
     
     -----------------------------
     -- Wishbone Streaming Interface Source
@@ -189,48 +181,51 @@ end wb_fmc516;
 architecture rtl of wb_fmc516 is
 
   -- Constants
-  constant c_counter_size                 : natural := f_ceil_log2(g_packet_size);
+  constant c_counter_size                   : natural := f_ceil_log2(g_packet_size);
   
   -----------------------------------------------------------------------------------------------
   -- IP / user logic interface signals
   -----------------------------------------------------------------------------------------------
   -- Clock and reset signals
-  signal sys_rst                          : std_logic;
-  
+  signal sys_rst                            : std_logic;
   
   -- FMC516 reg structure
   --signal regs_in                          : t_fmc516_out_registers;
   --signal regs_out                         : t_fmc516_in_registers;
-      
-  -- Stream Interface structure    
-  signal wbs_stream_out                   : t_wbs_source_out;
-  signal wbs_stream_in                    : t_wbs_source_in;
+
+  -- ADC Interface signals
+  signal fs_clk                             : std_logic;
+  signal fs_rst_n                           : std_logic;
+  signal fs_rst_sync_n                      : std_logic;
+  signal mmcm_adc_locked                    : std_logic;
       
   -- FMC516 signals    
   --signal cdce_pll_status                  : std_logic;
-  signal s_mmcm_adc_locked                : std_logic;
+  signal s_mmcm_adc_locked                  : std_logic;
       
-  signal s_adc_dout                       : std_logic_vector(31 downto 0);
-  signal s_clk_adc                        : std_logic;
-  signal rst_n_adc                        : std_logic;
-  signal s_fmc150_rst                     : std_logic;
+  -- Wishbone Streaming control signals    
+  signal s_wbs_packet_counter               : unsigned(c_counter_size-1 downto 0);
+  signal s_addr                             : std_logic_vector(c_wbs_address_width-1 downto 0);
+  signal s_data                             : std_logic_vector(c_wbs_data_width-1 downto 0);
+  signal s_dvalid                           : std_logic;
+  signal s_sof                              : std_logic;
+  signal s_eof                              : std_logic;  
+  signal s_error                            : std_logic;
+  signal s_bytesel                          : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
+  signal s_dreq                             : std_logic;
+
+  -- Wishbone Streaming interface structure    
+  signal wbs_stream_out                     : t_wbs_source_out;
+  signal wbs_stream_in                      : t_wbs_source_in;
       
-  -- Streaming control signals    
-  signal s_wbs_packet_counter             : unsigned(c_counter_size-1 downto 0);
-  signal s_addr                           : std_logic_vector(c_wbs_address_width-1 downto 0);
-  signal s_data                           : std_logic_vector(c_wbs_data_width-1 downto 0);
-  signal s_dvalid                         : std_logic;
-  signal s_sof                            : std_logic;
-  signal s_eof                            : std_logic;  
-  signal s_error                          : std_logic;
-  signal s_bytesel                        : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
-  signal s_dreq                           : std_logic;
-      
-  -- Wishbone adapter structures    
-  signal wb_out                           : t_wishbone_slave_out;
-  signal wb_in                            : t_wishbone_slave_in;
+  -- Wishbone slave adapter signals/structures    
+  signal wb_out                             : t_wishbone_slave_out;
+  signal wb_in                              : t_wishbone_slave_in;
+  signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
   
-  signal resized_addr                     : std_logic_vector(c_wishbone_address_width-1 downto 0);
+  -- Trigger signals  
+  signal m2c_trig                           : std_logic;
+  signal c2m_trig                           : std_logic;
   
   -----------------------------
   -- Components declaration
@@ -262,6 +257,14 @@ architecture rtl of wb_fmc516 is
     adc_clk2_n_i                            : in std_logic;
     adc_clk3_p_i                            : in std_logic;
     adc_clk3_n_i                            : in std_logic;
+
+    -- Do i need really to worry about the deassertion of async resets?
+    -- Generate them outside this module, as this reset is needed by
+    -- external logic
+    adc_clk0_rst_n_i                        : in std_logic;
+    adc_clk1_rst_n_i                        : in std_logic;
+    adc_clk2_rst_n_i                        : in std_logic;
+    adc_clk3_rst_n_i                        : in std_logic;
     
     -- DDR ADC data channels.
     adc_data_ch0_p_i                        : in std_logic_vector(g_adc_bits/2 - 1 downto 0);
@@ -281,25 +284,19 @@ architecture rtl of wb_fmc516 is
     
     adc_clk0_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_clk0_dly_val_o                      : out std_logic_vector(4 downto 0);
-  
     adc_clk1_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_clk1_dly_val_o                      : out std_logic_vector(4 downto 0);
-    
     adc_clk2_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_clk2_dly_val_o                      : out std_logic_vector(4 downto 0);
-    
     adc_clk3_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_clk3_dly_val_o                      : out std_logic_vector(4 downto 0);
     
     adc_data_ch0_dly_val_i                  : in std_logic_vector(4 downto 0);
     adc_data_ch0_dly_val_o                  : out std_logic_vector(4 downto 0);
-    
     adc_data_ch1_dly_val_i                  : in std_logic_vector(4 downto 0);
     adc_data_ch1_dly_val_o                  : out std_logic_vector(4 downto 0);
-    
     adc_data_ch2_dly_val_i                  : in std_logic_vector(4 downto 0);
     adc_data_ch2_dly_val_o                  : out std_logic_vector(4 downto 0);
-    
     adc_data_ch3_dly_val_i                  : in std_logic_vector(4 downto 0);
     adc_data_ch3_dly_val_o                  : out std_logic_vector(4 downto 0);
     
@@ -343,11 +340,34 @@ architecture rtl of wb_fmc516 is
     
 begin
 
-  -- Resets
-  --sys_rst  <= not(sys_rst_n_i);
-  --fs_rst_n <= sys_rst_n_i and locked_out;
+  -- Reset signals and sychronization with positive edge of
+  -- respective clock
+  sys_rst  <= not(sys_rst_n_i);
+  fs_rst_n <= sys_rst_n_i and mmcm_adc_locked;
   --fs_rst   <= not(fs_rst_n);
+
+  -- Reset synchronization with SYS clock domain
+  -- Align the reset deassertion to the next clock edge
+  cmp_reset_fs_synch : reset_synch
+  port map(
+    clk_i     		                          => sys_clk_i,
+    arst_n_i		                            => sys_rst_n_i,
+    rst_n_o      		                        => sys_rst_sync_n
+  );
+
+  -- Reset synchronization with FS clock domain (just clock 1
+  -- is used for now. Align the reset deassertion to the next
+  -- clock edge
+  cmp_reset_sys_synch : reset_synch
+  port map(
+    clk_i     		                          => fs_clk,
+    arst_n_i		                            => fs_rst_n,
+    rst_n_o      		                        => fs_rst_sync_n
+  );
   
+  -----------------------------
+  -- ADC Interface
+  -----------------------------
   cmp_fmc516_adc_iface : fmc516_adc_iface
   generic map(
     g_adc_bits                              => g_adc_bits,
@@ -373,6 +393,18 @@ begin
     adc_clk2_n_i                            => adc_clk2_n_i,
     adc_clk3_p_i                            => adc_clk3_p_i,
     adc_clk3_n_i                            => adc_clk3_n_i,
+
+    -- Do i need really to worry about the deassertion of async resets?
+    -- Generate them outside this module, as this reset is needed by
+    -- external logic.
+    --
+    -- WARNING: just clock 1 is ised for now. If more clocks are used,
+    -- we would have to synchronise the other resets to it and map them
+    -- here!
+    adc_clk0_rst_n_i                        => fs_rst_sync_n,
+    adc_clk1_rst_n_i                        => fs_rst_sync_n,
+    adc_clk2_rst_n_i                        => fs_rst_sync_n,
+    adc_clk3_rst_n_i                        => fs_rst_sync_n,
     
     -- DDR ADC data channels.
     adc_data_ch0_p_i                        => adc_data_ch0_p_i,
@@ -392,32 +424,26 @@ begin
     
     adc_clk0_dly_val_i                      => "00000",
     adc_clk0_dly_val_o                      => open,
-
     adc_clk1_dly_val_i                      => "00000",
     adc_clk1_dly_val_o                      => open,
-
     adc_clk2_dly_val_i                      => "00000",
     adc_clk2_dly_val_o                      => open,
-                                               
     adc_clk3_dly_val_i                      => "00000",
     adc_clk3_dly_val_o                      => open,
   
     adc_data_ch0_dly_val_i                  => "00000",
     adc_data_ch0_dly_val_o                  => open,
-
     adc_data_ch1_dly_val_i                  => "00000",
     adc_data_ch1_dly_val_o                  => open,
-
     adc_data_ch2_dly_val_i                  => "00000",
     adc_data_ch2_dly_val_o                  => open,
-
     adc_data_ch3_dly_val_i                  => "00000",
     adc_data_ch3_dly_val_o                  => open,
     
     -----------------------------
     -- ADC output signals.
     -----------------------------
-    adc_clk_o                               => adc_clk_o,       
+    adc_clk_o                               => fs_clk,       
     adc_data_ch0_o                          => adc_data_ch0_o, 
     adc_data_ch1_o                          => adc_data_ch1_o,  
     adc_data_ch2_o                          => adc_data_ch2_o,  
@@ -427,7 +453,53 @@ begin
     -----------------------------
     -- MMCM general signals
     -----------------------------
-    mmcm_adc_locked_o                       => open
+    mmcm_adc_locked_o                       => mmcm_adc_locked
+  );
+
+  adc_clk_o                                 <= fs_clk;
+
+  -----------------------------
+  -- Trigger Interface. Does not do anything yet! 
+  -----------------------------
+  -- Trigger buffers and Synchronization
+  cmp_ext_trig_ibufds : ibufds
+  generic map(
+      IOSTANDARD                           	=> "LVDS_25",
+      DIFF_TERM                             => TRUE
+  )
+  port map (
+    O  => m2c_trig,
+    I  => m2c_trig_p_i,
+    IB => m2c_trig_n_i
+  );
+
+  trig_hw_o                                 <= m2c_trig;
+
+  -- External hardware trigger synchronization
+  cmp_trig_sync : ext_pulse_sync
+  generic map(
+    g_min_pulse_width                       => 1,           -- clk_i ticks
+    g_clk_frequency                         => 100,         -- MHz
+    g_output_polarity                       => '0',         -- positive pulse
+    g_output_retrig                         => false,
+    g_output_length                         => 1            -- clk_i tick
+    )
+  port map(
+    rst_n_i                                 => fs_rst_n,
+    clk_i                                   => fs_clk,
+    input_polarity_i                        => hw_trig_pol,
+    pulse_i                                 => m2c_trig,
+    pulse_o                                 => m2c_trig_sync
+  );
+
+  cmp_ext_trig_obufds : obufds
+  generic map(
+    IOSTANDARD                           	  => "LVDS_25"
+  )
+  port map (
+    O                                       => c2m_trig_p_i,
+    OB                                      => c2m_trig_n_i,
+    I                                       => c2m_trig,
   );
 
 end rtl;

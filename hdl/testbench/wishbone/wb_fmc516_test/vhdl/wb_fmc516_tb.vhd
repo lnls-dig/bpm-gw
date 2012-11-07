@@ -22,36 +22,41 @@ architecture sim of wb_fmc516_tb is
   constant c_100mhz_clk_period							: time := 10.00 ns;
   -- 200.00 MHz clock
   constant c_200mhz_clk_period		    			: time := 5.00 ns;
-  -- 61.44 MHz clock
-  constant c_sim_adc_clk_period		    			: time := 4.00 ns;
+  -- 250.00 MHz clock
+  constant c_adc_clk_period		    					: time := 4.00 ns;
     
 	constant c_sim_time												: time := 10000.00 ns;
+	-- Specify clock chain 1 as 4.0 ns period = 250 MHz
+	constant c_adc_clock_values								: t_clock_values_array(3 downto 0) :=
+						(3 => 0.0, 2 => 0.0, 1 => 4.0, 0 => 0.0);
 	
 	signal g_end_simulation          					: boolean   := false; -- Set to true to halt the simulation
     
 	-- Clock signals
-	signal clk_100mhz                       : std_logic := '0';
-	signal clk_200mhz                       : std_logic := '0';
-	signal clk_sys                          : std_logic := '0';
-	signal sys_rst_n                        : std_logic := '0';
-	
-	-- Wishbone signals
-	signal wb_slv_in                        : t_wishbone_slave_in := cc_dummy_slave_in;
-	signal wb_slv_out                       : t_wishbone_slave_out;
-	
-	signal wbs_src_in                       : t_wbs_source_in := cc_dummy_src_in;
-	signal wbs_src_out                      : t_wbs_source_out;
-	
-	-- Dummy signals
-	constant cc_zero_bit                    : std_logic := '0';
-	
-	-- Simulation signals
-	signal s_sim_adc_clk                    : std_logic := '0';
-	signal s_sim_adc_ch0_data               : std_logic_vector(15 downto 0);
-	signal s_sim_adc_ch1_data               : std_logic_vector(15 downto 0);
-	signal s_sim_adc_ch2_data               : std_logic_vector(15 downto 0);
-	signal s_sim_adc_ch3_data               : std_logic_vector(15 downto 0);
-	signal s_sim_adc_valid                  : std_logic;
+	signal clk_100mhz                       	: std_logic := '0';
+	signal clk_200mhz                       	: std_logic := '0';
+	signal clk_sys                          	: std_logic := '0';
+	signal clk_sys_n													: std_logic := '1';
+	signal sys_rst_n                        	: std_logic := '0';
+		
+	-- Wishbone signals	
+	signal wb_slv_in                        	: t_wishbone_slave_in := cc_dummy_slave_in;
+	signal wb_slv_out                       	: t_wishbone_slave_out;
+		
+	signal wbs_src_in                       	: t_wbs_source_in := cc_dummy_src_in;
+	signal wbs_src_out                      	: t_wbs_source_out;
+		
+	-- Dummy signals	
+	constant cc_zero_bit                    	: std_logic := '0';
+		
+	-- Simulation signals	
+	signal s_adc_clk                    			: std_logic := '0';
+	signal s_adc_clk_n												: std_logic := '1';
+	signal s_adc_ch0_data               			: std_logic_vector(7 downto 0);
+	signal s_adc_ch1_data               			: std_logic_vector(7 downto 0);
+	signal s_adc_ch2_data               			: std_logic_vector(7 downto 0);
+	signal s_adc_ch3_data               			: std_logic_vector(7 downto 0);
+	signal s_adc_valid                  			: std_logic;
 	
 	--------------------------------
 	-- Functions and Procedures
@@ -93,8 +98,21 @@ architecture sim of wb_fmc516_tb is
 			
 			result <= stim(size-1 downto 0);
 	end procedure;
+
+	function toggle_bus(bus_in : std_logic_vector)
+		return std_logic_vector
+	is
+		variable ret : std_logic_vector(bus_in'length-1 downto 0) := (others => '0');
+	begin
+		for i in 0 to bus_in'length-1 loop
+			ret(i) := not bus_in(i);
+		end loop;
+
+		return ret;
+	end function;
     
 begin  -- sim
+
 	p_100mhz_clk_gen : process
 	begin
 		while g_end_simulation = false loop
@@ -117,14 +135,14 @@ begin  -- sim
 		wait;  -- simulation stops here
 	end process;
     
-    -- Sim ADC clock gen
-	p_sim_adc_clk_gen : process
+  -- ADC clock gen
+	p_adc_clk_gen : process
 	begin
 		while g_end_simulation = false loop
-			wait for c_sim_adc_clk_period/2;
-				s_sim_adc_clk <= not s_sim_adc_clk; 
-			wait for c_sim_adc_clk_period/2;
-				s_sim_adc_clk <= not s_sim_adc_clk; 
+			wait for c_adc_clk_period/2;
+				s_adc_clk <= not s_adc_clk; 
+			wait for c_adc_clk_period/2;
+				s_adc_clk <= not s_adc_clk; 
 		end loop;
 		wait;  -- simulation stops here
 	end process;
@@ -134,12 +152,12 @@ begin  -- sim
 	begin
 		seed1                                       := 67632;
 		seed2                                       := 3234; 
-		s_sim_adc_valid                             <= '0';
+		s_adc_valid                             		<= '0';
 		-- Wait until reset completion (synch with adc clock domain)
-		wait until sys_rst_n = '1' and rising_edge(s_sim_adc_clk);
+		wait until sys_rst_n = '1' and rising_edge(s_adc_clk);
 		l_generate_valid: loop 
-				gen_valid(0.5, seed1, seed2, s_sim_adc_valid);
-				wait until rising_edge(s_sim_adc_clk);
+				gen_valid(0.5, seed1, seed2, s_adc_valid);
+				wait until rising_edge(s_adc_clk);
 		end loop;                
 	end process;
     
@@ -148,18 +166,18 @@ begin  -- sim
 	begin
 		seed1                                       := 432566;
 		seed2                                       := 211; 
-		s_sim_adc_ch0_data                          <= (others => '0');
-		s_sim_adc_ch1_data                          <= (others => '0');
-		s_sim_adc_ch2_data                          <= (others => '0');
-		s_sim_adc_ch3_data                          <= (others => '0');
+		s_adc_ch0_data                          		<= (others => '0');
+		s_adc_ch1_data                          		<= (others => '0');
+		s_adc_ch2_data                          		<= (others => '0');
+		s_adc_ch3_data                          		<= (others => '0');
 		-- Wait until reset completion (synch with adc clock domain)
-		wait until sys_rst_n = '1' and rising_edge(s_sim_adc_clk);
+		wait until sys_rst_n = '1' and rising_edge(s_adc_clk);
 		l_generate_data: loop 
-				gen_data(s_sim_adc_ch0_data'length, seed1, seed2, s_sim_adc_ch0_data);
-				gen_data(s_sim_adc_ch1_data'length, seed1, seed2, s_sim_adc_ch1_data);          
-				gen_data(s_sim_adc_ch2_data'length, seed1, seed2, s_sim_adc_ch2_data);          
-				gen_data(s_sim_adc_ch3_data'length, seed1, seed2, s_sim_adc_ch3_data);          
-				wait until rising_edge(s_sim_adc_clk);
+				gen_data(s_adc_ch0_data'length, seed1, seed2, s_adc_ch0_data);
+				gen_data(s_adc_ch1_data'length, seed1, seed2, s_adc_ch1_data);          
+				gen_data(s_adc_ch2_data'length, seed1, seed2, s_adc_ch2_data);          
+				gen_data(s_adc_ch3_data'length, seed1, seed2, s_adc_ch3_data);          
+				wait until rising_edge(s_adc_clk);
 		end loop;  
 	end process;
 	
@@ -179,8 +197,9 @@ begin  -- sim
 	generic map(
 		--g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
 		--g_address_granularity                   : t_wishbone_address_granularity := WORD;
-		g_use_clock_chains                      => "0101",
-		g_use_data_chains                       => "1010",
+		g_adc_clock_period_values               => c_adc_clock_values,
+		g_use_clock_chains                      => "0010",
+		g_use_data_chains                       => "1111",
 		--g_adc_bits															=> 16,
 		--g_packet_size                           : natural := 32;
 		g_sim                                   => 1
@@ -207,16 +226,6 @@ begin  -- sim
 		wb_stall_o                              => open,
 		
 		-----------------------------
-		-- Simulation Only ports
-		-----------------------------
-		sim_adc_clk_i                           => s_sim_adc_clk,
-		sim_adc_ch0_data_i                      => f_zeros(16),
-		sim_adc_ch1_data_i                      => f_zeros(16),
-		sim_adc_ch2_data_i                      => f_zeros(16),
-		sim_adc_ch3_data_i                      => f_zeros(16),
-		sim_adc_data_valid_i                    => '0',
-		
-		-----------------------------
 		-- External ports
 		-----------------------------
 		-- System I2C Bus. Slaves: Atmel AT24C512B Serial EEPROM, 
@@ -227,24 +236,24 @@ begin  -- sim
 		-- ADC clocks. One clock per ADC channel.
 		-- Only ch1 clock is used as all data chains
 		-- are sampled at the same frequency
-		adc_clk0_p_i                         		=> '0',
-		adc_clk0_n_i                         		=> '0',
-		adc_clk1_p_i                         		=> '0',
-		adc_clk1_n_i                         		=> '0',
-		adc_clk2_p_i                         		=> '0',
-		adc_clk2_n_i                         		=> '0',
-		adc_clk3_p_i                         		=> '0',
-		adc_clk3_n_i                         		=> '0',
+		adc_clk0_p_i                         		=> s_adc_clk,
+		adc_clk0_n_i                         		=> s_adc_clk_n,
+		adc_clk1_p_i                         		=> s_adc_clk,
+		adc_clk1_n_i                         		=> s_adc_clk_n,
+		adc_clk2_p_i                         		=> clk_sys,
+		adc_clk2_n_i                         		=> clk_sys_n,
+		adc_clk3_p_i                         		=> clk_sys,
+		adc_clk3_n_i                         		=> clk_sys_n,
 		
 		-- DDR ADC data channels.
-		adc_data_ch0_p_i                      	=> f_zeros(8),
-		adc_data_ch0_n_i                      	=> f_zeros(8),
-		adc_data_ch1_p_i                      	=> f_zeros(8),
-		adc_data_ch1_n_i                      	=> f_zeros(8),
-		adc_data_ch2_p_i                      	=> f_zeros(8),
-		adc_data_ch2_n_i                      	=> f_zeros(8),
-		adc_data_ch3_p_i                      	=> f_zeros(8),
-		adc_data_ch3_n_i                      	=> f_zeros(8),
+		adc_data_ch0_p_i                      	=> s_adc_ch0_data,
+		adc_data_ch0_n_i                      	=> toggle_bus(s_adc_ch0_data),
+		adc_data_ch1_p_i                      	=> s_adc_ch1_data,
+		adc_data_ch1_n_i                      	=> toggle_bus(s_adc_ch1_data),
+		adc_data_ch2_p_i                      	=> s_adc_ch2_data,
+		adc_data_ch2_n_i                      	=> toggle_bus(s_adc_ch2_data),
+		adc_data_ch3_p_i                      	=> s_adc_ch3_data,
+		adc_data_ch3_n_i                      	=> toggle_bus(s_adc_ch3_data),
 		
 		-- ADC clock (half of the sampling frequency) divider reset
 		adc_clk_div_rst_p_o                     => open,
@@ -322,7 +331,9 @@ begin  -- sim
 		wbs_err_i                               => '0',
 		wbs_rty_i                               => '0'
 	);
-    
+
+  s_adc_clk_n																<= not s_adc_clk;
 	clk_sys                                   <= clk_100mhz;
+	clk_sys_n																	<= not clk_sys;
 
 end sim;

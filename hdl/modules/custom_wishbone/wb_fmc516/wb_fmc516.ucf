@@ -59,9 +59,9 @@ TIMESPEC ADC_CLK_3_P = PERIOD "ADC_CLK_3_P" 250 MHz HIGH 50 %;
 #TIMEGRP "datain18_p_group" OFFSET = IN -200 ps VALID 1200 ps BEFORE "clkin18_p" RISING;
 #
 #This is setup for a 250MHz clock (4ns period).  The ISLA216P25 specifies
-# tDC as -0.1 to +0.5ps.  The constraint adds an additional 100ps to each side
+# tDC as -0.1 to +0.5 ns.  The constraint adds an additional 100ps to each side
 # to account for potential skew due to the pcb.  So, the tDC ends up being -0.2
-# to 0.6ps.  The value after IN in the constraint equal tDC min (-200ps). 
+# to 0.6 ns.  The value after IN in the constraint equal tDC min (-200ps). 
 # The  value after VALID = Period/2 + tDC min – tDC max (4000ps/2 + -200ps –
 # 600ps = 1200ps).  (The period is divided by two because the data is DDR.)
 #
