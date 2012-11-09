@@ -294,7 +294,7 @@ module pcie_core_gt_wrapper #
     //---------- Select TX Receiver Detection Configuration 
     localparam          TX_RXDETECT_CFG = (PCIE_REFCLK_FREQ == 2) ? 14'd250 : 
                                           (PCIE_REFCLK_FREQ == 1) ? 14'd125 : 14'd100;
-    localparam          TX_RXDETECT_REF = (((PCIE_USE_MODE == "1.0") || (PCIE_USE_MODE == "1.1")) && (PCIE_SIM_MODE == "FALSE")) ? 3'b000 : 3'b100;                                                                 
+    localparam          TX_RXDETECT_REF = (((PCIE_USE_MODE == "1.0") || (PCIE_USE_MODE == "1.1")) && (PCIE_SIM_MODE == "FALSE")) ? 3'b000 : 3'b011;                                                                 
                                                       
     //---------- Select PCS_RSVD_ATTR ----------------------
     //  [0]: 1 = enable latch when bypassing TX buffer, 0 = disable latch when using TX buffer 
