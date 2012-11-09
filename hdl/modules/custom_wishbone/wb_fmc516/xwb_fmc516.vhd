@@ -13,10 +13,10 @@ use work.wb_stream_pkg.all;
 entity xwb_fmc150 is
 generic
 (
-    g_interface_mode                              : t_wishbone_interface_mode      := PIPELINED;
-    g_address_granularity                         : t_wishbone_address_granularity := WORD;
-    g_packet_size                                 : natural := 32;
-    g_sim                                         : integer := 0
+  g_interface_mode                              : t_wishbone_interface_mode      := PIPELINED;
+  g_address_granularity                         : t_wishbone_address_granularity := WORD;
+  g_packet_size                                 : natural := 32;
+  g_sim                                         : integer := 0
 );      
 port        
 (       

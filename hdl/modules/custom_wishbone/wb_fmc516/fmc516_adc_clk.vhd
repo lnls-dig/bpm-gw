@@ -27,42 +27,42 @@ entity fmc516_adc_clk is
 generic
 (
 	-- This genric must be specified
-  g_adc_clock_period												: real;
-  g_default_adc_clk_delay                		: natural := 0;
-  g_sim                                   	: integer := 0
+  g_adc_clock_period                        : real;
+  g_default_adc_clk_delay                   : natural := 0;
+  g_sim                                     : integer := 0
 );
 port
 (
-	sys_clk_i                               	: in std_logic;
-	sys_rst_i                             		: in std_logic;
+  sys_clk_i                                 : in std_logic;
+  sys_rst_i                                 : in std_logic;
 			
-	-----------------------------
-	-- External ports
-	-----------------------------
+  -----------------------------
+  -- External ports
+  -----------------------------
 	
-	-- ADC clocks. One clock per ADC channel
-	adc_clk_p_i                        				: in std_logic;
-	adc_clk_n_i                        				: in std_logic;
+  -- ADC clocks. One clock per ADC channel
+  adc_clk_p_i                               : in std_logic;
+  adc_clk_n_i                               : in std_logic;
 	
-	-----------------------------
-	-- ADC Delay signals.
-	-----------------------------
-	-- Pulse this to update the delay value
-	adc_clk_dly_pulse_i                    		: in std_logic;
-	adc_clk_dly_val_i                      		: in std_logic_vector(4 downto 0);
-	adc_clk_dly_val_o                      		: out std_logic_vector(4 downto 0);
+  -----------------------------
+  -- ADC Delay signals.
+  -----------------------------
+  -- Pulse this to update the delay value
+  adc_clk_dly_pulse_i                       : in std_logic;
+  adc_clk_dly_val_i                         : in std_logic_vector(4 downto 0);
+  adc_clk_dly_val_o                         : out std_logic_vector(4 downto 0);
 	
-	-----------------------------
-	-- ADC output signals.
-	-----------------------------
-	adc_clk_bufio_o                        		: out std_logic;
-	adc_clk_bufr_o                        		: out std_logic;
-	adc_clk_bufg_o                        		: out std_logic;
+  -----------------------------
+  -- ADC output signals.
+  -----------------------------
+  adc_clk_bufio_o                           : out std_logic;
+  adc_clk_bufr_o                            : out std_logic;
+  adc_clk_bufg_o                            : out std_logic;
 
-	-----------------------------
-	-- MMCM general signals
-	-----------------------------
-	mmcm_adc_locked_o                       	: out std_logic
+  -----------------------------
+  -- MMCM general signals
+  -----------------------------
+  mmcm_adc_locked_o                         : out std_logic
 );
 
 end fmc516_adc_clk;
@@ -72,19 +72,19 @@ architecture rtl of fmc516_adc_clk is
   constant c_num_adc_channels               : natural := 4;
 
   -- Clock and reset signals
-  signal adc_clk_ibufgds                		: std_logic;
-  signal adc_clk_ibufgds_dly             		: std_logic;
+  signal adc_clk_ibufgds                    : std_logic;
+  signal adc_clk_ibufgds_dly                : std_logic;
   signal sys_rst                            : std_logic;
 
   -- Clock internal signals interconnect
-  signal adc_clk_bufio                  		: std_logic;
-  signal adc_clk_bufr                   		: std_logic;
-  signal adc_clk_bufg	 											: std_logic;
+  signal adc_clk_bufio                      : std_logic;
+  signal adc_clk_bufr                       : std_logic;
+  signal adc_clk_bufg                       : std_logic;
 
   -- Clock MMCM signals
-  signal adc_clk_fbin                      	: std_logic;
-  signal adc_clk_fbout                     	: std_logic;
-  signal adc_clk_mmcm_2x_out               	: std_logic;
+  signal adc_clk_fbin                       : std_logic;
+  signal adc_clk_fbout                      : std_logic;
+  signal adc_clk_mmcm_2x_out                : std_logic;
   signal adc_clk_mmcm_out                   : std_logic; 
 
 begin
@@ -100,9 +100,9 @@ begin
     DIFF_TERM                               => TRUE
   )
   port map(
-    i  																			=> adc_clk_p_i,
-    ib 																			=> adc_clk_n_i,
-    o  																			=> adc_clk_ibufgds
+    i                                       => adc_clk_p_i,
+    ib                                      => adc_clk_n_i,
+    o                                       => adc_clk_ibufgds
   );
 
   -- Delay for Clock Buffers
@@ -250,9 +250,9 @@ begin
     I                                       => adc_clk_mmcm_out
   );
 
-	-- Output clocks
-	adc_clk_bufio_o    												<= adc_clk_bufio;
-	adc_clk_bufr_o    												<= adc_clk_bufr;
-	adc_clk_bufg_o     												<= adc_clk_bufg;
+  -- Output clocks
+  adc_clk_bufio_o                           <= adc_clk_bufio;
+  adc_clk_bufr_o                            <= adc_clk_bufr;
+  adc_clk_bufg_o                            <= adc_clk_bufg;
 
 end rtl;
