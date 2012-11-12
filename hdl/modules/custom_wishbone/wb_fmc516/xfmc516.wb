@@ -1,50 +1,16 @@
 peripheral {
   name = "FMC ADC 100MS/s core registers";
   description = "Wishbone slave for FMC ADC 100MS/s core";
-  hdl_entity = "fmc_adc_100Ms_csr";
-
-  prefix = "fmc_adc_core";
+  hdl_entity = "wb_fmc516_port";
+  prefix = "fmc516";
 
   reg {
     name = "Control register";
-    prefix = "ctl";
-
-    field {
-      name = "State machine commands";
-      description = "1: start\n2: stop";
-      prefix = "fsm_cmd";
-      type = PASS_THROUGH;
-      size = 2;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "FMC Si750 output enable";
-      prefix = "fmc_clk_oe";
-      type = BIT;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Offset DACs clear (active low)";
-      prefix = "offset_dac_clr_n";
-      type = BIT;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Manual serdes bitslip";
-      prefix = "man_bitslip";
-      type = MONOSTABLE;
-      clock = "fs_clk_i"
-    };
+    prefix = "fmc_ctl";
 
     field {
       name = "Enable test data";
-      description = "Write the address counter value instead of ADC data to DDR";
+      description = "Write the address counter value instead of ADC data to Wishbone Streaming Interface";
       prefix = "test_data_en";
       type = BIT;
       access_bus = READ_WRITE;
@@ -52,18 +18,20 @@ peripheral {
     };
 
     field {
-      name = "Manual TRIG LED";
-      description = "Manual control of the front panel TRIG LED";
-      prefix = "trig_led";
+      name = "Manual LED 0";
+      description = "Manual control of the front panel LED 0";
+      prefix = "led_0";
       type = BIT;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
 
     field {
-      name = "Manual ACQ LED";
-      description = "Manual control of the front panel ACQ LED";
-      prefix = "acq_led";
+      name = "Internal/External clock distribution selection";
+      description = "Select between internal VCXO or external reference clock \
+                      write 0: internal reference \
+                      write 1: external reference";
+      prefix = "led_1";
       type = BIT;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -71,10 +39,10 @@ peripheral {
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 24;
+      size = 29;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -82,31 +50,34 @@ peripheral {
 
   reg {
     name = "Status register";
-    prefix = "sta";
+    prefix = "fmc_sta";
 
     field {
-      name = "State machine status";
-      description = "States:\n0: illegal\n1: IDLE\n2: PRE_TRIG\n3: WAIT_TRIG\n4: POST_TRIG\n5: DECR_SHOT\n6: illegal\n7: illegal";
-      prefix = "fsm";
-      type = SLV;
-      size = 3;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "SerDes PLL status";
-      description = "Sampling clock recovery PLL.\n0: not locked\n1: locked";
-      prefix = "serdes_pll";
+      name = "MMCM locked status";
+      description = "ADC Clock Chain MMCM locked status.  \
+                      read 0: not locked  \
+                      read 1: locked";
+      prefix = "mmcm_locked";
       type = BIT;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
 
     field {
-      name = "SerDes synchronization status";
-      description = "0: bitslip in progress\n1: serdes synchronized";
-      prefix = "serdes_synced";
+      name = "FMC power good status";
+      description = "FMC power good status. \
+                      read 0: power not good  \
+                      read 1: power good";
+      prefix = "pwr_good";
+      type = BIT;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC board present status";
+      description = "FMC board present status.\n0: not present\n1: present";
+      prefix = "prst";
       type = BIT;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
@@ -114,10 +85,10 @@ peripheral {
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 27;
+      size = 29;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -128,18 +99,9 @@ peripheral {
     prefix = "trig_cfg";
 
     field {
-      name = "Hardware trigger selection";
-      description = "0: internal (data threshold)\n1: external (front panel trigger input)";
-      prefix = "hw_trig_sel";
-      type = BIT;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-      clock = "fs_clk_i";
-    };
-
-    field {
       name = "Hardware trigger polarity";
-      description = "0: positive edge/slope\n1: negative edge/slope";
+      description = "write 0: positive edge/slope \
+                      write 1: negative edge/slope";
       prefix = "hw_trig_pol";
       type = BIT;
       access_bus = READ_WRITE;
@@ -149,7 +111,8 @@ peripheral {
 
     field {
       name = "Hardware trigger enable";
-      description = "0: disable\n1: enable";
+      description = "write 0: disable \
+                      write 1: enable";
       prefix = "hw_trig_en";
       type = BIT;
       access_bus = READ_WRITE;
@@ -158,202 +121,166 @@ peripheral {
     };
 
     field {
-      name = "Software trigger enable";
-      description = "0: disable\n1: enable";
-      prefix = "sw_trig_en";
-      type = BIT;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-      clock = "fs_clk_i";
-    };
-
-    field {
-      name = "Channel selection for internal trigger";
-      description = "00: channel 1\n01: channel 2\n10: channel 3\n11: channel 4";
-      prefix = "int_trig_sel";
-      type = SLV;
-      size = 2;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-      clock = "fs_clk_i";
-    };
-
-    field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 10;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Threshold for internal trigger";
-      description = "Treated as binary two's complement and compared to raw ADC data";
-      prefix = "int_trig_thres";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-      clock = "fs_clk_i";
-    };
-  };
-
-  reg {
-    name = "Trigger delay";
-    prefix = "trig_dly";
-
-    field {
-      name = "Trigger delay value";
-      description = "Delay to apply on the trigger in sampling clock period.\nThe default clock frequency is 100MHz (period = 10ns).";
-      type = SLV;
-      size = 32;
+      size = 30;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
   };
 
-  reg {
-    name = "Software trigger";
-    description = "Writing (anything) to this register generates a software trigger.";
+  --reg {
+  --  name = "Trigger delay";
+  --  prefix = "trig_dly";
+  --
+  --  field {
+  --    name = "Trigger delay value";
+  --    description = "Delay to apply on the trigger in sampling clock period. \
+  --                    \nThe default clock frequency is 100MHz (period = 10ns).";
+  --    type = SLV;
+  --    size = 32;
+  --    access_bus = READ_WRITE;
+  --    access_dev = READ_ONLY;
+  --  };
+  --};
 
-    prefix = "sw_trig";
+  reg {
+    name = "Global ADC Status register";
+    description = "Global ADC status register.";
+    prefix = "adc_sta";
+
     field {
-      name = "Software trigger";
-      type = PASS_THROUGH;
-      size = 32;
-      clock = "fs_clk_i";
+      name = "FMC ADC clock chains";
+      description = "FMC ADC used clock chains. \
+                      read 1: clock chain is used  \
+                      read 0: clock chain is not used";
+      prefix = "clk_chains";
+      type = SLV;
+      size = 4;
+      align = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
     };
-   };
-
-  reg {
-    name = "Number of shots";
-    prefix = "shots";
 
     field {
-      name = "Number of shots";
-      description = "Number of shots required in multi-shot mode, set to one for single-shot mode.";
-      prefix = "nb";
+      name = "FMC ADC Data chains";
+      description = "FMC ADC used clock chains. \
+                      read 1: data chain is used  \
+                      read 0: data chain is not used";
+      prefix = "data_chains";
+      type = SLV;
+      size = 4;
+      align = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC ADC packet size";
+      description = "Size of the packet sent to the Wishbone Streaming Interface. \
+                      This will appear as cycles of <packet_size> clock cycles on \
+                      the wishbone interface";
+      prefix = "adc_pkt_size";
       type = SLV;
       size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Trigger address register";
-    prefix = "trig_pos";
-
-    field {
-      name = "Trigger address";
-      description = "Trigger address in DDR memory.\nOnly used in single-shot mode.";
-      type = SLV;
-      size = 32;
+      align = 16;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
   };
 
   reg {
-    name = "Sample rate";
-    prefix = "sr";
+    name = "Global ADC Control register";
+    description = "Global ADC control register.";
+    prefix = "adc_ctl";
 
     field {
-      name = "Sample rate decimation";
-      description = "Decimation factor. Takes one sample every N samples and discards the others (N = decimation factor).";
-      prefix = "deci";
-      type = SLV;
-      size = 16;
+      name = "Update ADC clock/data chains delay";
+      description = "write 1: update clock/data chains with the values in the delay registers.\
+                      write 0: no effect";
+
+      prefix = "update_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
-      clock = "fs_clk_i";
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Pre-trigger samples";
-    prefix = "pre_samples";
-
-    field {
-      name = "Pre-trigger samples";
-      description = "Number of requested pre-trigger samples";
-      type = SLV;
-      size = 32;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Post-trigger samples";
-    prefix = "post_samples";
-
-    field {
-      name = "Post-trigger samples";
-      description = "Number of requested post-trigger samples";
-      type = SLV;
-      size = 32;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Samples counter";
-    prefix = "samples_cnt";
-
-    field {
-      name = "Samples counter";
-      description = "Counts the number of samples.\n It is reset on START and then counts the number of pre-trigger + post-trigger samples";
-      type = SLV;
-      size = 32;
+      size = 31;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
   };
 
   reg {
-    name = "Channel 1 control register";
-    prefix = "ch1_ctl";
+    name = "Channel 0 status register";
+    prefix = "ch0_sta";
 
     field {
-      name = "Solid state relays control for channel 1";
-      description = "Controls input voltage range, termination and DC offset error calibration\n0x23: 100mV range\n0x11: 1V range\n0x45: 10V range\n0x00: Open input\n0x42: 100mV range calibration\n0x40: 1V range calibration\n0x44: 10V range calibration\nBit3 is indepandant of the others and enables the 50ohms termination.";
-      prefix = "ssr";
+      name = "Channel 0 current ADC value";
+      description = "Current ADC raw value. The format is binary two's complement.";
+      prefix = "val";
       type = SLV;
-      size = 7;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      --clock = "fs_clk_i";
+      clock = "wb_clk_i";
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 25;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 control register";
+    prefix = "ch0_ctl";
+
+    field {
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
+      type = SLV;
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      align = 16;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -371,12 +298,13 @@ peripheral {
       size = 16;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
+      clock = "wb_clk_i";
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
@@ -386,75 +314,40 @@ peripheral {
   };
 
   reg {
-    name = "Channel 1 gain calibration register";
-    prefix = "ch1_gain";
+    name = "Channel 1 control register";
+    prefix = "ch1_ctl";
 
     field {
-      name = "Gain calibration for channel 1";
-      description = "Gain applied to all data coming from the ADC.\nFixed point format:\nBit 15 = 2^0, bit 14 = 2^(-1), bit 13 = 2^(-2), ... , bit 1 = 2^(-14), bit 0 = 2^(-15)";
-      prefix = "val";
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
       type = SLV;
-      size = 16;
+      size = 5;
+      align = 8;
       access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 1 offset calibration register";
-    prefix = "ch1_offset";
-
-    field {
-      name = "Offset calibration for channel 1";
-      description = "Offset applied to all data coming from the ADC. The format is binary two's complement.";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 2 control register";
-    prefix = "ch2_ctl";
-
-    field {
-      name = "Solid state relays control for channel 2";
-      description = "Controls input voltage range, termination and DC offset error calibration\n0x23: 100mV range\n0x11: 1V range\n0x45: 10V range\n0x00: Open input\n0x42: 100mV range calibration\n0x40: 1V range calibration\n0x44: 10V range calibration\nBit3 is indepandant of the others and enables the 50ohms termination.";
-      prefix = "ssr";
-      type = SLV;
-      size = 7;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 25;
+      align = 16;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -465,19 +358,20 @@ peripheral {
     prefix = "ch2_sta";
 
     field {
-      name = "Channel 2 current ACD value";
+      name = "Channel 2 current ADC value";
       description = "Current ADC raw value. The format is binary two's complement.";
       prefix = "val";
       type = SLV;
       size = 16;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
+      clock = "wb_clk_i";
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
@@ -487,75 +381,40 @@ peripheral {
   };
 
   reg {
-    name = "Channel 2 gain calibration register";
-    prefix = "ch2_gain";
+    name = "Channel 2 control register";
+    prefix = "ch2_ctl";
 
     field {
-      name = "Gain calibration for channel 2";
-      description = "Gain applied to all data coming from the ADC.\nFixed point format:\nBit 15 = 2^0, bit 14 = 2^(-1), bit 13 = 2^(-2), ... , bit 1 = 2^(-14), bit 0 = 2^(-15)";
-      prefix = "val";
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
       type = SLV;
-      size = 16;
+      size = 5;
+      align = 8;
       access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 2 offset calibration register";
-    prefix = "ch2_offset";
-
-    field {
-      name = "Offset calibration for channel 2";
-      description = "Offset applied to all data coming from the ADC. The format is binary two's complement.";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 3 control register";
-    prefix = "ch3_ctl";
-
-    field {
-      name = "Solid state relays control for channel 3";
-      description = "Controls input voltage range, termination and DC offset error calibration\n0x23: 100mV range\n0x11: 1V range\n0x45: 10V range\n0x00: Open input\n0x42: 100mV range calibration\n0x40: 1V range calibration\n0x44: 10V range calibration\nBit3 is indepandant of the others and enables the 50ohms termination.";
-      prefix = "ssr";
-      type = SLV;
-      size = 7;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 25;
+      align = 16;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -573,12 +432,13 @@ peripheral {
       size = 16;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
+      clock = "wb_clk_i";
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
@@ -588,154 +448,42 @@ peripheral {
   };
 
   reg {
-    name = "Channel 3 gain calibration register";
-    prefix = "ch3_gain";
+    name = "Channel 3 control register";
+    prefix = "ch3_ctl";
 
     field {
-      name = "Gain calibration for channel 3";
-      description = "Gain applied to all data coming from the ADC.\nFixed point format:\nBit 15 = 2^0, bit 14 = 2^(-1), bit 13 = 2^(-2), ... , bit 1 = 2^(-14), bit 0 = 2^(-15)";
-      prefix = "val";
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
       type = SLV;
-      size = 16;
+      size = 5;
+      align = 8;
       access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
     };
 
     field {
       name = "Reserved";
-      description = "Ignore on read, write with 0's";
+      description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
       size = 16;
+      align = 16;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
   };
-
-  reg {
-    name = "Channel 3 offset calibration register";
-    prefix = "ch3_offset";
-
-    field {
-      name = "Offset calibration for channel 3";
-      description = "Offset applied to all data coming from the ADC. The format is binary two's complement.";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 4 control register";
-    prefix = "ch4_ctl";
-
-    field {
-      name = "Solid state relays control for channel 4";
-      description = "Controls input voltage range, termination and DC offset error calibration\n0x23: 100mV range\n0x11: 1V range\n0x45: 10V range\n0x00: Open input\n0x42: 100mV range calibration\n0x40: 1V range calibration\n0x44: 10V range calibration\nBit3 is indepandant of the others and enables the 50ohms termination.";
-      prefix = "ssr";
-      type = SLV;
-      size = 7;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 25;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 4 status register";
-    prefix = "ch4_sta";
-
-    field {
-      name = "Channel 4 current ADC value";
-      description = "Current ADC raw value. The format is binary two's complement.";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-      clock = "fs_clk_i";
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 4 gain calibration register";
-    prefix = "ch4_gain";
-
-    field {
-      name = "Gain calibration for channel 4";
-      description = "Gain applied to all data coming from the ADC.\nFixed point format:\nBit 15 = 2^0, bit 14 = 2^(-1), bit 13 = 2^(-2), ... , bit 1 = 2^(-14), bit 0 = 2^(-15)";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Channel 4 offset calibration register";
-    prefix = "ch4_offset";
-
-    field {
-      name = "Offset calibration for channel 4";
-      description = "Offset applied to all data coming from the ADC. The format is binary two's complement.";
-      prefix = "val";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's";
-      prefix = "reserved";
-      type = SLV;
-      size = 16;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-  };
-
 };

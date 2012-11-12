@@ -27,8 +27,8 @@ use work.wishbone_pkg.all;
 use work.custom_wishbone_pkg.all;
 -- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
--- Register Bank
---use work.fmc516_wbgen2_pkg.all;
+-- Wishbone Register Interface
+use work.fmc516_wbgen2_pkg.all;
 -- Reset Synch
 use work.custom_common_pkg.all;
 
@@ -180,10 +180,12 @@ end wb_fmc516;
 
 architecture rtl of wb_fmc516 is
 
-  -- Constants
+  -- Number packet size counter bits
   constant c_counter_size                   : natural := f_ceil_log2(g_packet_size);
+  -- Number of ADC channels
+  constant c_num_channels                   : natural := 4;
 
-  -- Wishbone fanout constants
+  -- Wishbone fanout component (xwb_bus_fanout) constants
   -- Number of internal wishbone slaves
   constant c_num_int_slaves                 : natural := 7;
   -- Number of each addressing bits for each internal slave (word addressed)
@@ -191,10 +193,11 @@ architecture rtl of wb_fmc516 is
 
   -- Clock and reset signals
   signal sys_rst                            : std_logic;
+  signal sys_rst_sync_n                     : std_logic;
 
   -- FMC516 reg structure
-  --signal regs_in                          : t_fmc516_out_registers;
-  --signal regs_out                         : t_fmc516_in_registers;
+  signal regs_in                            : t_fmc516_out_registers;
+  signal regs_out                           : t_fmc516_in_registers;
 
   -- ADC Interface signals
   signal fs_clk                             : std_logic;
@@ -227,12 +230,39 @@ architecture rtl of wb_fmc516 is
   signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
 
   -- Wishbone fanout signals
-  signal wb_out                             : t_wishbone_slave_out_array(0 to c_num_int_slaves-1);
-  signal wb_in                              : t_wishbone_slave_in_array(0 to c_num_int_slaves-1);
+  --signal wb_out                             : t_wishbone_slave_out_array(0 to c_num_int_slaves-1);
+  signal wb_out                             : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
+  --signal wb_in                              : t_wishbone_slave_in_array(0 to c_num_int_slaves-1);
+  signal wb_in                              : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
 
   -- Trigger signals
   signal m2c_trig                           : std_logic;
+  signal m2c_trig_sync                      : std_logic;
   signal c2m_trig                           : std_logic;
+
+  -- Led signals
+  signal led0_extd_p                        : std_logic;
+  --signal led0_reg                           : std_logic;
+  signal led1_extd_p                        : std_logic;
+  --signal led1_reg                           : std_logic;
+
+  -- ADC Data/Clock delay registers for generate statements
+  type t_adc_dly is record
+    -- registers to signals coming from wishbone register interface
+    -- ext_load mode
+    clk_dly_reg : std_logic_vector(4 downto 0);
+    data_dly_reg : std_logic_vector(4 downto 0);
+    -- signals from wishbone register interface
+    clk_dly : std_logic_vector(4 downto 0);
+    data_dly : std_logic_vector(4 downto 0);
+    clk_load : std_logic;
+    data_load : std_logic;
+  end record;
+
+  type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly;
+
+  -- 4 Channel ADC Clock/Data delay
+  signal adc_dly_reg                        : t_adc_dly_reg_array(3 downto 0);
 
   -----------------------------
   -- Components declaration
@@ -325,25 +355,24 @@ architecture rtl of wb_fmc516 is
   end component;
 
   -- FMC516 Register Wishbone Interface
-  --component wb_fmc516_port
-  --  port (
-  --    rst_n_i                             : in     std_logic;
-  --    clk_sys_i                           : in     std_logic;
-  --    wb_adr_i                            : in     std_logic_vector(2 downto 0);
-  --    wb_dat_i                            : in     std_logic_vector(31 downto 0);
-  --    wb_dat_o                            : out    std_logic_vector(31 downto 0);
-  --    wb_cyc_i                            : in     std_logic;
-  --    wb_sel_i                            : in     std_logic_vector(3 downto 0);
-  --    wb_stb_i                            : in     std_logic;
-  --    wb_we_i                             : in     std_logic;
-  --    wb_ack_o                            : out    std_logic;
-  --    wb_stall_o                          : out    std_logic;
-  --    --clk_100Mhz_i                        : in     std_logic;
-  --    --clk_wb_i                            : in     std_logic;
-  --    regs_i                              : in     t_fmc150_in_registers;
-  --    regs_o                              : out    t_fmc150_out_registers
-  --  );
-  --end component;
+  component wb_fmc516_port
+  port (
+    rst_n_i                                 : in std_logic;
+    wb_clk_i                                : in std_logic;
+    wb_addr_i                               : in std_logic_vector(3 downto 0);
+    wb_data_i                               : in std_logic_vector(31 downto 0);
+    wb_data_o                               : out std_logic_vector(31 downto 0);
+    wb_cyc_i                                : in std_logic;
+    wb_sel_i                                : in std_logic_vector(3 downto 0);
+    wb_stb_i                                : in std_logic;
+    wb_we_i                                 : in std_logic;
+    wb_ack_o                                : out std_logic;
+    fs_clk_i                                : in std_logic;
+    sys_clk_i                               : in std_logic;
+    regs_i                                  : in  t_fmc516_in_registers;
+    regs_o                                  : out t_fmc516_out_registers
+  );
+  end component;
 
 begin
 
@@ -387,8 +416,8 @@ begin
   port map (
     clk_sys_i                               => sys_clk_i,
     rst_n_i                                 => sys_rst_n_i,
-    master_i                                => wb_slv_adp_in,
-    master_o                                => wb_slv_adp_out,
+    master_i                                => wb_slv_adp_out,
+    master_o                                => wb_slv_adp_in,
     sl_adr_i                                => resized_addr,
     sl_dat_i                                => wb_dat_i,
     sl_sel_i                                => wb_sel_i,
@@ -402,9 +431,10 @@ begin
 
   -- Decode only the LSB bits. In this case, at most, 13 LSB must be decoded
   -- (if byte addresses) or 11 LSB (if word addressed): 3 bits for internal
-  -- wishbone peripheral addressing (I2C, SPI, One-Wire) + 8 bits for each
-  -- register peripheral space. We have to consider the biggest value in order
-  -- to be possible to select BYTE addressing to this wishbone slave.
+  -- wishbone peripheral addressing (register interface, I2C (2x), SPI (2x),
+  -- One-Wire (2x)) + 8 bits for each register peripheral space (2^8 registers if
+  -- word addressed or 2^6 if byte addressed). We have to consider the biggest
+  -- value in order to be possible to select BYTE addressing to this wishbone slave.
   --
   -- By doing this zeroing we avoid the issue related to BYTE -> WORD  conversion
   -- slave addressing (possibly performed by the slave adapter component)
@@ -434,15 +464,15 @@ begin
   cmp_fmc516_bus_fanout : xwb_bus_fanout
   generic map (
     g_num_outputs                           => c_num_int_slaves,
-    g_bits_per_slave                        => c_num_bits_per_slave,      -- 8-bit slave word address slave address
+    g_bits_per_slave                        => c_num_bits_per_slave, -- 8-bit slave word address slave address
     g_address_granularity                   => WORD,
     g_slave_interface_mode                  => PIPELINED
   )
   port map (
     clk_sys_i                               => sys_clk_i,
     rst_n_i                                 => sys_rst_n_i,
-    slave_i                                 => wb_slv_adp_out,
-    slave_o                                 => wb_slv_adp_in,
+    slave_i                                 => wb_slv_adp_in,
+    slave_o                                 => wb_slv_adp_out,
     master_i                                => wb_out,
     master_o                                => wb_in
   );
@@ -450,25 +480,26 @@ begin
   -----------------------------
   -- FMC516 Register Wishbone Interface. Word addressed!
   -----------------------------
-  -- FMC516 register interface is the slave number 0, word addressed
-  --cmp_wb_fmc516_port : wb_fmc516_port
-  --port (
-  --  rst_n_i                                 => sys_clk_i,       --: in     std_logic;
-  --  clk_sys_i                               => sys_rst_n_i,     --: in     std_logic;
-  --  wb_adr_i                                => wb_in(0).addr,            --: in     std_logic_vector(4 downto 0);
-  --  wb_dat_i                                => wb_in(0).dat,            --: in     std_logic_vector(31 downto 0);
-  --  wb_dat_o                                => wb_out(0).dat,            --: out    std_logic_vector(31 downto 0);
-  --  wb_cyc_i                                => wb_in(0).cyc,            --: in     std_logic;
-  --  wb_sel_i                                => wb_in(0).sel,            --: in     std_logic_vector(3 downto 0);
-  --  wb_stb_i                                => wb_in(0).stb,           --: in     std_logic;
-  --  wb_we_i                                 => wb_in(0).we,            --: in     std_logic;
-  --  wb_ack_o                                => wb_out(0).ack,            --: out    std_logic;
-  --  wb_stall_o                              => wb_out(0).stall,            --: out    std_logic;
-  --  --clk_fs_i                                            --  : in     std_logic;
-  --  --clk_wb_i                                            --  : in     std_logic;
-  --  regs_i                                  => regs_out,          --: in     t_fmc516_in_registers;
-  --  regs_o                                  => regs_in,           --: out    t_fmc516_out_registers
-  --);
+  --FMC516 register interface is the slave number 0, word addressed
+  cmp_wb_fmc516_port : wb_fmc516_port
+  port map(
+    rst_n_i                                  => sys_rst_n_i,
+    clk_sys_i                                => sys_clk_i,
+    wb_adr_i                                 => wb_in(0).addr,
+    wb_dat_i                                 => wb_in(0).dat,
+    wb_dat_o                                 => wb_out(0).dat,
+    wb_cyc_i                                 => wb_in(0).cyc,
+    wb_sel_i                                 => wb_in(0).sel,
+    wb_stb_i                                 => wb_in(0).stb,
+    wb_we_i                                  => wb_in(0).we,
+    wb_ack_o                                 => wb_out(0).ack,
+    wb_stall_o                               => wb_out(0).stall,
+    fs_clk_i                                 => fs_clk,
+    -- Check if this clock is necessary!
+    wb_clk_i                                 => sys_clk_i,
+    regs_i                                   => regs_out,
+    regs_o                                   => regs_in
+  );
 
   -----------------------------
   -- ADC Interface
@@ -525,25 +556,25 @@ begin
     -- ADC Delay signals.
     -----------------------------
     -- Pulse this to update all delay values to the corresponding adc_xxx_dly_val_i
-    adc_dly_pulse_i                         => '0',
+    adc_dly_pulse_i                         => regs_in.adc_ctl_update_dly_o,
 
-    adc_clk0_dly_val_i                      => "00000",
-    adc_clk0_dly_val_o                      => open,
-    adc_clk1_dly_val_i                      => "00000",
-    adc_clk1_dly_val_o                      => open,
-    adc_clk2_dly_val_i                      => "00000",
-    adc_clk2_dly_val_o                      => open,
-    adc_clk3_dly_val_i                      => "00000",
-    adc_clk3_dly_val_o                      => open,
+    adc_clk0_dly_val_i                      => adc_dly_reg(0).clk_dly_reg,
+    adc_clk0_dly_val_o                      => regs_out.ch0_ctl_clk_chain_dly_i,  -- read from clock register delay
+    adc_clk1_dly_val_i                      => radc_dly_reg(1).clk_dly_reg,
+    adc_clk1_dly_val_o                      => regs_out.ch1_ctl_clk_chain_dly_i,  -- read from clock register delay
+    adc_clk2_dly_val_i                      => adc_dly_reg(2).clk_dly_reg,
+    adc_clk2_dly_val_o                      => regs_out.ch2_ctl_clk_chain_dly_i,  -- read from clock register delay
+    adc_clk3_dly_val_i                      => adc_dly_reg(3).clk_dly_reg,
+    adc_clk3_dly_val_o                      => regs_out.ch3_ctl_clk_chain_dly_i,  -- read from clock register delay
 
-    adc_data_ch0_dly_val_i                  => "00000",
-    adc_data_ch0_dly_val_o                  => open,
-    adc_data_ch1_dly_val_i                  => "00000",
-    adc_data_ch1_dly_val_o                  => open,
-    adc_data_ch2_dly_val_i                  => "00000",
-    adc_data_ch2_dly_val_o                  => open,
-    adc_data_ch3_dly_val_i                  => "00000",
-    adc_data_ch3_dly_val_o                  => open,
+    adc_data_ch0_dly_val_i                  => adc_dly_reg(0).data_dly_reg,
+    adc_data_ch0_dly_val_o                  => regs_out.ch0_ctl_data_chain_dly_i, -- read from data register delay
+    adc_data_ch1_dly_val_i                  => adc_dly_reg(1).data_dly_reg,
+    adc_data_ch1_dly_val_o                  => regs_out.ch1_ctl_data_chain_dly_i, -- read from data register delay
+    adc_data_ch2_dly_val_i                  => adc_dly_reg(2).data_dly_reg,
+    adc_data_ch2_dly_val_o                  => regs_out.ch2_ctl_data_chain_dly_i, -- read from data register delay
+    adc_data_ch3_dly_val_i                  => adc_dly_reg(3).data_dly_reg,
+    adc_data_ch3_dly_val_o                  => regs_out.ch3_ctl_data_chain_dly_i, -- read from data register delay
 
     -----------------------------
     -- ADC output signals.
@@ -564,13 +595,60 @@ begin
   adc_clk_o                                 <= fs_clk;
 
   -----------------------------
+  -- Delay regs interface <-> ADC interface.
+  -----------------------------
+  -- Clock/Data Chain delays
+
+  -- Signal mangling for generate statements
+  adc_dly_reg(0).clk_load <= regs_in.ch0_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(0).data_load <= regs_in.ch0_ctl_data_chain_dly_load_o;
+  adc_dly_reg(0).clk_dly <= regs_in.ch0_ctl_clk_chain_dly_o;
+  adc_dly_reg(0).data_dly <= regs_in.ch0_ctl_data_chain_dly_o;
+
+  adc_dly_reg(1).clk_load <= regs_in.ch1_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(1).data_load <= regs_in.ch1_ctl_data_chain_dly_load_o;
+  adc_dly_reg(1).clk_dly <= regs_in.ch1_ctl_clk_chain_dly_o;
+  adc_dly_reg(1).data_dly <= regs_in.ch1_ctl_data_chain_dly_o;
+
+  adc_dly_reg(2).clk_load <= regs_in.ch2_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(2).data_load <= regs_in.ch2_ctl_data_chain_dly_load_o;
+  adc_dly_reg(2).clk_dly <= regs_in.ch2_ctl_clk_chain_dly_o;
+  adc_dly_reg(2).data_dly <= regs_in.ch2_ctl_data_chain_dly_o;
+
+  adc_dly_reg(3).clk_load <= regs_in.ch3_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(3).data_load <= regs_in.ch3_ctl_data_chain_dly_load_o;
+  adc_dly_reg(3).clk_dly <= regs_in.ch3_ctl_clk_chain_dly_o;
+  adc_dly_reg(3).data_dly <= regs_in.ch3_ctl_data_chain_dly_o;
+
+  -- Generate statements for all ADC channels (clock + data chains)
+  gen_adc_dly : for i in c_num_channels-1 generate
+    p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
+    begin
+      if sys_rst_sync_n = '0' then
+        adc_dly_reg(i).clk_dly_reg <= (others => '0');
+        adc_dly_reg(i).data_dly_reg <= (others => '0');
+      elsif rising_edge(sys_clk_i) then
+        -- write to clock register delay
+        if adc_dly_reg(i).clk_load = '1' then
+          adc_dly_reg(i).clk_dly_reg <= adc_dly_reg(i).clk_dly;
+        end if;
+
+        -- write to data register delay
+        if adc_dly_reg(i).data_load = '1' then
+          adc_dly_reg(i).data_dly_reg <= adc_dly_reg(i).data_dly;
+        end if;
+      end if;
+    end process;
+  end generate;
+
+  -----------------------------
   -- Trigger Interface. Does not do anything yet!
   -----------------------------
   -- Trigger buffers and Synchronization
   cmp_ext_trig_ibufds : ibufds
   generic map(
-      IOSTANDARD                           	=> "LVDS_25",
-      DIFF_TERM                             => TRUE
+    IOSTANDARD                           	=> "LVDS_25",
+    DIFF_TERM                             => TRUE
   )
   port map (
     O  => m2c_trig,
@@ -586,17 +664,17 @@ begin
     g_output_polarity                       => '0',         -- positive pulse
     g_output_retrig                         => false,
     g_output_length                         => 1            -- clk_i tick
-    )
+  )
   port map(
     rst_n_i                                 => fs_rst_n,
     clk_i                                   => fs_clk,
-    input_polarity_i                        => hw_trig_pol,
+    input_polarity_i                        => regs_in.trig_cfg_hw_trig_pol_o,
     pulse_i                                 => m2c_trig,
     pulse_o                                 => m2c_trig_sync
   );
 
-  -- Output external trigger to other logic
-  trig_hw_o                                 <= m2c_trig_sync;
+  -- Output external trigger to other logic. Hardware trigger enable
+  trig_hw_o                                 <= m2c_trig_sync and regs_in.trig_cfg_hw_trig_en_o;
 
   cmp_ext_trig_obufds : obufds
   generic map(
@@ -627,8 +705,12 @@ begin
     -- input pulse (synchronous to clk_i)
     pulse_i                                 => ?,
     -- extended output pulse
-    extended_o                              => fmc_leds_o(0)
+    extended_o                              => led0_extd_p
   );
+
+  -- Output extended pulse led from ... or register interface manual led control
+  fmc_leds_o(0) <= led0_extd_p or regs_in.fmc_ctl_led_0_o;
+
 
   cmp_led1_extende_pulse : gc_extend_pulse
   generic map (
@@ -642,7 +724,10 @@ begin
     -- input pulse (synchronous to clk_i)
     pulse_i                                 => ?,
     -- extended output pulse
-    extended_o                              => fmc_leds_o(1)
+    extended_o                              => led1_extd_p fmc_leds_o(1)
   );
+
+  -- Output extended pulse led from ... or register interface manual led control
+  fmc_leds_o(1) <= led1_extd_p or regs_in.fmc_ctl_led_1_o;
 
 end rtl;
