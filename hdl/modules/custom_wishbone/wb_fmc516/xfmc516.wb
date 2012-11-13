@@ -1,6 +1,6 @@
 peripheral {
-  name = "FMC ADC 100MS/s core registers";
-  description = "Wishbone slave for FMC ADC 100MS/s core";
+  name = "FMC ADC 250MS/s core registers";
+  description = "Wishbone slave for FMC ADC 250MS/s core";
   hdl_entity = "wb_fmc516_port";
   prefix = "fmc516";
 
@@ -27,11 +27,20 @@ peripheral {
     };
 
     field {
+      name = "Manual LED 1";
+      description = "Manual control of the front panel LED 1";
+      prefix = "led_1";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Internal/External clock distribution selection";
       description = "Select between internal VCXO or external reference clock \
                       write 0: internal reference \
                       write 1: external reference";
-      prefix = "led_1";
+      prefix = "clk_sel";
       type = BIT;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -42,7 +51,7 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 29;
+      size = 28;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };

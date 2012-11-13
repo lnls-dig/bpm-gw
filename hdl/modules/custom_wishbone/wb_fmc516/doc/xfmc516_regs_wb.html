@@ -28,8 +28,8 @@
 </HEAD>
 <BODY>
 <h1 class="heading">wb_fmc516_port</h1>
-<h3>FMC ADC 100MS/s core registers</h3>
-<p>Wishbone slave for FMC ADC 100MS/s core</p>
+<h3>FMC ADC 250MS/s core registers</h3>
+<p>Wishbone slave for FMC ADC 250MS/s core</p>
 <h3>Contents:</h3>
 <span style="margin-left: 0px; ">1. <A href="#sect_1_0">Memory map summary</a></span><br/>
 <span style="margin-left: 0px; ">2. <A href="#sect_2_0">HDL symbol</a></span><br/>
@@ -370,10 +370,10 @@ wb_dat_o[31:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_reserved_o[28:0]
+fmc516_fmc_ctl_clk_sel_o
 </td>
 <td  class="td_arrow_right">
-&rArr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -384,13 +384,13 @@ fmc516_fmc_ctl_reserved_o[28:0]
 wb_cyc_i
 </td>
 <td  class="td_sym_center">
-&nbsp;
+
 </td>
 <td  class="td_pblock_right">
-
+fmc516_fmc_ctl_reserved_o[27:0]
 </td>
 <td  class="td_arrow_right">
-
+&rArr;
 </td>
 </tr>
 <tr>
@@ -401,10 +401,10 @@ wb_cyc_i
 wb_sel_i[3:0]
 </td>
 <td  class="td_sym_center">
-
+&nbsp;
 </td>
 <td  class="td_pblock_right">
-<b>Status register:</b>
+
 </td>
 <td  class="td_arrow_right">
 
@@ -421,10 +421,10 @@ wb_stb_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_mmcm_locked_i
+<b>Status register:</b>
 </td>
 <td  class="td_arrow_right">
-&larr;
+
 </td>
 </tr>
 <tr>
@@ -438,7 +438,7 @@ wb_we_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_pwr_good_i
+fmc516_fmc_sta_mmcm_locked_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -455,7 +455,7 @@ wb_ack_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_prst_i
+fmc516_fmc_sta_pwr_good_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -467,6 +467,23 @@ fmc516_fmc_sta_prst_i
 </td>
 <td  class="td_pblock_left">
 wb_stall_o
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_fmc_sta_prst_i
+</td>
+<td  class="td_arrow_right">
+&larr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
 </td>
 <td  class="td_sym_center">
 
@@ -1668,7 +1685,7 @@ FMC_CTL
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[28:21]
+RESERVED[27:20]
 </td>
 <td >
 
@@ -1722,7 +1739,7 @@ RESERVED[28:21]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[20:13]
+RESERVED[19:12]
 </td>
 <td >
 
@@ -1776,7 +1793,7 @@ RESERVED[20:13]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[12:5]
+RESERVED[11:4]
 </td>
 <td >
 
@@ -1829,8 +1846,11 @@ RESERVED[12:5]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=5  class="td_field">
-RESERVED[4:0]
+<td style="border: solid 1px black;" colspan=4  class="td_field">
+RESERVED[3:0]
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+CLK_SEL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 LED_1
@@ -1840,9 +1860,6 @@ LED_0
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TEST_DATA_EN
-</td>
-<td >
-
 </td>
 <td >
 
@@ -1866,6 +1883,10 @@ LED_0
 <br>Manual control of the front panel LED 0
 <li><b>
 LED_1
+</b>[<i>read/write</i>]: Manual LED 1
+<br>Manual control of the front panel LED 1
+<li><b>
+CLK_SEL
 </b>[<i>read/write</i>]: Internal/External clock distribution selection
 <br>Select between internal VCXO or external reference clock <br>                      write 0: internal reference <br>                      write 1: external reference
 <li><b>

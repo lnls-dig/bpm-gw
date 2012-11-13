@@ -25,47 +25,47 @@ use unisim.vcomponents.all;
 
 library work;
 use work.genram_pkg.all;
+use work.fmc516_pkg.all;
 
 entity fmc516_adc_data is
 generic
 (
-  g_adc_bits                                : natural := 16;
   g_default_adc_data_delay                  : natural := 0;
   g_sim                                     : integer := 0
-);  
-port  
-( 
+);
+port
+(
   sys_clk_i                                 : in std_logic;
   sys_rst_n_i                               : in std_logic;
-  
+
   -----------------------------
   -- External ports
   -----------------------------
-  
+
   -- DDR ADC data channels.
-  adc_data_p_i                              : in std_logic_vector(g_adc_bits/2 - 1 downto 0);
-  adc_data_n_i                              : in std_logic_vector(g_adc_bits/2 - 1 downto 0);
-  
+  adc_data_p_i                              : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+  adc_data_n_i                              : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+
   -----------------------------
   -- Input Clocks from fmc516_adc_clk signals
   -----------------------------
   adc_clk_bufio_i                           : in std_logic;
-  adc_clk_bufr_i                            : in std_logic;    
+  adc_clk_bufr_i                            : in std_logic;
   adc_clk_bufg_i                            : in std_logic;
   adc_clk_bufg_rst_n_i                      : in std_logic;
-    
+
   -----------------------------
   -- ADC Data Delay signals
   -----------------------------
-  -- Pulse this to update the delay value 
+  -- Pulse this to update the delay value
   adc_data_dly_pulse_i                      : in std_logic;
   adc_data_dly_val_i                        : in std_logic_vector(4 downto 0);
   adc_data_dly_val_o                        : out std_logic_vector(4 downto 0);
-    
+
   -----------------------------
   -- ADC output signals
   -----------------------------
-  adc_data_o                                : out std_logic_vector(g_adc_bits-1 downto 0);
+  adc_data_o                                : out std_logic_vector(c_num_adc_bits-1 downto 0);
   adc_data_valid_o                          : out std_logic;
   adc_clk_o                                 : out std_logic
 );
@@ -74,20 +74,19 @@ end fmc516_adc_data;
 
 architecture rtl of fmc516_adc_data is
 
-  alias c_adc_bits                      		is g_adc_bits;
   -- Small fifo depth. This FIFO is intended just to cross phase-mismatched
   -- clock domains (BUFR -> BUFG), but frequency locked
-  constant async_fifo_size                  : natural := 4;
+  constant async_fifo_size                  : natural := 32;
 
   -- ADC data signals
-  signal adc_data_ddr_ibufds                : std_logic_vector(c_adc_bits/2 - 1 downto 0);
-  signal adc_data_ddr_dly                   : std_logic_vector(c_adc_bits/2 - 1 downto 0);
-  signal adc_data_sdr                       : std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_ddr_ibufds                : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+  signal adc_data_ddr_dly                   : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+  signal adc_data_sdr                       : std_logic_vector(c_num_adc_bits-1 downto 0);
   -- (* IOB = TRUE *)
   --attribute IOB : string
 	--attribute IOB of adc_data_ff: signal is "TRUE";
-  signal adc_data_ff                        : std_logic_vector(c_adc_bits-1 downto 0);
-  signal adc_data_bufg_sync                 : std_logic_vector(c_adc_bits-1 downto 0);
+  signal adc_data_ff                        : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
   -- FIFO signals
   signal adc_fifo_full                      : std_logic;
@@ -96,15 +95,15 @@ architecture rtl of fmc516_adc_data is
   signal adc_fifo_empty                     : std_logic;
 
 	-- Valid ADC signals
-  signal adc_data_valid                     : std_logic;  
-  signal adc_data_valid_d                   : std_logic;
+  signal adc_data_valid                     : std_logic;
+  signal adc_data_valid_d1                  : std_logic;
 begin
 
   -----------------------------
   -- ADC data signal datapath
   -----------------------------
 
-  gen_adc_data : for i in 0 to (c_adc_bits/2)-1 generate
+  gen_adc_data : for i in 0 to (c_num_adc_bits/2)-1 generate
     -- Diferential Clock Buffers for adc input
     cmp_ibufds_adc_data : ibufds
     generic map(
@@ -123,8 +122,8 @@ begin
       IDELAY_VALUE                          => g_default_adc_data_delay,
       SIGNAL_PATTERN                        => "DATA",
       DELAY_SRC                             => "I"
-    )	                        
-    port map(	                        
+    )
+    port map(
       idatain     	                        => adc_data_ddr_ibufds(i),
       dataout     	                        => adc_data_ddr_dly(i),
       c           	                        => sys_clk_i,
@@ -156,7 +155,7 @@ begin
       s                                     => '0'
     );
   end generate;
-  
+
   -- Data acquisition FF. Should we let the synthesis tool decide if it should
   -- be placed inside IOB or force them?
   -- In Virtex-6 BUFIO and BUFR are guaranteed to by phase-matched as they are
@@ -173,12 +172,12 @@ begin
   -- a clock domain crossing.
   cmp_adc_data_async_fifo	: generic_async_fifo
   generic map(
-    g_data_width                            => c_adc_bits,
+    g_data_width                            => c_num_adc_bits,
     g_size                                  => async_fifo_size
 	)
   port map(
     rst_n_i                                 => sys_rst_n_i,
-    
+
     -- write port
     clk_wr_i                                => adc_clk_bufr_i,
     d_i                                     => adc_data_ff,
@@ -201,8 +200,9 @@ begin
   -- data on q_o port
   p_gen_valid : process (adc_clk_bufg_i, adc_clk_bufg_rst_n_i)
   begin
-    if sys_rst_n_i = '0' then
+    if adc_clk_bufg_rst_n_i = '0' then
       adc_data_valid <= '0';
+      adc_data_valid_d1 <= '0';
     elsif rising_edge (adc_clk_bufg_i) then
       adc_data_valid <= adc_fifo_rd;
       adc_data_valid_d1 <= adc_data_valid;

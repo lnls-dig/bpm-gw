@@ -35,15 +35,15 @@ port
 (
   sys_clk_i                                 : in std_logic;
   sys_rst_i                                 : in std_logic;
-			
+
   -----------------------------
   -- External ports
   -----------------------------
-	
+
   -- ADC clocks. One clock per ADC channel
   adc_clk_p_i                               : in std_logic;
   adc_clk_n_i                               : in std_logic;
-	
+
   -----------------------------
   -- ADC Delay signals.
   -----------------------------
@@ -51,7 +51,7 @@ port
   adc_clk_dly_pulse_i                       : in std_logic;
   adc_clk_dly_val_i                         : in std_logic_vector(4 downto 0);
   adc_clk_dly_val_o                         : out std_logic_vector(4 downto 0);
-	
+
   -----------------------------
   -- ADC output signals.
   -----------------------------
@@ -69,12 +69,9 @@ end fmc516_adc_clk;
 
 architecture rtl of fmc516_adc_clk is
 
-  constant c_num_adc_channels               : natural := 4;
-
   -- Clock and reset signals
   signal adc_clk_ibufgds                    : std_logic;
   signal adc_clk_ibufgds_dly                : std_logic;
-  signal sys_rst                            : std_logic;
 
   -- Clock internal signals interconnect
   signal adc_clk_bufio                      : std_logic;
@@ -85,7 +82,7 @@ architecture rtl of fmc516_adc_clk is
   signal adc_clk_fbin                       : std_logic;
   signal adc_clk_fbout                      : std_logic;
   signal adc_clk_mmcm_2x_out                : std_logic;
-  signal adc_clk_mmcm_out                   : std_logic; 
+  signal adc_clk_mmcm_out                   : std_logic;
 
 begin
   -----------------------------
@@ -107,8 +104,8 @@ begin
 
   -- Delay for Clock Buffers
   -- From Virtex-6 SelectIO Datasheet:
-  -- Sets the type of tap delay line. DEFAULT delay 
-  -- guarantees zero hold times. FIXED delay sets a 
+  -- Sets the type of tap delay line. DEFAULT delay
+  -- guarantees zero hold times. FIXED delay sets a
   -- static delay value. VAR_LOADABLE dynamically
   -- loads tap values. VARIABLE delay dynamically
   -- adjusts the delay value.
@@ -151,7 +148,7 @@ begin
   -- BUFR (better switching characteristics than BUFG).
   -- It can drive logic elements (block ram, CLB, DSP tiles,
   -- etc) up to 6 clock regions.
-  cmp_adc_clk_bufr : bufr  
+  cmp_adc_clk_bufr : bufr
   generic map(
     SIM_DEVICE 	=> "VIRTEX6",
     BUFR_DIVIDE => "BYPASS"
@@ -235,7 +232,7 @@ begin
       PWRDWN                                => '0',
       RST                                   => sys_rst_i
   );
-  
+
   -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
   cmp_adc_clk_fb_bufg : BUFG
   port map(
