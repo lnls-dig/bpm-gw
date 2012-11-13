@@ -11,7 +11,7 @@ use work.custom_wishbone_pkg.all;
 -- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
 -- Register Bank
-use work.fmc150_wbgen2_pkg.all;
+use work.fmc516_pkg.all;
 
 entity wb_fmc516_tb is
 end wb_fmc516_tb;
@@ -27,9 +27,9 @@ architecture sim of wb_fmc516_tb is
 
   constant c_sim_time                       : time := 10000.00 ns;
   -- Specify clock chain 1 as 4.0 ns period = 250 MHz
-  constant c_adc_clock_values               : t_clock_values_array(3 downto 0) :=
-        (3 => 0.0, 2 => 0.0, 1 => 4.0, 0 => 0.0);
 
+  constant c_adc_clks_period                : t_clk_values_array :=
+          (3 => 0.0, 2 => 0.0, 1 => 4.0, 0 => 0.0);
   signal g_end_simulation                   : boolean   := false; -- Set to true to halt the simulation
 
   -- Clock signals
@@ -196,10 +196,9 @@ begin  -- sim
   generic map(
     --g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
     --g_address_granularity                   : t_wishbone_address_granularity := WORD;
-    g_adc_clock_period_values               => c_adc_clock_values,
-    g_use_clock_chains                      => "0010",
+    g_adc_clk_period_values                 => c_adc_clks_period,
+    g_use_clk_chains                        => "0010",
     g_use_data_chains                       => "1111",
-    --g_adc_bits															=> 16,
     --g_packet_size                           : natural := 32;
     g_sim                                   => 1
   )
