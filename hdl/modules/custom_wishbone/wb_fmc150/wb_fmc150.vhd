@@ -152,7 +152,7 @@ end wb_fmc150;
 architecture rtl of wb_fmc150 is
 
     -- Constants
-    constant c_counter_size                 : natural := f_packet_size(g_packet_size);
+    constant c_counter_size                 : natural := f_packet_num_bits(g_packet_size);
 
     -----------------------------------------------------------------------------------------------
     -- IP / user logic interface signals

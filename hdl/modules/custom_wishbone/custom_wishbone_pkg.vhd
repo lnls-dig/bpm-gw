@@ -4,20 +4,9 @@ use ieee.std_logic_1164.all;
 library work;
 use work.wishbone_pkg.all;
 use work.wb_stream_pkg.all;
+use work.fmc516_pkg.all;
 
 package custom_wishbone_pkg is
-
-  --------------------------------------------------------------------
-  -- Type definitions
-  --------------------------------------------------------------------
-  -- generic type
-  type t_clock_values_array is array (natural range <>) of real;
-
-  --------------------------------------------------------------------
-  -- Constants
-  --------------------------------------------------------------------
-  constant dummy_clocks : t_clock_values_array(3 downto 0) :=
-          (3 => 0.0, 2 => 0.0, 1 => 4.0, 0 => 0.0);
 
   --------------------------------------------------------------------
   -- Components
@@ -25,7 +14,7 @@ package custom_wishbone_pkg is
 
   component wb_dma_interface
   generic(
-        g_ovf_counter_width                   : natural := 10
+    g_ovf_counter_width                   : natural := 10
   );
   port(
     -- Asynchronous Reset signal
@@ -341,10 +330,9 @@ package custom_wishbone_pkg is
   (
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
-    g_adc_clock_period_values                 : t_clock_values_array(3 downto 0) := dummy_clocks;
-    g_use_clock_chains                        : std_logic_vector(3 downto 0) := "0010";
-    g_use_data_chains                         : std_logic_vector(3 downto 0) := "1111";
-    g_adc_bits                                : natural := 16;
+    g_adc_clk_period_values                   : t_clk_values_array := dummy_clks;
+    g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
+    g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
     g_packet_size                             : natural := 32;
     g_sim                                     : integer := 0
   );

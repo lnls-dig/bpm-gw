@@ -74,9 +74,9 @@ package wb_stream_pkg is
 
   function f_marshall_wbs_status (stat  : t_wbs_status_reg) return std_logic_vector;
   function f_unmarshall_wbs_status(stat : std_logic_vector) return t_wbs_status_reg;
-  
-  function f_packet_size(packet_size : natural) return natural;
-  
+
+  function f_packet_num_bits(packet_size : natural) return natural;
+
   constant cc_dummy_wbs_addr : std_logic_vector(c_wbs_address_width-1 downto 0):=
     (others => 'X');
   constant cc_dummy_wbs_dat : std_logic_vector(c_wbs_data_width-1 downto 0) :=
@@ -88,18 +88,18 @@ package wb_stream_pkg is
     ('0', '0', '0', '0');
   constant cc_dummy_snk_in : t_wbs_sink_in :=
     (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
-    
+
   -- Components
   component xwb_stream_source
   port (
     clk_i                                   : in std_logic;
     rst_n_i                                 : in std_logic;
-  
-    -- Wishbone Fabric Interface I/O  
+
+    -- Wishbone Fabric Interface I/O
     src_i                                   : in  t_wbs_source_in;
     src_o                                   : out t_wbs_source_out;
-  
-    -- Decoded & buffered logic 
+
+    -- Decoded & buffered logic
     addr_i                                  : in  std_logic_vector(c_wbs_address_width-1 downto 0);
     data_i                                  : in  std_logic_vector(c_wbs_data_width-1 downto 0);
     dvalid_i                                : in  std_logic;
@@ -110,7 +110,7 @@ package wb_stream_pkg is
     dreq_o                                  : out std_logic
   );
   end component;
-  
+
   component xwb_stream_sink
   port (
     clk_i                                   : in std_logic;
@@ -134,10 +134,10 @@ package wb_stream_pkg is
 
 end wb_stream_pkg;
 
-package body wb_stream_pkg is  
-  
+package body wb_stream_pkg is
+
   function f_marshall_wbs_status(stat : t_wbs_status_reg)
-    return std_logic_vector 
+    return std_logic_vector
   is
     -- Wishbone bus data_width is at least 16 bits
     variable tmp : std_logic_vector(c_wbs_data_width-1 downto 0);
@@ -149,9 +149,9 @@ package body wb_stream_pkg is
     tmp(15 downto 8) := stat.match_class;
     return tmp;
   end;
-  
-  function f_unmarshall_wbs_status(stat : std_logic_vector) 
-    return t_wbs_status_reg 
+
+  function f_unmarshall_wbs_status(stat : std_logic_vector)
+    return t_wbs_status_reg
   is
     variable tmp : t_wbs_status_reg;
   begin
@@ -161,22 +161,22 @@ package body wb_stream_pkg is
     tmp.has_crc     := stat(3);
     tmp.match_class := stat(15 downto 8);
     return tmp;
-  end;
-       
-  function f_packet_size(packet_size : natural)
+  end f_unmarshall_wbs_status;
+
+  function f_packet_num_bits(packet_size : natural)
     return natural
   is
-    variable result  : natural;
+    -- Slightly different behaviour than the one located at wishbone_pkg.vhd
+    function f_ceil_log2(x : natural) return natural is
+    begin
+      if x <= 2
+      then return 1;
+      else return f_ceil_log2((x+1)/2) +1;
+      end if;
+    end f_ceil_log2;
+
   begin
-    result := f_ceil_log2(packet_size);
-    
-    -- Avoid returning 0 as the couter must have a
-    -- positive value (>1)
-    if result = 0 then
-      result := 1;      
-    end if;
-    
-    return result;
-  end f_packet_size;
+    return f_ceil_log2(packet_size);
+  end f_packet_num_bits;
 
 end wb_stream_pkg;
