@@ -450,8 +450,12 @@ package custom_wishbone_pkg is
     -----------------------------
     -- General ADC output signals
     -----------------------------
+    -- Trigger to other FPGA logic
     trig_hw_o                                 : out std_logic;
     trig_hw_i                                 : in std_logic;
+
+    -- General board status
+    fmc_mmcm_lock_o                           : out std_logic;
 
     -----------------------------
     -- Wishbone Streaming Interface Source

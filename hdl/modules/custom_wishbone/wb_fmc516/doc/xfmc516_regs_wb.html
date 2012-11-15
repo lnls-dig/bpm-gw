@@ -34,8 +34,8 @@
 <span style="margin-left: 0px; ">1. <A href="#sect_1_0">Memory map summary</a></span><br/>
 <span style="margin-left: 0px; ">2. <A href="#sect_2_0">HDL symbol</a></span><br/>
 <span style="margin-left: 0px; ">3. <A href="#sect_3_0">Register description</a></span><br/>
-<span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">Control register</a></span><br/>
-<span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Status register</a></span><br/>
+<span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">Status register</a></span><br/>
+<span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Control register</a></span><br/>
 <span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Trigger configuration</a></span><br/>
 <span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Global ADC Status register</a></span><br/>
 <span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Global ADC Control register</a></span><br/>
@@ -74,13 +74,13 @@ C prefix
 REG
 </td>
 <td >
-<A href="#FMC_CTL">Control register</a>
+<A href="#FMC_STA">Status register</a>
 </td>
 <td  class="td_code">
-fmc516_fmc_ctl
+fmc516_fmc_sta
 </td>
 <td  class="td_code">
-FMC_CTL
+FMC_STA
 </td>
 </tr>
 <tr class="tr_even">
@@ -91,13 +91,13 @@ FMC_CTL
 REG
 </td>
 <td >
-<A href="#FMC_STA">Status register</a>
+<A href="#FMC_CTL">Control register</a>
 </td>
 <td  class="td_code">
-fmc516_fmc_sta
+fmc516_fmc_ctl
 </td>
 <td  class="td_code">
-FMC_STA
+FMC_CTL
 </td>
 </tr>
 <tr class="tr_odd">
@@ -302,7 +302,7 @@ rst_n_i
 
 </td>
 <td  class="td_pblock_right">
-<b>Control register:</b>
+<b>Status register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -319,10 +319,10 @@ clk_sys_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_test_data_en_o
+fmc516_fmc_sta_lmk_locked_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -336,10 +336,10 @@ wb_adr_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_led_0_o
+fmc516_fmc_sta_mmcm_locked_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -353,10 +353,10 @@ wb_dat_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_led_1_o
+fmc516_fmc_sta_pwr_good_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -370,10 +370,10 @@ wb_dat_o[31:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_clk_sel_o
+fmc516_fmc_sta_prst_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -387,10 +387,10 @@ wb_cyc_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_reserved_o[27:0]
+fmc516_fmc_sta_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
-&rArr;
+&lArr;
 </td>
 </tr>
 <tr>
@@ -421,7 +421,7 @@ wb_stb_i
 
 </td>
 <td  class="td_pblock_right">
-<b>Status register:</b>
+<b>Control register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -438,10 +438,10 @@ wb_we_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_mmcm_locked_i
+fmc516_fmc_ctl_test_data_en_o
 </td>
 <td  class="td_arrow_right">
-&larr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -455,10 +455,10 @@ wb_ack_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_pwr_good_i
+fmc516_fmc_ctl_led_0_o
 </td>
 <td  class="td_arrow_right">
-&larr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -472,10 +472,10 @@ wb_stall_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_prst_i
+fmc516_fmc_ctl_led_1_o
 </td>
 <td  class="td_arrow_right">
-&larr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -489,10 +489,27 @@ fmc516_fmc_sta_prst_i
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_sta_reserved_i[28:0]
+fmc516_fmc_ctl_clk_sel_o
 </td>
 <td  class="td_arrow_right">
-&lArr;
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_fmc_ctl_reserved_o[27:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -1620,15 +1637,15 @@ fmc516_ch3_ctl_reserved_o[15:0]
 </table>
 
 <h3><a name="sect_3_0">3. Register description</a></h3>
-<a name="FMC_CTL"></a>
-<h3><a name="sect_3_1">3.1. Control register</a></h3>
+<a name="FMC_STA"></a>
+<h3><a name="sect_3_1">3.1. Status register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_fmc_ctl
+fmc516_fmc_sta
 </td>
 </tr>
 <tr>
@@ -1644,7 +1661,7 @@ fmc516_fmc_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-FMC_CTL
+FMC_STA
 </td>
 </tr>
 <tr>
@@ -1653,6 +1670,280 @@ FMC_CTL
 </td>
 <td  class="td_code">
 0x0
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RESERVED[27:20]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RESERVED[19:12]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RESERVED[11:4]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=4  class="td_field">
+RESERVED[3:0]
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+PRST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+PWR_GOOD
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+MMCM_LOCKED
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+LMK_LOCKED
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+LMK_LOCKED
+</b>[<i>read-only</i>]: LMK (Clock Distribution CI) locked status
+<br>LMK locked status.  <br>                      read 0: not locked  <br>                      read 1: locked
+<li><b>
+MMCM_LOCKED
+</b>[<i>read-only</i>]: MMCM locked status
+<br>ADC Clock Chain MMCM locked status.  <br>                      read 0: not locked  <br>                      read 1: locked
+<li><b>
+PWR_GOOD
+</b>[<i>read-only</i>]: FMC power good status
+<br>FMC power good status. <br>                      read 0: power not good  <br>                      read 1: power good
+<li><b>
+PRST
+</b>[<i>read-only</i>]: FMC board present status
+<br>FMC board present status.<br>0: not present<br>1: present
+<li><b>
+RESERVED
+</b>[<i>read-only</i>]: Reserved
+<br>Ignore on write, read as 0's
+</ul>
+<a name="FMC_CTL"></a>
+<h3><a name="sect_3_2">3.2. Control register</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+fmc516_fmc_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x1
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+FMC_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x4
 </td>
 </tr>
 </table>
@@ -1892,276 +2183,6 @@ CLK_SEL
 <li><b>
 RESERVED
 </b>[<i>read/write</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
-<a name="FMC_STA"></a>
-<h3><a name="sect_3_2">3.2. Status register</a></h3>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td >
-<b>HW prefix: </b>
-</td>
-<td  class="td_code">
-fmc516_fmc_sta
-</td>
-</tr>
-<tr>
-<td >
-<b>HW address: </b>
-</td>
-<td  class="td_code">
-0x1
-</td>
-</tr>
-<tr>
-<td >
-<b>C prefix: </b>
-</td>
-<td  class="td_code">
-FMC_STA
-</td>
-</tr>
-<tr>
-<td >
-<b>C offset: </b>
-</td>
-<td  class="td_code">
-0x4
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-31
-</td>
-<td  class="td_bit">
-30
-</td>
-<td  class="td_bit">
-29
-</td>
-<td  class="td_bit">
-28
-</td>
-<td  class="td_bit">
-27
-</td>
-<td  class="td_bit">
-26
-</td>
-<td  class="td_bit">
-25
-</td>
-<td  class="td_bit">
-24
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[28:21]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-23
-</td>
-<td  class="td_bit">
-22
-</td>
-<td  class="td_bit">
-21
-</td>
-<td  class="td_bit">
-20
-</td>
-<td  class="td_bit">
-19
-</td>
-<td  class="td_bit">
-18
-</td>
-<td  class="td_bit">
-17
-</td>
-<td  class="td_bit">
-16
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[20:13]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-15
-</td>
-<td  class="td_bit">
-14
-</td>
-<td  class="td_bit">
-13
-</td>
-<td  class="td_bit">
-12
-</td>
-<td  class="td_bit">
-11
-</td>
-<td  class="td_bit">
-10
-</td>
-<td  class="td_bit">
-9
-</td>
-<td  class="td_bit">
-8
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[12:5]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-7
-</td>
-<td  class="td_bit">
-6
-</td>
-<td  class="td_bit">
-5
-</td>
-<td  class="td_bit">
-4
-</td>
-<td  class="td_bit">
-3
-</td>
-<td  class="td_bit">
-2
-</td>
-<td  class="td_bit">
-1
-</td>
-<td  class="td_bit">
-0
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=5  class="td_field">
-RESERVED[4:0]
-</td>
-<td style="border: solid 1px black;" colspan=1  class="td_field">
-PRST
-</td>
-<td style="border: solid 1px black;" colspan=1  class="td_field">
-PWR_GOOD
-</td>
-<td style="border: solid 1px black;" colspan=1  class="td_field">
-MMCM_LOCKED
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<ul>
-<li><b>
-MMCM_LOCKED
-</b>[<i>read-only</i>]: MMCM locked status
-<br>ADC Clock Chain MMCM locked status.  <br>                      read 0: not locked  <br>                      read 1: locked
-<li><b>
-PWR_GOOD
-</b>[<i>read-only</i>]: FMC power good status
-<br>FMC power good status. <br>                      read 0: power not good  <br>                      read 1: power good
-<li><b>
-PRST
-</b>[<i>read-only</i>]: FMC board present status
-<br>FMC board present status.<br>0: not present<br>1: present
-<li><b>
-RESERVED
-</b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
 <a name="TRIG_CFG"></a>
