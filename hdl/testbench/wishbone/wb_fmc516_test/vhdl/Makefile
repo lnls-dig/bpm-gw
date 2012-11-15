@@ -103,6 +103,8 @@ VHDL_SRC := wb_fmc516_tb.vhd \
 ../../../../ip_cores/general-cores/modules/genrams/genram_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd \
+../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd \
+../../../../ip_cores/general-cores/modules/genrams/inferred_async_fifo.vhd \
 ../../../../ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd \
 ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd \
@@ -214,6 +216,8 @@ work/gc_wfifo/.gc_wfifo_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/memory_loader_pkg/.memory_loader_pkg_vhd \
 work/generic_shiftreg_fifo/.generic_shiftreg_fifo_vhd \
+work/inferred_sync_fifo/.inferred_sync_fifo_vhd \
+work/inferred_async_fifo/.inferred_async_fifo_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/generic_dpram/.generic_dpram_vhd \
 work/generic_dpram_sameclock/.generic_dpram_sameclock_vhd \
@@ -880,6 +884,24 @@ work/generic_shiftreg_fifo/.generic_shiftreg_fifo_vhd: ../../../../ip_cores/gene
 
 
 work/generic_shiftreg_fifo/.generic_shiftreg_fifo: \
+work/genram_pkg/.genram_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/inferred_sync_fifo/.inferred_sync_fifo_vhd: ../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd work/inferred_sync_fifo/.inferred_sync_fifo
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/inferred_sync_fifo/.inferred_sync_fifo: \
+work/genram_pkg/.genram_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/inferred_async_fifo/.inferred_async_fifo_vhd: ../../../../ip_cores/general-cores/modules/genrams/inferred_async_fifo.vhd work/inferred_async_fifo/.inferred_async_fifo
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/inferred_async_fifo/.inferred_async_fifo: \
 work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 

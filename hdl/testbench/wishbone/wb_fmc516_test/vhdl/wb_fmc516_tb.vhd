@@ -47,13 +47,13 @@ architecture sim of wb_fmc516_tb is
   signal wbs_src_out                        : t_wbs_source_out;
 
   -- Simulation signals
-  signal s_adc_clk                          : std_logic := '0';
-  signal s_adc_clk_n                        : std_logic := '1';
-  signal s_adc_ch0_data                     : std_logic_vector(7 downto 0);
-  signal s_adc_ch1_data                     : std_logic_vector(7 downto 0);
-  signal s_adc_ch2_data                     : std_logic_vector(7 downto 0);
-  signal s_adc_ch3_data                     : std_logic_vector(7 downto 0);
-  signal s_adc_valid                        : std_logic;
+  signal adc_clk                            : std_logic := '0';
+  signal adc_clk_n                          : std_logic := '1';
+  signal adc_ch0_data                       : std_logic_vector(7 downto 0);
+  signal adc_ch1_data                       : std_logic_vector(7 downto 0);
+  signal adc_ch2_data                       : std_logic_vector(7 downto 0);
+  signal adc_ch3_data                       : std_logic_vector(7 downto 0);
+  --signal adc_valid                          : std_logic;
 
   --------------------------------
   -- Functions and Procedures
@@ -92,7 +92,7 @@ architecture sim of wb_fmc516_tb is
     variable stim : std_logic_vector(c_wbs_data_width-1 downto 0);  -- Random c_wbs_data_width-1 bit stimulus
   begin
     uniform(seed1, seed2, rand);                                   -- generate random number
-    int_rand := integer(trunc(rand*real(2**(c_wbs_data_width/2))));    -- rescale to 0..2^(c_wbs_data_width/2), find integer part
+    int_rand := integer(trunc(rand*real(2**(c_wbs_data_width/8))));    -- rescale to 0..2^(c_wbs_data_width/8), find integer part
     stim := std_logic_vector(to_unsigned(int_rand, stim'length));  -- convert to std_logic_vector
 
     result <= stim(size-1 downto 0);
@@ -139,44 +139,44 @@ begin  -- sim
   begin
     while g_end_simulation = false loop
       wait for c_adc_clk_period/2;
-        s_adc_clk <= not s_adc_clk;
+        adc_clk <= not adc_clk;
       wait for c_adc_clk_period/2;
-        s_adc_clk <= not s_adc_clk;
+        adc_clk <= not adc_clk;
     end loop;
     wait;  -- simulation stops here
   end process;
 
-  p_gen_adc_valid : process
-    variable seed1, seed2: positive;  -- Seed values for random generator
-  begin
-    seed1                                       := 67632;
-    seed2                                       := 3234;
-    s_adc_valid                             		<= '0';
-    -- Wait until reset completion (synch with adc clock domain)
-    wait until sys_rst_n = '1' and rising_edge(s_adc_clk);
-    l_generate_valid: loop
-        gen_valid(0.5, seed1, seed2, s_adc_valid);
-        wait until rising_edge(s_adc_clk);
-    end loop;
-  end process;
+  --p_gen_adc_valid : process
+  --  variable seed1, seed2: positive;  -- Seed values for random generator
+  --begin
+  --  seed1                                       := 67632;
+  --  seed2                                       := 3234;
+  --  adc_valid                             		  <= '0';
+  --  -- Wait until reset completion (synch with adc clock domain)
+  --  wait until sys_rst_n = '1' and rising_edge(adc_clk);
+  --  l_generate_valid: loop
+  --      gen_valid(0.5, seed1, seed2, adc_valid);
+  --      wait until rising_edge(adc_clk);
+  --  end loop;
+  --end process;
 
   p_gen_adc_data : process
     variable seed1, seed2: positive;  -- Seed values for random generator
   begin
     seed1                                   := 432566;
     seed2                                   := 211;
-    s_adc_ch0_data                          <= (others => '0');
-    s_adc_ch1_data                          <= (others => '0');
-    s_adc_ch2_data                          <= (others => '0');
-    s_adc_ch3_data                          <= (others => '0');
+    adc_ch0_data                            <= (others => '0');
+    adc_ch1_data                            <= (others => '0');
+    adc_ch2_data                            <= (others => '0');
+    adc_ch3_data                            <= (others => '0');
     -- Wait until reset completion (synch with adc clock domain)
-    wait until sys_rst_n = '1' and rising_edge(s_adc_clk);
+    wait until sys_rst_n = '1' and rising_edge(adc_clk);
     l_generate_data: loop
-        gen_data(s_adc_ch0_data'length, seed1, seed2, s_adc_ch0_data);
-        gen_data(s_adc_ch1_data'length, seed1, seed2, s_adc_ch1_data);
-        gen_data(s_adc_ch2_data'length, seed1, seed2, s_adc_ch2_data);
-        gen_data(s_adc_ch3_data'length, seed1, seed2, s_adc_ch3_data);
-        wait until rising_edge(s_adc_clk);
+        gen_data(adc_ch0_data'length, seed1, seed2, adc_ch0_data);
+        gen_data(adc_ch1_data'length, seed1, seed2, adc_ch1_data);
+        gen_data(adc_ch2_data'length, seed1, seed2, adc_ch2_data);
+        gen_data(adc_ch3_data'length, seed1, seed2, adc_ch3_data);
+        wait until rising_edge(adc_clk);
     end loop;
   end process;
 
@@ -233,24 +233,24 @@ begin  -- sim
     -- ADC clocks. One clock per ADC channel.
     -- Only ch1 clock is used as all data chains
     -- are sampled at the same frequency
-    adc_clk0_p_i                            => s_adc_clk,
-    adc_clk0_n_i                            => s_adc_clk_n,
-    adc_clk1_p_i                            => s_adc_clk,
-    adc_clk1_n_i                            => s_adc_clk_n,
+    adc_clk0_p_i                            => adc_clk,
+    adc_clk0_n_i                            => adc_clk_n,
+    adc_clk1_p_i                            => adc_clk,
+    adc_clk1_n_i                            => adc_clk_n,
     adc_clk2_p_i                            => clk_sys,
     adc_clk2_n_i                            => clk_sys_n,
     adc_clk3_p_i                            => clk_sys,
     adc_clk3_n_i                            => clk_sys_n,
 
     -- DDR ADC data channels.
-    adc_data_ch0_p_i                        => s_adc_ch0_data,
-    adc_data_ch0_n_i                        => toggle_bus(s_adc_ch0_data),
-    adc_data_ch1_p_i                        => s_adc_ch1_data,
-    adc_data_ch1_n_i                        => toggle_bus(s_adc_ch1_data),
-    adc_data_ch2_p_i                        => s_adc_ch2_data,
-    adc_data_ch2_n_i                        => toggle_bus(s_adc_ch2_data),
-    adc_data_ch3_p_i                        => s_adc_ch3_data,
-    adc_data_ch3_n_i                        => toggle_bus(s_adc_ch3_data),
+    adc_data_ch0_p_i                        => adc_ch0_data,
+    adc_data_ch0_n_i                        => toggle_bus(adc_ch0_data),
+    adc_data_ch1_p_i                        => adc_ch1_data,
+    adc_data_ch1_n_i                        => toggle_bus(adc_ch1_data),
+    adc_data_ch2_p_i                        => adc_ch2_data,
+    adc_data_ch2_n_i                        => toggle_bus(adc_ch2_data),
+    adc_data_ch3_p_i                        => adc_ch3_data,
+    adc_data_ch3_n_i                        => toggle_bus(adc_ch3_data),
 
     -- ADC clock (half of the sampling frequency) divider reset
     adc_clk_div_rst_p_o                     => open,
@@ -314,8 +314,11 @@ begin  -- sim
     -----------------------------
     -- General ADC output signals
     -----------------------------
+    -- Trigger to other FPGA logic
     trig_hw_o                               => open,
     trig_hw_i                               => '0',
+    -- General board status
+    fmc_mmcm_lock_o                         => open,
 
     -----------------------------
     -- Wishbone Streaming Interface Source
@@ -333,7 +336,7 @@ begin  -- sim
     wbs_rty_i                               => '0'
   );
 
-  s_adc_clk_n                               <= not s_adc_clk;
+  adc_clk_n                                 <= not adc_clk;
   clk_sys                                   <= clk_100mhz;
   clk_sys_n	                                <= not clk_sys;
 
