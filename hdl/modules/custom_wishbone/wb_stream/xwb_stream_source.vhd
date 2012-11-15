@@ -8,7 +8,7 @@ use work.genram_pkg.all;
 use work.wb_stream_pkg.all;
 
 entity xwb_stream_source is
-  
+
   port (
     clk_i                                       : in std_logic;
     rst_n_i                                     : in std_logic;
@@ -37,9 +37,9 @@ architecture rtl of xwb_stream_source is
 
   constant c_addr_lsb                           : natural := c_data_msb + 1;
   constant c_addr_msb                           : natural := c_addr_lsb + c_wbs_address_width -1;
-  
+
   constant c_valid_bit                          : natural := c_addr_msb + 1;
-  
+
   constant c_sel_lsb                            : natural := c_valid_bit + 1;
   constant c_sel_msb                            : natural := c_sel_lsb + (c_wbs_data_width/8) - 1;
 
@@ -48,25 +48,27 @@ architecture rtl of xwb_stream_source is
 
   constant c_logic_width                        : integer := c_sof_bit - c_valid_bit + 1;
   constant c_fifo_width                         : integer := c_sof_bit - c_data_lsb + 1;
-  constant c_fifo_depth                         : integer := 32;  
-  
+  constant c_fifo_depth                         : integer := 32;
+
   -- Signals
   signal q_valid, full, we, rd, rd_d0           : std_logic;
   signal fin, fout                              : std_logic_vector(c_fifo_width-1 downto 0);
 
   signal pre_dvalid                             : std_logic;
   signal pre_eof                                : std_logic;
+
   signal pre_data                               : std_logic_vector(c_wbs_data_width-1 downto 0);
   signal pre_addr                               : std_logic_vector(c_wbs_address_width-1 downto 0);
 
   signal post_dvalid, post_eof, post_sof        : std_logic;
+  signal post_eof_d                             : std_logic;
   signal post_bytesel                           : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
   signal post_data                              : std_logic_vector(c_wbs_data_width-1 downto 0);
   signal post_adr                               : std_logic_vector(c_wbs_address_width-1 downto 0);
 
   signal err_status                             : t_wbs_status_reg;
   signal cyc_int                                : std_logic;
-  
+
 begin  -- rtl
 
   err_status.error <= '1';
@@ -98,14 +100,14 @@ begin  -- rtl
       almost_full_o => full,
       q_valid_o     => q_valid
     );
-  
+
   post_sof    <= fout(c_sof_bit);
   post_eof    <= fout(c_eof_bit);
   post_dvalid <= fout(c_valid_bit);
   post_bytesel <= fout(c_sel_msb downto c_sel_lsb);
   post_data <= fout(c_data_msb downto c_data_lsb);
   post_adr <= fout(c_addr_msb downto c_addr_lsb);
-  
+
   p_gen_cyc : process(clk_i)
   begin
     if rising_edge(clk_i) then
@@ -114,12 +116,12 @@ begin  -- rtl
       else
         if(src_i.stall = '0' and q_valid = '1') then
           -- SOF and SOF signals must be one clock cycle long
-          -- and must be asseted at the same clock edge as the valid
+          -- and must be asserted at the same clock edge as the valid
           -- signal!
-          if(post_sof = '1' or post_eof = '1')then
+          if(post_sof = '1') then --or post_eof = '1')then
             cyc_int <= '1';
-          --elsif(post_eof = '1') then
-            --cyc_int <= '0';
+          elsif(post_eof = '1') then
+            cyc_int <= '0';
           end if;
         end if;
       end if;
@@ -133,7 +135,7 @@ begin  -- rtl
   src_o.sel <= post_bytesel;
   src_o.dat <= post_data;--fout(c_data_msb downto c_data_lsb);
   src_o.adr <= post_adr;--fout(c_addr_msb downto c_addr_lsb);
-  
+
 end rtl;
 
 library ieee;
@@ -142,7 +144,7 @@ use ieee.std_logic_1164.all;
 use work.wb_stream_pkg.all;
 
 entity wb_stream_source is
-  
+
   port (
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
@@ -191,7 +193,7 @@ architecture wrapper of wb_stream_source is
 
   signal src_in  : t_wbs_source_in;
   signal src_out : t_wbs_source_out;
-  
+
 begin  -- wrapper
 
   cmp_stream_source_wrapper : xwb_stream_source
@@ -222,5 +224,5 @@ begin  -- wrapper
   src_in.ack   <= src_ack_i;
   src_in.stall <= src_stall_i;
 
-  
+
 end wrapper;

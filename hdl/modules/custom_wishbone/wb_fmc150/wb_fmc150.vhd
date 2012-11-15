@@ -153,6 +153,9 @@ architecture rtl of wb_fmc150 is
 
     -- Constants
     constant c_counter_size                 : natural := f_packet_num_bits(g_packet_size);
+    constant c_num_channels                 : natural := 2;
+    constant c_num_adc_bits                 : natural := 16;
+    constant c_num_adc_data_msb             : natural := c_num_channels*c_num_adc_bits-1;
 
     -----------------------------------------------------------------------------------------------
     -- IP / user logic interface signals
@@ -169,7 +172,7 @@ architecture rtl of wb_fmc150 is
     --signal cdce_pll_status                  : std_logic;
     signal s_mmcm_adc_locked                : std_logic;
 
-    signal s_adc_dout                       : std_logic_vector(31 downto 0);
+    signal s_adc_dout                       : std_logic_vector(c_num_channels*c_num_adc_bits-1 downto 0);
     signal s_clk_adc                        : std_logic;
     signal rst_n_adc                        : std_logic;
     signal s_fmc150_rst                     : std_logic;
@@ -476,7 +479,8 @@ begin
     s_addr                                  <= (others => '0');
 
     -- Simulation / Syntesis Only consructs. Is there a better way to do it?
-    s_data                                  <= s_adc_dout(c_wbs_data_width-1 downto 0);
+    s_data(c_num_adc_data_msb downto 0)                     <= s_adc_dout(c_num_adc_data_msb downto 0);
+    s_data(c_wbs_data_width downto c_num_adc_data_msb+1)    <= (others => '0');
 
     gen_stream_valid : if (g_sim = 0) generate
         s_dvalid                            <= cdce_pll_status_i and s_mmcm_adc_locked;
@@ -511,7 +515,7 @@ begin
     wbs_adr_o                               <= wbs_stream_out.adr;
     wbs_dat_o                               <= wbs_stream_out.dat;
     wbs_cyc_o                               <= wbs_stream_out.cyc;
-    wbs_stb_o                               <= wbs_stream_out.cyc;
+    wbs_stb_o                               <= wbs_stream_out.stb;
     wbs_we_o                                <= wbs_stream_out.we;
     wbs_sel_o                               <= wbs_stream_out.sel;
     wb_err_o                                <= '0';

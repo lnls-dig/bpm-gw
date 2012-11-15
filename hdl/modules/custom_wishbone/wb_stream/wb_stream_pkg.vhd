@@ -11,8 +11,9 @@ use work.wishbone_pkg.all;
 package wb_stream_pkg is
   -- Must be at least 2 bits wide
   constant c_wbs_address_width      : integer := 4;
-  -- Must be at least 16 bits wide
-  constant c_wbs_data_width         : integer := 32;
+  -- Must be at least 16 bits wide. Not good solution, as streaming interfaces
+  -- have might different widths. FIX ME!
+  constant c_wbs_data_width         : integer := 64;
 
   subtype t_wbs_address is
     std_logic_vector(c_wbs_address_width-1 downto 0);
