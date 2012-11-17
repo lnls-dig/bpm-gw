@@ -11,7 +11,7 @@
 #endif
 
 // Number of CDCE72010 registers
-#define CDCE72010_NUMREGS 13
+#define CDCE72010_NUMREGS 12
 
 // Global definitions
 extern uint32_t cdce72010_regs[CDCE72010_NUMREGS];

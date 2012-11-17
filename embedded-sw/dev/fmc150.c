@@ -69,7 +69,7 @@ uint32_t cdce72010_regs[CDCE72010_NUMREGS] = {
 	0x68000049,
 	0x007C003A, // PFD_freq = 1.92MHz
 	0x8000050B,
-	0x0000180C
+	//0x0000180C
 
 //15.36MHz ext clock.
 	/*0x682C0290,
@@ -239,7 +239,7 @@ int init_cdce72010()
 
 	/* Write regs to cdce72010 statically */
 	// Do not write the last register, as it is Read-only
-	for(i = 0; i < CDCE72010_NUMREGS-1; ++i){
+	for(i = 0; i < CDCE72010_NUMREGS; ++i){
 		if(fmc150_spi_busy_loop() < 0){
 			dbg_print("init_cdce72010: max SPI tries excceded!\n");
 			return -1;
