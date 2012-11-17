@@ -171,6 +171,7 @@ port
 
   -- General board status
   fmc_mmcm_lock_o                           : out std_logic;
+  fmc_lmk_lock_o                            : out std_logic;
 
   -----------------------------
   -- Wishbone Streaming Interface Source
@@ -402,8 +403,8 @@ begin
   cmp_reset_fs_synch : reset_synch
   port map(
     clk_i     		                          => sys_clk_i,
-    arst_n_i		                            => sys_rst_n,
-    rst_n_o      		                        => sys_rst_sync_n
+    arst_n_i		                      	    => sys_rst_n,
+    rst_n_o                                 => sys_rst_sync_n
   );
 
   -- Reset synchronization with FS clock domain (just clock 1
@@ -420,7 +421,7 @@ begin
   -- General status board pins
   -----------------------------
   -- LMK CI lock detec available through a regular core pin
-  fmc_mmcm_lock_o                           <= lmk_lock_i;
+  fmc_lmk_lock_o                            <= lmk_lock_i;
 
   -----------------------------
   -- Slave adapter

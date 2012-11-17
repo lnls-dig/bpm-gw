@@ -273,6 +273,7 @@ module wb_fmc516_tb;
     .trig_hw_i                                (zero_bit),
     // General board status
     .fmc_mmcm_lock                            (fmc_mmcm_lock),
+    .fmc_lmk_lock                             (),
 
     //-----------------------------
     //-- Wishbone Streaming Interface Source

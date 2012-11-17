@@ -319,6 +319,7 @@ begin  -- sim
     trig_hw_i                               => '0',
     -- General board status
     fmc_mmcm_lock_o                         => open,
+  	 fmc_lmk_lock_o                          => open,
 
     -----------------------------
     -- Wishbone Streaming Interface Source
