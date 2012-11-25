@@ -62,4 +62,24 @@ package fmc516_pkg is
   constant dummy_data_use_chain : t_data_use_chain := (others => '0');
   constant dummy_default_dly : t_default_adc_dly := (others => 0);
 
+  -- SDB for internal FMCC516 layout. More general cores have its SDB structure
+  -- defined indes custom_wishbone_pkg file.
+    -- FMC516 Interface
+  constant c_xwb_fmc516_regs_sdb : t_sdb_device := (
+    abi_class     => x"0000", 				-- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4", 					-- 32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215", 	-- LNLS
+    device_id     => x"27b95341",
+    version       => x"00000001",
+    date          => x"20121124",
+    name          => "LNLS_FMC516_REGS   ")));
+
+
 end fmc516_pkg;

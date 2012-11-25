@@ -54,10 +54,8 @@ generic
 port
 (
   sys_clk_i                                 : in std_logic;
-  -- System Reset
+  -- System Reset. Rgular reset, not ANDed with mmcm_adc_locked
   sys_rst_n_i                               : in std_logic;
-  -- ADC clock generation reset. Just a regular asynchronous reset.
-  adc_clk_chain_rst_i                       : in std_logic;
   sys_clk_200Mhz_i                          : in std_logic;
 
   -----------------------------
@@ -92,10 +90,8 @@ end fmc516_adc_iface;
 
 architecture rtl of fmc516_adc_iface is
 
-  -- General signals
+  -- Reset generation
   signal sys_rst                            : std_logic;
-  signal sys_rst_all                        : std_logic;
-  signal sys_rst_adc_clk_chain              : std_logic;
 
   -- AND mmcm signals. Use the MSB bit for the final result
   signal mmcm_adc_locked_and                : std_logic_vector(c_num_adc_channels downto 0);
@@ -117,7 +113,6 @@ architecture rtl of fmc516_adc_iface is
 
   -- ADc and Clock chains
   signal adc_clk_chain						 				  : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
-  --signal adc_data_chain                     : t_adc_data_chain_array(c_num_adc_channels-1 downto 0);
 
   -- Fill out the intercon vector. This vector has c_num_data_chains positions
   -- and means which clock is connected for each data chain (position index): -1,
@@ -248,7 +243,7 @@ architecture rtl of fmc516_adc_iface is
     adc_clk_bufio_i                        	: in std_logic;
     adc_clk_bufr_i                        	: in std_logic;
     adc_clk_bufg_i                        	: in std_logic;
-    adc_clk_bufg_rst_n_i										: in std_logic;
+    --adc_clk_bufg_rst_n_i										: in std_logic;
 
     -----------------------------
     -- ADC Data Delay signals.
@@ -268,9 +263,7 @@ architecture rtl of fmc516_adc_iface is
   end component;
 
 begin
-
-  -- Reset for internal use
-  sys_rst <= not(sys_rst_n_i);
+  sys_rst <= not (sys_rst_n_i);
 
   -- idelay control for var_loadable iodelay mode
   cmp_idelayctrl : idelayctrl
@@ -291,7 +284,7 @@ begin
       )
       port map (
         sys_clk_i                       		=> sys_clk_i,
-        sys_rst_i                       		=> adc_clk_chain_rst_i,
+        sys_rst_i                       		=> sys_rst,
 
         -----------------------------
         -- External ports
@@ -353,7 +346,7 @@ begin
         )
         port map (
           sys_clk_i                         	=> sys_clk_i,
-          sys_rst_n_i                       	=> sys_rst_n_i,
+          sys_rst_n_i                       	=> adc_in_i(i).adc_rst_n,--sys_rst_n_i,
 
           -----------------------------
           -- External ports
@@ -369,7 +362,7 @@ begin
           adc_clk_bufio_i                   	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufio,
           adc_clk_bufr_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
           adc_clk_bufg_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
-          adc_clk_bufg_rst_n_i								=> adc_in_i(i).adc_rst_n,
+          --adc_clk_bufg_rst_n_i								=> adc_in_i(i).adc_rst_n,
 
           -----------------------------
           -- ADC Data Delay signals.

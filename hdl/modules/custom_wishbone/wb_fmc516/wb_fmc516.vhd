@@ -82,7 +82,7 @@ port
   sys_i2c_sda_b                             : inout std_logic;
 
   -- ADC clocks. One clock per ADC channel.
-  -- Only ch0 clock is used as all data chains
+  -- Only ch1 clock is used as all data chains
   -- are sampled at the same frequency
   adc_clk0_p_i                              : in std_logic;
   adc_clk0_n_i                              : in std_logic;
@@ -114,10 +114,10 @@ port
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   sys_spi_clk_o                             : out std_logic;
   sys_spi_data_b                            : inout std_logic;
-  sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 0
-  sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 1
-  sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 2
-  sys_spi_cs_adc4_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+  sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
+  sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
+  sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
+  sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
 
   -- External Trigger To/From FMC
   m2c_trig_p_i                              : in std_logic;
@@ -215,20 +215,52 @@ architecture rtl of wb_fmc516 is
   -- Wishbone fanout component (xwb_bus_fanout) constants
   -----------------------------
   -- Number of internal wishbone slaves
-  constant c_num_int_slaves                 : natural := 7;
-  constant c_num_int_slaves_log2            : natural := f_ceil_log2(c_num_int_slaves);
-  -- Number of each addressing bits for each internal slave (word addressed)
-  constant c_num_bits_per_slave             : natural := 6;
-  -- Number of bits of the address space of this peripheral
-  constant c_periph_addr_size               : natural :=
-            c_num_bits_per_slave+c_num_int_slaves_log2;
+  --constant c_num_int_slaves                 : natural := 7;
+  --constant c_num_int_slaves_log2            : natural := f_ceil_log2(c_num_int_slaves);
+  ---- Number of each addressing bits for each internal slave (word addressed)
+  --constant c_num_bits_per_slave             : natural := 6;
+  ---- Number of bits of the address space of this peripheral
+  --constant c_periph_addr_size               : natural :=
+  --          c_num_bits_per_slave+c_num_int_slaves_log2;
+
+  -----------------------------
+  -- Crossbar component constants
+  -----------------------------
+	-- Internal crossbar layout
+  -- 0 -> FMC516 Register Wishbone Interface
+  -- 1 -> System I2C Bus. Slaves: Atmel AT24C512B Serial EEPROM, AD7417
+  --        temperature diodes and AD7417 supply rails
+  -- 2 -> ADC SPI control interface. Three-wire mode. Tri-stated data pin
+  -- 3 -> Microwire (SPI dialect) for LMK (National Semiconductor) clock and
+  --        distribution IC.
+  -- 4 -> VCXO I2C Bus.
+  -- 5 -> One-wire To/From DS2431 (VMETRO Data)
+  -- 6 -> One-wire To/From DS2432 SHA-1 (SP-Devices key)
+  -- Number of slaves
+	constant c_slaves                         : natural := 7;
+  -- Number of masters
+	constant c_masters                        : natural := 1;			-- Top master.
+
+  -- WB SDB (Self describing bus) layout
+  constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
+  ( 0 => f_sdb_embed_device(c_xwb_fmc516_regs_sdb,      x"00000000"),		-- Register interface
+    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),		-- SYS I2C
+    2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
+    3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- LMK SPI
+    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO I2C
+    5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),		-- One-wire DS2431
+    6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")		-- One-wire DS2432
+  );
+
+	-- Self Describing Bus ROM Address. It will be an addressed slave as well.
+  constant c_sdb_address                    : t_wishbone_address := x"00000700";
 
   -----------------------------
   -- Clock and reset signals
   -----------------------------
   signal sys_rst_n                          : std_logic;
   signal sys_rst_sync_n                     : std_logic;
-  signal adc_clk_chain_rst                  : std_logic;
+  --signal adc_clk_chain_rst                  : std_logic;
 
   -----------------------------
   -- Wishbone Register Interface signals
@@ -301,8 +333,33 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- Wishbone fanout signals
   -----------------------------
-  signal wb_out                             : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
-  signal wb_in                              : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
+  --signal wb_out                             : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
+  --signal wb_in                              : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
+	-- Crossbar master/slave arrays
+	signal cbar_slave_in                      : t_wishbone_slave_in_array (c_masters-1 downto 0);
+	signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
+	signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
+	signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+
+  -----------------------------
+  -- System I2C signals
+  -----------------------------
+  signal sys_i2c_scl_in                     : std_logic;
+  signal sys_i2c_scl_out                    : std_logic;
+  signal sys_i2c_scl_oe_n                   : std_logic;
+  signal sys_i2c_sda_in                     : std_logic;
+  signal sys_i2c_sda_out                    : std_logic;
+  signal sys_i2c_sda_oe_n                   : std_logic;
+
+  -----------------------------
+  -- System SPI signals
+  -----------------------------
+  signal sys_spi_din                        : std_logic;
+  -- delayed signal
+  signal sys_spi_din_d                      : std_logic_vector(3 downto 0);
+  signal sys_spi_dout                       : std_logic;
+  signal sys_spi_ss_int                     : std_logic_vector(7 downto 0);
+  signal sys_spi_clk                        : std_logic;
 
   -----------------------------
   -- Trigger signals
@@ -336,7 +393,6 @@ architecture rtl of wb_fmc516 is
     -- System Reset
     sys_rst_n_i                             : in std_logic;
     -- ADC clock generation reset. Just a regular asynchronous reset.
-    adc_clk_chain_rst_i                     : in std_logic;
     sys_clk_200Mhz_i                        : in std_logic;
 
     -----------------------------
@@ -402,8 +458,8 @@ begin
   -- Align the reset deassertion to the next clock edge
   cmp_reset_fs_synch : reset_synch
   port map(
-    clk_i     		                          => sys_clk_i,
-    arst_n_i		                      	    => sys_rst_n,
+    clk_i                                   => sys_clk_i,
+    arst_n_i                                => sys_rst_n,
     rst_n_o                                 => sys_rst_sync_n
   );
 
@@ -485,21 +541,43 @@ begin
   -- 4 -> VCXO I2C Bus.
   -- 5 -> One-wire To/From DS2431 (VMETRO Data)
   -- 6 -> One-wire To/From DS2432 SHA-1 (SP-Devices key)
-  cmp_fmc516_bus_fanout : xwb_bus_fanout
-  generic map (
-    g_num_outputs                           => c_num_int_slaves,
-    g_bits_per_slave                        => c_num_bits_per_slave, -- slave word addressed
-    g_address_granularity                   => WORD,
-    g_slave_interface_mode                  => PIPELINED
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-    slave_i                                 => wb_slv_adp_in,
-    slave_o                                 => wb_slv_adp_out,
-    master_i                                => wb_out,
-    master_o                                => wb_in
-  );
+  --
+  --cmp_fmc516_bus_fanout : xwb_bus_fanout
+  --generic map (
+  --  g_num_outputs                           => c_num_int_slaves,
+  --  g_bits_per_slave                        => c_num_bits_per_slave, -- slave word addressed
+  --  g_address_granularity                   => WORD,
+  --  g_slave_interface_mode                  => PIPELINED
+  --)
+  --port map (
+  --  clk_sys_i                               => sys_clk_i,
+  --  rst_n_i                                 => sys_rst_sync_n,
+  --  slave_i                                 => wb_slv_adp_in,
+  --  slave_o                                 => wb_slv_adp_out,
+  --  master_i                                => wb_out,
+  --  master_o                                => wb_in
+  --);
+
+  -- The Internal Wishbone B.4 crossbar
+	cmp_interconnect : xwb_sdb_crossbar
+	generic map(
+		g_num_masters                             => c_masters,
+		g_num_slaves                              => c_slaves,
+		g_registered                              => true,
+		g_wraparound                              => true, -- Should be true for nested buses
+		g_layout                                  => c_layout,
+		g_sdb_addr                                => c_sdb_address
+	)
+	port map(
+		clk_sys_i                                 => sys_clk_i,
+		rst_n_i                                   => sys_rst_sync_n,
+		-- Master connections (INTERCON is a slave)
+		slave_i                                   => wb_slv_adp_in,
+		slave_o                                   => wb_slv_adp_out,
+		-- Slave connections (INTERCON is a master)
+		master_i                                  => cbar_master_in,
+		master_o                                  => cbar_master_out
+	);
 
   -----------------------------
   -- FMC516 Register Wishbone Interface. Word addressed!
@@ -509,15 +587,15 @@ begin
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => wb_in(0).adr(3 downto 0),
-    wb_dat_i                                => wb_in(0).dat,
-    wb_dat_o                                => wb_out(0).dat,
-    wb_cyc_i                                => wb_in(0).cyc,
-    wb_sel_i                                => wb_in(0).sel,
-    wb_stb_i                                => wb_in(0).stb,
-    wb_we_i                                 => wb_in(0).we,
-    wb_ack_o                                => wb_out(0).ack,
-    wb_stall_o                              => wb_out(0).stall,
+    wb_adr_i                                => cbar_master_out(0).adr(3 downto 0),
+    wb_dat_i                                => cbar_master_out(0).dat,
+    wb_dat_o                                => cbar_master_in(0).dat,
+    wb_cyc_i                                => cbar_master_out(0).cyc,
+    wb_sel_i                                => cbar_master_out(0).sel,
+    wb_stb_i                                => cbar_master_out(0).stb,
+    wb_we_i                                 => cbar_master_out(0).we,
+    wb_ack_o                                => cbar_master_in(0).ack,
+    wb_stall_o                              => cbar_master_in(0).stall,
     fs_clk_i                                => fs_clk,
     -- Check if this clock is necessary!
     wb_clk_i                                => sys_clk_i,
@@ -670,9 +748,8 @@ begin
   port map(
     sys_clk_i                               => sys_clk_i,
     -- System Reset
-    sys_rst_n_i                             => sys_rst_sync_n,
+    sys_rst_n_i                             => sys_rst_n_i,
     -- ADC clock generation reset. Just a regular asynchronous reset.
-    adc_clk_chain_rst_i                     => adc_clk_chain_rst,
     sys_clk_200Mhz_i                        => sys_clk_200Mhz_i,
 
     -----------------------------
@@ -701,7 +778,7 @@ begin
   -- WARNING: Hardcoded clock for now! Only clock chain 1 is used!
   fs_clk                                    <= adc_out(1).adc_clk;
   adc_clk_o                                 <= fs_clk;
-  adc_clk_chain_rst                         <= not sys_rst_n_i;
+  --adc_clk_chain_rst                         <= not sys_rst_n_i;
 
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
@@ -718,9 +795,94 @@ begin
   adc_data_ch2_o                            <= adc_out(2).adc_data;
   adc_data_ch3_o                            <= adc_out(3).adc_data;
 
-  -- It could be any adc chain as they are synchronized toe ach other
+  -- It could be any adc chain as they are synchronized to each other
   adc_data_valid_int                        <= adc_out(1).adc_data_valid;
   adc_data_valid_o                          <= adc_data_valid_int;
+
+  -----------------------------
+  -- System I2C Bus
+  -----------------------------
+  -- Slaves: Atmel AT24C512B Serial EEPROM, AD7417
+  --          temperature diodes and AD7417 supply rails
+  -- System I2C Bus is lave number 1, word addressed
+  cmp_fmc_sys_i2c : xwb_i2c_master
+  generic map(
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(1),
+    slave_o                                 => cbar_master_in(1),
+    desc_o                                  => open,
+
+    scl_pad_i                               => sys_i2c_scl_in,
+    scl_pad_o                               => sys_i2c_scl_out,
+    scl_padoen_o                            => sys_i2c_scl_oe_n,
+    sda_pad_i                               => sys_i2c_sda_in,
+    sda_pad_o                               => sys_i2c_sda_out,
+    sda_padoen_o                            => sys_i2c_sda_oe_n
+  );
+
+  -- Tri-state buffer for SDA and SCL
+  sys_i2c_scl_b  <= sys_i2c_scl_out when sys_i2c_scl_oe_n = '0' else 'Z';
+  sys_i2c_scl_in <= sys_i2c_scl_b;
+
+  sys_i2c_sda_b  <= sys_i2c_sda_out when sys_i2c_sda_oe_n = '0' else 'Z';
+  sys_i2c_sda_in <= sys_i2c_sda_b;
+
+  -----------------------------
+  -- SPI Bus
+  -----------------------------
+  -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
+  -- ADC SPI is slave number 2, word addressed
+
+  cmp_fmc_spi : xwb_spi
+  generic map(
+    g_three_wire_mode                       => 1,
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(2),
+    slave_o                                 => cbar_master_in(2),
+    desc_o                                  => open,
+
+    pad_cs_o                                => sys_spi_ss_int,
+    pad_sclk_o                              => sys_spi_clk,
+    --pad_mosi_o                              => sys_spi_dout,
+    --pad_miso_i                              => sys_spi_din_d(sys_spi_din_d'left),
+    pad_mosi_o                              => open,
+    pad_miso_i                              => '1',
+    pad_miosio_b                            => sys_spi_data_b
+  );
+
+  -- Output SPI clock
+  sys_spi_clk_o <= sys_spi_clk;
+
+  -- Assign slave select lines
+  sys_spi_cs_adc0_n_o <= sys_spi_ss_int(0);           -- SPI ADC CS channel 0
+  sys_spi_cs_adc1_n_o <= sys_spi_ss_int(1);           -- SPI ADC CS channel 1
+  sys_spi_cs_adc2_n_o <= sys_spi_ss_int(2);           -- SPI ADC CS channel 2
+  sys_spi_cs_adc3_n_o <= sys_spi_ss_int(3);           -- SPI ADC CS channel 3
+
+  -- Add some FF after the input pin to solve timing problem.
+  --p_adc_spi : process (sys_clk_i)
+  --begin
+  --  if rising_edge(sys_clk_i) then
+  --    if sys_rst_sync_n = '0' then
+  --      sys_spi_din_d <= (others => '0');
+  --    else
+  --      sys_spi_din_d <= sys_spi_din_d(sys_spi_din_d'left-1 downto 0) &
+  --                          sys_spi_din;
+  --    end if;
+  --  end if;
+  --end process;
 
   -----------------------------
   -- Wishbone Streaming Interface

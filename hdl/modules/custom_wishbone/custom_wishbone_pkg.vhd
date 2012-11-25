@@ -399,10 +399,10 @@ package custom_wishbone_pkg is
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                             : out std_logic;
     sys_spi_data_b                            : inout std_logic;
-    sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 0
-    sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 1
-    sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 2
-    sys_spi_cs_adc4_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+    sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
+    sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
+    sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
+    sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                              : in std_logic;
@@ -453,7 +453,7 @@ package custom_wishbone_pkg is
     -- Trigger to other FPGA logic
     trig_hw_o                                 : out std_logic;
     trig_hw_i                                 : in std_logic;
-  
+
     -- General board status
     fmc_mmcm_lock_o                           : out std_logic;
     fmc_lmk_lock_o                            : out std_logic;
@@ -510,7 +510,7 @@ package custom_wishbone_pkg is
     vendor_id     => x"1000000000001215", 	-- LNLS
     device_id     => x"15ff65e1",
     version       => x"00000001",
-    date          => x"20120903",			-- YY/MM/DD ??
+    date          => x"20120903",
     name          => "LNLS_IRQMNGR       ")));
 
   -- FMC150 Interface
@@ -527,8 +527,25 @@ package custom_wishbone_pkg is
     vendor_id     => x"1000000000001215", 	-- LNLS
     device_id     => x"f8c150c1",
     version       => x"00000001",
-    date          => x"20121010",			-- YY/MM/DD ??
+    date          => x"20121010",
     name          => "LNLS_FMC150        ")));
+
+  -- FMC516 Interface
+  constant c_xwb_fmc516_sdb : t_sdb_device := (
+    abi_class     => x"0000", 				-- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"0000000000000FFF",   -- Too much addresses? Probably...
+    product => (
+    vendor_id     => x"1000000000001215", 	-- LNLS
+    device_id     => x"64f2a9ba",
+    version       => x"00000001",
+    date          => x"20121124",
+    name          => "LNLS_FMC516        ")));
 
   -- UART Interface
   constant c_xwb_uart_sdb : t_sdb_device := (
@@ -544,7 +561,58 @@ package custom_wishbone_pkg is
     vendor_id     => x"000000000000CE42", 	-- CERN
     device_id     => x"8a5719ae",
     version       => x"00000001",
-    date          => x"20121011",			-- YY/MM/DD ??
+    date          => x"20121011",
     name          => "CERN_SIMPLE_UART   ")));
+
+  -- SPI Opencores Interface
+  constant c_xwb_spi_sdb : t_sdb_device := (
+    abi_class     => x"0000", 				-- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    device_id     => x"40286417",
+    version       => x"00000001",
+    date          => x"20121124",
+    name          => "OCORES_SPI         ")));
+
+  -- I2C Opencores Interface
+  constant c_xwb_i2c_master_sdb : t_sdb_device := (
+    abi_class     => x"0000", 				-- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    device_id     => x"97b6323d",
+    version       => x"00000001",
+    date          => x"20121124",
+    name          => "OCORES_I2C_MASTER  ")));
+
+  -- 1-Wire Opencores Interface
+  constant c_xwb_1_wire_master_sdb : t_sdb_device := (
+    abi_class     => x"0000", 				-- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    device_id     => x"525fbb09",
+    version       => x"00000001",
+    date          => x"20121124",
+    name          => "OCORES_1_WIRE      ")));
 
 end custom_wishbone_pkg;

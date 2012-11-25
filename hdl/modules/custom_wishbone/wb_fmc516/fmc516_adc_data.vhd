@@ -52,7 +52,7 @@ port
   adc_clk_bufio_i                           : in std_logic;
   adc_clk_bufr_i                            : in std_logic;
   adc_clk_bufg_i                            : in std_logic;
-  adc_clk_bufg_rst_n_i                      : in std_logic;
+  --adc_clk_bufg_rst_n_i                      : in std_logic;
 
   -----------------------------
   -- ADC Data Delay signals
@@ -227,9 +227,10 @@ begin
   -- Just delay the valid adc_fifo_rd signal as the fifo takes
   -- one clock cycle, after it has registered adc_fifo_rd, to output
   -- data on q_o port
-  p_gen_valid : process (adc_clk_bufg_i, adc_clk_bufg_rst_n_i)
+  p_gen_valid : process (adc_clk_bufg_i, sys_rst_n_i)--adc_clk_bufg_rst_n_i)
   begin
-    if adc_clk_bufg_rst_n_i = '0' then
+    --if adc_clk_bufg_rst_n_i = '0' then
+    if sys_rst_n_i = '0' then
       adc_data_valid <= '0';
       adc_data_valid_d1 <= '0';
     elsif rising_edge (adc_clk_bufg_i) then
