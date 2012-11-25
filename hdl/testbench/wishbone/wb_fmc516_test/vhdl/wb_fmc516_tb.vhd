@@ -263,10 +263,10 @@ begin  -- sim
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                           => open,
     sys_spi_data_b                          => open,
-    sys_spi_cs_adc1_n_o                     => open,  -- SPI ADC CS channel 0
-    sys_spi_cs_adc2_n_o                     => open,  -- SPI ADC CS channel 1
-    sys_spi_cs_adc3_n_o                     => open,  -- SPI ADC CS channel 2
-    sys_spi_cs_adc4_n_o                     => open,  -- SPI ADC CS channel 3
+    sys_spi_cs_adc0_n_o                     => open,  -- SPI ADC CS channel 0
+    sys_spi_cs_adc1_n_o                     => open,  -- SPI ADC CS channel 1
+    sys_spi_cs_adc2_n_o                     => open,  -- SPI ADC CS channel 2
+    sys_spi_cs_adc3_n_o                     => open,  -- SPI ADC CS channel 3
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                            => '0',
@@ -319,7 +319,7 @@ begin  -- sim
     trig_hw_i                               => '0',
     -- General board status
     fmc_mmcm_lock_o                         => open,
-  	 fmc_lmk_lock_o                          => open,
+    fmc_lmk_lock_o                          => open,
 
     -----------------------------
     -- Wishbone Streaming Interface Source

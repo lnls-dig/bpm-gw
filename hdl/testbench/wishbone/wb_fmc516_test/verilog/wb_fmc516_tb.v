@@ -34,14 +34,14 @@ module wb_fmc516_tb;
   wire rstn;
 
   // Data generation
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch0_data;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch1_data;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch2_data;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch3_data;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch0_data_n;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch1_data_n;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch2_data_n;
-  reg [`ADC_DATA_WIDTH-1:0] adc_ch3_data_n;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch0_data_p;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch1_data_p;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch2_data_p;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch3_data_p;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch0_data_n;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch1_data_n;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch2_data_n;
+  reg [`ADC_DATA_WIDTH/2-1:0] adc_ch3_data_n;
   reg adc_data_valid;
 
   // Wishbone signals
@@ -83,7 +83,7 @@ module wb_fmc516_tb;
   //reg 	                              wb_clk = 1;
 
   // Wiswhbone Master
-  WB_TEST_MASTER cmp_wb_master(.wb_clk(s_clk_sys));
+  WB_TEST_MASTER cmp_wb_master(.wb_clk(clk_100mhz));
 
   initial begin
     // Enable cmp_wb_master verbosity and bus monitoring
@@ -93,10 +93,10 @@ module wb_fmc516_tb;
     wb_fmc516_tb.cmp_wb_master.monitor_bus(1);
 
     // Initial values for ADC data signals
-    adc_ch0_data <= 'h0;
-    adc_ch1_data <= 'h0;
-    adc_ch2_data <= 'h0;
-    adc_ch3_data <= 'h0;
+    adc_ch0_data_p <= 'h0;
+    adc_ch1_data_p <= 'h0;
+    adc_ch2_data_p <= 'h0;
+    adc_ch3_data_p <= 'h0;
     adc_data_valid <= 'h0;
 
     // Wait next clock cycle
@@ -143,6 +143,7 @@ module wb_fmc516_tb;
     //$display("@%0d, Writing 32'h682C0290 to FMC150_CS_CDCE72010...", $time);
     //$display("----------------------------------");
     //write_fmc150_reg(`FMC150_CS_CDCE72010, 32'h0, 32'h682C0290);
+    cmp_wb_master.write32(32'h0, 32'h000000FF);
     //// Wait next clock cycle
     //@(posedge clk_sys);
     //// Read some values to FMC150 registers
@@ -154,24 +155,25 @@ module wb_fmc516_tb;
 
   // FMC516 device under test. Classic wishbone interface as the Wishbone Master
   // Interface does not talk PIPELINED cycles yet.
-  wb_fmc516  #(.g_packet_size(32), .g_sim(1)) cmp_wb_fmc516_dut
+  wb_fmc516  #(.g_packet_size(32), .g_sim(1), .g_use_clk_chains(4'b0010),
+                .g_use_data_chains(4'b1111)) cmp_wb_fmc516
   (
+    .sys_clk_i                                (clk_sys),
     .sys_rst_n_i                              (rstn),
-    .clk_sys_i                                (clk_sys),
-    .clk_200Mhz_i                             (clk_200mhz),
+    .sys_clk_200Mhz_i                         (clk_200mhz),
 
     //-----------------------------
     //-- Wishbone signals
     //-----------------------------
 
-    .wb_adr_i                                 (wb_fmc516_tb.cmp_wb_master.wb_addr),
-    .wb_dat_i                                 (wb_fmc516_tb.cmp_wb_master.wb_data_o),
-    .wb_dat_o                                 (wb_fmc516_tb.cmp_wb_master.wb_data_i),
-    .wb_sel_i                                 (wb_fmc150_tb.cmp_wb_master.wb_bwsel),
-    .wb_we_i                                  (wb_fmc516_tb.cmp_wb_master.wb_we),
-    .wb_cyc_i                                 (wb_fmc516_tb.cmp_wb_master.wb_cyc),
-    .wb_stb_i                                 (wb_fmc516_tb.cmp_wb_master.wb_stb),
-    .wb_ack_o                                 (wb_fmc516_tb.cmp_wb_master.wb_ack_i),
+    .wb_adr_i                                 (cmp_wb_master.wb_addr),
+    .wb_dat_i                                 (cmp_wb_master.wb_data_o),
+    .wb_dat_o                                 (cmp_wb_master.wb_data_i),
+    .wb_sel_i                                 (cmp_wb_master.wb_bwsel),
+    .wb_we_i                                  (cmp_wb_master.wb_we),
+    .wb_cyc_i                                 (cmp_wb_master.wb_cyc),
+    .wb_stb_i                                 (cmp_wb_master.wb_stb),
+    .wb_ack_o                                 (cmp_wb_master.wb_ack_i),
     .wb_err_o                                 (),
     .wb_rty_o                                 (),
     .wb_stall_o                               (),
@@ -197,14 +199,14 @@ module wb_fmc516_tb;
     .adc_clk3_n_i                             (~clk_adc),
 
     // DDR ADC data channels.
-    .adc_data_ch0_p_i                         (adc_ch0_data),
-    .adc_data_ch0_n_i                         (adc_ch0_data_n),
-    .adc_data_ch1_p_i                         (adc_ch1_data),
-    .adc_data_ch1_n_i                         (adc_ch1_data_n),
-    .adc_data_ch2_p_i                         (adc_ch2_data),
-    .adc_data_ch2_n_i                         (adc_ch2_data_n),
-    .adc_data_ch3_p_i                         (adc_ch3_data),
-    .adc_data_ch3_n_i                         (adc_ch3_data_n),
+    .adc_data_ch0_p_i                         (adc_ch0_data_p),
+    .adc_data_ch0_n_i                         (toggle_adc_data(adc_ch0_data_n)),
+    .adc_data_ch1_p_i                         (adc_ch1_data_p),
+    .adc_data_ch1_n_i                         (toggle_adc_data(adc_ch1_data_n)),
+    .adc_data_ch2_p_i                         (adc_ch2_data_p),
+    .adc_data_ch2_n_i                         (toggle_adc_data(adc_ch2_data_n)),
+    .adc_data_ch3_p_i                         (adc_ch3_data_p),
+    .adc_data_ch3_n_i                         (toggle_adc_data(adc_ch3_data_n)),
 
     // ADC clock (half of the sampling frequency) divider reset
     .adc_clk_div_rst_p_o                      (),
@@ -217,10 +219,10 @@ module wb_fmc516_tb;
     // ADC SPI control interface. Three-wire mode. Tri-stated data pin
     .sys_spi_clk_o                            (),
     .sys_spi_data_b                           (),
-    .sys_spi_cs_adc1_n_o                      (),  // SPI ADC CS channel 0
-    .sys_spi_cs_adc2_n_o                      (),  // SPI ADC CS channel 1
-    .sys_spi_cs_adc3_n_o                      (),  // SPI ADC CS channel 2
-    .sys_spi_cs_adc4_n_o                      (),  // SPI ADC CS channel 3
+    .sys_spi_cs_adc0_n_o                      (),  // SPI ADC CS channel 0
+    .sys_spi_cs_adc1_n_o                      (),  // SPI ADC CS channel 1
+    .sys_spi_cs_adc2_n_o                      (),  // SPI ADC CS channel 2
+    .sys_spi_cs_adc3_n_o                      (),  // SPI ADC CS channel 3
 
     // External Trigger To/From FMC
     .m2c_trig_p_i                             (zero_bit),
@@ -272,8 +274,8 @@ module wb_fmc516_tb;
     .trig_hw_o                                (),
     .trig_hw_i                                (zero_bit),
     // General board status
-    .fmc_mmcm_lock                            (fmc_mmcm_lock),
-    .fmc_lmk_lock                             (),
+    .fmc_mmcm_lock_o                          (fmc_mmcm_lock),
+    .fmc_lmk_lock_o                           (),
 
     //-----------------------------
     //-- Wishbone Streaming Interface Source
@@ -294,19 +296,19 @@ module wb_fmc516_tb;
   // Generate data and valid signals on positive edge of ADC clock
   always @(posedge clk_adc)
   begin
-    adc_ch0_data <= adc_data_gen(adc_data_max);
-    adc_ch1_data <= adc_data_gen(adc_data_max);
-    adc_ch2_data <= adc_data_gen(adc_data_max);
-    adc_ch3_data <= adc_data_gen(adc_data_max);
-    adc_ch0_data_n <= toggle_bus(adc_ch0_data);
-    adc_ch1_data_n <= toggle_bus(adc_ch1_data);
-    adc_ch2_data_n <= toggle_bus(adc_ch2_data);
-    adc_ch3_data_n <= toggle_bus(adc_ch3_data);
+    adc_ch0_data_p <= adc_data_gen(adc_data_max);
+    adc_ch1_data_p <= adc_data_gen(adc_data_max);
+    adc_ch2_data_p <= adc_data_gen(adc_data_max);
+    adc_ch3_data_p <= adc_data_gen(adc_data_max);
+    adc_ch0_data_n <= toggle_adc_data(adc_ch0_data_p);
+    adc_ch1_data_n <= toggle_adc_data(adc_ch1_data_p);
+    adc_ch2_data_n <= toggle_adc_data(adc_ch2_data_p);
+    adc_ch3_data_n <= toggle_adc_data(adc_ch3_data_p);
     adc_data_valid <= adc_data_valid_gen(adc_gen_threshold);
   end
 
   // Functions
-  function [`ADC_DATA_WIDTH-1:0] adc_data_gen;
+  function [`ADC_DATA_WIDTH/2-1:0] adc_data_gen;
     input integer max_size;
   begin
     // $random is surronded by the concat operator in order
@@ -315,11 +317,12 @@ module wb_fmc516_tb;
   end
   endfunction
 
-  function [`ADC_DATA_WIDTH-1:0] toggle_bus;
-    input data[`ADC_DATA_WIDTH-1:0];
+  function [`ADC_DATA_WIDTH/2 - 1 : 0] toggle_adc_data;
+    input [`ADC_DATA_WIDTH/2 -1  : 0] data;
+    integer i;
   begin
-    for (i = 0; i < `ADC_DATA_WIDTH; i = i+1) begin
-      toggle_bus[i] = ~data[i];
+    for (i = 0; i < `ADC_DATA_WIDTH/2; i = i+1) begin
+      toggle_adc_data[i] = ~data[i];
     end
   end
   endfunction
