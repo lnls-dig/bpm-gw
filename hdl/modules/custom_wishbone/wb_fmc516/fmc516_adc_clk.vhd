@@ -26,8 +26,8 @@ use unisim.vcomponents.all;
 entity fmc516_adc_clk is
 generic
 (
-	-- This genric must be specified
-  g_adc_clock_period                        : real;
+	-- This generic must be specified
+  g_adc_clock_period                        : real := 10.00;
   g_default_adc_clk_delay                   : natural := 0;
   g_sim                                     : integer := 0
 );

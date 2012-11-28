@@ -414,13 +414,13 @@ package custom_wishbone_pkg is
     -- SPI interface?
     lmk_lock_i                                : in std_logic;
     lmk_sync_o                                : out std_logic;
-    lmk_latch_en_o                            : out std_logic;
-    lmk_data_o                                : out std_logic;
-    lmk_clock_o                               : out std_logic;
+    lmk_uwire_latch_en_o                      : out std_logic;
+    lmk_uwire_data_o                          : out std_logic;
+    lmk_uwire_clock_o                         : out std_logic;
 
     -- Programable VCXO via I2C?
-    vcxo_sda_b                                : inout std_logic;
-    vcxo_scl_o                                : out std_logic;
+    vcxo_i2c_sda_b                            : inout std_logic;
+    vcxo_i2c_scl_o                            : out std_logic;
     vcxo_pd_l_o                               : out std_logic;
 
     -- One-wire To/From DS2431 (VMETRO Data)

@@ -125,17 +125,17 @@ port
   c2m_trig_p_o                              : out std_logic;
   c2m_trig_n_o                              : out std_logic;
 
-  -- LMK (National Semiconductor) is the clock and distribution IC.
-  -- SPI interface?
+  -- LMK (National Semiconductor) is the clock and distribution IC,
+  -- programmable via Microwire Interface
   lmk_lock_i                                : in std_logic;
   lmk_sync_o                                : out std_logic;
-  lmk_latch_en_o                            : out std_logic;
-  lmk_data_o                                : out std_logic;
-  lmk_clock_o                               : out std_logic;
+  lmk_uwire_latch_en_o                      : out std_logic;
+  lmk_uwire_data_o                          : out std_logic;
+  lmk_uwire_clock_o                         : out std_logic;
 
-  -- Programable VCXO via I2C?
-  vcxo_sda_b                                : inout std_logic;
-  vcxo_scl_o                                : out std_logic;
+  -- Programable VCXO via I2C
+  vcxo_i2c_sda_b                            : inout std_logic;
+  vcxo_i2c_scl_o                            : out std_logic;
   vcxo_pd_l_o                               : out std_logic;
 
   -- One-wire To/From DS2431 (VMETRO Data)
@@ -210,6 +210,8 @@ architecture rtl of wb_fmc516 is
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
   -- Number of ADC channels
   constant c_num_channels                   : natural := 4;
+  -- Numbert of bits in Wishbone register interface
+  constant c_periph_addr_size               : natural := 4;
 
   -----------------------------
   -- Wishbone fanout component (xwb_bus_fanout) constants
@@ -253,7 +255,7 @@ architecture rtl of wb_fmc516 is
   );
 
 	-- Self Describing Bus ROM Address. It will be an addressed slave as well.
-  constant c_sdb_address                    : t_wishbone_address := x"00000700";
+  constant c_sdb_address                    : t_wishbone_address := x"00000800";
 
   -----------------------------
   -- Clock and reset signals
@@ -326,8 +328,8 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- Wishbone slave adapter signals/structures
   -----------------------------
-  signal wb_slv_adp_out                     : t_wishbone_slave_out;
-  signal wb_slv_adp_in                      : t_wishbone_slave_in;
+  signal wb_slv_adp_out                     : t_wishbone_master_out;
+  signal wb_slv_adp_in                      : t_wishbone_master_in;
   signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
 
   -----------------------------
@@ -360,6 +362,36 @@ architecture rtl of wb_fmc516 is
   signal sys_spi_dout                       : std_logic;
   signal sys_spi_ss_int                     : std_logic_vector(7 downto 0);
   signal sys_spi_clk                        : std_logic;
+
+  -----------------------------
+  -- LMK SPI (microwire) signals
+  -----------------------------
+  signal fmc_lmk_uwire_ss_int               : std_logic_vector(7 downto 0);
+  signal fmc_lmk_uwire_clk                  : std_logic;
+
+  -----------------------------
+  -- VCXO I2C signals
+  -----------------------------
+  --signal vcxo_i2c_scl_in                     : std_logic;
+  signal vcxo_i2c_scl_out                   : std_logic;
+  signal vcxo_i2c_scl_oe_n                   : std_logic;
+  signal vcxo_i2c_sda_in                    : std_logic;
+  signal vcxo_i2c_sda_out                   : std_logic;
+  signal vcxo_i2c_sda_oe_n                  : std_logic;
+
+  -----------------------------
+  -- One Wire DS2431 (VMETRO Data) signals
+  -----------------------------
+  signal owr_id_pwren                       : std_logic_vector(0 downto 0);
+  signal owr_id_en                          : std_logic_vector(0 downto 0);
+  signal owr_id_i                           : std_logic_vector(0 downto 0);
+
+  -----------------------------
+  -- One Wire DS2432 SHA-1 (SP-Devices key) signals
+  -----------------------------
+  signal owr_key_pwren                      : std_logic_vector(0 downto 0);
+  signal owr_key_en                         : std_logic_vector(0 downto 0);
+  signal owr_key_i                          : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- Trigger signals
@@ -480,53 +512,6 @@ begin
   fmc_lmk_lock_o                            <= lmk_lock_i;
 
   -----------------------------
-  -- Slave adapter
-  -----------------------------
-  cmp_slave_Adapter : wb_slave_adapter
-  generic map (
-    g_master_use_struct                     => true,
-    g_master_mode                           => PIPELINED,
-    g_master_granularity                    => WORD,
-    g_slave_use_struct                      => false,
-    g_slave_mode                            => g_interface_mode,
-    g_slave_granularity                     => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-    master_i                                => wb_slv_adp_out,
-    master_o                                => wb_slv_adp_in,
-    sl_adr_i                                => resized_addr,
-    sl_dat_i                                => wb_dat_i,
-    sl_sel_i                                => wb_sel_i,
-    sl_cyc_i                                => wb_cyc_i,
-    sl_stb_i                                => wb_stb_i,
-    sl_we_i                                 => wb_we_i,
-    sl_dat_o                                => wb_dat_o,
-    sl_ack_o                                => wb_ack_o,
-    sl_stall_o                              => wb_stall_o
-  );
-
-  wb_err_o                                  <= '0';
-  wb_rty_o                                  <= '0';
-
-  -- Decode only the LSB bits. In this case, at most, 9 LSB (if word addressed):
-  -- 3 bits for internal wishbone peripheral addressing (register interface,
-  -- I2C (2x), SPI (2x), One-Wire (2x)) + 6 bits for each register peripheral
-  -- space (2^6 registers if word addressed or 2^4 regsiters if byte addressed).
-  --
-  -- By doing this zeroing we avoid the issue related to BYTE -> WORD  conversion
-  -- slave addressing (possibly performed by the slave adapter component)
-  -- in which a bit in the LSB of the peripheral addressing part (31 - 9 in our case)
-  -- is shifted to the internal register adressing part (8 - 0 in our case).
-  -- Therefore, possibly changing the these bits!
-  -- See wb_fmc516_port.vhd for register bank addresses and.
-  resized_addr(c_periph_addr_size-1 downto 0)
-                                            <= wb_adr_i(c_periph_addr_size-1 downto 0);
-  resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size)
-                                            <= (others => '0');
-
-  -----------------------------
   -- FMC516 Address decoder for SPI/I2C/Onewire Wishbone interfaces modules
   -----------------------------
   -- We need 7 outputs, as in the same wishbone addressing range, 7
@@ -572,12 +557,64 @@ begin
 		clk_sys_i                                 => sys_clk_i,
 		rst_n_i                                   => sys_rst_sync_n,
 		-- Master connections (INTERCON is a slave)
-		slave_i                                   => wb_slv_adp_in,
-		slave_o                                   => wb_slv_adp_out,
+		slave_i                                   => cbar_slave_in,
+		slave_o                                   => cbar_slave_out,
 		-- Slave connections (INTERCON is a master)
 		master_i                                  => cbar_master_in,
 		master_o                                  => cbar_master_out
 	);
+
+  cbar_slave_in(0).adr                        <= wb_adr_i;
+  cbar_slave_in(0).dat                        <= wb_dat_i;
+  cbar_slave_in(0).sel                        <= wb_sel_i;
+  cbar_slave_in(0).we                         <= wb_we_i;
+  cbar_slave_in(0).cyc                        <= wb_cyc_i;
+  cbar_slave_in(0).stb                        <= wb_stb_i;
+
+  wb_dat_o                                    <= cbar_slave_out(0).dat;
+  wb_ack_o                                    <= cbar_slave_out(0).ack;
+  wb_err_o                                    <= cbar_slave_out(0).err;
+  wb_rty_o                                    <= cbar_slave_out(0).rty;
+  wb_stall_o                                  <= cbar_slave_out(0).stall;
+
+  -----------------------------
+  -- Slave adapter for Wishbone Register Interface
+  -----------------------------
+  cmp_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => true,
+    g_master_mode                           => PIPELINED,
+    g_master_granularity                    => WORD,
+    g_slave_use_struct                      => false,
+    g_slave_mode                            => g_interface_mode,
+    g_slave_granularity                     => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+    master_i                                => wb_slv_adp_in,
+    master_o                                => wb_slv_adp_out,
+    sl_adr_i                                => resized_addr,
+    sl_dat_i                                => cbar_master_out(0).dat,
+    sl_sel_i                                => cbar_master_out(0).sel,
+    sl_cyc_i                                => cbar_master_out(0).cyc,
+    sl_stb_i                                => cbar_master_out(0).stb,
+    sl_we_i                                 => cbar_master_out(0).we,
+    sl_dat_o                                => cbar_master_in(0).dat,
+    sl_ack_o                                => cbar_master_in(0).ack,
+    sl_stall_o                              => cbar_master_in(0).stall
+  );
+
+  -- By doing this zeroing we avoid the issue related to BYTE -> WORD  conversion
+  -- slave addressing (possibly performed by the slave adapter component)
+  -- in which a bit in the MSB of the peripheral addressing part (31 - 5 in our case)
+  -- is shifted to the internal register adressing part (4 - 0 in our case).
+  -- Therefore, possibly changing the these bits!
+  -- See wb_fmc516_port.vhd for register bank addresses and.
+  resized_addr(c_periph_addr_size-1 downto 0)
+                                            <= wb_adr_i(c_periph_addr_size-1 downto 0);
+  resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size)
+                                            <= (others => '0');
 
   -----------------------------
   -- FMC516 Register Wishbone Interface. Word addressed!
@@ -587,15 +624,15 @@ begin
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => cbar_master_out(0).adr(3 downto 0),
-    wb_dat_i                                => cbar_master_out(0).dat,
-    wb_dat_o                                => cbar_master_in(0).dat,
-    wb_cyc_i                                => cbar_master_out(0).cyc,
-    wb_sel_i                                => cbar_master_out(0).sel,
-    wb_stb_i                                => cbar_master_out(0).stb,
-    wb_we_i                                 => cbar_master_out(0).we,
-    wb_ack_o                                => cbar_master_in(0).ack,
-    wb_stall_o                              => cbar_master_in(0).stall,
+    wb_adr_i                                => wb_slv_adp_out.adr(3 downto 0),
+    wb_dat_i                                => wb_slv_adp_out.dat,
+    wb_dat_o                                => wb_slv_adp_in.dat,
+    wb_cyc_i                                => wb_slv_adp_out.cyc,
+    wb_sel_i                                => wb_slv_adp_out.sel,
+    wb_stb_i                                => wb_slv_adp_out.stb,
+    wb_we_i                                 => wb_slv_adp_out.we,
+    wb_ack_o                                => wb_slv_adp_in.ack,
+    wb_stall_o                              => wb_slv_adp_in.stall,
     fs_clk_i                                => fs_clk,
     -- Check if this clock is necessary!
     wb_clk_i                                => sys_clk_i,
@@ -623,6 +660,34 @@ begin
   regs_out.ch2_sta_reserved_i               <= (others => '0');
   regs_out.ch3_sta_val_i                    <= adc_out(3).adc_data;
   regs_out.ch3_sta_reserved_i               <= (others => '0');
+
+  -- ADC delay registers out
+  regs_out.ch0_ctl_clk_chain_dly_i <= adc_dly_out(0).adc_clk_dly_val;
+  regs_out.ch0_ctl_data_chain_dly_i <= adc_dly_out(0).adc_data_dly_val;
+  regs_out.ch1_ctl_clk_chain_dly_i <= adc_dly_out(1).adc_clk_dly_val;
+  regs_out.ch1_ctl_data_chain_dly_i <= adc_dly_out(1).adc_data_dly_val;
+  regs_out.ch2_ctl_clk_chain_dly_i <= adc_dly_out(2).adc_clk_dly_val;
+  regs_out.ch2_ctl_data_chain_dly_i <= adc_dly_out(2).adc_data_dly_val;
+  regs_out.ch3_ctl_clk_chain_dly_i <= adc_dly_out(3).adc_clk_dly_val;
+  regs_out.ch3_ctl_data_chain_dly_i <= adc_dly_out(3).adc_data_dly_val;
+
+  -- ADC delay registers in
+  adc_dly_reg(0).clk_load <= regs_in.ch0_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(0).data_load <= regs_in.ch0_ctl_data_chain_dly_load_o;
+  adc_dly_reg(0).clk_dly <= regs_in.ch0_ctl_clk_chain_dly_o;
+  adc_dly_reg(0).data_dly <= regs_in.ch0_ctl_data_chain_dly_o;
+  adc_dly_reg(1).clk_load <= regs_in.ch1_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(1).data_load <= regs_in.ch1_ctl_data_chain_dly_load_o;
+  adc_dly_reg(1).clk_dly <= regs_in.ch1_ctl_clk_chain_dly_o;
+  adc_dly_reg(1).data_dly <= regs_in.ch1_ctl_data_chain_dly_o;
+  adc_dly_reg(2).clk_load <= regs_in.ch2_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(2).data_load <= regs_in.ch2_ctl_data_chain_dly_load_o;
+  adc_dly_reg(2).clk_dly <= regs_in.ch2_ctl_clk_chain_dly_o;
+  adc_dly_reg(2).data_dly <= regs_in.ch2_ctl_data_chain_dly_o;
+  adc_dly_reg(3).clk_load <= regs_in.ch3_ctl_clk_chain_dly_load_o;
+  adc_dly_reg(3).data_load <= regs_in.ch3_ctl_data_chain_dly_load_o;
+  adc_dly_reg(3).clk_dly <= regs_in.ch3_ctl_clk_chain_dly_o;
+  adc_dly_reg(3).data_dly <= regs_in.ch3_ctl_data_chain_dly_o;
 
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
@@ -675,44 +740,13 @@ begin
     --adc_dly_out(i).adc_data_dly_pulse <= '0';
   end generate;
 
-  -- Wishbone register interface
-  regs_out.ch0_ctl_clk_chain_dly_i <= adc_dly_out(0).adc_clk_dly_val;
-  regs_out.ch0_ctl_data_chain_dly_i <= adc_dly_out(0).adc_data_dly_val;
-  regs_out.ch1_ctl_clk_chain_dly_i <= adc_dly_out(1).adc_clk_dly_val;
-  regs_out.ch1_ctl_data_chain_dly_i <= adc_dly_out(1).adc_data_dly_val;
-  regs_out.ch2_ctl_clk_chain_dly_i <= adc_dly_out(2).adc_clk_dly_val;
-  regs_out.ch2_ctl_data_chain_dly_i <= adc_dly_out(2).adc_data_dly_val;
-  regs_out.ch3_ctl_clk_chain_dly_i <= adc_dly_out(3).adc_clk_dly_val;
-  regs_out.ch3_ctl_data_chain_dly_i <= adc_dly_out(3).adc_data_dly_val;
-
   -----------------------------
   -- Wishbone Delay Register Interface <-> ADC interface (clock + data delays).
   -----------------------------
   -- Clock/Data Chain delays
 
-  -- Signal mangling for generate statements
-  adc_dly_reg(0).clk_load <= regs_in.ch0_ctl_clk_chain_dly_load_o;
-  adc_dly_reg(0).data_load <= regs_in.ch0_ctl_data_chain_dly_load_o;
-  adc_dly_reg(0).clk_dly <= regs_in.ch0_ctl_clk_chain_dly_o;
-  adc_dly_reg(0).data_dly <= regs_in.ch0_ctl_data_chain_dly_o;
-
-  adc_dly_reg(1).clk_load <= regs_in.ch1_ctl_clk_chain_dly_load_o;
-  adc_dly_reg(1).data_load <= regs_in.ch1_ctl_data_chain_dly_load_o;
-  adc_dly_reg(1).clk_dly <= regs_in.ch1_ctl_clk_chain_dly_o;
-  adc_dly_reg(1).data_dly <= regs_in.ch1_ctl_data_chain_dly_o;
-
-  adc_dly_reg(2).clk_load <= regs_in.ch2_ctl_clk_chain_dly_load_o;
-  adc_dly_reg(2).data_load <= regs_in.ch2_ctl_data_chain_dly_load_o;
-  adc_dly_reg(2).clk_dly <= regs_in.ch2_ctl_clk_chain_dly_o;
-  adc_dly_reg(2).data_dly <= regs_in.ch2_ctl_data_chain_dly_o;
-
-  adc_dly_reg(3).clk_load <= regs_in.ch3_ctl_clk_chain_dly_load_o;
-  adc_dly_reg(3).data_load <= regs_in.ch3_ctl_data_chain_dly_load_o;
-  adc_dly_reg(3).clk_dly <= regs_in.ch3_ctl_clk_chain_dly_o;
-  adc_dly_reg(3).data_dly <= regs_in.ch3_ctl_data_chain_dly_o;
-
-  -- Capture delay signals (clock + data chains) coming from the wishbone
-  -- register interface
+  -- Capture delay signals (clock + data chains) coming from the Wishbone
+  -- Register Interface
   gen_adc_dly : for i in 0 to c_num_channels-1 generate
     p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
     begin
@@ -758,13 +792,13 @@ begin
     adc_in_i                                => adc_in,
 
     -----------------------------
-    -- ADC Delay signals.
+    -- ADC Delay signals
     -----------------------------
     adc_dly_i                               => adc_dly_in,
     adc_dly_o                               => adc_dly_out,
 
     -----------------------------
-    -- ADC output signals.
+    -- ADC output signals
     -----------------------------
     adc_out_o                               => adc_out,
 
@@ -778,7 +812,6 @@ begin
   -- WARNING: Hardcoded clock for now! Only clock chain 1 is used!
   fs_clk                                    <= adc_out(1).adc_clk;
   adc_clk_o                                 <= fs_clk;
-  --adc_clk_chain_rst                         <= not sys_rst_n_i;
 
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
@@ -805,6 +838,8 @@ begin
   -- Slaves: Atmel AT24C512B Serial EEPROM, AD7417
   --          temperature diodes and AD7417 supply rails
   -- System I2C Bus is lave number 1, word addressed
+  --
+  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
   cmp_fmc_sys_i2c : xwb_i2c_master
   generic map(
     g_interface_mode                        => CLASSIC,
@@ -838,7 +873,10 @@ begin
   -----------------------------
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   -- ADC SPI is slave number 2, word addressed
-
+  --
+  -- Note: On the L605 Kit GA0 = 0 and GA1 = 0. This geographical
+  -- adrresses are carrier specific. Check this before addressing
+  -- I2C slaves on this bus!
   cmp_fmc_spi : xwb_spi
   generic map(
     g_three_wire_mode                       => 1,
@@ -858,7 +896,7 @@ begin
     --pad_mosi_o                              => sys_spi_dout,
     --pad_miso_i                              => sys_spi_din_d(sys_spi_din_d'left),
     pad_mosi_o                              => open,
-    pad_miso_i                              => '1',
+    pad_miso_i                              => '0',
     pad_miosio_b                            => sys_spi_data_b
   );
 
@@ -883,6 +921,141 @@ begin
   --    end if;
   --  end if;
   --end process;
+
+  -----------------------------
+  -- Microwire FMC LMK
+  -----------------------------
+  -- Microwire FMC LMK control interface. Four-wire mode.
+  -- Microwire FMC LMK is slave number 3, word addressed
+  --
+  -- Note: No readback from the LMK CI is available. Hence,
+  -- pad_miso_i is fixed logic '0'
+  cmp_fmc_lmk_uwire : xwb_spi
+  generic map(
+    g_three_wire_mode                       => 0,
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(3),
+    slave_o                                 => cbar_master_in(3),
+    desc_o                                  => open,
+
+    pad_cs_o                                => fmc_lmk_uwire_ss_int,
+    pad_sclk_o                              => fmc_lmk_uwire_clk,
+    pad_mosi_o                              => lmk_uwire_data_o,
+    pad_miso_i                              => '0',
+    pad_miosio_b                            => open
+  );
+  --
+  -- Output Microwire LMK clock
+  lmk_uwire_clock_o <= fmc_lmk_uwire_clk;
+
+  -- Output latch enable signal
+  lmk_uwire_latch_en_o <= fmc_lmk_uwire_ss_int(0);
+
+  -- ???
+  lmk_sync_o <= '0';
+
+  -----------------------------
+  -- I2C Programmable VCXO
+  -----------------------------
+  -- I2C Programmable VCXO control interface.
+  -- I2C Programmable VCXO is slave number 4, word addressed
+  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
+  cmp_vcxo_i2c : xwb_i2c_master
+  generic map(
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(4),
+    slave_o                                 => cbar_master_in(4),
+    desc_o                                  => open,
+
+    scl_pad_i                               => '0',
+    scl_pad_o                               => sys_i2c_scl_out,
+    scl_padoen_o                            => open,
+    sda_pad_i                               => vcxo_i2c_sda_in,
+    sda_pad_o                               => vcxo_i2c_sda_out,
+    sda_padoen_o                            => vcxo_i2c_sda_oe_n
+  );
+
+  -- No bidirectional line to SCL from slaves
+  --vcxo_i2c_scl_b  <= vcxo_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
+  --vcxo_i2c_scl_in <= vcxo_i2c_scl_b;
+  vcxo_i2c_scl_o <= sys_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
+
+  vcxo_i2c_sda_b  <= vcxo_i2c_sda_out when vcxo_i2c_sda_oe_n = '0' else 'Z';
+  vcxo_i2c_sda_in <= vcxo_i2c_sda_b;
+
+  -- ???
+  vcxo_pd_l_o                               <= '0';
+
+  -----------------------------
+  -- DS2431 (VMETRO Data) One-Wire Interface
+  -----------------------------
+  -- DS2431 One-Wire control interface.
+  -- DS2431 One-Wire is slave number 5, word addressed
+
+  cmp_ds2431_onewire : xwb_onewire_master
+  generic map(
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD,
+    g_num_ports                             => 1,
+    g_ow_btp_normal                         => "5.0",
+    g_ow_btp_overdrive                      => "1.0"
+  )
+  port map(
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(5),
+    slave_o                                 => cbar_master_in(5),
+    desc_o                                  => open,
+
+    owr_pwren_o                             => owr_id_pwren,
+    owr_en_o                                => owr_id_en,
+    owr_i                                   => owr_id_i
+  );
+
+  fmc_id_dq_b <= '0' when owr_id_en(0) = '1' else 'Z';
+  owr_id_i(0) <= fmc_id_dq_b;
+
+  -----------------------------
+  -- DS2432 SHA-1 (SP-Devices key) One-Wire Interface
+  -----------------------------
+  -- DS2432 One-Wire control interface.
+  -- DS2432 One-Wire is slave number 6, word addressed
+  cmp_ds2432_onewire : xwb_onewire_master
+  generic map(
+    g_interface_mode                        => CLASSIC,
+    g_address_granularity                   => WORD,
+    g_num_ports                             => 1,
+    g_ow_btp_normal                         => "5.0",
+    g_ow_btp_overdrive                      => "1.0"
+  )
+  port map(
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(6),
+    slave_o                                 => cbar_master_in(6),
+    desc_o                                  => open,
+
+    owr_pwren_o                             => owr_key_pwren,
+    owr_en_o                                => owr_key_en,
+    owr_i                                   => owr_key_i
+  );
+
+  fmc_key_dq_b <= '0' when owr_key_en(0) = '1' else 'Z';
+  owr_key_i(0) <= fmc_key_dq_b;
 
   -----------------------------
   -- Wishbone Streaming Interface
