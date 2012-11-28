@@ -5,6 +5,7 @@
 // Wishbone Reference Clock
 `define WB_CLOCK_PERIOD 10.00
 `define WB_RESET_DELAY (4*`WB_CLOCK_PERIOD)
+`define WB_RESET_COUNTS 6
 // Wishbone Data Width
 `define WB_DATA_BUS_WIDTH 32
 // Wishbone Address Width

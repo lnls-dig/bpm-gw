@@ -22,6 +22,7 @@
 `include "timescale.v"
 // Wishbone Master
 `include "wishbone_test_master.v"
+//`include "wishbone_bfm.v"
 // fmc150 Register definitions
 `include "xfmc516_regs.vh"
 
@@ -55,11 +56,25 @@ module wb_fmc516_tb;
   // After reset delay
   localparam g_after_reset_delay = 16;
 
+  localparam CLASSIC = 0;
+  localparam PIPELINED = 1;
+  localparam BYTE = 0;
+  localparam WORD = 1;
+
   // Internal registers
   reg zero_bit = 1'b0;
   reg one_bit = 1'b1;
-  reg spi_busy;
+  reg spi_busy = 1'b0;
   reg [`WB_ADDRESS_BUS_WIDTH-1:0] data_out;
+
+  // SPI ADC Signals
+  reg sys_spi_data_reg = 1'b0;
+  reg sys_spi_data_en = 1'b0;
+  wire sys_spi_data;
+  wire sys_spi_cs_0;
+  wire sys_spi_cs_1;
+  wire sys_spi_cs_2;
+  wire sys_spi_cs_3;
 
   // Clock and Reset
   clk_rst cmp_rst(
@@ -83,14 +98,18 @@ module wb_fmc516_tb;
   //reg 	                              wb_clk = 1;
 
   // Wiswhbone Master
-  WB_TEST_MASTER cmp_wb_master(.wb_clk(clk_100mhz));
+  WB_TEST_MASTER cmp_wishbone_bfm(.wb_clk(clk_100mhz));
+  //wishbone_bfm cmp_wishbone_bfm(.wb_clk(clk_100mhz));
+
+  // model tristate buffer
+  assign sys_spi_data = sys_spi_data_en ? sys_spi_data_reg : 1'bz;
 
   initial begin
     // Enable cmp_wb_master verbosity and bus monitoring
     // Enable verbose mode
-    wb_fmc516_tb.cmp_wb_master.verbose(1);
+    wb_fmc516_tb.cmp_wishbone_bfm.verbose(1);
     // Enable monitor bus
-    wb_fmc516_tb.cmp_wb_master.monitor_bus(1);
+    wb_fmc516_tb.cmp_wishbone_bfm.monitor_bus(1);
 
     // Initial values for ADC data signals
     adc_ch0_data_p <= 'h0;
@@ -108,55 +127,100 @@ module wb_fmc516_tb;
       @(posedge clk_sys);
     end
 
-    $display("@%0d: Reset done!", $time);
+    $display("@%0d: Reset and MMCM done!", $time);
 
     // wait a few cycles before stimulus. Synchronizer chains needs to
     // update...
-    wait (!fmc_mmcm_lock) begin
+    while (!fmc_mmcm_lock) begin
       $display("@%0d: Waiting for MMCM lock...", $time);
       @(posedge clk_sys);
     end
 
     $display("@%0d: MMCM locked!", $time);
 
-    //$display("@%0d: Initializing FMC150 chips...", $time);
-    //
-    //// Waits until FMC150 chips are done initializing
-    //fmc150_spi_busy(spi_busy);
-    //@(posedge clk_sys);
-    //
-    //while (spi_busy) begin
-    //  fmc150_spi_busy(spi_busy);
-    //  // Wait for chips to be initialized...
-    //  repeat (128) begin
-    //    @(posedge clk_sys);
-    //  end
-    //  //$display(".");
-    //end
-    //
-    //$display("@%0d, FMC150 chips initialized!", $time);
-    //
-    //// Wait next clock cycle
-    //@(posedge clk_sys);
-    //// Write some values to FMC150 registers
-    //$display("----------------------------------");
-    //$display("@%0d, Writing 32'h682C0290 to FMC150_CS_CDCE72010...", $time);
-    //$display("----------------------------------");
-    //write_fmc150_reg(`FMC150_CS_CDCE72010, 32'h0, 32'h682C0290);
-    cmp_wb_master.write32(32'h0, 32'h000000FF);
-    //// Wait next clock cycle
-    //@(posedge clk_sys);
-    //// Read some values to FMC150 registers
-    //$display("----------------------------------");
-    //$display("@%0d, Reading FMC150_CS_CDCE72010...", $time);
-    //$display("----------------------------------");
-    //read_fmc150_reg(`FMC150_CS_CDCE72010, 32'h0, data_out);
+    // Testing SPI 3-wire communication
+    @(posedge clk_sys);
+    $display("----------------------------------------");
+    $display("@%0d: Writing data: FPGA -> external...", $time);
+    $display("----------------------------------------");
+    // RX/TX Register
+    //cmp_wishbone_bfm.write32(32'h00000200 << 2, 32'hAAAAAAAA);
+    cmp_wishbone_bfm.write32(32'h00000300 << 2, 32'hAAAAAAAA);
+    @(posedge clk_sys);
+    // Control register set. Direction reg is 1. Write to external chip
+    //cmp_wishbone_bfm.write32(32'h00000204 << 2, 32'h00006420);
+    cmp_wishbone_bfm.write32(32'h00000304 << 2, 32'h00006420);
+    @(posedge clk_sys);
+    // SS register set. Select slave #0
+    //cmp_wishbone_bfm.write32(32'h00000206 << 2, 32'h00000001);
+    cmp_wishbone_bfm.write32(32'h00000306 << 2, 32'h00000001);
+    @(posedge clk_sys);
+    // Control register set = set the go bit
+    //cmp_wishbone_bfm.write32(32'h00000204 << 2, 32'h00006520);
+    cmp_wishbone_bfm.write32(32'h00000304 << 2, 32'h00006520);
+    @(posedge clk_sys);
+
+    wait_spi_busy();
+
+    // wait a few cycles
+    repeat (8)
+      @(posedge clk_sys);
+
+    @(posedge clk_sys);
+    $display("----------------------------------------");
+    $display("@%0d: Reading data: external -> FPGA...", $time);
+    $display("----------------------------------------");
+
+    // 2 parallel tasks.
+    // 1: device write data to spi bus as soon as sys_spi_cs_0
+    // 2: fpga core read data from spi bus
+    fork
+      // Write 1010... pattern to data input SPI bus and read its data
+      begin
+        // The SPI core has clock idle = 0 and cs = 1 -> 0
+        @(negedge sys_spi_cs_0)
+        $display("@%0d: External will start writing to SPI bus...", $time);
+        sys_spi_data_en = 1'b1;
+        sys_spi_data_reg = #1 1'b1;
+
+        repeat (32) begin
+          // Data is sampled by the master on the negedge sys_spi_clk
+          // we have to start a new transcation
+          @(negedge sys_spi_clk)
+          $display("@%0d: External is writing to SPI bus...", $time);
+          sys_spi_data_reg = #1 ~sys_spi_data_reg;
+        end
+
+        $display("@%0d: External will stop writing to SPI bus...", $time);
+        sys_spi_data_en = 1'b0;
+      end
+
+      begin
+        // Control register set. Direction reg is 0. Read from external chip
+        //cmp_wishbone_bfm.write32(32'h00000204 << 2, 32'h00002420);
+        cmp_wishbone_bfm.write32(32'h00000304 << 2, 32'h00002420);
+        @(posedge clk_sys);
+        // Control register set = set the go bit
+        //cmp_wishbone_bfm.write32(32'h00000204 << 2, 32'h00002520);
+        cmp_wishbone_bfm.write32(32'h00000304 << 2, 32'h00002520);
+        @(posedge clk_sys);
+
+        wait_spi_busy();
+      end
+    join
+
+    // SPI data should be available by now
+    //cmp_wishbone_bfm.read32(32'h00000200 << 2, data_out);
+    cmp_wishbone_bfm.read32(32'h00000300 << 2, data_out);
+    $display("@%0d: SPI data: %08x", $time, data_out);
   end //initial
 
   // FMC516 device under test. Classic wishbone interface as the Wishbone Master
   // Interface does not talk PIPELINED cycles yet.
-  wb_fmc516  #(.g_packet_size(32), .g_sim(1), .g_use_clk_chains(4'b0010),
-                .g_use_data_chains(4'b1111)) cmp_wb_fmc516
+  wb_fmc516  #( .g_interface_mode(PIPELINED), .g_address_granularity(WORD),
+                .g_packet_size(32), .g_sim(1), .g_use_clk_chains(4'b0010),
+                .g_use_data_chains(4'b1111))
+  cmp_wb_fmc516
   (
     .sys_clk_i                                (clk_sys),
     .sys_rst_n_i                              (rstn),
@@ -166,14 +230,14 @@ module wb_fmc516_tb;
     //-- Wishbone signals
     //-----------------------------
 
-    .wb_adr_i                                 (cmp_wb_master.wb_addr),
-    .wb_dat_i                                 (cmp_wb_master.wb_data_o),
-    .wb_dat_o                                 (cmp_wb_master.wb_data_i),
-    .wb_sel_i                                 (cmp_wb_master.wb_bwsel),
-    .wb_we_i                                  (cmp_wb_master.wb_we),
-    .wb_cyc_i                                 (cmp_wb_master.wb_cyc),
-    .wb_stb_i                                 (cmp_wb_master.wb_stb),
-    .wb_ack_o                                 (cmp_wb_master.wb_ack_i),
+    .wb_adr_i                                 (cmp_wishbone_bfm.wb_addr),
+    .wb_dat_i                                 (cmp_wishbone_bfm.wb_data_o),
+    .wb_dat_o                                 (cmp_wishbone_bfm.wb_data_i),
+    .wb_sel_i                                 (cmp_wishbone_bfm.wb_bwsel),
+    .wb_we_i                                  (cmp_wishbone_bfm.wb_we),
+    .wb_cyc_i                                 (cmp_wishbone_bfm.wb_cyc),
+    .wb_stb_i                                 (cmp_wishbone_bfm.wb_stb),
+    .wb_ack_o                                 (cmp_wishbone_bfm.wb_ack_i),
     .wb_err_o                                 (),
     .wb_rty_o                                 (),
     .wb_stall_o                               (),
@@ -217,12 +281,12 @@ module wb_fmc516_tb;
     .fmc_leds_o                               (),
 
     // ADC SPI control interface. Three-wire mode. Tri-stated data pin
-    .sys_spi_clk_o                            (),
-    .sys_spi_data_b                           (),
-    .sys_spi_cs_adc0_n_o                      (),  // SPI ADC CS channel 0
-    .sys_spi_cs_adc1_n_o                      (),  // SPI ADC CS channel 1
-    .sys_spi_cs_adc2_n_o                      (),  // SPI ADC CS channel 2
-    .sys_spi_cs_adc3_n_o                      (),  // SPI ADC CS channel 3
+    .sys_spi_clk_o                            (sys_spi_clk),
+    .sys_spi_data_b                           (sys_spi_data),
+    .sys_spi_cs_adc0_n_o                      (sys_spi_cs_0),  // SPI ADC CS channel 0
+    .sys_spi_cs_adc1_n_o                      (sys_spi_cs_1),  // SPI ADC CS channel 1
+    .sys_spi_cs_adc2_n_o                      (sys_spi_cs_2),  // SPI ADC CS channel 2
+    .sys_spi_cs_adc3_n_o                      (sys_spi_cs_3),  // SPI ADC CS channel 3
 
     // External Trigger To/From FMC
     .m2c_trig_p_i                             (zero_bit),
@@ -234,13 +298,13 @@ module wb_fmc516_tb;
     // SPI interface?
     .lmk_lock_i                               (one_bit),
     .lmk_sync_o                               (),
-    .lmk_latch_en_o                           (),
-    .lmk_data_o                               (),
-    .lmk_clock_o                              (),
+    .lmk_uwire_latch_en_o                     (),
+    .lmk_uwire_data_o                         (),
+    .lmk_uwire_clock_o                        (),
 
     // Programable VCXO via I2C?
-    .vcxo_sda_b                               (),
-    .vcxo_scl_o                               (),
+    .vcxo_i2c_sda_b                           (),
+    .vcxo_i2c_scl_o                           (),
     .vcxo_pd_l_o                              (),
 
     // One-wire To/From DS2431 (VMETRO Data)
@@ -342,5 +406,27 @@ module wb_fmc516_tb;
       adc_data_valid_gen = 1'b0;
   end
   endfunction
+
+  // Tasks
+  task wait_spi_busy();
+  begin
+    // Wait for transfer
+    //cmp_wishbone_bfm.read32(32'h00000204 << 2, data_out);
+    cmp_wishbone_bfm.read32(32'h00000304 << 2, data_out);
+    @(posedge clk_sys);
+    $display("@%0d: Waiting for SPI...", $time);
+
+    while (data_out & (1 << 8)) begin
+      //cmp_wishbone_bfm.read32(32'h00000204 << 2, data_out);
+      cmp_wishbone_bfm.read32(32'h00000304 << 2, data_out);
+      repeat (16)
+        @(posedge clk_sys);
+      $display("@%0d: Waiting for SPI...", $time);
+    end
+
+    $display("@%0d: SPI completed its transcation", $time);
+  end
+  endtask
+
 endmodule
 

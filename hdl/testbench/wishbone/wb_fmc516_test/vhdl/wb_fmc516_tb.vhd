@@ -278,13 +278,13 @@ begin  -- sim
     -- SPI interface?
     lmk_lock_i                              => '0',
     lmk_sync_o                              => open,
-    lmk_latch_en_o                          => open,
-    lmk_data_o                              => open,
-    lmk_clock_o                             => open,
+    lmk_uwire_latch_en_o                    => open,
+    lmk_uwire_data_o                        => open,
+    lmk_uwire_clock_o                       => open,
 
     -- Programable VCXO via I2C?
-    vcxo_sda_b                              => open,
-    vcxo_scl_o                              => open,
+    vcxo_i2c_sda_b                          => open,
+    vcxo_i2c_scl_o                          => open,
     vcxo_pd_l_o                             => open,
 
     -- One-wire To/From DS2431 (VMETRO Data)
