@@ -24,7 +24,7 @@
 `include "wishbone_test_master.v"
 //`include "wishbone_bfm.v"
 // fmc150 Register definitions
-`include "xfmc516_regs.vh"
+`include "wb_fmc516_regs.vh"
 
 module wb_fmc516_tb;
 
@@ -218,8 +218,8 @@ module wb_fmc516_tb;
   // FMC516 device under test. Classic wishbone interface as the Wishbone Master
   // Interface does not talk PIPELINED cycles yet.
   wb_fmc516  #( .g_interface_mode(PIPELINED), .g_address_granularity(WORD),
-                .g_packet_size(32), .g_sim(1), .g_use_clk_chains(4'b0010),
-                .g_use_data_chains(4'b1111))
+                .g_use_clk_chains(4'b0001), .g_use_data_chains(4'b1111),
+                .g_packet_size(32), .g_sim(1))
   cmp_wb_fmc516
   (
     .sys_clk_i                                (clk_sys),

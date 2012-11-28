@@ -197,7 +197,7 @@ begin  -- sim
     --g_interface_mode                        : t_wishbone_interface_mode      := CLASSIC;
     --g_address_granularity                   : t_wishbone_address_granularity := WORD;
     g_adc_clk_period_values                 => c_adc_clks_period,
-    g_use_clk_chains                        => "0010",
+    g_use_clk_chains                        => "0001",
     g_use_data_chains                       => "1111",
     --g_packet_size                           : natural := 32;
     g_sim                                   => 1

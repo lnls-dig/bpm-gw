@@ -307,7 +307,7 @@ work/defines/.defines_v: defines.v
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/wb_fmc516_tb/.wb_fmc516_tb_v: wb_fmc516_tb.v defines.v timescale.v ../../../../sim/wishbone_test_master.v ../../../../sim/regs/xfmc516_regs.vh
+work/wb_fmc516_tb/.wb_fmc516_tb_v: wb_fmc516_tb.v defines.v timescale.v ../../../../sim/wishbone_test_master.v ../../../../sim/regs/wb_fmc516_regs.vh
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
 		@mkdir -p $(dir $@) && touch $@ 
 
