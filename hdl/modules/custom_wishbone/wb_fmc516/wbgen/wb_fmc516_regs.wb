@@ -1,7 +1,7 @@
 peripheral {
   name = "FMC ADC 250MS/s core registers";
   description = "Wishbone slave for FMC ADC 250MS/s core";
-  hdl_entity = "wb_fmc516_port";
+  hdl_entity = "wb_fmc516_regs";
   prefix = "fmc516";
 
   reg {
@@ -104,11 +104,22 @@ peripheral {
     };
 
     field {
+      name = "VCXO Ouput enable selection";
+      description = "Enable VCXO output \
+                      write 0: disable VCXO output \
+                      write 1: enable VCXO output";
+      prefix = "vcxo_out_en";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Reserved";
       description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 28;
+      size = 27;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };

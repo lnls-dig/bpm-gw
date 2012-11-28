@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<TITLE>wb_fmc516_port</TITLE>
+<TITLE>wb_fmc516_regs</TITLE>
 <STYLE TYPE="text/css" MEDIA="all">
 
 	<!--
@@ -27,7 +27,7 @@
 </STYLE>
 </HEAD>
 <BODY>
-<h1 class="heading">wb_fmc516_port</h1>
+<h1 class="heading">wb_fmc516_regs</h1>
 <h3>FMC ADC 250MS/s core registers</h3>
 <p>Wishbone slave for FMC ADC 250MS/s core</p>
 <h3>Contents:</h3>
@@ -506,7 +506,24 @@ fmc516_fmc_ctl_clk_sel_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_fmc_ctl_reserved_o[27:0]
+fmc516_fmc_ctl_vcxo_out_en_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_fmc_ctl_reserved_o[26:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1976,7 +1993,7 @@ FMC_CTL
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[27:20]
+RESERVED[26:19]
 </td>
 <td >
 
@@ -2030,7 +2047,7 @@ RESERVED[27:20]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[19:12]
+RESERVED[18:11]
 </td>
 <td >
 
@@ -2084,7 +2101,7 @@ RESERVED[19:12]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[11:4]
+RESERVED[10:3]
 </td>
 <td >
 
@@ -2137,8 +2154,11 @@ RESERVED[11:4]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=4  class="td_field">
-RESERVED[3:0]
+<td style="border: solid 1px black;" colspan=3  class="td_field">
+RESERVED[2:0]
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+VCXO_OUT_EN
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 CLK_SEL
@@ -2151,9 +2171,6 @@ LED_0
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TEST_DATA_EN
-</td>
-<td >
-
 </td>
 <td >
 
@@ -2180,6 +2197,10 @@ LED_1
 CLK_SEL
 </b>[<i>read/write</i>]: Internal/External clock distribution selection
 <br>Select between internal VCXO or external reference clock <br>                      write 0: internal reference <br>                      write 1: external reference
+<li><b>
+VCXO_OUT_EN
+</b>[<i>read/write</i>]: VCXO Ouput enable selection
+<br>Enable VCXO output <br>                      write 0: disable VCXO output <br>                      write 1: enable VCXO output
 <li><b>
 RESERVED
 </b>[<i>read/write</i>]: Reserved

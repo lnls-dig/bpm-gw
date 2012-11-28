@@ -457,7 +457,7 @@ architecture rtl of wb_fmc516 is
   end component;
 
   -- FMC516 Register Wishbone Interface
-  component wb_fmc516_port is
+  component wb_fmc516_regs is
   port (
     rst_n_i                                 : in std_logic;
     clk_sys_i                               : in std_logic;
@@ -620,7 +620,7 @@ begin
   -- FMC516 Register Wishbone Interface. Word addressed!
   -----------------------------
   --FMC516 register interface is the slave number 0, word addressed
-  cmp_wb_fmc516_port : wb_fmc516_port
+  cmp_wb_fmc516_port : wb_fmc516_regs
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
@@ -995,8 +995,8 @@ begin
   vcxo_i2c_sda_b  <= vcxo_i2c_sda_out when vcxo_i2c_sda_oe_n = '0' else 'Z';
   vcxo_i2c_sda_in <= vcxo_i2c_sda_b;
 
-  -- ???
-  vcxo_pd_l_o                               <= '0';
+  -- VCXO output enable. Controllable from the Wishbone Register Interface
+  vcxo_pd_l_o                               <= regs_in.fmc_ctl_vcxo_out_en_o;
 
   -----------------------------
   -- DS2431 (VMETRO Data) One-Wire Interface

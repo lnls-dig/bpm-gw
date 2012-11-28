@@ -66,8 +66,8 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_clk.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_data.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_iface.vhd \
-../../../../modules/custom_wishbone/wb_fmc516/xfmc516_regs_pkg.vhd \
-../../../../modules/custom_wishbone/wb_fmc516/wb_fmc516_port.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd \
@@ -178,8 +178,8 @@ work/wb_fmc516/.wb_fmc516_vhd \
 work/fmc516_adc_clk/.fmc516_adc_clk_vhd \
 work/fmc516_adc_data/.fmc516_adc_data_vhd \
 work/fmc516_adc_iface/.fmc516_adc_iface_vhd \
-work/xfmc516_regs_pkg/.xfmc516_regs_pkg_vhd \
-work/wb_fmc516_port/.wb_fmc516_port_vhd \
+work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
+work/wb_fmc516_regs/.wb_fmc516_regs_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd \
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd \
 work/adc_pkg/.adc_pkg_vhd \
@@ -497,7 +497,7 @@ work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
-work/xfmc516_regs_pkg/.xfmc516_regs_pkg_vhd \
+work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
@@ -530,21 +530,21 @@ work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
-work/xfmc516_regs_pkg/.xfmc516_regs_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc516/xfmc516_regs_pkg.vhd work/xfmc516_regs_pkg/.xfmc516_regs_pkg
+work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/xfmc516_regs_pkg/.xfmc516_regs_pkg:
+work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
-work/wb_fmc516_port/.wb_fmc516_port_vhd: ../../../../modules/custom_wishbone/wb_fmc516/wb_fmc516_port.vhd work/wb_fmc516_port/.wb_fmc516_port
+work/wb_fmc516_regs/.wb_fmc516_regs_vhd: ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd work/wb_fmc516_regs/.wb_fmc516_regs
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/wb_fmc516_port/.wb_fmc516_port: \
-work/xfmc516_regs_pkg/.xfmc516_regs_pkg_vhd
+work/wb_fmc516_regs/.wb_fmc516_regs: \
+work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc516_pkg/.fmc516_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc516/fmc516_pkg.vhd work/fmc516_pkg/.fmc516_pkg
