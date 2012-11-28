@@ -55,6 +55,10 @@ package fmc516_pkg is
   subtype t_clk_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_data_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
 
+  -- Constant default values.
+  constant default_adc_clk_period_values : t_clk_values_array :=
+    (0.0, 0.0, 0.0, 4.0);
+
   -- dummy values for fmc516_adc_iface generic definitions
   -- Warning: all clocks are null here! Should be modified
   constant dummy_clks : t_clk_values_array := (others => 0.0);

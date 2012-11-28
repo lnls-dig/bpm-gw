@@ -8,12 +8,12 @@
 -------------------------------------------------------------------------------
 -- Description: ADC Interface with FMC516 ADC board from Curtis Wright.
 --
--- Currently all ADC data is clocked on rising_edge of clk1, as this is an
+-- Currently all ADC data is clocked on rising_edge of clk0 (CLK1_M2C_P
+-- and CLK1_M2C_N from the FMC Specifications), as this is an
 -- IO pin capable of driving regional clocks up to 3 clocks regions (MRCC).
 --
 -- The generic parameter g_use_clocks specifies which clocks are to be used
--- for acquiring the corresponding adc data. This is not yet implemented!
--- Because of this, it should not be modified!
+-- for acquiring the corresponding adc data. Use with caution!
 -------------------------------------------------------------------------------
 -- Copyright (c) 2012 CNPEM
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
@@ -44,7 +44,9 @@ use work.fmc516_pkg.all;
 entity fmc516_adc_iface is
 generic
 (
-  g_adc_clk_period_values                   : t_clk_values_array := dummy_clks;
+	-- The only supported values are VIRTEX6 and 7SERIES
+  g_fpga_device                             : string := "VIRTEX6";
+  g_adc_clk_period_values                   : t_clk_values_array;
   g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
   g_clk_default_dly                         : t_default_adc_dly := dummy_default_dly;
   g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
@@ -181,8 +183,9 @@ architecture rtl of fmc516_adc_iface is
 
   component fmc516_adc_clk
   generic(
-    -- This genric must be specified
-    g_adc_clock_period                      : real := 10.00;
+	-- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                           : string := "VIRTEX6";
+    g_adc_clock_period                      : real;
     g_default_adc_clk_delay                 : natural := 0;
     g_sim                                   : integer := 0
   );
@@ -278,6 +281,8 @@ begin
     gen_check_clock_chains : if g_use_clk_chains(i) = '1' generate
       cmp_fmc516_adc_clk : fmc516_adc_clk
       generic map (
+      	-- The only supported values are VIRTEX6 and 7SERIES
+        g_fpga_device                       => g_fpga_device,
         g_adc_clock_period                  => g_adc_clk_period_values(i),
         g_default_adc_clk_delay             => g_clk_default_dly(i),
         g_sim                              	=> g_sim

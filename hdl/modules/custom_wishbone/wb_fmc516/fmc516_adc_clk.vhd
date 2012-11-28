@@ -26,8 +26,9 @@ use unisim.vcomponents.all;
 entity fmc516_adc_clk is
 generic
 (
-	-- This generic must be specified
-  g_adc_clock_period                        : real := 10.00;
+	-- The only supported values are VIRTEX6 and 7SERIES
+  g_fpga_device                             : string := "VIRTEX6";
+  g_adc_clock_period                        : real;
   g_default_adc_clk_delay                   : natural := 0;
   g_sim                                     : integer := 0
 );
@@ -73,6 +74,13 @@ architecture rtl of fmc516_adc_clk is
   signal adc_clk_ibufgds                    : std_logic;
   signal adc_clk_ibufgds_dly                : std_logic;
 
+  -- Clock BUFMR signals
+  signal adc_clk_bufmr                      : std_logic;
+
+  -- Clock BUFIO/BUFR input signals
+  signal adc_clk_bufio_in                   : std_logic;
+  signal adc_clk_bufr_in                    : std_logic;
+
   -- Clock internal signals interconnect
   signal adc_clk_bufio                      : std_logic;
   signal adc_clk_bufr                       : std_logic;
@@ -104,14 +112,12 @@ begin
 
   -- Delay for Clock Buffers
   -- From Virtex-6 SelectIO Datasheet:
-  -- Sets the type of tap delay line. DEFAULT delay
-  -- guarantees zero hold times. FIXED delay sets a
-  -- static delay value. VAR_LOADABLE dynamically
-  -- loads tap values. VARIABLE delay dynamically
-  -- adjusts the delay value.
+  -- Sets the type of tap delay line. DEFAULT delay guarantees zero hold times.
+  -- FIXED delay sets a static delay value. VAR_LOADABLE dynamically loads tap
+  -- values. VARIABLE delay dynamically adjusts the delay value.
   --
   -- HIGH_PERFORMANCE_MODE = TRUE reduces the output
-  -- jitter on exchange of increase power dissipation
+  -- jitter in exchange of increase power dissipation
   cmp_ibufgds_clk_iodelay : iodelaye1
   generic map(
     IDELAY_TYPE                             => "VAR_LOADABLE",
@@ -136,13 +142,40 @@ begin
     t                                       => '1'
   );
 
+  -- Generate BUFMR and connect directly to BUFIO/BUFR
+  --
+  -- In Xilinx 7-Series devices, BUFIO/BUFR only drives a single clock region.
+  -- If BUFIO/BUFR must drive multi clock-regions (up to 3: actual, above and
+  -- below), we must instanciate a multi-clock buffer (BUFMR) and then drive
+  -- the BUFIO/BUFR as needed.
+  gen_bufmr : if g_fpga_device = "7SERIES" generate
+
+    -- 1-bit output: Clock output (connect to BUFIOs/BUFRs)
+    -- 1-bit input: Clock input (Connect to IBUFG)
+    cmp_bufmr : bufmr
+    port map (
+      O                                     => adc_clk_bufmr,
+      I                                     => adc_clk_ibufgds_dly
+    );
+
+    adc_clk_bufio_in                        <= adc_clk_bufmr;
+    adc_clk_bufr_in                         <= adc_clk_bufmr;
+  end generate;
+
+  -- Do not generate BUFMR and connect the input clock directly to BUFIO/BUFR
+  gen_not_bufmr : if g_fpga_device = "VIRTEX6" generate
+
+    adc_clk_bufio_in                        <= adc_clk_ibufgds_dly;
+    adc_clk_bufr_in                         <= adc_clk_ibufgds_dly;
+  end generate;
+
   -- BUFIO (better switching characteristics than BUFR and BUFG).
   -- It can be used just inside ILOGIC blocks resources, such as
   -- an IDDR block.
   cmp_adc_clk_bufio : bufio
   port map (
     O                                       => adc_clk_bufio,
-    I                                       => adc_clk_ibufgds_dly
+    I                                       => adc_clk_bufio_in
   );
 
   -- BUFR (better switching characteristics than BUFG).
@@ -150,87 +183,87 @@ begin
   -- etc) up to 6 clock regions.
   cmp_adc_clk_bufr : bufr
   generic map(
-    SIM_DEVICE 	=> "VIRTEX6",
-    BUFR_DIVIDE => "BYPASS"
+    SIM_DEVICE 	                            => g_fpga_device,
+    BUFR_DIVIDE                             => "BYPASS"
   )
   port map (
-    clr                                     => '0',
-    ce                                      => '1',
-    i                                       => adc_clk_ibufgds_dly,
-    o                                       => adc_clk_bufr
+    CLR                                     => '0',
+    CE                                      => '1',
+    I                                       => adc_clk_bufr_in,
+    O                                       => adc_clk_bufr
   );
 
   -- ADC Clock PLL
   cmp_mmcm_adc_clk : MMCM_ADV
   generic map(
-      BANDWIDTH                             => "OPTIMIZED",
-      CLKOUT4_CASCADE                       => FALSE,
-      CLOCK_HOLD                            => FALSE,
-      -- Let the synthesis tools select the best appropriate
-      -- compensation method (as dictated in Virtex-6 clocking
-      -- resourses guide page 53, note 2)
-      --COMPENSATION         => "ZHOLD",
-      STARTUP_WAIT                          => FALSE,
-      DIVCLK_DIVIDE                         => 1,
-      CLKFBOUT_MULT_F                       => 5.000,
-      CLKFBOUT_PHASE                        => 0.000,
-      CLKFBOUT_USE_FINE_PS                  => FALSE,
-      CLKOUT0_DIVIDE_F                      => 5.000,
-      CLKOUT0_PHASE                         => 0.000,
-      CLKOUT0_DUTY_CYCLE                    => 0.500,
-      CLKOUT0_USE_FINE_PS                   => FALSE,
-      --CLKOUT1_DIVIDE                        => 5,
-      --CLKOUT1_PHASE                         => 0.000,
-      --CLKOUT1_DUTY_CYCLE                    => 0.500,
-      --CLKOUT1_USE_FINE_PS                   => FALSE,
-      -- 250 MHZ input clock
-      CLKIN1_PERIOD                         => g_adc_clock_period,
-      REF_JITTER1                           => 0.010,
-      -- Not used. Just to bypass Xilinx errors
-      -- Just input 250 MHz input clock
-      CLKIN2_PERIOD                         => g_adc_clock_period,
-      REF_JITTER2                           => 0.010
+    BANDWIDTH                             => "OPTIMIZED",
+    CLKOUT4_CASCADE                       => FALSE,
+    CLOCK_HOLD                            => FALSE,
+    -- Let the synthesis tools select the best appropriate
+    -- compensation method (as dictated in Virtex-6 clocking
+    -- resourses guide page 53, note 2)
+    --COMPENSATION         => "ZHOLD",
+    STARTUP_WAIT                          => FALSE,
+    DIVCLK_DIVIDE                         => 1,
+    CLKFBOUT_MULT_F                       => 5.000,
+    CLKFBOUT_PHASE                        => 0.000,
+    CLKFBOUT_USE_FINE_PS                  => FALSE,
+    CLKOUT0_DIVIDE_F                      => 5.000,
+    CLKOUT0_PHASE                         => 0.000,
+    CLKOUT0_DUTY_CYCLE                    => 0.500,
+    CLKOUT0_USE_FINE_PS                   => FALSE,
+    --CLKOUT1_DIVIDE                        => 5,
+    --CLKOUT1_PHASE                         => 0.000,
+    --CLKOUT1_DUTY_CYCLE                    => 0.500,
+    --CLKOUT1_USE_FINE_PS                   => FALSE,
+    -- 250 MHZ input clock
+    CLKIN1_PERIOD                         => g_adc_clock_period,
+    REF_JITTER1                           => 0.010,
+    -- Not used. Just to bypass Xilinx errors
+    -- Just input 250 MHz input clock
+    CLKIN2_PERIOD                         => g_adc_clock_period,
+    REF_JITTER2                           => 0.010
   )
   port map(
-      -- Output clocks
-      CLKFBOUT                              => adc_clk_fbout,
-      CLKFBOUTB                             => open,
-      CLKOUT0                               => adc_clk_mmcm_out,
-      CLKOUT0B                              => open,
-      CLKOUT1                               => open,
-      CLKOUT1B                              => open,
-      CLKOUT2                               => open,
-      CLKOUT2B                              => open,
-      CLKOUT3                               => open,
-      CLKOUT3B                              => open,
-      CLKOUT4                               => open,
-      CLKOUT5                               => open,
-      CLKOUT6                               => open,
-      -- Input clock control
-      CLKFBIN                               => adc_clk_fbin,
-      CLKIN1                                => adc_clk_bufr,
-      CLKIN2                                => '0',
-      -- Tied to always select the primary input clock
-      CLKINSEL                              => '1',
-      -- Ports for dynamic reconfiguration
-      DADDR                                 => (others => '0'),
-      DCLK                                  => '0',
-      DEN                                   => '0',
-      DI                                    => (others => '0'),
-      DO                                    => open,
-      DRDY                                  => open,
-      DWE                                   => '0',
-      -- Ports for dynamic phase shift
-      PSCLK                                 => '0',
-      PSEN                                  => '0',
-      PSINCDEC                              => '0',
-      PSDONE                                => open,
-      -- Other control and status signals
-      LOCKED                                => mmcm_adc_locked_o,
-      CLKINSTOPPED                          => open,
-      CLKFBSTOPPED                          => open,
-      PWRDWN                                => '0',
-      RST                                   => sys_rst_i
+    -- Output clocks
+    CLKFBOUT                              => adc_clk_fbout,
+    CLKFBOUTB                             => open,
+    CLKOUT0                               => adc_clk_mmcm_out,
+    CLKOUT0B                              => open,
+    CLKOUT1                               => open,
+    CLKOUT1B                              => open,
+    CLKOUT2                               => open,
+    CLKOUT2B                              => open,
+    CLKOUT3                               => open,
+    CLKOUT3B                              => open,
+    CLKOUT4                               => open,
+    CLKOUT5                               => open,
+    CLKOUT6                               => open,
+    -- Input clock control
+    CLKFBIN                               => adc_clk_fbin,
+    CLKIN1                                => adc_clk_bufr,
+    CLKIN2                                => '0',
+    -- Tied to always select the primary input clock
+    CLKINSEL                              => '1',
+    -- Ports for dynamic reconfiguration
+    DADDR                                 => (others => '0'),
+    DCLK                                  => '0',
+    DEN                                   => '0',
+    DI                                    => (others => '0'),
+    DO                                    => open,
+    DRDY                                  => open,
+    DWE                                   => '0',
+    -- Ports for dynamic phase shift
+    PSCLK                                 => '0',
+    PSEN                                  => '0',
+    PSINCDEC                              => '0',
+    PSDONE                                => open,
+    -- Other control and status signals
+    LOCKED                                => mmcm_adc_locked_o,
+    CLKINSTOPPED                          => open,
+    CLKFBSTOPPED                          => open,
+    PWRDWN                                => '0',
+    RST                                   => sys_rst_i
   );
 
   -- Global clock buffer for MMCM feedback. Deskew MMCM configuration

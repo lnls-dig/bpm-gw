@@ -76,15 +76,13 @@ architecture rtl of fmc516_adc_data is
 
   -- Small fifo depth. This FIFO is intended just to cross phase-mismatched
   -- clock domains (BUFR -> BUFG), but frequency locked
-  constant async_fifo_size                  : natural := 32;
+  constant async_fifo_size                  : natural := 16;
 
   -- ADC data signals
   signal adc_data_ddr_ibufds                : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
   signal adc_data_ddr_dly                   : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
   signal adc_data_sdr                       : std_logic_vector(c_num_adc_bits-1 downto 0);
   -- (* IOB = TRUE *)
-  --attribute IOB : string
-	--attribute IOB of adc_data_ff: signal is "TRUE";
   signal adc_data_ff                        : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
@@ -97,6 +95,9 @@ architecture rtl of fmc516_adc_data is
 	-- Valid ADC signals
   signal adc_data_valid                     : std_logic;
   signal adc_data_valid_d1                  : std_logic;
+
+  attribute IOB : string;
+	attribute IOB of adc_data_ff: signal is "TRUE";
 begin
 
   -----------------------------

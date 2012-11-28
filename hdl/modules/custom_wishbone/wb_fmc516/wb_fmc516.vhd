@@ -43,9 +43,11 @@ use unisim.vcomponents.all;
 entity wb_fmc516 is
 generic
 (
+	-- The only supported values are VIRTEX6 and 7SERIES
+  g_fpga_device                             : string := "VIRTEX6";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
-  g_adc_clk_period_values                   : t_clk_values_array := dummy_clks;
+  g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
   g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
   g_packet_size                             : natural := 32;
@@ -412,7 +414,9 @@ architecture rtl of wb_fmc516 is
   component fmc516_adc_iface
   generic
   (
-    g_adc_clk_period_values                 : t_clk_values_array := dummy_clks;
+  	-- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                           : string := "VIRTEX6";
+    g_adc_clk_period_values                 : t_clk_values_array;
     g_use_clk_chains                        : t_clk_use_chain := dummy_clk_use_chain;
     g_clk_default_dly                       : t_default_adc_dly := dummy_default_dly;
     g_use_data_chains                       : t_data_use_chain := dummy_data_use_chain;
@@ -478,13 +482,14 @@ architecture rtl of wb_fmc516 is
   end component;
 
 begin
-
   -- Reset signals and sychronization with positive edge of
   -- respective clock
-  sys_rst_n <= sys_rst_n_i and mmcm_adc_locked;
-  --sys_rst  <= not(sys_rst_n_i);
-  fs_rst_n <= sys_rst_n;
-  --fs_rst   <= not(fs_rst_n);
+  --sys_rst_n <= sys_rst_n_i and mmcm_adc_locked;
+  sys_rst_n <= sys_rst_n_i;
+  --sys_rst <= not sys_rst_n;
+  --fs_rst_n <= sys_rst_n;
+  fs_rst_n <= sys_rst_n and mmcm_adc_locked;
+  --fs_rst   <= not fs_rst_n;
 
   -- Reset synchronization with SYS clock domain
   -- Align the reset deassertion to the next clock edge
@@ -774,6 +779,8 @@ begin
   -- reset to it + a synchronized one for other logic (data capture for example)
   cmp_fmc516_adc_iface : fmc516_adc_iface
   generic map(
+  	-- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                           => g_fpga_device,
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
     g_use_data_chains                       => g_use_data_chains,
@@ -809,8 +816,8 @@ begin
   );
 
   -- Clock and reset assignments
-  -- WARNING: Hardcoded clock for now! Only clock chain 1 is used!
-  fs_clk                                    <= adc_out(1).adc_clk;
+  -- WARNING: Hardcoded clock for now! Only clock chain 0 is used!
+  fs_clk                                    <= adc_out(0).adc_clk;
   adc_clk_o                                 <= fs_clk;
 
   -- General status board pins
@@ -829,8 +836,10 @@ begin
   adc_data_ch3_o                            <= adc_out(3).adc_data;
 
   -- It could be any adc chain as they are synchronized to each other
-  adc_data_valid_int                        <= adc_out(1).adc_data_valid;
+  adc_data_valid_int                        <= adc_out(0).adc_data_valid;
   adc_data_valid_o                          <= adc_data_valid_int;
+
+  -- ADC resets logic
 
   -----------------------------
   -- System I2C Bus
@@ -839,7 +848,9 @@ begin
   --          temperature diodes and AD7417 supply rails
   -- System I2C Bus is lave number 1, word addressed
   --
-  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
+  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers.
+  -- Note2: On the L605 Kit GA0 = 0 and GA1 = 0. This geographical adrresses
+  -- are carrier specific. Check this before addressing I2C slaves on this bus!
   cmp_fmc_sys_i2c : xwb_i2c_master
   generic map(
     g_interface_mode                        => CLASSIC,
@@ -873,10 +884,7 @@ begin
   -----------------------------
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   -- ADC SPI is slave number 2, word addressed
-  --
-  -- Note: On the L605 Kit GA0 = 0 and GA1 = 0. This geographical
-  -- adrresses are carrier specific. Check this before addressing
-  -- I2C slaves on this bus!
+
   cmp_fmc_spi : xwb_spi
   generic map(
     g_three_wire_mode                       => 1,

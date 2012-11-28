@@ -328,9 +328,11 @@ package custom_wishbone_pkg is
   component wb_fmc516
   generic
   (
+  	-- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
-    g_adc_clk_period_values                   : t_clk_values_array := dummy_clks;
+    g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
     g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
     g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
     g_packet_size                             : natural := 32;
