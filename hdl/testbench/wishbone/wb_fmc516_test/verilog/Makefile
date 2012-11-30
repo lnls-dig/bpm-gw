@@ -56,8 +56,10 @@ work/jtag_tap/.jtag_tap_v \
 VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_common/custom_common_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd \
+../../../../modules/custom_wishbone/wb_stream/wb_stream_generic_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd \
 ../../../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd \
+../../../../modules/custom_wishbone/wb_stream/xwb_stream_source_test.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd \
@@ -168,8 +170,10 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 VHDL_OBJ := work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
 work/xwb_stream_sink/.xwb_stream_sink_vhd \
 work/xwb_stream_source/.xwb_stream_source_vhd \
+work/xwb_stream_source_test/.xwb_stream_source_test_vhd \
 work/wb_fmc150/.wb_fmc150_vhd \
 work/xwb_fmc150/.xwb_fmc150_vhd \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
@@ -426,6 +430,14 @@ work/wb_stream_pkg/.wb_stream_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd: ../../../../modules/custom_wishbone/wb_stream/wb_stream_generic_pkg.vhd work/wb_stream_generic_pkg/.wb_stream_generic_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
 work/xwb_stream_sink/.xwb_stream_sink_vhd: ../../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd work/xwb_stream_sink/.xwb_stream_sink
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
@@ -444,6 +456,16 @@ work/xwb_stream_source/.xwb_stream_source_vhd: ../../../../modules/custom_wishbo
 work/xwb_stream_source/.xwb_stream_source: \
 work/genram_pkg/.genram_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_stream_source_test/.xwb_stream_source_test_vhd: ../../../../modules/custom_wishbone/wb_stream/xwb_stream_source_test.vhd work/xwb_stream_source_test/.xwb_stream_source_test
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_stream_source_test/.xwb_stream_source_test: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_fmc150/.wb_fmc150_vhd: ../../../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd work/wb_fmc150/.wb_fmc150

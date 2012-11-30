@@ -5,15 +5,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library work;
-use work.wishbone_pkg.all;
-
-package wb_stream_pkg is
+package wb_stream_generic_pkg is generic (type g_wbs_address_width,
+                              type c_wbs_data_width);
   -- Must be at least 2 bits wide
-  constant c_wbs_address_width      : integer := 4;
+  --constant c_wbs_address_width      : integer := 4;
   -- Must be at least 16 bits wide. Not a good solution, as streaming interfaces
   -- might different widths. FIX ME!
-  constant c_wbs_data_width         : integer := 64;
+  --constant c_wbs_data_width         : integer := 64;
 
   subtype t_wbs_address is
     std_logic_vector(c_wbs_address_width-1 downto 0);

@@ -27,6 +27,7 @@ use work.wishbone_pkg.all;
 use work.custom_wishbone_pkg.all;
 -- Wishbone Stream Interface
 use work.wb_stream_pkg.all;
+--use work.wb_stream_generic_pkg.all;
 -- Wishbone Register Interface
 use work.fmc516_wbgen2_pkg.all;
 -- FMC 516 package
@@ -39,6 +40,9 @@ use work.gencores_pkg.all;
 -- For Xilinx primitives
 library unisim;
 use unisim.vcomponents.all;
+
+--package wb_stream_64_pkg is new wb_stream_generic_pkg
+--   generic map (type => std_logic_vector(63 downto 0));
 
 entity wb_fmc516 is
 generic
@@ -86,24 +90,24 @@ port
   -- ADC clocks. One clock per ADC channel.
   -- Only ch1 clock is used as all data chains
   -- are sampled at the same frequency
-  adc_clk0_p_i                              : in std_logic;
-  adc_clk0_n_i                              : in std_logic;
-  adc_clk1_p_i                              : in std_logic;
-  adc_clk1_n_i                              : in std_logic;
-  adc_clk2_p_i                              : in std_logic;
-  adc_clk2_n_i                              : in std_logic;
-  adc_clk3_p_i                              : in std_logic;
-  adc_clk3_n_i                              : in std_logic;
+  adc_clk0_p_i                              : in std_logic := '0';
+  adc_clk0_n_i                              : in std_logic := '0';
+  adc_clk1_p_i                              : in std_logic := '0';
+  adc_clk1_n_i                              : in std_logic := '0';
+  adc_clk2_p_i                              : in std_logic := '0';
+  adc_clk2_n_i                              : in std_logic := '0';
+  adc_clk3_p_i                              : in std_logic := '0';
+  adc_clk3_n_i                              : in std_logic := '0';
 
   -- DDR ADC data channels.
-  adc_data_ch0_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch0_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch1_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch1_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch2_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch2_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch3_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
-  adc_data_ch3_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0);
+  adc_data_ch0_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch0_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch1_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch1_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch2_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch2_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch3_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  adc_data_ch3_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
 
   -- ADC clock (half of the sampling frequency) divider reset
   adc_clk_div_rst_p_o                       : out std_logic;
@@ -122,14 +126,14 @@ port
   sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
 
   -- External Trigger To/From FMC
-  m2c_trig_p_i                              : in std_logic;
-  m2c_trig_n_i                              : in std_logic;
+  m2c_trig_p_i                              : in std_logic := '0';
+  m2c_trig_n_i                              : in std_logic := '0';
   c2m_trig_p_o                              : out std_logic;
   c2m_trig_n_o                              : out std_logic;
 
   -- LMK (National Semiconductor) is the clock and distribution IC,
   -- programmable via Microwire Interface
-  lmk_lock_i                                : in std_logic;
+  lmk_lock_i                                : in std_logic := '0';
   lmk_sync_o                                : out std_logic;
   lmk_uwire_latch_en_o                      : out std_logic;
   lmk_uwire_data_o                          : out std_logic;
@@ -152,7 +156,7 @@ port
   -- Reset ADCs
   fmc_reset_adcs_n_o                        : out std_logic;
   --FMC Present status
-  fmc_prsnt_m2c_l_i                         : in  std_logic;
+  fmc_prsnt_m2c_l_i                         : in  std_logic := '0';
 
   -----------------------------
   -- ADC output signals. Continuous flow
@@ -169,7 +173,7 @@ port
   -----------------------------
   -- Trigger to other FPGA logic
   trig_hw_o                                 : out std_logic;
-  trig_hw_i                                 : in std_logic;
+  trig_hw_i                                 : in std_logic := '0';
 
   -- General board status
   fmc_mmcm_lock_o                           : out std_logic;
@@ -178,7 +182,6 @@ port
   -----------------------------
   -- Wishbone Streaming Interface Source
   -----------------------------
-
   wbs_adr_o                                 : out std_logic_vector(c_wbs_address_width-1 downto 0);
   wbs_dat_o                                 : out std_logic_vector(c_wbs_data_width-1 downto 0);
   wbs_cyc_o                                 : out std_logic;
