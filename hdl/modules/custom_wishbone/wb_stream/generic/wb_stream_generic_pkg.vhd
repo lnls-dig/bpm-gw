@@ -25,6 +25,8 @@ package wb_stream_generic_pkg is
   constant c_wbs_sel64_width            : natural := c_wbs_dat64_width/8;
   constant c_wbs_sel128_width           : natural := c_wbs_dat128_width/8;
 
+  constant c_wbs_status_width           : natural := 8;
+
   type t_wbs_interface_width is (NARROW2, NARROW1, LARGE1, LARGE2);
 
   subtype t_wbs_adr4 is
@@ -43,13 +45,13 @@ package wb_stream_generic_pkg is
   subtype t_wbs_dat128 is
     std_logic_vector(c_wbs_dat128_width-1 downto 0);
 
-  subtype t_wbs_sel2 is
-    std_logic_vector((c_wbs_dat16_width/8)-1 downto 0);
-  subtype t_wbs_sel4 is
-    std_logic_vector((c_wbs_dat32_width/8)-1 downto 0);
-  subtype t_wbs_sel8 is
-    std_logic_vector((c_wbs_dat64_width/8)-1 downto 0);
   subtype t_wbs_sel16 is
+    std_logic_vector((c_wbs_dat16_width/8)-1 downto 0);
+  subtype t_wbs_sel32 is
+    std_logic_vector((c_wbs_dat32_width/8)-1 downto 0);
+  subtype t_wbs_sel64 is
+    std_logic_vector((c_wbs_dat64_width/8)-1 downto 0);
+  subtype t_wbs_sel128 is
     std_logic_vector((c_wbs_dat128_width/8)-1 downto 0);
 
   constant c_WBS_DATA   : unsigned := to_unsigned(0, 32);
@@ -61,12 +63,8 @@ package wb_stream_generic_pkg is
   --constant c_WRF_OOB_TYPE_TX : std_logic_vector(3 downto 0) := "0001";
 
   type t_wbs_status_reg is record
-    is_hp       : std_logic;
-    has_smac    : std_logic;
-    has_crc     : std_logic;
-    error       : std_logic;
-    tag_me      : std_logic;
-    match_class : std_logic_vector(7 downto 0);
+    error         : std_logic;
+    reserved      : std_logic_vector(6 downto 0);
   end record;
 
   --type t_wbs_source_out is record
@@ -84,7 +82,7 @@ package wb_stream_generic_pkg is
     cyc : std_logic;
     stb : std_logic;
     we  : std_logic;
-    sel : t_wbs_sel2;
+    sel : t_wbs_sel16;
   end record;
 
   type t_wbs_source_out32 is record
@@ -93,7 +91,7 @@ package wb_stream_generic_pkg is
     cyc : std_logic;
     stb : std_logic;
     we  : std_logic;
-    sel : t_wbs_sel4;
+    sel : t_wbs_sel32;
   end record;
 
   type t_wbs_source_out64 is record
@@ -102,7 +100,7 @@ package wb_stream_generic_pkg is
     cyc : std_logic;
     stb : std_logic;
     we  : std_logic;
-    sel : t_wbs_sel8;
+    sel : t_wbs_sel64;
   end record;
 
   type t_wbs_source_out128 is record
@@ -111,7 +109,7 @@ package wb_stream_generic_pkg is
     cyc : std_logic;
     stb : std_logic;
     we  : std_logic;
-    sel : t_wbs_sel16;
+    sel : t_wbs_sel128;
   end record;
 
   subtype t_wbs_sink_in16 is t_wbs_source_out16;
@@ -119,7 +117,7 @@ package wb_stream_generic_pkg is
   subtype t_wbs_sink_in64 is t_wbs_source_out64;
   subtype t_wbs_sink_in128 is t_wbs_source_out128;
 
-  type t_wbs_source_in is record
+  type t_wbs_source_com_in is record
     ack   : std_logic;
     stall : std_logic;
     err   : std_logic;
@@ -127,15 +125,15 @@ package wb_stream_generic_pkg is
   end record;
 
   -- Convinient type names for consistency
-  subtype t_wbs_source_in16 is t_wbs_source_in;
-  subtype t_wbs_source_in32 is t_wbs_source_in;
-  subtype t_wbs_source_in64 is t_wbs_source_in;
-  subtype t_wbs_source_in128 is t_wbs_source_in;
+  subtype t_wbs_source_in16 is t_wbs_source_com_in;
+  subtype t_wbs_source_in32 is t_wbs_source_com_in;
+  subtype t_wbs_source_in64 is t_wbs_source_com_in;
+  subtype t_wbs_source_in128 is t_wbs_source_com_in;
 
-  subtype t_wbs_sink_out16 is t_wbs_source_in;
-  subtype t_wbs_sink_out32 is t_wbs_source_in;
-  subtype t_wbs_sink_out64 is t_wbs_source_in;
-  subtype t_wbs_sink_out128 is t_wbs_source_in;
+  subtype t_wbs_sink_out16 is t_wbs_source_com_in;
+  subtype t_wbs_sink_out32 is t_wbs_source_com_in;
+  subtype t_wbs_sink_out64 is t_wbs_source_com_in;
+  subtype t_wbs_sink_out128 is t_wbs_source_com_in;
 
   --type t_wrf_oob is record
   --  valid: std_logic;
@@ -146,7 +144,7 @@ package wb_stream_generic_pkg is
   --  port_id  : std_logic_vector(5 downto 0);
   --end record;
 
-  type t_wbs_source_in_array is array (natural range <>) of t_wbs_source_in;
+  type t_wbs_source_in_array is array (natural range <>) of t_wbs_source_com_in;
   type t_wbs_source_out16_array is array (natural range <>) of t_wbs_source_out16;
   type t_wbs_source_out32_array is array (natural range <>) of t_wbs_source_out32;
   type t_wbs_source_out64_array is array (natural range <>) of t_wbs_source_out64;
@@ -162,32 +160,40 @@ package wb_stream_generic_pkg is
   function f_unmarshall_wbs_status(stat : std_logic_vector) return t_wbs_status_reg;
 
   function f_packet_num_bits(packet_size : natural) return natural;
+  function f_conv_wbs_interface_width(wbs_interface_width : t_wbs_interface_width)
+    return natural;
 
-  constant cc_dummy_wbs_adr : std_logic_vector := (others => 'X');
-  constant cc_dummy_wbs_dat : std_logic_vector := (others => 'X');
-  constant cc_dummy_wbs_sel : std_logic_vector := (others => 'X');
+  constant cc_dummy_wbs_adr4 : std_logic_vector(c_wbs_adr4_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_dat16 : std_logic_vector(c_wbs_dat16_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_dat32 : std_logic_vector(c_wbs_dat32_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_dat64 : std_logic_vector(c_wbs_dat64_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_dat128 : std_logic_vector(c_wbs_dat128_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_sel16 : std_logic_vector(c_wbs_sel16_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_sel32 : std_logic_vector(c_wbs_sel32_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_sel64 : std_logic_vector(c_wbs_sel64_width-1 downto 0) := (others => 'X');
+  constant cc_dummy_wbs_sel128 : std_logic_vector(c_wbs_sel128_width-1 downto 0) := (others => 'X');
 
-  constant cc_dummy_src_in : t_wbs_source_in := ('0', '0', '0', '0');
+  constant cc_dummy_src_com_in : t_wbs_source_com_in := ('0', '0', '0', '0');
   constant cc_dummy_snk_in16 : t_wbs_sink_in16 :=
-      (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
+      (cc_dummy_wbs_adr4, cc_dummy_wbs_dat16, '0', '0', '0', cc_dummy_wbs_sel16);
   constant cc_dummy_snk_in32 : t_wbs_sink_in32 :=
-      (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
+      (cc_dummy_wbs_adr4, cc_dummy_wbs_dat32, '0', '0', '0', cc_dummy_wbs_sel32);
   constant cc_dummy_snk_in64 : t_wbs_sink_in64 :=
-      (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
+      (cc_dummy_wbs_adr4, cc_dummy_wbs_dat64, '0', '0', '0', cc_dummy_wbs_sel64);
   constant cc_dummy_snk_in128 : t_wbs_sink_in128 :=
-      (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
+      (cc_dummy_wbs_adr4, cc_dummy_wbs_dat128, '0', '0', '0', cc_dummy_wbs_sel128);
 
   -- Convinient type names for consistency
-  alias cc_dummy_src_in16 is cc_dummy_src_in;
-  alias cc_dummy_src_in32 is cc_dummy_src_in;
-  alias cc_dummy_src_in64 is cc_dummy_src_in;
-  alias cc_dummy_src_in128 is cc_dummy_src_in;
+  alias cc_dummy_src_in16 is cc_dummy_src_com_in;
+  alias cc_dummy_src_in32 is cc_dummy_src_com_in;
+  alias cc_dummy_src_in64 is cc_dummy_src_com_in;
+  alias cc_dummy_src_in128 is cc_dummy_src_com_in;
 
   -----------------------------
   -- Components
   -----------------------------
   -- 16 (narrow2)/32 (narrow1)/64 (large1)/128 (large2) bit Wishbone Streaming Interfaces
-  component wb_stream_source
+  component wb_stream_source_gen
   generic (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
     g_wbs_interface_width                     : t_wbs_interface_width := LARGE1
@@ -201,22 +207,22 @@ package wb_stream_generic_pkg is
     -- 16-bit interface
     src_adr16_o                               : out t_wbs_adr4;
     src_dat16_o                               : out t_wbs_dat16;
-    src_sel16_o                               : out t_wbs_sel2;
+    src_sel16_o                               : out t_wbs_sel16;
 
     -- 32-bit interface
     src_adr32_o                               : out t_wbs_adr4;
     src_dat32_o                               : out t_wbs_dat32;
-    src_sel32_o                               : out t_wbs_sel4;
+    src_sel32_o                               : out t_wbs_sel32;
 
     -- 64-bit interface
     src_adr64_o                               : out t_wbs_adr4;
     src_dat64_o                               : out t_wbs_dat64;
-    src_sel64_o                               : out t_wbs_sel8;
+    src_sel64_o                               : out t_wbs_sel64;
 
     -- 128-bit interface
     src_adr128_o                              : out t_wbs_adr4;
     src_dat128_o                              : out t_wbs_dat128;
-    src_sel128_o                              : out t_wbs_sel16;
+    src_sel128_o                              : out t_wbs_sel128;
 
     -- Common Wishbone Streaming lines
     src_cyc_o                                 : out std_logic;
@@ -259,7 +265,7 @@ package wb_stream_generic_pkg is
   end component;
 
   -- 16 (narrow2)/32 (narrow1)/64 (large1)/128 (large2) bit Wishbone Streaming Interfaces
-  component xwb_stream_source
+  component xwb_stream_source_gen
   generic (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
     g_wbs_interface_width                   : t_wbs_interface_width := LARGE1
@@ -311,10 +317,10 @@ package wb_stream_generic_pkg is
   );
   end component;
 
-  component wb_stream_sink
+  component wb_stream_sink_gen
   generic (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-    g_wbs_dat_width                           : t_wbs_interface_width := LARGE1
+    g_wbs_interface_width                     : t_wbs_interface_width := LARGE1
   );
   port (
     clk_i                                     : in std_logic;
@@ -323,24 +329,24 @@ package wb_stream_generic_pkg is
     -- Wishbone Streaming Interface I/O.
     -- Only the used interface should be connected. The others can be left unconnected
     -- 16-bit interface
-    snk_adr16_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-    snk_dat16_i                               : in t_wbs_dat16 := cc_dummy_wbs_dat;
-    snk_sel16_i                               : in t_wbs_sel2 := cc_dummy_wbs_sel;
+    snk_adr16_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+    snk_dat16_i                               : in t_wbs_dat16 := cc_dummy_wbs_dat16;
+    snk_sel16_i                               : in t_wbs_sel16 := cc_dummy_wbs_sel16;
 
     -- 32-bit interface
-    snk_adr32_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-    snk_dat32_i                               : in t_wbs_dat32 := cc_dummy_wbs_dat;
-    snk_sel32_i                               : in t_wbs_sel4 := cc_dummy_wbs_sel;
+    snk_adr32_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+    snk_dat32_i                               : in t_wbs_dat32 := cc_dummy_wbs_dat32;
+    snk_sel32_i                               : in t_wbs_sel32 := cc_dummy_wbs_sel32;
 
     -- 64-bit interface
-    snk_adr64_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-    snk_dat64_i                               : in t_wbs_dat64 := cc_dummy_wbs_dat;
-    snk_sel64_i                               : in t_wbs_sel8 := cc_dummy_wbs_sel;
+    snk_adr64_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+    snk_dat64_i                               : in t_wbs_dat64 := cc_dummy_wbs_dat64;
+    snk_sel64_i                               : in t_wbs_sel64 := cc_dummy_wbs_sel64;
 
     -- 128-bit interface
-    snk_adr128_i                              : in t_wbs_adr4 := cc_dummy_wbs_adr;
-    snk_dat128_i                              : in t_wbs_dat128 := cc_dummy_wbs_dat;
-    snk_sel128_i                              : in t_wbs_sel16 := cc_dummy_wbs_sel;
+    snk_adr128_i                              : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+    snk_dat128_i                              : in t_wbs_dat128 := cc_dummy_wbs_dat128;
+    snk_sel128_i                              : in t_wbs_sel128 := cc_dummy_wbs_sel128;
 
     -- Common Wishbone Streaming lines
     snk_cyc_i                                 : in std_logic := '0';
@@ -371,19 +377,19 @@ package wb_stream_generic_pkg is
     sel128_o                                : out std_logic_vector(c_wbs_sel128_width-1 downto 0);
 
     -- Common lines
-    dvalid_i                                : out std_logic;
-    sof_i                                   : out std_logic;
-    eof_i                                   : out std_logic;
-    error_i                                 : out std_logic;
-    dreq_o                                  : in std_logic := '0'
+    dvalid_o                                : out std_logic;
+    sof_o                                   : out std_logic;
+    eof_o                                   : out std_logic;
+    error_o                                 : out std_logic;
+    dreq_i                                  : in std_logic := '0'
   );
   end component;
 
   -- 16 (narrow2)/32 (narrow1)/64 (large1)/128 (large2) bit Wishbone Streaming Interfaces
-  component xwb_stream_sink
+  component xwb_stream_sink_gen
   generic (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-    g_wbs_dat_width                         : t_wbs_interface_width := LARGE1
+    g_wbs_interface_width                   : t_wbs_interface_width := LARGE1
   );
   port (
     clk_i                                   : in std_logic;
@@ -424,11 +430,11 @@ package wb_stream_generic_pkg is
     sel128_o                                : out std_logic_vector(c_wbs_sel128_width-1 downto 0);
 
     -- Common lines
-    dvalid_i                                : out std_logic;
-    sof_i                                   : out std_logic;
-    eof_i                                   : out std_logic;
-    error_i                                 : out std_logic;
-    dreq_o                                  : in std_logic := '0'
+    dvalid_o                                : out std_logic;
+    sof_o                                   : out std_logic;
+    eof_o                                   : out std_logic;
+    error_o                                 : out std_logic;
+    dreq_i                                  : in std_logic := '0'
   );
   end component;
 
@@ -439,13 +445,9 @@ package body wb_stream_generic_pkg is
   function f_marshall_wbs_status(stat : t_wbs_status_reg)
     return std_logic_vector
   is
-    variable tmp : std_logic_vector(16-1 downto 0);
+    variable tmp : std_logic_vector(c_wbs_status_width-1 downto 0) := (others => '0');
   begin
-    tmp(0)           := stat.is_hp;
-    tmp(1)           := stat.error;
-    tmp(2)           := stat.has_smac;
-    tmp(3)           := stat.has_crc;
-    tmp(15 downto 8) := stat.match_class;
+    tmp(0)           := stat.error;
     return tmp;
   end;
 
@@ -454,11 +456,7 @@ package body wb_stream_generic_pkg is
   is
     variable tmp : t_wbs_status_reg;
   begin
-    tmp.is_hp       := stat(0);
-    tmp.error       := stat(1);
-    tmp.has_smac    := stat(2);
-    tmp.has_crc     := stat(3);
-    tmp.match_class := stat(15 downto 8);
+    tmp.error       := stat(0);
     return tmp;
   end f_unmarshall_wbs_status;
 
@@ -494,7 +492,7 @@ package body wb_stream_generic_pkg is
       when LARGE2 =>
         size := 128;
       -- Should not happen
-      others =>
+      when others =>
         size := 64;
     end case;
     return size;

@@ -47,10 +47,10 @@ use ieee.numeric_std.all;
 use work.genram_pkg.all;
 use work.wb_stream_generic_pkg.all;
 
-entity wb_stream_sink is
+entity wb_stream_sink_gen is
 generic (
   --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-  g_wbs_dat_width                           : t_wbs_interface_width := LARGE1
+  g_wbs_interface_width                     : t_wbs_interface_width := LARGE1
 );
 port (
   clk_i                                     : in std_logic;
@@ -59,24 +59,24 @@ port (
   -- Wishbone Streaming Interface I/O.
   -- Only the used interface should be connected. The others can be left unconnected
   -- 16-bit interface
-  snk_adr16_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-  snk_dat16_i                               : in t_wbs_dat16 := cc_dummy_wbs_dat;
-  snk_sel16_i                               : in t_wbs_sel2 := cc_dummy_wbs_sel;
+  snk_adr16_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+  snk_dat16_i                               : in t_wbs_dat16 := cc_dummy_wbs_dat16;
+  snk_sel16_i                               : in t_wbs_sel16 := cc_dummy_wbs_sel16;
 
   -- 32-bit interface
-  snk_adr32_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-  snk_dat32_i                               : in t_wbs_dat32 := cc_dummy_wbs_dat;
-  snk_sel32_i                               : in t_wbs_sel4 := cc_dummy_wbs_sel;
+  snk_adr32_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+  snk_dat32_i                               : in t_wbs_dat32 := cc_dummy_wbs_dat32;
+  snk_sel32_i                               : in t_wbs_sel32 := cc_dummy_wbs_sel32;
 
   -- 64-bit interface
-  snk_adr64_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr;
-  snk_dat64_i                               : in t_wbs_dat64 := cc_dummy_wbs_dat;
-  snk_sel64_i                               : in t_wbs_sel8 := cc_dummy_wbs_sel;
+  snk_adr64_i                               : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+  snk_dat64_i                               : in t_wbs_dat64 := cc_dummy_wbs_dat64;
+  snk_sel64_i                               : in t_wbs_sel64 := cc_dummy_wbs_sel64;
 
   -- 128-bit interface
-  snk_adr128_i                              : in t_wbs_adr4 := cc_dummy_wbs_adr;
-  snk_dat128_i                              : in t_wbs_dat128 := cc_dummy_wbs_dat;
-  snk_sel128_i                              : in t_wbs_sel16 := cc_dummy_wbs_sel;
+  snk_adr128_i                              : in t_wbs_adr4 := cc_dummy_wbs_adr4;
+  snk_dat128_i                              : in t_wbs_dat128 := cc_dummy_wbs_dat128;
+  snk_sel128_i                              : in t_wbs_sel128 := cc_dummy_wbs_sel128;
 
   -- Common Wishbone Streaming lines
   snk_cyc_i                                 : in std_logic := '0';
@@ -107,17 +107,17 @@ port (
   sel128_o                                : out std_logic_vector(c_wbs_sel128_width-1 downto 0);
 
   -- Common lines
-  dvalid_i                                : out std_logic;
-  sof_i                                   : out std_logic;
-  eof_i                                   : out std_logic;
-  error_i                                 : out std_logic;
-  dreq_o                                  : in std_logic := '0'
+  dvalid_o                                : out std_logic;
+  sof_o                                   : out std_logic;
+  eof_o                                   : out std_logic;
+  error_o                                 : out std_logic;
+  dreq_i                                  : in std_logic := '0'
 );
-end wb_stream_sink;
+end wb_stream_sink_gen;
 
-architecture rtl of wb_stream_sink is
+architecture rtl of wb_stream_sink_gen is
   -- Convert enum to natural
-  constant c_wbs_dat_width : natural := f_conv_wbs_dat_width(g_wbs_interface_width);
+  constant c_wbs_dat_width : natural := f_conv_wbs_interface_width(g_wbs_interface_width);
   constant c_wbs_sel_width : natural := c_wbs_dat_width/8;
   -- Fixed 4-bit address as we do not exceptct it to address real peripheral
   -- just to inform some other conditions
@@ -152,7 +152,7 @@ architecture rtl of wb_stream_sink is
   signal fin, fout, fout_reg                : std_logic_vector(c_fifo_width-1 downto 0);
   signal cyc_d0, rd_d0                      : std_logic;
 
-  signal pre_dvalid                         : std_logic;
+  signal pre_sof, pre_dvalid                : std_logic;
   signal pre_eof                            : std_logic;
   signal pre_dat                            : std_logic_vector(c_wbs_dat_width-1 downto 0);
   signal pre_adr                            : std_logic_vector(c_wbs_adr_width-1 downto 0);
@@ -189,31 +189,31 @@ begin  -- rtl
   end process;
 
   pre_sof <= snk_cyc_i and not cyc_d0;
-  pre_eof <= not snk_i.cyc and cyc_d0;
+  pre_eof <= not snk_cyc_i and cyc_d0;
   pre_dvalid <= snk_stb_i and snk_we_i and snk_cyc_i and not snk_stall_int;
 
   -----------------------------
   -- Wishbone Streaming Interface selection
   -----------------------------
-  gen_16_bit_interface : if g_wbs_interface_width = NARROW2 generate
+  gen_16_bit_interface_in : if g_wbs_interface_width = NARROW2 generate
     fin(c_dat_msb downto c_dat_lsb) <= snk_dat16_i;
     fin(c_adr_msb downto c_adr_lsb) <= snk_adr16_i;
     pre_sel <= snk_sel16_i;
   end generate;
 
-  gen_32_bit_interface : if g_wbs_interface_width = NARROW1 generate
+  gen_32_bit_interface_in : if g_wbs_interface_width = NARROW1 generate
     fin(c_dat_msb downto c_dat_lsb) <= snk_dat32_i;
     fin(c_adr_msb downto c_adr_lsb) <= snk_adr32_i;
     pre_sel <= snk_sel32_i;
   end generate;
 
-  gen_64_bit_interface : if g_wbs_interface_width = LARGE1 generate
+  gen_64_bit_interface_in : if g_wbs_interface_width = LARGE1 generate
     fin(c_dat_msb downto c_dat_lsb) <= snk_dat64_i;
     fin(c_adr_msb downto c_adr_lsb) <= snk_adr64_i;
     pre_sel <= snk_sel64_i;
   end generate;
 
-  gen_128_bit_interface : if g_wbs_interface_width = LARGE2 generate
+  gen_128_bit_interface_in : if g_wbs_interface_width = LARGE2 generate
     fin(c_dat_msb downto c_dat_lsb) <= snk_dat128_i;
     fin(c_adr_msb downto c_adr_lsb) <= snk_adr128_i;
     pre_sel <= snk_sel128_i;
@@ -301,32 +301,32 @@ begin  -- rtl
 
   sof_o <= post_sof and rd_d0;
   dvalid_o <= post_dvalid and rd_d0;
-  error_o <= '1' when rd_d0 = '1' and (post_adr = std_logic_vector(c_WBS_STATUS)) and
+  error_o <= '1' when rd_d0 = '1' and (post_adr = std_logic_vector(resize(c_WBS_STATUS, post_adr'length))) and
           (f_unmarshall_wbs_status(post_dat).error = '1') else '0';
   eof_o <= post_eof and rd_d0;
 
   -----------------------------
   -- Wishbone Streaming Interface selection
   -----------------------------
-  gen_16_bit_interface : if g_wbs_interface_width = NARROW2 generate
+  gen_16_bit_interface_out : if g_wbs_interface_width = NARROW2 generate
     sel16_o <= post_sel;
     dat16_o <= post_dat;
     adr16_o <= post_adr;
   end generate;
 
-  gen_32_bit_interface : if g_wbs_interface_width = NARROW1 generate
+  gen_32_bit_interface_out : if g_wbs_interface_width = NARROW1 generate
     sel32_o <= post_sel;
     dat32_o <= post_dat;
     adr32_o <= post_adr;
   end generate;
 
-  gen_64_bit_interface : if g_wbs_interface_width = LARGE1 generate
+  gen_64_bit_interface_out : if g_wbs_interface_width = LARGE1 generate
     sel64_o <= post_sel;
     dat64_o <= post_dat;
     adr64_o <= post_adr;
   end generate;
 
-  gen_128_bit_interface : if g_wbs_interface_width = LARGE2 generate
+  gen_128_bit_interface_out : if g_wbs_interface_width = LARGE2 generate
     sel128_o <= post_sel;
     dat128_o <= post_dat;
     adr128_o <= post_adr;

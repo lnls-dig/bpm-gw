@@ -8,10 +8,10 @@ use ieee.std_logic_1164.all;
 use work.genram_pkg.all;
 use work.wb_stream_generic_pkg.all;
 
-entity xwb_stream_source is
+entity xwb_stream_source_gen is
 generic (
   --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-  g_wbs_dat_width                           : t_wbs_dat_width := LARGE1
+  g_wbs_interface_width                     : t_wbs_interface_width := LARGE1
 );
 port (
   clk_i                                     : in std_logic;
@@ -58,9 +58,9 @@ port (
   error_i                                   : in  std_logic := '0';
   dreq_o                                    : out std_logic
 );
-end xwb_stream_source;
+end xwb_stream_source_gen;
 
-architecture rtl of xwb_stream_source is
+architecture rtl of xwb_stream_source_gen is
   signal src_cyc_int                        : std_logic;
   signal src_stb_int                        : std_logic;
   signal src_we_int                         : std_logic;
@@ -113,7 +113,7 @@ begin
     src_rty_int                             <= src128_i.rty;
   end generate;
 
-  cmp_wb_stream_source : wb_stream_source
+  cmp_wb_stream_source_gen : wb_stream_source_gen
   generic map (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
     g_wbs_interface_width                     => g_wbs_interface_width
@@ -180,6 +180,6 @@ begin
     sof_i                                     => sof_i,
     eof_i                                     => eof_i,
     error_i                                   => error_i,
-    dreq_o                                    => dreq_o,
+    dreq_o                                    => dreq_o
   );
 end rtl;

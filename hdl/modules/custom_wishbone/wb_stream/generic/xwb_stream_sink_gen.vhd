@@ -47,10 +47,10 @@ use ieee.numeric_std.all;
 use work.genram_pkg.all;
 use work.wb_stream_generic_pkg.all;
 
-entity xwb_stream_sink is
+entity xwb_stream_sink_gen is
 generic (
   --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-  g_wbs_dat_width                         : t_wbs_interface_width := LARGE1
+  g_wbs_interface_width                   : t_wbs_interface_width := LARGE1
 );
 port (
   clk_i                                   : in std_logic;
@@ -91,15 +91,15 @@ port (
   sel128_o                                : out std_logic_vector(c_wbs_sel128_width-1 downto 0);
 
   -- Common lines
-  dvalid_i                                : out std_logic;
-  sof_i                                   : out std_logic;
-  eof_i                                   : out std_logic;
-  error_i                                 : out std_logic;
-  dreq_o                                  : in std_logic := '0'
+  dvalid_o                                : out std_logic;
+  sof_o                                   : out std_logic;
+  eof_o                                   : out std_logic;
+  error_o                                 : out std_logic;
+  dreq_i                                  : in std_logic := '0'
 );
-end xwb_stream_sink;
+end xwb_stream_sink_gen;
 
-architecture rtl of xwb_stream_sink is
+architecture rtl of xwb_stream_sink_gen is
   signal snk_cyc_int                        : std_logic;
   signal snk_stb_int                        : std_logic;
   signal snk_we_int                         : std_logic;
@@ -152,10 +152,10 @@ begin
     snk128_o.rty                            <= snk_rty_int;
   end generate;
 
-  cmp_wb_stream_sink : wb_stream_sink
+  cmp_wb_stream_sink_gen : wb_stream_sink_gen
   generic map (
     --g_wbs_adr_width                         : natural := c_wbs_adr4_width;
-    g_wbs_dat_width                           : t_wbs_interface_width := LARGE1
+    g_wbs_interface_width                     => g_wbs_interface_width
   )
   port map(
     clk_i                                     => clk_i,
@@ -212,11 +212,11 @@ begin
     sel128_o                                => sel128_o,
 
     -- Common lines
-    dvalid_i                                => dvalid_i,
-    sof_i                                   => sof_i,
-    eof_i                                   => eof_i,
-    error_i                                 => error_i,
-    dreq_o                                  => dreq_o
+    dvalid_o                                => dvalid_o,
+    sof_o                                   => sof_o,
+    eof_o                                   => eof_o,
+    error_o                                 => error_o,
+    dreq_i                                  => dreq_i
   );
 end rtl;
 
