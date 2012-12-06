@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 -- Author     : Lucas Maziero Russo
 -- Company    : CNPEM LNLS-DIG
--- Created    : 2012-17-10
+-- Created    : 2012-29-10
 -- Platform   : FPGA-generic
 -------------------------------------------------------------------------------
 -- Description: ADC Interface with FMC516 ADC board from Curtis Wright.
@@ -47,10 +47,10 @@ generic
 	-- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
   g_adc_clk_period_values                   : t_clk_values_array;
-  g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
-  g_clk_default_dly                         : t_default_adc_dly := dummy_default_dly;
-  g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
-  g_data_default_dly                        : t_default_adc_dly := dummy_default_dly;
+  g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
+  g_clk_default_dly                         : t_default_adc_dly := default_clk_dly;
+  g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+  g_data_default_dly                        : t_default_adc_dly := default_data_dly;
   g_sim                                     : integer := 0
 );
 port
@@ -103,6 +103,7 @@ architecture rtl of fmc516_adc_iface is
     adc_clk_bufio: std_logic;
     adc_clk_bufr : std_logic;
     adc_clk_bufg : std_logic;
+    adc_clk2x_bufg : std_logic;
     mmcm_adc_locked : std_logic;
   end record;
 
@@ -111,7 +112,7 @@ architecture rtl of fmc516_adc_iface is
   --type t_adc_data_chain_array is array (natural range <>) of t_adc_data_chain;
 
   -- Conectivity vector for interconnecting clocks and data chains
-  type t_chain_intercon is array (natural range <>) of integer;
+  --type t_chain_intercon is array (natural range <>) of integer;
 
   -- ADc and Clock chains
   signal adc_clk_chain						 				  : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
@@ -120,60 +121,6 @@ architecture rtl of fmc516_adc_iface is
   -- and means which clock is connected for each data chain (position index): -1,
   -- means not to use this data chain; 0..c_num_clock_chains, means the clock
   -- driving this data chain.
-  --
-  -- The policy for attributing a data chain to a clock chain is simply clocking
-  -- the data chain index that is less or equal than the next usable clock index
-  -- in the clock chain. If there are remaining data chain to be clocked using the
-  -- above logic, the default is to connect them to the last available clock in
-  -- the clock chain.
-  function f_chain_intercon(clock_chains : std_logic_vector; data_chains : std_logic_vector)
-    return t_chain_intercon
-  is
-    constant c_num_chains : natural := clock_chains'length;
-    variable intercon : t_chain_intercon(c_num_chains-1 downto 0) := (others => -1);
-    variable data_chain_idx : natural := 0;
-    variable i : natural := 0;
-    variable j : natural := 0;
-    variable k : natural := 0;
-  begin
-    -- Check for the sizes
-    assert (clock_chains'length = data_chains'length) report
-      "Vectors clocks and data have different sizes" severity failure;
-
-    --for i in 0 to c_num_clock_chains-1 loop
-    while i < c_num_chains loop
-      if clock_chains(i) = '1' then
-        --for j in data_chain_idx to i loop
-        j := data_chain_idx;
-        while j <= i loop
-          if data_chains(j) = '1' then
-            intercon(j) := i;
-          end if;
-          j := j + 1;
-        end loop;
-        data_chain_idx := i+1;
-      end if;
-      i := i + 1;
-    end loop;
-
-    -- If there are remaining data chains unclocked, attribute
-    -- them to the last usable clock
-    for i in data_chain_idx to c_num_chains-1 loop
-      if data_chains(i) = '1' then
-        intercon(i) := data_chain_idx-1;
-      end if;
-    end loop;
-
-    -- Print the intercon vector
-    for k in 0 to c_num_chains-1 loop
-      report "[ intercon(" & integer'image(k) & ") = " &
-          Integer'image(intercon(k)) & " ]"
-      severity note;
-    end loop;
-
-    return intercon;
-  end f_chain_intercon;
-
   constant chain_intercon                   : t_chain_intercon :=
       f_chain_intercon(g_use_clk_chains, g_use_data_chains);
 
@@ -198,8 +145,7 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
 
     -- ADC clocks. One clock per ADC channel
-    adc_clk_p_i                             : in std_logic;
-    adc_clk_n_i                        		  : in std_logic;
+    adc_clk_i                        		    : in std_logic;
 
     -----------------------------
     -- ADC Delay signals.
@@ -215,6 +161,7 @@ architecture rtl of fmc516_adc_iface is
     adc_clk_bufio_o                         : out std_logic;
     adc_clk_bufr_o                          : out std_logic;
     adc_clk_bufg_o                          : out std_logic;
+    adc_clk2x_bufg_o                        : out std_logic;
 
     -----------------------------
     -- MMCM general signals
@@ -237,8 +184,7 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
 
     -- DDR ADC data channels.
-    adc_data_p_i	                          : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_n_i														: in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+    adc_data_i	                            : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
 
     -----------------------------
     -- Input Clocks from fmc516_adc_clk signals
@@ -246,7 +192,7 @@ architecture rtl of fmc516_adc_iface is
     adc_clk_bufio_i                        	: in std_logic;
     adc_clk_bufr_i                        	: in std_logic;
     adc_clk_bufg_i                        	: in std_logic;
-    --adc_clk_bufg_rst_n_i										: in std_logic;
+    adc_clk2x_bufg_i                        : in std_logic;
 
     -----------------------------
     -- ADC Data Delay signals.
@@ -261,7 +207,8 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
     adc_data_o                              : out std_logic_vector(c_num_adc_bits-1 downto 0);
     adc_data_valid_o                        : out std_logic;
-    adc_clk_o                               : out std_logic
+    adc_clk_o                               : out std_logic;
+    adc_clk2x_o                             : out std_logic
   );
   end component;
 
@@ -278,7 +225,7 @@ begin
 
   -- Generate clock chains
   gen_clock_chains : for i in 0 to chain_intercon'length-1 generate
-    gen_check_clock_chains : if g_use_clk_chains(i) = '1' generate
+    gen_clock_chains_check : if g_use_clk_chains(i) = '1' generate
       cmp_fmc516_adc_clk : fmc516_adc_clk
       generic map (
       	-- The only supported values are VIRTEX6 and 7SERIES
@@ -296,8 +243,7 @@ begin
         -----------------------------
 
         -- ADC clocks. One clock per ADC channel
-        adc_clk_p_i              						=> adc_in_i(i).adc_clk_p,
-        adc_clk_n_i               					=> adc_in_i(i).adc_clk_n,
+        adc_clk_i               					  => adc_in_i(i).adc_clk,
 
         -----------------------------
         -- ADC Delay signals.
@@ -313,6 +259,7 @@ begin
         adc_clk_bufio_o                 		=> adc_clk_chain(i).adc_clk_bufio,
         adc_clk_bufr_o                  		=> adc_clk_chain(i).adc_clk_bufr,
         adc_clk_bufg_o                  		=> adc_clk_chain(i).adc_clk_bufg,
+        adc_clk2x_bufg_o                  	=> adc_clk_chain(i).adc_clk2x_bufg,
 
         -----------------------------
         -- MMCM general signals
@@ -358,8 +305,7 @@ begin
           -----------------------------
 
           -- DDR ADC data channels.
-          adc_data_p_i												=> adc_in_i(i).adc_data_p,
-          adc_data_n_i												=> adc_in_i(i).adc_data_n,
+          adc_data_i												  => adc_in_i(i).adc_data,
 
           -----------------------------
           -- Input Clocks from fmc516_adc_clk signals
@@ -367,6 +313,7 @@ begin
           adc_clk_bufio_i                   	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufio,
           adc_clk_bufr_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
           adc_clk_bufg_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
+          adc_clk2x_bufg_i                  	=> adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
           --adc_clk_bufg_rst_n_i								=> adc_in_i(i).adc_rst_n,
 
           -----------------------------
@@ -382,7 +329,8 @@ begin
           -----------------------------
           adc_data_o													=> adc_out_o(i).adc_data,
           adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
-          adc_clk_o														=> adc_out_o(i).adc_clk
+          adc_clk_o														=> adc_out_o(i).adc_clk,
+          adc_clk2x_o													=> adc_out_o(i).adc_clk2x
         );
     end generate;
   end generate;

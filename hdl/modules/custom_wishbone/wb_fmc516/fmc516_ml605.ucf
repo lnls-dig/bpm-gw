@@ -1,0 +1,402 @@
+#######################################################################
+# This are constraints specific to Curtis Wright FMC516 board and ML605 Kit
+#######################################################################
+
+#######################################################################
+# Pin Assignments (FMC516)
+#######################################################################
+
+NET "adc_data_ch0_p_i[0]"           LOC = AB32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[0]"           LOC = AC32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[1]"           LOC = AC33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[1]"           LOC = AB33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[2]"           LOC = AD32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[2]"           LOC = AE32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[3]"           LOC = AD34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[3]"           LOC = AC34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[4]"           LOC = AG31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[4]"           LOC = AF31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[5]"           LOC = AA26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[5]"           LOC = AB26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[6]"           LOC = AA25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[6]"           LOC = Y26  | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[7]"           LOC = AB28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_n_i[7]"           LOC = AC28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+
+NET "adc_data_ch1_p_i[0]"           LOC = AN19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[0]"           LOC = AN20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[1]"           LOC = AP19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[1]"           LOC = AN18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[2]"           LOC = AM20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[2]"           LOC = AL20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[3]"           LOC = AM18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[3]"           LOC = AL18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[4]"           LOC = AK22 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[4]"           LOC = AJ22 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[5]"           LOC = AF19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[5]"           LOC = AE19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[6]"           LOC = AC20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[6]"           LOC = AD20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[7]"           LOC = AF20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[7]"           LOC = AF21 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+
+NET "adc_data_ch2_p_i[0]"           LOC = AJ24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[0]"           LOC = AK24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[1]"           LOC = AL29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[1]"           LOC = AK29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[2]"           LOC = AK27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[2]"           LOC = AJ27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[3]"           LOC = AN30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[3]"           LOC = AM30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[4]"           LOC = AM25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[4]"           LOC = AL25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[5]"           LOC = AP27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[5]"           LOC = AP26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[6]"           LOC = AK23 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[6]"           LOC = AL24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[7]"           LOC = AH25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[7]"           LOC = AJ25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+
+NET "adc_data_ch3_p_i[0]"           LOC = AJ31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[0]"           LOC = AJ32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[1]"           LOC = AH33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[1]"           LOC = AH32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[2]"           LOC = AE28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[2]"           LOC = AE29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[3]"           LOC = AJ29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[3]"           LOC = AJ30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[4]"           LOC = AF26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[4]"           LOC = AE26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[5]"           LOC = AM33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[5]"           LOC = AL33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[6]"           LOC = AN33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[6]"           LOC = AN34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[7]"           LOC = AP32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_n_i[7]"           LOC = AP33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+
+NET "sys_i2c_scl_b"                 LOC = AK9;  # Not directly connected to FMC HPC pins. There is a level shifter in the middle
+NET "sys_i2c_sda_b"                 LOC = AE9;  # Not directly connected to FMC HPC pins. There is a level shifter in the middle
+
+NET "adc_clk_div_rst_p_o"           LOC = AM23 | IOSTANDARD = LVDS_25;
+NET "adc_clk_div_rst_n_o"           LOC = AL23 | IOSTANDARD = LVDS_25;
+
+NET "fmc_leds_o[0]"                 LOC = AP22 | IOSTANDARD = LVCMOS25;
+NET "fmc_leds_o[1]"                 LOC = AN23 | IOSTANDARD = LVCMOS25;
+
+NET "sys_spi_clk_o"                 LOC = AG25 | IOSTANDARD = LVCMOS25;
+NET "sys_spi_data_b"                LOC = AG26 | IOSTANDARD = LVCMOS25;
+NET "sys_spi_cs_adc0_n_o"           LOC = AE27 | IOSTANDARD = LVCMOS25;
+NET "sys_spi_cs_adc1_n_o"           LOC = AD27 | IOSTANDARD = LVCMOS25;
+NET "sys_spi_cs_adc2_n_o"           LOC = AH30 | IOSTANDARD = LVCMOS25;
+NET "sys_spi_cs_adc3_n_o"           LOC = AH29 | IOSTANDARD = LVCMOS25;
+
+NET "m2c_trig_p_i"                  LOC = AE33 | IOSTANDARD = LVDS_25;
+NET "m2c_trig_n_i"                  LOC = AF33 | IOSTANDARD = LVDS_25;
+NET "c2m_trig_p_o"                  LOC = AD29 | IOSTANDARD = LVDS_25;
+NET "c2m_trig_n_o"                  LOC = AC29 | IOSTANDARD = LVDS_25;
+
+NET "lmk_lock_i"                    LOC = T33 | IOSTANDARD = LVCMOS25;
+NET "lmk_sync_o"                    LOC = T34 | IOSTANDARD = LVCMOS25;
+NET "lmk_uwire_latch_en_o"          LOC = U31 | IOSTANDARD = LVCMOS25;
+NET "lmk_uwire_data_o"              LOC = U30 | IOSTANDARD = LVCMOS25;
+NET "lmk_uwire_clock_o"             LOC = U28 | IOSTANDARD = LVCMOS25;
+
+NET "vcxo_i2c_sda_b"                LOC = V32 | IOSTANDARD = LVCMOS25;
+NET "vcxo_i2c_scl_o"                LOC = U33 | IOSTANDARD = LVCMOS25;
+NET "vcxo_pd_l_o"                   LOC = V33 | IOSTANDARD = LVCMOS25;
+
+NET "fmc_id_dq_b"                   LOC = V30 | IOSTANDARD = LVCMOS25;
+NET "fmc_key_dq_b"                  LOC = W30 | IOSTANDARD = LVCMOS25;
+
+NET "fmc_pwr_good_i"                LOC = AH23 | IOSTANDARD = LVCMOS25;
+NET "fmc_clk_sel_o"                 LOC = V29  | IOSTANDARD = LVCMOS25;
+NET "fmc_reset_adcs_n_o"            LOC = U32  | IOSTANDARD = LVCMOS25;
+NET "fmc_prsnt_m2c_l_i"             LOC = AP25;
+
+#######################################################################
+# Constraints from ML605 user guide
+#######################################################################
+
+# NET "FMC_HPC_CLK0_M2C_N"       LOC = "K23";    ## H5  on J64
+# NET "FMC_HPC_CLK0_M2C_P"       LOC = "K24";    ## H4  on J64
+# NET "FMC_HPC_CLK1_M2C_N"       LOC = "AP21";   ## G3  on J64
+# NET "FMC_HPC_CLK1_M2C_P"       LOC = "AP20";   ## G2  on J64
+# NET "FMC_HPC_CLK2_M2C_IO_N"    LOC = "AC30";   ## 15  on U83
+# NET "FMC_HPC_CLK2_M2C_IO_P"    LOC = "AD30";   ## 16  on U83
+# NET "FMC_HPC_CLK2_M2C_MGT_C_N" LOC = "AB5";    ## 2   on series C399 0.1uF
+# NET "FMC_HPC_CLK2_M2C_MGT_C_P" LOC = "AB6";    ## 2   on series C398 0.1uF
+# NET "FMC_HPC_CLK3_M2C_IO_N"    LOC = "AF34";   ## J3  on J64
+# NET "FMC_HPC_CLK3_M2C_IO_P"    LOC = "AE34";   ## J2  on J64
+# NET "FMC_HPC_CLK3_M2C_MGT_C_N" LOC = "AH5";    ## 2   on series C397 0.1uF
+# NET "FMC_HPC_CLK3_M2C_MGT_C_P" LOC = "AH6";    ## 2   on series C396 0.1uF
+
+# NET "FMC_HPC_HA00_CC_N"        LOC = "AF33";   ## F5  on J64
+# NET "FMC_HPC_HA00_CC_P"        LOC = "AE33";   ## F4  on J64
+# NET "FMC_HPC_HA01_CC_N"        LOC = "AC29";   ## E3  on J64
+# NET "FMC_HPC_HA01_CC_P"        LOC = "AD29";   ## E2  on J64
+# NET "FMC_HPC_HA02_N"           LOC = "AC25";   ## K8  on J64
+# NET "FMC_HPC_HA02_P"           LOC = "AB25";   ## K7  on J64
+# NET "FMC_HPC_HA03_N"           LOC = "Y26";    ## J7  on J64
+# NET "FMC_HPC_HA03_P"           LOC = "AA25";   ## J6  on J64
+# NET "FMC_HPC_HA04_N"           LOC = "AC28";   ## F8  on J64
+# NET "FMC_HPC_HA04_P"           LOC = "AB28";   ## F7  on J64
+# NET "FMC_HPC_HA05_N"           LOC = "AC27";   ## E7  on J64
+# NET "FMC_HPC_HA05_P"           LOC = "AB27";   ## E6  on J64
+# NET "FMC_HPC_HA06_N"           LOC = "AA29";   ## K11 on J64
+# NET "FMC_HPC_HA06_P"           LOC = "AA28";   ## K10 on J64
+# NET "FMC_HPC_HA07_N"           LOC = "AB26";   ## J10 on J64
+# NET "FMC_HPC_HA07_P"           LOC = "AA26";   ## J9  on J64
+# NET "FMC_HPC_HA08_N"           LOC = "AF31";   ## F11 on J64
+# NET "FMC_HPC_HA08_P"           LOC = "AG31";   ## F10 on J64
+# NET "FMC_HPC_HA09_N"           LOC = "AB31";   ## E10 on J64
+# NET "FMC_HPC_HA09_P"           LOC = "AB30";   ## E9  on J64
+# NET "FMC_HPC_HA10_N"           LOC = "AC34";   ## K14 on J64
+# NET "FMC_HPC_HA10_P"           LOC = "AD34";   ## K13 on J64
+# NET "FMC_HPC_HA11_N"           LOC = "AG32";   ## J13 on J64
+# NET "FMC_HPC_HA11_P"           LOC = "AG33";   ## J12 on J64
+# NET "FMC_HPC_HA12_N"           LOC = "AE32";   ## F14 on J64
+# NET "FMC_HPC_HA12_P"           LOC = "AD32";   ## F13 on J64
+# NET "FMC_HPC_HA13_N"           LOC = "AD31";   ## E13 on J64
+# NET "FMC_HPC_HA13_P"           LOC = "AE31";   ## E12 on J64
+# NET "FMC_HPC_HA14_N"           LOC = "AA31";   ## J16 on J64
+# NET "FMC_HPC_HA14_P"           LOC = "AA30";   ## J15 on J64
+# NET "FMC_HPC_HA15_N"           LOC = "AC32";   ## F17 on J64
+# NET "FMC_HPC_HA15_P"           LOC = "AB32";   ## F16 on J64
+# NET "FMC_HPC_HA16_N"           LOC = "AB33";   ## E16 on J64
+# NET "FMC_HPC_HA16_P"           LOC = "AC33";   ## E15 on J64
+# NET "FMC_HPC_HA17_CC_N"        LOC = "W30";    ## K17 on J64
+# NET "FMC_HPC_HA17_CC_P"        LOC = "V30";    ## K16 on J64
+# NET "FMC_HPC_HA18_N"           LOC = "T34";    ## J19 on J64
+# NET "FMC_HPC_HA18_P"           LOC = "T33";    ## J18 on J64
+# NET "FMC_HPC_HA19_N"           LOC = "U32";    ## F20 on J64
+# NET "FMC_HPC_HA19_P"           LOC = "U33";    ## F19 on J64
+# NET "FMC_HPC_HA20_N"           LOC = "V33";    ## E19 on J64
+# NET "FMC_HPC_HA20_P"           LOC = "V32";    ## E18 on J64
+# NET "FMC_HPC_HA21_N"           LOC = "U30";    ## K20 on J64
+# NET "FMC_HPC_HA21_P"           LOC = "U31";    ## K19 on J64
+# NET "FMC_HPC_HA22_N"           LOC = "V29";    ## J22 on J64
+# NET "FMC_HPC_HA22_P"           LOC = "U28";    ## J21 on J64
+# NET "FMC_HPC_HA23_N"           LOC = "U27";    ## K23 on J64
+# NET "FMC_HPC_HA23_P"           LOC = "U26";    ## K22 on J64
+
+# NET "FMC_HPC_HB00_CC_N"        LOC = "AG30";   ## K26 on J64
+# NET "FMC_HPC_HB00_CC_P"        LOC = "AF30";   ## K25 on J64
+# NET "FMC_HPC_HB01_N"           LOC = "AM32";   ## J25 on J64
+# NET "FMC_HPC_HB01_P"           LOC = "AN32";   ## J24 on J64
+# NET "FMC_HPC_HB02_N"           LOC = "AP33";   ## F23 on J64
+# NET "FMC_HPC_HB02_P"           LOC = "AP32";   ## F22 on J64
+# NET "FMC_HPC_HB03_N"           LOC = "AM31";   ## E22 on J64
+# NET "FMC_HPC_HB03_P"           LOC = "AL30";   ## E21 on J64
+# NET "FMC_HPC_HB04_N"           LOC = "AL33";   ## F26 on J64
+# NET "FMC_HPC_HB04_P"           LOC = "AM33";   ## F25 on J64
+# NET "FMC_HPC_HB05_N"           LOC = "AN34";   ## E25 on J64
+# NET "FMC_HPC_HB05_P"           LOC = "AN33";   ## E24 on J64
+# NET "FMC_HPC_HB06_CC_N"        LOC = "AE26";   ## K29 on J64
+# NET "FMC_HPC_HB06_CC_P"        LOC = "AF26";   ## K28 on J64
+# NET "FMC_HPC_HB07_N"           LOC = "AH34";   ## J28 on J64
+# NET "FMC_HPC_HB07_P"           LOC = "AJ34";   ## J27 on J64
+# NET "FMC_HPC_HB08_N"           LOC = "AK32";   ## F29 on J64
+# NET "FMC_HPC_HB08_P"           LOC = "AK33";   ## F28 on J64
+# NET "FMC_HPC_HB09_N"           LOC = "AK34";   ## E28 on J64
+# NET "FMC_HPC_HB09_P"           LOC = "AL34";   ## E27 on J64
+# NET "FMC_HPC_HB10_N"           LOC = "AF29";   ## K32 on J64
+# NET "FMC_HPC_HB10_P"           LOC = "AF28";   ## K31 on J64
+# NET "FMC_HPC_HB11_N"           LOC = "AJ30";   ## J31 on J64
+# NET "FMC_HPC_HB11_P"           LOC = "AJ29";   ## J30 on J64
+# NET "FMC_HPC_HB12_N"           LOC = "AJ32";   ## F32 on J64
+# NET "FMC_HPC_HB12_P"           LOC = "AJ31";   ## F31 on J64
+# NET "FMC_HPC_HB13_N"           LOC = "AH32";   ## E31 on J64
+# NET "FMC_HPC_HB13_P"           LOC = "AH33";   ## E30 on J64
+# NET "FMC_HPC_HB14_N"           LOC = "AD27";   ## K35 on J64
+# NET "FMC_HPC_HB14_P"           LOC = "AE27";   ## K34 on J64
+# NET "FMC_HPC_HB15_N"           LOC = "AE29";   ## J34 on J64
+# NET "FMC_HPC_HB15_P"           LOC = "AE28";   ## J33 on J64
+# NET "FMC_HPC_HB16_N"           LOC = "AH30";   ## F35 on J64
+# NET "FMC_HPC_HB16_P"           LOC = "AH29";   ## F34 on J64
+# NET "FMC_HPC_HB17_CC_N"        LOC = "AG28";   ## K38 on J64
+# NET "FMC_HPC_HB17_CC_P"        LOC = "AG27";   ## K37 on J64
+# NET "FMC_HPC_HB18_N"           LOC = "AD26";   ## J37 on J64
+# NET "FMC_HPC_HB18_P"           LOC = "AD25";   ## J36 on J64
+# NET "FMC_HPC_HB19_N"           LOC = "AK31";   ## E34 on J64
+# NET "FMC_HPC_HB19_P"           LOC = "AL31";   ## E33 on J64
+
+# NET "FMC_HPC_LA00_CC_N"        LOC = "AF21";   ## G7  on J64
+# NET "FMC_HPC_LA00_CC_P"        LOC = "AF20";   ## G6  on J64
+# NET "FMC_HPC_LA01_CC_N"        LOC = "AL19";   ## D9  on J64
+# NET "FMC_HPC_LA01_CC_P"        LOC = "AK19";   ## D8  on J64
+# NET "FMC_HPC_LA02_N"           LOC = "AD20";   ## H8  on J64
+# NET "FMC_HPC_LA02_P"           LOC = "AC20";   ## H7  on J64
+# NET "FMC_HPC_LA03_N"           LOC = "AD19";   ## G10 on J64
+# NET "FMC_HPC_LA03_P"           LOC = "AC19";   ## G9  on J64
+# NET "FMC_HPC_LA04_N"           LOC = "AE19";   ## H11 on J64
+# NET "FMC_HPC_LA04_P"           LOC = "AF19";   ## H10 on J64
+# NET "FMC_HPC_LA05_N"           LOC = "AH22";   ## D12 on J64
+# NET "FMC_HPC_LA05_P"           LOC = "AG22";   ## D11 on J64
+# NET "FMC_HPC_LA06_N"           LOC = "AG21";   ## C11 on J64
+# NET "FMC_HPC_LA06_P"           LOC = "AG20";   ## C10 on J64
+# NET "FMC_HPC_LA07_N"           LOC = "AJ21";   ## H14 on J64
+# NET "FMC_HPC_LA07_P"           LOC = "AK21";   ## H13 on J64
+# NET "FMC_HPC_LA08_N"           LOC = "AJ22";   ## G13 on J64
+# NET "FMC_HPC_LA08_P"           LOC = "AK22";   ## G12 on J64
+# NET "FMC_HPC_LA09_N"           LOC = "AL18";   ## D15 on J64
+# NET "FMC_HPC_LA09_P"           LOC = "AM18";   ## D14 on J64
+# NET "FMC_HPC_LA10_N"           LOC = "AL20";   ## C15 on J64
+# NET "FMC_HPC_LA10_P"           LOC = "AM20";   ## C14 on J64
+# NET "FMC_HPC_LA11_N"           LOC = "AN22";   ## H17 on J64
+# NET "FMC_HPC_LA11_P"           LOC = "AM22";   ## H16 on J64
+# NET "FMC_HPC_LA12_N"           LOC = "AL21";   ## G16 on J64
+# NET "FMC_HPC_LA12_P"           LOC = "AM21";   ## G15 on J64
+# NET "FMC_HPC_LA13_N"           LOC = "AN18";   ## D18 on J64
+# NET "FMC_HPC_LA13_P"           LOC = "AP19";   ## D17 on J64
+# NET "FMC_HPC_LA14_N"           LOC = "AN20";   ## C19 on J64
+# NET "FMC_HPC_LA14_P"           LOC = "AN19";   ## C18 on J64
+# NET "FMC_HPC_LA15_N"           LOC = "AL23";   ## H20 on J64
+# NET "FMC_HPC_LA15_P"           LOC = "AM23";   ## H19 on J64
+# NET "FMC_HPC_LA16_N"           LOC = "AN23";   ## G19 on J64
+# NET "FMC_HPC_LA16_P"           LOC = "AP22";   ## G18 on J64
+# NET "FMC_HPC_LA17_CC_N"        LOC = "AM27";   ## D21 on J64
+# NET "FMC_HPC_LA17_CC_P"        LOC = "AN27";   ## D20 on J64
+# NET "FMC_HPC_LA18_CC_N"        LOC = "AJ25";   ## C23 on J64
+# NET "FMC_HPC_LA18_CC_P"        LOC = "AH25";   ## C22 on J64
+# NET "FMC_HPC_LA19_N"           LOC = "AN24";   ## H23 on J64
+# NET "FMC_HPC_LA19_P"           LOC = "AN25";   ## H22 on J64
+# NET "FMC_HPC_LA20_N"           LOC = "AL24";   ## G22 on J64
+# NET "FMC_HPC_LA20_P"           LOC = "AK23";   ## G21 on J64
+# NET "FMC_HPC_LA21_N"           LOC = "AP29";   ## H26 on J64
+# NET "FMC_HPC_LA21_P"           LOC = "AN29";   ## H25 on J64
+# NET "FMC_HPC_LA22_N"           LOC = "AP26";   ## G25 on J64
+# NET "FMC_HPC_LA22_P"           LOC = "AP27";   ## G24 on J64
+# NET "FMC_HPC_LA23_N"           LOC = "AM26";   ## D24 on J64
+# NET "FMC_HPC_LA23_P"           LOC = "AL26";   ## D23 on J64
+# NET "FMC_HPC_LA24_N"           LOC = "AM30";   ## H29 on J64
+# NET "FMC_HPC_LA24_P"           LOC = "AN30";   ## H28 on J64
+# NET "FMC_HPC_LA25_N"           LOC = "AM28";   ## G28 on J64
+# NET "FMC_HPC_LA25_P"           LOC = "AN28";   ## G27 on J64
+# NET "FMC_HPC_LA26_N"           LOC = "AL25";   ## D27 on J64
+# NET "FMC_HPC_LA26_P"           LOC = "AM25";   ## D26 on J64
+# NET "FMC_HPC_LA27_N"           LOC = "AP31";   ## C27 on J64
+# NET "FMC_HPC_LA27_P"           LOC = "AP30";   ## C26 on J64
+# NET "FMC_HPC_LA28_N"           LOC = "AJ27";   ## H32 on J64
+# NET "FMC_HPC_LA28_P"           LOC = "AK27";   ## H31 on J64
+# NET "FMC_HPC_LA29_N"           LOC = "AK28";   ## G31 on J64
+# NET "FMC_HPC_LA29_P"           LOC = "AL28";   ## G30 on J64
+# NET "FMC_HPC_LA30_N"           LOC = "AK24";   ## H35 on J64
+# NET "FMC_HPC_LA30_P"           LOC = "AJ24";   ## H34 on J64
+# NET "FMC_HPC_LA31_N"           LOC = "AK29";   ## G34 on J64
+# NET "FMC_HPC_LA31_P"           LOC = "AL29";   ## G33 on J64
+# NET "FMC_HPC_LA32_N"           LOC = "AG26";   ## H38 on J64
+# NET "FMC_HPC_LA32_P"           LOC = "AG25";   ## H37 on J64
+# NET "FMC_HPC_LA33_N"           LOC = "AH24";   ## G37 on J64
+# NET "FMC_HPC_LA33_P"           LOC = "AH23";   ## G36 on J64
+# NET "FMC_HPC_PG_M2C_LS"        LOC = "J27";    ## F1  on J64
+# NET "FMC_HPC_PRSNT_M2C_L"      LOC = "AP25";   ## H2  on J64
+
+#######################################################################
+# ADC Clock Assignments (ISLA216P)
+#######################################################################
+
+# 250 MHz Clock
+# The CLOCK_DEDICATED_ROUTE﻿=FALSE workaround is typically for source clocks which
+# are not assigned to global clock input pins
+
+NET "adc_clk0_p_i" TNM_NET = "adc_clk0_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+TIMESPEC "TS_adc_clk0_p_i" = PERIOD "adc_clk0_p_i" 4 ns HIGH 50%;
+
+NET "adc_clk1_p_i" TNM_NET = "adc_clk1_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+TIMESPEC "TS_adc_clk1_p_i" = PERIOD "adc_clk1_p_i" 4 ns HIGH 50%;
+
+NET "adc_clk2_p_i" TNM_NET = "adc_clk2_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+TIMESPEC "TS_adc_clk2_p_i" = PERIOD "adc_clk2_p_i" 4 ns HIGH 50%;
+
+NET "adc_clk3_p_i" TNM_NET = "adc_clk3_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+TIMESPEC "TS_adc_clk3_p_i" = PERIOD "adc_clk3_p_i" 4 ns HIGH 50%;
+
+NET "adc_clk0_p_i" LOC = "AP20" | IOSTANDARD = LVDS_25;
+NET "adc_clk0_n_i" LOC = "AP21" | IOSTANDARD = LVDS_25;
+
+NET "adc_clk1_p_i" LOC = "AD30" | IOSTANDARD = LVDS_25;
+NET "adc_clk1_n_i" LOC = "AC30" | IOSTANDARD = LVDS_25;
+
+NET "adc_clk2_p_i" LOC = "K24" | IOSTANDARD = LVDS_25;
+NET "adc_clk2_n_i" LOC = "K23" | IOSTANDARD = LVDS_25;
+
+NET "adc_clk3_p_i" LOC = "AE34" | IOSTANDARD = LVDS_25;
+NET "adc_clk3_n_i" LOC = "AF34" | IOSTANDARD = LVDS_25;
+
+#######################################################################
+# ADC Data <-> Clocks Constraints (ISLA216P)
+#
+# From the data sheet (page 11)
+#
+#Output Clock to Data Propagation Delay (LVDS Mode):
+# tdc Rising/Falling Edge -0.1 (min) 0.16 (typ) 0.5 (max) ns
+#
+#Constraint recommended by an Intersil Employee
+#
+#TIMEGRP "datain18_p_group" OFFSET = IN -200 ps VALID 1200 ps BEFORE "clkin18_p" RISING;
+#
+#This is setup for a 250MHz clock (4ns period).  The ISLA216P25 specifies
+# tDC as -0.1 to +0.5 ns.  The constraint adds an additional 100ps to each side
+# to account for potential skew due to the pcb.  So, the tDC ends up being -0.2
+# to 0.6 ns.  The value after IN in the constraint equal tDC min (-200ps). 
+# The  value after VALID = Period/2 + tDC min – tDC max (4000ps/2 + -200ps –
+# 600ps = 1200ps).  (The period is divided by two because the data is DDR.)
+#
+#
+#         OFFSET
+#        +---+
+#
+#             --------      --------
+# CLK         |      |      |      |      |
+#                    --------      --------
+#        --------------------------------
+# DATA   |      ||      ||      ||      |
+#        --------------------------------
+#
+#        +------+
+#         VALID
+#
+#######################################################################
+
+TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk0_p_i" RISING;
+TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk0_p_i" FALLING;
+
+TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk1_p_i" RISING;
+TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk1_p_i" FALLING;
+
+TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk2_p_i" RISING;
+TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk2_p_i" FALLING;
+
+TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i" RISING;
+TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i" FALLING;
+
+#######################################################################
+# CDC FIFO Constraints
+#######################################################################
+
+# NET "RD_CLK"  TNM_NET     = "RD_CLK";
+# NET "WR_CLK"  TNM_NET     = "WR_CLK";
+# TIMESPEC "TS_RD_CLK"      = PERIOD "RD_CLK"  50 MHZ;
+# TIMESPEC "TS_WR_CLK"      = PERIOD "WR_CLK"  50 MHZ;
+
+#######################################################################
+# Other Constraints
+#######################################################################
+
+# Group all IDELAY-related blocks to use a single IDELAYCTRL
+INST "*cmp_fmc516_adc_iface/cmp_idelayctrl"                                   IODELAY_GROUP = adc_idelay;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].cmp_adc_data_iodelay"  IODELAY_GROUP = adc_idelay;
+INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/cmp_ibufds_clk_iodelay"   IODELAY_GROUP = adc_idelay;
+
+# Overrides default_delay hdl parameter.
+# For Virtex-6: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 4;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 1;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 3;
+
+# Overrides default_delay hdl parameter
+INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;

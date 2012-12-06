@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 -- Author     : Lucas Maziero Russo
 -- Company    : CNPEM LNLS-DIG
--- Created    : 2012-17-10
+-- Created    : 2012-29-10
 -- Platform   : FPGA-generic
 -------------------------------------------------------------------------------
 -- Description: Clock Interface with FMC516 ADC board from Curtis Wright.
@@ -42,8 +42,7 @@ port
   -----------------------------
 
   -- ADC clocks. One clock per ADC channel
-  adc_clk_p_i                               : in std_logic;
-  adc_clk_n_i                               : in std_logic;
+  adc_clk_i                                 : in std_logic;
 
   -----------------------------
   -- ADC Delay signals.
@@ -59,6 +58,7 @@ port
   adc_clk_bufio_o                           : out std_logic;
   adc_clk_bufr_o                            : out std_logic;
   adc_clk_bufg_o                            : out std_logic;
+  adc_clk2x_bufg_o                          : out std_logic;
 
   -----------------------------
   -- MMCM general signals
@@ -85,12 +85,14 @@ architecture rtl of fmc516_adc_clk is
   signal adc_clk_bufio                      : std_logic;
   signal adc_clk_bufr                       : std_logic;
   signal adc_clk_bufg                       : std_logic;
+  signal adc_clk2x_bufg                     : std_logic;
 
   -- Clock MMCM signals
   signal adc_clk_fbin                       : std_logic;
   signal adc_clk_fbout                      : std_logic;
-  signal adc_clk_mmcm_2x_out                : std_logic;
   signal adc_clk_mmcm_out                   : std_logic;
+  signal adc_clk2x_mmcm_out                 : std_logic;
+
 
 begin
   -----------------------------
@@ -99,16 +101,16 @@ begin
 
   -- Diferential Clock Buffers (IBUFGDS = IBUFDS)
   -- IBUFGDS is just a different name for IBUFDS
-  cmp_ibufgds_clk : ibufgds
-  generic map(
-    IOSTANDARD                              => "LVDS_25",
-    DIFF_TERM                               => TRUE
-  )
-  port map(
-    i                                       => adc_clk_p_i,
-    ib                                      => adc_clk_n_i,
-    o                                       => adc_clk_ibufgds
-  );
+  --cmp_ibufgds_clk : ibufgds
+  --generic map(
+  --  IOSTANDARD                              => "LVDS_25",
+  --  DIFF_TERM                               => TRUE
+  --)
+  --port map(
+  --  i                                       => adc_clk_p_i,
+  --  ib                                      => adc_clk_n_i,
+  --  o                                       => adc_clk_ibufgds
+  --);
 
   -- Delay for Clock Buffers
   -- From Virtex-6 SelectIO Datasheet:
@@ -118,16 +120,18 @@ begin
   --
   -- HIGH_PERFORMANCE_MODE = TRUE reduces the output
   -- jitter in exchange of increase power dissipation
-  cmp_ibufgds_clk_iodelay : iodelaye1
+  cmp_ibufds_clk_iodelay : iodelaye1
   generic map(
-    IDELAY_TYPE                             => "VAR_LOADABLE",
+    --IDELAY_TYPE                             => "VAR_LOADABLE",
+    IDELAY_TYPE                             => "VARIABLE",
     IDELAY_VALUE                            => g_default_adc_clk_delay,
     SIGNAL_PATTERN                          => "CLOCK",
     HIGH_PERFORMANCE_MODE                   => TRUE,
     DELAY_SRC                               => "I"
   )
   port map(
-    idatain                                 => adc_clk_ibufgds,
+    --idatain                                 => adc_clk_ibufgds,
+    idatain                                 => adc_clk_i,
     dataout                                 => adc_clk_ibufgds_dly,
     c                                       => sys_clk_i,
     ce                                      => '0',
@@ -193,7 +197,7 @@ begin
     O                                       => adc_clk_bufr
   );
 
-  -- ADC Clock PLL
+  -- ADC Clock PLL. Caution here!
   cmp_mmcm_adc_clk : MMCM_ADV
   generic map(
     BANDWIDTH                             => "OPTIMIZED",
@@ -204,18 +208,20 @@ begin
     -- resourses guide page 53, note 2)
     --COMPENSATION         => "ZHOLD",
     STARTUP_WAIT                          => FALSE,
-    DIVCLK_DIVIDE                         => 1,
-    CLKFBOUT_MULT_F                       => 5.000,
+    DIVCLK_DIVIDE                         => 3,
+    CLKFBOUT_MULT_F                       => 12.000,
     CLKFBOUT_PHASE                        => 0.000,
     CLKFBOUT_USE_FINE_PS                  => FALSE,
-    CLKOUT0_DIVIDE_F                      => 5.000,
+    -- adc clock
+    CLKOUT0_DIVIDE_F                      => 4.000,
     CLKOUT0_PHASE                         => 0.000,
     CLKOUT0_DUTY_CYCLE                    => 0.500,
     CLKOUT0_USE_FINE_PS                   => FALSE,
-    --CLKOUT1_DIVIDE                        => 5,
-    --CLKOUT1_PHASE                         => 0.000,
-    --CLKOUT1_DUTY_CYCLE                    => 0.500,
-    --CLKOUT1_USE_FINE_PS                   => FALSE,
+    -- 2x adc clock
+    CLKOUT1_DIVIDE                        => 2,
+    CLKOUT1_PHASE                         => 0.000,
+    CLKOUT1_DUTY_CYCLE                    => 0.500,
+    CLKOUT1_USE_FINE_PS                   => FALSE,
     -- 250 MHZ input clock
     CLKIN1_PERIOD                         => g_adc_clock_period,
     REF_JITTER1                           => 0.010,
@@ -230,7 +236,7 @@ begin
     CLKFBOUTB                             => open,
     CLKOUT0                               => adc_clk_mmcm_out,
     CLKOUT0B                              => open,
-    CLKOUT1                               => open,
+    CLKOUT1                               => adc_clk2x_mmcm_out,
     CLKOUT1B                              => open,
     CLKOUT2                               => open,
     CLKOUT2B                              => open,
@@ -280,9 +286,17 @@ begin
     I                                       => adc_clk_mmcm_out
   );
 
+  cmp_adc2x_out_bufg : BUFG
+  port map(
+    O                                       => adc_clk2x_bufg,
+    I                                       => adc_clk2x_mmcm_out
+  );
+
   -- Output clocks
   adc_clk_bufio_o                           <= adc_clk_bufio;
   adc_clk_bufr_o                            <= adc_clk_bufr;
   adc_clk_bufg_o                            <= adc_clk_bufg;
+  adc_clk2x_bufg_o                          <= adc_clk2x_bufg;
+
 
 end rtl;
