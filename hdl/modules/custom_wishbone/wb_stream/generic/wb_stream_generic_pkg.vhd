@@ -150,11 +150,21 @@ package wb_stream_generic_pkg is
   type t_wbs_source_out64_array is array (natural range <>) of t_wbs_source_out64;
   type t_wbs_source_out128_array is array (natural range <>) of t_wbs_source_out128;
 
+  type t_wbs_source_in16_array is array (natural range <>) of t_wbs_source_in16;
+  type t_wbs_source_in32_array is array (natural range <>) of t_wbs_source_in32;
+  type t_wbs_source_in64_array is array (natural range <>) of t_wbs_source_in64;
+  type t_wbs_source_in128_array is array (natural range <>) of t_wbs_source_in128;
+
   subtype t_wbs_sink_out_array is t_wbs_source_in_array;
   subtype t_wbs_sink_in16_array is t_wbs_source_out16_array;
   subtype t_wbs_sink_in32_array is t_wbs_source_out32_array;
   subtype t_wbs_sink_in64_array is t_wbs_source_out64_array;
   subtype t_wbs_sink_in128_array is t_wbs_source_out128_array;
+
+  subtype t_wbs_sink_out16_array is t_wbs_source_in16_array;
+  subtype t_wbs_sink_out32_array is t_wbs_source_in32_array;
+  subtype t_wbs_sink_out64_array is t_wbs_source_in64_array;
+  subtype t_wbs_sink_out128_array is t_wbs_source_in128_array;
 
   function f_marshall_wbs_status (stat  : t_wbs_status_reg) return std_logic_vector;
   function f_unmarshall_wbs_status(stat : std_logic_vector) return t_wbs_status_reg;
