@@ -63,12 +63,19 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/xwb_fmc516.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_clk.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_data.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_buf.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_iface.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_pkg.vhd \
+../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd \
+../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd \
+../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_source_gen.vhd \
+../../../../modules/custom_wishbone/wb_stream/generic/xwb_stream_sink_gen.vhd \
+../../../../modules/custom_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd \
@@ -88,6 +95,7 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_ext.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/coregen/cdc_fifo.vhd \
 ../../../../modules/custom_common/reset_synch/reset_synch.vhd \
 ../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd \
 ../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd \
@@ -175,12 +183,19 @@ work/xwb_fmc150/.xwb_fmc150_vhd \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
 work/wb_fmc150_port/.wb_fmc150_port_vhd \
 work/wb_fmc516/.wb_fmc516_vhd \
+work/xwb_fmc516/.xwb_fmc516_vhd \
 work/fmc516_adc_clk/.fmc516_adc_clk_vhd \
 work/fmc516_adc_data/.fmc516_adc_data_vhd \
+work/fmc516_adc_buf/.fmc516_adc_buf_vhd \
 work/fmc516_adc_iface/.fmc516_adc_iface_vhd \
 work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
 work/wb_fmc516_regs/.wb_fmc516_regs_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
+work/wb_stream_sink_gen/.wb_stream_sink_gen_vhd \
+work/wb_stream_source_gen/.wb_stream_source_gen_vhd \
+work/xwb_stream_sink_gen/.xwb_stream_sink_gen_vhd \
+work/xwb_stream_source_gen/.xwb_stream_source_gen_vhd \
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd \
 work/adc_pkg/.adc_pkg_vhd \
 work/strobe_lvds/.strobe_lvds_vhd \
@@ -200,6 +215,7 @@ work/amc7823_init_mem/.amc7823_init_mem_vhd \
 work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
 work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
 work/dac3283_init_mem/.dac3283_init_mem_vhd \
+work/cdc_fifo/.cdc_fifo_vhd \
 work/reset_synch/.reset_synch_vhd \
 work/rf_ch_swap/.rf_ch_swap_vhd \
 work/utilities_package/.utilities_package_vhd \
@@ -405,6 +421,7 @@ work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd: ../../../../modules/custom_wi
 
 work/custom_wishbone_pkg/.custom_wishbone_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
@@ -493,13 +510,25 @@ work/wb_fmc516/.wb_fmc516_vhd: ../../../../modules/custom_wishbone/wb_fmc516/wb_
 
 
 work/wb_fmc516/.wb_fmc516: \
-work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_fmc516/.xwb_fmc516_vhd: ../../../../modules/custom_wishbone/wb_fmc516/xwb_fmc516.vhd work/xwb_fmc516/.xwb_fmc516
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_fmc516/.xwb_fmc516: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
+work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
+work/fmc516_pkg/.fmc516_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc516_adc_clk/.fmc516_adc_clk_vhd: ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_clk.vhd work/fmc516_adc_clk/.fmc516_adc_clk
@@ -517,6 +546,15 @@ work/fmc516_adc_data/.fmc516_adc_data_vhd: ../../../../modules/custom_wishbone/w
 
 work/fmc516_adc_data/.fmc516_adc_data: \
 work/genram_pkg/.genram_pkg_vhd \
+work/fmc516_pkg/.fmc516_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/fmc516_adc_buf/.fmc516_adc_buf_vhd: ../../../../modules/custom_wishbone/wb_fmc516/fmc516_adc_buf.vhd work/fmc516_adc_buf/.fmc516_adc_buf
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/fmc516_adc_buf/.fmc516_adc_buf: \
 work/fmc516_pkg/.fmc516_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
@@ -555,6 +593,54 @@ work/fmc516_pkg/.fmc516_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc516/f
 work/fmc516_pkg/.fmc516_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd work/wb_stream_generic_pkg/.wb_stream_generic_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_stream_sink_gen/.wb_stream_sink_gen_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd work/wb_stream_sink_gen/.wb_stream_sink_gen
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_stream_sink_gen/.wb_stream_sink_gen: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_stream_source_gen/.wb_stream_source_gen_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_source_gen.vhd work/wb_stream_source_gen/.wb_stream_source_gen
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_stream_source_gen/.wb_stream_source_gen: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_stream_sink_gen/.xwb_stream_sink_gen_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/xwb_stream_sink_gen.vhd work/xwb_stream_sink_gen/.xwb_stream_sink_gen
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_stream_sink_gen/.xwb_stream_sink_gen: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_stream_source_gen/.xwb_stream_source_gen_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd work/xwb_stream_source_gen/.xwb_stream_source_gen
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_stream_source_gen/.xwb_stream_source_gen: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr
@@ -709,6 +795,14 @@ work/dac3283_init_mem/.dac3283_init_mem_vhd: ../../../../modules/custom_wishbone
 
 
 work/dac3283_init_mem/.dac3283_init_mem:
+		@mkdir -p $(dir $@) && touch $@
+
+work/cdc_fifo/.cdc_fifo_vhd: ../../../../modules/custom_wishbone/wb_fmc516/coregen/cdc_fifo.vhd work/cdc_fifo/.cdc_fifo
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/cdc_fifo/.cdc_fifo:
 		@mkdir -p $(dir $@) && touch $@
 
 work/reset_synch/.reset_synch_vhd: ../../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch

@@ -325,10 +325,7 @@ module wb_fmc516_tb;
     //-- ADC output signals. Continuous flow.
     //-----------------------------
     .adc_clk_o                                (),
-    .adc_data_ch0_o                           (),
-    .adc_data_ch1_o                           (),
-    .adc_data_ch2_o                           (),
-    .adc_data_ch3_o                           (),
+    .adc_data_o                               (),
     .adc_data_valid_o                         (),
 
     //-----------------------------
@@ -351,10 +348,10 @@ module wb_fmc516_tb;
     .wbs_stb_o                                (),
     .wbs_we_o                                 (),
     .wbs_sel_o                                (),
-    .wbs_ack_i                                (zero_bit),
-    .wbs_stall_i                              (zero_bit),
-    .wbs_err_i                                (zero_bit),
-    .wbs_rty_i                                (zero_bit)
+    .wbs_ack_i                                ('h0),
+    .wbs_stall_i                              ('h0),
+    .wbs_err_i                                ('h0),
+    .wbs_rty_i                                ('h0)
   );
 
   // Generate data and valid signals on positive edge of ADC clock

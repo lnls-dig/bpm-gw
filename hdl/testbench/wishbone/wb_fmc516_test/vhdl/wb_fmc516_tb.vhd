@@ -305,10 +305,7 @@ begin  -- sim
     -- ADC output signals. Continuous flow.
     -----------------------------
     adc_clk_o                               => open,
-    adc_data_ch0_o                          => open,
-    adc_data_ch1_o                          => open,
-    adc_data_ch2_o                          => open,
-    adc_data_ch3_o                          => open,
+    adc_data_o                              => open,
     adc_data_valid_o                        => open,
 
     -----------------------------
@@ -331,10 +328,10 @@ begin  -- sim
     wbs_stb_o                               => open,
     wbs_we_o                                => open,
     wbs_sel_o                               => open,
-    wbs_ack_i                               => '0',
-    wbs_stall_i                             => '0',
-    wbs_err_i                               => '0',
-    wbs_rty_i                               => '0'
+    wbs_ack_i                               => (others => '0'),
+    wbs_stall_i                             => (others => '0'),
+    wbs_err_i                               => (others => '0'),
+    wbs_rty_i                               => (others => '0')
   );
 
   adc_clk_n                                 <= not adc_clk;
