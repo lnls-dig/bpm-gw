@@ -335,12 +335,30 @@ architecture rtl of wb_fmc516 is
   signal fmc_reset_adcs_int                 : std_logic;
 
   -----------------------------
+  -- Test data signals and constants
+  -----------------------------
+  -- Counter width. It willl count up to 2^32 clock cycles
+	constant c_counter_width		              : natural := 16;
+  -- 100MHz period or 1 second
+	constant c_counter_full			              : natural := 1000000;
+  -- Offset between adjacent test data channels
+  constant c_offset_test_data               : natural := 10;
+  -- Counter signal
+  type t_wbs_test_data_array is array(natural range<>) of unsigned(c_counter_width-1 downto 0);
+
+	signal wbs_test_data        		          : t_wbs_test_data_array(c_num_adc_channels-1 downto 0);
+
+  -----------------------------
   -- Wishbone Streaming control signals
   -----------------------------
-  --signal wbs_packet_counter                 : unsigned(c_packet_num_bits-1 downto 0);
+  type t_wbs_dat16_array is array(natural range<>) of std_logic_vector(c_wbs_dat16_width-1 downto 0);
+  type t_wbs_valid16_array is array(natural range<>) of std_logic;
+
+  signal wbs_dat                            : t_wbs_dat16_array(c_num_adc_channels-1 downto 0);
+  signal wbs_valid                          : t_wbs_valid16_array(c_num_adc_channels-1 downto 0);
   signal wbs_adr                            : std_logic_vector(c_wbs_adr4_width-1 downto 0);
-  signal wbs_dat                            : std_logic_vector(c_wbs_dat16_width-1 downto 0);
-  signal wbs_dvalid                         : std_logic;
+  --signal wbs_dat                            : std_logic_vector(c_wbs_dat16_width-1 downto 0);
+  --signal wbs_dvalid                         : std_logic;
   signal wbs_sof                            : std_logic;
   signal wbs_eof                            : std_logic;
   signal wbs_error                          : std_logic;
@@ -399,7 +417,7 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   --signal vcxo_i2c_scl_in                     : std_logic;
   signal vcxo_i2c_scl_out                   : std_logic;
-  signal vcxo_i2c_scl_oe_n                   : std_logic;
+  signal vcxo_i2c_scl_oe_n                  : std_logic;
   signal vcxo_i2c_sda_in                    : std_logic;
   signal vcxo_i2c_sda_out                   : std_logic;
   signal vcxo_i2c_sda_oe_n                  : std_logic;
@@ -972,10 +990,6 @@ begin
   );
 
   -- Clock and reset assignments
-  -- WARNING: Hardcoded clock for now! Only clock chain 0 is used!
-  --fs_clk                                    <= adc_out(0).adc_clk;
-  --fs_clk2x                                  <= adc_out(0).adc_clk2x;
-
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
 
@@ -1323,21 +1337,35 @@ begin
         -- Decoded & buffered logic
         -- 16-bit interface
         adr16_i                                 => wbs_adr,
-        dat16_i                                 => adc_out(i).adc_data,
+        dat16_i                                 => wbs_dat(i),
         sel16_i                                 => wbs_sel,
 
-        dvalid_i                                => adc_out(i).adc_data_valid,
+        dvalid_i                                => wbs_valid(i),
         sof_i                                   => '1',
         eof_i                                   => '0',
         error_i                                 => wbs_error,
         dreq_o                                  => open
       );
 
+      -- Generate test data
+      p_gen_test_data : process(fs_clk(i), fs_rst_sync_n(i))
+      begin
+        if fs_rst_sync_n(i) = '0' then
+          wbs_test_data(i) <= (others => '0');
+        elsif rising_edge(fs_clk(i)) then
+          wbs_test_data(i) <= wbs_test_data(i) + 1;
+        end if;
+      end process;
+
+      wbs_dat(i) <= adc_out(i).adc_data when regs_out.fmc_ctl_test_data_en_o = '0'
+                      else std_logic_vector(wbs_test_data(i));
+      wbs_valid(i) <= adc_out(i).adc_data_valid when regs_out.fmc_ctl_test_data_en_o = '0'
+                        else '1';
     end generate;
   end generate;
 
   -- Write always to addr c_WBS_DATA (meaning we are transmiting data)
-  wbs_adr                                   <= std_logic_vector(resize(c_WBS_STATUS, wbs_adr'length));
+  wbs_adr                                   <= std_logic_vector(resize(c_WBS_DATA, wbs_adr'length));
   wbs_error                                 <= '0';
   wbs_sel                                   <= (others => '1');
 

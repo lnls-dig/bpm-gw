@@ -70,6 +70,7 @@ peripheral {
       description = "Write the address counter value instead of ADC data to Wishbone Streaming Interface";
       prefix = "test_data_en";
       type = BIT;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
