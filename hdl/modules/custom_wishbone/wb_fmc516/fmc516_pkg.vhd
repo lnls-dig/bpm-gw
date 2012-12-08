@@ -51,11 +51,37 @@ package fmc516_pkg is
   type t_adc_dly is record
     adc_clk_dly_pulse : std_logic;
     adc_clk_dly_val : std_logic_vector(4 downto 0);
+    adc_clk_dly_incdec : std_logic;
     adc_data_dly_pulse : std_logic;
     adc_data_dly_val : std_logic_vector(4 downto 0);
+    adc_data_dly_incdec : std_logic;
   end record;
 
   type t_adc_dly_array is array (natural range <>) of t_adc_dly;
+
+  -- Internal structure for generate statements
+
+  -- ADC Data/Clock delay registers for generate statements
+  type t_adc_dly_reg is record
+    -- registers to signals coming from wishbone register interface
+    -- ext_load mode
+    clk_dly_reg : std_logic_vector(4 downto 0);
+    data_dly_reg : std_logic_vector(4 downto 0);
+    clk_dly_incdec : std_logic;
+    data_dly_incdec : std_logic;
+
+    -- signals from wishbone register interface
+    clk_dly : std_logic_vector(4 downto 0);
+    clk_dly_inc : std_logic;
+    clk_dly_dec : std_logic;
+    data_dly : std_logic_vector(4 downto 0);
+    data_dly_inc : std_logic;
+    data_dly_dec : std_logic;
+    clk_load : std_logic;
+    data_load : std_logic;
+  end record;
+
+  type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly_reg;
 
   type t_adc_out is record
     adc_clk : std_logic;

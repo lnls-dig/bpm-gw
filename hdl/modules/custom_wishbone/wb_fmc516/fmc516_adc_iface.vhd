@@ -46,6 +46,7 @@ generic
 (
 	-- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
+  g_delay_type                              : string := "VARIABLE";
   g_adc_clk_period_values                   : t_clk_values_array;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_clk_default_dly                         : t_default_adc_dly := default_clk_dly;
@@ -132,6 +133,7 @@ architecture rtl of fmc516_adc_iface is
   generic(
 	-- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           : string := "VIRTEX6";
+    g_delay_type                            : string := "VARIABLE";
     g_adc_clock_period                      : real;
     g_default_adc_clk_delay                 : natural := 0;
     g_sim                                   : integer := 0
@@ -150,10 +152,16 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
     -- ADC Delay signals.
     -----------------------------
-    -- Pulse this to update the delay value
-    adc_clk_dly_pulse_i                     : in std_logic;
+    -- idelay var_loadable interface
     adc_clk_dly_val_i                       : in std_logic_vector(4 downto 0);
     adc_clk_dly_val_o                       : out std_logic_vector(4 downto 0);
+
+  -- idelay variable interface
+    adc_clk_dly_incdec_i                    : in std_logic;
+
+    -- Pulse this to update the delay value or reset to its default (depending
+    -- if idelay is in variable or var_loadable mode)
+    adc_clk_dly_pulse_i                     : in std_logic;
 
     -----------------------------
     -- ADC output signals.
@@ -172,6 +180,7 @@ architecture rtl of fmc516_adc_iface is
 
   component fmc516_adc_data
   generic(
+    g_delay_type                            : string := "VARIABLE";
     g_default_adc_data_delay                : natural := 0;
     g_sim                                   : integer := 0
   );
@@ -197,10 +206,16 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
     -- ADC Data Delay signals.
     -----------------------------
-    -- Pulse this to update the delay value
-    adc_data_dly_pulse_i                    : in std_logic;
+    -- idelay var_loadable interface
     adc_data_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_data_dly_val_o                      : out std_logic_vector(4 downto 0);
+
+  -- idelay variable interface
+    adc_data_dly_incdec_i                   : in std_logic;
+
+    -- Pulse this to update the delay value or reset to its default (depending
+    -- if idelay is in variable or var_loadable mode)
+    adc_data_dly_pulse_i                    : in std_logic;
 
     -----------------------------
     -- ADC output signals.
@@ -252,6 +267,7 @@ begin
         adc_clk_dly_pulse_i                 => adc_dly_i(i).adc_clk_dly_pulse,
         adc_clk_dly_val_i                   => adc_dly_i(i).adc_clk_dly_val,
         adc_clk_dly_val_o                   => adc_dly_o(i).adc_clk_dly_val,
+        adc_clk_dly_incdec_i                => adc_dly_i(i).adc_clk_dly_incdec,
 
         -----------------------------
         -- ADC output signals.
@@ -323,6 +339,7 @@ begin
           adc_data_dly_pulse_i								=> adc_dly_i(i).adc_data_dly_pulse,
           adc_data_dly_val_i  								=> adc_dly_i(i).adc_data_dly_val,
           adc_data_dly_val_o  								=> adc_dly_o(i).adc_data_dly_val,
+          adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
 
           -----------------------------
           -- ADC output signals.

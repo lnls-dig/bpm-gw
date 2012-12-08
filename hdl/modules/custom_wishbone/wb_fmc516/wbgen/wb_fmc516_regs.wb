@@ -376,7 +376,7 @@ peripheral {
       description = "write 1: increment clock chains delay.\
                       write 0: no effect";
 
-      prefix = "inc_chain_dly";
+      prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       align = 8;
@@ -390,7 +390,7 @@ peripheral {
       description = "write 1: decrement clock chains delay.\
                       write 0: no effect";
 
-      prefix = "dec_chain_dly";
+      prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       access_bus = READ_WRITE;
@@ -400,9 +400,46 @@ peripheral {
     field {
       name = "Reserved";
       description = "Ignore on write, read as 0's";
-      prefix = "reserved";
+      prefix = "reserved_clk_incdec_dly";
       type = SLV;
-      size = 14;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -491,7 +528,7 @@ peripheral {
       description = "write 1: increment clock chains delay.\
                       write 0: no effect";
 
-      prefix = "inc_chain_dly";
+      prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       align = 8;
@@ -505,7 +542,7 @@ peripheral {
       description = "write 1: decrement clock chains delay.\
                       write 0: no effect";
 
-      prefix = "dec_chain_dly";
+      prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       access_bus = READ_WRITE;
@@ -515,9 +552,46 @@ peripheral {
     field {
       name = "Reserved";
       description = "Ignore on write, read as 0's";
-      prefix = "reserved";
+      prefix = "reserved_clk_incdec_dly";
       type = SLV;
-      size = 14;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -606,7 +680,7 @@ peripheral {
       description = "write 1: increment clock chains delay.\
                       write 0: no effect";
 
-      prefix = "inc_chain_dly";
+      prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       align = 8;
@@ -620,7 +694,7 @@ peripheral {
       description = "write 1: decrement clock chains delay.\
                       write 0: no effect";
 
-      prefix = "dec_chain_dly";
+      prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       access_bus = READ_WRITE;
@@ -630,9 +704,46 @@ peripheral {
     field {
       name = "Reserved";
       description = "Ignore on write, read as 0's";
-      prefix = "reserved";
+      prefix = "reserved_clk_incdec_dly";
       type = SLV;
-      size = 14;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -721,7 +832,7 @@ peripheral {
       description = "write 1: increment clock chains delay.\
                       write 0: no effect";
 
-      prefix = "inc_chain_dly";
+      prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       align = 8;
@@ -735,7 +846,7 @@ peripheral {
       description = "write 1: decrement clock chains delay.\
                       write 0: no effect";
 
-      prefix = "dec_chain_dly";
+      prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
       access_bus = READ_WRITE;
@@ -745,9 +856,46 @@ peripheral {
     field {
       name = "Reserved";
       description = "Ignore on write, read as 0's";
-      prefix = "reserved";
+      prefix = "reserved_clk_incdec_dly";
       type = SLV;
-      size = 14;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };

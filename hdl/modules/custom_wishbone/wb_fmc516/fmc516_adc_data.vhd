@@ -30,6 +30,7 @@ use work.fmc516_pkg.all;
 entity fmc516_adc_data is
 generic
 (
+  g_delay_type                              : string := "VARIABLE";
   g_default_adc_data_delay                  : natural := 0;
   g_sim                                     : integer := 0
 );
@@ -57,10 +58,16 @@ port
   -----------------------------
   -- ADC Data Delay signals
   -----------------------------
-  -- Pulse this to update the delay value
-  adc_data_dly_pulse_i                      : in std_logic;
+  -- idelay var_loadable interface
   adc_data_dly_val_i                        : in std_logic_vector(4 downto 0);
   adc_data_dly_val_o                        : out std_logic_vector(4 downto 0);
+
+  -- idelay variable interface
+  adc_data_dly_incdec_i                     : in std_logic;
+
+  -- Pulse this to update the delay value or reset to its default (depending
+  -- if idelay is in variable or var_loadable mode)
+  adc_data_dly_pulse_i                      : in std_logic;
 
   -----------------------------
   -- ADC output signals
@@ -128,8 +135,7 @@ begin
   gen_adc_data : for i in 0 to (c_num_adc_bits/2)-1 generate
     cmp_adc_data_iodelay : iodelaye1
     generic map(
-      --IDELAY_TYPE                           => "VAR_LOADABLE",
-      IDELAY_TYPE                           => "VARIABLE",
+      IDELAY_TYPE                           => g_delay_type,
       IDELAY_VALUE                          => g_default_adc_data_delay,
       SIGNAL_PATTERN                        => "DATA",
       HIGH_PERFORMANCE_MODE                 => TRUE,
@@ -140,8 +146,8 @@ begin
       idatain     	                        => adc_data_i(i),
       dataout     	                        => adc_data_ddr_dly(i),
       c           	                        => sys_clk_i,
-      ce          	                        => '0',
-      inc         	                        => '0',
+      ce          	                        => adc_data_dly_pulse_i,
+      inc         	                        => adc_data_dly_incdec_i,
       datain      	                        => '0',
       odatain     	                        => '0',
       clkin       	                        => '0',

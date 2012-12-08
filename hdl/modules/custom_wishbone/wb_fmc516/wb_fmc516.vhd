@@ -317,23 +317,10 @@ architecture rtl of wb_fmc516 is
   -- ADC output signals.
   signal adc_out                            : t_adc_out_array(c_num_adc_channels-1 downto 0);
 
-  -- ADC Data/Clock delay registers for generate statements
-  type t_adc_dly is record
-    -- registers to signals coming from wishbone register interface
-    -- ext_load mode
-    clk_dly_reg : std_logic_vector(4 downto 0);
-    data_dly_reg : std_logic_vector(4 downto 0);
-    -- signals from wishbone register interface
-    clk_dly : std_logic_vector(4 downto 0);
-    data_dly : std_logic_vector(4 downto 0);
-    clk_load : std_logic;
-    data_load : std_logic;
-  end record;
-
-  type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly;
-
-  -- Channel ADC Clock/Data delay
+  -- Channel ADC Clock/Data internal structure
   signal adc_dly_reg                        : t_adc_dly_reg_array(c_num_adc_channels-1 downto 0);
+  signal adc_dly_reg_pulse_clk_int          : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal adc_dly_reg_pulse_data_int         : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   -- Signals for adc internal use
   --signal adc_clk_int                        : std_logic_vector(c_num_adc_bits-1 downto 0);
@@ -491,6 +478,7 @@ architecture rtl of wb_fmc516 is
   (
     -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           : string := "VIRTEX6";
+    g_delay_type                            : string := "VARIABLE";
     g_adc_clk_period_values                 : t_clk_values_array;
     g_use_clk_chains                        : t_clk_use_chain := default_clk_use_chain;
     g_clk_default_dly                       : t_default_adc_dly := default_clk_dly;
@@ -765,18 +753,34 @@ begin
   adc_dly_reg(0).data_load <= regs_out.ch0_ctl_data_chain_dly_load_o;
   adc_dly_reg(0).clk_dly <= regs_out.ch0_ctl_clk_chain_dly_o;
   adc_dly_reg(0).data_dly <= regs_out.ch0_ctl_data_chain_dly_o;
+  adc_dly_reg(0).clk_dly_inc <= regs_out.ch0_ctl_inc_clk_chain_dly_o;
+  adc_dly_reg(0).data_dly_inc <= regs_out.ch0_ctl_inc_data_chain_dly_o;
+  adc_dly_reg(0).clk_dly_dec <= regs_out.ch0_ctl_dec_clk_chain_dly_o;
+  adc_dly_reg(0).data_dly_dec <= regs_out.ch0_ctl_dec_data_chain_dly_o;
   adc_dly_reg(1).clk_load <= regs_out.ch1_ctl_clk_chain_dly_load_o;
   adc_dly_reg(1).data_load <= regs_out.ch1_ctl_data_chain_dly_load_o;
   adc_dly_reg(1).clk_dly <= regs_out.ch1_ctl_clk_chain_dly_o;
   adc_dly_reg(1).data_dly <= regs_out.ch1_ctl_data_chain_dly_o;
+  adc_dly_reg(1).clk_dly_inc <= regs_out.ch1_ctl_inc_clk_chain_dly_o;
+  adc_dly_reg(1).data_dly_inc <= regs_out.ch1_ctl_inc_data_chain_dly_o;
+  adc_dly_reg(1).clk_dly_dec <= regs_out.ch1_ctl_dec_clk_chain_dly_o;
+  adc_dly_reg(1).data_dly_dec <= regs_out.ch1_ctl_dec_data_chain_dly_o;
   adc_dly_reg(2).clk_load <= regs_out.ch2_ctl_clk_chain_dly_load_o;
   adc_dly_reg(2).data_load <= regs_out.ch2_ctl_data_chain_dly_load_o;
   adc_dly_reg(2).clk_dly <= regs_out.ch2_ctl_clk_chain_dly_o;
   adc_dly_reg(2).data_dly <= regs_out.ch2_ctl_data_chain_dly_o;
+  adc_dly_reg(2).clk_dly_inc <= regs_out.ch2_ctl_inc_clk_chain_dly_o;
+  adc_dly_reg(2).data_dly_inc <= regs_out.ch2_ctl_inc_data_chain_dly_o;
+  adc_dly_reg(2).clk_dly_dec <= regs_out.ch2_ctl_dec_clk_chain_dly_o;
+  adc_dly_reg(2).data_dly_dec <= regs_out.ch2_ctl_dec_data_chain_dly_o;
   adc_dly_reg(3).clk_load <= regs_out.ch3_ctl_clk_chain_dly_load_o;
   adc_dly_reg(3).data_load <= regs_out.ch3_ctl_data_chain_dly_load_o;
   adc_dly_reg(3).clk_dly <= regs_out.ch3_ctl_clk_chain_dly_o;
   adc_dly_reg(3).data_dly <= regs_out.ch3_ctl_data_chain_dly_o;
+  adc_dly_reg(3).clk_dly_inc <= regs_out.ch3_ctl_inc_clk_chain_dly_o;
+  adc_dly_reg(3).data_dly_inc <= regs_out.ch3_ctl_inc_data_chain_dly_o;
+  adc_dly_reg(3).clk_dly_dec <= regs_out.ch3_ctl_dec_clk_chain_dly_o;
+  adc_dly_reg(3).data_dly_dec <= regs_out.ch3_ctl_dec_data_chain_dly_o;
 
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
@@ -795,13 +799,10 @@ begin
   -- ADC in signal mangling
   adc_in(0).adc_clk                         <= adc_clk0;
   adc_in(0).adc_data                        <= adc_data_ch0;
-
   adc_in(1).adc_clk                         <= adc_clk1;
   adc_in(1).adc_data                        <= adc_data_ch1;
-
   adc_in(2).adc_clk                         <= adc_clk2;
   adc_in(2).adc_data                        <= adc_data_ch2;
-
   adc_in(3).adc_clk                         <= adc_clk3;
   adc_in(3).adc_data                        <= adc_data_ch3;
 
@@ -811,10 +812,12 @@ begin
 
   -- ADC dly signal mangling
   gen_adc_dly_in : for i in 0 to c_num_adc_channels-1 generate
-    adc_dly_in(i).adc_clk_dly_pulse <= regs_out.adc_ctl_update_dly_o;
+    adc_dly_in(i).adc_clk_dly_pulse <= regs_out.adc_ctl_update_dly_o or adc_dly_reg_pulse_clk_int(i);
     adc_dly_in(i).adc_clk_dly_val <= adc_dly_reg(i).clk_dly_reg;
-    adc_dly_in(i).adc_data_dly_pulse <= regs_out.adc_ctl_update_dly_o;
+    adc_dly_in(i).adc_clk_dly_incdec <= adc_dly_reg(i).clk_dly_incdec;
+    adc_dly_in(i).adc_data_dly_pulse <= regs_out.adc_ctl_update_dly_o or adc_dly_reg_pulse_data_int(i);
     adc_dly_in(i).adc_data_dly_val <= adc_dly_reg(i).data_dly_reg;
+    adc_dly_in(i).adc_data_dly_incdec <= adc_dly_reg(i).data_dly_incdec;
 
     -- pulse is not used for dly_out. These will be optimized out
     --adc_dly_out(i).adc_clk_dly_pulse <= '0';
@@ -827,8 +830,9 @@ begin
   -- Clock/Data Chain delays
 
   -- Capture delay signals (clock + data chains) coming from the Wishbone
-  -- Register Interface
-  gen_adc_dly : for i in 0 to c_num_adc_channels-1 generate
+  -- Register Interface.
+  -- Idelay "var_loadable" interface
+  gen_adc_dly_var_loadable : for i in 0 to c_num_adc_channels-1 generate
     p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
     begin
       if sys_rst_sync_n = '0' then
@@ -844,6 +848,48 @@ begin
         if adc_dly_reg(i).data_load = '1' then
           adc_dly_reg(i).data_dly_reg <= adc_dly_reg(i).data_dly;
         end if;
+      end if;
+    end process;
+  end generate;
+
+  -- Idelay "variable" interface
+  gen_adc_dly_variable : for i in 0 to c_num_adc_channels-1 generate
+    p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
+    begin
+      if sys_rst_sync_n = '0' then
+        adc_dly_reg_pulse_clk_int(i) <= '0';
+        adc_dly_reg_pulse_data_int(i) <= '0';
+        adc_dly_reg(i).clk_dly_incdec <= '0';
+        adc_dly_reg(i).data_dly_incdec <= '0';
+      elsif rising_edge(sys_clk_i) then
+        -- Increment/Decrement clk delays
+        if adc_dly_reg(i).clk_dly_inc = '1' then
+          adc_dly_reg(i).clk_dly_incdec <= '1';
+        elsif adc_dly_reg(i).clk_dly_dec = '1' then
+          adc_dly_reg(i).clk_dly_incdec <= '0';
+        end if;
+
+        -- Increment/Decrement data delays
+        if adc_dly_reg(i).data_dly_inc = '1' then
+          adc_dly_reg(i).data_dly_incdec <= '1';
+        elsif adc_dly_reg(i).data_dly_dec = '1' then
+          adc_dly_reg(i).data_dly_incdec <= '0';
+        end if;
+
+        -- Enable delay inc or dec for clk delay
+        if adc_dly_reg(i).clk_dly_inc = '1' or adc_dly_reg(i).clk_dly_dec = '1'  then
+          adc_dly_reg_pulse_clk_int(i) <= '1';
+        else
+          adc_dly_reg_pulse_clk_int(i) <= '0';
+        end if;
+
+        -- Enable delay inc or dec for data delay
+        if adc_dly_reg(i).data_dly_inc = '1' or adc_dly_reg(i).data_dly_dec = '1' then
+          adc_dly_reg_pulse_data_int(i) <= '1';
+        else
+          adc_dly_reg_pulse_data_int(i) <= '0';
+        end if;
+
       end if;
     end process;
   end generate;
@@ -887,8 +933,6 @@ begin
     adc_data_ch3_o                          => adc_data_ch3
   );
 
-  -- The ADC Interface generates its own reset signals. Just pass a regular
-  -- reset to it + a synchronized one for other logic (data capture for example)
   cmp_fmc516_adc_iface : fmc516_adc_iface
   generic map(
   	-- The only supported values are VIRTEX6 and 7SERIES
@@ -995,16 +1039,6 @@ begin
 
     fmc_reset_adcs_n_o                        <= not fmc_reset_adcs_int;
   end generate;
-
-  -- Missing ADC inc/dec delay register!!!!
-  --regs_out.ch0_ctl_inc_chain_dly_o
-  --regs_out.ch0_ctl_dec_chain_dly_o
-  --regs_out.ch1_ctl_inc_chain_dly_o
-  --regs_out.ch1_ctl_dec_chain_dly_o
-  --regs_out.ch2_ctl_inc_chain_dly_o
-  --regs_out.ch2_ctl_dec_chain_dly_o
-  --regs_out.ch3_ctl_inc_chain_dly_o
-  --regs_out.ch3_ctl_dec_chain_dly_o
 
   -----------------------------
   -- System I2C Bus
