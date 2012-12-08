@@ -28,7 +28,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="147" />
+   <WVObjectSize size="149" />
    <wvobject fp_name="divider142" type="divider">
       <obj_property name="label">wb_fmc516_tb</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -47,6 +47,18 @@
       <obj_property name="ElementShortName">clk_sys</obj_property>
       <obj_property name="ObjectShortName">clk_sys</obj_property>
    </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/sys_spi_data_reg" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_spi_data_reg</obj_property>
+      <obj_property name="ObjectShortName">sys_spi_data_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/sys_spi_data_en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_spi_data_en</obj_property>
+      <obj_property name="ObjectShortName">sys_spi_data_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/sys_spi_data" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_spi_data</obj_property>
+      <obj_property name="ObjectShortName">sys_spi_data</obj_property>
+   </wvobject>
    <wvobject fp_name="divider114" type="divider">
       <obj_property name="label">wb_fmc516</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -57,13 +69,13 @@
       <obj_property name="ElementShortName">fs_rst_n</obj_property>
       <obj_property name="ObjectShortName">fs_rst_n</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_rst_sync_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">fs_rst_sync_n</obj_property>
-      <obj_property name="ObjectShortName">fs_rst_sync_n</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_rst_sync_n" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">fs_rst_sync_n[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fs_rst_sync_n[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">fs_clk</obj_property>
-      <obj_property name="ObjectShortName">fs_clk</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_clk" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">fs_clk[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fs_clk[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/sys_clk_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">sys_clk_i</obj_property>
@@ -133,49 +145,45 @@
       <obj_property name="ObjectShortName">wb_stall_o</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_adr_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_adr_o[3:0]</obj_property>
-      <obj_property name="ObjectShortName">wbs_adr_o[3:0]</obj_property>
+      <obj_property name="ElementShortName">wbs_adr_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_adr_o[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_dat_o" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">wbs_dat_o[63:0]</obj_property>
       <obj_property name="ObjectShortName">wbs_dat_o[63:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_cyc_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_cyc_o</obj_property>
-      <obj_property name="ObjectShortName">wbs_cyc_o</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_cyc_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_cyc_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_cyc_o[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stb_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_stb_o</obj_property>
-      <obj_property name="ObjectShortName">wbs_stb_o</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stb_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_stb_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_stb_o[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_we_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_we_o</obj_property>
-      <obj_property name="ObjectShortName">wbs_we_o</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_we_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_we_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_we_o[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_sel_o" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">wbs_sel_o[7:0]</obj_property>
       <obj_property name="ObjectShortName">wbs_sel_o[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_ack_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_ack_i</obj_property>
-      <obj_property name="ObjectShortName">wbs_ack_i</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_ack_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_ack_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_ack_i[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stall_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_stall_i</obj_property>
-      <obj_property name="ObjectShortName">wbs_stall_i</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stall_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_stall_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_stall_i[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_err_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_err_i</obj_property>
-      <obj_property name="ObjectShortName">wbs_err_i</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_err_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_err_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_err_i[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_rty_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_rty_i</obj_property>
-      <obj_property name="ObjectShortName">wbs_rty_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_dvalid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_dvalid</obj_property>
-      <obj_property name="ObjectShortName">wbs_dvalid</obj_property>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_rty_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_rty_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_rty_i[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_sof" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">wbs_sof</obj_property>
@@ -184,11 +192,6 @@
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_eof" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">wbs_eof</obj_property>
       <obj_property name="ObjectShortName">wbs_eof</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_packet_counter" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wbs_packet_counter[4:0]</obj_property>
-      <obj_property name="ObjectShortName">wbs_packet_counter[4:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_error" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">wbs_error</obj_property>
@@ -448,6 +451,11 @@
    <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/dir" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">dir</obj_property>
       <obj_property name="ObjectShortName">dir</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/rx" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rx[127:0]</obj_property>
+      <obj_property name="ObjectShortName">rx[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="divider102" type="divider">
       <obj_property name="label">fmc_spi_sl_adapter</obj_property>

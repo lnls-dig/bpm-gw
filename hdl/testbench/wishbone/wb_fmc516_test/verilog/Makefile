@@ -96,6 +96,7 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/coregen/cdc_fifo.vhd \
+../../../../modules/custom_wishbone/wb_fmc516/coregen/adc_data_cdc_fifo.vhd \
 ../../../../modules/custom_common/reset_synch/reset_synch.vhd \
 ../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd \
 ../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd \
@@ -216,6 +217,7 @@ work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
 work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
 work/dac3283_init_mem/.dac3283_init_mem_vhd \
 work/cdc_fifo/.cdc_fifo_vhd \
+work/adc_data_cdc_fifo/.adc_data_cdc_fifo_vhd \
 work/reset_synch/.reset_synch_vhd \
 work/rf_ch_swap/.rf_ch_swap_vhd \
 work/utilities_package/.utilities_package_vhd \
@@ -803,6 +805,14 @@ work/cdc_fifo/.cdc_fifo_vhd: ../../../../modules/custom_wishbone/wb_fmc516/coreg
 
 
 work/cdc_fifo/.cdc_fifo:
+		@mkdir -p $(dir $@) && touch $@
+
+work/adc_data_cdc_fifo/.adc_data_cdc_fifo_vhd: ../../../../modules/custom_wishbone/wb_fmc516/coregen/adc_data_cdc_fifo.vhd work/adc_data_cdc_fifo/.adc_data_cdc_fifo
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/adc_data_cdc_fifo/.adc_data_cdc_fifo:
 		@mkdir -p $(dir $@) && touch $@
 
 work/reset_synch/.reset_synch_vhd: ../../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
