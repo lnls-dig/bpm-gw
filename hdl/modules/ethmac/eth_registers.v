@@ -3,7 +3,7 @@
 ////  eth_registers.v                                             ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -178,9 +178,11 @@ module eth_registers( DataIn, Address, Rw, Cs, Clk, Reset, DataOut,
                       LinkFail, r_MAC, WCtrlDataStart, RStatStart,
                       UpdateMIIRX_DATAReg, Prsd, r_TxBDNum, int_o,
                       r_HASH0, r_HASH1, r_TxPauseTV, r_TxPauseRq, RstTxPauseRq, TxCtrlEndFrm,
-                      dbg_dat,
+		      dbg_dat, // jb
                       StartTxDone, TxClk, RxClk, SetPauseTimer
                     );
+
+parameter Tp = 1;
 
 input [31:0] DataIn;
 input [7:0] Address;
@@ -269,7 +271,8 @@ input        TxClk;
 input        RxClk;
 input        SetPauseTimer;
 
-input [31:0] dbg_dat; // debug data input
+input [31:0] dbg_dat; // debug data input - JB
+   
 
 reg          irq_txb;
 reg          irq_txe;
@@ -314,8 +317,9 @@ wire HASH0_Sel      = (Address == `ETH_HASH0_ADR       );
 wire HASH1_Sel      = (Address == `ETH_HASH1_ADR       );
 wire TXCTRL_Sel     = (Address == `ETH_TX_CTRL_ADR     );
 wire RXCTRL_Sel     = (Address == `ETH_RX_CTRL_ADR     );
-wire DBG_REG_Sel    = (Address == `ETH_DBG_ADR         );
+wire DBG_REG_Sel  = (Address == `ETH_DBG_ADR   ); // JB
 wire TX_BD_NUM_Sel  = (Address == `ETH_TX_BD_NUM_ADR   );
+
 
 
 wire [2:0] MODER_Wr;
@@ -406,7 +410,7 @@ wire [31:0] TX_BD_NUMOut;
 wire [31:0] HASH0Out;
 wire [31:0] HASH1Out;
 wire [31:0] TXCTRLOut;
-wire [31:0] DBGOut;
+wire [31:0] DBGOut;    // JB
 
 // MODER Register
 eth_register #(`ETH_MODER_WIDTH_0, `ETH_MODER_DEF_0)        MODER_0
@@ -876,7 +880,7 @@ begin
         `ETH_HASH0_ADR        :  DataOut=HASH0Out;
         `ETH_HASH1_ADR        :  DataOut=HASH1Out;
         `ETH_TX_CTRL_ADR      :  DataOut=TXCTRLOut;
-        `ETH_DBG_ADR          :  DataOut=dbg_dat;
+	`ETH_DBG_ADR          :  DataOut=dbg_dat; // debug data out -- JB
         default:             DataOut=32'h0;
       endcase
     end
@@ -889,7 +893,7 @@ assign r_RecSmall         = MODEROut[16];
 assign r_Pad              = MODEROut[15];
 assign r_HugEn            = MODEROut[14];
 assign r_CrcEn            = MODEROut[13];
-assign r_DlyCrcEn         = MODEROut[12];
+assign r_DlyCrcEn         = /*MODEROut[12]*/1'b0; // Synthesis bugfix JB
 // assign r_Rst           = MODEROut[11];   This signal is not used any more
 assign r_FullD            = MODEROut[10];
 assign r_ExDfrEn          = MODEROut[9];

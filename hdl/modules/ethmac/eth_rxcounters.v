@@ -3,7 +3,7 @@
 ////  eth_rxcounters.v                                            ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -39,45 +39,6 @@
 //// from http://www.opencores.org/lgpl.shtml                     ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
-//
-// CVS Revision History
-//
-// $Log: not supported by cvs2svn $
-// Revision 1.5  2002/02/15 11:13:29  mohor
-// Format of the file changed a bit.
-//
-// Revision 1.4  2002/02/14 20:19:41  billditt
-// Modified for Address Checking,
-// addition of eth_addrcheck.v
-//
-// Revision 1.3  2002/01/23 10:28:16  mohor
-// Link in the header changed.
-//
-// Revision 1.2  2001/10/19 08:43:51  mohor
-// eth_timescale.v changed to timescale.v This is done because of the
-// simulation of the few cores in a one joined project.
-//
-// Revision 1.1  2001/08/06 14:44:29  mohor
-// A define FPGA added to select between Artisan RAM (for ASIC) and Block Ram (For Virtex).
-// Include files fixed to contain no path.
-// File names and module names changed ta have a eth_ prologue in the name.
-// File eth_timescale.v is used to define timescale
-// All pin names on the top module are changed to contain _I, _O or _OE at the end.
-// Bidirectional signal MDIO is changed to three signals (Mdc_O, Mdi_I, Mdo_O
-// and Mdo_OE. The bidirectional signal must be created on the top level. This
-// is done due to the ASIC tools.
-//
-// Revision 1.1  2001/07/30 21:23:42  mohor
-// Directory structure changed. Files checked and joind together.
-//
-// Revision 1.1  2001/06/27 21:26:19  mohor
-// Initial release of the RxEthMAC module.
-//
-//
-//
-//
-//
-//
 
 `include "timescale.v"
 

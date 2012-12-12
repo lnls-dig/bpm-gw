@@ -3,7 +3,7 @@
 ////  eth_receivecontrol.v                                        ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -83,6 +83,8 @@ module eth_receivecontrol (MTxClk, MRxClk, TxReset, RxReset, RxData, RxValid, Rx
                            TxUsedDataOutDetected, Pause, ReceivedPauseFrm, AddressOK, 
                            RxStatusWriteLatched_sync2, r_PassAll, SetPauseTimer
                           );
+
+parameter Tp = 1;
 
 
 input       MTxClk;

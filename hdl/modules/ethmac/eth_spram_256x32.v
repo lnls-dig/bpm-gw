@@ -3,7 +3,7 @@
 ////  eth_spram_256x32.v                                          ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -75,36 +75,38 @@
 `include "timescale.v"
 
 module eth_spram_256x32(
-	// Generic synchronous single-port RAM interface
-	clk, rst, ce, we, oe, addr, di, dato
+			// Generic synchronous single-port RAM interface
+			clk, rst, ce, we, oe, addr, di, dato
 
 `ifdef ETH_BIST
-  ,
-  // debug chain signals
-  mbist_si_i,       // bist scan serial in
-  mbist_so_o,       // bist scan serial out
-  mbist_ctrl_i        // bist chain shift control
+			,
+			// debug chain signals
+			mbist_si_i,       // bist scan serial in
+			mbist_so_o,       // bist scan serial out
+			mbist_ctrl_i        // bist chain shift control
 `endif
 
 
 
-);
-
+			);
+   parameter we_width = 4;
+   
    //
    // Generic synchronous single-port RAM interface
    //
    input           clk;  // Clock, rising edge
    input           rst;  // Reset, active high
    input           ce;   // Chip enable input, active high
-   input  [3:0]    we;   // Write enable input, active high
-   input           oe;   // Output enable input, active high
-   input  [7:0]    addr; // address bus inputs
-   input  [31:0]   di;   // input data bus
-   output [31:0]   dato;   // output data bus
+   input [we_width-1:0] we;   // Write enable input, active high
+   input 		oe;   // Output enable input, active high
+   input [7:0] 		addr; // address bus inputs
+   input [31:0] 	di;   // input data bus
+   output [31:0] 	dato;   // output data bus
+   
 
 `ifdef ETH_BIST
-   input           mbist_si_i;       // bist scan serial in
-   output          mbist_so_o;       // bist scan serial out
+   input 	   mbist_si_i;       // bist scan serial in
+   output 	   mbist_so_o;       // bist scan serial out
    input [`ETH_MBIST_CTRL_WIDTH - 1:0] mbist_ctrl_i;       // bist chain shift control
 `endif
 
@@ -201,7 +203,7 @@ module eth_spram_256x32(
         .mbist_so_o       (mbist_so_o),
         .mbist_ctrl_i       (mbist_ctrl_i)
   `endif
-       );
+	);
 
  `else   // !ETH_VIRTUAL_SILICON_RAM
 
@@ -229,7 +231,7 @@ module eth_spram_256x32(
         .mbist_so_o       (mbist_so_o),
         .mbist_ctrl_i     (mbist_ctrl_i)
    `endif
-       );
+	);
 
   `else   // !ETH_ARTISAN_RAM
    `ifdef ETH_ALTERA_ALTSYNCRAM
@@ -245,7 +247,7 @@ module eth_spram_256x32(
 
    `else   // !ETH_ALTERA_ALTSYNCRAM
 
-
+  
    //
    // Generic single-port synchronous RAM model
    //
@@ -253,16 +255,20 @@ module eth_spram_256x32(
    //
    // Generic RAM's registers and wires
    //
-   reg  [ 7: 0] mem0 [255:0]; // RAM content
-   reg  [15: 8] mem1 [255:0]; // RAM content
-   reg  [23:16] mem2 [255:0]; // RAM content
-   reg  [31:24] mem3 [255:0]; // RAM content
-   wire [31:0]  q;            // RAM output
-   reg   [7:0]   raddr;        // RAM read address
+   reg [ 7: 0] 			       mem0 [255:0]; // RAM content
+   reg [15: 8] 			       mem1 [255:0]; // RAM content
+   reg [23:16] 			       mem2 [255:0]; // RAM content
+   reg [31:24] 			       mem3 [255:0]; // RAM content
+   wire [31:0] 			       q;            // RAM output
+   reg [7:0] 			       raddr;        // RAM read address
+
+   reg [31:0] 			       mem[255:0];
+   
    //
    // Data output drivers
    //
-   assign dato = (oe & ce) ? q : {32{1'bz}};
+   //assign do = (oe & ce) ? q : {32{1'bz}};
+   assign dato = (oe & ce) ? q : {32{1'bx}};
 
    //
    // RAM read and write
@@ -273,14 +279,16 @@ module eth_spram_256x32(
      if (ce)
        raddr <=  addr; // read address needs to be registered to read clock
 
-   assign  q = rst ? {32{1'b0}} : {mem3[raddr],
-                                   mem2[raddr],
-                                   mem1[raddr],
-                                   mem0[raddr]};
-
-    // write operation
-    always@(posedge clk)
-    begin
+   generate
+      if (we_width > 1)
+	begin
+	   
+	   assign  q = rst ? {32{1'b0}} : {mem3[raddr], mem2[raddr], mem1[raddr], 
+					     mem0[raddr]};
+	   
+	   // write operation
+	   always@(posedge clk)
+	     begin
 		if (ce && we[3])
 		  mem3[addr] <=  di[31:24];
 		if (ce && we[2])
@@ -291,15 +299,30 @@ module eth_spram_256x32(
 		  mem0[addr] <=  di[ 7: 0];
 	     end
 
+	end // if (we_width > 1)
+      else
+	begin
+	   assign  q = rst ? {32{1'b0}} : {mem[raddr]};
+
+	   // write operation
+	   always@(posedge clk)
+	     begin
+		if (ce && we[0])
+		  mem[addr] <=  di[ 31: 0];
+	     end
+	   
+	end // else: !if(we_width > 1)
+      endgenerate
+   
    // Task prints range of memory
    // *** Remember that tasks are non reentrant, don't call this task in parallel for multiple instantiations. 
    task print_ram;
       input [7:0] start;
       input [7:0] finish;
-      integer     rnum;
+      integer 	  rnum;
       begin
     	 for (rnum={24'd0,start};rnum<={24'd0,finish};rnum=rnum+1)
-           $display("Addr %h = %0h %0h %0h %0h",rnum,mem3[rnum],mem2[rnum],mem1[rnum],mem0[rnum]);
+      	   $display("Addr %h = %0h %0h %0h %0h",rnum,mem3[rnum],mem2[rnum],mem1[rnum],mem0[rnum]);
       end
    endtask
 

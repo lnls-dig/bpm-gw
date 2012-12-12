@@ -3,7 +3,7 @@
 ////  eth_txstatem.v                                              ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -95,6 +95,8 @@ module eth_txstatem  (MTxClk, Reset, ExcessiveDefer, CarrierSense, NibCnt, IPGT,
                       StateJam, StateJam_q, StateBackOff, StateDefer, StartFCS, StartJam, 
                       StartBackoff, StartDefer, DeferIndication, StartPreamble, StartData, StartIPG
                      );
+
+parameter Tp = 1;
 
 input MTxClk;
 input Reset;

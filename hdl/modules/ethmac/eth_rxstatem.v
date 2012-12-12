@@ -1,12 +1,14 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  eth_outputcontrol.v                                         ////
+////  eth_rxstatem.v                                              ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
+////      - Novan Hartadi (novan@vlsi.itb.ac.id)                  ////
+////      - Mahmud Galela (mgalela@vlsi.itb.ac.id)                ////
 ////                                                              ////
 ////  All additional information is avaliable in the Readme.txt   ////
 ////  file.                                                       ////
@@ -41,12 +43,19 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.3  2002/01/23 10:28:16  mohor
+// Revision 1.5  2002/01/23 10:28:16  mohor
 // Link in the header changed.
 //
-// Revision 1.2  2001/10/19 08:43:51  mohor
+// Revision 1.4  2001/10/19 08:43:51  mohor
 // eth_timescale.v changed to timescale.v This is done because of the
 // simulation of the few cores in a one joined project.
+//
+// Revision 1.3  2001/10/18 12:07:11  mohor
+// Status signals changed, Adress decoding changed, interrupt controller
+// added.
+//
+// Revision 1.2  2001/09/11 14:17:00  mohor
+// Few little NCSIM warnings fixed.
 //
 // Revision 1.1  2001/08/06 14:44:29  mohor
 // A define FPGA added to select between Artisan RAM (for ASIC) and Block Ram (For Virtex).
@@ -61,85 +70,126 @@
 // Revision 1.1  2001/07/30 21:23:42  mohor
 // Directory structure changed. Files checked and joind together.
 //
-// Revision 1.3  2001/06/01 22:28:56  mohor
-// This files (MIIM) are fully working. They were thoroughly tested. The testbench is not updated.
+// Revision 1.2  2001/07/03 12:55:41  mohor
+// Minor changes because of the synthesys warnings.
 //
 //
+// Revision 1.1  2001/06/27 21:26:19  mohor
+// Initial release of the RxEthMAC module.
+//
+//
+//
+//
+
 
 `include "timescale.v"
 
-module eth_outputcontrol(Clk, Reset, InProgress, ShiftedBit, BitCounter, WriteOp, NoPre, MdcEn_n, Mdo, MdoEn);
 
-input         Clk;                // Host Clock
-input         Reset;              // General Reset
-input         WriteOp;            // Write Operation Latch (When asserted, write operation is in progress)
-input         NoPre;              // No Preamble (no 32-bit preamble)
-input         InProgress;         // Operation in progress
-input         ShiftedBit;         // This bit is output of the shift register and is connected to the Mdo signal
-input   [6:0] BitCounter;         // Bit Counter
-input         MdcEn_n;            // MII Management Data Clock Enable signal is asserted for one Clk period before Mdc falls.
+module eth_rxstatem (MRxClk, Reset, MRxDV, ByteCntEq0, ByteCntGreat2, Transmitting, MRxDEq5, MRxDEqD, 
+                     IFGCounterEq24, ByteCntMaxFrame, StateData, StateIdle, StatePreamble, StateSFD, 
+                     StateDrop
+                    );
 
-output        Mdo;                // MII Management Data Output
-output        MdoEn;              // MII Management Data Output Enable
+parameter Tp = 1;
 
-wire          SerialEn;
+input         MRxClk;
+input         Reset;
+input         MRxDV;
+input         ByteCntEq0;
+input         ByteCntGreat2;
+input         MRxDEq5;
+input         Transmitting;
+input         MRxDEqD;
+input         IFGCounterEq24;
+input         ByteCntMaxFrame;
 
-reg           MdoEn_2d;
-reg           MdoEn_d;
-reg           MdoEn;
+output [1:0]  StateData;
+output        StateIdle;
+output        StateDrop;
+output        StatePreamble;
+output        StateSFD;
 
-reg           Mdo_2d;
-reg           Mdo_d;
-reg           Mdo;                // MII Management Data Output
+reg           StateData0;
+reg           StateData1;
+reg           StateIdle;
+reg           StateDrop;
+reg           StatePreamble;
+reg           StateSFD;
+
+wire          StartIdle;
+wire          StartDrop;
+wire          StartData0;
+wire          StartData1;
+wire          StartPreamble;
+wire          StartSFD;
 
 
+// Defining the next state
+assign StartIdle = ~MRxDV & (StateDrop | StatePreamble | StateSFD | (|StateData));
 
-// Generation of the Serial Enable signal (enables the serialization of the data)
-assign SerialEn =  WriteOp & InProgress & ( BitCounter>31 | ( ( BitCounter == 0 ) & NoPre ) )
-                | ~WriteOp & InProgress & (( BitCounter>31 & BitCounter<46 ) | ( ( BitCounter == 0 ) & NoPre ));
+assign StartPreamble = MRxDV & ~MRxDEq5 & (StateIdle & ~Transmitting);
 
+assign StartSFD = MRxDV & MRxDEq5 & (StateIdle & ~Transmitting | StatePreamble);
 
-// Generation of the MdoEn signal
-always @ (posedge Clk or posedge Reset)
+assign StartData0 = MRxDV & (StateSFD & MRxDEqD & IFGCounterEq24 | StateData1);
+
+assign StartData1 = MRxDV & StateData0 & (~ByteCntMaxFrame);
+
+assign StartDrop = MRxDV & (StateIdle & Transmitting | StateSFD & ~IFGCounterEq24 &  
+			    MRxDEqD |  StateData0 &  ByteCntMaxFrame);
+
+// Rx State Machine
+always @ (posedge MRxClk or posedge Reset)
 begin
   if(Reset)
     begin
-      MdoEn_2d <=  1'b0;
-      MdoEn_d <=  1'b0;
-      MdoEn <=  1'b0;
+      StateIdle     <=  1'b0;
+      StateDrop     <=  1'b1;
+      StatePreamble <=  1'b0;
+      StateSFD      <=  1'b0;
+      StateData0    <=  1'b0;
+      StateData1    <=  1'b0;
     end
   else
     begin
-      if(MdcEn_n)
-        begin
-          MdoEn_2d <=  SerialEn | InProgress & BitCounter<32;
-          MdoEn_d <=  MdoEn_2d;
-          MdoEn <=  MdoEn_d;
-        end
+      if(StartPreamble | StartSFD | StartDrop)
+        StateIdle <=  1'b0;
+      else
+      if(StartIdle)
+        StateIdle <=  1'b1;
+
+      if(StartIdle)
+        StateDrop <=  1'b0;
+      else
+      if(StartDrop)
+        StateDrop <=  1'b1;
+
+      if(StartSFD | StartIdle | StartDrop)
+        StatePreamble <=  1'b0;
+      else
+      if(StartPreamble)
+        StatePreamble <=  1'b1;
+
+      if(StartPreamble | StartIdle | StartData0 | StartDrop)
+        StateSFD <=  1'b0;
+      else
+      if(StartSFD)
+        StateSFD <=  1'b1;
+
+      if(StartIdle | StartData1 | StartDrop)
+        StateData0 <=  1'b0;
+      else
+      if(StartData0)
+        StateData0 <=  1'b1;
+
+      if(StartIdle | StartData0 | StartDrop)
+        StateData1 <=  1'b0;
+      else
+      if(StartData1)
+        StateData1 <=  1'b1;
     end
 end
 
-
-// Generation of the Mdo signal.
-always @ (posedge Clk or posedge Reset)
-begin
-  if(Reset)
-    begin
-      Mdo_2d <=  1'b0;
-      Mdo_d <=  1'b0;
-      Mdo <=  1'b0;
-    end
-  else
-    begin
-      if(MdcEn_n)
-        begin
-          Mdo_2d <=  ~SerialEn & BitCounter<32;
-          Mdo_d <=  ShiftedBit | Mdo_2d;
-          Mdo <=  Mdo_d;
-        end
-    end
-end
-
-
+assign StateData[1:0] = {StateData1, StateData0};
 
 endmodule

@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  eth_shiftreg.v                                              ////
+////  eth_clockgen.v                                              ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -41,12 +41,6 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.5  2002/08/14 18:16:59  mohor
-// LinkFail signal was not latching appropriate bit.
-//
-// Revision 1.4  2002/03/02 21:06:01  mohor
-// LinkFail signal was not latching appropriate bit.
-//
 // Revision 1.3  2002/01/23 10:28:16  mohor
 // Link in the header changed.
 //
@@ -67,85 +61,71 @@
 // Revision 1.1  2001/07/30 21:23:42  mohor
 // Directory structure changed. Files checked and joind together.
 //
-// Revision 1.3  2001/06/01 22:28:56  mohor
+// Revision 1.3  2001/06/01 22:28:55  mohor
 // This files (MIIM) are fully working. They were thoroughly tested. The testbench is not updated.
 //
 //
 
 `include "timescale.v"
 
+module eth_clockgen(Clk, Reset, Divider, MdcEn, MdcEn_n, Mdc);
 
-module eth_shiftreg(Clk, Reset, MdcEn_n, Mdi, Fiad, Rgad, CtrlData, WriteOp, ByteSelect, 
-                    LatchByte, ShiftedBit, Prsd, LinkFail);
-
+parameter Tp=1;
 
 input       Clk;              // Input clock (Host clock)
 input       Reset;            // Reset signal
-input       MdcEn_n;          // Enable signal is asserted for one Clk period before Mdc falls.
-input       Mdi;              // MII input data
-input [4:0] Fiad;             // PHY address
-input [4:0] Rgad;             // Register address (within the selected PHY)
-input [15:0]CtrlData;         // Control data (data to be written to the PHY)
-input       WriteOp;          // The current operation is a PHY register write operation
-input [3:0] ByteSelect;       // Byte select
-input [1:0] LatchByte;        // Byte select for latching (read operation)
+input [7:0] Divider;          // Divider (input clock will be divided by the Divider[7:0])
 
-output      ShiftedBit;       // Bit shifted out of the shift register
-output[15:0]Prsd;             // Read Status Data (data read from the PHY)
-output      LinkFail;         // Link Integrity Signal
+output      Mdc;              // Output clock
+output      MdcEn;            // Enable signal is asserted for one Clk period before Mdc rises.
+output      MdcEn_n;          // Enable signal is asserted for one Clk period before Mdc falls.
 
-reg   [7:0] ShiftReg;         // Shift register for shifting the data in and out
-reg   [15:0]Prsd;
-reg         LinkFail;
+reg         Mdc;
+reg   [7:0] Counter;
+
+wire        CountEq0;
+wire  [7:0] CounterPreset;
+wire  [7:0] TempDivider;
 
 
+assign TempDivider[7:0]   = (Divider[7:0]<2)? 8'h02 : Divider[7:0]; // If smaller than 2
+assign CounterPreset[7:0] = (TempDivider[7:0]>>1) - 8'b1;           // We are counting half of period
 
 
-// ShiftReg[7:0] :: Shift Register Data
-always @ (posedge Clk or posedge Reset) 
+// Counter counts half period
+always @ (posedge Clk or posedge Reset)
 begin
   if(Reset)
-    begin
-      ShiftReg[7:0] <=  8'h0;
-      Prsd[15:0] <=  16'h0;
-      LinkFail <=  1'b0;
-    end
+    Counter[7:0] <=  8'h1;
   else
     begin
-      if(MdcEn_n)
-        begin 
-          if(|ByteSelect)
-            begin
-	       /* verilator lint_off CASEINCOMPLETE */
-              case (ByteSelect[3:0])  // synopsys parallel_case full_case
-                4'h1 :    ShiftReg[7:0] <=  {2'b01, ~WriteOp, WriteOp, Fiad[4:1]};
-                4'h2 :    ShiftReg[7:0] <=  {Fiad[0], Rgad[4:0], 2'b10};
-                4'h4 :    ShiftReg[7:0] <=  CtrlData[15:8];
-                4'h8 :    ShiftReg[7:0] <=  CtrlData[7:0];
-              endcase // case (ByteSelect[3:0])
-	       /* verilator lint_on CASEINCOMPLETE */
-            end 
-          else
-            begin
-              ShiftReg[7:0] <=  {ShiftReg[6:0], Mdi};
-              if(LatchByte[0])
-                begin
-                  Prsd[7:0] <=  {ShiftReg[6:0], Mdi};
-                  if(Rgad == 5'h01)
-                    LinkFail <=  ~ShiftReg[1];  // this is bit [2], because it is not shifted yet
-                end
-              else
-                begin
-                  if(LatchByte[1])
-                    Prsd[15:8] <=  {ShiftReg[6:0], Mdi};
-                end
-            end
+      if(CountEq0)
+        begin
+          Counter[7:0] <=  CounterPreset[7:0];
         end
+      else
+        Counter[7:0] <=  Counter - 8'h1;
     end
 end
 
 
-assign ShiftedBit = ShiftReg[7];
+// Mdc is asserted every other half period
+always @ (posedge Clk or posedge Reset)
+begin
+  if(Reset)
+    Mdc <=  1'b0;
+  else
+    begin
+      if(CountEq0)
+        Mdc <=  ~Mdc;
+    end
+end
 
+
+assign CountEq0 = Counter == 8'h0;
+assign MdcEn = CountEq0 & ~Mdc;
+assign MdcEn_n = CountEq0 & Mdc;
 
 endmodule
+
+

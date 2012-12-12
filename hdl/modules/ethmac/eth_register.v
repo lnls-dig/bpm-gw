@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  timescale.v                                                 ////
+////  eth_register.v                                              ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -13,7 +13,7 @@
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-//// Copyright (C) 2001 Authors                                   ////
+//// Copyright (C) 2001, 2002 Authors                             ////
 ////                                                              ////
 //// This source file may be used and distributed without         ////
 //// restriction provided that this copyright statement is not    ////
@@ -41,10 +41,68 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.2  2001/10/19 11:36:31  mohor
-// Log file added.
+// Revision 1.5  2002/08/16 12:33:27  mohor
+// Parameter ResetValue changed to capital letters.
+//
+// Revision 1.4  2002/02/26 16:18:08  mohor
+// Reset values are passed to registers through parameters
+//
+// Revision 1.3  2002/01/23 10:28:16  mohor
+// Link in the header changed.
+//
+// Revision 1.2  2001/10/19 08:43:51  mohor
+// eth_timescale.v changed to timescale.v This is done because of the
+// simulation of the few cores in a one joined project.
+//
+// Revision 1.1  2001/08/06 14:44:29  mohor
+// A define FPGA added to select between Artisan RAM (for ASIC) and Block Ram (For Virtex).
+// Include files fixed to contain no path.
+// File names and module names changed ta have a eth_ prologue in the name.
+// File eth_timescale.v is used to define timescale
+// All pin names on the top module are changed to contain _I, _O or _OE at the end.
+// Bidirectional signal MDIO is changed to three signals (Mdc_O, Mdi_I, Mdo_O
+// and Mdo_OE. The bidirectional signal must be created on the top level. This
+// is done due to the ASIC tools.
+//
+//
+//
+//
 //
 //
 //
 
-`timescale 1ns / 1ns
+`include "timescale.v"
+
+
+module eth_register(DataIn, DataOut, Write, Clk, Reset, SyncReset);
+
+parameter WIDTH = 8; // default parameter of the register width
+parameter RESET_VALUE = 0;
+
+input [WIDTH-1:0] DataIn;
+
+input Write;
+input Clk;
+input Reset;
+input SyncReset;
+
+output [WIDTH-1:0] DataOut;
+reg    [WIDTH-1:0] DataOut;
+
+
+
+always @ (posedge Clk or posedge Reset)
+begin
+  if(Reset)
+    DataOut<= RESET_VALUE;
+  else
+  if(SyncReset)
+    DataOut<= RESET_VALUE;
+  else
+  if(Write)                         // write
+    DataOut<= DataIn;
+end
+
+
+
+endmodule   // Register

@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  eth_register.v                                              ////
+////  eth_outputcontrol.v                                         ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -13,7 +13,7 @@
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-//// Copyright (C) 2001, 2002 Authors                             ////
+//// Copyright (C) 2001 Authors                                   ////
 ////                                                              ////
 //// This source file may be used and distributed without         ////
 //// restriction provided that this copyright statement is not    ////
@@ -41,12 +41,6 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.5  2002/08/16 12:33:27  mohor
-// Parameter ResetValue changed to capital letters.
-//
-// Revision 1.4  2002/02/26 16:18:08  mohor
-// Reset values are passed to registers through parameters
-//
 // Revision 1.3  2002/01/23 10:28:16  mohor
 // Link in the header changed.
 //
@@ -64,45 +58,90 @@
 // and Mdo_OE. The bidirectional signal must be created on the top level. This
 // is done due to the ASIC tools.
 //
+// Revision 1.1  2001/07/30 21:23:42  mohor
+// Directory structure changed. Files checked and joind together.
 //
-//
-//
-//
+// Revision 1.3  2001/06/01 22:28:56  mohor
+// This files (MIIM) are fully working. They were thoroughly tested. The testbench is not updated.
 //
 //
 
 `include "timescale.v"
 
+module eth_outputcontrol(Clk, Reset, InProgress, ShiftedBit, BitCounter, WriteOp, NoPre, MdcEn_n, Mdo, MdoEn);
 
-module eth_register(DataIn, DataOut, Write, Clk, Reset, SyncReset);
+parameter Tp = 1;
 
-parameter WIDTH = 8; // default parameter of the register width
-parameter RESET_VALUE = 0;
+input         Clk;                // Host Clock
+input         Reset;              // General Reset
+input         WriteOp;            // Write Operation Latch (When asserted, write operation is in progress)
+input         NoPre;              // No Preamble (no 32-bit preamble)
+input         InProgress;         // Operation in progress
+input         ShiftedBit;         // This bit is output of the shift register and is connected to the Mdo signal
+input   [6:0] BitCounter;         // Bit Counter
+input         MdcEn_n;            // MII Management Data Clock Enable signal is asserted for one Clk period before Mdc falls.
 
-input [WIDTH-1:0] DataIn;
+output        Mdo;                // MII Management Data Output
+output        MdoEn;              // MII Management Data Output Enable
 
-input Write;
-input Clk;
-input Reset;
-input SyncReset;
+wire          SerialEn;
 
-output [WIDTH-1:0] DataOut;
-reg    [WIDTH-1:0] DataOut;
+reg           MdoEn_2d;
+reg           MdoEn_d;
+reg           MdoEn;
+
+reg           Mdo_2d;
+reg           Mdo_d;
+reg           Mdo;                // MII Management Data Output
 
 
 
+// Generation of the Serial Enable signal (enables the serialization of the data)
+assign SerialEn =  WriteOp & InProgress & ( BitCounter>31 | ( ( BitCounter == 0 ) & NoPre ) )
+                | ~WriteOp & InProgress & (( BitCounter>31 & BitCounter<46 ) | ( ( BitCounter == 0 ) & NoPre ));
+
+
+// Generation of the MdoEn signal
 always @ (posedge Clk or posedge Reset)
 begin
   if(Reset)
-    DataOut<= RESET_VALUE;
+    begin
+      MdoEn_2d <=  1'b0;
+      MdoEn_d <=  1'b0;
+      MdoEn <=  1'b0;
+    end
   else
-  if(SyncReset)
-    DataOut<= RESET_VALUE;
+    begin
+      if(MdcEn_n)
+        begin
+          MdoEn_2d <=  SerialEn | InProgress & BitCounter<32;
+          MdoEn_d <=  MdoEn_2d;
+          MdoEn <=  MdoEn_d;
+        end
+    end
+end
+
+
+// Generation of the Mdo signal.
+always @ (posedge Clk or posedge Reset)
+begin
+  if(Reset)
+    begin
+      Mdo_2d <=  1'b0;
+      Mdo_d <=  1'b0;
+      Mdo <=  1'b0;
+    end
   else
-  if(Write)                         // write
-    DataOut<= DataIn;
+    begin
+      if(MdcEn_n)
+        begin
+          Mdo_2d <=  ~SerialEn & BitCounter<32;
+          Mdo_d <=  ShiftedBit | Mdo_2d;
+          Mdo <=  Mdo_d;
+        end
+    end
 end
 
 
 
-endmodule   // Register
+endmodule

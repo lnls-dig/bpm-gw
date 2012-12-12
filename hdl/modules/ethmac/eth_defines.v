@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  ethmac_defines.v                                            ////
+////  eth_defines.v                                               ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/projects/ethmac/                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -37,9 +37,6 @@
 //// from http://www.opencores.org/lgpl.shtml                     ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
-//
-// Renamed from eth_defines.v to ethmac_defines.v to fit better into
-// OpenCores defined project structure 2011-08-04 olof@opencores.org
 //
 // CVS Revision History
 //
@@ -222,7 +219,7 @@
 `define ETH_HASH1_ADR         8'h13   // 0x4C
 `define ETH_TX_CTRL_ADR       8'h14   // 0x50
 `define ETH_RX_CTRL_ADR       8'h15   // 0x54
-`define ETH_DBG_ADR           8'h16   // 0x58
+
 
 `define ETH_MODER_DEF_0         8'h00
 `define ETH_MODER_DEF_1         8'hA0
@@ -329,4 +326,20 @@
 // Burst length
 `define ETH_BURST_LENGTH       4    // Change also ETH_BURST_CNT_WIDTH
 `define ETH_BURST_CNT_WIDTH    3    // The counter must be width enough to count to ETH_BURST_LENGTH
+
+// WISHBONE interface is Revision B3 compliant (uncomment when needed)
+//`define ETH_WISHBONE_B3
+
+
+// Following defines are needed when eth_cop.v is used. Otherwise they may be deleted.
+`define ETH_BASE              32'hd0000000
+`define ETH_WIDTH             32'h800
+`define MEMORY_BASE           32'h2000
+`define MEMORY_WIDTH          32'h10000
+
+`define M1_ADDRESSED_S1 ( (m1_wb_adr_i >= `ETH_BASE)    & (m1_wb_adr_i < (`ETH_BASE    + `ETH_WIDTH   )) )
+`define M1_ADDRESSED_S2 ( (m1_wb_adr_i >= `MEMORY_BASE) & (m1_wb_adr_i < (`MEMORY_BASE + `MEMORY_WIDTH)) )
+`define M2_ADDRESSED_S1 ( (m2_wb_adr_i >= `ETH_BASE)    & (m2_wb_adr_i < (`ETH_BASE    + `ETH_WIDTH   )) )
+`define M2_ADDRESSED_S2 ( (m2_wb_adr_i >= `MEMORY_BASE) & (m2_wb_adr_i < (`MEMORY_BASE + `MEMORY_WIDTH)) )
+// Previous defines are only needed for eth_cop.v
 

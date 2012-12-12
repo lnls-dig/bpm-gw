@@ -3,7 +3,7 @@
 ////  eth_random.v                                                ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -81,6 +81,8 @@
 
 module eth_random (MTxClk, Reset, StateJam, StateJam_q, RetryCnt, NibCnt, ByteCnt, 
                    RandomEq0, RandomEqByteCnt);
+
+parameter Tp = 1;
 
 input MTxClk;
 input Reset;

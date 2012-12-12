@@ -3,7 +3,7 @@
 ////  eth_txcounters.v                                            ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -91,6 +91,8 @@ module eth_txcounters (StatePreamble, StateIPG, StateData, StatePAD, StateFCS, S
                        ExDfrEn, PacketFinished_q, DlyCrcEn, StateSFD, ByteCnt, NibCnt, 
                        ExcessiveDefer, NibCntEq7, NibCntEq15, MaxFrame, NibbleMinFl, DlyCrcCnt
                       );
+
+parameter Tp = 1;
 
 input MTxClk;             // Tx clock
 input Reset;              // Reset

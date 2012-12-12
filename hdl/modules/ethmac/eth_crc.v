@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  eth_rxstatem.v                                              ////
+////  eth_crc.v                                                   ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -43,19 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.5  2002/01/23 10:28:16  mohor
-// Link in the header changed.
-//
-// Revision 1.4  2001/10/19 08:43:51  mohor
+// Revision 1.2  2001/10/19 08:43:51  mohor
 // eth_timescale.v changed to timescale.v This is done because of the
 // simulation of the few cores in a one joined project.
-//
-// Revision 1.3  2001/10/18 12:07:11  mohor
-// Status signals changed, Adress decoding changed, interrupt controller
-// added.
-//
-// Revision 1.2  2001/09/11 14:17:00  mohor
-// Few little NCSIM warnings fixed.
 //
 // Revision 1.1  2001/08/06 14:44:29  mohor
 // A define FPGA added to select between Artisan RAM (for ASIC) and Block Ram (For Virtex).
@@ -70,13 +60,15 @@
 // Revision 1.1  2001/07/30 21:23:42  mohor
 // Directory structure changed. Files checked and joind together.
 //
-// Revision 1.2  2001/07/03 12:55:41  mohor
-// Minor changes because of the synthesys warnings.
+// Revision 1.3  2001/06/19 18:16:40  mohor
+// TxClk changed to MTxClk (as discribed in the documentation).
+// Crc changed so only one file can be used instead of two.
 //
+// Revision 1.2  2001/06/19 10:38:07  mohor
+// Minor changes in header.
 //
-// Revision 1.1  2001/06/27 21:26:19  mohor
-// Initial release of the RxEthMAC module.
-//
+// Revision 1.1  2001/06/19 10:27:57  mohor
+// TxEthMAC initial release.
 //
 //
 //
@@ -84,110 +76,70 @@
 
 `include "timescale.v"
 
-
-module eth_rxstatem (MRxClk, Reset, MRxDV, ByteCntEq0, ByteCntGreat2, Transmitting, MRxDEq5, MRxDEqD, 
-                     IFGCounterEq24, ByteCntMaxFrame, StateData, StateIdle, StatePreamble, StateSFD, 
-                     StateDrop
-                    );
-
-input         MRxClk;
-input         Reset;
-input         MRxDV;
-input         ByteCntEq0;
-input         ByteCntGreat2;
-input         MRxDEq5;
-input         Transmitting;
-input         MRxDEqD;
-input         IFGCounterEq24;
-input         ByteCntMaxFrame;
-
-output [1:0]  StateData;
-output        StateIdle;
-output        StateDrop;
-output        StatePreamble;
-output        StateSFD;
-
-reg           StateData0;
-reg           StateData1;
-reg           StateIdle;
-reg           StateDrop;
-reg           StatePreamble;
-reg           StateSFD;
-
-wire          StartIdle;
-wire          StartDrop;
-wire          StartData0;
-wire          StartData1;
-wire          StartPreamble;
-wire          StartSFD;
+module eth_crc (Clk, Reset, Data, Enable, Initialize, Crc, CrcError);
 
 
-// Defining the next state
-assign StartIdle = ~MRxDV & (StateDrop | StatePreamble | StateSFD | (|StateData));
+parameter Tp = 1;
 
-assign StartPreamble = MRxDV & ~MRxDEq5 & (StateIdle & ~Transmitting);
+input Clk;
+input Reset;
+input [3:0] Data;
+input Enable;
+input Initialize;
 
-assign StartSFD = MRxDV & MRxDEq5 & (StateIdle & ~Transmitting | StatePreamble);
+output [31:0] Crc;
+output CrcError;
 
-assign StartData0 = MRxDV & (StateSFD & MRxDEqD & IFGCounterEq24 | StateData1);
+reg  [31:0] Crc;
 
-assign StartData1 = MRxDV & StateData0 & (~ByteCntMaxFrame);
+wire [31:0] CrcNext;
 
-assign StartDrop = MRxDV & (StateIdle & Transmitting | StateSFD & ~IFGCounterEq24 &
-                   MRxDEqD |  StateData0 &  ByteCntMaxFrame);
 
-// Rx State Machine
-always @ (posedge MRxClk or posedge Reset)
+assign CrcNext[0] = Enable & (Data[0] ^ Crc[28]); 
+assign CrcNext[1] = Enable & (Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29]); 
+assign CrcNext[2] = Enable & (Data[2] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[30]); 
+assign CrcNext[3] = Enable & (Data[3] ^ Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30] ^ Crc[31]); 
+assign CrcNext[4] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[0]; 
+assign CrcNext[5] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[1]; 
+assign CrcNext[6] = (Enable & (Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30])) ^ Crc[ 2]; 
+assign CrcNext[7] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[3]; 
+assign CrcNext[8] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[4]; 
+assign CrcNext[9] = (Enable & (Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30])) ^ Crc[5]; 
+assign CrcNext[10] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[6]; 
+assign CrcNext[11] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[7]; 
+assign CrcNext[12] = (Enable & (Data[2] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[30])) ^ Crc[8]; 
+assign CrcNext[13] = (Enable & (Data[3] ^ Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30] ^ Crc[31])) ^ Crc[9]; 
+assign CrcNext[14] = (Enable & (Data[3] ^ Data[2] ^ Crc[30] ^ Crc[31])) ^ Crc[10]; 
+assign CrcNext[15] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[11]; 
+assign CrcNext[16] = (Enable & (Data[0] ^ Crc[28])) ^ Crc[12]; 
+assign CrcNext[17] = (Enable & (Data[1] ^ Crc[29])) ^ Crc[13]; 
+assign CrcNext[18] = (Enable & (Data[2] ^ Crc[30])) ^ Crc[14]; 
+assign CrcNext[19] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[15]; 
+assign CrcNext[20] = Crc[16]; 
+assign CrcNext[21] = Crc[17]; 
+assign CrcNext[22] = (Enable & (Data[0] ^ Crc[28])) ^ Crc[18]; 
+assign CrcNext[23] = (Enable & (Data[1] ^ Data[0] ^ Crc[29] ^ Crc[28])) ^ Crc[19]; 
+assign CrcNext[24] = (Enable & (Data[2] ^ Data[1] ^ Crc[30] ^ Crc[29])) ^ Crc[20]; 
+assign CrcNext[25] = (Enable & (Data[3] ^ Data[2] ^ Crc[31] ^ Crc[30])) ^ Crc[21]; 
+assign CrcNext[26] = (Enable & (Data[3] ^ Data[0] ^ Crc[31] ^ Crc[28])) ^ Crc[22]; 
+assign CrcNext[27] = (Enable & (Data[1] ^ Crc[29])) ^ Crc[23]; 
+assign CrcNext[28] = (Enable & (Data[2] ^ Crc[30])) ^ Crc[24]; 
+assign CrcNext[29] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[25]; 
+assign CrcNext[30] = Crc[26]; 
+assign CrcNext[31] = Crc[27]; 
+
+
+always @ (posedge Clk or posedge Reset)
 begin
-  if(Reset)
-    begin
-      StateIdle     <=  1'b0;
-      StateDrop     <=  1'b1;
-      StatePreamble <=  1'b0;
-      StateSFD      <=  1'b0;
-      StateData0    <=  1'b0;
-      StateData1    <=  1'b0;
-    end
+  if (Reset)
+    Crc <=  32'hffffffff;
   else
-    begin
-      if(StartPreamble | StartSFD | StartDrop)
-        StateIdle <=  1'b0;
-      else
-      if(StartIdle)
-        StateIdle <=  1'b1;
-
-      if(StartIdle)
-        StateDrop <=  1'b0;
-      else
-      if(StartDrop)
-        StateDrop <=  1'b1;
-
-      if(StartSFD | StartIdle | StartDrop)
-        StatePreamble <=  1'b0;
-      else
-      if(StartPreamble)
-        StatePreamble <=  1'b1;
-
-      if(StartPreamble | StartIdle | StartData0 | StartDrop)
-        StateSFD <=  1'b0;
-      else
-      if(StartSFD)
-        StateSFD <=  1'b1;
-
-      if(StartIdle | StartData1 | StartDrop)
-        StateData0 <=  1'b0;
-      else
-      if(StartData0)
-        StateData0 <=  1'b1;
-
-      if(StartIdle | StartData0 | StartDrop)
-        StateData1 <=  1'b0;
-      else
-      if(StartData1)
-        StateData1 <=  1'b1;
-    end
+  if(Initialize)
+    Crc <=  32'hffffffff;
+  else
+    Crc <=  CrcNext;
 end
 
-assign StateData[1:0] = {StateData1, StateData0};
+assign CrcError = Crc[31:0] != 32'hc704dd7b;  // CRC not equal to magic number
 
 endmodule

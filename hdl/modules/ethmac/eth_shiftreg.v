@@ -1,14 +1,12 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  eth_crc.v                                                   ////
+////  eth_shiftreg.v                                              ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
-////      - Novan Hartadi (novan@vlsi.itb.ac.id)                  ////
-////      - Mahmud Galela (mgalela@vlsi.itb.ac.id)                ////
 ////                                                              ////
 ////  All additional information is avaliable in the Readme.txt   ////
 ////  file.                                                       ////
@@ -43,6 +41,15 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2002/08/14 18:16:59  mohor
+// LinkFail signal was not latching appropriate bit.
+//
+// Revision 1.4  2002/03/02 21:06:01  mohor
+// LinkFail signal was not latching appropriate bit.
+//
+// Revision 1.3  2002/01/23 10:28:16  mohor
+// Link in the header changed.
+//
 // Revision 1.2  2001/10/19 08:43:51  mohor
 // eth_timescale.v changed to timescale.v This is done because of the
 // simulation of the few cores in a one joined project.
@@ -60,84 +67,87 @@
 // Revision 1.1  2001/07/30 21:23:42  mohor
 // Directory structure changed. Files checked and joind together.
 //
-// Revision 1.3  2001/06/19 18:16:40  mohor
-// TxClk changed to MTxClk (as discribed in the documentation).
-// Crc changed so only one file can be used instead of two.
-//
-// Revision 1.2  2001/06/19 10:38:07  mohor
-// Minor changes in header.
-//
-// Revision 1.1  2001/06/19 10:27:57  mohor
-// TxEthMAC initial release.
+// Revision 1.3  2001/06/01 22:28:56  mohor
+// This files (MIIM) are fully working. They were thoroughly tested. The testbench is not updated.
 //
 //
-//
-
 
 `include "timescale.v"
 
-module eth_crc (Clk, Reset, Data, Enable, Initialize, Crc, CrcError);
+
+module eth_shiftreg(Clk, Reset, MdcEn_n, Mdi, Fiad, Rgad, CtrlData, WriteOp, ByteSelect, 
+                    LatchByte, ShiftedBit, Prsd, LinkFail);
 
 
-input Clk;
-input Reset;
-input [3:0] Data;
-input Enable;
-input Initialize;
+parameter Tp=1;
 
-output [31:0] Crc;
-output CrcError;
+input       Clk;              // Input clock (Host clock)
+input       Reset;            // Reset signal
+input       MdcEn_n;          // Enable signal is asserted for one Clk period before Mdc falls.
+input       Mdi;              // MII input data
+input [4:0] Fiad;             // PHY address
+input [4:0] Rgad;             // Register address (within the selected PHY)
+input [15:0]CtrlData;         // Control data (data to be written to the PHY)
+input       WriteOp;          // The current operation is a PHY register write operation
+input [3:0] ByteSelect;       // Byte select
+input [1:0] LatchByte;        // Byte select for latching (read operation)
 
-reg  [31:0] Crc;
+output      ShiftedBit;       // Bit shifted out of the shift register
+output[15:0]Prsd;             // Read Status Data (data read from the PHY)
+output      LinkFail;         // Link Integrity Signal
 
-wire [31:0] CrcNext;
-
-
-assign CrcNext[0] = Enable & (Data[0] ^ Crc[28]); 
-assign CrcNext[1] = Enable & (Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29]); 
-assign CrcNext[2] = Enable & (Data[2] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[30]); 
-assign CrcNext[3] = Enable & (Data[3] ^ Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30] ^ Crc[31]); 
-assign CrcNext[4] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[0]; 
-assign CrcNext[5] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[1]; 
-assign CrcNext[6] = (Enable & (Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30])) ^ Crc[ 2]; 
-assign CrcNext[7] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[3]; 
-assign CrcNext[8] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[4]; 
-assign CrcNext[9] = (Enable & (Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30])) ^ Crc[5]; 
-assign CrcNext[10] = (Enable & (Data[3] ^ Data[2] ^ Data[0] ^ Crc[28] ^ Crc[30] ^ Crc[31])) ^ Crc[6]; 
-assign CrcNext[11] = (Enable & (Data[3] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[31])) ^ Crc[7]; 
-assign CrcNext[12] = (Enable & (Data[2] ^ Data[1] ^ Data[0] ^ Crc[28] ^ Crc[29] ^ Crc[30])) ^ Crc[8]; 
-assign CrcNext[13] = (Enable & (Data[3] ^ Data[2] ^ Data[1] ^ Crc[29] ^ Crc[30] ^ Crc[31])) ^ Crc[9]; 
-assign CrcNext[14] = (Enable & (Data[3] ^ Data[2] ^ Crc[30] ^ Crc[31])) ^ Crc[10]; 
-assign CrcNext[15] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[11]; 
-assign CrcNext[16] = (Enable & (Data[0] ^ Crc[28])) ^ Crc[12]; 
-assign CrcNext[17] = (Enable & (Data[1] ^ Crc[29])) ^ Crc[13]; 
-assign CrcNext[18] = (Enable & (Data[2] ^ Crc[30])) ^ Crc[14]; 
-assign CrcNext[19] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[15]; 
-assign CrcNext[20] = Crc[16]; 
-assign CrcNext[21] = Crc[17]; 
-assign CrcNext[22] = (Enable & (Data[0] ^ Crc[28])) ^ Crc[18]; 
-assign CrcNext[23] = (Enable & (Data[1] ^ Data[0] ^ Crc[29] ^ Crc[28])) ^ Crc[19]; 
-assign CrcNext[24] = (Enable & (Data[2] ^ Data[1] ^ Crc[30] ^ Crc[29])) ^ Crc[20]; 
-assign CrcNext[25] = (Enable & (Data[3] ^ Data[2] ^ Crc[31] ^ Crc[30])) ^ Crc[21]; 
-assign CrcNext[26] = (Enable & (Data[3] ^ Data[0] ^ Crc[31] ^ Crc[28])) ^ Crc[22]; 
-assign CrcNext[27] = (Enable & (Data[1] ^ Crc[29])) ^ Crc[23]; 
-assign CrcNext[28] = (Enable & (Data[2] ^ Crc[30])) ^ Crc[24]; 
-assign CrcNext[29] = (Enable & (Data[3] ^ Crc[31])) ^ Crc[25]; 
-assign CrcNext[30] = Crc[26]; 
-assign CrcNext[31] = Crc[27]; 
+reg   [7:0] ShiftReg;         // Shift register for shifting the data in and out
+reg   [15:0]Prsd;
+reg         LinkFail;
 
 
-always @ (posedge Clk or posedge Reset)
+
+
+// ShiftReg[7:0] :: Shift Register Data
+always @ (posedge Clk or posedge Reset) 
 begin
-  if (Reset)
-    Crc <=  32'hffffffff;
+  if(Reset)
+    begin
+      ShiftReg[7:0] <=  8'h0;
+      Prsd[15:0] <=  16'h0;
+      LinkFail <=  1'b0;
+    end
   else
-  if(Initialize)
-    Crc <=  32'hffffffff;
-  else
-    Crc <=  CrcNext;
+    begin
+      if(MdcEn_n)
+        begin 
+          if(|ByteSelect)
+            begin
+	       /* verilator lint_off CASEINCOMPLETE */
+              case (ByteSelect[3:0])  // synopsys parallel_case full_case
+                4'h1 :    ShiftReg[7:0] <=  {2'b01, ~WriteOp, WriteOp, Fiad[4:1]};
+                4'h2 :    ShiftReg[7:0] <=  {Fiad[0], Rgad[4:0], 2'b10};
+                4'h4 :    ShiftReg[7:0] <=  CtrlData[15:8];
+                4'h8 :    ShiftReg[7:0] <=  CtrlData[7:0];
+              endcase // case (ByteSelect[3:0])
+	       /* verilator lint_on CASEINCOMPLETE */
+            end 
+          else
+            begin
+              ShiftReg[7:0] <=  {ShiftReg[6:0], Mdi};
+              if(LatchByte[0])
+                begin
+                  Prsd[7:0] <=  {ShiftReg[6:0], Mdi};
+                  if(Rgad == 5'h01)
+                    LinkFail <=  ~ShiftReg[1];  // this is bit [2], because it is not shifted yet
+                end
+              else
+                begin
+                  if(LatchByte[1])
+                    Prsd[15:8] <=  {ShiftReg[6:0], Mdi};
+                end
+            end
+        end
+    end
 end
 
-assign CrcError = Crc[31:0] != 32'hc704dd7b;  // CRC not equal to magic number
+
+assign ShiftedBit = ShiftReg[7];
+
 
 endmodule

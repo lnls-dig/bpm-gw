@@ -3,7 +3,7 @@
 ////  eth_miim.v                                                  ////
 ////                                                              ////
 ////  This file is part of the Ethernet IP core project           ////
-////  http://www.opencores.org/project,ethmac                     ////
+////  http://www.opencores.org/project,ethmac                   ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Igor Mohor (igorM@opencores.org)                      ////
@@ -134,6 +134,8 @@ output [15:0] Prsd;               // Read Status Data (data read from the PHY)
 output        WCtrlDataStart;     // This signals resets the WCTRLDATA bit in the MIIM Command register
 output        RStatStart;         // This signal resets the RSTAT BIT in the MIIM Command register
 output        UpdateMIIRX_DATAReg;// Updates MII RX_DATA register with read data
+
+parameter Tp = 1;
 
 
 reg           Nvalid;
