@@ -7,8 +7,8 @@
 -- /___/  \  /    Vendor     : Xilinx
 -- \   \   \/     Version    : 13.4
 --  \   \         Application: XILINX CORE Generator
---  /   /         Filename   : chipscope_ila.vhd
--- /___/   /\     Timestamp  : Wed Dec 12 15:31:40 BRST 2012
+--  /   /         Filename   : chipscope_icon_1_port.vhd
+-- /___/   /\     Timestamp  : Wed Dec 12 14:30:28 BRST 2012
 -- \   \  /  \
 --  \___\/\___\
 --
@@ -18,17 +18,12 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-ENTITY chipscope_ila IS
+ENTITY chipscope_icon_1_port IS
   port (
-    CONTROL: inout std_logic_vector(35 downto 0);
-    CLK: in std_logic;
-    TRIG0: in std_logic_vector(31 downto 0);
-    TRIG1: in std_logic_vector(31 downto 0);
-    TRIG2: in std_logic_vector(31 downto 0);
-    TRIG3: in std_logic_vector(31 downto 0));
-END chipscope_ila;
+    CONTROL0: inout std_logic_vector(35 downto 0));
+END chipscope_icon_1_port;
 
-ARCHITECTURE chipscope_ila_a OF chipscope_ila IS
+ARCHITECTURE chipscope_icon_1_port_a OF chipscope_icon_1_port IS
 BEGIN
 
-END chipscope_ila_a;
+END chipscope_icon_1_port_a;
