@@ -104,14 +104,14 @@ INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i" LOC = PCIE_X0Y0;
 #
 # BlockRAM placement
 #
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[3].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X5Y35;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[2].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y36;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[1].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y35;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[0].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y34;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[0].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y33;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[1].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y32;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[2].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y31;
-INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[3].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl" LOC = RAMB36_X4Y30;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[3].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X5Y35;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[2].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y36;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[1].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y35;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[0].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y34;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[0].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y33;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[1].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y32;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[2].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y31;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[3].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X4Y30;
 ###############################################################################
 # Timing Constraints
 ###############################################################################

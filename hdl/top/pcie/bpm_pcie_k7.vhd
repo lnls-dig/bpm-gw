@@ -303,7 +303,7 @@ architecture Behavioral of bpm_pcie_k7 is
       -- 8. System(SYS) Interface                                                                                      --
       -------------------------------------------------------------------------------------------------------------------
       sys_clk   : in std_logic;
-      sys_reset : in std_logic);
+      sys_rst_n : in std_logic);
   end component;
 
   component PCIe_UserLogic_00
@@ -1344,8 +1344,7 @@ begin
 
     -- RX
     m_axis_rx_tdata  => m_axis_rx_tdata ,
-    m_axis_rx_tkeep(0)  => m_axis_rx_tkeep(0) ,
-    m_axis_rx_tkeep(7 downto 1) => open,
+    m_axis_rx_tkeep  => m_axis_rx_tkeep ,
     m_axis_rx_tlast  => m_axis_rx_tlast ,
     m_axis_rx_tvalid => m_axis_rx_tvalid ,
     m_axis_rx_tready => m_axis_rx_tready ,
@@ -1536,7 +1535,7 @@ begin
     -- 8. System(SYS) Interface                                                                                      --
     -------------------------------------------------------------------------------------------------------------------
     sys_clk   => sys_clk_c ,
-    sys_reset => sys_reset_c
+    sys_rst_n => sys_reset_n_c
     );
 
 -- ---------------------------------------------------------------
@@ -1544,7 +1543,7 @@ begin
 -- ---------------------------------------------------------------
 
 -- workaround pcie core bug
-  m_axis_rx_tkeep(7 downto 1) <= X"0" & m_axis_rx_tkeep(0) & m_axis_rx_tkeep(0) & m_axis_rx_tkeep(0);
+  --m_axis_rx_tkeep(7 downto 1) <= X"0" & m_axis_rx_tkeep(0) & m_axis_rx_tkeep(0) & m_axis_rx_tkeep(0);
 
   theTlpControl :
     tlpControl
