@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.3
-# Date: Wed Oct 24 16:37:55 2012
+# Date: Tue Dec 18 14:08:16 2012
 #
 ##############################################################
 #
@@ -18,10 +18,10 @@
 #
 # BEGIN Project Options
 SET addpads = false
-SET asysymbol = true
+SET asysymbol = false
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = VHDL
+SET designentry = Verilog
 SET device = xc7k325t
 SET devicefamily = kintex7
 SET flowvendor = Foundation_ISE
@@ -32,8 +32,8 @@ SET package = ffg900
 SET removerpms = false
 SET simulationfiles = Structural
 SET speedgrade = -2
-SET verilogsim = false
-SET vhdlsim = true
+SET verilogsim = true
+SET vhdlsim = false
 # END Project Options
 # BEGIN Select
 SELECT 7_Series_Integrated_Block_for_PCI_Express xilinx.com:ip:pcie_7x:1.7
@@ -263,4 +263,4 @@ CSET xlnx_ref_board=None
 MISC pkg_timestamp=2012-09-21T16:21:42Z
 # END Extra information
 GENERATE
-# CRC: 44793fbc
+# CRC: ecf273fe

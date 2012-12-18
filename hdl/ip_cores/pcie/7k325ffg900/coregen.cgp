@@ -1,7 +1,7 @@
-# Date: Mon Oct 15 15:11:05 2012
+# Date: Tue Dec 18 14:10:58 2012
 
 SET addpads = false
-SET asysymbol = true
+SET asysymbol = false
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
 SET designentry = VHDL
@@ -19,4 +19,4 @@ SET verilogsim = false
 SET vhdlsim = true
 SET workingdirectory = ./tmp/
 
-# CRC: fec58bbf
+# CRC: 8a06eaa2
