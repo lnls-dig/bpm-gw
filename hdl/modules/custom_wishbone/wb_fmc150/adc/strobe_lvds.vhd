@@ -32,7 +32,7 @@ end strobe_lvds;
 architecture rtl of strobe_lvds is
 
     signal s_strobe_l : std_logic;
-	signal s_strobe_dly : std_logic;
+    signal s_strobe_dly : std_logic;
     
 begin
 
@@ -48,7 +48,7 @@ begin
         ib => strobe_n_i,
         o  => s_strobe_l
     );
-	
+    
     cmp_iodelay : iodelaye1
     generic map
     (
@@ -73,19 +73,19 @@ begin
         cinvctrl    => '0',
         t           => '1'
     );
-	
-	cmp_bufr : bufr  
-	generic map
-	(
-		SIM_DEVICE 	=> "VIRTEX6",
-		BUFR_DIVIDE => "BYPASS"
-	)
-	port map 
-	(
-		clr  	=> '1',
-		ce 	 	=> '1',
-		i 		=> s_strobe_dly,
-		o 		=> strobe_o
-	);
+    
+    cmp_bufr : bufr  
+    generic map
+    (
+        SIM_DEVICE     => "VIRTEX6",
+        BUFR_DIVIDE => "BYPASS"
+    )
+    port map 
+    (
+        clr      => '1',
+        ce          => '1',
+        i         => s_strobe_dly,
+        o         => strobe_o
+    );
 
 end rtl;

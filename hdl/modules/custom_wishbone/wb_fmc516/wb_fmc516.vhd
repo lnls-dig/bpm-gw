@@ -47,7 +47,7 @@ use unisim.vcomponents.all;
 entity wb_fmc516 is
 generic
 (
-	-- The only supported values are VIRTEX6 and 7SERIES
+    -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
@@ -247,7 +247,7 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- Crossbar component constants
   -----------------------------
-	-- Internal crossbar layout
+    -- Internal crossbar layout
   -- 0 -> FMC516 Register Wishbone Interface
   -- 1 -> System I2C Bus. Slaves: Atmel AT24C512B Serial EEPROM, AD7417
   --        temperature diodes and AD7417 supply rails
@@ -258,22 +258,22 @@ architecture rtl of wb_fmc516 is
   -- 5 -> One-wire To/From DS2431 (VMETRO Data)
   -- 6 -> One-wire To/From DS2432 SHA-1 (SP-Devices key)
   -- Number of slaves
-	constant c_slaves                         : natural := 7;
+    constant c_slaves                         : natural := 7;
   -- Number of masters
-	constant c_masters                        : natural := 1;			-- Top master.
+    constant c_masters                        : natural := 1;            -- Top master.
 
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-  ( 0 => f_sdb_embed_device(c_xwb_fmc516_regs_sdb,      x"00000000"),		-- Register interface
-    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),		-- SYS I2C
+  ( 0 => f_sdb_embed_device(c_xwb_fmc516_regs_sdb,      x"00000000"),        -- Register interface
+    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),        -- SYS I2C
     2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
     3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- LMK SPI
     4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO I2C
-    5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),		-- One-wire DS2431
-    6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")		-- One-wire DS2432
+    5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),        -- One-wire DS2431
+    6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")        -- One-wire DS2432
   );
 
-	-- Self Describing Bus ROM Address. It will be an addressed slave as well.
+    -- Self Describing Bus ROM Address. It will be an addressed slave as well.
   constant c_sdb_address                    : t_wishbone_address := x"00000800";
 
   -----------------------------
@@ -375,11 +375,11 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   --signal wb_out                             : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
   --signal wb_in                              : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
-	-- Crossbar master/slave arrays
-	signal cbar_slave_in                      : t_wishbone_slave_in_array (c_masters-1 downto 0);
-	signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
-	signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
-	signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+    -- Crossbar master/slave arrays
+    signal cbar_slave_in                      : t_wishbone_slave_in_array (c_masters-1 downto 0);
+    signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
+    signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
+    signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
 
   -----------------------------
   -- System I2C signals
@@ -581,10 +581,10 @@ begin
     gen_adc_reset_synch_ch : if g_use_data_chains(i) = '1' generate
       cmp_reset_fs_synch : reset_synch
       port map(
-        clk_i     		                          => fs_clk(i),
-        arst_n_i		                            => fs_rst_n,
-        --rst_n_o      		                        => fs_rst_sync_n
-        rst_n_o      		                        => fs_rst_sync_n(i)
+        clk_i                                       => fs_clk(i),
+        arst_n_i                                    => fs_rst_n,
+        --rst_n_o                                      => fs_rst_sync_n
+        rst_n_o                                      => fs_rst_sync_n(i)
       );
 
       --fs_rst_sync_n(i) <= fs_rst_n;
@@ -614,25 +614,25 @@ begin
   -- 6 -> One-wire To/From DS2432 SHA-1 (SP-Devices key)
 
   -- The Internal Wishbone B.4 crossbar
-	cmp_interconnect : xwb_sdb_crossbar
-	generic map(
-		g_num_masters                             => c_masters,
-		g_num_slaves                              => c_slaves,
-		g_registered                              => true,
-		g_wraparound                              => true, -- Should be true for nested buses
-		g_layout                                  => c_layout,
-		g_sdb_addr                                => c_sdb_address
-	)
-	port map(
-		clk_sys_i                                 => sys_clk_i,
-		rst_n_i                                   => sys_rst_sync_n,
-		-- Master connections (INTERCON is a slave)
-		slave_i                                   => cbar_slave_in,
-		slave_o                                   => cbar_slave_out,
-		-- Slave connections (INTERCON is a master)
-		master_i                                  => cbar_master_in,
-		master_o                                  => cbar_master_out
-	);
+    cmp_interconnect : xwb_sdb_crossbar
+    generic map(
+        g_num_masters                             => c_masters,
+        g_num_slaves                              => c_slaves,
+        g_registered                              => true,
+        g_wraparound                              => true, -- Should be true for nested buses
+        g_layout                                  => c_layout,
+        g_sdb_addr                                => c_sdb_address
+    )
+    port map(
+        clk_sys_i                                 => sys_clk_i,
+        rst_n_i                                   => sys_rst_sync_n,
+        -- Master connections (INTERCON is a slave)
+        slave_i                                   => cbar_slave_in,
+        slave_o                                   => cbar_slave_out,
+        -- Slave connections (INTERCON is a master)
+        master_i                                  => cbar_master_in,
+        master_o                                  => cbar_master_out
+    );
 
   -- External master connection
   cbar_slave_in(0).adr                        <= wb_adr_i;
@@ -891,7 +891,7 @@ begin
   -- reset to it + a synchronized one for other logic (data capture for example)
   cmp_fmc516_adc_iface : fmc516_adc_iface
   generic map(
-  	-- The only supported values are VIRTEX6 and 7SERIES
+      -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
@@ -972,7 +972,7 @@ begin
     -- ADC div resets logic
     cmp_clk_div_rst_obufds : obufds
     generic map(
-      IOSTANDARD                           	  => "LVDS_25"
+      IOSTANDARD                                 => "LVDS_25"
     )
     port map (
       O                                       => adc_clk_div_rst_p_o,
@@ -1344,7 +1344,7 @@ begin
   -- Trigger buffers and Synchronization
   cmp_ext_trig_ibufds : ibufds
   generic map(
-    IOSTANDARD                           	=> "LVDS_25",
+    IOSTANDARD                               => "LVDS_25",
     DIFF_TERM                             => TRUE
   )
   port map (
@@ -1375,7 +1375,7 @@ begin
 
   cmp_ext_trig_obufds : obufds
   generic map(
-    IOSTANDARD                           	  => "LVDS_25"
+    IOSTANDARD                                 => "LVDS_25"
   )
   port map (
     O                                       => c2m_trig_p_o,

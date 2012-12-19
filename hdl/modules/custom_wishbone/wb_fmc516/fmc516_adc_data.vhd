@@ -93,7 +93,7 @@ architecture rtl of fmc516_adc_data is
   signal adc_fifo_empty                     : std_logic;
   signal adc_fifo_valid                     : std_logic;
 
-	-- Valid ADC signals
+    -- Valid ADC signals
   signal adc_data_valid                     : std_logic;
   signal adc_data_valid_out                 : std_logic;
 
@@ -103,7 +103,7 @@ architecture rtl of fmc516_adc_data is
   signal sys_rst                            : std_logic;
 
   --attribute IOB : string;
-	--attribute IOB of adc_data_ff: signal is "TRUE";
+    --attribute IOB of adc_data_ff: signal is "TRUE";
 
   component cdc_fifo
   port (
@@ -136,20 +136,20 @@ begin
       DELAY_SRC                             => "I"
     )
     port map(
-      --idatain     	                        => adc_data_ddr_ibufds(i),
-      idatain     	                        => adc_data_i(i),
-      dataout     	                        => adc_data_ddr_dly(i),
-      c           	                        => sys_clk_i,
-      ce          	                        => '0',
-      inc         	                        => '0',
-      datain      	                        => '0',
-      odatain     	                        => '0',
-      clkin       	                        => '0',
-      rst         	                        => adc_data_dly_pulse_i,
-      cntvaluein  	                        => adc_data_dly_val_i,
-      cntvalueout 	                        => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
-      cinvctrl    	                        => '0',
-      t           	                        => '1'
+      --idatain                                 => adc_data_ddr_ibufds(i),
+      idatain                                 => adc_data_i(i),
+      dataout                                 => adc_data_ddr_dly(i),
+      c                                       => sys_clk_i,
+      ce                                      => '0',
+      inc                                     => '0',
+      datain                                  => '0',
+      odatain                                 => '0',
+      clkin                                   => '0',
+      rst                                     => adc_data_dly_pulse_i,
+      cntvaluein                              => adc_data_dly_val_i,
+      cntvalueout                             => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
+      cinvctrl                                => '0',
+      t                                       => '1'
     );
 
     -- Output a single value to adc_data_dly_val_o
@@ -195,7 +195,7 @@ begin
       -- write port
       wr_clk                                => adc_clk_bufr_i,
       din                                   => adc_data_ff,
-      wr_en 		                            => adc_fifo_wr,
+      wr_en                                     => adc_fifo_wr,
       full                                  => adc_fifo_full,
 
       -- read port
@@ -208,7 +208,7 @@ begin
 
     adc_data_valid_out                      <= adc_fifo_valid;
 
-    --cmp_adc_data_async_fifo	: generic_async_fifo
+    --cmp_adc_data_async_fifo    : generic_async_fifo
     --generic map(
     --  g_data_width                          => c_num_adc_bits,
     --  g_size                                => async_fifo_size

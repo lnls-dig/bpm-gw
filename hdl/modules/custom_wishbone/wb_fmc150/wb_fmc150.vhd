@@ -447,9 +447,9 @@ begin
     -- Reset synchronization with ADC clock domain
     cmp_reset_adc_synch : reset_synch
     port map(
-      clk_i     		                        => s_clk_adc,
-      arst_n_i		                          => rst_n_i,
-      rst_n_o      		                      => rst_n_adc
+      clk_i                                     => s_clk_adc,
+      arst_n_i                                  => rst_n_i,
+      rst_n_o                                    => rst_n_adc
     );
 
     -- This stream source is in ADC clock domain

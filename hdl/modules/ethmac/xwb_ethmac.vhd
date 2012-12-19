@@ -33,8 +33,8 @@ generic (
 );
 port(
   -- WISHBONE common
-  wb_clk_i	                                : in std_logic;
-  wb_rst_i	                                : in std_logic;
+  wb_clk_i                                    : in std_logic;
+  wb_rst_i                                    : in std_logic;
 
   -- WISHBONE slave
   wb_slave_in                               : in t_wishbone_slave_in;
@@ -51,11 +51,11 @@ port(
   mtxerr_pad_o                              : out std_logic;
 
   -- PHY RX
-  mrx_clk_pad_i	                            : in std_logic;
+  mrx_clk_pad_i                                : in std_logic;
   mrxd_pad_i                                : in std_logic_vector(3 downto 0);
-  mrxdv_pad_i	                              : in std_logic;
+  mrxdv_pad_i                                  : in std_logic;
   mrxerr_pad_i                              : in std_logic;
-  mcoll_pad_i	                              : in std_logic;
+  mcoll_pad_i                                  : in std_logic;
   mcrs_pad_i                                : in std_logic;
 
   -- MII
@@ -65,7 +65,7 @@ port(
   md_padoe_o                                : out std_logic;
 
   -- Interrupt
-  int_o		                                  : out std_logic
+  int_o                                          : out std_logic
 );
 end xwb_ethmac;
 
@@ -82,26 +82,26 @@ begin
   )
   port map(
     -- WISHBONE common
-    wb_clk_i	                              => wb_clk_i,
-    wb_rst_i	                              => wb_rst_i,
+    wb_clk_i                                  => wb_clk_i,
+    wb_rst_i                                  => wb_rst_i,
 
     -- WISHBONE slave
     wb_dat_i                                => wb_slave_in.dat,
     wb_dat_o                                => wb_slave_out.dat,
     wb_adr_i                                => wb_slave_in.adr(11 downto 0),
-    wb_sel_i	                              => wb_slave_in.sel,
-    wb_we_i	                                => wb_slave_in.we,
-    wb_cyc_i	                              => wb_slave_in.cyc,
-    wb_stb_i	                              => wb_slave_in.stb,
-    wb_ack_o	                              => wb_slave_out.ack,
-    wb_err_o	                              => wb_slave_out.err,
+    wb_sel_i                                  => wb_slave_in.sel,
+    wb_we_i                                    => wb_slave_in.we,
+    wb_cyc_i                                  => wb_slave_in.cyc,
+    wb_stb_i                                  => wb_slave_in.stb,
+    wb_ack_o                                  => wb_slave_out.ack,
+    wb_err_o                                  => wb_slave_out.err,
     wb_stall_o                              => wb_slave_out.stall,
     wb_rty_o                                => wb_slave_out.rty,
 
     -- WISHBONE master
     m_wb_adr_o                              => wb_master_out.adr,
     m_wb_sel_o                              => wb_master_out.sel,
-    m_wb_we_o	                              => wb_master_out.we,
+    m_wb_we_o                                  => wb_master_out.we,
     m_wb_dat_o                              => wb_master_out.dat,
     m_wb_dat_i                              => wb_master_in.dat,
     m_wb_cyc_o                              => wb_master_out.cyc,
@@ -118,11 +118,11 @@ begin
     mtxerr_pad_o                            => mtxerr_pad_o,
 
     -- PHY RX
-    mrx_clk_pad_i	                          => mrx_clk_pad_i,
+    mrx_clk_pad_i                              => mrx_clk_pad_i,
     mrxd_pad_i                              => mrxd_pad_i,
-    mrxdv_pad_i	                            => mrxdv_pad_i,
+    mrxdv_pad_i                                => mrxdv_pad_i,
     mrxerr_pad_i                            => mrxerr_pad_i,
-    mcoll_pad_i	                            => mcoll_pad_i,
+    mcoll_pad_i                                => mcoll_pad_i,
     mcrs_pad_i                              => mcrs_pad_i,
 
     -- MII
@@ -132,6 +132,6 @@ begin
     md_padoe_o                              => md_padoe_o,
 
     -- Interrupt
-    int_o		                                => int_o
+    int_o                                        => int_o
   );
 end rtl;

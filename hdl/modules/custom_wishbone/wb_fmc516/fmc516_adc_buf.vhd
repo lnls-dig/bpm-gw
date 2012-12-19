@@ -132,9 +132,9 @@ begin
       DIFF_TERM                             => TRUE
     )
     port map(
-      i	                                    => adc_data_ch0_p_i(i),
+      i                                        => adc_data_ch0_p_i(i),
       ib                                    => adc_data_ch0_n_i(i),
-      o	                                    => adc_data_ch0_o(i)
+      o                                        => adc_data_ch0_o(i)
     );
 
     cmp_ibufds_adc_data_ch1 : ibufds
@@ -143,9 +143,9 @@ begin
       DIFF_TERM                             => TRUE
     )
     port map(
-      i	                                    => adc_data_ch1_p_i(i),
+      i                                        => adc_data_ch1_p_i(i),
       ib                                    => adc_data_ch1_n_i(i),
-      o	                                    => adc_data_ch1_o(i)
+      o                                        => adc_data_ch1_o(i)
     );
 
     cmp_ibufds_adc_data_ch2 : ibufds
@@ -154,9 +154,9 @@ begin
       DIFF_TERM                             => TRUE
     )
     port map(
-      i	                                    => adc_data_ch2_p_i(i),
+      i                                        => adc_data_ch2_p_i(i),
       ib                                    => adc_data_ch2_n_i(i),
-      o	                                    => adc_data_ch2_o(i)
+      o                                        => adc_data_ch2_o(i)
     );
 
     cmp_ibufds_adc_data_ch3 : ibufds
@@ -165,9 +165,9 @@ begin
       DIFF_TERM                             => TRUE
     )
     port map(
-      i	                                    => adc_data_ch3_p_i(i),
+      i                                        => adc_data_ch3_p_i(i),
       ib                                    => adc_data_ch3_n_i(i),
-      o	                                    => adc_data_ch3_o(i)
+      o                                        => adc_data_ch3_o(i)
     );
 
   end generate;
