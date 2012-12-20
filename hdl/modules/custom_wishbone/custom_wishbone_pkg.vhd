@@ -6,6 +6,7 @@ use work.wishbone_pkg.all;
 use work.wb_stream_pkg.all;
 use work.wb_stream_generic_pkg.all;
 use work.fmc516_pkg.all;
+use work.wr_fabric_pkg.all;
 
 package custom_wishbone_pkg is
 
@@ -608,6 +609,31 @@ package custom_wishbone_pkg is
     -----------------------------
     wbs_source_i                              : in t_wbs_source_in64;
     wbs_source_o                              : out t_wbs_source_out64
+  );
+  end component;
+
+  component xwb_ethmac_adapter
+  port(
+    clk_i                                     : in std_logic;
+    rstn_i                                    : in std_logic;
+
+    wb_slave_o                                : out t_wishbone_slave_out;
+    wb_slave_i                                : in t_wishbone_slave_in;
+
+    tx_ram_o                                  : out t_wishbone_master_out;
+    tx_ram_i                                  : in t_wishbone_master_in;
+
+    rx_ram_o                                  : out t_wishbone_master_out;
+    rx_ram_i                                  : in t_wishbone_master_in;
+
+    rx_eb_o                                   : out t_wrf_source_out;
+    rx_eb_i                                   : in t_wrf_source_in;
+
+    tx_eb_o                                   : out t_wrf_sink_out;
+    tx_eb_i                                   : in t_wrf_sink_in;
+
+    irq_tx_done_o                             : out std_logic;
+    irq_rx_done_o                             : out std_logic
   );
   end component;
 
