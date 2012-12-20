@@ -65,16 +65,16 @@ port(
   mtxd_pad_o                                : out std_logic_vector(3 downto 0);
   mtxen_pad_o                               : out std_logic;
   mtxerr_pad_o                              : out std_logic;
-  
-  -- PHY RX 
+
+  -- PHY RX
   mrx_clk_pad_i                             : in std_logic;
   mrxd_pad_i                                : in std_logic_vector(3 downto 0);
   mrxdv_pad_i                               : in std_logic;
   mrxerr_pad_i                              : in std_logic;
   mcoll_pad_i                               : in std_logic;
   mcrs_pad_i                                : in std_logic;
-  
-  -- MII  
+
+  -- MII
   mdc_pad_o                                 : out std_logic;
   md_pad_b                                  : inout std_logic;
 
@@ -105,7 +105,7 @@ architecture rtl of dbe_bpm_ebone is
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
   constant c_buttons_num_pins               : natural := 8;
-  
+
   -- Counter width. It willl count up to 2^32 clock cycles
   constant c_counter_width                  : natural := 32;
 
@@ -142,19 +142,19 @@ architecture rtl of dbe_bpm_ebone is
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
   constant c_sdb_address                    : t_wishbone_address := x"20000000";
-  
+
   -- Crossbar master/slave arrays
   signal cbar_slave_i                       : t_wishbone_slave_in_array (c_masters-1 downto 0);
   signal cbar_slave_o                       : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_i                      : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_o                      : t_wishbone_master_out_array(c_slaves-1 downto 0);
-    
-  -- LM32 signals 
+
+  -- LM32 signals
   signal clk_sys                            : std_logic;
   signal lm32_interrupt                     : std_logic_vector(31 downto 0);
   signal lm32_rstn                          : std_logic;
-  
-  -- Clocks and resets signals  
+
+  -- Clocks and resets signals
   signal locked                             : std_logic;
   signal clk_sys_rstn                       : std_logic;
   signal clk_sys_rst                        : std_logic;
@@ -187,14 +187,14 @@ architecture rtl of dbe_bpm_ebone is
   signal gpio_slave_led_i                   : t_wishbone_slave_in;
   signal gpio_leds_int                      : std_logic_vector(c_leds_num_pins-1 downto 0);
   -- signal leds_gpio_dummy_in                : std_logic_vector(c_leds_num_pins-1 downto 0);
-    
-  -- GPIO Button signals  
+
+  -- GPIO Button signals
   signal gpio_slave_button_o                : t_wishbone_slave_out;
   signal gpio_slave_button_i                : t_wishbone_slave_in;
-    
-  -- Counter signal 
+
+  -- Counter signal
   signal s_counter                          : unsigned(c_counter_width-1 downto 0);
-  -- 100MHz period or 1 second      
+  -- 100MHz period or 1 second
   constant s_counter_full                   : integer := 100000000;
 
   -- Chipscope control signals
@@ -206,9 +206,9 @@ architecture rtl of dbe_bpm_ebone is
   signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
 
-    ---------------------------
-    --      Components       --
-    ---------------------------
+  ---------------------------
+  --      Components       --
+  ---------------------------
 
   -- Clock generation
   component clk_gen is
@@ -274,7 +274,7 @@ begin
     sys_clk_n_i                             => sys_clk_n_i,
     sys_clk_o                               => sys_clk_gen
   );
-  
+
   -- Obtain core locking and generate necessary clocks
   cmp_sys_pll_inst : sys_pll
   port map (
@@ -349,7 +349,7 @@ begin
 
   -- The LM32 is master 0+1
   lm32_rstn                                 <= clk_sys_rstn;
-  
+
   cmp_lm32 : xwb_lm32
   generic map(
     g_profile                               => "medium_icache_debug"
@@ -457,6 +457,36 @@ begin
   ethmac_md_in <= md_pad_b;
 
   -- The Etherbone is master 5, slave 4
+  cmp_eb_slave_core : eb_slave_core
+  generic(g_sdb_address : std_logic_vector(63 downto 0));
+  port
+  (
+    clk_i             : in    std_logic;   --! clock input
+    nRst_i        : in  std_logic;
+
+    -- EB streaming sink -----------------------------------------
+    snk_i   : in  t_wrf_sink_in;
+    snk_o   : out t_wrf_sink_out;
+    --------------------------------------------------------------
+
+    -- EB streaming source ---------------------------------------
+    src_o   : out t_wrf_source_out;
+    src_i   : in  t_wrf_source_in;
+    --------------------------------------------------------------
+
+    -- WB slave - Cfg IF -----------------------------------------
+    cfg_slave_o : out t_wishbone_slave_out;
+    cfg_slave_i : in  t_wishbone_slave_in;
+
+    -- WB master - Bus IF ----------------------------------------
+    master_o : out t_wishbone_master_out;
+    master_i : in  t_wishbone_master_in
+    --------------------------------------------------------------
+
+  );
+
+
+
 
 
   -- Slave 5 is the UART
@@ -485,14 +515,14 @@ begin
   port map(
     clk_sys_i                               => clk_sys,
     rst_n_i                                 => clk_sys_rstn,
-          
-    -- Wishbone     
+
+    -- Wishbone
     slave_i                                 => cbar_master_o(6),
     slave_o                                 => cbar_master_i(6),
     desc_o                                  => open,    -- Not implemented
-    
+
     --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
-    
+
     gpio_out_o                              => gpio_leds_int,
     gpio_in_i                               => gpio_leds_int,
     gpio_oen_o                              => open
@@ -516,12 +546,12 @@ begin
   --        end if;
   --    end if;
   --end process;
-  
+
   -- Slave 1 is the example LED driver
   --gpio_slave_led_i                 <= cbar_master_o(1);
   --cbar_master_i(1)                 <= gpio_slave_led_o;
   --leds_o                             <= not r_leds;
-  
+
   -- There is a tool called 'wbgen2' which can autogenerate a Wishbone
   -- interface and C header file, but this is a simple example.
   --gpio : process(clk_sys)
@@ -533,7 +563,7 @@ begin
       --
       -- This is an easy solution for a device that never stalls:
   --    gpio_slave_led_o.ack         <= gpio_slave_led_i.cyc and gpio_slave_led_i.stb;
-  
+
       -- Detect a write to the register byte
   --    if gpio_slave_led_i.cyc = '1' and gpio_slave_led_i.stb = '1' and
   --        gpio_slave_led_i.we = '1' and gpio_slave_led_i.sel(0) = '1' then
@@ -544,7 +574,7 @@ begin
   --            r_reset             <= gpio_slave_led_i.dat(0);
   --        end if;
   --    end if;
-  
+
       -- Read to the register byte
   --    if gpio_slave_led_i.adr(2) = '0' then
   --        gpio_slave_led_o.dat(31 downto 8) <= (others => '0');
@@ -555,7 +585,7 @@ begin
   --    end if;
   --end if;
   --end process;
-  
+
   --gpio_slave_led_o.int             <= '0';
   --gpio_slave_led_o.err             <= '0';
   --gpio_slave_led_o.rty             <= '0';
@@ -572,14 +602,14 @@ begin
   port map(
     clk_sys_i                               => clk_sys,
     rst_n_i                                 => clk_sys_rstn,
-    
+
     -- Wishbone
     slave_i                                 => cbar_master_o(7),
     slave_o                                 => cbar_master_i(7),
     desc_o                                  => open,    -- Not implemented
-    
+
     --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
-    
+
     gpio_out_o                              => open,
     gpio_in_i                               => buttons_i,
     gpio_oen_o                              => open
