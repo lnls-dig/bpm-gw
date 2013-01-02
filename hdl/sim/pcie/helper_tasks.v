@@ -133,9 +133,6 @@ endtask // Copy_rnd_data
 	       board.Hdr_Array[2];
     hdr_type = board.Hdr_Array[0] & hdr_mask;
 
-    $display("addr=%x, hdr_type=%x", sys_addr, hdr_type);
-    $display("hdr=%x, mwr3=%x", board.Hdr_Array[0], `HEADER0_MWR3_);
-
     if ((board.Hdr_Array[0] & 32'hFF000000) == `HEADER0_MWR4_) begin
       board.RP.tx_usrapp.TSK_TX_MEMORY_WRITE_64(board.Hdr_Array[1][15:8],
 						board.Hdr_Array[0][22:20],

@@ -386,8 +386,8 @@ begin
 
 
   -- Always deasserted
-  s_axis_tx_tdsc_i    <= '1';
-  s_axis_tx_terrfwd_i <= '1';
+  s_axis_tx_tdsc_i    <= '0';
+  s_axis_tx_terrfwd_i <= '0';
 --   s_axis_tx_tkeep_i          <= (OTHERS=>'0');
 
 
@@ -1070,7 +1070,7 @@ begin
             mbuf_RE_ok        <= '1';
           else                          -- 3DW header
 --                s_axis_tx_tdata_i             <= Trn_Qout_reg (C_DBUS_WIDTH-1+64 downto 64);
-            s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1-32 downto 0)
+            s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1 downto 32)
                                              & Trn_Qout_reg (C_DBUS_WIDTH+32-1 downto C_DBUS_WIDTH);
             trn_tsof_n_i      <= '1';
             s_axis_tx_tlast_i <= not(mbuf_Qout(C_DBUS_WIDTH));

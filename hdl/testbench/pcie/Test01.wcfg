@@ -2105,6 +2105,250 @@
             <obj_property name="ElementShortName">iord_type</obj_property>
             <obj_property name="ObjectShortName">iord_type</obj_property>
          </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/carryin_alc" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">carryin_alc[10:0]</obj_property>
+            <obj_property name="ObjectShortName">carryin_alc[10:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/cfg_mps" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_mps[2:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_mps[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/cfg_mps_decoded" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_mps_decoded[10:5]</obj_property>
+            <obj_property name="ObjectShortName">cfg_mps_decoded[10:5]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/cfg_mrs" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_mrs[2:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_mrs[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/cfg_mrs_decoded" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_mrs_decoded[10:5]</obj_property>
+            <obj_property name="ObjectShortName">cfg_mrs_decoded[10:5]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/cpld_on_eb" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cpld_on_eb</obj_property>
+            <obj_property name="ObjectShortName">cpld_on_eb</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/fsm_aotram" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">fsm_aotram</obj_property>
+            <obj_property name="ObjectShortName">fsm_aotram</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/link_buf_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">link_buf_full</obj_property>
+            <obj_property name="ObjectShortName">link_buf_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/maxpayloadsize_exceeded" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">maxpayloadsize_exceeded</obj_property>
+            <obj_property name="ObjectShortName">maxpayloadsize_exceeded</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/maxreadreqsize_exceeded" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">maxreadreqsize_exceeded</obj_property>
+            <obj_property name="ObjectShortName">maxreadreqsize_exceeded</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/maxsize_thresholds" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">maxsize_thresholds[5:0]</obj_property>
+            <obj_property name="ObjectShortName">maxsize_thresholds[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/pool_wrbuf_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">pool_wrbuf_full</obj_property>
+            <obj_property name="ObjectShortName">pool_wrbuf_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/mwr_on_eb" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">mwr_on_eb</obj_property>
+            <obj_property name="ObjectShortName">mwr_on_eb</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_address_sig" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_address_sig[10:0]</obj_property>
+            <obj_property name="ObjectShortName">tlp_address_sig[10:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_dw_length_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_dw_length_i[9:0]</obj_property>
+            <obj_property name="ObjectShortName">tlp_dw_length_i[9:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_has_0_length" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_has_0_length</obj_property>
+            <obj_property name="ObjectShortName">tlp_has_0_length</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_cpl" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_cpl</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_cpl</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_cpld" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_cpld</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_cpld</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_cpldlk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_cpldlk</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_cpldlk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_cpllk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_cpllk</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_cpllk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iord" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iord</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iord</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iord_bar1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iord_bar1</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iord_bar1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iord_bar0" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iord_bar0</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iord_bar0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iord_bar2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iord_bar2</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iord_bar2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iord_bar3" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iord_bar3</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iord_bar3</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iowr" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iowr</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iowr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iowr_bar0" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iowr_bar0</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iowr_bar0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iowr_bar1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iowr_bar1</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iowr_bar1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iowr_bar2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iowr_bar2</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iowr_bar2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_iowr_bar3" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_iowr_bar3</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_iowr_bar3</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar0_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar0_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar0_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar0_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar0_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar0_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar1_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar1_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar1_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar1_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar1_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar1_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar2_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar2_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar2_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar2_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar2_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar2_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar3_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar3_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar3_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_bar3_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_bar3_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_bar3_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrd_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrd_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrd_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar0_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar0_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar0_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar0_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar0_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar0_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar1_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar1_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar1_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar1_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar1_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar1_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar2_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar2_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar2_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar2_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar2_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar2_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar3_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar3_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar3_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_bar3_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_bar3_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_bar3_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mrdlk_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mrdlk_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mrdlk_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar0_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar0_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar0_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar0_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar0_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar0_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar1_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar1_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar1_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar1_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar1_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar1_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar2_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar2_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar2_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar2_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar2_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar2_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar3_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar3_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar3_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_bar3_h4dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_bar3_h4dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_bar3_h4dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_is_mwr_h3dw" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_is_mwr_h3dw</obj_property>
+            <obj_property name="ObjectShortName">tlp_is_mwr_h3dw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Rx_Input_Delays/tlp_payload_address_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">tlp_payload_address_i[63:0]</obj_property>
+            <obj_property name="ObjectShortName">tlp_payload_address_i[63:0]</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject fp_name="group633" type="group">
          <obj_property name="label">dsDMA_Channel</obj_property>
@@ -2774,6 +3018,646 @@
          <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Downstream_DMA_Engine/mrd_dsp_req_i" type="logic" db_ref_id="1">
             <obj_property name="ElementShortName">mrd_dsp_req_i</obj_property>
             <obj_property name="ObjectShortName">mrd_dsp_req_i</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group963" type="group">
+         <obj_property name="label">usDMA_Channel</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="group1051" type="group">
+            <obj_property name="label">usDMA_statem</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/tlp_has_payload" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">tlp_has_payload</obj_property>
+               <obj_property name="ObjectShortName">tlp_has_payload</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/tlp_hdr_is_4dw" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">tlp_hdr_is_4dw</obj_property>
+               <obj_property name="ObjectShortName">tlp_hdr_is_4dw</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_addr_inc" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_addr_inc</obj_property>
+               <obj_property name="ObjectShortName">dma_addr_inc</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_bar_number" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_bar_number[2:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_bar_number[2:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_start" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_start</obj_property>
+               <obj_property name="ObjectShortName">dma_start</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_start2" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_start2</obj_property>
+               <obj_property name="ObjectShortName">dma_start2</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_stop" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_stop</obj_property>
+               <obj_property name="ObjectShortName">dma_stop</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_stop2" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_stop2</obj_property>
+               <obj_property name="ObjectShortName">dma_stop2</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/no_more_bodies" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">no_more_bodies</obj_property>
+               <obj_property name="ObjectShortName">no_more_bodies</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_snout" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_snout</obj_property>
+               <obj_property name="ObjectShortName">thereis_snout</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_body" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_body</obj_property>
+               <obj_property name="ObjectShortName">thereis_body</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_tail" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_tail</obj_property>
+               <obj_property name="ObjectShortName">thereis_tail</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_dex" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_dex</obj_property>
+               <obj_property name="ObjectShortName">thereis_dex</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_pa_loaded" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_pa_loaded[63:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_pa_loaded[63:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_pa_var" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_pa_var[63:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_pa_var[63:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_ha_var" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_ha_var[63:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_ha_var[63:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_bda_fsm" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_bda_fsm[63:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_bda_fsm[63:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/bda_is_64b_fsm" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">bda_is_64b_fsm</obj_property>
+               <obj_property name="ObjectShortName">bda_is_64b_fsm</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_snout_length" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_snout_length[12:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_snout_length[12:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_body_length" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_body_length[12:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_body_length[12:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_tail_length" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_tail_length[11:0]</obj_property>
+               <obj_property name="ObjectShortName">dma_tail_length[11:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/done_condition_1" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">done_condition_1</obj_property>
+               <obj_property name="ObjectShortName">done_condition_1</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/done_condition_2" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">done_condition_2</obj_property>
+               <obj_property name="ObjectShortName">done_condition_2</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/done_condition_3" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">done_condition_3</obj_property>
+               <obj_property name="ObjectShortName">done_condition_3</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/done_condition_4" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">done_condition_4</obj_property>
+               <obj_property name="ObjectShortName">done_condition_4</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/done_condition_5" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">done_condition_5</obj_property>
+               <obj_property name="ObjectShortName">done_condition_5</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/us_mwr_param_vec" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">us_mwr_param_vec[5:0]</obj_property>
+               <obj_property name="ObjectShortName">us_mwr_param_vec[5:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_afull" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_afull</obj_property>
+               <obj_property name="ObjectShortName">chbuf_afull</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_wren" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_wren</obj_property>
+               <obj_property name="ObjectShortName">chbuf_wren</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_wrdin" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_wrdin[127:0]</obj_property>
+               <obj_property name="ObjectShortName">chbuf_wrdin[127:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_loadparam" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_loadparam</obj_property>
+               <obj_property name="ObjectShortName">state_is_loadparam</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_snout" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_snout</obj_property>
+               <obj_property name="ObjectShortName">state_is_snout</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_body" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_body</obj_property>
+               <obj_property name="ObjectShortName">state_is_body</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_tail" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_tail</obj_property>
+               <obj_property name="ObjectShortName">state_is_tail</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_cmd_ack" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_cmd_ack</obj_property>
+               <obj_property name="ObjectShortName">dma_cmd_ack</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_validrd" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_validrd</obj_property>
+               <obj_property name="ObjectShortName">chbuf_validrd</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/bda_naligned" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">bda_naligned</obj_property>
+               <obj_property name="ObjectShortName">bda_naligned</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_timeout" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_timeout</obj_property>
+               <obj_property name="ObjectShortName">dma_timeout</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_busy" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_busy</obj_property>
+               <obj_property name="ObjectShortName">dma_busy</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_done" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_done</obj_property>
+               <obj_property name="ObjectShortName">dma_done</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/pkt_tag" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">pkt_tag[7:0]</obj_property>
+               <obj_property name="ObjectShortName">pkt_tag[7:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dex_tag" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">dex_tag[7:0]</obj_property>
+               <obj_property name="ObjectShortName">dex_tag[7:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_clk" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_clk</obj_property>
+               <obj_property name="ObjectShortName">dma_clk</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_reset" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_reset</obj_property>
+               <obj_property name="ObjectShortName">dma_reset</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_nextstate" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_nextstate</obj_property>
+               <obj_property name="ObjectShortName">dma_nextstate</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_state" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_state</obj_property>
+               <obj_property name="ObjectShortName">dma_state</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/busydone_nextstate" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">busydone_nextstate</obj_property>
+               <obj_property name="ObjectShortName">busydone_nextstate</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/busydone_state" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">busydone_state</obj_property>
+               <obj_property name="ObjectShortName">busydone_state</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_timeout_state" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_timeout_state</obj_property>
+               <obj_property name="ObjectShortName">dma_timeout_state</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_start_r1" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_start_r1</obj_property>
+               <obj_property name="ObjectShortName">dma_start_r1</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_start2_r1" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_start2_r1</obj_property>
+               <obj_property name="ObjectShortName">dma_start2_r1</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_dex_reg" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_dex_reg</obj_property>
+               <obj_property name="ObjectShortName">thereis_dex_reg</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_snout_reg" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_snout_reg</obj_property>
+               <obj_property name="ObjectShortName">thereis_snout_reg</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_body_reg" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_body_reg</obj_property>
+               <obj_property name="ObjectShortName">thereis_body_reg</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/thereis_tail_reg" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">thereis_tail_reg</obj_property>
+               <obj_property name="ObjectShortName">thereis_tail_reg</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/bda_naligned_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">bda_naligned_i</obj_property>
+               <obj_property name="ObjectShortName">bda_naligned_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_busy_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_busy_i</obj_property>
+               <obj_property name="ObjectShortName">dma_busy_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_done_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_done_i</obj_property>
+               <obj_property name="ObjectShortName">dma_done_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_loadparam_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_loadparam_i</obj_property>
+               <obj_property name="ObjectShortName">state_is_loadparam_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_snout_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_snout_i</obj_property>
+               <obj_property name="ObjectShortName">state_is_snout_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_body_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_body_i</obj_property>
+               <obj_property name="ObjectShortName">state_is_body_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_tail_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_tail_i</obj_property>
+               <obj_property name="ObjectShortName">state_is_tail_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/state_is_awaitdex_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">state_is_awaitdex_i</obj_property>
+               <obj_property name="ObjectShortName">state_is_awaitdex_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_cmd_ack_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_cmd_ack_i</obj_property>
+               <obj_property name="ObjectShortName">dma_cmd_ack_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_wrdin_i" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_wrdin_i[127:0]</obj_property>
+               <obj_property name="ObjectShortName">chbuf_wrdin_i[127:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_wren_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_wren_i</obj_property>
+               <obj_property name="ObjectShortName">chbuf_wren_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/chbuf_afull_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">chbuf_afull_i</obj_property>
+               <obj_property name="ObjectShortName">chbuf_afull_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/cnt_dma_to" type="array" db_ref_id="1">
+               <obj_property name="ElementShortName">cnt_dma_to[31:0]</obj_property>
+               <obj_property name="ObjectShortName">cnt_dma_to[31:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/tout_lo_carry" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">tout_lo_carry</obj_property>
+               <obj_property name="ObjectShortName">tout_lo_carry</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/dma_timeout_i" type="logic" db_ref_id="1">
+               <obj_property name="ElementShortName">dma_timeout_i</obj_property>
+               <obj_property name="ObjectShortName">dma_timeout_i</obj_property>
+            </wvobject>
+            <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/cbit_tout_carry" type="other" db_ref_id="1">
+               <obj_property name="ElementShortName">cbit_tout_carry</obj_property>
+               <obj_property name="ObjectShortName">cbit_tout_carry</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_req</obj_property>
+            <obj_property name="ObjectShortName">ustlp_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_re" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_re</obj_property>
+            <obj_property name="ObjectShortName">ustlp_re</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_qout[127:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_qout[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_fc_stop" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">us_fc_stop</obj_property>
+            <obj_property name="ObjectShortName">us_fc_stop</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_last_sof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">us_last_sof</obj_property>
+            <obj_property name="ObjectShortName">us_last_sof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_last_eof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">us_last_eof</obj_property>
+            <obj_property name="ObjectShortName">us_last_eof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fifo_data_count" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">fifo_data_count[26:0]</obj_property>
+            <obj_property name="ObjectShortName">fifo_data_count[26:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fifo_reading" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">fifo_reading</obj_property>
+            <obj_property name="ObjectShortName">fifo_reading</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_channel_rst" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_channel_rst</obj_property>
+            <obj_property name="ObjectShortName">usdma_channel_rst</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_pa" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_pa[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_pa[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_ha" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_ha[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_ha[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_bda" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_bda[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_bda[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_length" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_length[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_length[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_control" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_control[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_control[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_bda_eq_null" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_bda_eq_null</obj_property>
+            <obj_property name="ObjectShortName">usdma_bda_eq_null</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_mwr_param_vec" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">us_mwr_param_vec[5:0]</obj_property>
+            <obj_property name="ObjectShortName">us_mwr_param_vec[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usha_is_64b" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usha_is_64b</obj_property>
+            <obj_property name="ObjectShortName">usha_is_64b</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usbda_is_64b" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usbda_is_64b</obj_property>
+            <obj_property name="ObjectShortName">usbda_is_64b</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usleng_hi19b_true" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usleng_hi19b_true</obj_property>
+            <obj_property name="ObjectShortName">usleng_hi19b_true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usleng_lo7b_true" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usleng_lo7b_true</obj_property>
+            <obj_property name="ObjectShortName">usleng_lo7b_true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_dex_tag" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_dex_tag[7:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_dex_tag[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_start" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_start</obj_property>
+            <obj_property name="ObjectShortName">usdma_start</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_stop" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_stop</obj_property>
+            <obj_property name="ObjectShortName">usdma_stop</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_start2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_start2</obj_property>
+            <obj_property name="ObjectShortName">usdma_start2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_stop2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_stop2</obj_property>
+            <obj_property name="ObjectShortName">usdma_stop2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_cmd_ack" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_cmd_ack</obj_property>
+            <obj_property name="ObjectShortName">dma_cmd_ack</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_done" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_done</obj_property>
+            <obj_property name="ObjectShortName">dma_done</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_timeout" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_timeout</obj_property>
+            <obj_property name="ObjectShortName">dma_timeout</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_busy" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_busy</obj_property>
+            <obj_property name="ObjectShortName">dma_busy</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_us_status" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_us_status[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_us_status[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/cfg_dcommand" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_dcommand[15:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_dcommand[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/user_clk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">user_clk</obj_property>
+            <obj_property name="ObjectShortName">user_clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/local_reset_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">local_reset_i</obj_property>
+            <obj_property name="ObjectShortName">local_reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/dma_status_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">dma_status_i[63:0]</obj_property>
+            <obj_property name="ObjectShortName">dma_status_i[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/cfg_mps" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_mps[2:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_mps[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_mwr_tag" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_mwr_tag[7:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_mwr_tag[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_pa_loaded" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_pa_loaded[63:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_pa_loaded[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_pa_var" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_pa_var[63:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_pa_var[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_ha_var" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_ha_var[63:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_ha_var[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_bda_fsm" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_bda_fsm[63:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_bda_fsm[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usbda_is_64b_fsm" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usbda_is_64b_fsm</obj_property>
+            <obj_property name="ObjectShortName">usbda_is_64b_fsm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_pa_snout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_pa_snout[63:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_pa_snout[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_bar_number" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_bar_number[2:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_bar_number[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_snout_length" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_snout_length[12:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_snout_length[12:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_body_length" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_body_length[12:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_body_length[12:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_tail_length" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_tail_length[11:0]</obj_property>
+            <obj_property name="ObjectShortName">usdma_tail_length[11:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usno_more_bodies" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usno_more_bodies</obj_property>
+            <obj_property name="ObjectShortName">usno_more_bodies</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usthereis_snout" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usthereis_snout</obj_property>
+            <obj_property name="ObjectShortName">usthereis_snout</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usthereis_body" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usthereis_body</obj_property>
+            <obj_property name="ObjectShortName">usthereis_body</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usthereis_tail" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usthereis_tail</obj_property>
+            <obj_property name="ObjectShortName">usthereis_tail</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usthereis_dex" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usthereis_dex</obj_property>
+            <obj_property name="ObjectShortName">usthereis_dex</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usha64bit" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usha64bit</obj_property>
+            <obj_property name="ObjectShortName">usha64bit</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_ainc" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">us_ainc</obj_property>
+            <obj_property name="ObjectShortName">us_ainc</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usstate_is_loadparam" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usstate_is_loadparam</obj_property>
+            <obj_property name="ObjectShortName">usstate_is_loadparam</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usstate_is_snout" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usstate_is_snout</obj_property>
+            <obj_property name="ObjectShortName">usstate_is_snout</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usstate_is_body" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usstate_is_body</obj_property>
+            <obj_property name="ObjectShortName">usstate_is_body</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usstate_is_tail" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usstate_is_tail</obj_property>
+            <obj_property name="ObjectShortName">usstate_is_tail</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/uschbuf_validrd" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">uschbuf_validrd</obj_property>
+            <obj_property name="ObjectShortName">uschbuf_validrd</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usbda_naligned" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usbda_naligned</obj_property>
+            <obj_property name="ObjectShortName">usbda_naligned</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_timeout_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_timeout_i</obj_property>
+            <obj_property name="ObjectShortName">usdma_timeout_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_busy_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_busy_i</obj_property>
+            <obj_property name="ObjectShortName">usdma_busy_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usdma_done_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">usdma_done_i</obj_property>
+            <obj_property name="ObjectShortName">usdma_done_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_din[127:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_din[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_qout_wire" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_qout_wire[127:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_qout_wire[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_qout_reg" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_qout_reg[127:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_qout_reg[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_qout_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_qout_i[127:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_qout_i[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_re_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_re_i</obj_property>
+            <obj_property name="ObjectShortName">ustlp_re_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_re_i_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_re_i_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_re_i_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_we" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_we</obj_property>
+            <obj_property name="ObjectShortName">ustlp_we</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_empty_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_empty_i</obj_property>
+            <obj_property name="ObjectShortName">ustlp_empty_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_full</obj_property>
+            <obj_property name="ObjectShortName">ustlp_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_prog_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_prog_full</obj_property>
+            <obj_property name="ObjectShortName">ustlp_prog_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_pempty" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_pempty</obj_property>
+            <obj_property name="ObjectShortName">ustlp_pempty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_npempty_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_npempty_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_npempty_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_nempty_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_nempty_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_nempty_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_empty_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_empty_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_empty_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_empty_r2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_empty_r2</obj_property>
+            <obj_property name="ObjectShortName">ustlp_empty_r2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_empty_r3" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_empty_r3</obj_property>
+            <obj_property name="ObjectShortName">ustlp_empty_r3</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_empty_r4" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_empty_r4</obj_property>
+            <obj_property name="ObjectShortName">ustlp_empty_r4</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_prog_full_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_prog_full_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_prog_full_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_req_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_req_i</obj_property>
+            <obj_property name="ObjectShortName">ustlp_req_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_nreq_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_nreq_r1</obj_property>
+            <obj_property name="ObjectShortName">ustlp_nreq_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fifo_reading_r1" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">fifo_reading_r1</obj_property>
+            <obj_property name="ObjectShortName">fifo_reading_r1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fifo_reading_r2" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">fifo_reading_r2</obj_property>
+            <obj_property name="ObjectShortName">fifo_reading_r2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fifo_reading_r3p" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">fifo_reading_r3p</obj_property>
+            <obj_property name="ObjectShortName">fifo_reading_r3p</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/ustlp_mwr_leng" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ustlp_mwr_leng[9:0]</obj_property>
+            <obj_property name="ObjectShortName">ustlp_mwr_leng[9:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/fsm_req_us" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">fsm_req_us</obj_property>
+            <obj_property name="ObjectShortName">fsm_req_us</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group267" type="group">

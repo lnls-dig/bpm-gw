@@ -1001,8 +1001,8 @@ architecture Behavioral of bpm_pcie_k7 is
 
 --S     SIMONE: Wanxau UserLogic Signals, not Used
   signal protocol_link_act : std_logic_vector(2-1 downto 0)              := (others => '0');
-  signal protocol_rst      : std_logic;
-  signal daq_rstop         : std_logic;
+  signal protocol_rst      : std_logic; 
+  signal daq_rstop         : std_logic := '0';
   signal ctl_rv            : std_logic;
   signal ctl_rd            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
   signal ctl_ttake         : std_logic;
