@@ -844,7 +844,7 @@ begin
 
       board.Desc_tx_MRd_TAG = 'hE0;
       board.RP.com_usrapp.TSK_EXPECT_MEMRD(3'b000, 1'b0, 1'b0, 2'b00,
-					board.Tx_MRd_Leng,
+					'h8,
 					board.localID,
 					board.Desc_tx_MRd_TAG,
 					4'hf,
@@ -932,9 +932,9 @@ begin
   //////////////////////////////////////////////////////////////////////////////////
 
 
-      # 100
+      TSK_CLK_EAT(100);
       $display("### Simulation FINISHED ###\n");
-      $finish();
+      $finish(2);
 
 end
 

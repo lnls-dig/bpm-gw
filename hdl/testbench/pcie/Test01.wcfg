@@ -23,14 +23,6 @@
       </db_ref>
    </db_ref_list>
    <WVObjectSize size="12" />
-   <wave_markers>
-      <marker time="702000000" label="" />
-      <marker time="804000000" label="" />
-      <marker time="908000000" label="" />
-      <marker time="1312000000" label="" />
-      <marker time="2425785000" label="" />
-      <marker time="3698049000" label="" />
-   </wave_markers>
    <wvobject fp_name="/board/EP/user_clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">user_clk</obj_property>
       <obj_property name="ObjectShortName">user_clk</obj_property>
