@@ -4123,6 +4123,162 @@
             </wvobject>
          </wvobject>
       </wvobject>
+      <wvobject fp_name="group1265" type="group">
+         <obj_property name="label">Irpt_Handle</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/sys_irq" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">sys_irq[63:0]</obj_property>
+            <obj_property name="ObjectShortName">sys_irq[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_reset" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_reset</obj_property>
+            <obj_property name="ObjectShortName">ig_reset</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_host_clear" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_host_clear</obj_property>
+            <obj_property name="ObjectShortName">ig_host_clear</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_latency" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_latency[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_latency[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_num_assert" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_num_assert[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_num_assert[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_num_deassert" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_num_deassert[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_num_deassert[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_asserting" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_asserting</obj_property>
+            <obj_property name="ObjectShortName">ig_asserting</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_rdy" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_rdy</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_rdy</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_mmenable" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_mmenable[2:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_mmenable[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_msienable" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_msienable</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_msienable</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_di" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_di[7:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_di[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_do" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_do[7:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_do[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_assert" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_assert</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_assert</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/irpt_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">irpt_req</obj_property>
+            <obj_property name="ObjectShortName">irpt_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/irpt_re" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">irpt_re</obj_property>
+            <obj_property name="ObjectShortName">irpt_re</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/irpt_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">irpt_qout[127:0]</obj_property>
+            <obj_property name="ObjectShortName">irpt_qout[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/edge_intrpt_state" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">edge_intrpt_state</obj_property>
+            <obj_property name="ObjectShortName">edge_intrpt_state</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/level_intrpt_state" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">level_intrpt_state</obj_property>
+            <obj_property name="ObjectShortName">level_intrpt_state</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_i</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_rdy_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_rdy_i</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_rdy_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_di_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_di_i[7:0]</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_di_i[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/cfg_interrupt_assert_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">cfg_interrupt_assert_i</obj_property>
+            <obj_property name="ObjectShortName">cfg_interrupt_assert_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/edge_irpt_req_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">edge_irpt_req_i</obj_property>
+            <obj_property name="ObjectShortName">edge_irpt_req_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/level_irpt_req_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">level_irpt_req_i</obj_property>
+            <obj_property name="ObjectShortName">level_irpt_req_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/irpt_re_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">irpt_re_i</obj_property>
+            <obj_property name="ObjectShortName">irpt_re_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/irpt_qout_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">irpt_qout_i[127:0]</obj_property>
+            <obj_property name="ObjectShortName">irpt_qout_i[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/msg_tag_lo" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">msg_tag_lo[3:0]</obj_property>
+            <obj_property name="ObjectShortName">msg_tag_lo[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/msg_code" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">msg_code[7:0]</obj_property>
+            <obj_property name="ObjectShortName">msg_code[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/edge_msgcode_is_assert" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">edge_msgcode_is_assert</obj_property>
+            <obj_property name="ObjectShortName">edge_msgcode_is_assert</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/level_msgcode_is_assert" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">level_msgcode_is_assert</obj_property>
+            <obj_property name="ObjectShortName">level_msgcode_is_assert</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/interrupts_ored" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">interrupts_ored</obj_property>
+            <obj_property name="ObjectShortName">interrupts_ored</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_trigger_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_trigger_i</obj_property>
+            <obj_property name="ObjectShortName">ig_trigger_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_counter" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_counter[29:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_counter[29:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_run" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_run</obj_property>
+            <obj_property name="ObjectShortName">ig_run</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_num_assert_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_num_assert_i[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_num_assert_i[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_num_deassert_i" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_num_deassert_i[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ig_num_deassert_i[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/theTlpControl/rx_Itf/Intrpt_Handle/ig_asserting_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ig_asserting_i</obj_property>
+            <obj_property name="ObjectShortName">ig_asserting_i</obj_property>
+         </wvobject>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="group189" type="group">
       <obj_property name="label">tx_itf</obj_property>

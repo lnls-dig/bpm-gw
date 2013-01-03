@@ -693,6 +693,7 @@ begin
          board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
        end
 
+       TSK_TX_CLK_EAT(50); //wait a bit to distinguish payloads in waveform dump
 
        // feeding the payload CplD (2nd descriptor)
        $display("%d ns:   feeding the payload CplD (2nd descriptor)", $time);
@@ -767,23 +768,9 @@ begin
        
        $display("\n%d ns: >DMA Read", $time);
        board.DMA_us_is_Last   = 'B0;
-       dword_pack_data_store(0, 0);
-       dword_pack_data_store(board.DMA_PA[31:00], 1);
-       dword_pack_data_store(board.DMA_HA[63:32], 2);          // 0
-       dword_pack_data_store(board.DMA_HA[31:00], 3);
-       dword_pack_data_store(board.DMA_BDA[63:32], 4);         // 0
-       dword_pack_data_store(board.DMA_BDA[31:00] + 'H10000, 5);
-       dword_pack_data_store(board.DMA_L1, 6);
-       dword_pack_data_store({4'H0
-                            ,3'H1, board.DMA_us_is_Last
-                            ,3'H0, 1'B1
-                            ,1'B0, board.DMA_bar
-                            ,1'B1
-                            ,15'H0
-                            }, 7);
+
        board.Rx_TLP_Length    = 'H01;
 
-     
        board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
        board.Hdr_Array[2] = `C_ADDR_DMA_US_PAH;
@@ -837,7 +824,7 @@ begin
        //  Write LENG
        $display("%d ns:   Write LENG", $time);
        board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
-       dword_pack_data_store(board.DMA_Leng, 0);            //'H100
+       dword_pack_data_store(board.DMA_L1, 0);            //'H100
      
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
@@ -846,12 +833,14 @@ begin
        $display("%d ns:   Write CTRL and start the DMA", $time);
        board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
        dword_pack_data_store({4'H0
-                            ,3'H1, board.DMA_ds_is_Last
+                            ,3'H1, board.DMA_us_is_Last
                             ,3'H0, 1'B1
                             ,1'B0, board.DMA_bar
                             ,1'B1
                             ,15'H0
                             }, 0);
+       TLP_Feed_Rx(`C_BAR0_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
       board.Desc_tx_MRd_TAG = 'hE0;
       board.RP.com_usrapp.TSK_EXPECT_MEMRD(3'b000, 1'b0, 1'b0, 2'b00,
