@@ -131,10 +131,20 @@ wire  [0:0]  rp_pci_exp_txp;
 //
 // PCI-Express Endpoint Instance
 //
+`ifdef ENABLE_GT
+parameter PIPE_SIM = "FALSE";
+parameter PIPE_SIM_MODE = "FALSE";
+defparam board.RP.rport.PIPE_SIM_MODE = "FALSE";
+`else
+parameter PIPE_SIM = "TRUE";
+parameter PIPE_SIM_MODE = "TRUE";
+defparam board.RP.rport.PIPE_SIM_MODE = "TRUE";
+`endif
 
 bpm_pcie_k7 # (
 
-  .PL_FAST_TRAIN("TRUE")
+  .PL_FAST_TRAIN("TRUE"),
+  .PIPE_SIM_MODE(PIPE_SIM_MODE)
 
 )
 EP (
@@ -237,6 +247,8 @@ CLK_GEN_EP (
 `endif
     end
   end
+
+`include "pipe_interconnect.v"
 
 initial begin
 

@@ -35,7 +35,8 @@ use UNISIM.VComponents.all;
 entity bpm_pcie_k7 is
   generic (
     constant pcieLanes : integer := C_NUM_PCIE_LANES;
-    PL_FAST_TRAIN      : string  := "FALSE"
+    PL_FAST_TRAIN      : string  := "FALSE";
+    PIPE_SIM_MODE      : string := "FALSE"
     );
   port (
 
@@ -67,7 +68,8 @@ architecture Behavioral of bpm_pcie_k7 is
     generic (
       PL_FAST_TRAIN   : string := "FALSE";
       PCIE_EXT_CLK    : string := "FALSE";
-      UPSTREAM_FACING : string := "TRUE"
+      UPSTREAM_FACING : string := "TRUE";
+      PIPE_SIM_MODE   : string := "FALSE"
       );
     port (
       -------------------------------------------------------------------------------------------------------------------
@@ -1299,7 +1301,8 @@ begin
   pcie_core_i : pcie_core 
   generic map(
     PL_FAST_TRAIN => PL_FAST_TRAIN,
-    PCIE_EXT_CLK => "FALSE"
+    PCIE_EXT_CLK => "FALSE",
+    PIPE_SIM_MODE => "FALSE"
   )
   port map(
     --------------------------------------------------------------------------------------------------------------------

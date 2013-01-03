@@ -29,6 +29,7 @@ board.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top.v
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top_pipe_mode.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_top_7x.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v
