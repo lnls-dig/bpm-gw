@@ -469,73 +469,76 @@
     <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_reset.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="42"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top_pipe_mode.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="43"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="44"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="45"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="46"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_sync.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="47"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_sync.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="48"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="49"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_drp.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="50"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_drp.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="51"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="52"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="53"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="54"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_eq.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="55"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_eq.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="56"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_clock.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="57"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_wrapper.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_clock.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="58"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_wrapper.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="59"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="60"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="61"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_rate.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="62"/>
     </file>
-    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_rate.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="Implementation" xil_pn:seqID="63"/>
+    </file>
+    <file xil_pn:name="../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v" xil_pn:type="FILE_VERILOG">
+      <association xil_pn:name="Implementation" xil_pn:seqID="64"/>
     </file>
   </files>
 
   <bindings/>
 
-  <version xil_pn:ise_version="14.3" xil_pn:schema_version="2"/>
+  <version xil_pn:ise_version="14.4" xil_pn:schema_version="2"/>
 
 </project>
