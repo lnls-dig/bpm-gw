@@ -34,7 +34,9 @@ use UNISIM.VComponents.all;
 
 entity bpm_pcie_k7 is
   generic (
-    constant pcieLanes : integer := C_NUM_PCIE_LANES
+    constant pcieLanes : integer := C_NUM_PCIE_LANES;
+    PL_FAST_TRAIN      : string  := "FALSE";
+    PIPE_SIM_MODE      : string := "FALSE"
     );
   port (
 
@@ -66,7 +68,8 @@ architecture Behavioral of bpm_pcie_k7 is
     generic (
       PL_FAST_TRAIN   : string := "FALSE";
       PCIE_EXT_CLK    : string := "FALSE";
-      UPSTREAM_FACING : string := "TRUE"
+      UPSTREAM_FACING : string := "TRUE";
+      PIPE_SIM_MODE   : string := "FALSE"
       );
     port (
       -------------------------------------------------------------------------------------------------------------------
@@ -653,11 +656,11 @@ architecture Behavioral of bpm_pcie_k7 is
       ctl_reset         : out std_logic;
       ctl_status        : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
       -- Fabric side: DLM Rx
-      dlm_rv            : out std_logic;
-      dlm_rd            : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
+      dlm_rv            : in std_logic;
+      dlm_rd            : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
       -- Fabric side: DLM Tx
-      dlm_tv            : in  std_logic;
-      dlm_td            : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
+      dlm_tv            : out std_logic;
+      dlm_td            : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
       Link_Buf_full     : in  std_logic;
       -- Data generator table write
       tab_we            : out std_logic_vector(2-1 downto 0);
@@ -1000,8 +1003,8 @@ architecture Behavioral of bpm_pcie_k7 is
 
 --S     SIMONE: Wanxau UserLogic Signals, not Used
   signal protocol_link_act : std_logic_vector(2-1 downto 0)              := (others => '0');
-  signal protocol_rst      : std_logic;
-  signal daq_rstop         : std_logic;
+  signal protocol_rst      : std_logic; 
+  signal daq_rstop         : std_logic := '0';
   signal ctl_rv            : std_logic;
   signal ctl_rd            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
   signal ctl_ttake         : std_logic;
@@ -1250,8 +1253,8 @@ begin
 
   tx_cfg_gnt         <= '1';
   s_axis_tx_tuser    <= s_axis_tx_tdsc & '0' & s_axis_tx_terrfwd & '0';
-  m_axis_rx_tuser    <= (others => '0');
-  m_axis_rx_tuser(1) <= m_axis_rx_terrfwd;
+  m_axis_rx_terrfwd  <= m_axis_rx_tuser(1); 
+  m_axis_rx_tbar_hit <= m_axis_rx_tuser(8 downto 2);
 
 --
   cfg_di           <= (others => '0');
@@ -1295,7 +1298,13 @@ begin
 
 -- --------------------------------------------------------------
 -- --------------------------------------------------------------
-  pcie_core_i : pcie_core port map(
+  pcie_core_i : pcie_core 
+  generic map(
+    PL_FAST_TRAIN => PL_FAST_TRAIN,
+    PCIE_EXT_CLK => "FALSE",
+    PIPE_SIM_MODE => "FALSE"
+  )
+  port map(
     --------------------------------------------------------------------------------------------------------------------
     -- 1. PCI Express (pci_exp) Interface                                                                             --
     --------------------------------------------------------------------------------------------------------------------

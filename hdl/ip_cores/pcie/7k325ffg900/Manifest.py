@@ -1,7 +1,5 @@
 if (action == "synthesis"):
 
-    modules = {"local" : ["pcie_core/source"]}
-
     files = ["bram_x64.ngc",
              "eb_fifo_counted_resized.ngc",
              "mbuf_128x72.ngc",
@@ -15,3 +13,5 @@ else:
              "mbuf_128x72.vhd",
              "prime_FIFO_plain.vhd",
              "sfifo_15x128.vhd"]
+
+modules = {"local" : ["pcie_core/source"]}

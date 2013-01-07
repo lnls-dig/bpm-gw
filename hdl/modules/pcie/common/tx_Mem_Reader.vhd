@@ -723,7 +723,7 @@ begin
                            else eb_FIFO_qout_shift when (eb_FIFO_Hit = '1' and Shift_1st_QWord_k = '1')
                            else (others => '0');
   DDR_Dout_wire    <= DDR_FIFO_RdQout when DDR_FIFO_Hit = '1' else (others => '0');
-  Regs_RdQout_wire <= Regs_RdQout(31 downto 0) & Regs_RdQout(63 downto 32)  --watch out!
+  Regs_RdQout_wire <= Regs_RdQout  --watch out!
                            when Regs_Hit = '1' else (others => '0');
 
   mbuf_Din_wire_OR <= eb_FIFO_Dout_wire or DDR_Dout_wire or Regs_RdQout_wire;
