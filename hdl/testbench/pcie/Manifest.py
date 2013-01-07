@@ -2,18 +2,18 @@ import os as __os
 import shutil as __shutil
 
 def __import_verilog_lib():
-	xilinx_dir = __os.getenv("XILINX");
-	if xilinx_dir == None:
-		print("XILINX variable not set")
-		__os.exit(-1)
+    xilinx_dir = __os.getenv("XILINX");
+    if xilinx_dir == None:
+        print("XILINX variable not set")
+        __os.exit(-1)
 
-	if __os.path.isdir("work"):
-		return
+    if __os.path.isdir("work"):
+        return
 
-	verilog_lib = xilinx_dir + "/ISE/verilog/src/glbl.v"
-	print("Copying " + verilog_lib)
-	#__os.mkdir("work")
-	__shutil.copy(verilog_lib, ".")
+    verilog_lib = xilinx_dir + "/ISE/verilog/src/glbl.v"
+    print("Copying " + verilog_lib)
+    #__os.mkdir("work")
+    __shutil.copy(verilog_lib, ".")
 
 
 target = "xilinx"
