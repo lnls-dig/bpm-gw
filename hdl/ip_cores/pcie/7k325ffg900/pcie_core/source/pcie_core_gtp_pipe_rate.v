@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gtp_pipe_rate.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  gtp_pipe_rate.v
 //  Description  :  PIPE Rate Module for 7 Series Transceiver

@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_qpll_wrapper.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  qpll_wrapper.v
 //  Description  :  QPLL Wrapper Module for 7 Series Transceiver
-//  Version      :  16.1
+//  Version      :  18.1
 //------------------------------------------------------------------------------
 
 
@@ -147,20 +147,19 @@ generate if (PCIE_GT_DEVICE == "GTP")
         //---------- Clock Attributes ------------------------------------------                                                     
         .PLL0_CFG                       (27'h01F024C),                          // Optimized for IES                                                  
         .PLL1_CFG                       (27'h01F024C),                          // Optimized for IES                                                  
-      //.PLL0_CLKOUT_CFG                ( 4'd0),                                //                                                   
-      //.PLL1_CLKOUT_CFG                ( 4'd0),                                //   
-      //.PLL0_DMON_CFG                  (),                                     //                                                   
-      //.PLL1_DMON_CFG                  (),                                     //                                      
-        .PLL0_FBDIV                     (GTP_QPLL_FBDIV),                       //                                                   
-        .PLL1_FBDIV                     (GTP_QPLL_FBDIV),                       //                                                   
-        .PLL0_FBDIV_45                  (5),                                    //                                                   
-        .PLL1_FBDIV_45                  (5),                                    //                                                   
-      //.PLL0_INIT_CFG                  (24'h000006),                           //                                                   
-      //.PLL1_INIT_CFG                  (24'h000006),                           //                                                   
-      //.PLL0_LOCK_CFG                  ( 9'h1E8),                              //     
-      //.PLL1_LOCK_CFG                  ( 9'h1E8),                              //                                                                                                                    
-        .PLL0_REFCLK_DIV                (1),                                    //                                                   
-        .PLL1_REFCLK_DIV                (1),                                    //                                                   
+      //.PLL_CLKOUT_CFG                 (8'd0),                                 // Optimized for IES                                                   
+      //.PLL0_DMON_CFG                  (1'b0),                                 // Optimized for IES
+      //.PLL1_DMON_CFG                  (1'b0),                                 // Optimized for IES
+        .PLL0_FBDIV                     (GTP_QPLL_FBDIV),                       // Optimized for IES                                                   
+        .PLL1_FBDIV                     (GTP_QPLL_FBDIV),                       // Optimized for IES                                                   
+        .PLL0_FBDIV_45                  (5),                                    // Optimized for IES                                                   
+        .PLL1_FBDIV_45                  (5),                                    // Optimized for IES                                                   
+      //.PLL0_INIT_CFG                  (24'h00001E),                           // Optimized for IES
+      //.PLL1_INIT_CFG                  (24'h00001E),                           // Optimized for IES                                                   
+      //.PLL0_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES
+      //.PLL1_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES                                                   
+        .PLL0_REFCLK_DIV                (1),                                    // Optimized for IES                                                  
+        .PLL1_REFCLK_DIV                (1),                                    // Optimized for IES                                                  
                                                                                                                                      
         //---------- MISC ------------------------------------------------------                                                     
         .BIAS_CFG                       (64'h0000000000000001),                 // Optimized for IES                                                 
@@ -185,10 +184,10 @@ generate if (PCIE_GT_DEVICE == "GTP")
         .PLL1LOCKDETCLK                 (QPLL_QPLLLOCKDETCLK),                  //                       
         .PLL0LOCKEN                     ( 1'd1),                                //                       
         .PLL1LOCKEN                     ( 1'd1),                                //                       
-        .PLL0REFCLKSEL                  ( 3'd1),                                //                       
-        .PLL1REFCLKSEL                  ( 3'd1),                                //                       
-        .PLLRSVD1                       (16'd0),                                //                       
-        .PLLRSVD2                       ( 5'b11111),                            //                       
+        .PLL0REFCLKSEL                  ( 3'd1),                                // Optimized for IES                      
+        .PLL1REFCLKSEL                  ( 3'd1),                                // Optimized for IES                      
+        .PLLRSVD1                       (16'd0),                                // Optimized for IES                    
+        .PLLRSVD2                       ( 5'd0),                                // Optimized for IES                  
         
         .PLL0OUTCLK                     (QPLL_QPLLOUTCLK),                      //                       
         .PLL1OUTCLK                     (),                                     //                       
@@ -219,15 +218,15 @@ generate if (PCIE_GT_DEVICE == "GTP")
         .DRPRDY                         (QPLL_DRPRDY),                          //                       
                                                                                                          
         //---------- Band Gap --------------------------------------------------                         
-        .BGBYPASSB                      ( 1'd1),                                //                       
-        .BGMONITORENB                   ( 1'd1),                                //                       
-        .BGPDB                          ( 1'd1),                                // 
-        .BGRCALOVRD                     ( 5'd31),                               //
-        .BGRCALOVRDENB                  ( 1'd1),                                //
+        .BGBYPASSB                      ( 1'd1),                                // Optimized for IES                      
+        .BGMONITORENB                   ( 1'd1),                                // Optimized for IES                      
+        .BGPDB                          ( 1'd1),                                // Optimized for IES
+        .BGRCALOVRD                     ( 5'd31),                               // Optimized for IES
+        .BGRCALOVRDENB                  ( 1'd1),                                // Optimized for IES
         
         //---------- MISC ------------------------------------------------------
         .PMARSVD                        ( 8'd0),                                //
-        .RCALENB                        ( 1'd0),                                //
+        .RCALENB                        ( 1'd1),                                // Optimized for IES
                                                                                
         .REFCLKOUTMONITOR0              (),                                     //
         .REFCLKOUTMONITOR1              (),                                     //
@@ -264,7 +263,7 @@ else if (PCIE_GT_DEVICE == "GTH")
         .QPLL_FBDIV_RATIO               ( 1'd1),                                // Optimized
         .QPLL_INIT_CFG	                (24'h000006),                           // 
         .QPLL_LOCK_CFG                  (16'h05E8),                             // Optimized for IES
-        .QPLL_LPF                       ( 4'hD),                                // Optimized for IES
+        .QPLL_LPF                       ( 4'hD),                                // Optimized for IES, [1:0] = 2'b00 (13.3 KOhm), [1:0] = 2'b01 (57.0 KOhm)
         .QPLL_REFCLK_DIV	              ( 1),                                   // 
         .QPLL_RP_COMP                   ( 1'd0),                                // GTH new
         .QPLL_VTRL_RESET                ( 2'd0),                                // GTH new
@@ -316,15 +315,15 @@ else if (PCIE_GT_DEVICE == "GTH")
         .DRPRDY                         (QPLL_DRPRDY),                          //
                 
         //---------- Band Gap --------------------------------------------------    
-        .BGBYPASSB                      ( 1'd1),                                //
-        .BGMONITORENB                   ( 1'd1),                                //
-        .BGPDB                          ( 1'd1),                                //
-        .BGRCALOVRD                     ( 5'd0),                                //
-        .BGRCALOVRDENB                  ( 1'd0),                                // GTH
+        .BGBYPASSB                      ( 1'd1),                                // Optimized for IES
+        .BGMONITORENB                   ( 1'd1),                                // Optimized for IES
+        .BGPDB                          ( 1'd1),                                // Optimized for IES
+        .BGRCALOVRD                     ( 5'd31),                               // Optimized for IES
+        .BGRCALOVRDENB                  ( 1'd1),                                // GTH, Optimized for IES
         
         //---------- MISC ------------------------------------------------------
         .PMARSVD                        ( 8'd0),                                //
-        .RCALENB                        ( 1'd1),                                //
+        .RCALENB                        ( 1'd1),                                // Optimized for IES
                                                                               
         .REFCLKOUTMONITOR               (),                                     //
         .PMARSVDOUT                     ()                                      // GTH
@@ -352,7 +351,7 @@ else
       //.QPLL_CLKOUT_CFG                ( 4'd0),                                //
         .QPLL_COARSE_FREQ_OVRD          ( 6'b010000),                           // 
         .QPLL_COARSE_FREQ_OVRD_EN       ( 1'd0),                                // 
-        .QPLL_CP                        (10'h03F),                              // Optimized for Gen3 compliance (Gen1/Gen2 = 10'h1FF) 
+        .QPLL_CP                        (10'h01F),                              // Optimized for Gen3 compliance (Gen1/Gen2 = 10'h1FF) 
         .QPLL_CP_MONITOR_EN             ( 1'd0),                                //
         .QPLL_DMONITOR_SEL              ( 1'd0),                                //
         .QPLL_FBDIV                     (QPLL_FBDIV),                           // 
@@ -360,7 +359,7 @@ else
         .QPLL_FBDIV_RATIO               ( 1'd1),                                // Optimized for silicon
       //.QPLL_INIT_CFG	                (24'h000006),                           // 
         .QPLL_LOCK_CFG                  (16'h21E8),                             // Optimized for silicon, IES = 16'h01D0, GES 16'h21D0
-        .QPLL_LPF                       ( 4'hD),                                // Optimized for silicon
+        .QPLL_LPF                       ( 4'hD),                                // Optimized for silicon, [1:0] = 2'b00 (13.3 KOhm), [1:0] = 2'b01 (57.0 KOhm)
         .QPLL_REFCLK_DIV	              (1),                                    // 
     
         //---------- MISC ------------------------------------------------------
@@ -411,11 +410,11 @@ else
         .BGBYPASSB                      ( 1'd1),                                //
         .BGMONITORENB                   ( 1'd1),                                //
         .BGPDB                          ( 1'd1),                                //
-        .BGRCALOVRD                     ( 5'd0),                                //
+        .BGRCALOVRD                     ( 5'd31),                               //
         
         //---------- MISC ------------------------------------------------------
         .PMARSVD                        ( 8'd0),                                //
-        .RCALENB                        ( 1'd0),                                //
+        .RCALENB                        ( 1'd1),                                // Optimized for GES
                                                                                
         .REFCLKOUTMONITOR               ()                                      //
     

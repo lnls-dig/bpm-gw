@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_pipe_lane.v
-// Version    : 1.7
+// Version    : 1.8
 //
 // Description: PIPE per lane module for 7-Series PCIe Block
 //
@@ -102,36 +102,6 @@ module pcie_core_pcie_pipe_lane #
 
     parameter TCQ  = 1;      // clock to out delay model
 
-    reg [ 1:0]          pipe_rx_char_is_k_q     ;
-    reg [15:0]          pipe_rx_data_q          ;
-    reg                 pipe_rx_valid_q         ;
-    reg                 pipe_rx_chanisaligned_q ;
-    reg [ 2:0]          pipe_rx_status_q        ;
-    reg                 pipe_rx_phy_status_q    ;
-    reg                 pipe_rx_elec_idle_q     ;
-
-    reg                 pipe_rx_polarity_q      ;
-    reg                 pipe_tx_compliance_q    ;
-    reg [ 1:0]          pipe_tx_char_is_k_q     ;
-    reg [15:0]          pipe_tx_data_q          ;
-    reg                 pipe_tx_elec_idle_q     ;
-    reg [ 1:0]          pipe_tx_powerdown_q     ;
-
-    reg [ 1:0]          pipe_rx_char_is_k_qq    ;
-    reg [15:0]          pipe_rx_data_qq         ;
-    reg                 pipe_rx_valid_qq        ;
-    reg                 pipe_rx_chanisaligned_qq;
-    reg [ 2:0]          pipe_rx_status_qq       ;
-    reg                 pipe_rx_phy_status_qq   ;
-    reg                 pipe_rx_elec_idle_qq    ;
-
-    reg                 pipe_rx_polarity_qq     ;
-    reg                 pipe_tx_compliance_qq   ;
-    reg [ 1:0]          pipe_tx_char_is_k_qq    ;
-    reg [15:0]          pipe_tx_data_qq         ;
-    reg                 pipe_tx_elec_idle_qq    ;
-    reg [ 1:0]          pipe_tx_powerdown_qq    ;
-
     generate
 
     if (PIPE_PIPELINE_STAGES == 0) begin : pipe_stages_0
@@ -153,6 +123,21 @@ module pcie_core_pcie_pipe_lane #
 
     end // if (PIPE_PIPELINE_STAGES == 0)
     else if (PIPE_PIPELINE_STAGES == 1) begin : pipe_stages_1
+
+    reg [ 1:0]          pipe_rx_char_is_k_q     ;
+    reg [15:0]          pipe_rx_data_q          ;
+    reg                 pipe_rx_valid_q         ;
+    reg                 pipe_rx_chanisaligned_q ;
+    reg [ 2:0]          pipe_rx_status_q        ;
+    reg                 pipe_rx_phy_status_q    ;
+    reg                 pipe_rx_elec_idle_q     ;
+
+    reg                 pipe_rx_polarity_q      ;
+    reg                 pipe_tx_compliance_q    ;
+    reg [ 1:0]          pipe_tx_char_is_k_q     ;
+    reg [15:0]          pipe_tx_data_q          ;
+    reg                 pipe_tx_elec_idle_q     ;
+    reg [ 1:0]          pipe_tx_powerdown_q     ;
 
         always @(posedge pipe_clk) begin
 
@@ -214,6 +199,36 @@ module pcie_core_pcie_pipe_lane #
 
     end // if (PIPE_PIPELINE_STAGES == 1)
     else if (PIPE_PIPELINE_STAGES == 2) begin : pipe_stages_2
+
+    reg [ 1:0]          pipe_rx_char_is_k_q     ;
+    reg [15:0]          pipe_rx_data_q          ;
+    reg                 pipe_rx_valid_q         ;
+    reg                 pipe_rx_chanisaligned_q ;
+    reg [ 2:0]          pipe_rx_status_q        ;
+    reg                 pipe_rx_phy_status_q    ;
+    reg                 pipe_rx_elec_idle_q     ;
+
+    reg                 pipe_rx_polarity_q      ;
+    reg                 pipe_tx_compliance_q    ;
+    reg [ 1:0]          pipe_tx_char_is_k_q     ;
+    reg [15:0]          pipe_tx_data_q          ;
+    reg                 pipe_tx_elec_idle_q     ;
+    reg [ 1:0]          pipe_tx_powerdown_q     ;
+
+    reg [ 1:0]          pipe_rx_char_is_k_qq    ;
+    reg [15:0]          pipe_rx_data_qq         ;
+    reg                 pipe_rx_valid_qq        ;
+    reg                 pipe_rx_chanisaligned_qq;
+    reg [ 2:0]          pipe_rx_status_qq       ;
+    reg                 pipe_rx_phy_status_qq   ;
+    reg                 pipe_rx_elec_idle_qq    ;
+
+    reg                 pipe_rx_polarity_qq     ;
+    reg                 pipe_tx_compliance_qq   ;
+    reg [ 1:0]          pipe_tx_char_is_k_qq    ;
+    reg [15:0]          pipe_tx_data_qq         ;
+    reg                 pipe_tx_elec_idle_qq    ;
+    reg [ 1:0]          pipe_tx_powerdown_qq    ;
 
         always @(posedge pipe_clk) begin
 

@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_top.v
-// Version    : 1.7
+// Version    : 1.8
 // Description: Solution wrapper for Virtex7 Hard Block for PCI Express
 //
 //
@@ -1059,7 +1059,7 @@ pcie_core_axi_basic_top #(
     .trn_rsrc_dsc             (trn_rsrc_dsc),             //  input
     .trn_rrem                 (trn_rrem),                 //  input
     .trn_rerrfwd              (trn_rerrfwd),              //  input
-    .trn_rbar_hit             (trn_rbar_hit),             //  input
+    .trn_rbar_hit             (trn_rbar_hit[6:0]),             //  input
     .trn_recrc_err            (trn_recrc_err),            //  input
 
     // TRN Misc.

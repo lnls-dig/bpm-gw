@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_axi_basic_tx_pipeline.v
-// Version    : 1.7
+// Version    : 1.8
 //                                                                            //
 //  Description:                                                              //
 //  AXI to TRN TX pipeline. Converts transmitted data from AXI protocol to    //

@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_user.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_user.v
 //  Description  :  PIPE User Module for 7 Series Transceiver
@@ -178,7 +178,7 @@ module pcie_core_pipe_user #
     localparam          FSM_RESET      = 2'd3;    
     
     //---------- Simulation Speedup ------------------------
-    localparam converge_max_cnt = PCIE_SIM_MODE ? 22'd100 : CONVERGE_MAX;                                                              
+    localparam converge_max_cnt = (PCIE_SIM_MODE == "TRUE") ? 22'd100 : CONVERGE_MAX;                                                              
 
 
 

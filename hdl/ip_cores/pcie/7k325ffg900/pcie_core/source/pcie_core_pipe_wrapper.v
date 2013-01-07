@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_wrapper.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_wrapper.v
 //  Description  :  PIPE Wrapper for 7 Series Transceiver
-//  Version      :  18.0
+//  Version      :  18.1
 //------------------------------------------------------------------------------
 
 //---------- PIPE Wrapper Hierarchy --------------------------------------------
@@ -85,8 +85,8 @@
 //                                : "GTP"
 //  PCIE_USE_MODE                 : "1.0" = GTX IES 325T or GTP IES use mode.
 //                                : "1.1" = GTX IES 485T use mode.
-//                                : "2.0" = GTH IES 690T use mode.
-//                                : "2.1" = GTH GES 690T use mode for 1.2 silicon.
+//                                : "2.0" = GTH IES 690T use mode for 1.0 silicon.
+//                                : "2.1" = GTH GES 690T use mode for 1.2 silicon.  SW model use "2.0"
 //                                : "3.0" = GTX GES 325T or 485T use mode (default).
 //  PCIE_PLL_SEL                  : "CPLL" (default)
 //                                : "QPLL"
@@ -252,6 +252,7 @@ module pcie_core_pipe_wrapper #
     output      [(PCIE_LANE*3)-1:0] PIPE_RXBUFSTATUS,       // PCLK       | RXUSRCLK
     
     //---------- PIPE User Ports ---------------------------
+  //input                           PIPE_MMCM_RST_N,        // Async      | Async
     input       [PCIE_LANE-1:0]     PIPE_RXSLIDE,           // PCLK       | RXUSRCLK
     
     output      [PCIE_LANE-1:0]     PIPE_CPLL_LOCK,         // Async      | Async
@@ -593,7 +594,8 @@ generate
             .CLK_CLK                        (PIPE_CLK),
             .CLK_TXOUTCLK                   (gt_txoutclk[0]),       // Reference clock from lane 0
             .CLK_RXOUTCLK_IN                (gt_rxoutclk),         
-            .CLK_RST_N                      (1'b1),                
+            .CLK_RST_N                      (1'b1),  
+          //.CLK_RST_N                      (PIPE_MMCM_RST_N),      // Allow system reset for error recovery             
             .CLK_PCLK_SEL                   (rate_pclk_sel),     
             .CLK_GEN3                       (rate_gen3[0]),          
             
@@ -1107,8 +1109,10 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
     pcie_core_pipe_drp #
     (
     
+        .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),   // PCIe GT device
         .PCIE_USE_MODE                  (PCIE_USE_MODE),    // PCIe use mode
         .PCIE_PLL_SEL                   (PCIE_PLL_SEL),     // PCIe PLL select for Gen1/Gen2 only
+        .PCIE_ASYNC_EN                  (PCIE_ASYNC_EN),    // PCIe async enable
         .PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),    // PCIe TX buffer enable for Gen1/Gen2 only
         .PCIE_RXBUF_EN                  (PCIE_RXBUF_EN),    // PCIe RX buffer enable for Gen3      only
         .PCIE_TXSYNC_MODE               (PCIE_TXSYNC_MODE), // PCIe TX sync mode

@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_rxeq_scan.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  rxeq_scan.v
 //  Description  :  PIPE RX Equalization Eye Scan Module for 7 Series Transceiver
@@ -67,7 +67,8 @@ module pcie_core_rxeq_scan #
 
     parameter PCIE_SIM_MODE       = "FALSE",                // PCIe sim mode 
     parameter PCIE_RXEQ_MODE_GEN3 = 1,                      // PCIe RX equalization mode
-    parameter CONVERGE_MAX        = 22'd3125000             // Convergence max count 
+    parameter CONVERGE_MAX        = 22'd3125000,            // Convergence max count (12ms) 
+    parameter CONVERGE_MAX_BYPASS = 22'd2083333             // Convergence max count for phase2/3 bypass mode (8ms)
 )
 
 (
@@ -134,7 +135,8 @@ module pcie_core_rxeq_scan #
     //  Gen3:  32 bits / PCLK : 1 million bits / X PCLK
     //         X = 
     //------------------------------------------------------
-    localparam converge_max_cnt = (PCIE_SIM_MODE == "TRUE") ? 22'd1000 : CONVERGE_MAX;   
+    localparam converge_max_cnt        = (PCIE_SIM_MODE == "TRUE") ? 22'd1000 : CONVERGE_MAX;   
+    localparam converge_max_bypass_cnt = (PCIE_SIM_MODE == "TRUE") ? 22'd1000 : CONVERGE_MAX_BYPASS;   
     
     
 
@@ -281,7 +283,15 @@ begin
                 end
             else
                 begin
-                fsm              <= (converge_cnt == converge_max_cnt) ? FSM_NEW_TXCOEFF_REQ : FSM_CONVERGE;
+                
+                //---------- Phase2/3 ----------------------
+                if (RXEQSCAN_CONTROL == 2'd2)
+                    fsm <= (converge_cnt == converge_max_cnt)        ? FSM_NEW_TXCOEFF_REQ : FSM_CONVERGE;
+                //---------- Phase2/3 Bypass ---------------
+                else
+                    fsm <= (converge_cnt == converge_max_bypass_cnt) ? FSM_NEW_TXCOEFF_REQ : FSM_CONVERGE;
+                
+
                 preset_done      <= 1'd0;
                 converge_cnt     <= converge_cnt + 1'd1;
                 new_txcoeff      <= new_txcoeff;

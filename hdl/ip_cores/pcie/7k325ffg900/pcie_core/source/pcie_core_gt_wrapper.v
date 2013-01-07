@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gt_wrapper.v
-// Version    : 1.7
+// Version    : 1.8
 //------------------------------------------------------------------------------
 //  Filename     :  gt_wrapper.v
 //  Description  :  GT Wrapper Module for 7 Series Transceiver
-//  Version      :  18.0
+//  Version      :  18.1
 //------------------------------------------------------------------------------
 
 
@@ -278,10 +278,19 @@ module pcie_core_gt_wrapper #
     //---------- Select GTP CPLL configuration -------------
     //  PLL0/1_CFG[ 5:2] = CP1 : [    8, 4, 2, 1] units
     //  PLL0/1_CFG[10:6] = CP2 : [16, 8, 4, 2, 1] units
+    //  CP2/CP1 = 2 to 3  
+    //  (8/4=2)    = 27'h01F0210 = 0000_0001_1111_0000_0010_0001_0000
+    //  (9/3=3)    = 27'h01F024C = 0000_0001_1111_0000_0010_0100_1100
+    //  (8/3=2.67) = 27'h01F020C = 0000_0001_1111_0000_0010_0000_1100
+    //  (7/3=2.33) = 27'h01F01CC = 0000_0001_1111_0000_0001_1100_1100
+    //  (6/3=2)    = 27'h01F018C = 0000_0001_1111_0000_0001_1000_1100
+    //  (5/3=1.67) = 27'h01F014C = 0000_0001_1111_0000_0001_0100_1100
+    //  (6/2=3)    = 27'h01F0188 = 0000_0001_1111_0000_0001_1000_1000
     //---------- Select GTX CPLL configuration -------------
-    //  CPLL_CFG[ 5: 2]  = CP1 : [    8, 4, 2, 1] units
+    //  CPLL_CFG[ 5: 2]  = CP1 : [    8, 4, 2, 1] units 
     //  CPLL_CFG[22:18]  = CP2 : [16, 8, 4, 2, 1] units
-    //  CP2/CP1 = 2 to 3
+    //  CP2/CP1 = 2 to 3 
+    //  (9/3=3)    = 1010_0100_0000_0111_1100_1100
     //------------------------------------------------------
     localparam          CPLL_CFG  = ((PCIE_USE_MODE == "1.0") || (PCIE_USE_MODE == "1.1")) ? 24'hB407CC : 24'hA407CC;
     
@@ -324,15 +333,24 @@ module pcie_core_gt_wrapper #
                                         ((PCIE_ASYNC_EN == "TRUE") ? 72'b0000_0010_0000_0111_1111_1110_0010_0000_0110_0000_0010_0001_0001_0000_0000000000010000
                                                                    : 72'h11_07FE_4060_0104_0000):   // IES setting
                                         ((PCIE_ASYNC_EN == "TRUE") ? 72'h03_8000_23FF_1020_0020     // 
-                                                                   : 72'h03_0000_23FF_1020_0020);   // optimized for GES silicon                    
-                                      //((PCIE_ASYNC_EN == "TRUE") ? 72'h0B_0000_23FF_2040_0020     // 
-                                      //                           : 72'h0B_0000_23FF_1040_0020);   // remapped from IES setting                  
+                                                                   : 72'h03_0000_23FF_1020_0020);   // optimized for GES silicon 
+      
+    //---------- GTX Note ----------------------------------
+    // For GTX PCIe Gen1/Gen2 with 8B/10B, the following CDR setting may provide more margin
+    // Async 72'h03_8000_23FF_1040_0020
+    // Sync: 72'h03_0000_23FF_1040_0020   
+    //------------------------------------------------------                                                                                     
                             
     localparam          RXCDR_CFG_GTH = (PCIE_USE_MODE == "2.0") ? 
                                         ((PCIE_ASYNC_EN == "TRUE") ? 83'h0_0011_07FE_4060_2104_1010   
                                                                    : 83'h0_0011_07FE_4060_0104_1010):  // Optimized for IES silicon
-                                        ((PCIE_ASYNC_EN == "TRUE") ? 83'h0_0020_07FE_2000_C208_801A   
-                                                                   : 83'h0_0020_07FE_2000_C208_001A);  // Optimized for 1.2 silicon                   
+                                        ((PCIE_ASYNC_EN == "TRUE") ? 83'h0_0020_07FE_2000_C208_8018   
+                                                                   : 83'h0_0020_07FE_2000_C208_0018);  // Optimized for 1.2 silicon     
+                                                                                 
+    localparam          RXCDR_CFG_GTP = ((PCIE_ASYNC_EN == "TRUE") ? 83'h0_0001_07FE_4060_2104_1010
+                                                                   : 83'h0_0001_07FE_4060_0104_1010);  // Optimized for IES silicon
+                   
+                         
                                                                                            
                             
     //---------- Select TX and RX Sync Mode ----------------                                            
@@ -458,11 +476,11 @@ generate if (PCIE_GT_DEVICE == "GTP")
         .TX_RXDETECT_CFG                (TX_RXDETECT_CFG),                      // 
         .TX_RXDETECT_REF                ( 3'b100),                              // 
         .RX_CM_SEL                      ( 2'd3),                                // 0 = AVTT, 1 = GND, 2 = Float, 3 = Programmable
-        .RX_CM_TRIM	                    ( 4'b1010),                             // Select 800mV, Changed from 3 to 4-bits, optimized for silicon
+        .RX_CM_TRIM	                    ( 4'b1010),                             // Select 800mV, Changed from 3 to 4-bits, optimized for IES
         .TX_EIDLE_ASSERT_DELAY          (PCIE_TX_EIDLE_ASSERT_DELAY),           // Optimized for sim
         .TX_EIDLE_DEASSERT_DELAY        ( 3'b010),                              // Optimized for sim
       //.PD_TRANS_TIME_FROM_P2          (12'h03C),                              //
-      //.PD_TRANS_TIME_NONE_P2          ( 8'h19),                               //
+      //.PD_TRANS_TIME_NONE_P2          ( 8'h09),                               //
       //.PD_TRANS_TIME_TO_P2            ( 8'h64),                               //
       //.TRANS_TIME_RATE                ( 8'h0E),                               //
                                                                                  
@@ -501,9 +519,9 @@ generate if (PCIE_GT_DEVICE == "GTP")
       //.PMA_RSV5                       ( 1'd0),                                // Changed from 4 to 1-bit
       //.PMA_RSV6                       ( 1'd0),                                // GTP new
       //.PMA_RSV7                       ( 1'd0),                                // GTP new
-        .RX_BIAS_CFG                    (16'h0F33),                             //
-      //.TERM_RCAL_CFG                  (15'b100001000010000),                  // 
-      //.TERM_RCAL_OVRD                 ( 3'd0),                                // 
+        .RX_BIAS_CFG                    (16'h0F33),                             // Optimized for IES
+      //.TERM_RCAL_CFG                  (15'b100001000010000),                  // Optimized for IES
+      //.TERM_RCAL_OVRD                 ( 3'b000),                              // Optimized for IES 
                                              
          //---------- TX PI ----------------------------------------------------                                              
       //.TXPI_CFG0                      ( 2'd0),                                //                                            
@@ -519,12 +537,13 @@ generate if (PCIE_GT_DEVICE == "GTP")
       //.TXPI_SYNFREQ_PPM               ( 3'd0),                                //                                            
                                                                                                                                
         //---------- RX PI -----------------------------------------------------                                              
-      //.RXPI_CFG0                      ( 3'd0),                                // Changed from 3 to 2-bits                                           
-      //.RXPI_CFG1                      ( 1'd0),                                // Changed from 2 to 1-bits                                          
-      //.RXPI_CFG2                      ( 1'd0),                                // Changed from 2 to 1-bits                                                      
+      //.RXPI_CFG0                      ( 3'd0),                                // Changed from 3 to 2-bits, Optimized for IES                                           
+      //.RXPI_CFG1                      ( 1'd1),                                // Changed from 2 to 1-bits, Optimized for IES                                          
+      //.RXPI_CFG2                      ( 1'd1),                                // Changed from 2 to 1-bits, Optimized for IES                                                      
                                              
        //---------- CDR Attributes ---------------------------------------------
-        .RXCDR_CFG                      (72'b0000_001000000_11111_11111_001000000_011_0000111_000_001000_010000_100000000000000),  // CHECK                         
+      //.RXCDR_CFG                      (72'b0000_001000000_11111_11111_001000000_011_0000111_000_001000_010000_100000000000000),  // CHECK  
+        .RXCDR_CFG                      (RXCDR_CFG_GTP),       // Optimized for IES                       
         .RXCDR_LOCK_CFG                 ( 6'b010101),                           // [5:3] Window Refresh, [2:1] Window Size, [0] Enable Detection (sensitive lock = 6'b111001)  CHECK
         .RXCDR_HOLD_DURING_EIDLE        ( 1'd1),                                // Hold  RX CDR           on electrical idle for Gen1/Gen2
         .RXCDR_FR_RESET_ON_EIDLE        ( 1'd0),                                // Reset RX CDR frequency on electrical idle for Gen3
@@ -545,15 +564,15 @@ generate if (PCIE_GT_DEVICE == "GTP")
       //.RXLPM_HF_CFG3                  ( 4'b0000),                             // GTP new
         .RXLPM_HOLD_DURING_EIDLE        ( 1'b1),                                // GTP new
         .RXLPM_INCM_CFG                 ( 1'b1),                                // GTP new, optimized for IES
-      //.RXLPM_IPCM_CFG                 ( 1'b0),                                // GTP new
+      //.RXLPM_IPCM_CFG                 ( 1'b0),                                // GTP new, optimized for IES
       //.RXLPM_LF_CFG                   (18'b000000001111110000),               // 
         .RXLPM_LF_CFG2                  ( 5'b01010),                            // GTP new, optimized for IES
-      //.RXLPM_OSINT_CFG                ( 3'b000),                              // GTP new
+      //.RXLPM_OSINT_CFG                ( 3'b100),                              // GTP new, optimized for IES
                                                                            
         //---------- OS Attributes ---------------------------------------------
         .RX_OS_CFG                      (13'h0080),                             // CHECK
-      //.RXOSCALRESET_TIME              (5'b00011),                             //
-        .RXOSCALRESET_TIMEOUT           (5'b00000),                             // Disable timeout     
+      //.RXOSCALRESET_TIME              (5'b00011),                             // Optimized for IES
+        .RXOSCALRESET_TIMEOUT           (5'b00000),                             // Disable timeout, Optimized for IES     
                                                                                  
         //---------- Eye Scan Attributes --------------------------------------- 
       //.ES_CLK_PHASE_SEL               ( 1'b0),                                //
@@ -700,7 +719,7 @@ generate if (PCIE_GT_DEVICE == "GTP")
                                                                                  
         //---------- MISC ------------------------------------------------------               
         .DMONITOR_CFG                   (24'h000B01),                           // 
-        .RX_DEBUG_CFG                   (14'b00000011000000),                   // Optimized for IES
+        .RX_DEBUG_CFG                   (14'h0000),                             // Optimized for IES
       //.TST_RSV                        (32'd0),                                //
       //.UCODEER_CLR                    ( 1'd0)                                 // 
       
@@ -709,12 +728,12 @@ generate if (PCIE_GT_DEVICE == "GTP")
       //.ACJTAG_MODE                    (1'd0),                                 //
       //.ACJTAG_RESET                   (1'd0),                                 //
       //.ADAPT_CFG0                     (20'd0),                                //
-        .CFOK_CFG                       (43'h000_0000_0100)                     // Changed from 42 to 43-bits
-      //.CFOK_CFG2                      ( 7'd0),                                // Changed from 6 to 7-bits
-      //.CFOK_CFG3                      ( 7'd0),                                // Changed from 6 to 7-bits
-      //.CFOK_CFG4                      ( 1'd0),                                // GTP new
-      //.CFOK_CFG5                      ( 2'd0),                                // GTP new
-      //.CFOK_CFG6                      ( 4'd0),                                // GTP new 
+        .CFOK_CFG                       (43'h490_0004_0E80)                     // Changed from 42 to 43-bits, Optimized for IES
+      //.CFOK_CFG2                      ( 7'b010_0000),                         // Changed from 6 to 7-bits, Optimized for IES
+      //.CFOK_CFG3                      ( 7'b010_0000),                         // Changed from 6 to 7-bits, Optimized for IES
+      //.CFOK_CFG4                      ( 1'd0),                                // GTP new, Optimized for IES
+      //.CFOK_CFG5                      ( 2'd0),                                // GTP new, Optimized for IES
+      //.CFOK_CFG6                      ( 4'd0)                                 // GTP new, Optimized for IES
       
      )                                                                        
      gtpe2_channel_i                                                                     
@@ -863,17 +882,17 @@ generate if (PCIE_GT_DEVICE == "GTP")
         .RXDFEXYDEN                     (1'd0),                                 //  
         
         //---------- OS --------------------------------------------------------         
-        .RXOSHOLD                       (1'd0),                                 // 
-        .RXOSOVRDEN                     (1'd0),                                 //                           
-        .RXOSINTEN                      (1'd0),                                 //            
-        .RXOSINTHOLD                    (1'd0),                                 //                                                                                                       
-        .RXOSINTNTRLEN                  (1'd0),                                 //            
-        .RXOSINTOVRDEN                  (1'd0),                                 //             
-        .RXOSINTPD                      (1'd0),                                 // GTP new             
-        .RXOSINTSTROBE                  (1'd0),                                 //            
-        .RXOSINTTESTOVRDEN              (1'd0),                                 //            
-        .RXOSINTCFG                     (4'd0),                                 //                     
-        .RXOSINTID0                     (4'd0),                                 //
+        .RXOSHOLD                       (1'd0),                                 // Optimized for IES
+        .RXOSOVRDEN                     (1'd0),                                 // Optimized for IES                          
+        .RXOSINTEN                      (1'd1),                                 // Optimized for IES           
+        .RXOSINTHOLD                    (1'd0),                                 // Optimized for IES                                                                                                      
+        .RXOSINTNTRLEN                  (1'd0),                                 // Optimized for IES           
+        .RXOSINTOVRDEN                  (1'd0),                                 // Optimized for IES            
+        .RXOSINTPD                      (1'd0),                                 // GTP new, Optimized for IES             
+        .RXOSINTSTROBE                  (1'd0),                                 // Optimized for IES           
+        .RXOSINTTESTOVRDEN              (1'd0),                                 // Optimized for IES           
+        .RXOSINTCFG                     (4'b0010),                              // Optimized for IES                     
+        .RXOSINTID0                     (4'd0),                                 // Optimized for IES
                                   
         .RXOSINTDONE                    (),                                     //
         .RXOSINTSTARTED                 (),                                     //
@@ -1060,8 +1079,8 @@ else if (PCIE_GT_DEVICE == "GTH")
         .RX_XCLK_SEL                    ("RXREC"),                              // RXREC = use RX buffer, RXUSR = bypass RX buffer
         .OUTREFCLK_SEL_INV              ( 2'b11),                               //
         .CPLL_CFG                       (29'h00A407CC),                         // Changed from 24 to 29-bits, Optimized for PCIe PLL BW 
-      //.CPLL_INIT_CFG                  (24'h00001E),                           // 
-      //.CPLL_LOCK_CFG                  (16'h01E8),                             //
+      //.CPLL_INIT_CFG                  (24'h00001E),                           // Optimized for IES
+      //.CPLL_LOCK_CFG                  (16'h01E8),                             // Optimized for IES
       //.USE_PCS_CLK_PHASE_SEL          ( 1'd0)                                 // GTH new
                                                                                
         //---------- Reset Attributes ------------------------------------------                
@@ -1089,7 +1108,7 @@ else if (PCIE_GT_DEVICE == "GTH")
         .TX_EIDLE_ASSERT_DELAY          (PCIE_TX_EIDLE_ASSERT_DELAY),           // Optimized for sim (3'd4)
         .TX_EIDLE_DEASSERT_DELAY        ( 3'b100),                              // Optimized for sim
       //.PD_TRANS_TIME_FROM_P2          (12'h03C),                              //
-      //.PD_TRANS_TIME_NONE_P2          ( 8'h19),                               //
+      //.PD_TRANS_TIME_NONE_P2          ( 8'h09),                               // Optimized for sim
       //.PD_TRANS_TIME_TO_P2            ( 8'h64),                               //
       //.TRANS_TIME_RATE                ( 8'h0E),                               //
                                                                                
@@ -1126,8 +1145,8 @@ else if (PCIE_GT_DEVICE == "GTH")
         .PMA_RSV4                       (15'h0008),                             // GTH new, Optimized for IES
       //.PMA_RSV5                       ( 4'h00),                               // GTH new
         .RX_BIAS_CFG                    (24'h0C0010),                           // Changed from 12 to 24-bits, Optimized for IES
-        .TERM_RCAL_CFG                  (15'b100001000010000),                  // Changed from  5 to 15-bits
-        .TERM_RCAL_OVRD                 ( 3'b000),                              // Changed from  1 to  3-bits
+        .TERM_RCAL_CFG                  (15'b100001000010000),                  // Changed from  5 to 15-bits, Optimized for IES
+        .TERM_RCAL_OVRD                 ( 3'b000),                              // Changed from  1 to  3-bits, Optimized for IES
                   
         //---------- TX PI -----------------------------------------------------             
       //.TXPI_CFG0                      ( 2'd0),                                // GTH new
@@ -1494,7 +1513,7 @@ else if (PCIE_GT_DEVICE == "GTH")
         .TXQPIBIASEN                    ( 1'd0),                                // 
         .TXQPISTRONGPDOWN               ( 1'd0),                                // 
         .TXQPIWEAKPUP                   ( 1'd0),                                // 
-        .RXQPIEN                        ( 1'd0),                                // 
+        .RXQPIEN                        ( 1'd0),                                // Optimized for IES
         .PMARSVDIN                      ( 5'd0),                                // 
         .GTRSVD                         (16'd0),                                // 
                                                                               
@@ -1528,7 +1547,7 @@ else if (PCIE_GT_DEVICE == "GTH")
                                                                 
         //---------- DFE -------------------------------------------------------   
         .RXDFELPMRESET                  (GT_RXDFELPMRESET),                     //  
-        .RXDFEAGCTRL                    (5'h10),                                // GTH new, optimized for IES
+        .RXDFEAGCTRL                    (5'b10000),                             // GTH new, optimized for IES
         .RXDFECM1EN                     (1'd0),                                 // 
         .RXDFEVSEN                      (1'd0),                                 // 
         .RXDFETAP2HOLD                  (1'd0),                                 // 
@@ -1579,6 +1598,7 @@ else if (PCIE_GT_DEVICE == "GTH")
         .RXOSINTTESTOVRDEN              (1'd0),                                 // GTH new, optimized for IES
         .RXOSINTCFG                     (4'b0110),                              // GTH new, optimized for IES
         .RXOSINTID0                     (4'b0000),                              // GTH new, optimized for IES
+        .RXOSCALRESET                   ( 1'd0),                                // GTH, optimized for IES
         
         .RSOSINTDONE                    (),                                     // GTH new
         .RXOSINTSTARTED                 (),                                     // GTH new
@@ -1728,7 +1748,6 @@ else if (PCIE_GT_DEVICE == "GTH")
         .DMONFIFORESET                  ( 1'd0),                                // GTH
         .DMONITORCLK                    (dmonitorclk),                          // GTH, optimized for debug
       //.DMONITORCLK                    (GT_DRPCLK),                            // GTH, optimized for debug
-        .RXOSCALRESET                   ( 1'd0),                                // GTH, optimized for IES
         
         .RXPMARESETDONE                 (),                                     // GTH
         .TXPMARESETDONE                 ()                                      // GTH
@@ -1792,7 +1811,7 @@ else
         .TX_EIDLE_ASSERT_DELAY          (PCIE_TX_EIDLE_ASSERT_DELAY),           // Optimized for sim (3'd4)
         .TX_EIDLE_DEASSERT_DELAY        ( 3'b100),                              // Optimized for sim
       //.PD_TRANS_TIME_FROM_P2          (12'h03C),                              //
-      //.PD_TRANS_TIME_NONE_P2          ( 8'h19),                               //
+      //.PD_TRANS_TIME_NONE_P2          ( 8'h09),                               //
       //.PD_TRANS_TIME_TO_P2            ( 8'h64),                               //
       //.TRANS_TIME_RATE                ( 8'h0E),                               //
                                                                                 
@@ -1824,7 +1843,7 @@ else
         .PCS_RSVD_ATTR                  (PCS_RSVD_ATTR),                        //         
                                                                                 
         //---------- PMA Attributes --------------------------------------------                
-        .PMA_RSV                        (32'h00018480),                         // Optimized for GES 
+        .PMA_RSV                        (32'h00018480),                         // Optimized for GES Gen1/Gen2
         .PMA_RSV2                       (16'h2070),                             // Optimized for silicon, [4] RX_CM_TRIM[4], [5] = 1 Enable Eye Scan
       //.PMA_RSV3                       ( 2'd0),                                // 
       //.PMA_RSV4                       (32'd0),                                // GTX 3.0 new
@@ -1853,7 +1872,7 @@ else
         .RX_DFE_H4_CFG                  (11'b00011110000),                      // Optimized for GES
         .RX_DFE_H5_CFG                  (11'b00011100000),                      // Optimized for GES
         .RX_DFE_KL_CFG                  (13'b0000011111110),                    // Optimized for GES
-        .RX_DFE_KL_CFG2                 (32'h3010D90C),                         // Optimized for GES, GTX new
+        .RX_DFE_KL_CFG2                 (32'h3010D86C),                         // Optimized for GES, GTX new, CTLE 3 3 0, default = 32'h3010D90C
         .RX_DFE_LPM_CFG                 (16'h0954),                             // Optimized for GES
         .RX_DFE_LPM_HOLD_DURING_EIDLE   ( 1'd1),                                // Optimized for PCIe
         .RX_DFE_UT_CFG                  (17'b10001111000000000),                // Optimized for GES, IES = 17'h08F00
@@ -2087,7 +2106,7 @@ else
         .TXDEEMPH                       (GT_TXDEEMPH),                          //
         .TXINHIBIT                      (1'd0),                                 // 
         .TXBUFDIFFCTRL                  (3'b100),                               // 
-        .TXDIFFCTRL                     (4'b1100),                              // Select 850mV 
+        .TXDIFFCTRL                     (4'b1100),                              // 
         .TXPRECURSOR                    (GT_TXPRECURSOR),                       // 
         .TXPRECURSORINV                 (1'd0),                                 // 
         .TXMAINCURSOR                   (GT_TXMAINCURSOR),                      // 
@@ -2328,4 +2347,3 @@ assign GT_DMONITOROUT   = dmonitorout;
 
 
 endmodule
-

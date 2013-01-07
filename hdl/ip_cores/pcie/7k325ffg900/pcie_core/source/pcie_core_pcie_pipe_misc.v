@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_pipe_misc.v
-// Version    : 1.7
+// Version    : 1.8
 //
 // Description: Misc PIPE module for 7-Series PCIe Block
 //
@@ -89,20 +89,6 @@ module pcie_core_pcie_pipe_misc #
 
     parameter TCQ  = 1;      // clock to out delay model
 
-    reg                pipe_tx_rcvr_det_q       ;
-    reg                pipe_tx_reset_q          ;
-    reg                pipe_tx_rate_q           ;
-    reg                pipe_tx_deemph_q         ;
-    reg [2:0]          pipe_tx_margin_q         ;
-    reg                pipe_tx_swing_q          ;
-
-    reg                pipe_tx_rcvr_det_qq      ;
-    reg                pipe_tx_reset_qq         ;
-    reg                pipe_tx_rate_qq          ;
-    reg                pipe_tx_deemph_qq        ;
-    reg [2:0]          pipe_tx_margin_qq        ;
-    reg                pipe_tx_swing_qq         ;
-
     generate
 
     if (PIPE_PIPELINE_STAGES == 0) begin : pipe_stages_0
@@ -116,6 +102,13 @@ module pcie_core_pcie_pipe_misc #
 
     end // if (PIPE_PIPELINE_STAGES == 0)
     else if (PIPE_PIPELINE_STAGES == 1) begin : pipe_stages_1
+
+    reg                pipe_tx_rcvr_det_q       ;
+    reg                pipe_tx_reset_q          ;
+    reg                pipe_tx_rate_q           ;
+    reg                pipe_tx_deemph_q         ;
+    reg [2:0]          pipe_tx_margin_q         ;
+    reg                pipe_tx_swing_q          ;
 
         always @(posedge pipe_clk) begin
 
@@ -153,6 +146,20 @@ module pcie_core_pcie_pipe_misc #
 
     end // if (PIPE_PIPELINE_STAGES == 1)
     else if (PIPE_PIPELINE_STAGES == 2) begin : pipe_stages_2
+
+    reg                pipe_tx_rcvr_det_q       ;
+    reg                pipe_tx_reset_q          ;
+    reg                pipe_tx_rate_q           ;
+    reg                pipe_tx_deemph_q         ;
+    reg [2:0]          pipe_tx_margin_q         ;
+    reg                pipe_tx_swing_q          ;
+
+    reg                pipe_tx_rcvr_det_qq      ;
+    reg                pipe_tx_reset_qq         ;
+    reg                pipe_tx_rate_qq          ;
+    reg                pipe_tx_deemph_qq        ;
+    reg [2:0]          pipe_tx_margin_qq        ;
+    reg                pipe_tx_swing_qq         ;
 
         always @(posedge pipe_clk) begin
 

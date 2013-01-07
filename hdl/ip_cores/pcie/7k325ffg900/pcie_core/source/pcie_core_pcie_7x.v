@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_7x.v
-// Version    : 1.7
+// Version    : 1.8
 //
 // Description: Solution wrapper for Virtex7 Hard Block for PCI Express
 //
@@ -446,6 +446,7 @@ module pcie_core_pcie_7x # (
   input wire                user_clk2,
   input wire                user_clk_prebuf,
   input wire                user_clk_prebuf_en,
+`ifdef B_TESTMODE
   input wire                scanmode_n,
   input wire                scanenable_n,
   input wire                edt_clk,
@@ -464,6 +465,7 @@ module pcie_core_pcie_7x # (
   input wire                pmv_enable_n,
   input wire        [2:0]   pmv_select,
   input wire        [1:0]   pmv_divide,
+`endif
   input wire                sys_rst_n,
   input wire                cm_rst_n,
   input wire                cm_sticky_rst_n,
@@ -472,10 +474,10 @@ module pcie_core_pcie_7x # (
   input wire                dl_rst_n,
   input wire                pl_rst_n,
   input wire                pl_transmit_hot_rst,
-  input wire                cfg_reset,
-  input wire                gwe,
-  input wire                grestore,
-  input wire                ghigh,
+//  input wire                cfg_reset,
+//  input wire                gwe,
+//  input wire                grestore,
+//  input wire                ghigh,
   input wire       [31:0]   cfg_mgmt_di,
   input wire        [3:0]   cfg_mgmt_byte_en_n,
   input wire        [9:0]   cfg_mgmt_dwaddr,
@@ -653,7 +655,9 @@ module pcie_core_pcie_7x # (
   output wire       [1:0]   pipe_tx5_powerdown,
   output wire       [1:0]   pipe_tx6_powerdown,
   output wire       [1:0]   pipe_tx7_powerdown,
+`ifdef B_TESTMODE
   output wire               pmv_out,
+`endif
   output wire               user_rst_n,
   output wire               pl_received_hot_rst,
   output wire               received_func_lvl_rst_n,
@@ -774,8 +778,8 @@ module pcie_core_pcie_7x # (
   output wire               dbg_sclr_i,
   output wire               dbg_sclr_j,
   output wire               dbg_sclr_k,
-  output wire      [11:0]   pl_dbg_vec,
-  output wire      [18:0]   xil_unconn_out
+  output wire      [11:0]   pl_dbg_vec
+//  output wire      [18:0]   xil_unconn_out
 );
 
   localparam        TCQ = 1;
