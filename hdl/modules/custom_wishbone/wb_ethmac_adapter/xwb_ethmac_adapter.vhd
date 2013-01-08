@@ -388,7 +388,7 @@ begin
         rx_eb32_o.we <= '1';
         rx_eb32_o.sel <= (others => '1');
         --rx_eb_o.adr <= (others => '0');
-        rx_eb32_o.adr <= std_logic_vector(resize(unsigned(c_WRF_DATA), rx_eb32_o.adr'length-1));
+        rx_eb32_o.adr <= std_logic_vector(resize(unsigned(c_WRF_DATA), rx_eb32_o.adr'length));
         eb_stall <= '0';
       else
         eb_stall <= rx_eb32_i.stall;
