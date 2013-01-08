@@ -27,6 +27,12 @@ architecture sim of xwb_ethmac_adapter_tb is
   signal irq_tx_done_o                        : std_logic;
   signal irq_rx_done_o                        : std_logic;
 
+  -- TX signals
+  signal tx_eb_counter                        : unsigned(31 downto 0);
+
+  -- General constants
+  constant length_transfer                    : std_logic_vector := x"0000002F";
+
   constant clock_period                       : time := 10 ns;
   signal stop_the_clock                       : boolean := false;
 
@@ -88,7 +94,6 @@ begin
   begin
 
     -- Put initialisation code here
-    wait until rising_edge(clk_i);
     rstn_i <= '0';
 
     --tx_eb_i <=   (
@@ -126,7 +131,7 @@ begin
     --rx_ram_i.stall <= '0';
     --rx_ram_i.dat <= (others => '0');
 
-    wait for clock_period;
+    wait for 2*clock_period;
     rstn_i <= '1';
     wait for clock_period;
     -- put test bench stimulus code here
@@ -160,7 +165,7 @@ begin
         adr => x"0000000C",
         sel => (others => '1'),
         we  => '1',
-        dat => x"0000002F");
+        dat => length_transfer);
 
     wait for clock_period;
 
@@ -171,6 +176,16 @@ begin
         adr => x"00000000",
         sel => (others => '1'),
         we  => '1',
+        dat => x"00000001");
+
+    wait for clock_period;
+  --ctrl = 0x00
+    wb_slave_i <=   (
+        cyc => '1',
+        stb => '1',
+        adr => x"00000000",
+        sel => (others => '1'),
+        we  => '0',
         dat => x"00000001");
 
     --stop_the_clock <= true;
@@ -209,15 +224,27 @@ begin
         tx_eb_i.sel <= (others => '1');
         tx_eb_i.we  <= '1';
         tx_eb_i.dat <= (others => '0');
+        tx_eb_counter <= (others => '0');
       else
+        -- keep this line high
         tx_eb_i.cyc <= '1';
-        tx_eb_i.stb <= '1';
         tx_eb_i.adr <= c_WRF_DATA;
-        --tx_eb_i.sel => (others => '1');
-        -- tx_eb_i.we  => '1';
+        -- Check if we have received the whole transfer
+        if (irq_rx_done_o = '1' and irq_tx_done_o = '0') then
+          -- Prepare to transfer data...
+          tx_eb_i.stb <= '0';
 
-        if(tx_eb_o.stall = '0') then
-          tx_eb_i.dat <= std_logic_vector(unsigned(tx_eb_i.dat) + 4);
+          -- Tranasfer data if not done
+          if (tx_eb_o.stall = '0') then
+            -- reply must be of the same length than request
+            tx_eb_i.stb <= '1';
+            tx_eb_i.dat <= std_logic_vector(unsigned(tx_eb_i.dat) + 4);
+            tx_eb_counter <= tx_eb_counter + 4;
+          else
+            tx_eb_i.stb <= '0';
+          end if;
+        else
+          tx_eb_i.stb <= '0';
         end if;
 
       end if;

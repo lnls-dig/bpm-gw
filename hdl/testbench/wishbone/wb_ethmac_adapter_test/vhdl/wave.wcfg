@@ -19,7 +19,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="50" />
+   <WVObjectSize size="73" />
    <wvobject fp_name="/xwb_ethmac_adapter_tb/clk_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -97,6 +97,7 @@
       <wvobject fp_name="/xwb_ethmac_adapter_tb/rx_ram_o.dat" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">.dat</obj_property>
          <obj_property name="ObjectShortName">rx_ram_o.dat</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="/xwb_ethmac_adapter_tb/rx_ram_i" type="array" db_ref_id="1">
@@ -168,6 +169,31 @@
    <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">tx_eb_i</obj_property>
       <obj_property name="ObjectShortName">tx_eb_i</obj_property>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.adr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.adr</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.adr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.dat" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.dat</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.dat</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.cyc" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.cyc</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.cyc</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.stb" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.stb</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.stb</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.we" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.we</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xwb_ethmac_adapter_tb/tx_eb_i.sel" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.sel</obj_property>
+         <obj_property name="ObjectShortName">tx_eb_i.sel</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/xwb_ethmac_adapter_tb/irq_tx_done_o" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">irq_tx_done_o</obj_property>
@@ -176,14 +202,6 @@
    <wvobject fp_name="/xwb_ethmac_adapter_tb/irq_rx_done_o" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">irq_rx_done_o</obj_property>
       <obj_property name="ObjectShortName">irq_rx_done_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/xwb_ethmac_adapter_tb/stop_the_clock" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">stop_the_clock</obj_property>
-      <obj_property name="ObjectShortName">stop_the_clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/xwb_ethmac_adapter_tb/clock_period" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">clock_period</obj_property>
-      <obj_property name="ObjectShortName">clock_period</obj_property>
    </wvobject>
    <wvobject fp_name="divider28" type="divider">
       <obj_property name="label">cmp_xwb_ethmac_adapter</obj_property>
@@ -333,5 +351,107 @@
       <obj_property name="ElementShortName">b_dat_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">b_dat_i[15:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider89" type="divider">
+      <obj_property name="label">cmp_tx_adapter_16_to_32</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/clk_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/nrst_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">nrst_i</obj_property>
+      <obj_property name="ObjectShortName">nrst_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_cyc_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_cyc_i</obj_property>
+      <obj_property name="ObjectShortName">a_cyc_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_stb_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_stb_i</obj_property>
+      <obj_property name="ObjectShortName">a_stb_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_adr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">a_adr_i[1:0]</obj_property>
+      <obj_property name="ObjectShortName">a_adr_i[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_sel_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">a_sel_i[1:0]</obj_property>
+      <obj_property name="ObjectShortName">a_sel_i[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_we_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_we_i</obj_property>
+      <obj_property name="ObjectShortName">a_we_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_dat_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">a_dat_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">a_dat_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_ack_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_ack_o</obj_property>
+      <obj_property name="ObjectShortName">a_ack_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_err_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_err_o</obj_property>
+      <obj_property name="ObjectShortName">a_err_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_rty_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_rty_o</obj_property>
+      <obj_property name="ObjectShortName">a_rty_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_stall_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">a_stall_o</obj_property>
+      <obj_property name="ObjectShortName">a_stall_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/a_dat_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">a_dat_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">a_dat_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_cyc_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_cyc_o</obj_property>
+      <obj_property name="ObjectShortName">b_cyc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_stb_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_stb_o</obj_property>
+      <obj_property name="ObjectShortName">b_stb_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_adr_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">b_adr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">b_adr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_sel_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">b_sel_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">b_sel_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_we_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_we_o</obj_property>
+      <obj_property name="ObjectShortName">b_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_dat_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">b_dat_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">b_dat_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_ack_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_ack_i</obj_property>
+      <obj_property name="ObjectShortName">b_ack_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_err_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_err_i</obj_property>
+      <obj_property name="ObjectShortName">b_err_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_rty_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_rty_i</obj_property>
+      <obj_property name="ObjectShortName">b_rty_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_stall_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">b_stall_i</obj_property>
+      <obj_property name="ObjectShortName">b_stall_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xwb_ethmac_adapter_tb/cmp_xwb_ethmac_adapter/cmp_tx_adapter_16_to_32/b_dat_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">b_dat_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">b_dat_i[31:0]</obj_property>
    </wvobject>
 </wave_config>
