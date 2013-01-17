@@ -5,11 +5,16 @@
 *.txt
 *.asy
 *.vho
+*.veo
 *.gise
 *.tcl
 *.ncf
 *.sym
+tmp/
+*/*.csv
 */example_design/
 */implement/
 */simulation/
+*/docs/
+ddr_core/user_design/constraints/
 

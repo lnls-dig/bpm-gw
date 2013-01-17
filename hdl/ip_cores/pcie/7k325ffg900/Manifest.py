@@ -14,4 +14,5 @@ else:
              "prime_FIFO_plain.vhd",
              "sfifo_15x128.vhd"]
 
-modules = {"local" : ["pcie_core/source"]}
+modules = {"local" : ["pcie_core/source"],
+                     ["ddr_core/user_design"]}
