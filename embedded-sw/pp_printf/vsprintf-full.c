@@ -21,27 +21,27 @@
 /* <ctype.h> */
 static inline int isdigit(int c)
 {
-        return c >= '0' && c <= '9';
+	return c >= '0' && c <= '9';
 }
 
 static inline int islower(int c)
 {
-        return c >= 'a' && c <= 'z';
+	return c >= 'a' && c <= 'z';
 }
 
 static inline int isupper(int c)
 {
-        return c >= 'A' && c <= 'Z';
+	return c >= 'A' && c <= 'Z';
 }
 
 static inline int isalpha(int c)
 {
-        return islower(c) || isupper(c);
+	return islower(c) || isupper(c);
 }
 
 static inline int isalnum(int c)
 {
-        return isalpha(c) || isdigit(c);
+	return isalpha(c) || isdigit(c);
 }
 
 /* <linux/types.h> -- but if we typedef we get redefined type when hosted */
@@ -146,21 +146,21 @@ static char* put_dec_full(char *buf, unsigned q)
 	d0 = d0 - 10*q;
 	*buf++ = d0 + '0';
 	d1 = q + 9*d3 + 5*d2 + d1;
-		q = (d1 * 0xcd) >> 11;
-		d1 = d1 - 10*q;
-		*buf++ = d1 + '0';
+	q = (d1 * 0xcd) >> 11;
+	d1 = d1 - 10*q;
+	*buf++ = d1 + '0';
 
-		d2 = q + 2*d2;
-			q = (d2 * 0xd) >> 7;
-			d2 = d2 - 10*q;
-			*buf++ = d2 + '0';
+	d2 = q + 2*d2;
+	q = (d2 * 0xd) >> 7;
+	d2 = d2 - 10*q;
+	*buf++ = d2 + '0';
 
-			d3 = q + 4*d3;
-				q = (d3 * 0xcd) >> 11; /* - shorter code */
-				/* q = (d3 * 0x67) >> 10; - would also work */
-				d3 = d3 - 10*q;
-				*buf++ = d3 + '0';
-					*buf++ = q + '0';
+	d3 = q + 4*d3;
+	q = (d3 * 0xcd) >> 11; /* - shorter code */
+	/* q = (d3 * 0x67) >> 10; - would also work */
+	d3 = d3 - 10*q;
+	*buf++ = d3 + '0';
+	*buf++ = q + '0';
 	return buf;
 }
 /* No inlining helps gcc to use registers better */
@@ -225,10 +225,10 @@ static char *number(char *buf, unsigned long num, int base, int size, int precis
 	if (num == 0)
 		tmp[i++] = '0';
 	/* Generic code, for any base:
-	else do {
+		else do {
 		tmp[i++] = (digits[do_div(num,base)] | locase);
-	} while (num != 0);
-	*/
+		} while (num != 0);
+	 */
 	else if (base != 10) { /* 8 or 16 */
 		int mask = base - 1;
 		int shift = 3;
@@ -297,7 +297,7 @@ static char *string(char *buf, char *s, int field_width, int precision, int flag
 
 #ifdef CONFIG_CMD_NET
 static char *mac_address_string(char *buf, u8 *addr, int field_width,
-				int precision, int flags)
+		int precision, int flags)
 {
 	char mac_addr[6 * 3]; /* (6 * 2 hex digits), 5 colons and trailing zero */
 	char *p = mac_addr;
@@ -314,7 +314,7 @@ static char *mac_address_string(char *buf, u8 *addr, int field_width,
 }
 
 static char *ip6_addr_string(char *buf, u8 *addr, int field_width,
-			 int precision, int flags)
+		int precision, int flags)
 {
 	char ip6_addr[8 * 5]; /* (8 * 4 hex digits), 7 colons and trailing zero */
 	char *p = ip6_addr;
@@ -332,7 +332,7 @@ static char *ip6_addr_string(char *buf, u8 *addr, int field_width,
 }
 
 static char *ip4_addr_string(char *buf, u8 *addr, int field_width,
-			 int precision, int flags)
+		int precision, int flags)
 {
 	char ip4_addr[4 * 4]; /* (4 * 3 decimal digits), 3 dots and trailing zero */
 	char temp[3];	/* hold each IP quad in reverse order */
@@ -378,21 +378,21 @@ static char *pointer(const char *fmt, char *buf, void *ptr, int field_width, int
 
 #ifdef CONFIG_CMD_NET
 	switch (*fmt) {
-	case 'm':
-		flags |= SPECIAL;
-		/* Fallthrough */
-	case 'M':
-		return mac_address_string(buf, ptr, field_width, precision, flags);
-	case 'i':
-		flags |= SPECIAL;
-		/* Fallthrough */
-	case 'I':
-		if (fmt[1] == '6')
-			return ip6_addr_string(buf, ptr, field_width, precision, flags);
-		if (fmt[1] == '4')
-			return ip4_addr_string(buf, ptr, field_width, precision, flags);
-		flags &= ~SPECIAL;
-		break;
+		case 'm':
+			flags |= SPECIAL;
+			/* Fallthrough */
+		case 'M':
+			return mac_address_string(buf, ptr, field_width, precision, flags);
+		case 'i':
+			flags |= SPECIAL;
+			/* Fallthrough */
+		case 'I':
+			if (fmt[1] == '6')
+				return ip6_addr_string(buf, ptr, field_width, precision, flags);
+			if (fmt[1] == '4')
+				return ip4_addr_string(buf, ptr, field_width, precision, flags);
+			flags &= ~SPECIAL;
+			break;
 	}
 #endif
 	flags |= SMALL;
@@ -430,11 +430,11 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 
 	int field_width;	/* width of output field */
 	int precision;		/* min. # of digits for integers; max
-				   number of chars for from string */
+								number of chars for from string */
 	int qualifier;		/* 'h', 'l', or 'L' for integer fields */
-				/* 'z' support added 23/7/1999 S.H.    */
-				/* 'z' changed to 'Z' --davidm 1/25/99 */
-				/* 't' added for ptrdiff_t */
+	/* 'z' support added 23/7/1999 S.H.    */
+	/* 'z' changed to 'Z' --davidm 1/25/99 */
+	/* 't' added for ptrdiff_t */
 
 	str = buf;
 
@@ -446,15 +446,15 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 
 		/* process flags */
 		flags = 0;
-		repeat:
-			++fmt;		/* this also skips first '%' */
-			switch (*fmt) {
-				case '-': flags |= LEFT; goto repeat;
-				case '+': flags |= PLUS; goto repeat;
-				case ' ': flags |= SPACE; goto repeat;
-				case '#': flags |= SPECIAL; goto repeat;
-				case '0': flags |= ZEROPAD; goto repeat;
-			}
+repeat:
+		++fmt;		/* this also skips first '%' */
+		switch (*fmt) {
+			case '-': flags |= LEFT; goto repeat;
+			case '+': flags |= PLUS; goto repeat;
+			case ' ': flags |= SPACE; goto repeat;
+			case '#': flags |= SPECIAL; goto repeat;
+			case '0': flags |= ZEROPAD; goto repeat;
+		}
 
 		/* get field width */
 		field_width = -1;
@@ -488,7 +488,7 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 		/* get the conversion qualifier */
 		qualifier = -1;
 		if (*fmt == 'h' || *fmt == 'l' || *fmt == 'L' ||
-		    *fmt == 'Z' || *fmt == 'z' || *fmt == 't') {
+				*fmt == 'Z' || *fmt == 'z' || *fmt == 't') {
 			qualifier = *fmt;
 			++fmt;
 			if (qualifier == 'l' && *fmt == 'l') {
@@ -501,89 +501,89 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 		base = 10;
 
 		switch (*fmt) {
-		case 'c':
-			if (!(flags & LEFT))
+			case 'c':
+				if (!(flags & LEFT))
+					while (--field_width > 0)
+						*str++ = ' ';
+				*str++ = (unsigned char) va_arg(args, int);
 				while (--field_width > 0)
 					*str++ = ' ';
-			*str++ = (unsigned char) va_arg(args, int);
-			while (--field_width > 0)
-				*str++ = ' ';
-			continue;
+				continue;
 
-		case 's':
-			str = string(str, va_arg(args, char *), field_width, precision, flags);
-			continue;
+			case 's':
+				str = string(str, va_arg(args, char *), field_width, precision, flags);
+				continue;
 
-		case 'p':
-			str = pointer(fmt+1, str,
-					va_arg(args, void *),
-					field_width, precision, flags);
-			/* Skip all alphanumeric pointer suffixes */
-			while (isalnum(fmt[1]))
-				fmt++;
-			continue;
+			case 'p':
+				str = pointer(fmt+1, str,
+						va_arg(args, void *),
+						field_width, precision, flags);
+				/* Skip all alphanumeric pointer suffixes */
+				while (isalnum(fmt[1]))
+					fmt++;
+				continue;
 
-		case 'n':
-			if (qualifier == 'l') {
-				long * ip = va_arg(args, long *);
-				*ip = (str - buf);
-			} else {
-				int * ip = va_arg(args, int *);
-				*ip = (str - buf);
-			}
-			continue;
+			case 'n':
+				if (qualifier == 'l') {
+					long * ip = va_arg(args, long *);
+					*ip = (str - buf);
+				} else {
+					int * ip = va_arg(args, int *);
+					*ip = (str - buf);
+				}
+				continue;
 
-		case '%':
-			*str++ = '%';
-			continue;
+			case '%':
+				*str++ = '%';
+				continue;
 
-		/* integer number formats - set up the flags and "break" */
-		case 'o':
-			base = 8;
-			break;
+				/* integer number formats - set up the flags and "break" */
+			case 'o':
+				base = 8;
+				break;
 
-		case 'x':
-			flags |= SMALL;
-		case 'X':
-			base = 16;
-			break;
+			case 'x':
+				flags |= SMALL;
+			case 'X':
+				base = 16;
+				break;
 
-		case 'd':
-		case 'i':
-			flags |= SIGN;
-		case 'u':
-			break;
+			case 'd':
+			case 'i':
+				flags |= SIGN;
+			case 'u':
+				break;
 
-		default:
-			*str++ = '%';
-			if (*fmt)
-				*str++ = *fmt;
-			else
-				--fmt;
-			continue;
+			default:
+				*str++ = '%';
+				if (*fmt)
+					*str++ = *fmt;
+				else
+					--fmt;
+				continue;
 		}
 #ifdef CONFIG_SYS_64BIT_VSPRINTF
 		if (qualifier == 'L')  /* "quad" for 64 bit variables */
 			num = va_arg(args, unsigned long long);
 		else
 #endif
-		if (qualifier == 'l') {
-			num = va_arg(args, unsigned long);
-			if (flags & SIGN)
-				num = (signed long) num;
-		} else if (qualifier == 'Z' || qualifier == 'z') {
-			num = va_arg(args, size_t);
-		} else if (qualifier == 't') {
-			num = va_arg(args, ptrdiff_t);
-		} else if (qualifier == 'h') {
-			num = (unsigned short) va_arg(args, int);
-			if (flags & SIGN)
-				num = (signed short) num;
-		} else {
-			num = va_arg(args, unsigned int);
-			if (flags & SIGN)
-				num = (signed int) num;
-		}
+			if (qualifier == 'l') {
+				num = va_arg(args, unsigned long);
+				if (flags & SIGN)
+					num = (signed long) num;
+			} else if (qualifier == 'Z' || qualifier == 'z') {
+				num = va_arg(args, size_t);
+			} else if (qualifier == 't') {
+				num = va_arg(args, ptrdiff_t);
+			} else if (qualifier == 'h') {
+				num = (unsigned short) va_arg(args, int);
+				if (flags & SIGN)
+					num = (signed short) num;
+			} else {
+				num = va_arg(args, unsigned int);
+				if (flags & SIGN)
+					num = (signed int) num;
+			}
 		str = number(str, num, base, field_width, precision, flags);
 	}
 	*str = '\0';

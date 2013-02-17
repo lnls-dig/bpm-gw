@@ -17,53 +17,53 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 			continue;
 		}
 
-	repeat:
+repeat:
 		fmt++;		/* Skip '%' initially, other stuff later */
 
 		/* Skip the complete format string */
 		switch(*fmt) {
-		case '\0':
-			goto ret;
-		case '*':
-			/* should be precision, just eat it */
-			i = va_arg(args, int);
-			/* fall through: discard unknown stuff */
-		default:
-			goto repeat;
+			case '\0':
+				goto ret;
+			case '*':
+				/* should be precision, just eat it */
+				i = va_arg(args, int);
+				/* fall through: discard unknown stuff */
+			default:
+				goto repeat;
 
-			/* Special cases for conversions */
+				/* Special cases for conversions */
 
-		case 'c': /* char: supported */
-			*str++ = (unsigned char) va_arg(args, int);
-			break;
-		case 's': /* string: supported */
-			s = va_arg(args, char *);
-			while (*s)
-				*str++ = *s++;
-			break;
-		case 'n': /* number-thus-far: not supported */
-			break;
-		case '%': /* supported */
-			*str++ = '%';
-			break;
+			case 'c': /* char: supported */
+				*str++ = (unsigned char) va_arg(args, int);
+				break;
+			case 's': /* string: supported */
+				s = va_arg(args, char *);
+				while (*s)
+					*str++ = *s++;
+				break;
+			case 'n': /* number-thus-far: not supported */
+				break;
+			case '%': /* supported */
+				*str++ = '%';
+				break;
 
-			/* all integer (and pointer) are printed as <%08x> */
-		case 'o':
-		case 'x':
-		case 'X':
-		case 'd':
-		case 'i':
-		case 'u':
-		case 'p':
-			i = va_arg(args, int);
-			*str++ = '<';
-			for (j = 28; j >= 0; j -= 4)
-				*str++ = hex[(i>>j)&0xf];
-			*str++ = '>';
-			break;
+				/* all integer (and pointer) are printed as <%08x> */
+			case 'o':
+			case 'x':
+			case 'X':
+			case 'd':
+			case 'i':
+			case 'u':
+			case 'p':
+				i = va_arg(args, int);
+				*str++ = '<';
+				for (j = 28; j >= 0; j -= 4)
+					*str++ = hex[(i>>j)&0xf];
+				*str++ = '>';
+				break;
 		}
 	}
- ret:
+ret:
 	*str = '\0';
 	return str - buf;
 }

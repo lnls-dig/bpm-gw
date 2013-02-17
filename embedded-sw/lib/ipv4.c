@@ -16,17 +16,17 @@ unsigned char hisMAC[6];
 
 unsigned int ipv4_checksum(unsigned short *buf, int shorts)
 {
-    int i;
-    unsigned int sum;
+	int i;
+	unsigned int sum;
 
-    sum = 0;
-    for (i = 0; i < shorts; ++i)
-        sum += buf[i];
+	sum = 0;
+	for (i = 0; i < shorts; ++i)
+		sum += buf[i];
 
-    sum = (sum >> 16) + (sum & 0xffff);
-    sum += (sum >> 16);
+	sum = (sum >> 16) + (sum & 0xffff);
+	sum += (sum >> 16);
 
-    return (~sum & 0xffff);
+	return (~sum & 0xffff);
 }
 
 //static int bootp_retry = 0;

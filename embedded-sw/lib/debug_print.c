@@ -12,10 +12,10 @@
 
 void debug_print2(const char *fmt, const char *data, int len)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < len; ++i)
-        pp_printf(fmt, data[i]);
+	for (i = 0; i < len; ++i)
+		pp_printf(fmt, data[i]);
 
-    pp_printf("\n");
+	pp_printf("\n");
 }

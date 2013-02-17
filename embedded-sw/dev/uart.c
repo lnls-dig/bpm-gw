@@ -4,8 +4,8 @@
 #include "uart.h"		 // UART device functions
 
 #define CALC_BAUD(baudrate) \
-		( ((( (unsigned long long)baudrate * 8ULL) << (16 - 7)) + \
-			(CPU_CLOCK >> 8)) / (CPU_CLOCK >> 7) )
+	( ((( (unsigned long long)baudrate * 8ULL) << (16 - 7)) + \
+		(CPU_CLOCK >> 8)) / (CPU_CLOCK >> 7) )
 
 // Global UART handler.
 uart_t *uart;

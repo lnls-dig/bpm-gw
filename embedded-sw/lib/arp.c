@@ -50,38 +50,38 @@ volatile int sawARP = 0;
 //}
 
 void sendARP() {
-  unsigned char buf[ARP_END];
+	unsigned char buf[ARP_END];
 
-  pp_printf("> sending ARP packet\n");
+	pp_printf("> sending ARP packet\n");
 
-  // ------------- Ethernet ------------
-  // MAC address
-  memcpy(buf+ETH_DEST,   hisMAC, 6);
-  memcpy(buf+ETH_SOURCE, myMAC,  6);
-  // ethertype ARP
-  buf[ETH_TYPE+0] = 0x08;
-  buf[ETH_TYPE+1] = 0x06;
+	// ------------- Ethernet ------------
+	// MAC address
+	memcpy(buf+ETH_DEST,   hisMAC, 6);
+	memcpy(buf+ETH_SOURCE, myMAC,  6);
+	// ethertype ARP
+	buf[ETH_TYPE+0] = 0x08;
+	buf[ETH_TYPE+1] = 0x06;
 
-  // ------------- ARP ------------
-  // HW ethernet
-  buf[ARP_HTYPE+0] = 0;
-  buf[ARP_HTYPE+1] = 1;
-  // proto IP
-  buf[ARP_PTYPE+0] = 8;
-  buf[ARP_PTYPE+1] = 0;
-  // lengths
-  buf[ARP_HLEN] = 6;
-  buf[ARP_PLEN] = 4;
-  // Response
-  buf[ARP_OPER+0] = 0;
-  buf[ARP_OPER+1] = 2;
-  // my MAC+IP
-  memcpy(buf+ARP_SHA, myMAC, 6);
-  memcpy(buf+ARP_SPA, myIP,  4);
-  // his MAC+IP
-  memcpy(buf+ARP_THA, hisMAC, 6);
-  memcpy(buf+ARP_TPA, hisIP,  4);
+	// ------------- ARP ------------
+	// HW ethernet
+	buf[ARP_HTYPE+0] = 0;
+	buf[ARP_HTYPE+1] = 1;
+	// proto IP
+	buf[ARP_PTYPE+0] = 8;
+	buf[ARP_PTYPE+1] = 0;
+	// lengths
+	buf[ARP_HLEN] = 6;
+	buf[ARP_PLEN] = 4;
+	// Response
+	buf[ARP_OPER+0] = 0;
+	buf[ARP_OPER+1] = 2;
+	// my MAC+IP
+	memcpy(buf+ARP_SHA, myMAC, 6);
+	memcpy(buf+ARP_SPA, myIP,  4);
+	// his MAC+IP
+	memcpy(buf+ARP_THA, hisMAC, 6);
+	memcpy(buf+ARP_TPA, hisIP,  4);
 
-  tx_packet(buf, sizeof(buf));
-  sawARP = 0;
+	tx_packet(buf, sizeof(buf));
+	sawARP = 0;
 }

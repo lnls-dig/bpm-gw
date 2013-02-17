@@ -71,52 +71,52 @@ unsigned char hisBody[1516];
 //}
 
 void sendECHO() {
-  unsigned char buf[500];
-  unsigned int sum;
+	unsigned char buf[500];
+	unsigned int sum;
 
-  pp_printf("> sending ECHO packet\n");
+	pp_printf("> sending ECHO packet\n");
 
-  // ------------- Ethernet ------------
-  // MAC address
-  memcpy(buf+ETH_DEST,   hisMAC, 6);
-  memcpy(buf+ETH_SOURCE, myMAC,  6);
-  // ethertype IP
-  buf[ETH_TYPE+0] = 0x08;
-  buf[ETH_TYPE+1] = 0x00;
+	// ------------- Ethernet ------------
+	// MAC address
+	memcpy(buf+ETH_DEST,   hisMAC, 6);
+	memcpy(buf+ETH_SOURCE, myMAC,  6);
+	// ethertype IP
+	buf[ETH_TYPE+0] = 0x08;
+	buf[ETH_TYPE+1] = 0x00;
 
-  // ------------ IP --------------
-  buf[IP_VERSION] = 0x45;
-  buf[IP_TOS] = 0;
-  buf[IP_LEN+0] = (hisBodyLen+24) >> 8;
-  buf[IP_LEN+1] = (hisBodyLen+24) & 0xff;
-  buf[IP_ID+0] = 0;
-  buf[IP_ID+1] = 0;
-  buf[IP_FLAGS+0] = 0;
-  buf[IP_FLAGS+1] = 0;
-  buf[IP_TTL] = 63;
-  buf[IP_PROTOCOL] = 1; /* ICMP */
-  buf[IP_CHECKSUM+0] = 0;
-  buf[IP_CHECKSUM+1] = 0;
-  memcpy(buf+IP_SOURCE, myIP, 4);
-  memcpy(buf+IP_DEST, hisIP, 4);
+	// ------------ IP --------------
+	buf[IP_VERSION] = 0x45;
+	buf[IP_TOS] = 0;
+	buf[IP_LEN+0] = (hisBodyLen+24) >> 8;
+	buf[IP_LEN+1] = (hisBodyLen+24) & 0xff;
+	buf[IP_ID+0] = 0;
+	buf[IP_ID+1] = 0;
+	buf[IP_FLAGS+0] = 0;
+	buf[IP_FLAGS+1] = 0;
+	buf[IP_TTL] = 63;
+	buf[IP_PROTOCOL] = 1; /* ICMP */
+	buf[IP_CHECKSUM+0] = 0;
+	buf[IP_CHECKSUM+1] = 0;
+	memcpy(buf+IP_SOURCE, myIP, 4);
+	memcpy(buf+IP_DEST, hisIP, 4);
 
-  // ------------ ICMP ---------
-  buf[ICMP_TYPE] = 0x0; // echo reply
-  buf[ICMP_CODE] = 0;
-  buf[ICMP_CHECKSUM+0] = 0;
-  buf[ICMP_CHECKSUM+1] = 0;
-  memcpy(buf+ICMP_QUENCH, hisBody, hisBodyLen);
-  if ((hisBodyLen & 1) != 0)
-    buf[ICMP_QUENCH+hisBodyLen] = 0;
+	// ------------ ICMP ---------
+	buf[ICMP_TYPE] = 0x0; // echo reply
+	buf[ICMP_CODE] = 0;
+	buf[ICMP_CHECKSUM+0] = 0;
+	buf[ICMP_CHECKSUM+1] = 0;
+	memcpy(buf+ICMP_QUENCH, hisBody, hisBodyLen);
+	if ((hisBodyLen & 1) != 0)
+		buf[ICMP_QUENCH+hisBodyLen] = 0;
 
-  sum = ipv4_checksum((unsigned short*)(buf+ICMP_TYPE), (hisBodyLen+4+1)/2);
-  buf[ICMP_CHECKSUM+0] = sum >> 8;
-  buf[ICMP_CHECKSUM+1] = sum & 0xff;
+	sum = ipv4_checksum((unsigned short*)(buf+ICMP_TYPE), (hisBodyLen+4+1)/2);
+	buf[ICMP_CHECKSUM+0] = sum >> 8;
+	buf[ICMP_CHECKSUM+1] = sum & 0xff;
 
-  sum = ipv4_checksum((unsigned short*)(buf+IP_VERSION), 10);
-  buf[IP_CHECKSUM+0] = sum >> 8;
-  buf[IP_CHECKSUM+1] = sum & 0xff;
+	sum = ipv4_checksum((unsigned short*)(buf+IP_VERSION), 10);
+	buf[IP_CHECKSUM+0] = sum >> 8;
+	buf[IP_CHECKSUM+1] = sum & 0xff;
 
-  tx_packet(buf, hisBodyLen+ICMP_QUENCH);
-  sawPING = 0;
+	tx_packet(buf, hisBodyLen+ICMP_QUENCH);
+	sawPING = 0;
 }

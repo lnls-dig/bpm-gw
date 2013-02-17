@@ -94,7 +94,7 @@ int send_bootp(uint8_t * buf, int retry)
 	buf[UDP_CHECKSUM + 1] = 0;
 
 	sum =
-			ipv4_checksum((unsigned short *)(buf + UDP_VIRT_SADDR),
+		ipv4_checksum((unsigned short *)(buf + UDP_VIRT_SADDR),
 				(BOOTP_END - UDP_VIRT_SADDR) / 2);
 	if (sum == 0)
 		sum = 0xFFFF;
@@ -119,7 +119,7 @@ int send_bootp(uint8_t * buf, int retry)
 	memset(buf + IP_DEST, 0xFF, 4);
 
 	sum =
-			ipv4_checksum((unsigned short *)(buf + IP_VERSION),
+		ipv4_checksum((unsigned short *)(buf + IP_VERSION),
 				(IP_END - IP_VERSION) / 2);
 	buf[IP_CHECKSUM + 0] = sum >> 8;
 	buf[IP_CHECKSUM + 1] = sum & 0xff;

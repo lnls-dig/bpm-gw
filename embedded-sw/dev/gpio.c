@@ -1,10 +1,10 @@
-#include "board.h"			// Board definitions: GPIO device structure
-#include "gpio.h"			 // GPIO device functions
+#include "board.h"      // Board definitions: GPIO device structure
+#include "gpio.h"      // GPIO device functions
 
 // Global GPIO handler.
 gpio_t *gpio;
 
-int gpio_init(gpio_t * gpio, int id)
+int gpio_init(/*gpio_t * gpio, int id*/)
 {
 	if (gpio_devl->devices){
 		// get first gpio device found

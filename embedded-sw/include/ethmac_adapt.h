@@ -4,10 +4,10 @@
 #include "inttypes.h"
 
 struct ETHMAC_ADAPT {
-  uint32_t doit;
-  uint32_t base_tx;
-  uint32_t base_rx;
-  uint32_t length;
+	uint32_t doit;
+	uint32_t base_tx;
+	uint32_t base_rx;
+	uint32_t length;
 };
 
 typedef volatile struct ETHMAC_ADAPT ethmac_adapt_t;

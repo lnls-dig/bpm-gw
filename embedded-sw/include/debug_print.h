@@ -16,9 +16,9 @@ void debug_print2(const char *fmt, const char *data, int len);
 
 #ifdef DEBUG_PRINT
 #define dbg_print(fmt, ...) \
-    pp_printf(fmt, ...)
+	pp_printf(fmt, ...)
 #define dbg_print2(fmt, data, len) \
-    debug_print2(fmt, data, len)
+	debug_print2(fmt, data, len)
 #else
 #define dbg_print(const char *fmt, ...)
 #define dbg_print2(fmt, data, len)

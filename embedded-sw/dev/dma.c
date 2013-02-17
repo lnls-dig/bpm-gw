@@ -18,25 +18,25 @@ int dma_init(void)
 /* DMA user interface definition */
 int read_is_addr(void)
 {
-		return dma->RD_ADDR;
+	return dma->RD_ADDR;
 }
 
 void write_is_addr(int addr)
 {
-		dma->WR_ADDR = (uint32_t)addr;
+	dma->WR_ADDR = (uint32_t)addr;
 }
 
 int read_strd(void)
 {
-		return dma->RD_STRD;
+	return dma->RD_STRD;
 }
 
 void write_strd(int strd)
 {
-		dma->WR_STRD = (uint32_t) strd;
+	dma->WR_STRD = (uint32_t) strd;
 }
 
 int read_tr_count(void)
 {
-		return dma->TR_COUNT;
-}				
+	return dma->TR_COUNT;
+}

@@ -11,33 +11,33 @@ static char print_buf[CONFIG_PRINT_BUFSIZE];
 
 int pp_vprintf(const char *fmt, va_list args)
 {
-    int ret;
+	int ret;
 
-    ret = pp_vsprintf(print_buf, fmt, args);
-    puts(print_buf);
-    return ret;
+	ret = pp_vsprintf(print_buf, fmt, args);
+	puts(print_buf);
+	return ret;
 }
 
 int pp_sprintf(char *s, const char *fmt, ...)
 {
-    va_list args;
-    int ret;
+	va_list args;
+	int ret;
 
-    va_start(args, fmt);
-    ret = pp_vsprintf(s, fmt, args);
-    va_end(args);
-    return ret;
+	va_start(args, fmt);
+	ret = pp_vsprintf(s, fmt, args);
+	va_end(args);
+	return ret;
 }
 
 
 int pp_printf(const char *fmt, ...)
 {
-    va_list args;
-    int ret;
+	va_list args;
+	int ret;
 
-    va_start(args, fmt);
-    ret = pp_vprintf(fmt, args);
-    va_end(args);
+	va_start(args, fmt);
+	ret = pp_vprintf(fmt, args);
+	va_end(args);
 
-    return ret;
+	return ret;
 }

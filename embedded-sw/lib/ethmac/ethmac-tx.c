@@ -4,7 +4,7 @@
 ////                                                              ////
 ////  Description                                                 ////
 ////  Transmits packets, testing both 100mbit and 10mbit modes.   ////
-////  Expects testbench to be checking each packet sent.          ////   
+////  Expects testbench to be checking each packet sent.          ////
 ////  Define, ETH_TX_TEST_LENGTH, set further down, controls how  ////
 ////  many packets the test will send.                            ////
 ////                                                              ////
@@ -48,22 +48,22 @@
 
 int main ()
 {
-  /* Initialise handler vector */
-  int_init();
+	/* Initialise handler vector */
+	int_init();
 
-  /* Install ethernet interrupt handler, it is enabled here too */
-  int_add(ETH0_IRQ, oeth_interrupt, 0);
+	/* Install ethernet interrupt handler, it is enabled here too */
+	int_add(ETH0_IRQ, oeth_interrupt, 0);
 
-  ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
+	ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
 
-  /* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
+	/* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
 
-  while (1) {
-    char buf[120];
-    memcpy(buf, "Hello world!\n", 12);
-    tx_packet(buf, sizeof(buf));
-  }
-  
-  exit(0x8000000d);
-  
+	while (1) {
+		char buf[120];
+		memcpy(buf, "Hello world!\n", 12);
+		tx_packet(buf, sizeof(buf));
+	}
+
+	exit(0x8000000d);
+
 }

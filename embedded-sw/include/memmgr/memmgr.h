@@ -76,11 +76,11 @@
 //#endif
 
 #ifndef POOL_SIZE
-	#define POOL_SIZE 4 * 1024
+#define POOL_SIZE 4 * 1024
 #endif
 
 #ifndef MIN_POOL_ALLOC_QUANTAS
-	#define MIN_POOL_ALLOC_QUANTAS 2
+#define MIN_POOL_ALLOC_QUANTAS 2
 #endif
 
 // Initialize the memory manager. This function should be called

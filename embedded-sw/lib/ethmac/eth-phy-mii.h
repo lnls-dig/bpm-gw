@@ -75,9 +75,9 @@
 #define ADVERTISE_NPAGE         0x8000  /* Next page bit               */
 
 #define ADVERTISE_FULL (ADVERTISE_100FULL | ADVERTISE_10FULL | \
-			ADVERTISE_CSMA)
+		ADVERTISE_CSMA)
 #define ADVERTISE_ALL (ADVERTISE_10HALF | ADVERTISE_10FULL | \
-                       ADVERTISE_100HALF | ADVERTISE_100FULL)
+		ADVERTISE_100HALF | ADVERTISE_100FULL)
 
 /* Link partner ability register. */
 #define LPA_SLCT                0x001f  /* Same as advertise selector  */

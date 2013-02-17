@@ -26,103 +26,103 @@
 #define  ABB_LEN     3
 
 static const char *_days[] = {
-    "Sun", "Mon", "Tue", "Wed",
-    "Thu", "Fri", "Sat"
+	"Sun", "Mon", "Tue", "Wed",
+	"Thu", "Fri", "Sat"
 };
 
 static const char *_months[] = {
-    "Jan", "Feb", "Mar",
-    "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep",
-    "Oct", "Nov", "Dec"
+	"Jan", "Feb", "Mar",
+	"Apr", "May", "Jun",
+	"Jul", "Aug", "Sep",
+	"Oct", "Nov", "Dec"
 };
 
 static const int _ytab[2][12] = {
-    {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
-    {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+	{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
+	{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 };
 
 char *format_time(uint64_t sec)
 {
-    struct tm t;
-    static char buf[64];
-    unsigned long dayclock, dayno;
-    int year = EPOCH_YR;
+	struct tm t;
+	static char buf[64];
+	unsigned long dayclock, dayno;
+	int year = EPOCH_YR;
 
-    dayclock = (unsigned long)sec % SECS_DAY;
-    dayno = (unsigned long)sec / SECS_DAY;
+	dayclock = (unsigned long)sec % SECS_DAY;
+	dayno = (unsigned long)sec / SECS_DAY;
 
-    t.tm_sec = dayclock % 60;
-    t.tm_min = (dayclock % 3600) / 60;
-    t.tm_hour = dayclock / 3600;
-    t.tm_wday = (dayno + 4) % 7;    /* day 0 was a thursday */
-    while (dayno >= YEARSIZE(year)) {
-        dayno -= YEARSIZE(year);
-        year++;
-    }
-    t.tm_year = year - YEAR0;
-    t.tm_yday = dayno;
-    t.tm_mon = 0;
-    while (dayno >= _ytab[LEAPYEAR(year)][t.tm_mon]) {
-        dayno -= _ytab[LEAPYEAR(year)][t.tm_mon];
-        t.tm_mon++;
-    }
-    t.tm_mday = dayno + 1;
-    t.tm_isdst = 0;
+	t.tm_sec = dayclock % 60;
+	t.tm_min = (dayclock % 3600) / 60;
+	t.tm_hour = dayclock / 3600;
+	t.tm_wday = (dayno + 4) % 7;    /* day 0 was a thursday */
+	while (dayno >= YEARSIZE(year)) {
+		dayno -= YEARSIZE(year);
+		year++;
+	}
+	t.tm_year = year - YEAR0;
+	t.tm_yday = dayno;
+	t.tm_mon = 0;
+	while (dayno >= _ytab[LEAPYEAR(year)][t.tm_mon]) {
+		dayno -= _ytab[LEAPYEAR(year)][t.tm_mon];
+		t.tm_mon++;
+	}
+	t.tm_mday = dayno + 1;
+	t.tm_isdst = 0;
 
-    sprintf(buf, "%s, %s %d, %d, %2d:%2d:%2d", _days[t.tm_wday],
-        _months[t.tm_mon], t.tm_mday, t.tm_year + YEAR0, t.tm_hour,
-        t.tm_min, t.tm_sec);
+	sprintf(buf, "%s, %s %d, %d, %2d:%2d:%2d", _days[t.tm_wday],
+			_months[t.tm_mon], t.tm_mday, t.tm_year + YEAR0, t.tm_hour,
+			t.tm_min, t.tm_sec);
 
-    return buf;
+	return buf;
 }
 
 void cprintf(int color, const char *fmt, ...)
 {
-    va_list ap;
-    mprintf("\033[0%d;3%dm", color & C_DIM ? 2 : 1, color & 0x7f);
-    va_start(ap, fmt);
-    vprintf(fmt, ap);
-    va_end(ap);
+	va_list ap;
+	mprintf("\033[0%d;3%dm", color & C_DIM ? 2 : 1, color & 0x7f);
+	va_start(ap, fmt);
+	vprintf(fmt, ap);
+	va_end(ap);
 }
 
 void pcprintf(int row, int col, int color, const char *fmt, ...)
 {
-    va_list ap;
-    mprintf("\033[%d;%df", row, col);
-    mprintf("\033[0%d;3%dm", color & C_DIM ? 2 : 1, color & 0x7f);
-    va_start(ap, fmt);
-    vprintf(fmt, ap);
-    va_end(ap);
+	va_list ap;
+	mprintf("\033[%d;%df", row, col);
+	mprintf("\033[0%d;3%dm", color & C_DIM ? 2 : 1, color & 0x7f);
+	va_start(ap, fmt);
+	vprintf(fmt, ap);
+	va_end(ap);
 }
 
 void term_clear()
 {
-    mprintf("\033[2J\033[1;1H");
+	mprintf("\033[2J\033[1;1H");
 }
 
 /* From OHWR LM32 repository */
 void* memcpy(void* a, const void* b, unsigned int len) {
-  unsigned char* ca = (unsigned char*)a;
-  const unsigned char* cb = (const unsigned char*)b;
+	unsigned char* ca = (unsigned char*)a;
+	const unsigned char* cb = (const unsigned char*)b;
 
-  unsigned int i;
-  for (i = 0; i < len; ++i)
-    ca[i] = cb[i];
+	unsigned int i;
+	for (i = 0; i < len; ++i)
+		ca[i] = cb[i];
 
-  return a;
+	return a;
 }
 
 int memcmp(const void* a, const void* b, unsigned int len) {
-  const unsigned char* ca = (const unsigned char*)a;
-  const unsigned char* cb = (const unsigned char*)b;
+	const unsigned char* ca = (const unsigned char*)a;
+	const unsigned char* cb = (const unsigned char*)b;
 
-  unsigned int i;
-  int x = 0;
-  for (i = 0; i < len; ++i) {
-    x = ca[i] - cb[i];
-    if (x != 0) break;
-  }
+	unsigned int i;
+	int x = 0;
+	for (i = 0; i < len; ++i) {
+		x = ca[i] - cb[i];
+		if (x != 0) break;
+	}
 
-  return x;
+	return x;
 }

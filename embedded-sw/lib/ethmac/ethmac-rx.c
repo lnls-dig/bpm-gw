@@ -44,23 +44,23 @@
 #include "ethmac.h"
 #include "eth-phy-mii.h"
 
-int
+	int
 main ()
 {
-  /* Initialise handler vector */
-  int_init();
+	/* Initialise handler vector */
+	int_init();
 
-  /* Install ethernet interrupt handler, it is enabled here too */
-  int_add(ETH0_IRQ, oeth_interrupt, 0);
+	/* Install ethernet interrupt handler, it is enabled here too */
+	int_add(ETH0_IRQ, oeth_interrupt, 0);
 
-  ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
-  
-  wprint("Entering loop\n");
-  while (1) { }
+	ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
 
-  ethmac_halt();
-  
-  exit(0x8000000d);
+	wprint("Entering loop\n");
+	while (1) { }
 
-  return 0;
+	ethmac_halt();
+
+	exit(0x8000000d);
+
+	return 0;
 }
