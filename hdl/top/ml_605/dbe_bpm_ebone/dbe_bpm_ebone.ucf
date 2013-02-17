@@ -64,6 +64,7 @@ NET "sys_clk_p_i" LOC = J9;
 
 # Ethernet LOC Contraints. MII 10/100 Mode
 
+NET "mrstn_o"               LOC = AH13;
 NET "mcoll_pad_i"           LOC = AK13;   ## 114 on U80
 NET "mcrs_pad_i"            LOC = AL13;   ## 115 on U80
 # NET "PHY_INT"             LOC = AH14;   ## 32  on U80

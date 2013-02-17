@@ -64,6 +64,10 @@ port(
   -- PHY pins
   -----------------------------------------
 
+  -- Clock and resets to PHY (GMII). Not used in MII mode (10/100)
+  mgtx_clk_o                                : out std_logic;
+  mrstn_o                                   : out std_logic;
+
   -- PHY TX
   mtx_clk_pad_i                             : in std_logic;
   mtxd_pad_o                                : out std_logic_vector(3 downto 0);
@@ -102,11 +106,12 @@ architecture rtl of dbe_bpm_ebone is
   -- General Dual-port memory, Buffer Single-por memory, UART, DMA control port, MAC,
   --Etherbone
   -- Number of masters
-  constant c_masters                        : natural := 7;            -- LM32 master. Data + Instruction,
-  --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master
+  constant c_masters                        : natural := 8;            -- LM32 master, Data + Instruction,
+  --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone
 
-  constant c_dpram_size                     : natural := 22528; -- in 32-bit words (64KB)
-  constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
+  constant c_dpram_size                     : natural := 131072/4; -- in 32-bit words (128KB)
+  --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
+  constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -152,17 +157,24 @@ architecture rtl of dbe_bpm_ebone is
 
     -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-    ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 64KB RAM
+    ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 128KB RAM
       1 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"10000000"),   -- Second port to the same memory
       2 => f_sdb_embed_device(f_xwb_dpram(c_dpram_ethbuf_size),
-                                                          x"20000000"),   -- 32KB RAM
-      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"30014000"),   -- DMA control port
-      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30015000"),   -- Ethernet MAC control port
-      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30016000"),   -- Ethernet Adapter control port
-      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30017000"),   -- Etherbone control port
-      7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"30018000"),   -- UART control port
-      8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"30019000"),   -- GPIO LED
-      9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"3001A000")    -- GPIO Button
+                                                          x"20000000"),   -- 64KB RAM
+      --3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"30014000"),   -- DMA control port
+      --4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30015000"),   -- Ethernet MAC control port
+      --5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30016000"),   -- Ethernet Adapter control port
+      --6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30017000"),   -- Etherbone control port
+      --7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"30018000"),   -- UART control port
+      --8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"30019000"),   -- GPIO LED
+      --9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"3001A000")    -- GPIO Button
+      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"60000000"),   -- DMA control port
+      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"70000000"),   -- Ethernet MAC control port
+      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"80000000"),   -- Ethernet Adapter control port
+      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"90000000"),   -- Etherbone control port
+      7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"A0000000"),   -- UART control port
+      8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"B0000000"),   -- GPIO LED
+      9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"C0000000")    -- GPIO Button
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
@@ -204,14 +216,19 @@ architecture rtl of dbe_bpm_ebone is
   signal ethmac_md_out                      : std_logic;
   signal ethmac_md_oe                       : std_logic;
 
+  signal mtxd_pad_int                       : std_logic_vector(3 downto 0);
+  signal mtxen_pad_int                      : std_logic;
+  signal mtxerr_pad_int                     : std_logic;
+  signal mdc_pad_int                        : std_logic;
+
+
   -- Ethrnet MAC adapter signals
   signal irq_rx_done                        : std_logic;
   signal irq_tx_done                        : std_logic;
 
   -- Etherbone signals
-  signal wb_ebone_debug_out                 : t_wishbone_master_out;
-  signal wb_ebone_debug_in                  : t_wishbone_master_in :=
-        ('0', '0', '0', '0', '0', x"00000000");
+  signal wb_ebone_out                       : t_wishbone_master_out;
+  signal wb_ebone_in                        : t_wishbone_master_in;
 
   signal eb_src_i                           : t_wrf_source_in;
   signal eb_src_o                           : t_wrf_source_out;
@@ -239,6 +256,8 @@ architecture rtl of dbe_bpm_ebone is
   -- Chipscope control signals
   signal CONTROL0                           : std_logic_vector(35 downto 0);
   signal CONTROL1                           : std_logic_vector(35 downto 0);
+  signal CONTROL2                           : std_logic_vector(35 downto 0);
+  signal CONTROL3                           : std_logic_vector(35 downto 0);
 
   -- Chipscope ILA 0 signals
   signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
@@ -251,6 +270,18 @@ architecture rtl of dbe_bpm_ebone is
   signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
+
+  -- Chipscope ILA 2 signals
+  signal TRIG_ILA2_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
+
+  -- Chipscope ILA 3 signals
+  signal TRIG_ILA3_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
 
   ---------------------------
   --      Components       --
@@ -284,10 +315,19 @@ architecture rtl of dbe_bpm_ebone is
   end component;
 
   -- Xilinx Chipscope Controller 2 port
-  component chipscope_icon_2_port
+  --component chipscope_icon_2_port
+  --port (
+  --  CONTROL0                                : inout std_logic_vector(35 downto 0);
+  --  CONTROL1                                : inout std_logic_vector(35 downto 0)
+  --);
+  --end component;
+
+  component chipscope_icon_4_port
   port (
     CONTROL0                                : inout std_logic_vector(35 downto 0);
-    CONTROL1                                : inout std_logic_vector(35 downto 0)
+    CONTROL1                                : inout std_logic_vector(35 downto 0);
+    CONTROL2                                : inout std_logic_vector(35 downto 0);
+    CONTROL3                                : inout std_logic_vector(35 downto 0)
   );
   end component;
 
@@ -346,6 +386,7 @@ begin
   reset_clks(0)                             <= clk_sys;
   clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
   clk_sys_rst                               <= not clk_sys_rstn;
+  mrstn_o                                   <= clk_sys_rstn;
 
   -- Generate button reset synchronous to each clock domain
   -- Detect button positive edge of clk_sys
@@ -420,7 +461,7 @@ begin
   lm32_interrupt <= (0 => ethmac_int, 1 => dma_int, 2 => not buttons_i(0), 3 => irq_rx_done,
                       4 => irq_tx_done, others => '0');
 
-  -- A DMA controller is master 2+3, slave 3, and interrupt 0
+  -- A DMA controller is master 2+3, slave 3, and interrupt 1
   cmp_dma : xwb_dma
   port map(
     clk_i                                   => clk_sys,
@@ -434,12 +475,11 @@ begin
     interrupt_o                             => dma_int
   );
 
-  -- Slave 0+1 is the RAM. Load a input file containing a simple led blink program!
+  -- Slave 0+1 is the RAM. Load a input file containing the embedded software
   cmp_ram : xwb_dpram
   generic map(
     g_size                                  => c_dpram_size, -- must agree with sw/target/lm32/ram.ld:LENGTH / 4
-    g_init_file                             => "",
-    --"../../../embedded-sw/dbe.ram",
+    g_init_file                             => "../../../embedded-sw/dbe.ram",
     --"../../top/ml_605/dbe_bpm_simple/sw/main.ram",
     g_must_have_init_file                   => true,
     g_slave1_interface_mode                 => PIPELINED,
@@ -484,9 +524,13 @@ begin
   cmp_xwb_ethmac : xwb_ethmac
   generic map (
     g_ma_interface_mode                     => PIPELINED,
-    g_ma_address_granularity                => WORD,
+    --g_ma_interface_mode                     => CLASSIC,
+    --g_ma_address_granularity                => WORD,
+    g_ma_address_granularity                => BYTE,
     g_sl_interface_mode                     => PIPELINED,
-    g_sl_address_granularity                => WORD
+    --g_sl_interface_mode                     => CLASSIC,
+    --g_sl_address_granularity                => WORD
+    g_sl_address_granularity                => BYTE
   )
   port map(
     -- WISHBONE common
@@ -503,9 +547,12 @@ begin
 
     -- PHY TX
     mtx_clk_pad_i                           => mtx_clk_pad_i,
-    mtxd_pad_o                              => mtxd_pad_o,
-    mtxen_pad_o                             => mtxen_pad_o,
-    mtxerr_pad_o                            => mtxerr_pad_o,
+    --mtxd_pad_o                              => mtxd_pad_o,
+    mtxd_pad_o                              => mtxd_pad_int,
+    --mtxen_pad_o                             => mtxen_pad_o,
+    mtxen_pad_o                             => mtxen_pad_int,
+    --mtxerr_pad_o                            => mtxerr_pad_o,
+    mtxerr_pad_o                            => mtxerr_pad_int,
 
     -- PHY RX
     mrx_clk_pad_i                           => mrx_clk_pad_i,
@@ -516,7 +563,8 @@ begin
     mcrs_pad_i                              => mcrs_pad_i,
 
     -- MII
-    mdc_pad_o                               => mdc_pad_o,
+    --mdc_pad_o                               => mdc_pad_o,
+    mdc_pad_o                               => mdc_pad_int,
     md_pad_i                                => ethmac_md_in,
     md_pad_o                                => ethmac_md_out,
     md_padoe_o                              => ethmac_md_oe,
@@ -529,29 +577,34 @@ begin
   md_pad_b <= ethmac_md_out when ethmac_md_oe = '1' else 'Z';
   ethmac_md_in <= md_pad_b;
 
-  -- The Ethernet MAC Adapeter is master 5+6, slave 5
+  mtxd_pad_o                                <=  mtxd_pad_int;
+  mtxen_pad_o                               <=  mtxen_pad_int;
+  mtxerr_pad_o                              <=  mtxerr_pad_int;
+  mdc_pad_o                                 <=  mdc_pad_int;
+
+  -- The Ethernet MAC Adapter is master 5+6, slave 5
   cmp_xwb_ethmac_adapter : xwb_ethmac_adapter
   port map(
-    clk_i                                     => clk_sys,
-    rstn_i                                    => clk_sys_rst,
+    clk_i                                   => clk_sys,
+    rstn_i                                  => clk_sys_rstn,
 
-    wb_slave_o                                => cbar_master_i(5),
-    wb_slave_i                                => cbar_master_o(5),
+    wb_slave_o                              => cbar_master_i(5),
+    wb_slave_i                              => cbar_master_o(5),
 
-    tx_ram_o                                  => cbar_slave_i(5),
-    tx_ram_i                                  => cbar_slave_o(5),
+    tx_ram_o                                => cbar_slave_i(5),
+    tx_ram_i                                => cbar_slave_o(5),
 
-    rx_ram_o                                  => cbar_slave_i(6),
-    rx_ram_i                                  => cbar_slave_o(6),
+    rx_ram_o                                => cbar_slave_i(6),
+    rx_ram_i                                => cbar_slave_o(6),
 
-    rx_eb_o                                   => eb_snk_i,
-    rx_eb_i                                   => eb_snk_o,
+    rx_eb_o                                 => eb_snk_i,
+    rx_eb_i                                 => eb_snk_o,
 
-    tx_eb_o                                   => eb_src_i,
-    tx_eb_i                                   => eb_src_o,
+    tx_eb_o                                 => eb_src_i,
+    tx_eb_i                                 => eb_src_o,
 
-    irq_tx_done_o                             => irq_tx_done,
-    irq_rx_done_o                             => irq_rx_done
+    irq_tx_done_o                           => irq_tx_done,
+    irq_rx_done_o                           => irq_rx_done
   );
 
   -- The Etherbone is slave 6
@@ -562,7 +615,7 @@ begin
   port map
   (
     clk_i                                   => clk_sys,
-    nRst_i                                  => clk_sys_rst,
+    nRst_i                                  => clk_sys_rstn,
 
     -- EB streaming sink
     snk_i                                   => eb_snk_i,
@@ -577,9 +630,12 @@ begin
     cfg_slave_i                             => cbar_master_o(6),
 
     -- WB master - Bus IF
-    master_o                                => wb_ebone_debug_out,
-    master_i                                => wb_ebone_debug_in
+    master_o                                => wb_ebone_out,
+    master_i                                => wb_ebone_in
   );
+
+  cbar_slave_i(7)                           <= wb_ebone_out;
+  wb_ebone_in                               <= cbar_slave_o(7);
 
   -- Slave 7 is the UART
   cmp_uart : xwb_simple_uart
@@ -622,71 +678,10 @@ begin
 
   leds_o <= gpio_leds_int;
 
-  --p_test_leds : process (clk_adc)
-  --begin
-  --    if rising_edge(clk_adc) then
-  --        if clk_adc_rstn = '0' then
-  --            s_counter            <= (others => '0');
-  --            gpio_leds_int                <= x"01";
-  --        else
-  --            if (s_counter = s_counter_full-1) then
-  --                s_counter        <= (others => '0');
-  --                gpio_leds_int            <= gpio_leds_int(c_leds_num_pins-2 downto 0) & gpio_leds_int(c_leds_num_pins-1);
-  --            else
-  --                s_counter        <= s_counter + 1;
-  --            end if;
-  --        end if;
-  --    end if;
-  --end process;
-
-  -- Slave 1 is the example LED driver
-  --gpio_slave_led_i                 <= cbar_master_o(1);
-  --cbar_master_i(1)                 <= gpio_slave_led_o;
-  --leds_o                             <= not r_leds;
-
-  -- There is a tool called 'wbgen2' which can autogenerate a Wishbone
-  -- interface and C header file, but this is a simple example.
-  --gpio : process(clk_sys)
-  --begin
-  --    if rising_edge(clk_sys) then
-      -- It is vitally important that for each occurance of
-      --   (cyc and stb and not stall) there is (ack or rty or err)
-      --   sometime later on the bus.
-      --
-      -- This is an easy solution for a device that never stalls:
-  --    gpio_slave_led_o.ack         <= gpio_slave_led_i.cyc and gpio_slave_led_i.stb;
-
-      -- Detect a write to the register byte
-  --    if gpio_slave_led_i.cyc = '1' and gpio_slave_led_i.stb = '1' and
-  --        gpio_slave_led_i.we = '1' and gpio_slave_led_i.sel(0) = '1' then
-          -- Register 0x0 = LEDs, 0x4 = CPU reset
-  --        if gpio_slave_led_i.adr(2) = '0' then
-  --            r_leds                 <= gpio_slave_led_i.dat(7 downto 0);
-  --        else
-  --            r_reset             <= gpio_slave_led_i.dat(0);
-  --        end if;
-  --    end if;
-
-      -- Read to the register byte
-  --    if gpio_slave_led_i.adr(2) = '0' then
-  --        gpio_slave_led_o.dat(31 downto 8) <= (others => '0');
-  --        gpio_slave_led_o.dat(7 downto 0) <= r_leds;
-  --    else
-  --        gpio_slave_led_o.dat(31 downto 2) <= (others => '0');
-  --        gpio_slave_led_o.dat(0) <= r_reset;
-  --    end if;
-  --end if;
-  --end process;
-
-  --gpio_slave_led_o.int             <= '0';
-  --gpio_slave_led_o.err             <= '0';
-  --gpio_slave_led_o.rty             <= '0';
-  --gpio_slave_led_o.stall         <= '0'; -- This simple example is always ready
-
   -- Slave 9 is the Button driver
   cmp_buttons : xwb_gpio_port
   generic map(
-  g_interface_mode                          => CLASSIC,
+    g_interface_mode                        => CLASSIC,
     g_address_granularity                   => BYTE,
     g_num_pins                              => c_buttons_num_pins,
     g_with_builtin_tristates                => false
@@ -707,11 +702,13 @@ begin
     gpio_oen_o                              => open
   );
 
-  -- Xilinx Chipscope
-  cmp_chipscope_icon_0 : chipscope_icon_2_port
+  ---- Xilinx Chipscope
+  cmp_chipscope_icon_0 : chipscope_icon_4_port
   port map (
     CONTROL0                                => CONTROL0,
-    CONTROL1                                => CONTROL1
+    CONTROL1                                => CONTROL1,
+    CONTROL2                                => CONTROL2,
+    CONTROL3                                => CONTROL3
   );
 
   cmp_chipscope_ila_0_ethmac : chipscope_ila
@@ -725,46 +722,112 @@ begin
   );
 
   -- ETHMAC master output (slave input) control data
-  TRIG_ILA0_0 <= cbar_slave_o(4).dat;
+  TRIG_ILA0_0                               <= cbar_slave_o(4).dat;
   -- ETHMAC master input (slave output) control data
-  TRIG_ILA0_1 <= cbar_slave_i(4).dat;
+  TRIG_ILA0_1                               <= cbar_slave_i(4).dat;
 
   -- ETHMAC master control input (slave output) control signals
-  TRIG_ILA0_2(4 downto 0) <= cbar_slave_o(3).ack &
-                              cbar_slave_o(3).err &
-                              cbar_slave_o(3).rty &
-                              cbar_slave_o(3).stall &
-                              cbar_slave_o(3).int;
-  TRIG_ILA0_2(31 downto 5) <= (others => '0');
-
+  TRIG_ILA0_2(4 downto 0)                   <= cbar_slave_o(4).ack &
+                                                 cbar_slave_o(4).err &
+                                                 cbar_slave_o(4).rty &
+                                                 cbar_slave_o(4).stall &
+                                                 cbar_slave_o(4).int;
+  TRIG_ILA0_2(31 downto 5)                  <= (others => '0');
 
   -- ETHMAC master control output (slave input) control signals
   -- Partial decoding. Thus, only the LSB part of address matters to
   -- a specific slave core
-  TRIG_ILA0_3(18 downto 0) <= cbar_slave_i(3).cyc &
-                                cbar_slave_i(3).stb &
-                                cbar_slave_i(3).adr(11 downto 0) &
-                                cbar_slave_i(3).sel &
-                                cbar_slave_i(3).we;
-  TRIG_ILA0_3(31 downto 19)  <= (others => '0');
+  TRIG_ILA0_3(18 downto 0)                  <= cbar_slave_i(4).cyc &
+                                                 cbar_slave_i(4).stb &
+                                                 cbar_slave_i(4).adr(11 downto 0) &
+                                                 cbar_slave_i(4).sel &
+                                                 cbar_slave_i(4).we;
+  TRIG_ILA0_3(31 downto 19)                 <= (others => '0');
 
   -- Etherbone debuging signals
-  cmp_chipscope_ila_1_etherbone : chipscope_ila
+  --cmp_chipscope_ila_1_etherbone : chipscope_ila
+  --port map (
+  --    CONTROL                               => CONTROL1,
+  --    CLK                                   => clk_sys,
+  --    TRIG0                                 => TRIG_ILA1_0,
+  --    TRIG1                                 => TRIG_ILA1_1,
+  --    TRIG2                                 => TRIG_ILA1_2,
+  --    TRIG3                                 => TRIG_ILA1_3
+  --);
+
+  --TRIG_ILA1_0                               <= wb_ebone_out.dat;
+  --TRIG_ILA1_1                               <= wb_ebone_in.dat;
+  --TRIG_ILA1_2                               <= wb_ebone_out.adr;
+  --TRIG_ILA1_3(6 downto 0)                   <= wb_ebone_out.cyc &
+  --                                              wb_ebone_out.stb &
+  --                                              wb_ebone_out.sel &
+  --                                              wb_ebone_out.we;
+  --TRIG_ILA1_3(11 downto 7)                   <= wb_ebone_in.ack &
+  --                                              wb_ebone_in.err &
+  --                                              wb_ebone_in.rty &
+  --                                              wb_ebone_in.stall &
+  --                                              wb_ebone_in.int;
+  --TRIG_ILA1_3(31 downto 12)                  <= (others => '0');
+
+  cmp_chipscope_ila_1_ethmac_rx : chipscope_ila
   port map (
-      CONTROL                               => CONTROL1,
-      CLK                                   => clk_sys,
-      TRIG0                                 => TRIG_ILA1_0,
-      TRIG1                                 => TRIG_ILA1_1,
-      TRIG2                                 => TRIG_ILA1_2,
-      TRIG3                                 => TRIG_ILA1_3
+    CONTROL                                 => CONTROL1,
+    CLK                                     => mrx_clk_pad_i,
+    TRIG0                                   => TRIG_ILA1_0,
+    TRIG1                                   => TRIG_ILA1_1,
+    TRIG2                                   => TRIG_ILA1_2,
+    TRIG3                                   => TRIG_ILA1_3
   );
 
-  TRIG_ILA1_0                               <= wb_ebone_debug_out.dat;
-  TRIG_ILA1_1                               <= wb_ebone_debug_out.adr;
-  TRIG_ILA1_2(6 downto 0)                   <= wb_ebone_debug_out.cyc &
-                                                wb_ebone_debug_out.stb &
-                                                wb_ebone_debug_out.sel &
-                                                wb_ebone_debug_out.we;
-  TRIG_ILA1_2(31 downto 7)                  <= (others => '0');
+  TRIG_ILA1_0(7 downto 0)                   <= mrxd_pad_i &
+                                                 mrxdv_pad_i &
+                                                 mrxerr_pad_i &
+                                                 mcoll_pad_i &
+                                                 mcrs_pad_i;
+
+  TRIG_ILA1_0(31 downto 8)                  <= (others => '0');
+  TRIG_ILA1_1                               <= (others => '0');
+  TRIG_ILA1_2                               <= (others => '0');
   TRIG_ILA1_3                               <= (others => '0');
+
+  cmp_chipscope_ila_1_ethmac_tx : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL2,
+    CLK                                     => mtx_clk_pad_i,
+    TRIG0                                   => TRIG_ILA2_0,
+    TRIG1                                   => TRIG_ILA2_1,
+    TRIG2                                   => TRIG_ILA2_2,
+    TRIG3                                   => TRIG_ILA2_3
+  );
+
+  TRIG_ILA2_0(5 downto 0)                   <= mtxd_pad_int &
+                                                mtxen_pad_int &
+                                                mtxerr_pad_int;
+
+  TRIG_ILA2_0(31 downto 6)                  <= (others => '0');
+  TRIG_ILA2_1                               <= (others => '0');
+  TRIG_ILA2_2                               <= (others => '0');
+  TRIG_ILA2_3                               <= (others => '0');
+
+  cmp_chipscope_ila_1_ethmac_miim : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL3,
+    CLK                                     => clk_sys,
+    TRIG0                                   => TRIG_ILA3_0,
+    TRIG1                                   => TRIG_ILA3_1,
+    TRIG2                                   => TRIG_ILA3_2,
+    TRIG3                                   => TRIG_ILA3_3
+  );
+
+  TRIG_ILA3_0(4 downto 0)                   <= mdc_pad_int &
+                                                 ethmac_md_in &
+                                                 ethmac_md_out &
+                                                 ethmac_md_oe &
+                                                 ethmac_int;
+
+  TRIG_ILA3_0(31 downto 6)                  <= (others => '0');
+  TRIG_ILA3_1                               <= (others => '0');
+  TRIG_ILA3_2                               <= (others => '0');
+  TRIG_ILA3_3                               <= (others => '0');
+
 end rtl;
