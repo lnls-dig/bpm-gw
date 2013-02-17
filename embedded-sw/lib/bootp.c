@@ -94,8 +94,8 @@ int send_bootp(uint8_t * buf, int retry)
 	buf[UDP_CHECKSUM + 1] = 0;
 
 	sum =
-	    ipv4_checksum((unsigned short *)(buf + UDP_VIRT_SADDR),
-			  (BOOTP_END - UDP_VIRT_SADDR) / 2);
+		ipv4_checksum((unsigned short *)(buf + UDP_VIRT_SADDR),
+				(BOOTP_END - UDP_VIRT_SADDR) / 2);
 	if (sum == 0)
 		sum = 0xFFFF;
 
@@ -119,8 +119,8 @@ int send_bootp(uint8_t * buf, int retry)
 	memset(buf + IP_DEST, 0xFF, 4);
 
 	sum =
-	    ipv4_checksum((unsigned short *)(buf + IP_VERSION),
-			  (IP_END - IP_VERSION) / 2);
+		ipv4_checksum((unsigned short *)(buf + IP_VERSION),
+				(IP_END - IP_VERSION) / 2);
 	buf[IP_CHECKSUM + 0] = sum >> 8;
 	buf[IP_CHECKSUM + 1] = sum & 0xff;
 
@@ -141,8 +141,8 @@ int process_bootp(uint8_t * buf, int len)
 		return 0;
 
 	if (buf[IP_PROTOCOL] != 17 ||
-	    buf[UDP_DPORT] != 0 || buf[UDP_DPORT + 1] != 68 ||
-	    buf[UDP_SPORT] != 0 || buf[UDP_SPORT + 1] != 67)
+			buf[UDP_DPORT] != 0 || buf[UDP_DPORT + 1] != 68 ||
+			buf[UDP_SPORT] != 0 || buf[UDP_SPORT + 1] != 67)
 		return 0;
 
 	if (memcmp(buf + BOOTP_CHADDR, mac, 6))

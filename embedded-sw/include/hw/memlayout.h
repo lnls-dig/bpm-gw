@@ -1,7 +1,5 @@
 #ifndef _MEM_LAYOUT_H_
 #define _MEM_LAYOUT_H_
-//TODO: Implement a simple memory pool in order to use with
-// a malloc and free clone!!
 
 // TODO: Automate this!
 //#define NUM_DMA_DEVS 1
@@ -10,33 +8,37 @@
 //#define NUM_GPIO_DEVS 2
 
 /* Simple device nodes for supporting various instances
-  of the same component */
+	of the same component */
 struct dev_node{
-  unsigned char *base;
-  struct dev_node *next;
+	unsigned char *base;
+	struct dev_node *next;
 };
 
-/* List of devices of the same kind (same devid).
-  Note the use of flexible array member. Space is allocated
-  only when instanciated */
+/* List of devices of the same kind (same devid).*/
 struct dev_list{
-  unsigned int devid;
-  //unsigned int size;
-  struct dev_node *devices;
+	unsigned int devid;
+	//unsigned int size;
+	struct dev_node *devices;
 };
 
 /* Automate the address peripheral discover. use SDB */
-#define SDB_ADDRESS 0x20000000
+#define SDB_ADDRESS 0x30000000
 
 //unsigned char *BASE_DMA;
 //unsigned char *BASE_FMA150;
 //unsigned char *BASE_UART;
 //unsigned char *BASE_GPIO;
 
+struct dev_list *ethmac_buf_devl;
+
 struct dev_list *dma_devl;
 struct dev_list *fmc150_devl;
 struct dev_list *uart_devl;
 struct dev_list *gpio_devl;
+
+struct dev_list *ethmac_devl;
+struct dev_list *ethmac_adapt_devl;
+struct dev_list *ebone_cfg_devl;
 
 //#define FMC_EEPROM_ADR 0x50
 
@@ -44,7 +46,7 @@ void sdb_find_devices(void);
 void sdb_print_devices(void);
 
 /*************************/
-/*    Base addresses     */
+/*      Base addresses    */
 /*************************/
 
 /* RAM Definitions */

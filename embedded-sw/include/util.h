@@ -21,4 +21,8 @@ void pcprintf(int row, int col, int color, const char *fmt, ...);
 /* Clears the terminal scree. */
 void term_clear();
 
+/* From OHWR LM32 repository */
+void* memcpy(void* a, const void* b, unsigned int len);
+int memcmp(const void* a, const void* b, unsigned int len);
+
 #endif

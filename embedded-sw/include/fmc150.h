@@ -2,16 +2,10 @@
 #define _FMC150_H_
 
 #include "hw/wb_fmc150.h"
-
-// Debug print
-#ifdef FMC150_DEBUG
-	#define dbg_print(fmt, args...)	mprintf(fmt, ## args)
-#else
-	#define dbg_print(fmt, args...)    /* Don't do anything in release builds */
-#endif
+#include "debug_print.h"
 
 // Number of CDCE72010 registers
-#define CDCE72010_NUMREGS 13
+#define CDCE72010_NUMREGS 12
 
 // Global definitions
 extern uint32_t cdce72010_regs[CDCE72010_NUMREGS];
@@ -26,6 +20,6 @@ int fmc150_spi_busy(void);
 void update_fmc150_adc_delay(uint8_t adc_strobe_delay, uint8_t adc_cha_delay, uint8_t adc_chb_delay);
 int read_fmc150_register(uint32_t cs, uint32_t addr, uint32_t* data);
 int write_fmc150_register(uint32_t cs, uint32_t addr, uint32_t data);
-      
+
 #endif
-        
+

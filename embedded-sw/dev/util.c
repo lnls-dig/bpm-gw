@@ -10,21 +10,20 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <time.h>
-#include <wrc.h>
 
 #include "util.h"
 
 /* cut from libc sources */
 
-#define 	YEAR0   1900
-#define 	EPOCH_YR   1970
-#define 	SECS_DAY   (24L * 60L * 60L)
-#define 	LEAPYEAR(year)   (!((year) % 4) && (((year) % 100) || !((year) % 400)))
-#define 	YEARSIZE(year)   (LEAPYEAR(year) ? 366 : 365)
-#define 	FIRSTSUNDAY(timp)   (((timp)->tm_yday - (timp)->tm_wday + 420) % 7)
-#define 	FIRSTDAYOF(timp)   (((timp)->tm_wday - (timp)->tm_yday + 420) % 7)
-#define 	TIME_MAX   ULONG_MAX
-#define 	ABB_LEN   3
+#define  YEAR0   1900
+#define  EPOCH_YR    1970
+#define  SECS_DAY    (24L * 60L * 60L)
+#define  LEAPYEAR(year)  (!((year) % 4) && (((year) % 100) || !((year) % 400)))
+#define  YEARSIZE(year)  (LEAPYEAR(year) ? 366 : 365)
+#define  FIRSTSUNDAY(timp)   (((timp)->tm_yday - (timp)->tm_wday + 420) % 7)
+#define  FIRSTDAYOF(timp)    (((timp)->tm_wday - (timp)->tm_yday + 420) % 7)
+#define  TIME_MAX    ULONG_MAX
+#define  ABB_LEN     3
 
 static const char *_days[] = {
 	"Sun", "Mon", "Tue", "Wed",
@@ -56,7 +55,7 @@ char *format_time(uint64_t sec)
 	t.tm_sec = dayclock % 60;
 	t.tm_min = (dayclock % 3600) / 60;
 	t.tm_hour = dayclock / 3600;
-	t.tm_wday = (dayno + 4) % 7;	/* day 0 was a thursday */
+	t.tm_wday = (dayno + 4) % 7;    /* day 0 was a thursday */
 	while (dayno >= YEARSIZE(year)) {
 		dayno -= YEARSIZE(year);
 		year++;
@@ -72,8 +71,8 @@ char *format_time(uint64_t sec)
 	t.tm_isdst = 0;
 
 	sprintf(buf, "%s, %s %d, %d, %2d:%2d:%2d", _days[t.tm_wday],
-		_months[t.tm_mon], t.tm_mday, t.tm_year + YEAR0, t.tm_hour,
-		t.tm_min, t.tm_sec);
+			_months[t.tm_mon], t.tm_mday, t.tm_year + YEAR0, t.tm_hour,
+			t.tm_min, t.tm_sec);
 
 	return buf;
 }
@@ -100,4 +99,30 @@ void pcprintf(int row, int col, int color, const char *fmt, ...)
 void term_clear()
 {
 	mprintf("\033[2J\033[1;1H");
+}
+
+/* From OHWR LM32 repository */
+void* memcpy(void* a, const void* b, unsigned int len) {
+	unsigned char* ca = (unsigned char*)a;
+	const unsigned char* cb = (const unsigned char*)b;
+
+	unsigned int i;
+	for (i = 0; i < len; ++i)
+		ca[i] = cb[i];
+
+	return a;
+}
+
+int memcmp(const void* a, const void* b, unsigned int len) {
+	const unsigned char* ca = (const unsigned char*)a;
+	const unsigned char* cb = (const unsigned char*)b;
+
+	unsigned int i;
+	int x = 0;
+	for (i = 0; i < len; ++i) {
+		x = ca[i] - cb[i];
+		if (x != 0) break;
+	}
+
+	return x;
 }
