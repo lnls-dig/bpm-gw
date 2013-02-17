@@ -1,0 +1,190 @@
+
+This is the "poor programmer's" printf implementation. It is meant to
+be used in small environments, like microcontrollers or soft
+processors.  Actually, that's where I needed it years ago and where
+I'm still using it.
+
+It is a complete printf (it only misses the %[charset] feature, and
+obviously floating point support). It relies on an external "puts"
+function for the actual output; the full version also needs strnlen.
+Unfortunately, the stdio puts adds a trailing newline (while most
+embedded implementations do not). The sprintf function is included
+as pp_sprintf.
+
+The printf engine, vsprintf(), comes in four flavours:
+
+In summary:
+
+    - the "full" version is a normal printf (GPL2, from older Linux kernel)
+
+    - the "xint" version accepts all formats and prints hex and int only
+
+    - the "mini" version accepts all formats but only prints hex (GPL2)
+
+    - the "none" version accepts all formats and prints nothing (PD)
+
+The version you use can be selected at compile time, so you can
+develop with a full-featured printf and install the minimal one in
+production, saving a few kilobytes and still not loosing information
+in messages.  At the end I list compiled sizes for a few use cases.
+
+While I use this very code in several projects, the only example here
+is a stupid main that prints something.  You are expected to pick these
+files and copy them to your projects, rather than use this "package"
+as a system library.
+
+
+	The full implementation in detail
+	=================================
+
+This comes from u-boot, which means that it is an earlier printf as
+used in the Linux kernel. It is licensed according to the GNU GPL
+version 2.  It includes all formats and prefixes and so on. It is
+clearly bugless because everybody is using it.
+
+It is selected at compile time by setting the make variable
+"CONFIG_PRINTF_FULL" to "y". You can do that in the environment,
+or use Kconfig in your application.
+
+(The Makefile selects this by default if you set nothing in the
+environment or make variables)
+
+Example calls (example-printf.c):
+
+    pp_printf("integer %5i %5i %05i\n", 1024, 666, 53);
+    pp_printf("octal   %5o %5o %05o\n", 1024, 666, 53);
+    pp_printf("hex     %5x %5x %05x\n", 1024, 666, 53);
+    pp_printf("HEX etc %5X %+5d %-5i\n", 1024, 666, 53);
+    pp_printf("neg     %5i %05i %05x\n", -5, -10, -15);
+    pp_printf("char: %c  string %s %5s %.5s\n", 65, "foo", "foo",
+              "verylongstring");
+    pp_printf("hour    %02d:%02d:%02d\n", 12, 9, 0);
+
+Result (as you see, format modifiers are respected):
+
+    integer  1024   666 00053
+    octal    2000  1232 00065
+    hex       400   29a 00035
+    HEX etc   400  +666 53
+    neg        -5 -0010 fffffff1
+    char: A  string foo   foo veryl
+    hour    12:09:00
+
+Footprint: 1400-3200 bytes, plus 100-400 bytes for the frontend.
+
+
+	The xint implementation in detail
+	================================
+
+This prints correctly "%c", "%s", "%i", "%x". Formats "%u" and "%d"
+are synonyms of "%i", and "%p" is a synonym for "%x".  The only
+supported attributes are '0' and a one-digit width (e.g.: "%08x"
+works).  I personally use it a lot but I don't like it much, because it
+is not powerful enough nor low-level as real hacker's too should be.
+However, it matches the requirement of some projects with a little
+user interface, where the "full" code reveals too large and the "mini"
+code is too unfair to the reader.  To compile it and link the example,
+please set "CONFIG_PRINTF_XINT=y" in your environment or Makefile.
+
+This is the result of the example. As expected, data is aligned and
+has leading zeroes when requested, but bot other formats are obeyed:
+
+    integer  1024   666 00053
+    octal    2000  1232 00065
+    hex       400   29a 00035
+    HEX etc   400   666    53
+    neg        -5 -0010 fffffff1
+    char: A  string foo foo verylongstring
+    hour    12:09:00
+
+Footprint: 350-800 bytes, plus 100-400 bytes for the frontend
+
+
+	The miminal implementation in detail
+	===================================
+
+It is derived from the full one. I left all format parsing intact, but
+only print "%s" and "%c". Everything else is printed as hex numbers
+like "<badc0ffe>". This means your 47 printed as "%03i" will be output
+as "<0000002f>" instead of "047".  Still, the standard format is
+accepted without errors and no information is lost.
+
+I have made no checks nor reasoning about 32-bit vs 64-bit. I only
+used it on 32-bit computers and never printed "long long". Now that it
+is published, I have an incentive to do it, though.
+
+It is selected at compile time by setting CONFIG_PRINTF_MINI=y as a
+make variable, possibly inherited by the environment.  It is licensed
+as GPL version 2 because it's derived from the full one -- I left the
+parsing as I found in there.
+
+Result of example-printf (you can "make CONFIG_PRINTF_MINI=y):
+
+    integer <00000400> <0000029a> <00000035>
+    octal   <00000400> <0000029a> <00000035>
+    hex     <00000400> <0000029a> <00000035>
+    HEX etc <00000400> <0000029a> <00000035>
+    neg     <fffffffb> <fffffff6> <fffffff1>
+    char: A  string foo foo verylongstring
+    hour    <0000000c>:<00000009>:<00000000>
+
+As promised, %c and %s is printed correctly, but without obeying the
+format modifiers, but all integer value are printed in hex.
+
+Footprint: 200-600 bytes, plus 100-400 for the frontend.
+
+
+	The empty implementation in detail
+	==================================
+
+The empty implementation, called "none" to respect the 4-letter
+pattern of "full" and "mini" doesn't parse any format. It simply
+prints the format string and nothing more.  This allows to keep the
+most important messages, like the welcome string or a "Panic" string,
+while saving code space.
+
+It is selected at compile time by setting CONFIG_PRINTF_NONE.
+
+Result of example-printf (you can "make CONFIG_PRINTF_MINI=y):
+
+    integer %5i %5i %05i
+    octal   %5o %5o %05o
+    hex     %5x %5x %05x
+    HEX etc %5X %+5d %-5i
+    neg     %5i %05i %05x
+    char: %c  string %s %5s %.5s
+    hour    %02d:%02d:%02d
+
+Footprint: 25-110 bytes, plus 100-400 for the frontend.
+
+If you want to remove all printf overhead in production, you should
+use a preprocessor macro to completely kill the printf calls. This
+would save you the parameter-passing overhead in the caller and all
+the constant strings in .rodata.  I don't support this in the package,
+though, and I discourage from doing it, for the usual
+preprocessor-related reasons.
+
+
+	Footprint of the various implementations
+	========================================
+
+This table excludes the static buffer (256 in .bss by default) and
+only lists the code size (command "size", column "text"), compiled
+with -Os as for this Makefile.
+
+printf.o is the frontend and is linked in all four configurations,
+the other ones are exclusive one another:
+
+                        printf.o       full  xint  mini  none
+
+   x86, gcc-4.4.5           87         1715   476   258    48
+   x86-64, gcc-4.4.5       418         2325   712   433    77
+   x86, gcc-4.6.2          255         2210   577   330   110
+   arm, gcc-4.2.2          156         2408   684   356    52
+   arm, gcc-4.5.2          128         2235   645   353    44
+   arm, gcc-4.5.2 thumb2    80         1443   373   209    26
+   lm32, gcc-4.5.3         196         3228   792   576    44
+   mips, gcc-4.4.1         184         2616   824   504    72
+   powerpc, gcc-4.4.1      328         2895   881   521    48
+   coldfire, gcc-4.4.1      96         2025   485   257    42
+   sh4, gcc-4.4.1          316         2152   608   408    34
