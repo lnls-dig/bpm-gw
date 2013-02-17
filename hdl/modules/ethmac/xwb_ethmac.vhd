@@ -26,10 +26,10 @@ use work.ethmac_pkg.all;
 
 entity xwb_ethmac is
 generic (
-  g_ma_interface_mode                       : t_wishbone_interface_mode      := CLASSIC;
-  g_ma_address_granularity                  : t_wishbone_address_granularity := WORD;
-  g_sl_interface_mode                       : t_wishbone_interface_mode      := CLASSIC;
-  g_sl_address_granularity                  : t_wishbone_address_granularity := WORD
+  g_ma_interface_mode                       : t_wishbone_interface_mode      := PIPELINED;
+  g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
+  g_sl_interface_mode                       : t_wishbone_interface_mode      := PIPELINED;
+  g_sl_address_granularity                  : t_wishbone_address_granularity := BYTE
 );
 port(
   -- WISHBONE common
@@ -96,7 +96,7 @@ begin
     wb_ack_o                                  => wb_slave_out.ack,
     wb_err_o                                  => wb_slave_out.err,
     wb_stall_o                              => wb_slave_out.stall,
-    wb_rty_o                                => wb_slave_out.rty,
+    --wb_rty_o                                => wb_slave_out.rty,
 
     -- WISHBONE master
     m_wb_adr_o                              => wb_master_out.adr,
@@ -109,7 +109,7 @@ begin
     m_wb_ack_i                              => wb_master_in.ack,
     m_wb_err_i                              => wb_master_in.err,
     m_wb_stall_i                            => wb_master_in.stall,
-    m_wb_rty_i                              => wb_master_in.rty,
+    --m_wb_rty_i                              => wb_master_in.rty,
 
     -- PHY TX
     mtx_clk_pad_i                           => mtx_clk_pad_i,

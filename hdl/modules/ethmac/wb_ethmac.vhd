@@ -47,7 +47,7 @@ port(
   wb_ack_o                                    : out std_logic;
   wb_err_o                                    : out std_logic;
   wb_stall_o                                : out std_logic;
-  wb_rty_o                                  : out std_logic;
+  --wb_rty_o                                  : out std_logic;
 
   -- WISHBONE master
   m_wb_adr_o                                : out std_logic_vector(31 downto 0);
@@ -60,7 +60,7 @@ port(
   m_wb_ack_i                                : in std_logic;
   m_wb_err_i                                : in std_logic;
   m_wb_stall_i                              : in std_logic;
-  m_wb_rty_i                                : in std_logic;
+  --m_wb_rty_i                                : in std_logic;
 
   -- PHY TX
   mtx_clk_pad_i                             : in std_logic;
@@ -193,6 +193,7 @@ begin
   -- Unused slave signals
   wb_sl_out.rty                             <= '0';
   wb_sl_out.stall                           <= '0';
+  wb_sl_out.int                             <= '0';
 
   -- ETHMAC master interface is byte addressed, classic wishbone
   cmp_ma_iface_slave_adapter : wb_slave_adapter
@@ -226,6 +227,7 @@ begin
   -- Unused slave signals
   --wb_ma_in.rty                              <= '0';
   --wb_ma_in.stall                            <= '0';
+  --wb_ma_in.int                              <= '0';
 
   cmp_wrapper_ethmac : ethmac
   port map (
@@ -247,7 +249,7 @@ begin
     -- WISHBONE master
     m_wb_adr_o                              => wb_ma_out.adr,
     m_wb_sel_o                              => wb_ma_out.sel,
-    m_wb_we_o                                  => wb_ma_out.we,
+    m_wb_we_o                               => wb_ma_out.we,
     m_wb_dat_o                              => wb_ma_out.dat,
     m_wb_dat_i                              => wb_ma_in.dat,
     m_wb_cyc_o                              => wb_ma_out.cyc,

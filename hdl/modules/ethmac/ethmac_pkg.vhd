@@ -28,10 +28,10 @@ package ethmac_pkg is
   -- Conponents
   component wb_ethmac
   generic (
-    g_ma_interface_mode                     : t_wishbone_interface_mode      := CLASSIC;
-    g_ma_address_granularity                : t_wishbone_address_granularity := WORD;
-    g_sl_interface_mode                     : t_wishbone_interface_mode      := CLASSIC;
-    g_sl_address_granularity                : t_wishbone_address_granularity := WORD
+    g_ma_interface_mode                     : t_wishbone_interface_mode      := PIPELINED;
+    g_ma_address_granularity                : t_wishbone_address_granularity := BYTE;
+    g_sl_interface_mode                     : t_wishbone_interface_mode      := PIPELINED;
+    g_sl_address_granularity                : t_wishbone_address_granularity := BYTE
   );
   port(
     -- WISHBONE common
@@ -49,7 +49,7 @@ package ethmac_pkg is
     wb_ack_o                                    : out std_logic;
     wb_err_o                                    : out std_logic;
     wb_stall_o                                : out std_logic;
-    wb_rty_o                                  : out std_logic;
+    --wb_rty_o                                  : out std_logic;
 
     -- WISHBONE master
     m_wb_adr_o                                : out std_logic_vector(31 downto 0);
@@ -62,7 +62,7 @@ package ethmac_pkg is
     m_wb_ack_i                                : in std_logic;
     m_wb_err_i                                : in std_logic;
     m_wb_stall_i                              : in std_logic;
-    m_wb_rty_i                                : in std_logic;
+    --m_wb_rty_i                                : in std_logic;
 
     -- PHY TX
     mtx_clk_pad_i                           : in std_logic;
@@ -91,10 +91,10 @@ package ethmac_pkg is
 
   component xwb_ethmac
   generic (
-    g_ma_interface_mode                     : t_wishbone_interface_mode      := CLASSIC;
-    g_ma_address_granularity                : t_wishbone_address_granularity := WORD;
-    g_sl_interface_mode                     : t_wishbone_interface_mode      := CLASSIC;
-    g_sl_address_granularity                : t_wishbone_address_granularity := WORD
+    g_ma_interface_mode                     : t_wishbone_interface_mode      := PIPELINED;
+    g_ma_address_granularity                : t_wishbone_address_granularity := BYTE;
+    g_sl_interface_mode                     : t_wishbone_interface_mode      := PIPELINED;
+    g_sl_address_granularity                : t_wishbone_address_granularity := BYTE
   );
   port(
     -- WISHBONE common
@@ -143,7 +143,7 @@ package ethmac_pkg is
     wbd_width     => x"4",                     -- 32-bit port granularity (0100)
     sdb_component => (
     addr_first    => x"0000000000000000",
-    addr_last     => x"0000000000000fff",
+    addr_last     => x"0000000000ffffff",       -- FIX THIS address!
     product => (
     vendor_id     => x"100000004E2C05E5",     -- OpenCores
     device_id     => x"f8cfeb16",
