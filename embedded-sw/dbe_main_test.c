@@ -211,7 +211,7 @@ int dbe_init(void)
 void print_header(void)
 {
   pp_printf("-------------------------------------------\n");
-  pp_printf("|       DBE EXAMPLE APPLICATION           |\n");
+  pp_printf("|       DBE TEST EXAMPLE APPLICATION      |\n");
   pp_printf("|                                         |\n");
   pp_printf("|  This application aims to demostrate    |\n");
   pp_printf("|  the capabilities of the DBE project    |\n");
@@ -311,7 +311,7 @@ int main(void)
     return -1;
   }
 
-  pp_printf("main:\n");
+  pp_printf("main: TEST TEST TEST TEST TEST\n");
 
   /* Install ethernet interrupt handler, it is enabled here too */
   int_add(ETH0_IRQ, oeth_interrupt, 0);
@@ -345,19 +345,6 @@ int main(void)
   //fmc516_test();
 
   print_end_header();
-
-  // Waiting for ARP or ICMP request
-  pp_printf("> waiting for ARP or ICMP request\n");
-  while (1) {
-    if (sawARP){
-      pp_printf("> saw ARP request\n");
-      sendARP();
-    }
-    if (sawPING){
-      pp_printf("> saw PING request\n");
-      sendECHO();
-    }
-  }
 
   return 0;
 }

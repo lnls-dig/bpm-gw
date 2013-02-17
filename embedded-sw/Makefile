@@ -1,63 +1,43 @@
 # choose your board here.
 BOARD = ml605
 
+# some configurations
+CONFIG_PPRINTF =? 1
+
+#ifeq ($(CONFIG_PPRINTF),1)
+	#CONFIG_PRINT_BUFSIZE = 200
+#endif
+
+CONFIG_ETHERBONE =? 1
+
 # and don't touch the rest unless you know what you're doing.
 CROSS_COMPILE ?= lm32-elf-
 
 CC =		$(CROSS_COMPILE)gcc
+LD =		$(CROSS_COMPILE)ld
 OBJDUMP =	$(CROSS_COMPILE)objdump
 OBJCOPY =	$(CROSS_COMPILE)objcopy
 SIZE =		$(CROSS_COMPILE)size
 
 -include $(CURDIR)/.config
 
-OBJS_DBE = dbe_main.o #\
-#		wrc_ptp.o \
-#		monitor/monitor.o
-
-#PTP_NOPOSIX = ptp-noposix
+OBJS_DBE = dbe_main.o
+#OBJS_DBE = dbe_main_test.o
 
 INCLUDE_DIRS = -Iinclude   \
-               -Iinclude/memmgr
-#-I$(PTP_NOPOSIX)/wrsw_hal \
-#		-I$(PTP_NOPOSIX)/libptpnetif \
-#		-I$(PTP_NOPOSIX)/softpll \
+		-Iinclude/memmgr \
+		-I$(CURDIR)/pp_printf	\
+		-I$(CURDIR)/lib	\
+		-I$(CURDIR)/lib/ethmac
 
-CFLAGS = 
+CFLAGS = -Wall
 #-include $(CURDIR)/include/generated/autoconf.h
 
-CFLAGS_MEMMGR = -DDEBUG_MEMMGR_FATAL=1	\
-								-DDEBUG_MEMMGR_SUPPORT_STATS=1 \
-								-DPOOL_SIZE=1024
+CFLAGS_MEMMGR = -DDEBUG_MEMMGR_FATAL=1 \
+	-DDEBUG_MEMMGR_SUPPORT_STATS=1 \
+	-DPOOL_SIZE=2048
 
-CFLAGS_DEBUG = -DFMC150_DEBUG=1
-
-#CFLAGS_PTPD  = -ffreestanding \
-#	-DPTPD_FREESTANDING \
-#	-DWRPC_EXTRA_SLIM \
-#	-DPTPD_MSBF \
-#	-DPTPD_DBG \
-#	-DPTPD_NO_DAEMON \
-#	-DNEW_SINGLE_WRFSM \
-#	-DPTPD_TRACE_MASK=0 \
-#	-include $(PTP_NOPOSIX)/compat.h \
-#	-include $(PTP_NOPOSIX)/PTPWRd/dep/trace.h \
-#	-include $(PTP_NOPOSIX)/libposix/ptpd-wrappers.h
-
-#OBJS_PTPD = $(PTP_NOPOSIX)/PTPWRd/arith.o \
-#	$(PTP_NOPOSIX)/PTPWRd/bmc.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/msg.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/net.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/sys.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/timer.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/wr_servo.o \
-#	$(PTP_NOPOSIX)/PTPWRd/dep/servo.o \
-#	$(PTP_NOPOSIX)/PTPWRd/protocol.o \
-#	$(PTP_NOPOSIX)/PTPWRd/wr_protocol.o \
-#	$(PTP_NOPOSIX)/libposix/freestanding-startup.o \
-#	$(PTP_NOPOSIX)/libposix/freestanding-wrapper.o \
-#	$(PTP_NOPOSIX)/libposix/net.o \
-#	$(PTP_NOPOSIX)/softpll/softpll_ng.o
+CFLAGS_DEBUG = -DDEBUG_PRINT=1 -DFMC150_DEBUG=1
 
 CFLAGS_PLATFORM  = -mmultiply-enabled -mbarrel-shift-enabled
 LDFLAGS_PLATFORM = -mmultiply-enabled -mbarrel-shift-enabled \
@@ -65,25 +45,24 @@ LDFLAGS_PLATFORM = -mmultiply-enabled -mbarrel-shift-enabled \
 
 OBJS_PLATFORM = arch/lm32/crt0.o arch/lm32/irq.o arch/lm32/debug.o
 
-#include shell/shell.mk
-#include tests/tests.mk
 include lib/lib.mk
-#include sockitowm/sockitowm.mk
 include dev/dev.mk
+include pp_printf/printf.mk
 include boards/boards.mk
 
 CFLAGS += $(CFLAGS_PLATFORM) $(CFLAGS_EB) $(INCLUDE_DIRS) \
-					$(CFLAGS_MEMMGR) $(CFLAGS_DEBUG) -ffunction-sections -fdata-sections	\
-					-Os
+	$(CFLAGS_MEMMGR) $(CFLAGS_DEBUG) -ffunction-sections -fdata-sections \
+	-Os
 
 LDFLAGS = $(LDFLAGS_PLATFORM) \
 	-ffunction-sections -fdata-sections -Wl,--gc-sections -Os -Iinclude
 
-OBJS = $(OBJS_PLATFORM) $(OBJS_DBE)\
+OBJS = $(OBJS_PLATFORM) $(OBJS_DBE) \
 	$(OBJS_SHELL) $(OBJS_TESTS) $(OBJS_LIB) \
-  $(OBJS_DEV) $(OBJS_BOARD)
+	$(OBJS_DEV) $(OBJS_BOARD)
 
 OUTPUT = dbe
+#OUTPUT = dbe_test
 
 REVISION=$(shell git describe --dirty --always)
 
@@ -105,29 +84,19 @@ $(OUTPUT).elf: $(OBJS)
 	./tools/genraminit $*.bin 0 > $@
 
 %.vhd: tools %.bin
-	./tools/genramvhd -s 90112 $*.bin > $@
+	./tools/genramvhd -s 131072 $*.bin > $@
 
-#$(OBJS): include/board.h
+$(OBJS): include/board.h
 
-#include/board.h:
-#	ln -sf ../boards/$(BOARD)/board.h include/board.h
+include/board.h:
+	ln -sf ../boards/$(BOARD)/board.h include/board.h
 
 clean:
-	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S
+	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S include/board.h
 	make clean -C tools
 
-%.o:		%.c
-	${CC} $(CFLAGS) $(INCLUDE_DIR) $(LIB_DIR) -c $*.c -o $@
+%.o: %.c
+	${CC} $(CFLAGS) $(INCLUDE_DIRS) $(LIB_DIR) -c $*.c -o $@
 
 tools:
 	$(MAKE) -C tools
-
-# following targets from Makefile.kconfig
-#silentoldconfig:
-#	@mkdir -p include/config
-#	$(MAKE) -f Makefile.kconfig $@
-
-#scripts_basic config %config:
-#	$(MAKE) -f Makefile.kconfig $@
-
-#.config: silentoldconfig
