@@ -1,10 +1,10 @@
 --      -------------------------------------------------------------
 --
---      Purpose: This package defines supplemental types, subtypes, 
---               constants, and functions 
---     
+--      Purpose: This package defines supplemental types, subtypes,
+--               constants, and functions
+--
 --     Nov 2008 --> 64-bit
--- 
+--
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
@@ -14,7 +14,7 @@ package abb64Package is
 
 
   -- Implemet a design with only one FIFO and only one BRAM Module: For Loopback Test!!
-  constant USE_LOOPBACK_TEST : boolean := true;
+  constant USE_LOOPBACK_TEST : boolean := false;
 
 
 -- Declare constants
@@ -70,7 +70,7 @@ package abb64Package is
   constant C_EMU_FIFO_DC_WIDTH : integer := 15;  --S 14 x fifo originale ; 15 x fifo grande!!
 
   ---       Address width for endpoint device/peripheral
-  -- 
+  --
   constant C_EP_AWIDTH : integer range 10 to 30 := 16;
 
   ---       Buffer width from the PCIe Core
@@ -111,15 +111,20 @@ package abb64Package is
   --  512 Mb=  64MB : 26
   -- 1024 Mb= 128MB : 27
   -- 2048 Mb= 256MB : 28
-  constant C_DDR_IAWIDTH : integer range 24 to 28 := 26;
+  -- 4096 Mb= 512MB : 29
+  -- 8192 Mb= 1024MB : 30
+  -- 16384 Mb= 2048MB : 31
+  -- 32768 Mb= 4096MB : 32
+  constant C_DDR_IAWIDTH : integer range 24 to 32 := 30;
 
+  --- DDR SDRAM controller data width, dependent on controller, memory type & clock speed used
+  constant C_DDR_DATAWIDTH : integer range 32 to 512 := 512;
 
   ---       Block RAM address bus width.  Variation requires BRAM core regeneration.
   constant C_PRAM_AWIDTH : integer range 8 to 28 := 12;
 
   ---       Width for Interrupt generation counter
   constant C_CNT_GINT_WIDTH : integer := 30;
-
 
 --  ---       Emulation FIFOs' address width
 --  Constant  C_FIFO_AWIDTH         : integer      :=   5;
@@ -510,7 +515,7 @@ package abb64Package is
   constant C_NUM_OF_INTERRUPTS : integer := 16;
 
   ------------------------------------------------------------------------
-  -- Minimal register set 
+  -- Minimal register set
   constant CINT_ADDR_VERSION : integer := 0;
 
   constant CINT_ADDR_IRQ_STAT : integer := 2;
@@ -641,10 +646,10 @@ package abb64Package is
   --------  SIMONE USER REGISTER 10 rx(R) + tx (W)
   constant CINT_ADDR_REG10 : integer := 53;
 
-  --------  Host2Board FIFO status (R) 
+  --------  Host2Board FIFO status (R)
   constant CINT_ADDR_H2B_STACON : integer := 54;
 
-  --------  Board2Host FIFO status (R) 
+  --------  Board2Host FIFO status (R)
   constant CINT_ADDR_B2H_STACON : integer := 55;
 
   --------  SIMONE USER REGISTER 11 rx(R) + tx (W)
@@ -662,7 +667,7 @@ package abb64Package is
   ------------------------------------------------------------------------
   --        Number of registers
   constant C_NUM_OF_ADDRESSES : integer := 60;
-  -- 
+  --
   ------------------------------------------------------------------------
 
 
@@ -772,7 +777,7 @@ package abb64Package is
 
   ----------------------------------------------------------------------------------
   --   Zero and -1 constants for different dimensions
-  -- 
+  --
   constant C_ALL_ZEROS : std_logic_vector(255 downto 0) := (others => '0');
   constant C_ALL_ONES : std_logic_vector(255 downto 0) := (others => '1');
 
@@ -805,7 +810,7 @@ package abb64Package is
   ----------------------------------------------------------------------------------
 
 ----  ------------ design ID              ---------------------
----- design id now contains a version: upper 8 bits, a major revision: next 8 bits, 
+---- design id now contains a version: upper 8 bits, a major revision: next 8 bits,
 ---- and author code: next 4 bits and a minor revision: lower 12 bits
 ---- keep the autor file seperate and don't submit to CVS
 ----
@@ -819,7 +824,7 @@ package abb64Package is
                                                             & DESIGN_MINOR_REVISION;
 
   ----------------------------------------------------------------------------------
-  --       Function to invert endian for 32-bit data 
+  --       Function to invert endian for 32-bit data
   --
   function Endian_Invert_32 (Word_in : std_logic_vector) return std_logic_vector;
   function Endian_Invert_64 (Word_in : std_logic_vector(64-1 downto 0)) return std_logic_vector;
@@ -829,21 +834,21 @@ package abb64Package is
   ----------------------------------------------------------------------------------
   -- revision log
   -- 2007-05-30: AK - abbPackage added, address map changed
-  -- 2007-06-12: WGao - C_DEF_DMA_CTRL_WORD added, 
+  -- 2007-06-12: WGao - C_DEF_DMA_CTRL_WORD added,
   --                    DMA Control word bit definition added,
   --                    Function Endian_Invert_32 added.
   --                    CINT_ADDR_MRD_CTRL and CINT_ADDR_CPLD_CTRL changed,
   --                    CINT_ADDR_US_SAH and CINT_ADDR_DS_SAH removed.
   -- 2007-07-16: AK - dma status bits added
 
-  
+
 end abb64Package;
 
 
 package body abb64Package is
 
   -- ------------------------------------------------------------------------------------------
-  --   Function to invert bytewise endian for 32-bit data 
+  --   Function to invert bytewise endian for 32-bit data
   -- ------------------------------------------------------------------------------------------
   function Endian_Invert_32 (Word_in : std_logic_vector) return std_logic_vector is
   begin
@@ -851,7 +856,7 @@ package body abb64Package is
   end Endian_Invert_32;
 
   -- ------------------------------------------------------------------------------------------
-  --   Function to invert bytewise endian for 64-bit data 
+  --   Function to invert bytewise endian for 64-bit data
   -- ------------------------------------------------------------------------------------------
   function Endian_Invert_64 (Word_in : std_logic_vector(64-1 downto 0)) return std_logic_vector is
   begin

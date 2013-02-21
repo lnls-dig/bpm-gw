@@ -1,22 +1,22 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
+-- Company:
+-- Engineer:
+--
 -- Create Date:    09:12:51 01 Feb 2010
--- Design Name: 
--- Module Name:    pcieDMA - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Design Name:
+-- Module Name:    pcieDMA - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Dependencies: 
+-- Dependencies:
 --
--- Revision: 
--- 
+-- Revision:
+--
 -- Revision 1.00 - File Released
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -36,32 +36,39 @@ entity bpm_pcie_k7 is
   generic (
     constant pcieLanes : integer := C_NUM_PCIE_LANES;
     PL_FAST_TRAIN      : string  := "FALSE";
-    PIPE_SIM_MODE      : string := "FALSE"
+    PIPE_SIM_MODE      : string := "FALSE";
+    SIMULATION         : string := "FALSE"
     );
   port (
-
-    --userclk_66MHz                                      : IN std_logic;    --66  MHz USER Socket SingleEnded
-    --userclk_200MHz_n              : IN std_logic;    --200 MHz USER Socket LVDS N
-    --userclk_200MHz_p              : IN std_logic;    --200 MHz USER Socket LVDS P
-
-    -- DPR blinker
-    --LEDs_IO_pin                   : OUT   std_logic_vector(7 downto 0);
-
-
+    --DDR3 memory pins
+    ddr3_dq      : inout std_logic_vector(64-1 downto 0);
+    ddr3_dqs_p   : inout std_logic_vector(8-1 downto 0);
+    ddr3_dqs_n   : inout std_logic_vector(8-1 downto 0);
+    ddr3_addr    : out   std_logic_vector(14-1 downto 0);
+    ddr3_ba      : out   std_logic_vector(3-1 downto 0);
+    ddr3_ras_n   : out   std_logic;
+    ddr3_cas_n   : out   std_logic;
+    ddr3_we_n    : out   std_logic;
+    ddr3_reset_n : out   std_logic;
+    ddr3_ck_p    : out   std_logic_vector(1-1 downto 0);
+    ddr3_ck_n    : out   std_logic_vector(1-1 downto 0);
+    ddr3_cke     : out   std_logic_vector(1-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector((1)-1 downto 0);
+    ddr3_dm      : out   std_logic_vector(8-1 downto 0);
+    ddr3_odt     : out   std_logic_vector(1-1 downto 0);
     -- PCIe transceivers
     pci_exp_rxp : in  std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_rxn : in  std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_txp : out std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_txn : out std_logic_vector(pcieLanes - 1 downto 0);
-
     -- Necessity signals
-    sys_clk_p   : in std_logic;         --125 MHz PCIe Clock
-    sys_clk_n   : in std_logic;         --125 MHz PCIe Clock
-    sys_rst_n : in std_logic          --Reset
-    );                       
-
+    ddr_sys_clk_p : in std_logic;
+    ddr_sys_clk_n : in std_logic;
+    sys_clk_p     : in std_logic;         --125 MHz PCIe Clock
+    sys_clk_n     : in std_logic;         --125 MHz PCIe Clock
+    sys_rst_n     : in std_logic          --Reset
+    );
 end entity bpm_pcie_k7;
-
 
 architecture Behavioral of bpm_pcie_k7 is
   component pcie_core
@@ -447,36 +454,39 @@ architecture Behavioral of bpm_pcie_k7 is
       );
   end component;
 
-
-  component bram_DDRs_Control
+  component DDR_Transact
     generic (
-      C_ASYNFIFO_WIDTH : integer;
-      P_SIMULATION     : boolean
+      SIMULATION : string
       );
     port (
-      --USER Logic Interface
-      user_wr_weA   : in  std_logic_vector(7 downto 0);
-      user_wr_addrA : in  std_logic_vector(C_PRAM_AWIDTH-1 downto 0);
-      user_wr_dinA  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      user_rd_addrB : in  std_logic_vector(C_PRAM_AWIDTH-1 downto 0);
-      user_rd_doutB : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      user_rd_clk   : in  std_logic;
-      user_wr_clk   : in  std_logic;
+      --ext logic interface to memory core
+      -- memory controller interface --
+      memc_ui_clk    : out std_logic;
+      memc_cmd_rdy   : out std_logic;
+      memc_cmd_en    : in  std_logic;
+      memc_cmd_instr : in  std_logic_vector(2 downto 0);
+      memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+      memc_wr_en     : in  std_logic;
+      memc_wr_end    : in  std_logic;
+      memc_wr_mask   : in  std_logic_vector(C_DDR_DATAWIDTH/8-1 downto 0);
+      memc_wr_data   : in  std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+      memc_wr_rdy    : out std_logic;
+      memc_rd_data   : out std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+      memc_rd_valid  : out std_logic;
+      -- memory arbiter interface
+      memarb_acc_req : in  std_logic;
+      memarb_acc_gnt : out std_logic;
+      --/ext logic interface
 
-      -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-      DDR_wr_sof   : in  std_logic;
+      -- PCIE interface
       DDR_wr_eof   : in  std_logic;
       DDR_wr_v     : in  std_logic;
-      DDR_wr_FA    : in  std_logic;
       DDR_wr_Shift : in  std_logic;
       DDR_wr_Mask  : in  std_logic_vector(2-1 downto 0);
       DDR_wr_din   : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_wr_full  : out std_logic;
 
-      DDR_rdc_sof   : in  std_logic;
-      DDR_rdc_eof   : in  std_logic;
       DDR_rdc_v     : in  std_logic;
-      DDR_rdc_FA    : in  std_logic;
       DDR_rdc_Shift : in  std_logic;
       DDR_rdc_din   : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_rdc_full  : out std_logic;
@@ -485,14 +495,35 @@ architecture Behavioral of bpm_pcie_k7 is
       DDR_FIFO_RdEn   : in  std_logic;
       DDR_FIFO_Empty  : out std_logic;
       DDR_FIFO_RdQout : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      --/PCIE interface
 
       -- Common interface
-      DDR_Ready   : out std_logic;
-      DDR_Blinker : out std_logic;
-      mem_clk     : in  std_logic;
-      user_clk    : in  std_logic;
-      Sim_Zeichen : out std_logic;
-      user_reset  : in  std_logic
+      DDR_Ready : out std_logic;
+
+      --DDR3 memory pins
+      ddr3_dq      : inout std_logic_vector(64-1 downto 0);
+      ddr3_dqs_p   : inout std_logic_vector(8-1 downto 0);
+      ddr3_dqs_n   : inout std_logic_vector(8-1 downto 0);
+      ddr3_addr    : out   std_logic_vector(14-1 downto 0);
+      ddr3_ba      : out   std_logic_vector(3-1 downto 0);
+      ddr3_ras_n   : out   std_logic;
+      ddr3_cas_n   : out   std_logic;
+      ddr3_we_n    : out   std_logic;
+      ddr3_reset_n : out   std_logic;
+      ddr3_ck_p    : out   std_logic_vector(1-1 downto 0);
+      ddr3_ck_n    : out   std_logic_vector(1-1 downto 0);
+      ddr3_cke     : out   std_logic_vector(1-1 downto 0);
+      ddr3_cs_n    : out   std_logic_vector((1)-1 downto 0);
+      ddr3_dm      : out   std_logic_vector(8-1 downto 0);
+      ddr3_odt     : out   std_logic_vector(1-1 downto 0);
+
+      --clocking & reset
+      ddr_sys_clk_p : in std_logic;
+      ddr_sys_clk_n : in std_logic;
+      ddr_ref_clk   : in std_logic;
+      user_clk      : in std_logic;
+      user_reset    : in std_logic;
+      sys_reset     : in std_logic
       );
   end component;
 
@@ -550,7 +581,6 @@ architecture Behavioral of bpm_pcie_k7 is
       );
   end component;
 
-
   component eb_wrapper
     port (
       --FIFO PCIe-->USER
@@ -585,7 +615,6 @@ architecture Behavioral of bpm_pcie_k7 is
       rst               : in  std_logic
       );
   end component;
-
 
   signal eb_wclk   : std_logic;
   signal eb_we     : std_logic;
@@ -631,10 +660,8 @@ architecture Behavioral of bpm_pcie_k7 is
   signal user_wr_full       : std_logic;
   signal user_rd_valid      : std_logic;
 
-
-
 ------------- COMPONENT Declaration: tlpControl   ------
--- 
+--
   component tlpControl
     port (
       --  Test pin, emulating DDR data flow discontinuity
@@ -676,7 +703,6 @@ architecture Behavioral of bpm_pcie_k7 is
       DAQ_irq : in std_logic;
       CTL_irq : in std_logic;
       DLM_irq : in std_logic;
-
 
       -- SIMONE Register: PC-->FPGA
       reg01_tv : out std_logic;
@@ -743,7 +769,6 @@ architecture Behavioral of bpm_pcie_k7 is
       debug_in_2i : out std_logic_vector(31 downto 0);
       debug_in_3i : out std_logic_vector(31 downto 0);
       debug_in_4i : out std_logic_vector(31 downto 0);
-
 
       -- Event Buffer FIFO interface
       eb_FIFO_we   : out std_logic;
@@ -885,7 +910,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal PIPE_RXOUTCLK_OUT : std_logic_vector(0 downto 0);
   signal PIPE_PCLK_SEL_OUT : std_logic_vector(0 downto 0);
   signal PIPE_GEN3_OUT     : std_logic;
-  ----------------------------------------------------   
+  ----------------------------------------------------
 
   signal user_reset_int1  : std_logic;
   signal user_lnk_up_int1 : std_logic;
@@ -1003,7 +1028,7 @@ architecture Behavioral of bpm_pcie_k7 is
 
 --S     SIMONE: Wanxau UserLogic Signals, not Used
   signal protocol_link_act : std_logic_vector(2-1 downto 0)              := (others => '0');
-  signal protocol_rst      : std_logic; 
+  signal protocol_rst      : std_logic;
   signal daq_rstop         : std_logic := '0';
   signal ctl_rv            : std_logic;
   signal ctl_rd            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
@@ -1092,7 +1117,7 @@ architecture Behavioral of bpm_pcie_k7 is
 
   signal user_rst_o : std_logic;
 
-  signal clk_200MHz : std_logic;
+  signal ddr_ref_clk_i : std_logic;
 
   signal DMA_Host2Board_Busy : std_logic;
   signal DMA_Host2Board_Done : std_logic;
@@ -1101,7 +1126,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal DMA_us_Done : std_logic;
   signal DMA_ds_Done : std_logic;
   signal DMA_ds_Busy : std_logic;
-  
+
 
 begin
 
@@ -1113,7 +1138,7 @@ begin
         inout_logic_cw_ce   => '1',
         inout_logic_cw_clk  => user_clk,
         user_logic_cw_ce    => '1',
-        user_logic_cw_clk   => clk_200MHz,
+        user_logic_cw_clk   => ddr_ref_clk_i,
         fifo_rd_count       => user_rd_data_count,
         fifo_rd_dout        => user_rd_dout ,
         fifo_rd_empty       => user_rd_empty ,
@@ -1213,21 +1238,26 @@ begin
       I => sys_rst_n
       );
 
-  refclk_ibuf : IBUFDS_GTE2
+  pcieclk_ibuf : IBUFDS_GTE2
     port map (
-      O  => sys_clk_c,
+      O     => sys_clk_c,
       ODIV2 => open,
-      I  => sys_clk_p,
-      IB => sys_clk_n,
-      CEB => '0'
+      I     => sys_clk_p,
+      IB    => sys_clk_n,
+      CEB   => '0'
       );
 
---   userclk_ibuf : IBUFGDS 
---      port map (
---                 O  => clk_200MHz,
---                 I  => userclk_200MHz_p,
---                 IB => userclk_200MHz_n
---                );
+  --ddr_refclk_ibuf : IBUFGDS
+    --generic map (
+      --DIFF_TERM    => TRUE,
+      --IBUF_LOW_PWR => FALSE
+    --)
+    --port map (
+      --I  => ddr_sys_clk_p,
+      --IB => ddr_sys_clk_n,
+      --O  => ddr_ref_clk_i
+    --);
+  ddr_ref_clk_i <= '0'; --USE_SYSTEM_CLOCK
 
   cfg_err_cor            <= '0';
   cfg_err_ur             <= '0';
@@ -1240,9 +1270,7 @@ begin
   cfg_err_tlp_cpl_header <= (others => '0');
   cfg_trn_pending        <= '0';
   cfg_pm_wake            <= '0';
-
-
--- 
+--
   fc_sel <= (others => '0');
 
   pl_directed_link_auton    <= '0';
@@ -1253,9 +1281,8 @@ begin
 
   tx_cfg_gnt         <= '1';
   s_axis_tx_tuser    <= s_axis_tx_tdsc & '0' & s_axis_tx_terrfwd & '0';
-  m_axis_rx_terrfwd  <= m_axis_rx_tuser(1); 
+  m_axis_rx_terrfwd  <= m_axis_rx_tuser(1);
   m_axis_rx_tbar_hit <= m_axis_rx_tuser(8 downto 2);
-
 --
   cfg_di           <= (others => '0');
   cfg_dwaddr       <= (others => '1');
@@ -1282,7 +1309,6 @@ begin
       PRE => '0'
       );
 
-
   user_reset_i : FDPE
     generic map (
       INIT => '1'
@@ -1295,10 +1321,9 @@ begin
       PRE => '0'
       );
 
-
 -- --------------------------------------------------------------
 -- --------------------------------------------------------------
-  pcie_core_i : pcie_core 
+  pcie_core_i : pcie_core
   generic map(
     PL_FAST_TRAIN => PL_FAST_TRAIN,
     PCIE_EXT_CLK => "FALSE",
@@ -1657,26 +1682,26 @@ begin
         reg14_rv => reg14_rv,
         reg14_rd => reg14_rd,
 
-        -- SIMONE debug signals 
+        -- SIMONE debug signals
         debug_in_1i => debug_in_1i,
         debug_in_2i => debug_in_2i,
         debug_in_3i => debug_in_3i,
         debug_in_4i => debug_in_4i,
 
         -- Event Buffer FIFO interface
-        eb_FIFO_we   => eb_we ,         --  OUT std_logic; 
-        eb_FIFO_wsof => eb_wsof ,       --  OUT std_logic; 
-        eb_FIFO_weof => eb_weof ,       --  OUT std_logic; 
+        eb_FIFO_we   => eb_we ,         --  OUT std_logic;
+        eb_FIFO_wsof => eb_wsof ,       --  OUT std_logic;
+        eb_FIFO_weof => eb_weof ,       --  OUT std_logic;
         eb_FIFO_din  => eb_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        eb_FIFO_re         => eb_re ,   --  OUT std_logic; 
-        eb_FIFO_empty      => eb_empty ,       --  IN  std_logic; 
+        eb_FIFO_re         => eb_re ,   --  OUT std_logic;
+        eb_FIFO_empty      => eb_empty ,       --  IN  std_logic;
         eb_FIFO_qout       => eb_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         eb_FIFO_data_count => eb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
 
         eb_FIFO_ow => eb_FIFO_ow ,      --  IN  std_logic;
 
-        pio_reading_status => pio_reading_status ,  --  OUT std_logic; 
+        pio_reading_status => pio_reading_status ,  --  OUT std_logic;
 
         eb_FIFO_Status  => eb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         eb_FIFO_Rst     => eb_rst ,     --  OUT std_logic;
@@ -1715,7 +1740,7 @@ begin
         DDR_rdc_full  => DDR_rdc_full ,   --  IN    std_logic;
 
         -- DDR payload FIFO Read Port
-        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic; 
+        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic;
         DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- IN  std_logic;
         DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -1759,67 +1784,82 @@ begin
         localId         => localId
         );
 
-
   -- -----------------------------------------------------------------------
-  --  DDR SDRAM: control module USER LOGIC (2 BRAM Module: 
+  --  DDR SDRAM: control module USER LOGIC (2 BRAM Module:
   -- -----------------------------------------------------------------------
-
 
   LoopBack_BRAM_Off : if not USE_LOOPBACK_TEST generate
 
-    DDRs_ctrl_module :
-      bram_DDRs_Control
-        generic map (
-          C_ASYNFIFO_WIDTH => 72 ,
-          P_SIMULATION     => false
-          )
-        port map(
+    DDRs_ctrl_module : DDR_Transact
+      generic map (
+        SIMULATION => SIMULATION
+        )
+      port map(
+        -- connect your own signals here
+        memc_ui_clk    => open, --: out std_logic;
+        memc_cmd_rdy   => open, --: out std_logic;
+        memc_cmd_en    => '0', --: in  std_logic;
+        memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
+        memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
+        memc_wr_en     => '0', --: in  std_logic;
+        memc_wr_end    => '0', --: in  std_logic;
+        memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
+        memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
+        memc_wr_rdy    => open, --: out std_logic;
+        memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
+        memc_rd_valid  => open, --: out std_logic;
+        memarb_acc_req => '0', --: in  std_logic;
+        memarb_acc_gnt => open, --: out std_logic;
+        -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+        DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
+        DDR_wr_v     => DDR_wr_v ,   --  IN    std_logic;
+        DDR_wr_Shift => DDR_wr_Shift ,  --  IN    std_logic;
+        DDR_wr_Mask  => DDR_wr_Mask ,  --  IN    std_logic_vector(2-1 downto 0);
+        DDR_wr_din   => DDR_wr_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        DDR_wr_full  => DDR_wr_full ,  --  OUT   std_logic;
 
-          user_wr_weA   => user_wr_weA ,
-          user_wr_addrA => user_wr_addrA ,
-          user_wr_dinA  => user_wr_dinA ,
-          user_rd_addrB => user_rd_addrB ,
-          user_rd_doutB => user_rd_doutB ,
-          user_rd_clk   => clk_200MHz ,
-          user_wr_clk   => clk_200MHz ,
-          -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-          DDR_wr_sof    => DDR_wr_sof ,  --  IN    std_logic;
-          DDR_wr_eof    => DDR_wr_eof ,  --  IN    std_logic;
-          DDR_wr_v      => DDR_wr_v ,   --  IN    std_logic;
-          DDR_wr_FA     => DDR_wr_FA ,  --  IN    std_logic;
-          DDR_wr_Shift  => DDR_wr_Shift ,  --  IN    std_logic;
-          DDR_wr_Mask   => DDR_wr_Mask ,  --  IN    std_logic_vector(2-1 downto 0);
-          DDR_wr_din    => DDR_wr_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-          DDR_wr_full   => DDR_wr_full ,  --  OUT   std_logic;
+        DDR_rdc_v     => DDR_rdc_v ,  --  IN    std_logic;
+        DDR_rdc_Shift => DDR_rdc_Shift ,  --  IN    std_logic;
+        DDR_rdc_din   => DDR_rdc_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        DDR_rdc_full  => DDR_rdc_full ,   --  OUT   std_logic;
 
-          DDR_rdc_sof   => DDR_rdc_sof ,  --  IN    std_logic;
-          DDR_rdc_eof   => DDR_rdc_eof ,  --  IN    std_logic;
-          DDR_rdc_v     => DDR_rdc_v ,  --  IN    std_logic;
-          DDR_rdc_FA    => DDR_rdc_FA ,   --  IN    std_logic;
-          DDR_rdc_Shift => DDR_rdc_Shift ,  --  IN    std_logic;
-          DDR_rdc_din   => DDR_rdc_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-          DDR_rdc_full  => DDR_rdc_full ,   --  OUT   std_logic;
+        -- DDR payload FIFO Read Port
+        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- IN    std_logic;
+        DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- OUT   std_logic;
+        DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-          -- DDR payload FIFO Read Port
-          DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- IN    std_logic; 
-          DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- OUT   std_logic;
-          DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        -- Common interface
+        DDR_Ready => DDR_Ready, --  OUT   std_logic;
 
-          -- Common interface
-          DDR_Ready   => DDR_Ready ,    --  OUT   std_logic;
-          DDR_Blinker => DDR_Blinker ,  --  OUT   std_logic;
-          mem_clk     => user_clk ,     --  IN
-          user_clk    => user_clk ,     --  IN    std_logic;
-          Sim_Zeichen => Sim_Zeichen ,  --  OUT   std_logic;  
-          user_reset  => user_reset     --  IN    std_logic
-          );
+        --DDR3 memory pins
+        ddr3_dq      => ddr3_dq, --: inout std_logic_vector(64-1 downto 0);
+        ddr3_dqs_p   => ddr3_dqs_p, --: inout std_logic_vector(8-1 downto 0);
+        ddr3_dqs_n   => ddr3_dqs_n, --: inout std_logic_vector(8-1 downto 0);
+        ddr3_addr    => ddr3_addr, --: out   std_logic_vector(14-1 downto 0);
+        ddr3_ba      => ddr3_ba, --: out   std_logic_vector(3-1 downto 0);
+        ddr3_ras_n   => ddr3_ras_n, --: out   std_logic;
+        ddr3_cas_n   => ddr3_cas_n, --: out   std_logic;
+        ddr3_we_n    => ddr3_we_n, --: out   std_logic;
+        ddr3_reset_n => ddr3_reset_n, --: out   std_logic;
+        ddr3_ck_p    => ddr3_ck_p, --: out   std_logic_vector(1-1 downto 0);
+        ddr3_ck_n    => ddr3_ck_n, --: out   std_logic_vector(1-1 downto 0);
+        ddr3_cke     => ddr3_cke, --: out   std_logic_vector(1-1 downto 0);
+        ddr3_cs_n    => ddr3_cs_n, --: out   std_logic_vector((1)-1 downto 0);
+        ddr3_dm      => ddr3_dm, --: out   std_logic_vector(8-1 downto 0);
+        ddr3_odt     => ddr3_odt, --: out   std_logic_vector(1-1 downto 0);
+
+        --clocking & reset
+        ddr_sys_clk_p => ddr_sys_clk_p, --: in std_logic;
+        ddr_sys_clk_n => ddr_sys_clk_n, --: in std_logic;
+        ddr_ref_clk   => ddr_ref_clk_i, --: in std_logic;
+        user_clk      => user_clk , --  IN    std_logic;
+        user_reset    => user_reset, --  IN    std_logic
+        sys_reset     => sys_reset_c --: in std_logic
+        );
 
   end generate;
 
-
-
   LoopBack_BRAM_On : if USE_LOOPBACK_TEST generate
-
 
     DDRs_ctrl_module :
       bram_DDRs_Control_loopback
@@ -1828,8 +1868,7 @@ begin
           P_SIMULATION     => false
           )
         port map(
-
-          -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+          -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
           DDR_wr_sof   => DDR_wr_sof ,  --  IN    std_logic;
           DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
           DDR_wr_v     => DDR_wr_v ,    --  IN    std_logic;
@@ -1848,7 +1887,7 @@ begin
           DDR_rdc_full  => DDR_rdc_full ,   --  OUT   std_logic;
 
           -- DDR payload FIFO Read Port
-          DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- IN    std_logic; 
+          DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- IN    std_logic;
           DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- OUT   std_logic;
           DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -1857,20 +1896,11 @@ begin
           DDR_Blinker => DDR_Blinker ,  --  OUT   std_logic;
           mem_clk     => user_clk ,     --  IN
           user_clk    => user_clk ,     --  IN    std_logic;
-          Sim_Zeichen => Sim_Zeichen ,  --  OUT   std_logic;  
+          Sim_Zeichen => Sim_Zeichen ,  --  OUT   std_logic;
           user_reset  => user_reset     --  IN    std_logic
           );
 
   end generate;
-
-
-
---    LEDs_IO_pin(0)    <= user_reset xor Format_Shower;
-  --   LEDs_IO_pin(1)    <= user_lnk_up  ;
-  --   LEDs_IO_pin(2)    <= Format_Shower ;
---    LEDs_IO_pin(3)    <= trn_Blinker   ;
-
-
 
   ------------------------ -----------------------
   -- Event Buffer wrapper (FIFO Module: H2B & B2H)
@@ -1889,7 +1919,7 @@ begin
           H2B_wr_full       => eb_full ,
           H2B_wr_data_count => H2B_wr_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
 
-          H2B_rd_clk        => clk_200MHz ,
+          H2B_rd_clk        => ddr_ref_clk_i ,
           H2B_rd_en         => user_rd_en ,
           H2B_rd_dout       => user_rd_dout ,
           H2B_rd_pempty     => user_rd_pempty ,
@@ -1897,13 +1927,12 @@ begin
           H2B_rd_valid      => user_rd_valid ,
           H2B_rd_data_count => user_rd_data_count ,
 
-          B2H_wr_clk        => clk_200MHz ,
+          B2H_wr_clk        => ddr_ref_clk_i ,
           B2H_wr_en         => user_wr_en ,
           B2H_wr_din        => user_wr_din ,
           B2H_wr_pfull      => user_wr_pfull ,
           B2H_wr_full       => user_wr_full ,
           B2H_wr_data_count => user_wr_data_count ,
-
 
           B2H_rd_clk        => user_clk ,
           B2H_rd_en         => eb_re ,
@@ -1917,8 +1946,7 @@ begin
           );
 
 
-
-    --- 64 bits to 32 bits transformation ( --> Count * 2)--- 
+    --- 64 bits to 32 bits transformation ( --> Count * 2)---
     B2H_rd_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
  <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
     B2H_rd_data_count(0) <= '0';
@@ -1946,7 +1974,7 @@ begin
 
 
     --- Host2Board FIFO status used by user ---
-    --- read: H2B status ; write: nothing 
+    --- read: H2B status ; write: nothing
     H2B_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
  <= (others => '0');
     H2B_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
@@ -1957,7 +1985,7 @@ begin
 
 
     --- Board2Host FIFO status used by user ---
-    --- read: B2H status ; write: nothing 
+    --- read: B2H status ; write: nothing
     B2H_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
     B2H_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
@@ -2006,7 +2034,7 @@ begin
 
     H2B_FIFO_Status <= (others => '0');
     H2B_FIFO_Status <= (others => '0');
-    
+
   end generate;
 
 end Behavioral;
