@@ -214,9 +214,9 @@ module mig_7series_v1_8_ddr_phy_wrlvl #
    reg [2:0]             corse_dec[0:DQS_WIDTH-1];
    reg [2:0]             corse_inc[0:DQS_WIDTH-1];
    reg                   dq_cnt_inc;
-   reg [2:0]             stable_cnt;
+   reg [3:0]             stable_cnt;
    reg                   flag_ck_negedge;
-   reg                   past_negedge;
+   //reg                   past_negedge;
    reg                   flag_init;
    reg [2:0]             corse_cnt[0:DQS_WIDTH-1];
    reg [3*DQS_WIDTH-1:0] corse_cnt_dbg;
@@ -275,15 +275,15 @@ module mig_7series_v1_8_ddr_phy_wrlvl #
    assign dbg_phy_wrlvl[32+:4]  = dqs_count_r;
    assign dbg_phy_wrlvl[36+:9]  = rd_data_rise_wl_r;
    assign dbg_phy_wrlvl[45+:9] = rd_data_previous_r;
-   assign dbg_phy_wrlvl[54+:3]  = stable_cnt;
-   assign dbg_phy_wrlvl[57]     = past_negedge;
-   assign dbg_phy_wrlvl[58]     = flag_ck_negedge;
+   assign dbg_phy_wrlvl[54+:4]  = stable_cnt;
+   assign dbg_phy_wrlvl[58]     = 'd0;
+   assign dbg_phy_wrlvl[59]     = flag_ck_negedge;
 
-   assign dbg_phy_wrlvl [59] = wl_edge_detect_valid_r;
-   assign dbg_phy_wrlvl [60+:6] = wl_tap_count_r;
-   assign dbg_phy_wrlvl [66+:9] = rd_data_edge_detect_r;
-   assign dbg_phy_wrlvl [75+:54] = wl_po_fine_cnt;
-   assign dbg_phy_wrlvl [129+:27] = wl_po_coarse_cnt;
+   assign dbg_phy_wrlvl [60] = wl_edge_detect_valid_r;
+   assign dbg_phy_wrlvl [61+:6] = wl_tap_count_r;
+   assign dbg_phy_wrlvl [67+:9] = rd_data_edge_detect_r;
+   assign dbg_phy_wrlvl [76+:54] = wl_po_fine_cnt;
+   assign dbg_phy_wrlvl [130+:27] = wl_po_coarse_cnt;
   
 
    
@@ -663,8 +663,9 @@ endgenerate
 
    // storing the previous data for checking later.
    always @(posedge clk)begin
-     if ((wl_state_r == WL_INIT) || (wl_state_r == WL_INIT_FINE_INC_WAIT) ||
-         (wl_state_r == WL_INIT_FINE_INC_WAIT1) ||
+     if ((wl_state_r == WL_INIT) || //(wl_state_r == WL_INIT_FINE_INC_WAIT) ||
+         //(wl_state_r == WL_INIT_FINE_INC_WAIT1) ||
+		 ((wl_state_r1 == WL_INIT_FINE_INC_WAIT) & (wl_state_r == WL_INIT_FINE_INC)) ||
          (wl_state_r == WL_FINE_DEC) || (wl_state_r == WL_FINE_DEC_WAIT1) || (wl_state_r == WL_FINE_DEC_WAIT) ||
          (wl_state_r == WL_CORSE_INC) || (wl_state_r == WL_CORSE_INC_WAIT) || (wl_state_r == WL_CORSE_INC_WAIT_TMP) || 
          (wl_state_r == WL_CORSE_INC_WAIT1) || (wl_state_r == WL_CORSE_INC_WAIT2) ||
@@ -679,39 +680,40 @@ endgenerate
          (wl_state_r == WL_FINE_DEC) |
          (rd_data_previous_r[dqs_count_r] != rd_data_rise_wl_r[dqs_count_r]) |
          (wl_state_r1 == WL_INIT_FINE_DEC))
-        stable_cnt <= #TCQ 3'd0;
+        stable_cnt <= #TCQ 'd0;
       else if ((wl_tap_count_r > 6'd0) & 
          (((wl_state_r == WL_EDGE_CHECK) & (wl_edge_detect_valid_r)) |
          ((wl_state_r1 == WL_INIT_FINE_INC_WAIT) & (wl_state_r == WL_INIT_FINE_INC)))) begin
         if ((rd_data_previous_r[dqs_count_r] == rd_data_rise_wl_r[dqs_count_r])
-           & (stable_cnt < 3'd7))
+           & (stable_cnt < 'd14))
           stable_cnt <= #TCQ stable_cnt + 1;
       end
    end
    
    // Signal to ensure that flag_ck_negedge does not incorrectly assert
    // when DQS is very close to CK rising edge
-   always @(posedge clk) begin
-     if (rst | (wl_state_r == WL_DQS_CNT) |
-        (wl_state_r == WL_DQS_CHECK) | wr_level_done_r)
-       past_negedge <= #TCQ 1'b0;
-     else if (~flag_ck_negedge && ~rd_data_previous_r[dqs_count_r] &&
-              (stable_cnt == 3'd0) && ((wl_state_r == WL_CORSE_INC_WAIT1) |
-              (wl_state_r == WL_CORSE_INC_WAIT2)))
-       past_negedge <= #TCQ 1'b1;
-   end 
+   //always @(posedge clk) begin
+   //  if (rst | (wl_state_r == WL_DQS_CNT) |
+   //     (wl_state_r == WL_DQS_CHECK) | wr_level_done_r)
+   //    past_negedge <= #TCQ 1'b0;
+   //  else if (~flag_ck_negedge && ~rd_data_previous_r[dqs_count_r] &&
+   //           (stable_cnt == 'd0) && ((wl_state_r == WL_CORSE_INC_WAIT1) |
+   //           (wl_state_r == WL_CORSE_INC_WAIT2)))
+   //    past_negedge <= #TCQ 1'b1;
+   //end 
    
    // Flag to indicate negedge of CK detected and ignore 0->1 transitions
    // in this region
    always @(posedge clk)begin
-      if (rst | (wl_state_r == WL_DQS_CNT) | past_negedge |
+      if (rst | (wl_state_r == WL_DQS_CNT) |
          (wl_state_r == WL_DQS_CHECK) | wr_level_done_r |
          (wl_state_r1 == WL_INIT_FINE_DEC))
         flag_ck_negedge <= #TCQ 1'd0;
-      else if (rd_data_previous_r[dqs_count_r] && ((stable_cnt > 3'd0) |
-              (wl_state_r == WL_FINE_DEC) | (wl_state_r == WL_FINE_DEC_WAIT) | (wl_state_r == WL_FINE_DEC_WAIT1)))
+      else if ((rd_data_previous_r[dqs_count_r] && ((stable_cnt > 'd0) |
+              (wl_state_r == WL_FINE_DEC) | (wl_state_r == WL_FINE_DEC_WAIT) | (wl_state_r == WL_FINE_DEC_WAIT1))) |
+			  (wl_state_r == WL_CORSE_INC)) 
         flag_ck_negedge <= #TCQ 1'd1;
-      else if (~rd_data_previous_r[dqs_count_r] && (stable_cnt == 3'd7))
+      else if (~rd_data_previous_r[dqs_count_r] && (stable_cnt == 'd14))
                //&& flag_ck_negedge)
         flag_ck_negedge <= #TCQ 1'd0;
    end
@@ -737,7 +739,7 @@ endgenerate
          rd_data_edge_detect_r <= #TCQ {DQS_WIDTH{1'b0}};
        else
          rd_data_edge_detect_r <= #TCQ rd_data_edge_detect_r;
-     end else if (rd_data_previous_r[dqs_count_r] && (stable_cnt < 3'd7))
+     end else if (rd_data_previous_r[dqs_count_r] && (stable_cnt < 'd14))
        rd_data_edge_detect_r     <= #TCQ {DQS_WIDTH{1'b0}};
      else
        rd_data_edge_detect_r <= #TCQ (~rd_data_previous_r & rd_data_rise_wl_r);
@@ -856,8 +858,8 @@ endgenerate
            end
            
            // Initially Phaser_Out fine delay taps incremented
-           // until stable_cnt=7. A stable_cnt of 7 indicates
-           // that rd_data_rise_wl_r=rd_data_previous_r for 7 fine
+           // until stable_cnt=14. A stable_cnt of 14 indicates
+           // that rd_data_rise_wl_r=rd_data_previous_r for 14 fine
            // tap increments. This is done to inhibit false 0->1 
            // edge detection when DQS is initially aligned to the
            // negedge of CK
@@ -881,7 +883,7 @@ endgenerate
            // undetected. 
            WL_INIT_FINE_INC_WAIT: begin
               if (wl_sm_start) begin
-                if (stable_cnt < 'd7)
+                if (stable_cnt < 'd14)
                   wl_state_r   <= #TCQ WL_INIT_FINE_INC;
                 else if (~rd_data_previous_r[dqs_count_r]) begin
                   wl_state_r             <= #TCQ WL_WAIT;
@@ -1103,9 +1105,9 @@ endgenerate
                   else
                     wl_state_r <= #TCQ WL_2RANK_TAP_DEC;
                 end
-              // For initial writes check only upto 41 taps. Reserving the 
+              // For initial writes check only upto 56 taps. Reserving the 
               // remaining taps for OCLK calibration. 
-              else if((~wrlvl_tap_done_r) && (wl_tap_count_r > 6'd41)) begin
+              else if((~wrlvl_tap_done_r) && (wl_tap_count_r > 6'd55)) begin
                 if (corse_cnt[dqs_count_r] < COARSE_TAPS) begin
                   wl_state_r   <= #TCQ WL_FINE_DEC;
                   fine_dec_cnt <= #TCQ wl_tap_count_r;

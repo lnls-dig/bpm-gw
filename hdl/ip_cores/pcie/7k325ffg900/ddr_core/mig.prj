@@ -11,7 +11,7 @@
     <TargetFPGA>xc7k325t-ffg900/-2</TargetFPGA>
     <Version>1.8</Version>
     <SystemClock>Differential</SystemClock>
-    <ReferenceClock>No Buffer</ReferenceClock>
+    <ReferenceClock>Use System Clock</ReferenceClock>
     <BankSelectionFlag>FALSE</BankSelectionFlag>
     <InternalVref>0</InternalVref>
     <dci_hr_inouts_inputs>50 Ohms</dci_hr_inouts_inputs>

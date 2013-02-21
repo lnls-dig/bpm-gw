@@ -474,15 +474,18 @@ module mig_7series_v1_8_ddr_mc_phy_wrapper #
   //localparam integer PHY_0_A_PO_OCLK_DELAY = MC_OCLK_DELAY;
 
   localparam integer PHY_0_A_PO_OCLK_DELAY_HW 
-                     = (tCK <= 938)  ? 23 :
-                       (tCK <= 1072) ? 24 :
-                       (tCK <= 1250) ? 25 :
-                       (tCK <= 1500) ? 26 : 27;
+                     = (tCK > 2273)  ? 34 :
+                       (tCK > 2000)  ? 33 :
+                       (tCK > 1724)  ? 32 :
+                       (tCK > 1515)  ? 31 : 
+					   (tCK > 1315)  ? 30 :
+					   (tCK > 1136)  ? 29 :
+					   (tCK > 1021)  ? 28 : 27;
                        
   // Note that simulation requires a different value than in H/W because of the
   // difference in the way delays are modeled
   localparam integer PHY_0_A_PO_OCLK_DELAY = (SIM_CAL_OPTION == "NONE") ? 
-                                             (tCK > 2500) ? 8 : 30 :
+                                             (tCK > 2500) ? 8 : PHY_0_A_PO_OCLK_DELAY_HW :
                                              MC_OCLK_DELAY;
                        
   // Initial DQ IDELAY value

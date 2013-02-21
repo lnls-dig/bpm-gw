@@ -122,6 +122,10 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    //(tCK <= 1500) ? 16 : 17;
    
    localparam WAIT_CNT = 15;
+   // Default set to TRUE because there can be a case where the ocal_rise_right_edge
+   // may not be detected if WRLVL stage2 tap value is large upto 63 and the initial
+   // DQS position is more than 225 degrees
+   localparam MINUS_32 = "TRUE";
    
    localparam [4:0] OCAL_IDLE          = 5'h00;
    localparam [4:0] OCAL_NEW_DQS_WAIT  = 5'h01;
@@ -210,8 +214,12 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    reg                      pat_data_match_r;
    reg                      pat_data_match_valid_r;
    reg                      pat_data_match_valid_r1;
-   reg [3:0]                stable_stg3_cnt;
-   reg                      stable_eye_r;
+   //reg [3:0]                stable_stg3_cnt;
+   //reg                      stable_eye_r;
+   reg [3:0]                stable_rise_stg3_cnt;
+   reg                      stable_rise_eye_r;
+   reg [3:0]                stable_fall_stg3_cnt;
+   reg                      stable_fall_eye_r;
    reg                      wait_cnt_en_r;
    reg [3:0]                wait_cnt_r;
    reg                      cnt_next_state;
@@ -230,23 +238,29 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    reg [5:0]                ocal_inc_cnt;
    reg [5:0]                ocal_dec_cnt;
    reg                      ocal_stg3_inc_en;
-   reg                      ocal_edge1_found;
-   reg                      ocal_edge2_found;
-   reg [5:0]                ocal_edge1_taps;
-   reg [5:0]                ocal_edge2_taps;
-   reg [5:0]                ocal_right_edge;
+   reg                      ocal_rise_edge1_found;
+   reg                      ocal_rise_edge2_found;
+   reg [5:0]                ocal_rise_edge1_taps;
+   reg [5:0]                ocal_rise_edge2_taps;
+   reg [5:0]                ocal_rise_right_edge;
+   reg                      ocal_fall_edge1_found;
+   reg                      ocal_fall_edge2_found;
+   reg [5:0]                ocal_fall_edge1_taps;
+   reg [5:0]                ocal_fall_edge2_taps;
    reg                      ocal_byte_done;
    reg                      ocal_wrlvl_done;
    reg                      ocal_wrlvl_done_r;
 (* keep = "true", max_fanout = 10 *) reg   ocal_done_r /* synthesis syn_maxfan = 10 */;
    reg [5:0]                ocal_tap_cnt_r[0:DQS_WIDTH-1];
    reg                      prech_done_r;
+   reg                      rise_win;
+   reg                      fall_win;
   
 
    // timing registers 
   reg  stg3_tap_cnt_eq_oclkdelay_init_val;
   reg  stg3_tap_cnt_eq_0;
-  reg  stg3_tap_cnt_gt_20;
+  //reg  stg3_tap_cnt_gt_20;
   reg  stg3_tap_cnt_eq_63;
   reg  stg3_tap_cnt_less_oclkdelay_init_val;
   reg  stg3_limit;
@@ -263,16 +277,16 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    endgenerate
    
    assign dbg_phy_oclkdelay_cal[57:54]   = cnt_dqs_r;
-   assign dbg_phy_oclkdelay_cal[58]      = ocal_edge1_found;
-   assign dbg_phy_oclkdelay_cal[59]      = ocal_edge2_found;
-   assign dbg_phy_oclkdelay_cal[65:60]   = ocal_edge1_taps;
-   assign dbg_phy_oclkdelay_cal[71:66]   = ocal_edge2_taps;
+   assign dbg_phy_oclkdelay_cal[58]      = ocal_rise_edge1_found;
+   assign dbg_phy_oclkdelay_cal[59]      = ocal_rise_edge2_found;
+   assign dbg_phy_oclkdelay_cal[65:60]   = ocal_rise_edge1_taps;
+   assign dbg_phy_oclkdelay_cal[71:66]   = ocal_rise_edge2_taps;
    assign dbg_phy_oclkdelay_cal[76:72]   = ocal_state_r;
    assign dbg_phy_oclkdelay_cal[77]      = pat_data_match_valid_r;
    assign dbg_phy_oclkdelay_cal[78]      = pat_data_match_r;
    assign dbg_phy_oclkdelay_cal[84:79]   = stg3_tap_cnt;
-   assign dbg_phy_oclkdelay_cal[88:85]   = stable_stg3_cnt;
-   assign dbg_phy_oclkdelay_cal[89]      = stable_eye_r;
+   assign dbg_phy_oclkdelay_cal[88:85]   = stable_rise_stg3_cnt;
+   assign dbg_phy_oclkdelay_cal[89]      = stable_rise_eye_r;
    assign dbg_phy_oclkdelay_cal[97:90]   = prev_rd_rise0_r;
    assign dbg_phy_oclkdelay_cal[105:98]  = prev_rd_fall0_r;
    assign dbg_phy_oclkdelay_cal[113:106] = prev_rd_rise1_r;
@@ -291,6 +305,15 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    assign dbg_phy_oclkdelay_cal[210:203] = sel_rd_rise3_r;
    assign dbg_phy_oclkdelay_cal[218:211] = sel_rd_fall3_r;
    assign dbg_phy_oclkdelay_cal[219+:6]  = stg2_tap_cnt;
+   assign dbg_phy_oclkdelay_cal[225]     = ocal_fall_edge1_found;
+   assign dbg_phy_oclkdelay_cal[226]     = ocal_fall_edge2_found;
+   assign dbg_phy_oclkdelay_cal[232:227] = ocal_fall_edge1_taps;
+   assign dbg_phy_oclkdelay_cal[238:233] = ocal_fall_edge2_taps;
+   assign dbg_phy_oclkdelay_cal[244:239] = ocal_rise_right_edge;
+   assign dbg_phy_oclkdelay_cal[250:245] = 'd0;
+   assign dbg_phy_oclkdelay_cal[251]     = stable_fall_eye_r;
+   assign dbg_phy_oclkdelay_cal[252]     = rise_win;
+   assign dbg_phy_oclkdelay_cal[253]     = fall_win;
 
    assign dbg_oclkdelay_rd_data[DRAM_WIDTH*1 -1:0]              = prev_rd_rise0_r;
    assign dbg_oclkdelay_rd_data[DRAM_WIDTH*2 -1:DRAM_WIDTH*1]   = prev_rd_fall0_r;
@@ -317,7 +340,8 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
 
    always @(posedge clk)
      oclk_init_delay_start_r <= #TCQ oclk_init_delay_start;
-   
+
+	 
    always @(posedge clk) begin
      if (rst || po_stg3_dec)
        count <= #TCQ WAIT_CNT;
@@ -451,15 +475,24 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
       prev_rd_rise3_r <= #TCQ sel_rd_rise3_r;
       prev_rd_fall3_r <= #TCQ sel_rd_fall3_r;
     end
-  
+	
   
   // Each bit of each byte is compared with previous data to
   // detect an edge
   generate
     genvar pt_j;
     if (nCK_PER_CLK == 4) begin: gen_pat_match_div4
+	
+	  always @(posedge clk) begin
+        if (rd_active_r) begin
+          rise_win <= #TCQ (|sel_rd_rise0_r | |sel_rd_rise1_r | |sel_rd_rise2_r | |sel_rd_rise3_r);
+	      fall_win <= #TCQ (&sel_rd_rise0_r & &sel_rd_rise1_r & &sel_rd_rise2_r & &sel_rd_rise3_r);
+	    end
+	  end
+	
       for (pt_j = 0; pt_j < DRAM_WIDTH; pt_j = pt_j + 1) begin: gen_pat_match
-        always @(posedge clk) begin
+		
+		always @(posedge clk) begin
           if (sel_rd_rise0_r[pt_j] == prev_rd_rise0_r[pt_j])
             pat_match_rise0_r[pt_j] <= #TCQ 1'b1;
           else
@@ -528,9 +561,17 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
        end
 
     end else if (nCK_PER_CLK == 2) begin: gen_pat_match_div2
+	
+      always @(posedge clk) begin
+	    if (rd_active_r) begin
+          rise_win <= #TCQ (|sel_rd_rise0_r | |sel_rd_rise1_r);
+	      fall_win <= #TCQ (&sel_rd_rise0_r & &sel_rd_rise1_r);
+	    end
+      end	
+	
       for (pt_j = 0; pt_j < DRAM_WIDTH; pt_j = pt_j + 1) begin: gen_pat_match
-
-        always @(posedge clk) begin
+		
+		always @(posedge clk) begin
           if (sel_rd_rise0_r[pt_j] == prev_rd_rise0_r[pt_j])
             pat_match_rise0_r[pt_j] <= #TCQ 1'b1;
           else
@@ -578,19 +619,38 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
       if (rst | (pat_data_match_valid_r & ~pat_data_match_r &
           (ocal_state_r == OCAL_NEW_DQS_WAIT)) | 
 		  (ocal_state_r == OCAL_STG3_CALC))
-        stable_stg3_cnt <= #TCQ 'd0;
+        stable_rise_stg3_cnt <= #TCQ 'd0;
       else if ((!stg3_tap_cnt_eq_oclkdelay_init_val) & 
                pat_data_match_valid_r & pat_data_match_r &
                (ocal_state_r == OCAL_NEW_DQS_WAIT) &
-               (stable_stg3_cnt < 'd8))
-          stable_stg3_cnt <= #TCQ stable_stg3_cnt + 1;
+               (stable_rise_stg3_cnt < 'd8) & ~rise_win)
+          stable_rise_stg3_cnt <= #TCQ stable_rise_stg3_cnt + 1;
    end
    
    always @(posedge clk) begin
-     if (rst | (stable_stg3_cnt != 'd8))
-       stable_eye_r <= #TCQ 1'b0;
-     else if (stable_stg3_cnt == 'd8)
-       stable_eye_r <= #TCQ 1'b1;
+     if (rst | (stable_rise_stg3_cnt != 'd8))
+       stable_rise_eye_r <= #TCQ 1'b0;
+     else if (stable_rise_stg3_cnt == 'd8)
+       stable_rise_eye_r <= #TCQ 1'b1;
+   end
+   
+   always @(posedge clk)begin
+      if (rst | (pat_data_match_valid_r & ~pat_data_match_r &
+          (ocal_state_r == OCAL_NEW_DQS_WAIT)) | 
+		  (ocal_state_r == OCAL_STG3_CALC))
+        stable_fall_stg3_cnt <= #TCQ 'd0;
+      else if ((!stg3_tap_cnt_eq_oclkdelay_init_val) & 
+               pat_data_match_valid_r & pat_data_match_r &
+               (ocal_state_r == OCAL_NEW_DQS_WAIT) &
+               (stable_fall_stg3_cnt < 'd8) & fall_win)
+          stable_fall_stg3_cnt <= #TCQ stable_fall_stg3_cnt + 1;
+   end
+   
+   always @(posedge clk) begin
+     if (rst | (stable_fall_stg3_cnt != 'd8))
+       stable_fall_eye_r <= #TCQ 1'b0;
+     else if (stable_fall_stg3_cnt == 'd8)
+       stable_fall_eye_r <= #TCQ 1'b1;
    end
    
    always @(posedge clk)
@@ -660,16 +720,16 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    end // always @ (posedge clk)
 
 // setting sg3_tap_cng > 20 
-   always @(posedge clk) begin
-    if ((rst)|| (ocal_state_r == OCAL_NEXT_DQS)) begin
-      stg3_tap_cnt_gt_20 <= #TCQ 1'b0;
-    end else begin // if (rst)
-      if (ocal_state_r == OCAL_STG3_DEC)
-         stg3_tap_cnt_gt_20 <= #TCQ (stg3_tap_cnt >= 'd22);
-      else if (ocal_state_r == OCAL_STG3_INC)
-           stg3_tap_cnt_gt_20 <= #TCQ (stg3_tap_cnt >= 'd20);
-     end // else: !if((rst || (ocal_state_r == OCAL_IDLE)) begin...
-   end // always @ (posedge clk)
+//   always @(posedge clk) begin
+//    if ((rst)|| (ocal_state_r == OCAL_NEXT_DQS)) begin
+//      stg3_tap_cnt_gt_20 <= #TCQ 1'b0;
+//    end else begin // if (rst)
+//      if (ocal_state_r == OCAL_STG3_DEC)
+//         stg3_tap_cnt_gt_20 <= #TCQ (stg3_tap_cnt >= 'd22);
+//      else if (ocal_state_r == OCAL_STG3_INC)
+//           stg3_tap_cnt_gt_20 <= #TCQ (stg3_tap_cnt >= 'd20);
+//     end // else: !if((rst || (ocal_state_r == OCAL_IDLE)) begin...
+//   end // always @ (posedge clk)
 
 // setting sg3_tap_cnt == 0 
    always @(posedge clk) begin
@@ -718,35 +778,39 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
    // State Machine
    always @(posedge clk) begin
      if (rst) begin
-       ocal_state_r      <= #TCQ OCAL_IDLE;
-       cnt_dqs_r         <= #TCQ 'd0;
-       stg3_tap_cnt      <= #TCQ oclkdelay_init_val;
-       stg3_incdec_limit <= #TCQ 'd0;
-       stg3_dec2inc      <= #TCQ 1'b0;
-       stg2_tap_cnt      <= #TCQ 'd0;
-       stg2_inc2_cnt     <= #TCQ 2'b00;
-       stg2_dec2_cnt     <= #TCQ 2'b00;
-       stg2_dec_cnt      <= #TCQ 'd0;
-       stg3_dec          <= #TCQ 1'b0;
-       wrlvl_final       <= #TCQ 1'b0;
-       oclk_calib_resume <= #TCQ 1'b0;
-       oclk_prech_req    <= #TCQ 1'b0;
-       ocal_final_cnt_r  <= #TCQ 'd0;
-       ocal_inc_cnt      <= #TCQ 'd0;
-       ocal_dec_cnt      <= #TCQ 'd0;
-       ocal_stg3_inc_en  <= #TCQ 1'b0;
-       ocal_edge1_found  <= #TCQ 1'b0;
-       ocal_edge2_found  <= #TCQ 1'b0;
-       ocal_right_edge   <= #TCQ 'd0;
-       ocal_edge1_taps   <= #TCQ 'd0;
-       ocal_edge2_taps   <= #TCQ 'd0;
-       ocal_byte_done    <= #TCQ 1'b0;
-       ocal_wrlvl_done   <= #TCQ 1'b0;
-       ocal_if_rst       <= #TCQ 1'b0;
-       ocal_done_r       <= #TCQ 1'b0;
-       po_stg23_sel      <= #TCQ 1'b0;
-       po_en_stg23       <= #TCQ 1'b0;
-       po_stg23_incdec   <= #TCQ 1'b0;
+       ocal_state_r          <= #TCQ OCAL_IDLE;
+       cnt_dqs_r             <= #TCQ 'd0;
+       stg3_tap_cnt          <= #TCQ oclkdelay_init_val;
+       stg3_incdec_limit     <= #TCQ 'd0;
+       stg3_dec2inc          <= #TCQ 1'b0;
+       stg2_tap_cnt          <= #TCQ 'd0;
+       stg2_inc2_cnt         <= #TCQ 2'b00;
+       stg2_dec2_cnt         <= #TCQ 2'b00;
+       stg2_dec_cnt          <= #TCQ 'd0;
+       stg3_dec              <= #TCQ 1'b0;
+       wrlvl_final           <= #TCQ 1'b0;
+       oclk_calib_resume     <= #TCQ 1'b0;
+       oclk_prech_req        <= #TCQ 1'b0;
+       ocal_final_cnt_r      <= #TCQ 'd0;
+       ocal_inc_cnt          <= #TCQ 'd0;
+       ocal_dec_cnt          <= #TCQ 'd0;
+       ocal_stg3_inc_en      <= #TCQ 1'b0;
+       ocal_rise_edge1_found <= #TCQ 1'b0;
+       ocal_rise_edge2_found <= #TCQ 1'b0;
+       ocal_rise_right_edge  <= #TCQ 'd0;
+       ocal_rise_edge1_taps  <= #TCQ 'd0;
+       ocal_rise_edge2_taps  <= #TCQ 'd0;
+	   ocal_fall_edge1_found <= #TCQ 1'b0;
+       ocal_fall_edge2_found <= #TCQ 1'b0;
+       ocal_fall_edge1_taps  <= #TCQ 'd0;
+       ocal_fall_edge2_taps  <= #TCQ 'd0;
+       ocal_byte_done        <= #TCQ 1'b0;
+       ocal_wrlvl_done       <= #TCQ 1'b0;
+       ocal_if_rst           <= #TCQ 1'b0;
+       ocal_done_r           <= #TCQ 1'b0;
+       po_stg23_sel          <= #TCQ 1'b0;
+       po_en_stg23           <= #TCQ 1'b0;
+       po_stg23_incdec       <= #TCQ 1'b0;
      end else begin
        case (ocal_state_r)
         
@@ -773,7 +837,7 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
           po_stg23_incdec   <= #TCQ 1'b0;
           if (pat_data_match_valid_r && !stg3_tap_cnt_eq_oclkdelay_init_val) begin
             if ((stg3_limit && ~ocal_stg3_inc_en)  ||
-                (stg3_tap_cnt == 0)) begin
+                stg3_tap_cnt == 'd0) begin
               // No write levling performed to avoid stage 2 coarse dec.
               // Therefore stage 3 taps can only be decremented by an
               // additional 15 taps after stage 2 taps reach 63.
@@ -785,37 +849,47 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
               // Sticky bit - asserted after we encounter an edge, although
               // the current edge may not be considered the "first edge" this
               // just means we found at least one edge
-              if (~ocal_stg3_inc_en)
-                ocal_edge1_found <= #TCQ 1'b1;
+              if (~ocal_stg3_inc_en) begin
+			    if (|stable_fall_stg3_cnt && ~ocal_fall_edge1_found) begin
+				  ocal_fall_edge1_found <= #TCQ 1'b1;
+				  ocal_fall_edge1_taps  <= #TCQ stg3_tap_cnt + 1;
+				end else
+                  ocal_rise_edge1_found <= #TCQ 1'b1;
+			  end
               // Sarting point was in the jitter region close to the right edge
-              if (~stable_eye_r && ~ocal_stg3_inc_en && stg3_tap_cnt_gt_20) begin
-                ocal_right_edge <= #TCQ stg3_tap_cnt;
-                ocal_state_r    <= #TCQ OCAL_STG3_SEL;
+              if (~stable_rise_eye_r && ~ocal_stg3_inc_en) begin
+                ocal_rise_right_edge <= #TCQ stg3_tap_cnt;
+                ocal_state_r         <= #TCQ OCAL_STG3_SEL;
               // Starting point was in the valid window close to the right edge
               // Or away from the right edge hence no stable_eye_r condition
-              // Or starting point was in the right jitter region and ocal_right_edge
+              // Or starting point was in the right jitter region and ocal_rise_right_edge
               // is detected
               end else if (ocal_stg3_inc_en) begin
                 // Both edges found
-                ocal_state_r     <= #TCQ OCAL_STG3_CALC;
-                ocal_edge2_found <= #TCQ 1'b1;
-                ocal_edge2_taps  <= #TCQ stg3_tap_cnt - 1;
+				if (stable_fall_eye_r) begin
+				  ocal_state_r          <= #TCQ OCAL_STG3_CALC;
+                  ocal_fall_edge2_found <= #TCQ 1'b1;
+                  ocal_fall_edge2_taps  <= #TCQ stg3_tap_cnt - 1;
+				end else begin
+                  ocal_state_r          <= #TCQ OCAL_STG3_CALC;
+                  ocal_rise_edge2_found <= #TCQ 1'b1;
+                  ocal_rise_edge2_taps  <= #TCQ stg3_tap_cnt - 1;
+				end
               // Starting point in the valid window away from left edge
               // Assuming starting point will not be in valid window close to
               // left edge
-//              end else if (~ocal_edge1_found && stable_eye_r) begin
-              end else if (stable_eye_r) begin
+              end else if (stable_rise_eye_r) begin
 
-                ocal_edge1_taps   <= #TCQ stg3_tap_cnt + 1;
-                ocal_state_r     <= #TCQ OCAL_STG3_SEL;
-                ocal_stg3_inc_en  <= #TCQ 1'b1;
-                stg3_incdec_limit <= #TCQ 'd0;
+                ocal_rise_edge1_taps <= #TCQ stg3_tap_cnt + 1;
+                ocal_state_r         <= #TCQ OCAL_STG3_SEL;
+                ocal_stg3_inc_en     <= #TCQ 1'b1;
+                stg3_incdec_limit    <= #TCQ 'd0;
               end else
-                ocal_state_r     <= #TCQ OCAL_STG3_SEL;
+                ocal_state_r <= #TCQ OCAL_STG3_SEL;
             end else
-              ocal_state_r   <= #TCQ OCAL_STG3_SEL;
+              ocal_state_r <= #TCQ OCAL_STG3_SEL;
           end else if (stg3_tap_cnt_eq_oclkdelay_init_val)
-              ocal_state_r     <= #TCQ OCAL_STG3_SEL;
+            ocal_state_r <= #TCQ OCAL_STG3_SEL;
           else if ((stg3_limit && ocal_stg3_inc_en) ||
                    (stg3_tap_cnt_eq_63)) begin
             ocal_state_r      <= #TCQ OCAL_STG3_CALC;
@@ -1011,43 +1085,42 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
         end
         
         OCAL_STG3_CALC: begin
-          // ocal_right_edge is asserted when an edge is detected
-          // within 8 tap decrements from the initial 30 taps.
-          if (|ocal_right_edge) begin
-            // edge2 is either not detected or edge2 is less than
-            // 8 taps away from ocal_right_edge
-		    if (~ocal_edge2_found | (ocal_edge2_found & (((ocal_edge2_taps - ocal_right_edge) < 'd8) | (ocal_edge1_taps > 'd0))))
+          // ocal_rise_right_edge is asserted when an edge is detected
+          // with both stable_rise_eye_r and stabe_fall_eye_r de-asserted
+          if (|ocal_rise_right_edge) begin
+		    if (ocal_fall_edge2_found && ocal_fall_edge1_found) begin
+			  if (MINUS_32 == "TRUE")
+			    ocal_final_cnt_r <= #TCQ ((ocal_fall_edge2_taps - ocal_fall_edge1_taps)>>1) + 1 + 32;
+			  else
+			    ocal_final_cnt_r <= #TCQ ((ocal_fall_edge2_taps - ocal_fall_edge1_taps)>>1) +
+				  (stg3_tap_cnt - ocal_rise_right_edge);
+			end else
               ocal_final_cnt_r 
-                <=  #TCQ ((ocal_right_edge - ocal_edge1_taps)>>1) + 1 +
-                          (stg3_tap_cnt - ocal_right_edge);
-	        // edge2 is detected more than 8 taps away from ocal_right_edge
-            else
-			  ocal_final_cnt_r 
-                <=  #TCQ ((ocal_edge2_taps - ocal_right_edge)>>1) + 1;
-		  // Both edges found. The left edge is the first
-          // edge since we start from 0 and increment until
-          // second edge or 63 taps
-          end else if (ocal_edge2_found && ocal_edge1_found)
+                <=  #TCQ ((ocal_rise_right_edge - ocal_rise_edge1_taps)>>1) +
+                          (stg3_tap_cnt - ocal_rise_right_edge);
+		  // Both rise window edges found. The left edge is the first
+          // edge since taps are decremented first from initial tap value
+          // and then incremented until second edge or 63 taps
+          end else if (ocal_rise_edge2_found && ocal_rise_edge1_found)
             ocal_final_cnt_r 
-              <=  #TCQ ((ocal_edge2_taps -
-                         ocal_edge1_taps)>>1) + 1;
-          else if (ocal_edge2_found && ~ocal_edge1_found)
+              <=  #TCQ ((ocal_rise_edge2_taps -
+                         ocal_rise_edge1_taps)>>1) + 1;
+          else if (ocal_rise_edge2_found && ~ocal_rise_edge1_found)
+		    // This case is possible if either write level stg2
+            // tap values are very large resulting in minimal
+			// stage3 tap decrements
+			// Or if initial DQS is very close to the right edge
             ocal_final_cnt_r 
-              <=  #TCQ (ocal_edge2_taps>>1) + 1;
-          else if (~ocal_edge2_found && ocal_edge1_found)
+              <=  #TCQ (ocal_rise_edge2_taps>>1) + 1;
+          else if (~ocal_rise_edge2_found && ocal_rise_edge1_found)
             // This case is possible if write level stg2
-            // tap values are very small 
+            // tap values are very small resulting in minimal
+			// stage3 tap increments
             ocal_final_cnt_r 
-              <=  #TCQ ((stg3_tap_cnt - ocal_edge1_taps)>>1);
-          else
-            ocal_final_cnt_r <= #TCQ (stg3_tap_cnt>>1);
-          // Now use the value we just calculated place stage3 taps
-          // to the desired calibration point
-          //if (~ocal_edge2_found && ~ocal_edge1_found) begin
-          //  ocal_state_r   <= #TCQ OCAL_STG2_SEL;
-          //  ocal_byte_done <= #TCQ 1'b1;
-          //  stg3_dec       <= #TCQ 1'b0;
-          //end else begin
+              <=  #TCQ ((stg3_tap_cnt - ocal_rise_edge1_taps)>>1);
+          else if (ocal_fall_edge2_found && ocal_fall_edge1_found)
+            ocal_final_cnt_r <= #TCQ ((ocal_fall_edge2_taps - ocal_fall_edge1_taps)>>1) + 1 + 32;
+
           ocal_state_r <= #TCQ OCAL_STG3_SEL;
           stg3_dec         <= #TCQ 1'b1;
           //end
@@ -1092,16 +1165,21 @@ module mig_7series_v1_8_ddr_phy_oclkdelay_cal #
         end        
         
         OCAL_NEXT_DQS: begin
-          po_en_stg23       <= #TCQ 1'b0;
-          po_stg23_incdec   <= #TCQ 1'b0;
-          stg3_tap_cnt      <= #TCQ 6'd0;
-          ocal_edge1_found  <= #TCQ 1'b0;
-          ocal_edge2_found  <= #TCQ 1'b0;
-          ocal_edge1_taps   <= #TCQ 'd0;
-          ocal_edge2_taps   <= #TCQ 'd0;
-          ocal_right_edge   <= #TCQ 'd0;
-		  stg3_incdec_limit <= #TCQ 'd0;
-          oclk_prech_req    <= #TCQ 1'b1;
+          po_en_stg23           <= #TCQ 1'b0;
+          po_stg23_incdec       <= #TCQ 1'b0;
+          stg3_tap_cnt          <= #TCQ 6'd0;
+          ocal_rise_edge1_found <= #TCQ 1'b0;
+          ocal_rise_edge2_found <= #TCQ 1'b0;
+          ocal_rise_edge1_taps  <= #TCQ 'd0;
+          ocal_rise_edge2_taps  <= #TCQ 'd0;
+          ocal_rise_right_edge  <= #TCQ 'd0;
+		  ocal_fall_edge1_found <= #TCQ 1'b0;
+          ocal_fall_edge2_found <= #TCQ 1'b0;
+          ocal_fall_edge1_taps  <= #TCQ 'd0;
+          ocal_fall_edge2_taps  <= #TCQ 'd0;
+		  ocal_final_cnt_r      <= #TCQ 'd0;
+		  stg3_incdec_limit     <= #TCQ 'd0;
+          oclk_prech_req        <= #TCQ 1'b1;
           if (cnt_dqs_r == DQS_WIDTH-1)
             wrlvl_final <= #TCQ 1'b1;
           if (prech_done) begin

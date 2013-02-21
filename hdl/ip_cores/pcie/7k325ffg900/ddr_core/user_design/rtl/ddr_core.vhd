@@ -113,7 +113,7 @@ entity ddr_core is
    PAYLOAD_WIDTH         : integer := 64;
    ECC_WIDTH             : integer := 8;
    MC_ERR_ADDR_WIDTH     : integer := 31;
-      
+
    nBANK_MACHS           : integer := 4;
    RANKS                 : integer := 1;
                                      -- # of Ranks.
@@ -207,7 +207,7 @@ entity ddr_core is
                                      --   = "OFF" - Components, SODIMMs, UDIMMs.
    CA_MIRROR             : string  := "OFF";
                                      -- C/A mirror opt for DDR3 dual rank
-   
+
    --***************************************************************************
    -- The following parameters are multiplier and divisor factors for PLLE2.
    -- Based on the selected design frequency these parameters vary.
@@ -399,10 +399,10 @@ entity ddr_core is
    SYSCLK_TYPE           : string  := "DIFFERENTIAL";
                                      -- System clock type DIFFERENTIAL, SINGLE_ENDED,
                                      -- NO_BUFFER
-   REFCLK_TYPE           : string  := "NO_BUFFER";
+   REFCLK_TYPE           : string  := "USE_SYSTEM_CLOCK";
                                      -- Reference clock type DIFFERENTIAL, SINGLE_ENDED
                                      -- NO_BUFFER, USE_SYSTEM_CLOCK
-      
+
    CMD_PIPE_PLUS1        : string  := "ON";
                                      -- add pipeline stage between MC and PHY
    DRAM_TYPE             : string  := "DDR3";
@@ -442,7 +442,7 @@ entity ddr_core is
    --***************************************************************************
    TEMP_MON_CONTROL         : string  := "INTERNAL";
                                      -- # = "INTERNAL", "EXTERNAL"
-      
+
    RST_ACT_LOW           : integer := 1
                                      -- =1 for active low reset,
                                      -- =0 for active high.
@@ -473,8 +473,7 @@ entity ddr_core is
    -- Differential system clocks
    sys_clk_p                      : in    std_logic;
    sys_clk_n                      : in    std_logic;
-   -- Single-ended iodelayctrl clk (reference clock)
-   clk_ref_i                                : in    std_logic;
+
    -- user interface signals
    app_addr             : in    std_logic_vector(ADDR_WIDTH-1 downto 0);
    app_cmd              : in    std_logic_vector(2 downto 0);
@@ -496,12 +495,12 @@ entity ddr_core is
    app_zq_ack           : out   std_logic;
    ui_clk               : out   std_logic;
    ui_clk_sync_rst      : out   std_logic;
-   
-      
-   
+
+
+
    init_calib_complete  : out std_logic;
-   
-      
+
+
 
    -- System reset
       sys_rst                     : in    std_logic
@@ -532,7 +531,7 @@ architecture arch_ddr_core of ddr_core is
       return "OFF";
     end if;
   end function;
-      
+
 
 
   constant BM_CNT_WIDTH : integer := clogb2(nBANK_MACHS);
@@ -544,8 +543,8 @@ architecture arch_ddr_core of ddr_core is
                                    -- Enable or disable the temp monitor module
   constant tTEMPSAMPLE : integer := 10000000; -- sample every 10 us
   constant XADC_CLK_PERIOD : integer := 5000; -- Use 200 MHz IODELAYCTRL clock
-      
-      
+
+
 
 
 
@@ -612,7 +611,7 @@ architecture arch_ddr_core of ddr_core is
       ref_dll_lock      : in  std_logic
    );
   end component mig_7series_v1_8_infrastructure;
-      
+
   component mig_7series_v1_8_tempmon is
     generic (
       TCQ              : integer;
@@ -882,10 +881,10 @@ architecture arch_ddr_core of ddr_core is
       dbg_oclkdelay_rd_data            : out std_logic_vector(DRAM_WIDTH*16-1 downto 0)
       );
   end component mig_7series_v1_8_memc_ui_top_std;
-      
+
 
   -- Signal declarations
-      
+
   signal bank_mach_next              : std_logic_vector(BM_CNT_WIDTH-1 downto 0);
   signal clk                         : std_logic;
   signal clk_ref              : std_logic;
@@ -899,16 +898,15 @@ architecture arch_ddr_core of ddr_core is
   signal rst_phaser_ref              : std_logic;
 
   signal rst                         : std_logic;
-  
+
   signal app_ecc_multiple_err        : std_logic_vector(2*nCK_PER_CLK-1 downto 0);
   signal ddr3_parity          : std_logic;
-      
+
   signal init_calib_complete_i       : std_logic;
 
   signal sys_clk_i      : std_logic;
   signal mmcm_clk           : std_logic;
-  signal clk_ref_p               : std_logic;
-  signal clk_ref_n               : std_logic;
+  signal clk_ref_i               : std_logic;
   signal device_temp             : std_logic_vector(11 downto 0);
   signal device_temp_i           : std_logic_vector(11 downto 0);
 
@@ -985,7 +983,9 @@ architecture arch_ddr_core of ddr_core is
   signal dbg_data_offset_1           : std_logic_vector(5 downto 0);
   signal dbg_data_offset_2           : std_logic_vector(5 downto 0);
   signal all_zeros                   : std_logic_vector(2*nCK_PER_CLK-1 downto 0) := (others => '0');
-  
+
+  signal clk_ref_p : std_logic := '0';
+  signal clk_ref_n : std_logic := '0';
 
 begin
 
@@ -997,12 +997,11 @@ begin
 
   ui_clk <= clk;
   ui_clk_sync_rst <= rst;
-  
+
   sys_clk_i <= '0';
-  clk_ref_p <= '0';
-  clk_ref_n <= '0';
+  clk_ref_i <= '0';
   init_calib_complete         <= init_calib_complete_i;
-      
+
 
 
   clk_ref_in_use_sys_clk : if (REFCLK_TYPE = "USE_SYSTEM_CLOCK") generate
@@ -1071,7 +1070,7 @@ begin
   temp_mon_disabled : if (TEMP_MON_EN /= "ON") generate
     device_temp <= (others => '0');
   end generate;
-       
+
 
   u_ddr3_infrastructure : mig_7series_v1_8_infrastructure
     generic map
@@ -1363,7 +1362,7 @@ begin
         init_calib_complete              => init_calib_complete_i
         );
 
-      
+
 
 
 
@@ -1387,6 +1386,6 @@ begin
   dbg_po_f_stg23_sel   <= '0';
   dbg_sel_po_incdec    <= '0';
 
-      
+
 
 end architecture arch_ddr_core;
