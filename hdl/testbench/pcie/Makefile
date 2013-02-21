@@ -5,14 +5,14 @@
 
 ## variables #############################
 PWD := $(shell pwd)
-TOP_MODULE :=board
+TOP_MODULE := board
 FUSE_OUTPUT ?= isim_proj
 
 XILINX_INI_PATH := /opt/Xilinx/14.4/ISE_DS/ISE/vhdl/hdp/lin64
 
 VHPCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini
 ISIM_FLAGS :=
-VLOGCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini -d SIMULATION -d ENABLE_GT
+VLOGCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini -d SIMULATION -d ENABLE_GT -d x1Gb -d sg125 -d x8
 VERILOG_SRC := board.v \
 glbl.v \
 ../../sim/pcie/pci_exp_usrapp_cfg.v \
@@ -25,40 +25,90 @@ glbl.v \
 ../../sim/pcie/xilinx_pcie_2_1_rport_7x.v \
 ../../sim/pcie/sys_clk_gen.v \
 ../../sim/pcie/sys_clk_gen_ds.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_top_7x.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_drp.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_lane.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_user.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_top.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_pipeline.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_misc.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_pipeline.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_reset.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_reset.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top_pipe_mode.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_sync.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v \
+../../sim/ddr_model/ddr3_model.v \
+../../sim/ddr_model/wiredly.v \
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_drp.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_pipeline.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_lane.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top_pipe_mode.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_sync.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core.v \
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_top.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_eq.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v \
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_clock.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_wrapper.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v \
-../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_rate.v \
 ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_eq.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_reset.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_wrapper.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_rate.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_misc.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_user.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_reset.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_drp.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_pipeline.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_top_7x.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_top.v \
+../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_clk_ibuf.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_tempmon.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_infrastructure.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_iodelay_ctrl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_compare.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_common.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_cntrl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_col_mach.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_mc.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_mach.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_round_robin_arb.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_mux.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_queue.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_state.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_cntrl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_select.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_row_col.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_common.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_mach.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_buf.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_gen.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_merge_enc.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_dec_fix.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_mem_intfc.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_memc_ui_top_std.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrlvl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal_hr.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_rdlvl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_of_pre_fifo.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_init.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_oclkdelay_cal.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_group_io.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_prbs_gen.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_calib_top.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_4lanes.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrcal.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_tempmon.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_prbs_rdlvl.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy_wrapper.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_if_post_fifo.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_lane.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_rd_data.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_wr_data.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_cmd.v \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_top.v \
 
 VERILOG_OBJ := work/board/.board_v \
 work/glbl/.glbl_v \
@@ -72,40 +122,90 @@ work/pcie_axi_trn_bridge/.pcie_axi_trn_bridge_v \
 work/xilinx_pcie_2_1_rport_7x/.xilinx_pcie_2_1_rport_7x_v \
 work/sys_clk_gen/.sys_clk_gen_v \
 work/sys_clk_gen_ds/.sys_clk_gen_ds_v \
-work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_v \
-work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v \
-work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_v \
-work/pcie_core_pipe_user/.pcie_core_pipe_user_v \
-work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_v \
-work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_v \
-work/pcie_core/.pcie_core_v \
-work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_v \
-work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_v \
-work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v \
-work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_v \
-work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v \
-work/pcie_core_gt_top_pipe_mode/.pcie_core_gt_top_pipe_mode_v \
-work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_v \
-work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_v \
-work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_v \
-work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_v \
-work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v \
-work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v \
-work/pcie_core_pcie_7x/.pcie_core_pcie_7x_v \
+work/ddr3_model/.ddr3_model_v \
+work/wiredly/.wiredly_v \
 work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v \
-work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v \
-work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_v \
-work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v \
+work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_v \
+work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_v \
+work/pcie_core_gt_top_pipe_mode/.pcie_core_gt_top_pipe_mode_v \
+work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v \
+work/pcie_core/.pcie_core_v \
 work/pcie_core_gt_top/.pcie_core_gt_top_v \
-work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v \
-work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v \
 work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v \
-work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v \
-work/pcie_core_pcie_top/.pcie_core_pcie_top_v \
-work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_v \
-work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v \
-work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v \
 work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_v \
+work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_v \
+work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_v \
+work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_v \
+work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_v \
+work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v \
+work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v \
+work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v \
+work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v \
+work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v \
+work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v \
+work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v \
+work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_v \
+work/pcie_core_pipe_user/.pcie_core_pipe_user_v \
+work/pcie_core_pcie_top/.pcie_core_pcie_top_v \
+work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v \
+work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v \
+work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_v \
+work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_v \
+work/pcie_core_pcie_7x/.pcie_core_pcie_7x_v \
+work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_v \
+work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v \
+work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_v \
+work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_v \
+work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_v \
+work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v \
+work/mig_7series_v1_8_clk_ibuf/.mig_7series_v1_8_clk_ibuf_v \
+work/mig_7series_v1_8_tempmon/.mig_7series_v1_8_tempmon_v \
+work/mig_7series_v1_8_infrastructure/.mig_7series_v1_8_infrastructure_v \
+work/mig_7series_v1_8_iodelay_ctrl/.mig_7series_v1_8_iodelay_ctrl_v \
+work/mig_7series_v1_8_bank_compare/.mig_7series_v1_8_bank_compare_v \
+work/mig_7series_v1_8_rank_common/.mig_7series_v1_8_rank_common_v \
+work/mig_7series_v1_8_rank_cntrl/.mig_7series_v1_8_rank_cntrl_v \
+work/mig_7series_v1_8_col_mach/.mig_7series_v1_8_col_mach_v \
+work/mig_7series_v1_8_mc/.mig_7series_v1_8_mc_v \
+work/mig_7series_v1_8_rank_mach/.mig_7series_v1_8_rank_mach_v \
+work/mig_7series_v1_8_round_robin_arb/.mig_7series_v1_8_round_robin_arb_v \
+work/mig_7series_v1_8_arb_mux/.mig_7series_v1_8_arb_mux_v \
+work/mig_7series_v1_8_bank_queue/.mig_7series_v1_8_bank_queue_v \
+work/mig_7series_v1_8_bank_state/.mig_7series_v1_8_bank_state_v \
+work/mig_7series_v1_8_bank_cntrl/.mig_7series_v1_8_bank_cntrl_v \
+work/mig_7series_v1_8_arb_select/.mig_7series_v1_8_arb_select_v \
+work/mig_7series_v1_8_arb_row_col/.mig_7series_v1_8_arb_row_col_v \
+work/mig_7series_v1_8_bank_common/.mig_7series_v1_8_bank_common_v \
+work/mig_7series_v1_8_bank_mach/.mig_7series_v1_8_bank_mach_v \
+work/mig_7series_v1_8_ecc_buf/.mig_7series_v1_8_ecc_buf_v \
+work/mig_7series_v1_8_ecc_gen/.mig_7series_v1_8_ecc_gen_v \
+work/mig_7series_v1_8_ecc_merge_enc/.mig_7series_v1_8_ecc_merge_enc_v \
+work/mig_7series_v1_8_ecc_dec_fix/.mig_7series_v1_8_ecc_dec_fix_v \
+work/mig_7series_v1_8_mem_intfc/.mig_7series_v1_8_mem_intfc_v \
+work/mig_7series_v1_8_memc_ui_top_std/.mig_7series_v1_8_memc_ui_top_std_v \
+work/mig_7series_v1_8_ddr_phy_wrlvl/.mig_7series_v1_8_ddr_phy_wrlvl_v \
+work/mig_7series_v1_8_ddr_phy_dqs_found_cal_hr/.mig_7series_v1_8_ddr_phy_dqs_found_cal_hr_v \
+work/mig_7series_v1_8_ddr_phy_rdlvl/.mig_7series_v1_8_ddr_phy_rdlvl_v \
+work/mig_7series_v1_8_ddr_of_pre_fifo/.mig_7series_v1_8_ddr_of_pre_fifo_v \
+work/mig_7series_v1_8_ddr_phy_init/.mig_7series_v1_8_ddr_phy_init_v \
+work/mig_7series_v1_8_ddr_phy_oclkdelay_cal/.mig_7series_v1_8_ddr_phy_oclkdelay_cal_v \
+work/mig_7series_v1_8_ddr_byte_group_io/.mig_7series_v1_8_ddr_byte_group_io_v \
+work/mig_7series_v1_8_ddr_prbs_gen/.mig_7series_v1_8_ddr_prbs_gen_v \
+work/mig_7series_v1_8_ddr_calib_top/.mig_7series_v1_8_ddr_calib_top_v \
+work/mig_7series_v1_8_ddr_phy_4lanes/.mig_7series_v1_8_ddr_phy_4lanes_v \
+work/mig_7series_v1_8_ddr_phy_wrcal/.mig_7series_v1_8_ddr_phy_wrcal_v \
+work/mig_7series_v1_8_ddr_phy_tempmon/.mig_7series_v1_8_ddr_phy_tempmon_v \
+work/mig_7series_v1_8_ddr_phy_dqs_found_cal/.mig_7series_v1_8_ddr_phy_dqs_found_cal_v \
+work/mig_7series_v1_8_ddr_phy_prbs_rdlvl/.mig_7series_v1_8_ddr_phy_prbs_rdlvl_v \
+work/mig_7series_v1_8_ddr_mc_phy_wrapper/.mig_7series_v1_8_ddr_mc_phy_wrapper_v \
+work/mig_7series_v1_8_ddr_if_post_fifo/.mig_7series_v1_8_ddr_if_post_fifo_v \
+work/mig_7series_v1_8_ddr_mc_phy/.mig_7series_v1_8_ddr_mc_phy_v \
+work/mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay/.mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay_v \
+work/mig_7series_v1_8_ddr_byte_lane/.mig_7series_v1_8_ddr_byte_lane_v \
+work/mig_7series_v1_8_ui_rd_data/.mig_7series_v1_8_ui_rd_data_v \
+work/mig_7series_v1_8_ui_wr_data/.mig_7series_v1_8_ui_wr_data_v \
+work/mig_7series_v1_8_ui_cmd/.mig_7series_v1_8_ui_cmd_v \
+work/mig_7series_v1_8_ui_top/.mig_7series_v1_8_ui_top_v \
 
 VHDL_SRC := ../../ip_cores/pcie/7k325ffg900/bram_x64.vhd \
 ../../ip_cores/pcie/7k325ffg900/eb_fifo_counted_resized.vhd \
@@ -125,8 +225,9 @@ VHDL_SRC := ../../ip_cores/pcie/7k325ffg900/bram_x64.vhd \
 ../../modules/pcie/common/Registers.vhd \
 ../../modules/pcie/common/RxIn_Delays.vhd \
 ../../modules/pcie/common/Tx_Output_Arbitor.vhd \
-../../modules/pcie/common/bram_DDRs_Control.vhd \
+../../modules/pcie/common/DDRs_Control.vhd \
 ../../modules/pcie/common/bram_DDRs_Control_Loopback.vhd \
+../../modules/pcie/common/ddr_Transact.vhd \
 ../../modules/pcie/common/rx_CplD_Channel.vhd \
 ../../modules/pcie/common/rx_MRd_Channel.vhd \
 ../../modules/pcie/common/rx_MWr_Channel.vhd \
@@ -136,6 +237,8 @@ VHDL_SRC := ../../ip_cores/pcie/7k325ffg900/bram_x64.vhd \
 ../../modules/pcie/common/tlpControl.vhd \
 ../../modules/pcie/common/tx_Mem_Reader.vhd \
 ../../modules/pcie/common/tx_Transact.vhd \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ddr_core.vhd \
+../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_top.vhd \
 
 VHDL_OBJ := work/bram_x64/.bram_x64_vhd \
 work/eb_fifo_counted_resized/.eb_fifo_counted_resized_vhd \
@@ -155,8 +258,9 @@ work/PCIe_UserLogic_00/.PCIe_UserLogic_00_vhd \
 work/Registers/.Registers_vhd \
 work/RxIn_Delays/.RxIn_Delays_vhd \
 work/Tx_Output_Arbitor/.Tx_Output_Arbitor_vhd \
-work/bram_DDRs_Control/.bram_DDRs_Control_vhd \
+work/DDRs_Control/.DDRs_Control_vhd \
 work/bram_DDRs_Control_Loopback/.bram_DDRs_Control_Loopback_vhd \
+work/ddr_Transact/.ddr_Transact_vhd \
 work/rx_CplD_Channel/.rx_CplD_Channel_vhd \
 work/rx_MRd_Channel/.rx_MRd_Channel_vhd \
 work/rx_MWr_Channel/.rx_MWr_Channel_vhd \
@@ -166,12 +270,14 @@ work/rx_usDMA_Channel/.rx_usDMA_Channel_vhd \
 work/tlpControl/.tlpControl_vhd \
 work/tx_Mem_Reader/.tx_Mem_Reader_vhd \
 work/tx_Transact/.tx_Transact_vhd \
+work/ddr_core/.ddr_core_vhd \
+work/mig_7series_v1_8_ddr_phy_top/.mig_7series_v1_8_ddr_phy_top_vhd \
 
 LIBS := work
 LIB_IND := work/.work
 ## rules #################################
 sim: xilinxsim.ini $(LIB_IND) $(VERILOG_OBJ) $(VHDL_OBJ)
-$(VERILOG_OBJ): $(LIB_IND) xilinxsim.ini
+$(VERILOG_OBJ): $(VHDL_OBJ) 
 $(VHDL_OBJ): $(LIB_IND) xilinxsim.ini
 
 xilinxsim.ini: $(XILINX_INI_PATH)/xilinxsim.ini
@@ -183,19 +289,19 @@ else
 		fuse work.$(TOP_MODULE) work.glbl -d ENABLE_GT -d SIMULATION -L unisims_ver -L unimacro_ver -L unisim -L unimacro -L secureip -intstyle ise -incremental -o $(FUSE_OUTPUT)
 endif
 clean:
-		rm -rf ./xilinxsim.ini $(LIBS) fuse.xmsgs fuse.log fuseRelaunch.cmd isim isim.log isim.wdb
+		rm -rf ./xilinxsim.ini $(LIBS) fuse.xmsgs fuse.log fuseRelaunch.cmd isim isim.log isim.wdb 
 .PHONY: clean
 
 work/.work:
 	(mkdir work && touch work/.work && echo "work=work"  >> xilinxsim.ini) || rm -rf work 
 
 work/board/.board_v: board.v ../../sim/pcie/helper_tasks.v pipe_interconnect.v
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../sim/pcie -d SIMULATION -d ENABLE_GT $<
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../sim/pcie -d SIMULATION -d ENABLE_GT -i ../../sim/ddr_model -d x1Gb -d sg125 -d x8 $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/glbl/.glbl_v: glbl.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../sim/pcie -d SIMULATION -d ENABLE_GT $<
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../sim/pcie -d SIMULATION -d ENABLE_GT -i ../../sim/ddr_model -d x1Gb -d sg125 -d x8 $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
@@ -249,27 +355,17 @@ work/sys_clk_gen_ds/.sys_clk_gen_ds_v: ../../sim/pcie/sys_clk_gen_ds.v
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_top_7x.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+work/ddr3_model/.ddr3_model_v: ../../sim/ddr_model/ddr3_model.v ../../sim/ddr_model/ddr3_model_parameters.vh
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../sim/ddr_model  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_drp.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+work/wiredly/.wiredly_v: ../../sim/ddr_model/wiredly.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../sim/ddr_model  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_lane.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pipe_user/.pcie_core_pipe_user_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_user.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_top.v 
+work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_drp.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
@@ -279,32 +375,7 @@ work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_v: ../../i
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core/.pcie_core_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_misc.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_pipeline.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_reset.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_reset.v 
+work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_lane.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
@@ -314,57 +385,12 @@ work/pcie_core_gt_top_pipe_mode/.pcie_core_gt_top_pipe_mode_v: ../../ip_cores/pc
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
 work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_sync.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pcie_7x/.pcie_core_pcie_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_drp.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v 
+work/pcie_core/.pcie_core_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
@@ -374,17 +400,42 @@ work/pcie_core_gt_top/.pcie_core_gt_top_v: ../../ip_cores/pcie/7k325ffg900/pcie_
 		@mkdir -p $(dir $@) && touch $@ 
 
 
+work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_clock.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_pipeline.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
 work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_eq.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_clock.v 
+work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_reset.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
@@ -394,17 +445,12 @@ work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v: ../../ip_cores/pcie/7k325
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pcie_top/.pcie_core_pcie_top_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v 
+work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_wrapper.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v 
-		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@ 
-
-
-work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v 
+work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_qpll_reset.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
@@ -414,8 +460,318 @@ work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v: ../../ip_cores/pcie/7k325ffg900
 		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_7x.v 
+work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_wrapper.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_pipe_misc.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pipe_user/.pcie_core_pipe_user_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_user.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_top/.pcie_core_pcie_top_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_top.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_rate.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gtp_pipe_reset.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_brams_7x.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_rx.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_7x/.pcie_core_pcie_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_7x.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pipe_drp.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_tx_pipeline.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_pcie_bram_top_7x.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_axi_basic_top.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v: ../../ip_cores/pcie/7k325ffg900/pcie_core/source/pcie_core_rxeq_scan.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/pcie_core/source  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_clk_ibuf/.mig_7series_v1_8_clk_ibuf_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_clk_ibuf.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_tempmon/.mig_7series_v1_8_tempmon_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_tempmon.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_infrastructure/.mig_7series_v1_8_infrastructure_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_infrastructure.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_iodelay_ctrl/.mig_7series_v1_8_iodelay_ctrl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking/mig_7series_v1_8_iodelay_ctrl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/clocking  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_compare/.mig_7series_v1_8_bank_compare_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_compare.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_rank_common/.mig_7series_v1_8_rank_common_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_common.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_rank_cntrl/.mig_7series_v1_8_rank_cntrl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_cntrl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_col_mach/.mig_7series_v1_8_col_mach_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_col_mach.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_mc/.mig_7series_v1_8_mc_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_mc.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_rank_mach/.mig_7series_v1_8_rank_mach_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_mach.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_round_robin_arb/.mig_7series_v1_8_round_robin_arb_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_round_robin_arb.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_arb_mux/.mig_7series_v1_8_arb_mux_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_mux.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_queue/.mig_7series_v1_8_bank_queue_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_queue.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_state/.mig_7series_v1_8_bank_state_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_state.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_cntrl/.mig_7series_v1_8_bank_cntrl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_cntrl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_arb_select/.mig_7series_v1_8_arb_select_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_select.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_arb_row_col/.mig_7series_v1_8_arb_row_col_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_row_col.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_common/.mig_7series_v1_8_bank_common_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_common.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_bank_mach/.mig_7series_v1_8_bank_mach_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_mach.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/controller  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ecc_buf/.mig_7series_v1_8_ecc_buf_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_buf.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ecc_gen/.mig_7series_v1_8_ecc_gen_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_gen.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ecc_merge_enc/.mig_7series_v1_8_ecc_merge_enc_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_merge_enc.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ecc_dec_fix/.mig_7series_v1_8_ecc_dec_fix_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_dec_fix.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ecc  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_mem_intfc/.mig_7series_v1_8_mem_intfc_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_mem_intfc.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_memc_ui_top_std/.mig_7series_v1_8_memc_ui_top_std_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_memc_ui_top_std.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ip_top  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_wrlvl/.mig_7series_v1_8_ddr_phy_wrlvl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrlvl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_dqs_found_cal_hr/.mig_7series_v1_8_ddr_phy_dqs_found_cal_hr_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal_hr.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_rdlvl/.mig_7series_v1_8_ddr_phy_rdlvl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_rdlvl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_of_pre_fifo/.mig_7series_v1_8_ddr_of_pre_fifo_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_of_pre_fifo.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_init/.mig_7series_v1_8_ddr_phy_init_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_init.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_oclkdelay_cal/.mig_7series_v1_8_ddr_phy_oclkdelay_cal_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_oclkdelay_cal.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_byte_group_io/.mig_7series_v1_8_ddr_byte_group_io_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_group_io.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_prbs_gen/.mig_7series_v1_8_ddr_prbs_gen_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_prbs_gen.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_calib_top/.mig_7series_v1_8_ddr_calib_top_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_calib_top.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_4lanes/.mig_7series_v1_8_ddr_phy_4lanes_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_4lanes.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_wrcal/.mig_7series_v1_8_ddr_phy_wrcal_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrcal.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_tempmon/.mig_7series_v1_8_ddr_phy_tempmon_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_tempmon.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_dqs_found_cal/.mig_7series_v1_8_ddr_phy_dqs_found_cal_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_prbs_rdlvl/.mig_7series_v1_8_ddr_phy_prbs_rdlvl_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_prbs_rdlvl.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_mc_phy_wrapper/.mig_7series_v1_8_ddr_mc_phy_wrapper_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy_wrapper.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_if_post_fifo/.mig_7series_v1_8_ddr_if_post_fifo_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_if_post_fifo.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_mc_phy/.mig_7series_v1_8_ddr_mc_phy_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay/.mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ddr_byte_lane/.mig_7series_v1_8_ddr_byte_lane_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_lane.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ui_rd_data/.mig_7series_v1_8_ui_rd_data_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_rd_data.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ui_wr_data/.mig_7series_v1_8_ui_wr_data_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_wr_data.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ui_cmd/.mig_7series_v1_8_ui_cmd_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_cmd.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/mig_7series_v1_8_ui_top/.mig_7series_v1_8_ui_top_v: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_top.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ui  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
@@ -575,12 +931,12 @@ work/Tx_Output_Arbitor/.Tx_Output_Arbitor: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd
 		@mkdir -p $(dir $@) && touch $@
 
-work/bram_DDRs_Control/.bram_DDRs_Control_vhd: ../../modules/pcie/common/bram_DDRs_Control.vhd work/bram_DDRs_Control/.bram_DDRs_Control
+work/DDRs_Control/.DDRs_Control_vhd: ../../modules/pcie/common/DDRs_Control.vhd work/DDRs_Control/.DDRs_Control
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/bram_DDRs_Control/.bram_DDRs_Control: \
+work/DDRs_Control/.DDRs_Control: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd
 		@mkdir -p $(dir $@) && touch $@
 
@@ -590,6 +946,15 @@ work/bram_DDRs_Control_Loopback/.bram_DDRs_Control_Loopback_vhd: ../../modules/p
 
 
 work/bram_DDRs_Control_Loopback/.bram_DDRs_Control_Loopback: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/ddr_Transact/.ddr_Transact_vhd: ../../modules/pcie/common/ddr_Transact.vhd work/ddr_Transact/.ddr_Transact
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/ddr_Transact/.ddr_Transact: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd
 		@mkdir -p $(dir $@) && touch $@
 
@@ -672,5 +1037,21 @@ work/tx_Transact/.tx_Transact_vhd: ../../modules/pcie/common/tx_Transact.vhd wor
 
 work/tx_Transact/.tx_Transact: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/ddr_core/.ddr_core_vhd: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ddr_core.vhd work/ddr_core/.ddr_core
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/ddr_core/.ddr_core:
+		@mkdir -p $(dir $@) && touch $@
+
+work/mig_7series_v1_8_ddr_phy_top/.mig_7series_v1_8_ddr_phy_top_vhd: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_top.vhd work/mig_7series_v1_8_ddr_phy_top/.mig_7series_v1_8_ddr_phy_top
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/mig_7series_v1_8_ddr_phy_top/.mig_7series_v1_8_ddr_phy_top:
 		@mkdir -p $(dir $@) && touch $@
 

@@ -3,11 +3,12 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="wave_isim.wdb" id="1" type="auto">
+      <db_ref path="./isim.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="abb64package" />
             <top_module name="board" />
             <top_module name="glbl" />
+            <top_module name="numeric_std" />
             <top_module name="std_logic_1164" />
             <top_module name="std_logic_arith" />
             <top_module name="std_logic_signed" />
@@ -4894,95 +4895,6 @@
          <obj_property name="ObjectShortName">eb_empty</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group124" type="group">
-      <obj_property name="label">DDR</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/board/EP/ddr_wr_v" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_v</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_v</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_sof" type="logic" db_ref_id="1">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">ddr_wr_sof</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_sof</obj_property>
-         <obj_property name="label">DDR_wr_sof</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_eof" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_eof</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_eof</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_shift" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_shift</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_shift</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_mask" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_mask[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_mask[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_din" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_din[63:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_din[63:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_full" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_full</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_v" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_v</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_v</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_sof" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_sof</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_sof</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_eof" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_eof</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_eof</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_shift" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_shift</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_shift</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_din" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_din[63:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_din[63:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_full" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_full</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_fifo_rden" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_fifo_rden</obj_property>
-         <obj_property name="ObjectShortName">ddr_fifo_rden</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_fifo_empty" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_fifo_empty</obj_property>
-         <obj_property name="ObjectShortName">ddr_fifo_empty</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_fifo_rdqout" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_fifo_rdqout[63:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr_fifo_rdqout[63:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_ready" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_ready</obj_property>
-         <obj_property name="ObjectShortName">ddr_ready</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_wr_fa" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_wr_fa</obj_property>
-         <obj_property name="ObjectShortName">ddr_wr_fa</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_rdc_fa" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_rdc_fa</obj_property>
-         <obj_property name="ObjectShortName">ddr_rdc_fa</obj_property>
-      </wvobject>
-      <wvobject fp_name="/board/EP/ddr_blinker" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">ddr_blinker</obj_property>
-         <obj_property name="ObjectShortName">ddr_blinker</obj_property>
-      </wvobject>
-   </wvobject>
    <wvobject fp_name="group198" type="group">
       <obj_property name="label">tb_top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -5071,6 +4983,798 @@
          <obj_property name="ElementShortName">localid[15:0]</obj_property>
          <obj_property name="ObjectShortName">localid[15:0]</obj_property>
          <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group1446" type="group">
+      <obj_property name="label">DDR_Transact</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group1447" type="group">
+         <obj_property name="label">DDR_Control</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_clk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_clk</obj_property>
+            <obj_property name="ObjectShortName">wr_clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_eof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_eof</obj_property>
+            <obj_property name="ObjectShortName">wr_eof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_v" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_v</obj_property>
+            <obj_property name="ObjectShortName">wr_v</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_shift" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_shift</obj_property>
+            <obj_property name="ObjectShortName">wr_shift</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_mask" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_mask[1:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_mask[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_din[63:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_din[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wr_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wr_full</obj_property>
+            <obj_property name="ObjectShortName">wr_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rd_clk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rd_clk</obj_property>
+            <obj_property name="ObjectShortName">rd_clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdc_v" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rdc_v</obj_property>
+            <obj_property name="ObjectShortName">rdc_v</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdc_shift" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rdc_shift</obj_property>
+            <obj_property name="ObjectShortName">rdc_shift</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdc_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rdc_din[63:0]</obj_property>
+            <obj_property name="ObjectShortName">rdc_din[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdc_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rdc_full</obj_property>
+            <obj_property name="ObjectShortName">rdc_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rdd_fifo_rden</obj_property>
+            <obj_property name="ObjectShortName">rdd_fifo_rden</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rdd_fifo_empty</obj_property>
+            <obj_property name="ObjectShortName">rdd_fifo_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rdd_fifo_dout[63:0]</obj_property>
+            <obj_property name="ObjectShortName">rdd_fifo_dout[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_cmd_rdy</obj_property>
+            <obj_property name="ObjectShortName">memc_cmd_rdy</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_cmd_en</obj_property>
+            <obj_property name="ObjectShortName">memc_cmd_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_cmd_instr[2:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_cmd_instr[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_cmd_addr[31:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_cmd_addr[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_en</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_end" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_end</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_end</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_mask[63:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_mask[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_data" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_data[511:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_data[511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_rdy</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_rdy</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_en</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_data" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_data[511:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_data[511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_valid</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memarb_acc_req</obj_property>
+            <obj_property name="ObjectShortName">memarb_acc_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memarb_acc_gnt</obj_property>
+            <obj_property name="ObjectShortName">memarb_acc_gnt</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_ui_clk</obj_property>
+            <obj_property name="ObjectShortName">memc_ui_clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddr_rdy" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ddr_rdy</obj_property>
+            <obj_property name="ObjectShortName">ddr_rdy</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/reset" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">reset</obj_property>
+            <obj_property name="ObjectShortName">reset</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rst_i" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rst_i</obj_property>
+            <obj_property name="ObjectShortName">rst_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddr_wr_state" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">ddr_wr_state</obj_property>
+            <obj_property name="ObjectShortName">ddr_wr_state</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wen" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wen</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wen</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_din[71:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_din[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_afull" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_afull</obj_property>
+            <obj_property name="ObjectShortName">wpipe_afull</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_full</obj_property>
+            <obj_property name="ObjectShortName">wpipe_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_ren" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_ren</obj_property>
+            <obj_property name="ObjectShortName">wpipe_ren</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_qout[71:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_qout[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_empty" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_empty</obj_property>
+            <obj_property name="ObjectShortName">wpipe_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_latch" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_qout_latch[71:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_qout_latch[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_qout_lo32b[32:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_qout_lo32b[32:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_qw_aligned" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_qw_aligned</obj_property>
+            <obj_property name="ObjectShortName">wpipe_qw_aligned</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_read_valid</obj_property>
+            <obj_property name="ObjectShortName">wpipe_read_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_en</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rden" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_rden</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_rden</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_wr_data[511:0]</obj_property>
+            <obj_property name="ObjectShortName">ddram_wr_data[511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_wr_addr[29:0]</obj_property>
+            <obj_property name="ObjectShortName">ddram_wr_addr[29:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_wr_valid</obj_property>
+            <obj_property name="ObjectShortName">ddram_wr_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_wr_mask[63:0]</obj_property>
+            <obj_property name="ObjectShortName">ddram_wr_mask[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_cmd_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_cmd_valid</obj_property>
+            <obj_property name="ObjectShortName">ddram_cmd_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_empty</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_qout[127:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_qout[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_din[127:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_din[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_rd_en</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_rd_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_rd</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_rd</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_cnt[4:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_cnt[4:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_mask[7:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_mask[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_data[63:0]</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_data[63:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_sof</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_sof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_pause</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_pause</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_full</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_valid</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_arb_req</obj_property>
+            <obj_property name="ObjectShortName">wpipe_arb_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_f2m_arb_req</obj_property>
+            <obj_property name="ObjectShortName">wpipe_f2m_arb_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_wr_eof</obj_property>
+            <obj_property name="ObjectShortName">wpipe_wr_eof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">wpipe_fill_eof</obj_property>
+            <obj_property name="ObjectShortName">wpipe_fill_eof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/pram_addra_inc" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">pram_addra_inc</obj_property>
+            <obj_property name="ObjectShortName">pram_addra_inc</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddr_rd_state" type="other" db_ref_id="1">
+            <obj_property name="ElementShortName">ddr_rd_state</obj_property>
+            <obj_property name="ObjectShortName">ddr_rd_state</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_rd_cnt[9:0]</obj_property>
+            <obj_property name="ObjectShortName">rpiped_rd_cnt[9:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_rd_cnt_latch[9:0]</obj_property>
+            <obj_property name="ObjectShortName">rpiped_rd_cnt_latch[9:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_eof" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_wr_eof</obj_property>
+            <obj_property name="ObjectShortName">rpiped_wr_eof</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_read_valid</obj_property>
+            <obj_property name="ObjectShortName">rpipec_read_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_wr_skew</obj_property>
+            <obj_property name="ObjectShortName">rpiped_wr_skew</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_written" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_written</obj_property>
+            <obj_property name="ObjectShortName">rpiped_written</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_written_r</obj_property>
+            <obj_property name="ObjectShortName">rpiped_written_r</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_rdconv_cnt[4:0]</obj_property>
+            <obj_property name="ObjectShortName">rpiped_rdconv_cnt[4:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_wen" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_wen</obj_property>
+            <obj_property name="ObjectShortName">rpipec_wen</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_din[71:0]</obj_property>
+            <obj_property name="ObjectShortName">rpipec_din[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_afull" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_afull</obj_property>
+            <obj_property name="ObjectShortName">rpipec_afull</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_ren" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_ren</obj_property>
+            <obj_property name="ObjectShortName">rpipec_ren</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_qout[71:0]</obj_property>
+            <obj_property name="ObjectShortName">rpipec_qout[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipec_empty" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipec_empty</obj_property>
+            <obj_property name="ObjectShortName">rpipec_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">ddram_rd_addr[29:0]</obj_property>
+            <obj_property name="ObjectShortName">ddram_rd_addr[29:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpipe_arb_req</obj_property>
+            <obj_property name="ObjectShortName">rpipe_arb_req</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_wen" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_wen</obj_property>
+            <obj_property name="ObjectShortName">rpiped_wen</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_din" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_din[71:0]</obj_property>
+            <obj_property name="ObjectShortName">rpiped_din[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_afull" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_afull</obj_property>
+            <obj_property name="ObjectShortName">rpiped_afull</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/rpiped_qout" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">rpiped_qout[71:0]</obj_property>
+            <obj_property name="ObjectShortName">rpiped_qout[71:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_addr[31:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_addr[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_cmd</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_cmd</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_data_r1[511:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_data_r1[511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_data_conv[511:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_data_conv[511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_rd_shift_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_rd_shift_r[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr" type="array" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_addr[31:0]</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_addr[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_data_en</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_data_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en" type="logic" db_ref_id="1">
+            <obj_property name="ElementShortName">memc_wr_cmd_en</obj_property>
+            <obj_property name="ObjectShortName">memc_wr_cmd_en</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_ui_clk" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_ui_clk</obj_property>
+         <obj_property name="ObjectShortName">memc_ui_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_cmd_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_cmd_rdy</obj_property>
+         <obj_property name="ObjectShortName">memc_cmd_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_cmd_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_cmd_en</obj_property>
+         <obj_property name="ObjectShortName">memc_cmd_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_cmd_instr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_cmd_instr[2:0]</obj_property>
+         <obj_property name="ObjectShortName">memc_cmd_instr[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_cmd_addr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_cmd_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">memc_cmd_addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_wr_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_wr_en</obj_property>
+         <obj_property name="ObjectShortName">memc_wr_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_wr_end" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_wr_end</obj_property>
+         <obj_property name="ObjectShortName">memc_wr_end</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_wr_mask" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_wr_mask[63:0]</obj_property>
+         <obj_property name="ObjectShortName">memc_wr_mask[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_wr_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_wr_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">memc_wr_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_wr_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_wr_rdy</obj_property>
+         <obj_property name="ObjectShortName">memc_wr_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_rd_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_rd_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">memc_rd_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memc_rd_valid" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memc_rd_valid</obj_property>
+         <obj_property name="ObjectShortName">memc_rd_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memarb_acc_req" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memarb_acc_req</obj_property>
+         <obj_property name="ObjectShortName">memarb_acc_req</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/memarb_acc_gnt" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">memarb_acc_gnt</obj_property>
+         <obj_property name="ObjectShortName">memarb_acc_gnt</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_eof" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_eof</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_eof</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_v" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_v</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_v</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_shift" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_shift</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_shift</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_mask" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_mask[1:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_mask[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_din" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_din[63:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_din[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_wr_full" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_wr_full</obj_property>
+         <obj_property name="ObjectShortName">ddr_wr_full</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_rdc_v" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_rdc_v</obj_property>
+         <obj_property name="ObjectShortName">ddr_rdc_v</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_rdc_shift" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_rdc_shift</obj_property>
+         <obj_property name="ObjectShortName">ddr_rdc_shift</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_rdc_din" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_rdc_din[63:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr_rdc_din[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_rdc_full" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_rdc_full</obj_property>
+         <obj_property name="ObjectShortName">ddr_rdc_full</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_fifo_rden" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_fifo_rden</obj_property>
+         <obj_property name="ObjectShortName">ddr_fifo_rden</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_fifo_empty" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_fifo_empty</obj_property>
+         <obj_property name="ObjectShortName">ddr_fifo_empty</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_fifo_rdqout" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_fifo_rdqout[63:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr_fifo_rdqout[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_ready" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_ready</obj_property>
+         <obj_property name="ObjectShortName">ddr_ready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_dq" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_dq[63:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_dq[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_dqs_p" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_dqs_p[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_dqs_p[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_dqs_n" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_dqs_n[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_dqs_n[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_addr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_addr[13:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_addr[13:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_ba" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_ba[2:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_ba[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_ras_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_ras_n</obj_property>
+         <obj_property name="ObjectShortName">ddr3_ras_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_cas_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_cas_n</obj_property>
+         <obj_property name="ObjectShortName">ddr3_cas_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_we_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_we_n</obj_property>
+         <obj_property name="ObjectShortName">ddr3_we_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_reset_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_reset_n</obj_property>
+         <obj_property name="ObjectShortName">ddr3_reset_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_ck_p" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_ck_p[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_ck_p[0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_ck_n" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_ck_n[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_ck_n[0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_cke" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_cke[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_cke[0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_cs_n" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_cs_n[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_cs_n[0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_dm" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_dm[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_dm[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr3_odt" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr3_odt[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr3_odt[0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_sys_clk_p" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_sys_clk_p</obj_property>
+         <obj_property name="ObjectShortName">ddr_sys_clk_p</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_sys_clk_n" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_sys_clk_n</obj_property>
+         <obj_property name="ObjectShortName">ddr_sys_clk_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_ref_clk" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_ref_clk</obj_property>
+         <obj_property name="ObjectShortName">ddr_ref_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/user_reset" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">user_reset</obj_property>
+         <obj_property name="ObjectShortName">user_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/sys_reset" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_reset</obj_property>
+         <obj_property name="ObjectShortName">sys_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_addr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">app_addr[27:0]</obj_property>
+         <obj_property name="ObjectShortName">app_addr[27:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_cmd" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">app_cmd[2:0]</obj_property>
+         <obj_property name="ObjectShortName">app_cmd[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_en</obj_property>
+         <obj_property name="ObjectShortName">app_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_wdf_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">app_wdf_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">app_wdf_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_wdf_end" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_wdf_end</obj_property>
+         <obj_property name="ObjectShortName">app_wdf_end</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_wdf_mask" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">app_wdf_mask[63:0]</obj_property>
+         <obj_property name="ObjectShortName">app_wdf_mask[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_wdf_wren" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_wdf_wren</obj_property>
+         <obj_property name="ObjectShortName">app_wdf_wren</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_rd_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">app_rd_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">app_rd_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_rd_data_end" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_rd_data_end</obj_property>
+         <obj_property name="ObjectShortName">app_rd_data_end</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_rd_data_valid" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_rd_data_valid</obj_property>
+         <obj_property name="ObjectShortName">app_rd_data_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_rdy</obj_property>
+         <obj_property name="ObjectShortName">app_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_wdf_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_wdf_rdy</obj_property>
+         <obj_property name="ObjectShortName">app_wdf_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_sr_active" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_sr_active</obj_property>
+         <obj_property name="ObjectShortName">app_sr_active</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_ref_ack" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_ref_ack</obj_property>
+         <obj_property name="ObjectShortName">app_ref_ack</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/app_zq_ack" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">app_zq_ack</obj_property>
+         <obj_property name="ObjectShortName">app_zq_ack</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ui_clk" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ui_clk</obj_property>
+         <obj_property name="ObjectShortName">ui_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ui_reset" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ui_reset</obj_property>
+         <obj_property name="ObjectShortName">ui_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ui_reset_s1" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ui_reset_s1</obj_property>
+         <obj_property name="ObjectShortName">ui_reset_s1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ui_reset_s2" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ui_reset_s2</obj_property>
+         <obj_property name="ObjectShortName">ui_reset_s2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/calib_done" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">calib_done</obj_property>
+         <obj_property name="ObjectShortName">calib_done</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ddr_switch" type="other" db_ref_id="1">
+         <obj_property name="ElementShortName">ddr_switch</obj_property>
+         <obj_property name="ObjectShortName">ddr_switch</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/arb_req" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">arb_req[1:0]</obj_property>
+         <obj_property name="ObjectShortName">arb_req[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_cmd_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_cmd_rdy</obj_property>
+         <obj_property name="ObjectShortName">pcie_cmd_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_cmd_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_cmd_en</obj_property>
+         <obj_property name="ObjectShortName">pcie_cmd_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_cmd_instr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_cmd_instr[2:0]</obj_property>
+         <obj_property name="ObjectShortName">pcie_cmd_instr[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_cmd_addr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_cmd_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pcie_cmd_addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_wr_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_wr_en</obj_property>
+         <obj_property name="ObjectShortName">pcie_wr_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_wr_end" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_wr_end</obj_property>
+         <obj_property name="ObjectShortName">pcie_wr_end</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_wr_mask" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_wr_mask[63:0]</obj_property>
+         <obj_property name="ObjectShortName">pcie_wr_mask[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_wr_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_wr_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">pcie_wr_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_wr_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_wr_rdy</obj_property>
+         <obj_property name="ObjectShortName">pcie_wr_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_rd_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pcie_rd_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_rd_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_rd_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">pcie_rd_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_rd_valid" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_rd_valid</obj_property>
+         <obj_property name="ObjectShortName">pcie_rd_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_arb_gnt" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_arb_gnt</obj_property>
+         <obj_property name="ObjectShortName">pcie_arb_gnt</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/pcie_arb_req" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">pcie_arb_req</obj_property>
+         <obj_property name="ObjectShortName">pcie_arb_req</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_cmd_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_cmd_rdy</obj_property>
+         <obj_property name="ObjectShortName">ext_cmd_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_cmd_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_cmd_en</obj_property>
+         <obj_property name="ObjectShortName">ext_cmd_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_cmd_instr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_cmd_instr[2:0]</obj_property>
+         <obj_property name="ObjectShortName">ext_cmd_instr[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_cmd_addr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_cmd_addr[27:0]</obj_property>
+         <obj_property name="ObjectShortName">ext_cmd_addr[27:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_wr_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_wr_en</obj_property>
+         <obj_property name="ObjectShortName">ext_wr_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_wr_end" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_wr_end</obj_property>
+         <obj_property name="ObjectShortName">ext_wr_end</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_wr_mask" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_wr_mask[63:0]</obj_property>
+         <obj_property name="ObjectShortName">ext_wr_mask[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_wr_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_wr_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">ext_wr_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_wr_rdy" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_wr_rdy</obj_property>
+         <obj_property name="ObjectShortName">ext_wr_rdy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_rd_en" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_rd_en</obj_property>
+         <obj_property name="ObjectShortName">ext_rd_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_rd_data" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_rd_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">ext_rd_data[511:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_rd_valid" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_rd_valid</obj_property>
+         <obj_property name="ObjectShortName">ext_rd_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_arb_gnt" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_arb_gnt</obj_property>
+         <obj_property name="ObjectShortName">ext_arb_gnt</obj_property>
+      </wvobject>
+      <wvobject fp_name="/board/EP/loopback_bram_off/DDRs_ctrl_module/ext_arb_req" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">ext_arb_req</obj_property>
+         <obj_property name="ObjectShortName">ext_arb_req</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>
