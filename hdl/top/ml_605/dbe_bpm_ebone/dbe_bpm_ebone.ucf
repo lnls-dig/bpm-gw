@@ -1,0 +1,96 @@
+NET "buttons_i[0]" LOC = D22;
+NET "buttons_i[1]" LOC = C22;
+NET "buttons_i[2]" LOC = L21;
+NET "buttons_i[3]" LOC = L20;
+NET "buttons_i[4]" LOC = C18;
+NET "buttons_i[5]" LOC = B18;
+NET "buttons_i[6]" LOC = K22;
+NET "buttons_i[7]" LOC = K21;
+NET "leds_o[0]" LOC = AC22;
+NET "leds_o[1]" LOC = AC24;
+NET "leds_o[2]" LOC = AE22;
+NET "leds_o[3]" LOC = AE23;
+NET "leds_o[4]" LOC = AB23;
+NET "leds_o[5]" LOC = AG23;
+NET "leds_o[6]" LOC = AE24;
+NET "leds_o[7]" LOC = AD24;
+NET "uart_rxd_i" LOC = J24;
+NET "uart_txd_o" LOC = J25;
+NET "buttons_i[7]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[6]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[5]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[4]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[3]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[2]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[1]" IOSTANDARD = LVCMOS25;
+NET "buttons_i[0]" IOSTANDARD = LVCMOS25;
+NET "leds_o[7]" IOSTANDARD = LVCMOS25;
+NET "leds_o[7]" DRIVE = 12;
+NET "leds_o[7]" SLEW = SLOW;
+NET "leds_o[6]" IOSTANDARD = LVCMOS25;
+NET "leds_o[6]" DRIVE = 12;
+NET "leds_o[6]" SLEW = SLOW;
+NET "leds_o[5]" IOSTANDARD = LVCMOS25;
+NET "leds_o[5]" DRIVE = 12;
+NET "leds_o[5]" SLEW = SLOW;
+NET "leds_o[4]" IOSTANDARD = LVCMOS25;
+NET "leds_o[4]" DRIVE = 12;
+NET "leds_o[4]" SLEW = SLOW;
+NET "leds_o[3]" IOSTANDARD = LVCMOS25;
+NET "leds_o[3]" DRIVE = 12;
+NET "leds_o[3]" SLEW = SLOW;
+NET "leds_o[2]" IOSTANDARD = LVCMOS25;
+NET "leds_o[2]" DRIVE = 12;
+NET "leds_o[2]" SLEW = SLOW;
+NET "leds_o[1]" IOSTANDARD = LVCMOS25;
+NET "leds_o[1]" DRIVE = 12;
+NET "leds_o[1]" SLEW = SLOW;
+NET "leds_o[0]" IOSTANDARD = LVCMOS25;
+NET "leds_o[0]" DRIVE = 12;
+NET "leds_o[0]" SLEW = SLOW;
+NET "uart_rxd_i" IOSTANDARD = LVCMOS25;
+NET "uart_txd_o" IOSTANDARD = LVCMOS25;
+
+NET "sys_clk_p_i" IOSTANDARD = LVDS_25;
+NET "sys_clk_n_i" IOSTANDARD = LVDS_25;
+NET "sys_rst_button_i" IOSTANDARD = "SSTL15" | TIG;
+
+NET "sys_rst_button_i" LOC = H10;
+
+# PlanAhead Generated physical constraints
+
+NET "sys_clk_n_i" LOC = H9;
+NET "sys_clk_p_i" LOC = J9;
+
+# Ethernet LOC Contraints. MII 10/100 Mode
+
+NET "mrstn_o"               LOC = AH13;
+NET "mcoll_pad_i"           LOC = AK13;   ## 114 on U80
+NET "mcrs_pad_i"            LOC = AL13;   ## 115 on U80
+# NET "PHY_INT"             LOC = AH14;   ## 32  on U80
+NET "mdc_pad_o"             LOC = AP14;   ## 35  on U80
+NET "md_pad_b"              LOC = AN14;   ## 33  on U80
+# NET "PHY_RESET"           LOC = AH13;   ## 36  on U80
+NET "mrx_clk_pad_i"         LOC = AP11;   ## 7   on U80
+NET "mrxdv_pad_i"           LOC = AM13;   ## 4   on U80
+NET "mrxd_pad_i[0]"         LOC = AN13;   ## 3   on U80
+NET "mrxd_pad_i[1]"         LOC = AF14;   ## 128 on U80
+NET "mrxd_pad_i[2]"         LOC = AE14;   ## 126 on U80
+NET "mrxd_pad_i[3]"         LOC = AN12;   ## 125 on U80
+# NET "PHY_RXD4"            LOC = AM12;   ## 124 on U80
+# NET "PHY_RXD5"            LOC = AD11;   ## 123 on U80
+# NET "PHY_RXD6"            LOC = AC12;   ## 121 on U80
+# NET "PHY_RXD7"            LOC = AC13;   ## 120 on U80
+NET "mrxerr_pad_i"          LOC = AG12;   ## 9   on U80
+NET "mtx_clk_pad_i"         LOC = AD12;   ## 10  on U80
+NET "mtxen_pad_o"           LOC = AJ10;   ## 16  on U80
+# NET "PHY_TXC_GTXCLK"      LOC = AH12;   ## 14  on U80
+NET "mtxd_pad_o[0]"         LOC = AM11;   ## 18  on U80
+NET "mtxd_pad_o[1]"         LOC = AL11;   ## 19  on U80
+NET "mtxd_pad_o[2]"         LOC = AG10;   ## 20  on U80
+NET "mtxd_pad_o[3]"         LOC = AG11;   ## 24  on U80
+# NET "PHY_TXD4"            LOC = AL10;   ## 25  on U80
+# NET "PHY_TXD5"            LOC = AM10;   ## 26  on U80
+# NET "PHY_TXD6"            LOC = AE11;   ## 28  on U80
+# NET "PHY_TXD7"            LOC = AF11;   ## 29  on U80
+NET "mtxerr_pad_o"          LOC = AH10;   ## 13  on U80

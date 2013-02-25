@@ -31,7 +31,8 @@ GROUP(-lgcc -lc)
 
 MEMORY
 {
-    ram : ORIGIN = 0x00000000, LENGTH = 0x16000
+    /* ram : ORIGIN = 0x00000000, LENGTH = 0x16000 */
+     ram : ORIGIN = 0x00000000, LENGTH = 0x20000    /* 128KB */
 }
 
 SECTIONS
@@ -147,3 +148,6 @@ SECTIONS
   .debug_typenames 0 : { *(.debug_typenames) }
   .debug_varnames  0 : { *(.debug_varnames) }
 }
+
+/* We need to provide mprintf to old files that uses mprintf. From wrpc-sw repository */
+PROVIDE(mprintf = pp_printf);

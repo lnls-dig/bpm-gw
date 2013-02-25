@@ -1,0 +1,20 @@
+#ChipScope Pro Analyzer Project File, Version 3.0
+#Mon Feb 18 08:45:03 BRT 2013
+mdiAreaHeight=0.6997716894977168
+mdiAreaHeightLast=0.6997716894977168
+mdiCount=0
+navigatorHeight=0.17922374429223745
+navigatorHeightLast=0.17922374429223745
+navigatorWidth=0.17963576158940397
+navigatorWidthLast=0.17963576158940397
+signalDisplayPath=0
+unit.-1.-1.username=
+
+#Allows chipscope to avoid scanning certain USER registers.
+#This allows the use of chipscope with other BSCAN primitives 
+#in the same design. See: http://www.xilinx.com/support/answers
+#/31596.htm
+
+#Avoids scanning the USER registers 1, 2 and 3 for the second device
+#(FPGA) in the chain. Device 0 is the SystemACE
+avoidUserRegDevice0=1,2,3 

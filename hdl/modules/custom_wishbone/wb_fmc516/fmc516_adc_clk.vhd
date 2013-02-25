@@ -26,7 +26,7 @@ use unisim.vcomponents.all;
 entity fmc516_adc_clk is
 generic
 (
-	-- The only supported values are VIRTEX6 and 7SERIES
+    -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
   g_delay_type                              : string := "VARIABLE";
   g_adc_clock_period                        : real;
@@ -193,7 +193,7 @@ begin
   -- etc) up to 6 clock regions.
   cmp_adc_clk_bufr : bufr
   generic map(
-    SIM_DEVICE 	                            => g_fpga_device,
+    SIM_DEVICE                                 => g_fpga_device,
     BUFR_DIVIDE                             => "BYPASS"
   )
   port map (

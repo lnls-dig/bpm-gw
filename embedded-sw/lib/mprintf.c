@@ -44,65 +44,65 @@ int vprintf(char const *format, va_list ap)
 		}
 
 		switch (format_flag = *format++) {
-		case 'c':
-			format_flag = va_arg(ap, int);
+			case 'c':
+				format_flag = va_arg(ap, int);
 
-			//fall through
+				//fall through
 
-		default:
-			uart_write_byte(format_flag);
+			default:
+				uart_write_byte(format_flag);
 
-			continue;
+				continue;
 
-		case 'S':
-		case 's':
-			ptr = (unsigned char *)va_arg(ap, char *);
-			while (*ptr)
-				uart_write_byte(*ptr++);
-			continue;
+			case 'S':
+			case 's':
+				ptr = (unsigned char *)va_arg(ap, char *);
+				while (*ptr)
+					uart_write_byte(*ptr++);
+				continue;
 
-		case 'd':
-			base = 10;
-			goto CONVERSION_LOOP;
+			case 'd':
+				base = 10;
+				goto CONVERSION_LOOP;
 
-		case 'u':
-			base = 10;
-			goto CONVERSION_LOOP;
+			case 'u':
+				base = 10;
+				goto CONVERSION_LOOP;
 
-		case 'x':
-			base = 16;
+			case 'x':
+				base = 16;
 
 CONVERSION_LOOP:
 
-			u_val = va_arg(ap, unsigned int);
-			if ((format_flag == 'd') && (u_val & 0x80000000)) {
-				uart_write_byte('-');
-				u_val = -u_val;
-			}
+				u_val = va_arg(ap, unsigned int);
+				if ((format_flag == 'd') && (u_val & 0x80000000)) {
+					uart_write_byte('-');
+					u_val = -u_val;
+				}
 
-			ptr = scratch + 16;
+				ptr = scratch + 16;
 
-			*--ptr = 0;
+				*--ptr = 0;
 
-			do {
-				char ch = (u_val % base) + '0';
-				if (ch > '9')
-					ch += 'a' - '9' - 1;
+				do {
+					char ch = (u_val % base) + '0';
+					if (ch > '9')
+						ch += 'a' - '9' - 1;
 
-				*--ptr = ch;
+					*--ptr = ch;
 
-				u_val /= base;
+					u_val /= base;
 
-				if (width)
-					width--;
+					if (width)
+						width--;
 
-			} while (u_val > 0);
+				} while (u_val > 0);
 
-			while (width--)
-				*--ptr = fill;
+				while (width--)
+					*--ptr = fill;
 
-			while (*ptr)
-				uart_write_byte(*ptr++);
+				while (*ptr)
+					uart_write_byte(*ptr++);
 
 		}
 	}
@@ -149,58 +149,58 @@ static int _p_vsprintf(char const *format, va_list ap, char *dst)
 		}
 
 		switch (format_flag = *format++) {
-		case 'c':
-			format_flag = va_arg(ap, int);
+			case 'c':
+				format_flag = va_arg(ap, int);
 
-			//fall through
+				//fall through
 
-		default:
-			*dst++ = format_flag;
+			default:
+				*dst++ = format_flag;
 
-			continue;
+				continue;
 
-		case 'S':
-		case 's':
-			ptr = (unsigned char *)va_arg(ap, char *);
-			while (*ptr)
-				*dst++ = *ptr++;
-			continue;
+			case 'S':
+			case 's':
+				ptr = (unsigned char *)va_arg(ap, char *);
+				while (*ptr)
+					*dst++ = *ptr++;
+				continue;
 
-		case 'd':
-		case 'u':
-			base = 10;
-			goto CONVERSION_LOOP;
+			case 'd':
+			case 'u':
+				base = 10;
+				goto CONVERSION_LOOP;
 
-		case 'x':
-			base = 16;
+			case 'x':
+				base = 16;
 
 CONVERSION_LOOP:
 
-			u_val = va_arg(ap, unsigned int);
+				u_val = va_arg(ap, unsigned int);
 
-			ptr = scratch + 16;
+				ptr = scratch + 16;
 
-			*--ptr = 0;
+				*--ptr = 0;
 
-			do {
-				char ch = (u_val % base) + '0';
-				if (ch > '9')
-					ch += 'a' - '9' - 1;
+				do {
+					char ch = (u_val % base) + '0';
+					if (ch > '9')
+						ch += 'a' - '9' - 1;
 
-				*--ptr = ch;
+					*--ptr = ch;
 
-				u_val /= base;
+					u_val /= base;
 
-				if (width)
-					width--;
+					if (width)
+						width--;
 
-			} while (u_val > 0);
+				} while (u_val > 0);
 
-//        while (width--)
-//                      *--ptr = fill;
+				//				while (width--)
+				//											*--ptr = fill;
 
-			while (*ptr)
-				*dst++ = *ptr++;
+				while (*ptr)
+					*dst++ = *ptr++;
 
 		}
 	}

@@ -1,0 +1,7 @@
+setMode -bscan
+setCable -port auto
+identify
+assignFile -p 2 -file ../dbe_bpm_ebone/dbe_bpm_ebone.bit
+program -p 2 
+closeCable
+quit

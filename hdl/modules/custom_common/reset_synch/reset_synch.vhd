@@ -5,14 +5,14 @@ use ieee.numeric_std.all;
 entity reset_synch is
   port 
   (
-    clk_i     		        : in  std_logic;
-    arst_n_i		        : in  std_logic;
-    rst_n_o      		    : out std_logic
+    clk_i                     : in  std_logic;
+    arst_n_i                : in  std_logic;
+    rst_n_o                  : out std_logic
   );
 end reset_synch;
 
 architecture rtl of reset_synch is
-  signal s_ff 		        : std_logic;
+  signal s_ff                 : std_logic;
 begin
   process(clk_i, arst_n_i)
   begin

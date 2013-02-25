@@ -6,6 +6,7 @@ use work.wishbone_pkg.all;
 use work.wb_stream_pkg.all;
 use work.wb_stream_generic_pkg.all;
 use work.fmc516_pkg.all;
+use work.wr_fabric_pkg.all;
 
 package custom_wishbone_pkg is
 
@@ -19,15 +20,15 @@ package custom_wishbone_pkg is
   );
   port(
     -- Asynchronous Reset signal
-    arst_n_i						   	                  : in std_logic;
+    arst_n_i                                                 : in std_logic;
 
     -- Write Domain Clock
-    dma_clk_i             		                : in  std_logic;
-    --dma_valid_o             		   	        : out std_logic;
-    --dma_data_o              		   	        : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
-    --dma_be_o                		   	        : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
-    --dma_last_o              		   	        : out std_logic;
-    --dma_ready_i             		   	        : in  std_logic;
+    dma_clk_i                                     : in  std_logic;
+    --dma_valid_o                                    : out std_logic;
+    --dma_data_o                                     : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
+    --dma_be_o                                       : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
+    --dma_last_o                                     : out std_logic;
+    --dma_ready_i                                    : in  std_logic;
 
     -- Slave Data Flow port
     --dma_dflow_slave_i                       : in  t_wishbone_dflow_slave_in;
@@ -45,44 +46,44 @@ package custom_wishbone_pkg is
     -- Slave Data Input Port
     --data_slave_i                            : in  t_wishbone_slave_in;
     --data_slave_o                            : out t_wishbone_slave_out;
-    data_clk_i		               	            : in std_logic;
-    data_i       	          	  		          : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    data_valid_i						                  : in std_logic;
-    data_ready_o						                  : out std_logic;
+    data_clk_i                                       : in std_logic;
+    data_i                                             : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    data_valid_i                                          : in std_logic;
+    data_ready_o                                          : out std_logic;
 
     -- Slave control port. use wbgen2 tool or not if it is simple.
     --control_slave_i                         : in  t_wishbone_slave_in;
     --control_slave_o                         : out t_wishbone_slave_out;
-    capture_ctl_i				   		                : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    dma_complete_o						                : out std_logic;
-    dma_ovf_o							                    : out std_logic
+    capture_ctl_i                                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    dma_complete_o                                        : out std_logic;
+    dma_ovf_o                                                : out std_logic
 
     -- Debug Signals
-    --dma_debug_clk_o            		   	          : out std_logic;
-    --dma_debug_data_o           		   	          : out std_logic_vector(255 downto 0);
-    --dma_debug_trigger_o        		   	          : out std_logic_vector(15 downto 0)
+    --dma_debug_clk_o                                     : out std_logic;
+    --dma_debug_data_o                                    : out std_logic_vector(255 downto 0);
+    --dma_debug_trigger_o                                 : out std_logic_vector(15 downto 0)
   );
   end component;
 
   component xwb_dma_interface
   generic(
     -- Three 32-bit data input. LSB bits are valid.
-    --C_NBITS_VALID_INPUT             	        : natural := 128;
-    --C_NBITS_DATA_INPUT					              : natural := 128;
-    --C_OVF_COUNTER_SIZE					              : natural := 10
+    --C_NBITS_VALID_INPUT                         : natural := 128;
+    --C_NBITS_DATA_INPUT                                  : natural := 128;
+    --C_OVF_COUNTER_SIZE                                  : natural := 10
     g_ovf_counter_width                       : natural := 10
   );
   port(
     -- Asynchronous Reset signal
-    arst_n_i						   	                  : in std_logic;
+    arst_n_i                                                 : in std_logic;
 
         -- Write Domain Clock
-    dma_clk_i             		                : in  std_logic;
-    --dma_valid_o             		   	        : out std_logic;
-    --dma_data_o              		   	        : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
-    --dma_be_o                		   	        : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
-    --dma_last_o              		   	        : out std_logic;
-    --dma_ready_i             		   	        : in  std_logic;
+    dma_clk_i                                     : in  std_logic;
+    --dma_valid_o                                    : out std_logic;
+    --dma_data_o                                     : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
+    --dma_be_o                                       : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
+    --dma_last_o                                     : out std_logic;
+    --dma_ready_i                                    : in  std_logic;
 
         -- Slave Data Flow port
         dma_slave_i                           : in  t_wishbone_slave_in;
@@ -91,22 +92,22 @@ package custom_wishbone_pkg is
     -- Slave Data Input Port
     --data_slave_i                              : in  t_wishbone_slave_in;
     --data_slave_o                              : out t_wishbone_slave_out;
-    data_clk_i		               		          : in std_logic;
-    data_i       	          	  		          : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    data_valid_i						                  : in std_logic;
-    data_ready_o						                  : out std_logic;
+    data_clk_i                                         : in std_logic;
+    data_i                                             : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    data_valid_i                                          : in std_logic;
+    data_ready_o                                          : out std_logic;
 
     -- Slave control port. use wbgen2 tool or not if it is simple.
     --control_slave_i                         : in  t_wishbone_slave_in;
     --control_slave_o                         : out t_wishbone_slave_out;
-    capture_ctl_i				   		                : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    dma_complete_o						                : out std_logic;
-    dma_ovf_o							                    : out std_logic
+    capture_ctl_i                                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    dma_complete_o                                        : out std_logic;
+    dma_ovf_o                                                : out std_logic
 
     -- Debug Signals
-    --dma_debug_clk_o            		   	        : out std_logic;
-    --dma_debug_data_o           		   	        : out std_logic_vector(255 downto 0);
-    --dma_debug_trigger_o        		   	        : out std_logic_vector(15 downto 0)
+    --dma_debug_clk_o                                   : out std_logic;
+    --dma_debug_data_o                                  : out std_logic_vector(255 downto 0);
+    --dma_debug_trigger_o                               : out std_logic_vector(15 downto 0)
   );
   end component;
 
@@ -329,7 +330,7 @@ package custom_wishbone_pkg is
   component wb_fmc516
   generic
   (
-  	-- The only supported values are VIRTEX6 and 7SERIES
+      -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             : string := "VIRTEX6";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
@@ -611,22 +612,47 @@ package custom_wishbone_pkg is
   );
   end component;
 
+  component xwb_ethmac_adapter
+  port(
+    clk_i                                     : in std_logic;
+    rstn_i                                    : in std_logic;
+
+    wb_slave_o                                : out t_wishbone_slave_out;
+    wb_slave_i                                : in t_wishbone_slave_in;
+
+    tx_ram_o                                  : out t_wishbone_master_out;
+    tx_ram_i                                  : in t_wishbone_master_in;
+
+    rx_ram_o                                  : out t_wishbone_master_out;
+    rx_ram_i                                  : in t_wishbone_master_in;
+
+    rx_eb_o                                   : out t_wrf_source_out;
+    rx_eb_i                                   : in t_wrf_source_in;
+
+    tx_eb_o                                   : out t_wrf_sink_out;
+    tx_eb_i                                   : in t_wrf_sink_in;
+
+    irq_tx_done_o                             : out std_logic;
+    irq_rx_done_o                             : out std_logic
+  );
+  end component;
+
   --------------------------------------------------------------------
   -- SDB Devices Structures
   --------------------------------------------------------------------
 
   -- Simple GPIO interface device
   constant c_xwb_gpio32_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000FF", 	-- Max of 256 pins. Max of 8 32-bit registers
+    addr_last     => x"00000000000000FF",     -- Max of 256 pins. Max of 8 32-bit registers
     product => (
-    vendor_id     => x"0000000000000651", 	-- GSI
+    vendor_id     => x"0000000000000651",     -- GSI
     device_id     => x"35aa6b95",
     version       => x"00000001",
     date          => x"20120305",
@@ -634,16 +660,16 @@ package custom_wishbone_pkg is
 
   -- IRQ manager interface device
   constant c_xwb_irqmngr_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"1000000000001215", 	-- LNLS
+    vendor_id     => x"1000000000001215",     -- LNLS
     device_id     => x"15ff65e1",
     version       => x"00000001",
     date          => x"20120903",
@@ -651,16 +677,16 @@ package custom_wishbone_pkg is
 
   -- FMC150 Interface
   constant c_xwb_fmc150_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"1000000000001215", 	-- LNLS
+    vendor_id     => x"1000000000001215",     -- LNLS
     device_id     => x"f8c150c1",
     version       => x"00000001",
     date          => x"20121010",
@@ -668,16 +694,16 @@ package custom_wishbone_pkg is
 
   -- FMC516 Interface
   constant c_xwb_fmc516_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"0000000000000FFF",   -- Too much addresses? Probably...
     product => (
-    vendor_id     => x"1000000000001215", 	-- LNLS
+    vendor_id     => x"1000000000001215",     -- LNLS
     device_id     => x"64f2a9ba",
     version       => x"00000001",
     date          => x"20121124",
@@ -685,16 +711,16 @@ package custom_wishbone_pkg is
 
   -- UART Interface
   constant c_xwb_uart_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"1", 					-- 8-bit port granularity (0001)
+    wbd_width     => x"1",                     -- 8-bit port granularity (0001)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"000000000000CE42", 	-- CERN
+    vendor_id     => x"000000000000CE42",     -- CERN
     device_id     => x"8a5719ae",
     version       => x"00000001",
     date          => x"20121011",
@@ -702,16 +728,16 @@ package custom_wishbone_pkg is
 
   -- SPI Opencores Interface
   constant c_xwb_spi_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    vendor_id     => x"100000004E2C05E5",     -- OpenCores
     device_id     => x"40286417",
     version       => x"00000001",
     date          => x"20121124",
@@ -719,16 +745,16 @@ package custom_wishbone_pkg is
 
   -- I2C Opencores Interface
   constant c_xwb_i2c_master_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    vendor_id     => x"100000004E2C05E5",     -- OpenCores
     device_id     => x"97b6323d",
     version       => x"00000001",
     date          => x"20121124",
@@ -736,16 +762,16 @@ package custom_wishbone_pkg is
 
   -- 1-Wire Opencores Interface
   constant c_xwb_1_wire_master_sdb : t_sdb_device := (
-    abi_class     => x"0000", 				-- undocumented device
+    abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
     abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7", 					-- 8/16/32-bit port granularity (0111)
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
     sdb_component => (
     addr_first    => x"0000000000000000",
     addr_last     => x"00000000000000FF",
     product => (
-    vendor_id     => x"100000004E2C05E5", 	-- OpenCores
+    vendor_id     => x"100000004E2C05E5",     -- OpenCores
     device_id     => x"525fbb09",
     version       => x"00000001",
     date          => x"20121124",

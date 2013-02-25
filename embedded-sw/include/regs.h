@@ -4,7 +4,7 @@
  *
  * Released according to the GNU GPL, version 2 or any later version.
  */
- 
+
 #ifndef _REGS_H_
 #define _REGS_H_
 

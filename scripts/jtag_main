@@ -1,0 +1,100 @@
+#! /bin/bash
+# \
+export RLWRAP_ #\
+exec rlwrap -C lm32-ctl-xil -I xtclsh "$0" "$@"
+
+##
+#
+# Copyright (c) 2011 fpgaminer@bitcoin-mining.com
+#
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##
+
+
+## TODO: Long polling.
+## TODO: --verbose option for debugging issues.
+## TODO: Handle multiple FPGAs at once.
+
+# Modified by Lucas Russo <lucas.russo@lnls.br> with additions from
+#
+# lm32-ctl script: http://www.ohwr.org/projects/lm32/repository
+
+
+source utils.tcl
+#source json_rpc.tcl
+source jtag_comm.tcl
+source lm32_comm.tcl
+
+proc say_line {msg} {
+    set t [clock format [clock seconds] -format "%D %T"]
+    puts "\[$t\] $msg"
+}
+
+proc say_error {msg} {
+    set t [clock format [clock seconds] -format "%D %T"]
+    puts stderr "\[$t\] $msg"
+}
+
+proc say_status {rate est_rate accepted rejected} {
+    set submitted [expr {$rejected + $accepted}]
+
+    if {$submitted == 0} {
+        set rej_rate [expr {$rejected * 100.0}]
+    } else {
+        set rej_rate [expr {$rejected * 100.0 / $submitted}]
+    }
+
+    say_line [format "%.2f MH/s (~%.2f MH/s) \[Rej: %i/%i (%.2f%%)\]" $rate $est_rate $rejected $submitted $rej_rate]
+}
+
+################################# MAIN #################################
+
+proc main {argc argv} {
+
+    global jtag_handle
+    global CSE_MSG_INFO
+
+    puts " --- FPGA Mining Tcl Script --- \n\n"
+
+    puts "Looking for and preparing FPGAs...\n"
+    if {[fpga_init] == -1} {
+        puts stderr "No mining FPGAs found."
+        puts "\n\n --- Shutting Down --- \n\n"
+        exit
+    }
+
+    set fpga_name [get_fpga_name]
+    puts "Target FPGA Found: $fpga_name\n\n"
+
+    #if {[get_current_fpga_nonce] == -1} {
+    #    puts "WARNING: The FPGA's mining firmware does not report a hashrate. Status messages will show 0.00 MH/s, but the FPGA should still be running. Check the estimated rate for approximate hashing rate after shares have been submitted.\n\n"
+    #}
+
+
+    # Waits input from user and executs specified command
+    mainLoop $argc $argv
+
+    # Close everything
+    csejtag_target close $jtag_handle
+    csejtag_session send_message $jtag_handle $CSE_MSG_INFO "Closed cable successfully\n"
+    csejtag_session destroy $jtag_handle
+
+    puts "\n\n --- Shutting Down --- \n\n"
+}
+
+# Start the program
+main $argc $argv

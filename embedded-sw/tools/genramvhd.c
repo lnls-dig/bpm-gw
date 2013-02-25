@@ -17,20 +17,20 @@ void help()
 	fprintf(stderr, "Usage: %s [OPTION] <filename>\n", program);
 	fprintf(stderr, "\n");
 	fprintf(stderr,
-		"  -w <width>     width of values in bytes [1/2/4/8/16]        (4)\n");
+			"	-w <width>		 width of values in bytes [1/2/4/8/16]				(4)\n");
 	fprintf(stderr,
-		"  -p <package>   name of the output package            (filename)\n");
+			"	-p <package>	 name of the output package						(filename)\n");
 	fprintf(stderr,
-		"  -s <size>      pad the output up to size bytes       (filesize)\n");
+			"	-s <size>			pad the output up to size bytes			 (filesize)\n");
 	fprintf(stderr,
-		"  -b             big-endian operation                         (*)\n");
+			"	-b						 big-endian operation												 (*)\n");
 	fprintf(stderr,
-		"  -l             little-endian operation                         \n");
-	fprintf(stderr, "  -v             verbose operation\n");
-	fprintf(stderr, "  -h             display this help and exit\n");
+			"	-l						 little-endian operation												 \n");
+	fprintf(stderr, "	-v						 verbose operation\n");
+	fprintf(stderr, "	-h						 display this help and exit\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr,
-		"Report Etherbone bugs to <white-rabbit-dev@ohwr.org>\n");
+			"Report Etherbone bugs to <white-rabbit-dev@ohwr.org>\n");
 }
 
 /* We don't want localized versions from ctype.h */
@@ -64,55 +64,55 @@ int main(int argc, char **argv)
 	/* Process the command-line */
 	while ((opt = getopt(argc, argv, "w:p:s:blvh")) != -1) {
 		switch (opt) {
-		case 'w':
-			width = strtol(optarg, &value_end, 0);
-			if (*value_end ||	/* bad integer */
-			    ((width - 1) & width) != 0 ||	/* not a power of 2 */
-			    width == 0 || width > 16) {
-				fprintf(stderr,
-					"%s: invalid value width -- '%s'\n",
-					program, optarg);
+			case 'w':
+				width = strtol(optarg, &value_end, 0);
+				if (*value_end ||	/* bad integer */
+						((width - 1) & width) != 0 ||	/* not a power of 2 */
+						width == 0 || width > 16) {
+					fprintf(stderr,
+							"%s: invalid value width -- '%s'\n",
+							program, optarg);
+					error = 1;
+				}
+				break;
+			case 'p':
+				package = optarg;
+				break;
+			case 's':
+				size = strtol(optarg, &value_end, 0);
+				if (*value_end) {
+					fprintf(stderr,
+							"%s: invalid value size -- '%s'\n",
+							program, optarg);
+					error = 1;
+				}
+				break;
+			case 'b':
+				bigendian = 1;
+				break;
+			case 'l':
+				bigendian = 0;
+				break;
+			case 'v':
+				verbose = 1;
+				break;
+			case 'h':
+				help();
+				return 1;
+			case ':':
+			case '?':
 				error = 1;
-			}
-			break;
-		case 'p':
-			package = optarg;
-			break;
-		case 's':
-			size = strtol(optarg, &value_end, 0);
-			if (*value_end) {
-				fprintf(stderr,
-					"%s: invalid value size -- '%s'\n",
-					program, optarg);
-				error = 1;
-			}
-			break;
-		case 'b':
-			bigendian = 1;
-			break;
-		case 'l':
-			bigendian = 0;
-			break;
-		case 'v':
-			verbose = 1;
-			break;
-		case 'h':
-			help();
-			return 1;
-		case ':':
-		case '?':
-			error = 1;
-			break;
-		default:
-			fprintf(stderr, "%s: bad getopt result\n", program);
-			return 1;
+				break;
+			default:
+				fprintf(stderr, "%s: bad getopt result\n", program);
+				return 1;
 		}
 	}
 
 	if (optind + 1 != argc) {
 		fprintf(stderr,
-			"%s: expecting one non-optional argument: <filename>\n",
-			program);
+				"%s: expecting one non-optional argument: <filename>\n",
+				program);
 		return 1;
 	}
 
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	/* Confirm the filename exists */
 	if ((f = fopen(filename, "r")) == 0) {
 		fprintf(stderr, "%s: %s while opening '%s'\n", program,
-			strerror(errno), filename);
+				strerror(errno), filename);
 		return 1;
 	}
 
@@ -136,23 +136,23 @@ int main(int argc, char **argv)
 
 	if (size < elements) {
 		fprintf(stderr,
-			"%s: length of initialization file '%s' (%ld) exceeds specified size (%ld)\n",
-			program, filename, elements, size);
+				"%s: length of initialization file '%s' (%ld) exceeds specified size (%ld)\n",
+				program, filename, elements, size);
 		return 1;
 	}
 
 	if (elements % width != 0) {
 		fprintf(stderr,
-			"%s: initialization file '%s' is not a multiple of %ld bytes\n",
-			program, filename, width);
+				"%s: initialization file '%s' is not a multiple of %ld bytes\n",
+				program, filename, width);
 		return 1;
 	}
 	elements /= width;
 
 	if (size % width != 0) {
 		fprintf(stderr,
-			"%s: specified size '%ld' is not a multiple of %ld bytes\n",
-			program, size, width);
+				"%s: specified size '%ld' is not a multiple of %ld bytes\n",
+				program, size, width);
 		return 1;
 	}
 	size /= width;
@@ -161,8 +161,8 @@ int main(int argc, char **argv)
 	if (package == 0) {
 		if (strlen(filename) >= sizeof(buf) - 5) {
 			fprintf(stderr,
-				"%s: filename too long to deduce package name -- '%s'\n",
-				program, filename);
+					"%s: filename too long to deduce package name -- '%s'\n",
+					program, filename);
 			return 1;
 		}
 
@@ -181,8 +181,8 @@ int main(int argc, char **argv)
 
 		if (i == 0) {
 			fprintf(stderr,
-				"%s: no appropriate characters in filename to use for package name -- '%s'\n",
-				program, filename);
+					"%s: no appropriate characters in filename to use for package name -- '%s'\n",
+					program, filename);
 			return 1;
 		}
 
@@ -191,14 +191,14 @@ int main(int argc, char **argv)
 		/* Check for valid VHDL identifier */
 		if (!my_isalpha(package[0])) {
 			fprintf(stderr, "%s: invalid package name -- '%s'\n",
-				program, package);
+					program, package);
 			return 1;
 		}
 		for (i = 1; package[i]; ++i) {
 			if (!my_isok(package[i])) {
 				fprintf(stderr,
-					"%s: invalid package name -- '%s'\n",
-					program, package);
+						"%s: invalid package name -- '%s'\n",
+						program, package);
 				return 1;
 			}
 		}
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 	columns = 76 / entry_width;
 
 	printf("-- AUTOGENERATED FILE (from genramvhd.c run on %s) --\n",
-	       argv[1]);
+			argv[1]);
 	printf("library IEEE;\n");
 	printf("use IEEE.std_logic_1164.all;\n");
 	printf("use IEEE.numeric_std.all;\n");
@@ -225,12 +225,12 @@ int main(int argc, char **argv)
 
 	printf("package %s_pkg is\n", package);
 	printf
-	    ("  constant %s_init : t_meminit_array(%ld downto 0, %ld downto 0) := (\n",
-	     package, size - 1, (width * 8) - 1);
+		("	constant %s_init : t_meminit_array(%ld downto 0, %ld downto 0) := (\n",
+		 package, size - 1, (width * 8) - 1);
 
 	for (i = 0; i < size; ++i) {
 		if (i % columns == 0)
-			printf("    ");
+			printf("		");
 
 		if (i < elements) {
 			if (fread(x, 1, width, f) != width) {

@@ -72,8 +72,8 @@ begin
         s_adc_str_dly <= str_p_i and str_n_i;
     end generate;
     
-	-- s_adc_str_dly is a regional clock driven by BUFR.
-	-- Must go through a BUFG before other components (BPM DDC)
+    -- s_adc_str_dly is a regional clock driven by BUFR.
+    -- Must go through a BUFG before other components (BPM DDC)
     -- ADC strobe must be routed on a global net
     --cmp_adc_str_bufg: bufg
     --port map
@@ -83,7 +83,7 @@ begin
     --);
     
     --str_o <= s_adc_str;
-	str_o <= s_adc_str_dly;
+    str_o <= s_adc_str_dly;
 
     -- ADC channel A with adjustable delay
     cmp_adc_cha: adc_channel_lvds_ddr

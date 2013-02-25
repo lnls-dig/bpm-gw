@@ -34,7 +34,7 @@ use work.fmc516_pkg.all;
 entity xwb_fmc516 is
 generic
 (
-	-- The only supported values are VIRTEX6 and 7SERIES
+    -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
@@ -182,7 +182,7 @@ begin
 
   cmp_wb_fmc516 : wb_fmc516
   generic map (
-  	-- The only supported values are VIRTEX6 and 7SERIES
+      -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             => g_fpga_device,
     g_interface_mode                          => g_interface_mode,
     g_address_granularity                     => g_address_granularity,

@@ -8,12 +8,12 @@ package custom_common_pkg is
     --------------------------------------------------------------------
     
     component reset_synch
-	port 
-	(
-		clk_i     		        : in  std_logic;
-		arst_n_i		        : in  std_logic;
-		rst_n_o      		    : out std_logic
-	);
+    port 
+    (
+        clk_i                     : in  std_logic;
+        arst_n_i                : in  std_logic;
+        rst_n_o                  : out std_logic
+    );
     end component;
-	
+    
 end custom_common_pkg;
