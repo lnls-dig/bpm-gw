@@ -504,7 +504,7 @@ begin
     g_size                                  => c_dpram_ethbuf_size,
     g_init_file                             => "",
     g_must_have_init_file                   => false,
-    g_slave1_interface_mode                 => PIPELINED,
+    g_slave1_interface_mode                 => CLASSIC,
     --g_slave2_interface_mode                 => PIPELINED,
     g_slave1_granularity                    => BYTE
     --g_slave2_granularity                    => BYTE
@@ -523,10 +523,10 @@ begin
   -- The Ethernet MAC is master 4, slave 4
   cmp_xwb_ethmac : xwb_ethmac
   generic map (
-    g_ma_interface_mode                     => PIPELINED,
-    --g_ma_interface_mode                     => CLASSIC,
+    --g_ma_interface_mode                     => PIPELINED,
+    g_ma_interface_mode                     => CLASSIC, -- NOT used for now
     --g_ma_address_granularity                => WORD,
-    g_ma_address_granularity                => BYTE,
+    g_ma_address_granularity                => BYTE,    -- NOT used for now
     g_sl_interface_mode                     => PIPELINED,
     --g_sl_interface_mode                     => CLASSIC,
     --g_sl_address_granularity                => WORD

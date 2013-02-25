@@ -71,7 +71,36 @@ end xwb_ethmac;
 
 architecture rtl of xwb_ethmac is
 
+  --signal mac_m_idle                       : std_logic;
+  --signal wb_slave_out_ack_int             : std_logic;
+  --signal wb_master_out_stb_int             : std_logic;
+  --signal wb_master_out_cyc_int             : std_logic;
+
 begin
+
+  -- Wishbone B4 master to B2 slave
+  --wb_slave_out.STALL <= wb_slave_in.CYC AND (NOT wb_slave_out_ack_int);
+  --wb_slave_out.ACK <= wb_slave_out_ack_int;
+  --wb_slave_out.RTY <= '0';
+  --
+  ---- Wishbone B2 master to B4 slave
+  --wb_master_out.STB <= wb_master_out_stb_int when mac_m_idle='1' else '0';
+  --wb_master_out.CYC <= wb_master_out_cyc_int;
+  --
+  --macStateMachine : process(wb_clk_i)
+  --begin
+  --  if (rising_edge(wb_clk_i)) then
+  --    if wb_rst_i = '1' then
+  --      mac_m_idle <= '1';
+  --    else
+  --      if (wb_master_in.ACK = '1' and wb_master_out_cyc_int = '1') then
+  --        mac_m_idle <= '1';
+  --      elsif (wb_master_out_stb_int = '1' and wb_master_out_cyc_int = '1') then
+  --        mac_m_idle <= '0';
+  --      end if;
+  --    end if;
+  --  end if;
+  --end process;
 
   cmp_wrapper_wb_ethmac : wb_ethmac
   generic map (
@@ -82,34 +111,39 @@ begin
   )
   port map(
     -- WISHBONE common
-    wb_clk_i                                  => wb_clk_i,
-    wb_rst_i                                  => wb_rst_i,
+    wb_clk_i                                => wb_clk_i,
+    wb_rst_i                                => wb_rst_i,
 
     -- WISHBONE slave
     wb_dat_i                                => wb_slave_in.dat,
     wb_dat_o                                => wb_slave_out.dat,
     wb_adr_i                                => wb_slave_in.adr(11 downto 0),
-    wb_sel_i                                  => wb_slave_in.sel,
-    wb_we_i                                    => wb_slave_in.we,
-    wb_cyc_i                                  => wb_slave_in.cyc,
-    wb_stb_i                                  => wb_slave_in.stb,
-    wb_ack_o                                  => wb_slave_out.ack,
-    wb_err_o                                  => wb_slave_out.err,
+    wb_sel_i                                => wb_slave_in.sel,
+    wb_we_i                                 => wb_slave_in.we,
+    wb_cyc_i                                => wb_slave_in.cyc,
+    wb_stb_i                                => wb_slave_in.stb,
+    wb_ack_o                                => wb_slave_out.ack,
+    --wb_ack_o                                => wb_slave_out_ack_int,
+    wb_err_o                                => wb_slave_out.err,
     wb_stall_o                              => wb_slave_out.stall,
+    wb_rty_o                                => wb_slave_out.rty,
     --wb_rty_o                                => wb_slave_out.rty,
 
     -- WISHBONE master
     m_wb_adr_o                              => wb_master_out.adr,
     m_wb_sel_o                              => wb_master_out.sel,
-    m_wb_we_o                                  => wb_master_out.we,
+    m_wb_we_o                               => wb_master_out.we,
     m_wb_dat_o                              => wb_master_out.dat,
     m_wb_dat_i                              => wb_master_in.dat,
     m_wb_cyc_o                              => wb_master_out.cyc,
     m_wb_stb_o                              => wb_master_out.stb,
+    --m_wb_cyc_o                              => wb_master_out_cyc_int,
+    --m_wb_stb_o                              => wb_master_out_stb_int,
     m_wb_ack_i                              => wb_master_in.ack,
     m_wb_err_i                              => wb_master_in.err,
     m_wb_stall_i                            => wb_master_in.stall,
     --m_wb_rty_i                              => wb_master_in.rty,
+    m_wb_rty_i                              => wb_master_in.rty,
 
     -- PHY TX
     mtx_clk_pad_i                           => mtx_clk_pad_i,
@@ -118,11 +152,11 @@ begin
     mtxerr_pad_o                            => mtxerr_pad_o,
 
     -- PHY RX
-    mrx_clk_pad_i                              => mrx_clk_pad_i,
+    mrx_clk_pad_i                           => mrx_clk_pad_i,
     mrxd_pad_i                              => mrxd_pad_i,
-    mrxdv_pad_i                                => mrxdv_pad_i,
+    mrxdv_pad_i                             => mrxdv_pad_i,
     mrxerr_pad_i                            => mrxerr_pad_i,
-    mcoll_pad_i                                => mcoll_pad_i,
+    mcoll_pad_i                             => mcoll_pad_i,
     mcrs_pad_i                              => mcrs_pad_i,
 
     -- MII
@@ -132,6 +166,6 @@ begin
     md_padoe_o                              => md_padoe_o,
 
     -- Interrupt
-    int_o                                        => int_o
+    int_o                                   => int_o
   );
 end rtl;

@@ -49,7 +49,7 @@ package ethmac_pkg is
     wb_ack_o                                    : out std_logic;
     wb_err_o                                    : out std_logic;
     wb_stall_o                                : out std_logic;
-    --wb_rty_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
 
     -- WISHBONE master
     m_wb_adr_o                                : out std_logic_vector(31 downto 0);
@@ -62,7 +62,7 @@ package ethmac_pkg is
     m_wb_ack_i                                : in std_logic;
     m_wb_err_i                                : in std_logic;
     m_wb_stall_i                              : in std_logic;
-    --m_wb_rty_i                                : in std_logic;
+    m_wb_rty_i                                : in std_logic;
 
     -- PHY TX
     mtx_clk_pad_i                           : in std_logic;
