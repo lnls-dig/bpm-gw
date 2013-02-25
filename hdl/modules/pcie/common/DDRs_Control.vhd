@@ -589,7 +589,7 @@ begin
             if wpipe_f2m_valid = '1' then
               ddram_wr_data(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH) <=
                 wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
-              ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH) <=
+              ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <=
                 wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
               if wpipe_f2m_qout(73) = '1' then --wpipe_wr_eof
                 wpipe_fill_eof <= '1';

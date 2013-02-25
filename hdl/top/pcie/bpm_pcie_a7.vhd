@@ -32,9 +32,9 @@ use work.abb64Package.all;
 library UNISIM;
 use UNISIM.VComponents.all;
 
-entity bpm_pcie_k7 is
+entity bpm_pcie_a7 is
   generic (
-    constant pcieLanes : integer := C_NUM_PCIE_LANES;
+    constant pcieLanes : integer := 4;
     PL_FAST_TRAIN      : string  := "FALSE";
     PIPE_SIM_MODE      : string := "FALSE";
     SIMULATION         : string := "FALSE";
@@ -58,15 +58,15 @@ entity bpm_pcie_k7 is
     CKE_WIDTH             : integer := 1;
                                      -- # of CKE outputs to memory.
     DATA_BUF_ADDR_WIDTH   : integer := 5;
-    DQ_CNT_WIDTH          : integer := 6;
+    DQ_CNT_WIDTH          : integer := 5;
                                      -- = ceil(log2(DQ_WIDTH))
     DQ_PER_DM             : integer := 8;
-    DM_WIDTH              : integer := 8;
+    DM_WIDTH              : integer := 4;
                                      -- # of DM (data mask)
-    DQ_WIDTH              : integer := 64;
+    DQ_WIDTH              : integer := 32;
                                      -- # of DQ (data)
-    DQS_WIDTH             : integer := 8;
-    DQS_CNT_WIDTH         : integer := 3;
+    DQS_WIDTH             : integer := 4;
+    DQS_CNT_WIDTH         : integer := 2;
                                      -- = ceil(log2(DQS_WIDTH))
     DRAM_WIDTH            : integer := 8;
                                      -- # of DQ per DQS
@@ -76,14 +76,14 @@ entity bpm_pcie_k7 is
                                      -- # of Ranks.
     ODT_WIDTH             : integer := 1;
                                      -- # of ODT outputs to memory.
-    ROW_WIDTH             : integer := 14;
+    ROW_WIDTH             : integer := 16;
                                      -- # of memory Row Address bits.
-    ADDR_WIDTH            : integer := 28;
+    ADDR_WIDTH            : integer := 30;
                                      -- # = RANK_WIDTH + BANK_WIDTH
                                      --     + ROW_WIDTH + COL_WIDTH;
                                      -- Chip Select is always tied to low for
                                      -- single rank devices
-    USE_CS_PORT          : integer := 1;
+    USE_CS_PORT          : integer := 0;
                                      -- # = 1, When Chip Select (CS#) output is enabled
                                      --   = 0, When Chip Select (CS#) output is disabled
                                      -- If CS_N disabled, user must connect
@@ -101,7 +101,7 @@ entity bpm_pcie_k7 is
     PHY_CONTROL_MASTER_BANK : integer := 1;
                                      -- The bank index where master PHY_CONTROL resides,
                                      -- equal to the PLL residing bank
-    MEM_DENSITY             : string  := "1GB";
+    MEM_DENSITY             : string  := "4Gb";
                                      -- Indicates the density of the Memory part
                                      -- Added for the sake of Vivado simulations
     MEM_SPEEDGRADE          : string  := "125";
@@ -135,11 +135,11 @@ entity bpm_pcie_k7 is
                                      -- DDR2 SDRAM: Burst Type (Mode Register).
                                      -- # = "SEQ" - (Sequential),
                                      --   = "INT" - (Interleaved).
-    CL                    : integer := 11;
+    CL                    : integer := 6;
                                      -- in number of clock cycles
                                      -- DDR3 SDRAM: CAS Latency (Mode Register 0).
                                      -- DDR2 SDRAM: CAS Latency (Mode Register).
-    CWL                   : integer := 8;
+    CWL                   : integer := 5;
                                      -- in number of clock cycles
                                      -- DDR3 SDRAM: CAS Write Latency (Mode Register 2).
                                      -- DDR2 SDRAM: Can be ignored
@@ -171,7 +171,7 @@ entity bpm_pcie_k7 is
     --***************************************************************************
     CLKIN_PERIOD          : integer := 5000;
                                      -- Input Clock Period
-    CLKFBOUT_MULT         : integer := 8;
+    CLKFBOUT_MULT         : integer := 4;
                                      -- write PLL VCO multiplier
     DIVCLK_DIVIDE         : integer := 1;
                                      -- write PLL VCO divisor
@@ -196,13 +196,13 @@ entity bpm_pcie_k7 is
                                      -- memory tRAW paramter in pS.
     tRAS                  : integer := 35000;
                                      -- memory tRAS paramter in pS.
-    tRCD                  : integer := 13125;
+    tRCD                  : integer := 13750;
                                      -- memory tRCD paramter in pS.
     tREFI                 : integer := 7800000;
                                      -- memory tREFI paramter in pS.
-    tRFC                  : integer := 110000;
+    tRFC                  : integer := 300000;
                                      -- memory tRFC paramter in pS.
-    tRP                   : integer := 13125;
+    tRP                   : integer := 13750;
                                      -- memory tRP paramter in pS.
     tRRD                  : integer := 6000;
                                      -- memory tRRD paramter in pS.
@@ -224,7 +224,7 @@ entity bpm_pcie_k7 is
                                      -- # = "SKIP" - Not supported
                                      -- # = "FAST" - Complete memory init & use
                                      --              abbreviated calib sequence
-    --already declared
+
     --SIMULATION            : string  := "FALSE";
                                      -- Should be TRUE during design simulations and
                                      -- FALSE during implementations
@@ -236,9 +236,9 @@ entity bpm_pcie_k7 is
     --***************************************************************************
     BYTE_LANES_B0         : std_logic_vector(3 downto 0) := "1111";
                                      -- Byte lanes used in an IO column.
-    BYTE_LANES_B1         : std_logic_vector(3 downto 0) := "0111";
+    BYTE_LANES_B1         : std_logic_vector(3 downto 0) := "1110";
                                      -- Byte lanes used in an IO column.
-    BYTE_LANES_B2         : std_logic_vector(3 downto 0) := "1111";
+    BYTE_LANES_B2         : std_logic_vector(3 downto 0) := "0000";
                                      -- Byte lanes used in an IO column.
     BYTE_LANES_B3         : std_logic_vector(3 downto 0) := "0000";
                                      -- Byte lanes used in an IO column.
@@ -254,7 +254,7 @@ entity bpm_pcie_k7 is
                                      -- or control Byte lane. '1' in a bit
                                      -- position indicates a data byte lane and
                                      -- a '0' indicates a control byte lane
-    DATA_CTL_B2           : std_logic_vector(3 downto 0) := "1111";
+    DATA_CTL_B2           : std_logic_vector(3 downto 0) := "0000";
                                      -- Indicates Byte lane is data byte lane
                                      -- or control Byte lane. '1' in a bit
                                      -- position indicates a data byte lane and
@@ -269,34 +269,34 @@ entity bpm_pcie_k7 is
                                      -- or control Byte lane. '1' in a bit
                                      -- position indicates a data byte lane and
                                      -- a '0' indicates a control byte lane
-    PHY_0_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FE3FE2FF";
-    PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"000CB0473FFF";
-    PHY_2_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FE3FE2FF";
+    PHY_0_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FD2FF2FF";
+    PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FFE7F3CC0000";
+    PHY_2_BITLANES        : std_logic_vector(47 downto 0) := X"000000000000";
 
     -- control/address/data pin mapping parameters
     CK_BYTE_MAP
-     : std_logic_vector(143 downto 0) := X"000000000000000000000000000000000011";
+     : std_logic_vector(143 downto 0) := X"000000000000000000000000000000000012";
     ADDR_MAP
-     : std_logic_vector(191 downto 0) := X"00000011111010910810710610B10A105104103102101100";
-    BANK_MAP   : std_logic_vector(35 downto 0) := X"11A115114";
-    CAS_MAP    : std_logic_vector(11 downto 0) := X"12A";
+     : std_logic_vector(191 downto 0) := X"13712612413513113612A11A11B12112013A11712913B128";
+    BANK_MAP   : std_logic_vector(35 downto 0) := X"132138116";
+    CAS_MAP    : std_logic_vector(11 downto 0) := X"125";
     CKE_ODT_BYTE_MAP : std_logic_vector(7 downto 0) := X"00";
-    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000116";
+    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000139";
     ODT_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000127";
-    CS_MAP     : std_logic_vector(119 downto 0) := X"00000000000000000000000000012B";
+    CS_MAP     : std_logic_vector(119 downto 0) := X"000000000000000000000000000000";
     PARITY_MAP : std_logic_vector(11 downto 0) := X"000";
-    RAS_MAP    : std_logic_vector(11 downto 0) := X"125";
-    WE_MAP     : std_logic_vector(11 downto 0) := X"124";
+    RAS_MAP    : std_logic_vector(11 downto 0) := X"134";
+    WE_MAP     : std_logic_vector(11 downto 0) := X"133";
     DQS_BYTE_MAP
-     : std_logic_vector(143 downto 0) := X"000000000000000000000302010023222120";
-    DATA0_MAP  : std_logic_vector(95 downto 0) := X"200209206203204205202207";
-    DATA1_MAP  : std_logic_vector(95 downto 0) := X"219218214215217212216213";
-    DATA2_MAP  : std_logic_vector(95 downto 0) := X"225224229226223222228227";
-    DATA3_MAP  : std_logic_vector(95 downto 0) := X"238236234233235237232239";
-    DATA4_MAP  : std_logic_vector(95 downto 0) := X"005003000009007006004002";
-    DATA5_MAP  : std_logic_vector(95 downto 0) := X"013012018019015014017016";
-    DATA6_MAP  : std_logic_vector(95 downto 0) := X"023027022029024025028026";
-    DATA7_MAP  : std_logic_vector(95 downto 0) := X"039037033032035034038036";
+     : std_logic_vector(143 downto 0) := X"000000000000000000000000000003020100";
+    DATA0_MAP  : std_logic_vector(95 downto 0) := X"009006002004003007000005";
+    DATA1_MAP  : std_logic_vector(95 downto 0) := X"017014010015013011016019";
+    DATA2_MAP  : std_logic_vector(95 downto 0) := X"024026023027022025020029";
+    DATA3_MAP  : std_logic_vector(95 downto 0) := X"034037031035033036032039";
+    DATA4_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
+    DATA5_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
+    DATA6_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
+    DATA7_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
     DATA8_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
     DATA9_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
     DATA10_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
@@ -307,7 +307,7 @@ entity bpm_pcie_k7 is
     DATA15_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
     DATA16_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
     DATA17_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    MASK0_MAP  : std_logic_vector(107 downto 0) := X"000031021011001231221211201";
+    MASK0_MAP  : std_logic_vector(107 downto 0) := X"000000000000000038028012001";
     MASK1_MAP  : std_logic_vector(107 downto 0) := X"000000000000000000000000000";
 
     SLOT_0_CONFIG         : std_logic_vector(7 downto 0) := "00000001";
@@ -326,9 +326,9 @@ entity bpm_pcie_k7 is
                                      -- to phy_top
     DATA_IO_IDLE_PWRDWN   : string  := "ON";
                                      -- # = "ON", "OFF"
-    BANK_TYPE             : string  := "HP_IO";
+    BANK_TYPE             : string  := "HR_IO";
                                      -- # = "HP_IO", "HPL_IO", "HR_IO", "HRL_IO"
-    DATA_IO_PRIM_TYPE     : string  := "HP_LP";
+    DATA_IO_PRIM_TYPE     : string  := "HR_LP";
                                      -- # = "HP_LP", "HR_LP", "DEFAULT"
     CKE_ODT_AUX           : string  := "FALSE";
     USER_REFRESH          : string  := "OFF";
@@ -374,7 +374,7 @@ entity bpm_pcie_k7 is
     --***************************************************************************
     -- System clock frequency parameters
     --***************************************************************************
-    tCK                   : integer := 1250;
+    tCK                   : integer := 2500;
                                      -- memory tCK paramter.
                                      -- # = Clock Period in pS.
     nCK_PER_CLK           : integer := 4;
@@ -414,7 +414,6 @@ entity bpm_pcie_k7 is
     ddr3_ck_p    : out   std_logic_vector(CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(CKE_WIDTH-1 downto 0);
-    ddr3_cs_n    : out   std_logic_vector((CS_WIDTH*nCS_PER_RANK)-1 downto 0);
     ddr3_dm      : out   std_logic_vector(DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
@@ -429,9 +428,9 @@ entity bpm_pcie_k7 is
     sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
     sys_rst_n     : in std_logic          --Reset
     );
-end entity bpm_pcie_k7;
+end entity bpm_pcie_a7;
 
-architecture Behavioral of bpm_pcie_k7 is
+architecture Behavioral of bpm_pcie_a7 is
   -------------------------------------------------------
   -------- Constants & functions helpful in DDR core instatiation
   -------------------------------------------------------
@@ -483,17 +482,17 @@ architecture Behavioral of bpm_pcie_k7 is
       -------------------------------------------------------------------------------------------------------------------
       -- 1. PCI Express (pci_exp) Interface                                                                            --
       -------------------------------------------------------------------------------------------------------------------
-      pci_exp_txp : out std_logic_vector(0 downto 0);
-      pci_exp_txn : out std_logic_vector(0 downto 0);
-      pci_exp_rxp : in  std_logic_vector(0 downto 0);
-      pci_exp_rxn : in  std_logic_vector(0 downto 0);
+      pci_exp_txp : out std_logic_vector(3 downto 0);
+      pci_exp_txn : out std_logic_vector(3 downto 0);
+      pci_exp_rxp : in  std_logic_vector(3 downto 0);
+      pci_exp_rxn : in  std_logic_vector(3 downto 0);
 
       -------------------------------------------------------------------------------------------------------------------
       -- 2. Clocking Interface                                                                                         --
       -------------------------------------------------------------------------------------------------------------------
       PIPE_PCLK_IN      : in std_logic;
       PIPE_RXUSRCLK_IN  : in std_logic;
-      PIPE_RXOUTCLK_IN  : in std_logic_vector(0 downto 0);
+      PIPE_RXOUTCLK_IN  : in std_logic_vector(3 downto 0);
       PIPE_DCLK_IN      : in std_logic;
       PIPE_USERCLK1_IN  : in std_logic;
       PIPE_USERCLK2_IN  : in std_logic;
@@ -501,8 +500,8 @@ architecture Behavioral of bpm_pcie_k7 is
       PIPE_MMCM_LOCK_IN : in std_logic;
 
       PIPE_TXOUTCLK_OUT : out std_logic;
-      PIPE_RXOUTCLK_OUT : out std_logic_vector(0 downto 0);
-      PIPE_PCLK_SEL_OUT : out std_logic_vector(0 downto 0);
+      PIPE_RXOUTCLK_OUT : out std_logic_vector(3 downto 0);
+      PIPE_PCLK_SEL_OUT : out std_logic_vector(3 downto 0);
       PIPE_GEN3_OUT     : out std_logic;
 
       -------------------------------------------------------------------------------------------------------------------
@@ -877,7 +876,6 @@ architecture Behavioral of bpm_pcie_k7 is
       ddr3_ck_p    : out   std_logic_vector(CK_WIDTH-1 downto 0);
       ddr3_ck_n    : out   std_logic_vector(CK_WIDTH-1 downto 0);
       ddr3_cke     : out   std_logic_vector(CKE_WIDTH-1 downto 0);
-      ddr3_cs_n    : out   std_logic_vector((CS_WIDTH*nCS_PER_RANK)-1 downto 0);
       ddr3_dm      : out   std_logic_vector(DM_WIDTH-1 downto 0);
       ddr3_odt     : out   std_logic_vector(ODT_WIDTH-1 downto 0);
 
@@ -1493,7 +1491,7 @@ architecture Behavioral of bpm_pcie_k7 is
   -- Wires used for external clocking connectivity
   signal PIPE_PCLK_IN      : std_logic                    := '0';
   signal PIPE_RXUSRCLK_IN  : std_logic                    := '0';
-  signal PIPE_RXOUTCLK_IN  : std_logic_vector(0 downto 0) := (others => '0');
+  signal PIPE_RXOUTCLK_IN  : std_logic_vector(3 downto 0) := (others => '0');
   signal PIPE_DCLK_IN      : std_logic                    := '0';
   signal PIPE_USERCLK1_IN  : std_logic                    := '0';
   signal PIPE_USERCLK2_IN  : std_logic                    := '0';
@@ -1501,8 +1499,8 @@ architecture Behavioral of bpm_pcie_k7 is
   signal PIPE_MMCM_LOCK_IN : std_logic                    := '0';
 
   signal PIPE_TXOUTCLK_OUT : std_logic;
-  signal PIPE_RXOUTCLK_OUT : std_logic_vector(0 downto 0);
-  signal PIPE_PCLK_SEL_OUT : std_logic_vector(0 downto 0);
+  signal PIPE_RXOUTCLK_OUT : std_logic_vector(3 downto 0);
+  signal PIPE_PCLK_SEL_OUT : std_logic_vector(3 downto 0);
   signal PIPE_GEN3_OUT     : std_logic;
   ----------------------------------------------------
 
@@ -2804,7 +2802,6 @@ begin
       ddr3_dqs_n          => ddr3_dqs_n,
       ddr3_dqs_p          => ddr3_dqs_p,
       init_calib_complete => ddr_calib_done,
-      ddr3_cs_n           => ddr3_cs_n,
       ddr3_dm             => ddr3_dm,
       ddr3_odt            => ddr3_odt,
       -- Application interface ports
