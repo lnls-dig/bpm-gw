@@ -92,7 +92,7 @@ include/board.h:
 	ln -sf ../boards/$(BOARD)/board.h include/board.h
 
 clean:
-	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S include/board.h
+	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S $(OUTPUT).vhd include/board.h
 	make clean -C tools
 
 %.o: %.c
