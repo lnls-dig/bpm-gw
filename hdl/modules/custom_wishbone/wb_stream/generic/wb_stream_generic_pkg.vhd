@@ -183,7 +183,7 @@ package wb_stream_generic_pkg is
   constant cc_dummy_wbs_sel64 : std_logic_vector(c_wbs_sel64_width-1 downto 0) := (others => 'X');
   constant cc_dummy_wbs_sel128 : std_logic_vector(c_wbs_sel128_width-1 downto 0) := (others => 'X');
 
-  constant cc_dummy_src_com_in : t_wbs_source_com_in := ('0', '0', '0', '0');
+  constant cc_dummy_src_com_in : t_wbs_source_com_in := ('1', '0', '0', '0');
   constant cc_dummy_snk_in16 : t_wbs_sink_in16 :=
       (cc_dummy_wbs_adr4, cc_dummy_wbs_dat16, '0', '0', '0', cc_dummy_wbs_sel16);
   constant cc_dummy_snk_in32 : t_wbs_sink_in32 :=

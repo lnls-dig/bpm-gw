@@ -202,6 +202,5 @@ package body fmc516_pkg is
 
     return intercon;
   end f_chain_intercon;
-
-  end fmc516_pkg;
+end fmc516_pkg;
 

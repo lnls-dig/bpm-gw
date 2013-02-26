@@ -143,7 +143,7 @@ package ethmac_pkg is
     wbd_width     => x"4",                     -- 32-bit port granularity (0100)
     sdb_component => (
     addr_first    => x"0000000000000000",
-    addr_last     => x"0000000000ffffff",       -- FIX THIS address!
+    addr_last     => x"00000000000001ff",
     product => (
     vendor_id     => x"100000004E2C05E5",     -- OpenCores
     device_id     => x"f8cfeb16",

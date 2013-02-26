@@ -607,8 +607,8 @@ package custom_wishbone_pkg is
     -----------------------------
     -- Wishbone Streaming Interface Source
     -----------------------------
-    wbs_source_i                              : in t_wbs_source_in64;
-    wbs_source_o                              : out t_wbs_source_out64
+    wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
+    wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0)
   );
   end component;
 
@@ -634,6 +634,83 @@ package custom_wishbone_pkg is
 
     irq_tx_done_o                             : out std_logic;
     irq_rx_done_o                             : out std_logic
+  );
+  end component;
+
+  component wb_dbe_periph
+  generic(
+    -- NOT used!
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    -- NOT used!
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
+    g_num_leds                                : natural                        := 8;
+    g_num_buttons                             : natural                        := 8
+  );
+  port(
+    clk_sys_i                                 : in std_logic;
+    rst_n_i                                   : in std_logic;
+
+    -- UART
+    uart_rxd_i                                : in  std_logic;
+    uart_txd_o                                : out std_logic;
+
+    -- LEDs
+    led_out_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+    led_in_i                                  : in  std_logic_vector(g_num_leds-1 downto 0);
+    led_oen_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+
+    -- Buttons
+    button_out_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+    button_in_i                               : in  std_logic_vector(g_num_buttons-1 downto 0);
+    button_oen_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+
+    -- Wishbone
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic
+  );
+  end component;
+
+  component xwb_dbe_periph
+  generic(
+    -- NOT used!
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    -- NOT used!
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
+    g_num_leds                                : natural                        := 8;
+    g_num_buttons                             : natural                        := 8
+  );
+  port(
+    clk_sys_i                                 : in std_logic;
+    rst_n_i                                   : in std_logic;
+
+    -- UART
+    uart_rxd_i                                : in  std_logic;
+    uart_txd_o                                : out std_logic;
+
+    -- LEDs
+    led_out_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+    led_in_i                                  : in  std_logic_vector(g_num_leds-1 downto 0);
+    led_oen_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+
+    -- Buttons
+    button_out_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+    button_in_i                               : in  std_logic_vector(g_num_buttons-1 downto 0);
+    button_oen_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+
+    -- Wishbone
+    slave_i                                   : in  t_wishbone_slave_in;
+    slave_o                                   : out t_wishbone_slave_out
   );
   end component;
 
@@ -776,5 +853,22 @@ package custom_wishbone_pkg is
     version       => x"00000001",
     date          => x"20121124",
     name          => "OCORES_1_WIRE      ")));
+
+  -- Simple TICs counter Interface
+  constant c_xwb_tics_counter_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"000000000000000F",
+    product => (
+    vendor_id     => x"000000000000CE42",     -- CERN
+    device_id     => x"FDAFB9DD",
+    version       => x"00000001",
+    date          => x"20130225",
+    name          => "CERN_TICS_COUNTER  ")));
 
 end custom_wishbone_pkg;
