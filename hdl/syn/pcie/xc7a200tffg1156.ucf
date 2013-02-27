@@ -129,12 +129,6 @@ NET   "ddr_sys_clk_n"                          LOC = "AL7"    |   IOSTANDARD = D
 #########################################################################################################################
 # End User Constraints
 #########################################################################################################################
-#
-#
-#
-#########################################################################################################################
-# PCIE Core Constraints
-#########################################################################################################################
 
 ###############################################################################
 # Pinout and Related I/O Constraints
@@ -297,8 +291,12 @@ TIMESPEC "TS_MULTICYCLEPATH_DEVICE_TEMP_SYNC" = TO "TNM_MULTICYCLEPATH_DEVICE_TE
 ###############################################################################
 # Physical Constraints
 ###############################################################################
-#########################################################################################################################
-# End PCIe Core Constraints
-#########################################################################################################################
+# Constrain the PCIe core elements placement, so that it won't fail
+# timing analysis.
+INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
+AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
+#Place the DMA design not far from PCIe core, otherwise it also breaks timing
+INST "theTlpControl" AREA_GROUP = "GRP_tlpControl";
+AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
 
 # PlanAhead Generated physical constraints 
