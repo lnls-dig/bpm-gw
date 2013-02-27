@@ -50,5 +50,8 @@ xst/
 *.xpi
 *.xst
 run.tcl
+pa.fromNcd.tcl
 *.txt
+*.xdl
+planAhead*
 
