@@ -1940,7 +1940,7 @@ begin
   generic map(
     PL_FAST_TRAIN => PL_FAST_TRAIN,
     PCIE_EXT_CLK => "FALSE",
-    PIPE_SIM_MODE => "FALSE"
+    PIPE_SIM_MODE => PIPE_SIM_MODE
   )
   port map(
     --------------------------------------------------------------------------------------------------------------------
