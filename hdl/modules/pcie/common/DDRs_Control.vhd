@@ -83,8 +83,8 @@ end entity DDRs_Control;
 
 architecture Behavioral of DDRs_Control is
 
-  constant DDRAM_ADDR_INCVAL : integer := 64;--byte counted
-  constant DDRAM_RDCNT_DECVAL : integer := 16;--DW counted
+  constant DDRAM_RDCNT_DECVAL : integer := C_DDR_DATAWIDTH/C_DBUS_WIDTH;--2DW counted
+  constant DDRAM_ADDR_INCVAL : integer := DDRAM_RDCNT_DECVAL*8;--byte counted
   -- ----------------------------------------------------------------------------
   --
   -- ----------------------------------------------------------------------------
@@ -138,41 +138,40 @@ architecture Behavioral of DDRs_Control is
   signal DDR_wr_state : ddr_wrStates;
 
   -- -- --  Write Pipe Channel
-  signal wpipe_wEn         : std_logic;
-  signal wpipe_Din         : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
-  signal wpipe_aFull       : std_logic;
-  signal wpipe_Full        : std_logic;
-  signal wpipe_rEn         : std_logic;
-  signal wpipe_Qout        : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
-  signal wpipe_Empty       : std_logic;
-  signal wpipe_Qout_latch  : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
-  signal wpipe_qout_lo32b  : std_logic_vector(33-1 downto 0);
-  signal wpipe_QW_Aligned  : std_logic;
-  signal wpipe_read_valid  : std_logic;
-  signal wpipe_wr_en       : std_logic;
-  signal wpipe_f2m_rden    : std_logic;
-  signal ddram_wr_data     : std_logic_vector(memc_wr_data'range);
-  signal ddram_wr_addr     : unsigned(C_DDR_IAWIDTH-1 downto 0);
-  signal ddram_wr_valid    : std_logic;
-  signal ddram_wr_mask     : std_logic_vector(memc_wr_mask'range);
-  signal ddram_cmd_valid   : std_logic;
-  signal wpipe_f2m_empty   : std_logic;
-  signal wpipe_f2m_qout    : std_logic_vector(127 downto 0);
-  signal wpipe_f2m_din     : std_logic_vector(127 downto 0) := (others => '0');
-  signal wpipe_f2m_rd_en   : std_logic;
-  signal wpipe_f2m_rd      : std_logic;
-  signal wpipe_f2m_cnt     : unsigned(4 downto 0);
-  signal wpipe_wr_mask     : std_logic_vector(DATA_WIDTH/8-1 downto 0);
-  signal wpipe_wr_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
-  signal wpipe_wr_sof      : std_logic;
-  signal wpipe_wr_pause    : std_logic;
-  signal wpipe_f2m_full    : std_logic;
-  signal wpipe_f2m_valid   : std_logic;
-  signal wpipe_arb_req     : std_logic;
-  signal wpipe_f2m_arb_req : std_logic;
-  signal wpipe_wr_eof      : std_logic;
-  signal wpipe_fill_eof    : std_logic;
-  signal pRAM_addra_inc    : std_logic;
+  signal wpipe_wEn          : std_logic;
+  signal wpipe_Din          : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
+  signal wpipe_aFull        : std_logic;
+  signal wpipe_Full         : std_logic;
+  signal wpipe_rEn          : std_logic;
+  signal wpipe_Qout         : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
+  signal wpipe_Empty        : std_logic;
+  signal wpipe_Qout_latch   : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
+  signal wpipe_qout_lo32b   : std_logic_vector(33-1 downto 0);
+  signal wpipe_QW_Aligned   : std_logic;
+  signal wpipe_read_valid   : std_logic;
+  signal wpipe_wr_en        : std_logic;
+  signal ddram_wr_data      : std_logic_vector(memc_wr_data'range);
+  signal ddram_wr_addr      : unsigned(C_DDR_IAWIDTH-1 downto 0);
+  signal ddram_wr_valid     : std_logic;
+  signal ddram_wr_mask      : std_logic_vector(memc_wr_mask'range);
+  signal ddram_wr_cmd_valid : std_logic;
+  signal wpipe_f2m_empty    : std_logic;
+  signal wpipe_f2m_qout     : std_logic_vector(127 downto 0);
+  signal wpipe_f2m_din      : std_logic_vector(127 downto 0) := (others => '0');
+  signal wpipe_f2m_rd_en    : std_logic;
+  signal wpipe_f2m_rd       : std_logic;
+  signal wpipe_f2m_cnt      : unsigned(4 downto 0);
+  signal wpipe_wr_mask      : std_logic_vector(DATA_WIDTH/8-1 downto 0);
+  signal wpipe_wr_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+  signal wpipe_wr_sof       : std_logic;
+  signal wpipe_wr_pause     : std_logic;
+  signal wpipe_f2m_full     : std_logic;
+  signal wpipe_f2m_valid    : std_logic;
+  signal wpipe_arb_req      : std_logic;
+  signal wpipe_f2m_arb_req  : std_logic;
+  signal wpipe_wr_eof       : std_logic;
+  signal wpipe_fill_eof     : std_logic;
+  signal pRAM_addra_inc     : std_logic;
 
   --   read State machine
   type ddr_rdstates is (rdst_RESET
@@ -182,6 +181,7 @@ architecture Behavioral of DDRs_Control is
                          , rdst_LA
                          , rdst_CMD
                          , rdst_DATA
+                         , rdst_WAIT
                          );
 
   -- State variables
@@ -231,7 +231,7 @@ begin
 
   memc_cmd_en    <= memc_rd_cmd or memc_wr_cmd_en;
   memc_cmd_instr <= "00" & memc_rd_cmd;
-  memc_cmd_addr  <= std_logic_vector(memc_wr_addr) when memc_wr_data_en = '1' else std_logic_vector(memc_rd_addr);
+  memc_cmd_addr  <= std_logic_vector(memc_wr_addr) when memc_wr_cmd_en = '1' else std_logic_vector(memc_rd_addr);
   memc_wr_en     <= memc_wr_data_en;
   memc_wr_end    <= memc_wr_data_en;
   memc_wr_data   <= ddram_wr_data;
@@ -281,11 +281,11 @@ begin
 
   wpipe_f2m_din(74-1 downto 0) <= wpipe_wr_eof & wpipe_wr_sof & wpipe_wr_mask & wpipe_wr_data;
   --stall FIFO readout when data was written, but command wasn't yet
-  wpipe_f2m_rd_en <= wpipe_f2m_rd and memc_wr_rdy and not(not(ddram_wr_valid) and ddram_cmd_valid);
+  wpipe_f2m_rd_en <= wpipe_f2m_rd and memc_wr_rdy and not(not(ddram_wr_valid) and ddram_wr_cmd_valid);
   --keep requesting arbiter access if there's any data left to write
-  wpipe_f2m_arb_req <= ddram_cmd_valid or ddram_wr_valid;
+  wpipe_f2m_arb_req <= '1' when (wpipe_f2m_cnt /= 0) else '0';
   memc_wr_data_en   <= ddram_wr_valid;
-  memc_wr_cmd_en    <= ddram_cmd_valid;
+  memc_wr_cmd_en    <= ddram_wr_cmd_valid;
   -- ----------------------------------------------------------------------------
   --
   -- ----------------------------------------------------------------------------
@@ -560,14 +560,14 @@ begin
       if ddr_rdy = '0' then
         wpipe_f2m_rd    <= '0';
         ddram_wr_valid  <= '0';
-        ddram_cmd_valid <= '0';
+        ddram_wr_cmd_valid <= '0';
         wpipe_f2m_cnt   <= (others => '0');
         wpipe_fill_eof  <= '0';
       else
         wpipe_wr_pause  <= not(memc_cmd_rdy);
         ddram_wr_addr   <= ddram_wr_addr;
         ddram_wr_valid  <= ddram_wr_valid;
-        ddram_cmd_valid <= ddram_cmd_valid;
+        ddram_wr_cmd_valid <= ddram_wr_cmd_valid;
         if wpipe_f2m_cnt = C_DDR_DATAWIDTH/C_DBUS_WIDTH then
           wpipe_f2m_rd   <= '0';
           wpipe_f2m_cnt  <= wpipe_f2m_cnt;
@@ -575,14 +575,14 @@ begin
           if memc_wr_rdy = '1' and ddram_wr_valid = '1' then
             ddram_wr_valid <= '0';
           end if;
-          if memc_cmd_rdy = '1' and ddram_cmd_valid = '1' then
-            ddram_cmd_valid <= '0';
+          if memc_cmd_rdy = '1' and ddram_wr_cmd_valid = '1' then
+            ddram_wr_cmd_valid <= '0';
             wpipe_f2m_cnt   <= (others => '0');
             ddram_wr_addr   <= ddram_wr_addr + DDRAM_ADDR_INCVAL;
           end if;
         else
-          ddram_wr_valid  <= '0';
-          ddram_cmd_valid <= '0';
+          ddram_wr_valid     <= '0';
+          ddram_wr_cmd_valid <= '0';
           if wpipe_fill_eof = '0' then
             wpipe_f2m_rd   <= '1';
             wpipe_fill_eof <= wpipe_fill_eof;
@@ -601,8 +601,8 @@ begin
                 wpipe_f2m_cnt <= wpipe_f2m_cnt + 1;
               end if;
               if wpipe_f2m_cnt = (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) then
-                ddram_wr_valid  <= '1';
-                ddram_cmd_valid <= '1';
+                ddram_wr_valid     <= '1';
+                ddram_wr_cmd_valid <= '1';
               end if;
             else
               wpipe_f2m_cnt <= wpipe_f2m_cnt;
@@ -613,6 +613,11 @@ begin
             ddram_wr_data <= ddram_wr_data;
             ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <= x"FF";
             wpipe_f2m_cnt <= wpipe_f2m_cnt + 1;
+            wpipe_f2m_rd  <= '0';
+            if wpipe_f2m_cnt = (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) then
+              ddram_wr_valid     <= '1';
+              ddram_wr_cmd_valid <= '1';
+            end if;
           end if;
         end if;
       end if;
@@ -666,7 +671,7 @@ begin
         when rdst_IDLE =>
           ddram_rd_addr <= (others => '0');
           rpiped_rd_cnt <= (others => '0');
-          rpiped_wr_EOF <= '0';
+          rpiped_wr_EOF <= rpiped_wr_EOF;
           rpipec_rEn    <= '0';
           memc_rd_cmd   <= '0';
           --don't start if our module has access granted (write operation running)
@@ -689,7 +694,7 @@ begin
             DDR_rd_state <= rdst_b4_LA;
           else
             rpipec_rEn   <= '0';
-            DDR_rd_state <= rdst_IDLE;
+            DDR_rd_state <= rdst_ACC_REQ;
           end if;
 
         when rdst_b4_LA =>
@@ -707,8 +712,9 @@ begin
           rpiped_wr_EOF <= '0';
           rpipe_arb_req <= '1';
           memc_rd_cmd   <= '0';
-          if rpipec_Qout(69) = '1' then --shifted data
-            rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32)) + "10";
+          if rpipec_Qout(69) = '1' and rpipec_Qout(3+32) = '1' then
+            --if data is shifted and read count is multiple of 2 DWs, then we have to read one more DW
+            rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32)) + "1";
           else
             rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32));
           end if;
@@ -732,26 +738,30 @@ begin
           rpipec_rEn    <= '0';
           rpipe_arb_req <= '1';
           memc_rd_cmd   <= '0';
+          DDR_rd_state  <= DDR_rd_state;
           if rpiped_rd_cnt <= to_unsigned(DDRAM_RDCNT_DECVAL, rpiped_rd_cnt'length) then
-          rpiped_wr_EOF <= '1';
-          rpiped_rd_cnt <= rpiped_rd_cnt;
-          ddram_rd_addr <= ddram_rd_addr;
+            rpiped_wr_EOF <= '1';
+            rpiped_rd_cnt <= rpiped_rd_cnt;
+            ddram_rd_addr <= ddram_rd_addr;
             if memc_rd_valid = '1' then --wait until data arrives before relinquishing access
               DDR_rd_state <= rdst_IDLE;
-            else
-              DDR_rd_state <= rdst_DATA;
             end if;
           else
             rpiped_wr_EOF <= '0';
-            if rpiped_written = '1' then
-              ddram_rd_addr <= ddram_rd_addr + DDRAM_ADDR_INCVAL;
-              rpiped_rd_cnt <= rpiped_rd_cnt - DDRAM_RDCNT_DECVAL;
-              DDR_rd_state  <= rdst_CMD;
-            else
-              ddram_rd_addr <= ddram_rd_addr;
-              rpiped_rd_cnt <= rpiped_rd_cnt;
-              DDR_rd_state  <= rdst_DATA;
+            if memc_rd_valid = '1' then
+              DDR_rd_state <= rdst_WAIT;
             end if;
+          end if;
+
+        when rdst_WAIT =>
+          if rpiped_written = '1' then
+            ddram_rd_addr <= ddram_rd_addr + DDRAM_ADDR_INCVAL;
+            rpiped_rd_cnt <= rpiped_rd_cnt - DDRAM_RDCNT_DECVAL;
+            DDR_rd_state  <= rdst_CMD;
+          else
+            ddram_rd_addr <= ddram_rd_addr;
+            rpiped_rd_cnt <= rpiped_rd_cnt;
+            DDR_rd_state  <= rdst_WAIT;
           end if;
 
         when others =>
@@ -771,33 +781,39 @@ begin
   DDR_rdd_write :
   process (memc_ui_clk, ddr_rdy)
   begin
-    if rising_edge(memc_ui_clk) then
-      rpiped_written_r <= rpiped_written;
-      if memc_rd_valid = '1' then
-        memc_rd_data_r1     <= memc_rd_data_conv;
-        rpiped_rd_cnt_latch <= rpiped_rd_cnt;
-        --FIXME: assuming that DATAWIDTH is multiple of DBUS_WIDTH
-        rpiped_rdconv_cnt   <= (others => '0');
-      end if;
-      if rpiped_written_r = '0' and rpiped_afull = '0' then
-        rpiped_rdconv_cnt <= rpiped_rdconv_cnt + 1;
-        --memc_rd_data_r1   <= memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0) & (others => '0');
-        memc_rd_data_r1(memc_rd_data_r1'left downto C_DBUS_WIDTH) <=
-          memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0);
-        memc_rd_data_r1(C_DBUS_WIDTH -1 downto 0) <= (others => '0');
-        memc_rd_shift_r   <= memc_rd_data_r1(memc_rd_data_r1'left - 32 downto memc_rd_data_r1'left - C_DBUS_WIDTH + 1);
-        if rpiped_wr_skew = '1' then
-          rpiped_wen <= not(rpiped_written_r);
-          rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" & memc_rd_shift_r &
-                        memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - 32+1);
-        else
-          rpiped_wen <= not(rpiped_written);
-          rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" &
-                        memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - C_DBUS_WIDTH+1);
+    if ddr_rdy = '0' then
+      rpiped_wen        <= '0';
+      rpiped_written_r  <= '1';
+      rpiped_rdconv_cnt <= (others => '1');
+    else
+      if rising_edge(memc_ui_clk) then
+        rpiped_written_r <= rpiped_written;
+        if memc_rd_valid = '1' then
+          memc_rd_data_r1     <= memc_rd_data_conv;
+          rpiped_rd_cnt_latch <= rpiped_rd_cnt;
+          --FIXME: assuming that DATAWIDTH is multiple of DBUS_WIDTH
+          rpiped_rdconv_cnt   <= (others => '0');
         end if;
-      else
-        rpiped_wen <= '0';
-        rpiped_Din <= rpiped_Din;
+        if rpiped_written_r = '0' and rpiped_afull = '0' then
+          rpiped_rdconv_cnt <= rpiped_rdconv_cnt + 1;
+          --memc_rd_data_r1   <= memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0) & (others => '0');
+          memc_rd_data_r1(memc_rd_data_r1'left downto C_DBUS_WIDTH) <=
+            memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0);
+          memc_rd_data_r1(C_DBUS_WIDTH -1 downto 0) <= (others => '0');
+          memc_rd_shift_r   <= memc_rd_data_r1(memc_rd_data_r1'left - 32 downto memc_rd_data_r1'left - C_DBUS_WIDTH + 1);
+          if rpiped_wr_skew = '1' then
+            rpiped_wen <= not(rpiped_written);
+            rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" & memc_rd_shift_r &
+                          memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - 32+1);
+          else
+            rpiped_wen <= not(rpiped_written);
+            rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" &
+                          memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - C_DBUS_WIDTH+1);
+          end if;
+        else
+          rpiped_wen <= '0';
+          rpiped_Din <= rpiped_Din;
+        end if;
       end if;
     end if;
   end process;
