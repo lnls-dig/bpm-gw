@@ -105,6 +105,8 @@ module ddr3_model (
 
     `include "ddr3_model_parameters.vh"
 
+    //Disable overflow of debug messages
+    defparam DEBUG = 0;
     parameter check_strict_mrbits = 1;
     parameter check_strict_timing = 1;
     parameter feature_pasr = 1;
