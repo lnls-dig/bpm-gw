@@ -18,13 +18,16 @@ def __import_verilog_lib():
 
 target = "xilinx"
 action = "simulation"
-vlog_opt = "-i ../../sim/pcie -d SIMULATION"
+#pickup correct top file
+syn_device = "xc7k325t"
+
+vlog_opt = "+incdir+../../sim/pcie +define+SIMULATION"
 # ENABLE_GT has to be set until I figure out a way
 # to force ISIM to work in PIPE simulation mode
-vlog_opt += " -d ENABLE_GT"
+#vlog_opt += " +define+ENABLE_GT"
 # DDR model options
-vlog_opt += " -i ../../sim/ddr_model -d x1Gb -d sg125 -d x8"
-vsim_opt = "-testplusarg TESTNAME=tf64_pcie_axi"
+vlog_opt += " +incdir+../../sim/ddr_model +define+x1Gb +define+sg125 +define+x8"
+vsim_opt = "+TESTNAME=tf64_pcie_axi -t fs -novopt +notimingchecks -L unisims_ver -L secureip -L unimacro_ver glbl"
 
 __import_verilog_lib()
 files = ["board.v",
