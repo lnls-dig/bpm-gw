@@ -16,7 +16,7 @@
 // dynamic defined through SDB
 //#define ETH0_BASE 0x30015000U   //ethmac_devl
 //#define ETH0_BUF  0x20000000U   //ethmac_buf_devl
-#define ETH0_BASE 0x70000000U   //ethmac_devl
+#define ETH0_BASE 0x30005000U   //ethmac_devl
 #define ETH0_BUF  0x20000000U   //ethmac_buf_devl
 #define ETH0_IRQ 0
 //#define ETH0_PHY 0

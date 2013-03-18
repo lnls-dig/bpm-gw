@@ -3,5 +3,6 @@ OBJS_DEV =	dev/dma.o	\
 			dev/gpio.o	\
 			dev/uart.o	\
 			dev/sdb.o	\
-			dev/ethmac_adapt.o
+			dev/ethmac_adapt.o	\
+			dev/spi.o
 	  

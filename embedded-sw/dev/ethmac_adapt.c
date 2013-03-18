@@ -5,40 +5,51 @@
 #include "debug_print.h"
 
 // Global handler.
-ethmac_adapt_t *ethmac_adapt;
+ethmac_adapt_t **ethmac_adapt;
 
-int ethmac_adapt_init(/*gpio_t * gpio, int id*/)
+int ethmac_adapt_init(void)
 {
-	if (ethmac_adapt_devl->devices){
-		// get first device found
-		ethmac_adapt = (ethmac_adapt_t *)ethmac_adapt_devl->devices->base;//BASE_ETHAMC_ADAPTER;
-		return 0;
-	}
+    int i;
+    struct dev_node *dev_p = 0;
 
-	return -1;
+    if (!ethmac_adapt_devl->devices)
+        return -1;
+
+    // get all base addresses
+    ethmac_adapt = (ethmac_adapt_t **) memmgr_alloc(sizeof(ethmac_adapt_t *)*ethmac_adapt_devl->size);
+
+    //dbg_print("> ethmac_adapt size: %d\n", ethmac_adapt_devl->size);
+
+    for (i = 0, dev_p = ethmac_adapt_devl->devices; i < ethmac_adapt_devl->size;
+        ++i, dev_p = dev_p->next) {
+        ethmac_adapt[i] = (ethmac_adapt_t *) dev_p->base;
+        //dbg_print("> dma addr[%d]: %08X\n", i, gpio[i]);
+    }
+    //ethmac_adapt = (ethmac_adapt_t *)ethmac_adapt_devl->devices->base;//BASE_GPIO;
+    return 0;
 }
 
-int ethmac_adapt_set_base(unsigned int base_rx, unsigned int base_tx)
+int ethmac_adapt_set_base(unsigned int id, unsigned int base_rx, unsigned int base_tx)
 {
-	ethmac_adapt->base_rx = base_rx;
-	ethmac_adapt->base_tx = base_tx;
+    ethmac_adapt[id]->base_rx = base_rx;
+    ethmac_adapt[id]->base_tx = base_tx;
 
-	return 0;
+    return 0;
 }
 
-int ethmac_adapt_set_length(unsigned int length)
+int ethmac_adapt_set_length(unsigned int id, unsigned int length)
 {
-	ethmac_adapt->length = length;
+    ethmac_adapt[id]->length = length;
 
-	return 0;
+    return 0;
 }
 
-int ethmac_adapt_go(void)
+int ethmac_adapt_go(unsigned int id)
 {
-	// write anything to trigger a transaction
-	ethmac_adapt->doit = 1;
+    // write anything to trigger a transaction
+    ethmac_adapt[id]->doit = 1;
 
-	return 0;
+    return 0;
 }
 
 

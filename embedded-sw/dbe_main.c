@@ -26,20 +26,13 @@
 
 #define NUM_LEDS 8
 #define NUM_LED_ITER 4
-#define NUM_FMC150_TRIES 5
+//#define NUM_FMC150_TRIES 5
 
-/* Ethernet MAC + Etherbone testing */
-//unsigned char myIP[]  = { 10, 0, 18, 100 };
-//unsigned char myMAC[] = { ETH_MACADDR0, ETH_MACADDR1, ETH_MACADDR2, ETH_MACADDR3, ETH_MACADDR4, ETH_MACADDR5 };
-//unsigned char allMAC[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-
-/* His info */
-//volatile int sawARP = 0;
-//volatile static int sawPING = 0;
-//volatile static int hisBodyLen;
-//static unsigned char hisBody[1516];
-//unsigned char hisIP[4];
-//unsigned char hisMAC[6];
+#define NUM_BUTTONS 8
+#define TEST_BUTTONS_MASK 0x00000003
+#define TEST_BUTTONS_TRIES 10
+#define TEST_BUTTONS_ITER 2
+#define TEST_BUTTONS_DELAY (100000000/4/5)
 
 static volatile int eb_done;
 
@@ -133,9 +126,9 @@ void user_recv(unsigned char* data, int length) {
 
             eb_done = 0;
             //ethmac_adapt->length = iplen + 16;
-            ethmac_adapt_set_length(iplen + 16);
+            ethmac_adapt_set_length(0, iplen + 16);
             //ethmac_adapt->doit = 1;
-            ethmac_adapt_go();
+            ethmac_adapt_go(0);
             while (!eb_done);
 
             dbg_print("> EBONE request\n");
@@ -208,6 +201,14 @@ int dbe_init(void)
     return 0;
 }
 
+int dbe_exit()
+{
+    gpio_exit();
+
+    //always succeeds
+    return 0;
+}
+
 void print_header(void)
 {
     pp_printf("-------------------------------------------\n");
@@ -259,11 +260,12 @@ void leds_test(void)
     pp_printf("-------------------------------------------\n\n");
 
     pp_printf("leds_test:\n");
+    pp_printf("> blinking leds\n");
     /* Rotate the LEDs  */
     for ( j = 0; j < NUM_LED_ITER; ++j)
         for (i = 0; i < NUM_LEDS; ++i){
             // Set led at position i
-            gpio_out(i, 1);
+            gpio_out(0, i, 1);
 
             /* Each loop iteration takes 4 cycles.
              * It runs at 100MHz.
@@ -272,15 +274,53 @@ void leds_test(void)
             delay(LED_DELAY);
 
             // Clear led at position i
-            gpio_out(i, 0);
+            gpio_out(0, i, 0);
         }
 
-    pp_printf("> testing leds\n");
     // End test with 4 leds set
-    gpio_out(0, 1);
-    gpio_out(2, 1);
-    gpio_out(4, 1);
-    gpio_out(6, 1);
+    gpio_out(0, 0, 1);
+    gpio_out(0, 2, 1);
+    gpio_out(0, 4, 1);
+    gpio_out(0, 6, 1);
+
+    pp_printf("> test passed!\n");
+}
+
+void button_test()
+{
+    int i, j;
+    unsigned int button_pressed = 0;
+
+    pp_printf("-------------------------------------------\n");
+    pp_printf("|               Button test               |\n");
+    pp_printf("-------------------------------------------\n\n");
+
+    pp_printf("buttons_test:\n");
+    pp_printf("> press (switch) buttons ");
+
+    for (i = 0; i < TEST_BUTTONS_ITER-1; ++i)
+        pp_printf("%d, ", i);
+
+    pp_printf("%d\n", TEST_BUTTONS_ITER);
+
+    for (i = 0; i < TEST_BUTTONS_TRIES; ++i) {
+        for (j = 0; j < TEST_BUTTONS_ITER; ++j) {
+            if ((!(button_pressed & (0x1 << j))) & gpio_in(1, j)) {
+                button_pressed |= 1 << j;
+                pp_printf("button%d pressed!\n", j);
+            }
+        }
+
+        if (button_pressed == TEST_BUTTONS_MASK) {
+            pp_printf("> test passed!\n");
+            return;
+        }
+
+        pp_printf("> remaining time to press buttons: %ds\n", (TEST_BUTTONS_TRIES-i));
+        delay(TEST_BUTTONS_DELAY);
+    }
+
+    pp_printf("> test failed!\n");
 }
 
 //void fmc150_test()
@@ -322,7 +362,7 @@ int main(void)
     /* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
 
     /* Configure EB DMA */
-    ethmac_adapt_set_base((unsigned int)hisBody, (unsigned int)hisBody);
+    ethmac_adapt_set_base(0, (unsigned int)hisBody, (unsigned int)hisBody);
     int_add(4, &set_eb_done, 0);
 
     print_header();
@@ -332,6 +372,9 @@ int main(void)
 
     /* Test leds */
     leds_test();
+
+    /* Test button */
+    button_test();
 
     /* FMC150 test */
     //fmc150_test();
@@ -353,6 +396,8 @@ int main(void)
             sendECHO();
         }
     }
+
+    dbe_exit();
 
     return 0;
 }
