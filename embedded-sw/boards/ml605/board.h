@@ -62,6 +62,10 @@
 #define GEN_LED_GPIO_ID 0
 #define GEN_BUTTON_GPIO_ID 1
 
+#define FMC150_ID 0
+#define FMC516_ID 0
+#define TICS_ID 0
+
 /*
  * IDs of some FMC516 components
  */

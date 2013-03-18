@@ -14,6 +14,7 @@ int mprintf(char const *format, ...);
 
 /* UART API */
 int uart_init(void);
+int uart_exit(void);
 void uart_write_byte(unsigned int id, int b);
 void uart_write_string(unsigned int id, char *s);
 int puts(const char *s);
