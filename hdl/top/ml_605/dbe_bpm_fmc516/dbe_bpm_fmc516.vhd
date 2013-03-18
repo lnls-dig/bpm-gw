@@ -331,6 +331,13 @@ architecture rtl of dbe_bpm_fmc516 is
   signal fmc516_mmcm_lock_int               : std_logic;
   signal fmc516_lmk_lock_int                : std_logic;
 
+  signal fmc516_fs_clk                      : std_logic_vector(c_num_adc_channels-1 downto 0);
+
+  signal sys_spi_cs_adc0_n_int              : std_logic;
+  signal sys_spi_cs_adc1_n_int              : std_logic;
+  signal sys_spi_cs_adc2_n_int              : std_logic;
+  signal sys_spi_cs_adc3_n_int              : std_logic;
+
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
   signal gpio_slave_led_i                   : t_wishbone_slave_in;
@@ -735,7 +742,8 @@ begin
   generic map(
     g_fpga_device                           => "VIRTEX6",
     g_interface_mode                        => PIPELINED,
-    g_address_granularity                   => WORD,
+    --g_address_granularity                   => WORD,
+    g_address_granularity                   => BYTE,
     g_adc_clk_period_values                 => default_adc_clk_period_values,
     g_use_clk_chains                        => default_clk_use_chain,
     g_use_data_chains                       => default_data_use_chain,
@@ -794,10 +802,10 @@ begin
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                           => sys_spi_clk_o,
     sys_spi_data_b                          => sys_spi_data_b,
-    sys_spi_cs_adc0_n_o                     => sys_spi_cs_adc0_n_o,  -- SPI ADC CS channel 0
-    sys_spi_cs_adc1_n_o                     => sys_spi_cs_adc1_n_o,  -- SPI ADC CS channel 1
-    sys_spi_cs_adc2_n_o                     => sys_spi_cs_adc2_n_o,  -- SPI ADC CS channel 2
-    sys_spi_cs_adc3_n_o                     => sys_spi_cs_adc3_n_o,  -- SPI ADC CS channel 3
+    sys_spi_cs_adc0_n_o                     => sys_spi_cs_adc0_n_int,  -- SPI ADC CS channel 0
+    sys_spi_cs_adc1_n_o                     => sys_spi_cs_adc1_n_int,  -- SPI ADC CS channel 1
+    sys_spi_cs_adc2_n_o                     => sys_spi_cs_adc2_n_int,  -- SPI ADC CS channel 2
+    sys_spi_cs_adc3_n_o                     => sys_spi_cs_adc3_n_int,  -- SPI ADC CS channel 3
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                            => m2c_trig_p_i,
@@ -835,7 +843,7 @@ begin
     -----------------------------
     -- ADC output signals. Continuous flow.
     -----------------------------
-    adc_clk_o                               => open,
+    adc_clk_o                               => fmc516_fs_clk,
     adc_data_o                              => open,
     adc_data_valid_o                        => open,
 
@@ -862,6 +870,11 @@ begin
 
   fmc_mmcm_lock_o                           <= fmc516_mmcm_lock_int;
   fmc_lmk_lock_o                            <= fmc516_lmk_lock_int;
+
+  sys_spi_cs_adc0_n_o                       <= sys_spi_cs_adc0_n_int;
+  sys_spi_cs_adc1_n_o                       <= sys_spi_cs_adc1_n_int;
+  sys_spi_cs_adc2_n_o                       <= sys_spi_cs_adc2_n_int;
+  sys_spi_cs_adc3_n_o                       <= sys_spi_cs_adc3_n_int;
 
   -- The board peripherals components is slave 8
   cmp_xwb_dbe_periph : xwb_dbe_periph
@@ -976,7 +989,8 @@ begin
   cmp_chipscope_ila_0_ethmac : chipscope_ila
   port map (
     CONTROL                                 => CONTROL0,
-    CLK                                     => clk_sys,
+    --CLK                                     => clk_sys,
+    CLK                                     => fmc516_fs_clk(0),
     TRIG0                                   => TRIG_ILA0_0,
     TRIG1                                   => TRIG_ILA0_1,
     TRIG2                                   => TRIG_ILA0_2,
@@ -1062,7 +1076,7 @@ begin
   TRIG_ILA1_2                               <= (others => '0');
   TRIG_ILA1_3                               <= (others => '0');
 
-  cmp_chipscope_ila_1_ethmac_tx : chipscope_ila
+  cmp_chipscope_ila_2_ethmac_tx : chipscope_ila
   port map (
     CONTROL                                 => CONTROL2,
     CLK                                     => mtx_clk_pad_i,
@@ -1081,7 +1095,31 @@ begin
   TRIG_ILA2_2                               <= (others => '0');
   TRIG_ILA2_3                               <= (others => '0');
 
-  cmp_chipscope_ila_1_ethmac_miim : chipscope_ila
+  --cmp_chipscope_ila_3_ethmac_miim : chipscope_ila
+  --port map (
+  --  CONTROL                                 => CONTROL3,
+  --  CLK                                     => clk_sys,
+  --  TRIG0                                   => TRIG_ILA3_0,
+  --  TRIG1                                   => TRIG_ILA3_1,
+  --  TRIG2                                   => TRIG_ILA3_2,
+  --  TRIG3                                   => TRIG_ILA3_3
+  --);
+  --
+  --TRIG_ILA3_0(4 downto 0)                   <= mdc_pad_int &
+  --                                               ethmac_md_in &
+  --                                               ethmac_md_out &
+  --                                               ethmac_md_oe &
+  --                                               ethmac_int;
+  --
+  --TRIG_ILA3_0(31 downto 6)                  <= (others => '0');
+  --TRIG_ILA3_1                               <= (others => '0');
+  --TRIG_ILA3_2                               <= (others => '0');
+  --TRIG_ILA3_3                               <= (others => '0');
+
+  -- The clocks to/from peripherals are derived from the bus clock.
+  -- Therefore we don't have to worry about synchronization here, just
+  -- keep in mind that the data/ss lines will appear longer than normal
+  cmp_chipscope_ila_3_fmc516_periph : chipscope_ila
   port map (
     CONTROL                                 => CONTROL3,
     CLK                                     => clk_sys,
@@ -1091,13 +1129,12 @@ begin
     TRIG3                                   => TRIG_ILA3_3
   );
 
-  TRIG_ILA3_0(4 downto 0)                   <= mdc_pad_int &
-                                                 ethmac_md_in &
-                                                 ethmac_md_out &
-                                                 ethmac_md_oe &
-                                                 ethmac_int;
+  TRIG_ILA3_0(3 downto 0)                   <= sys_spi_cs_adc0_n_int &    -- SPI ADC CS channel 0
+                                                 sys_spi_cs_adc1_n_int &  -- SPI ADC CS channel 1
+                                                 sys_spi_cs_adc2_n_int &  -- SPI ADC CS channel 2
+                                                 sys_spi_cs_adc3_n_int;   -- SPI ADC CS channel 3
 
-  TRIG_ILA3_0(31 downto 6)                  <= (others => '0');
+  TRIG_ILA3_0(31 downto 4)                  <= (others => '0');
   TRIG_ILA3_1                               <= (others => '0');
   TRIG_ILA3_2                               <= (others => '0');
   TRIG_ILA3_3                               <= (others => '0');
