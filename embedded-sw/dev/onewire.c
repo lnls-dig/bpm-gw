@@ -8,88 +8,117 @@
 #include "memmgr.h"     // malloc and free clones
 
 // Global SPI handler.
-onewire_t **onewire;
+owr_t **owr;
 
-int onewire_init(void)
+int owr_init(void)
 {
-    int i;
-    struct dev_node *dev_p = 0;
+	int i;
+	struct dev_node *dev_p = 0;
 
-    if (!spi_devl->devices)
-        return -1;
+	if (!owr_devl->devices)
+		return -1;
 
-    // get all base addresses
-    spi = (spi_t **) memmgr_alloc(sizeof(spi)*spi_devl->size);
-    spi_config = (uint32_t *) memmgr_alloc(sizeof(spi_config)*spi_devl->size);
+	// get all base addresses
+	owr = (owr_t **) memmgr_alloc(sizeof(owr)*owr_devl->size);
 
-    //dbg_print("> spi size: %d\n", spi_devl->size);
+	//dbg_print("> owr size: %d\n", owr_devl->size);
 
-    for (i = 0, dev_p = spi_devl->devices; i < spi_devl->size;
-        ++i, dev_p = dev_p->next) {
-        spi[i] = (spi_t *) dev_p->base;
-        // Default configuration
-        spi[i]->DIVIDER = DEFAULT_SPI_DIVIDER & SPI_DIV_MASK;
-        spi[i]->CTRL = SPI_CTRL_ASS | SPI_CTRL_TXNEG;
-        //dbg_print("> spi addr[%d]: %08X\n", i, spi[i]);
-    }
-    //spi = (spi_t *)spi_devl->devices->base;;
-    return 0;
+	for (i = 0, dev_p = owr_devl->devices; i < owr_devl->size;
+			++i, dev_p = dev_p->next) {
+		owr[i] = (owr_t *) dev_p->base;
+		// Default configuration
+		owr[i]->CDR = (OWR_CDR_NOR(DEFAULT_OWR_DIVIDER_NOR)) |
+			(OWR_CDR_OVD(DEFAULT_OWR_DIVIDER_OVD));
+		//dbg_print("> owr addr[%d]: %08X\n", i, owr[i]);
+	}
+	//owr = (owr_t *)owr_devl->devices->base;
+	return 0;
 }
 
-void spi_exit(void)
+void owr_exit(void)
 {
-    memmgr_free(spi);
-    memmgr_free(spi_config);
+	memmgr_free(owr);
 }
 
-int oc_spi_poll(unsigned int id)
+int oc_owr_poll(unsigned int id)
 {
-    return spi[id]->CTRL & SPI_CTRL_BSY;
+	return (owr[id]->CSR & OWR_CSR_CYC) ? 1 : 0;
 }
 
-void oc_spi_config(unsigned int id, int ass, int rx_neg, int tx_neg,
-                    int lsb, int ie)
+int oc_owr_reset(unsigned int id, int port)
 {
-    spi_config[id] = 0;
+	// Request reset
+	owr[id]->CSR = OWR_CSR_SEL(port) | OWR_CSR_CYC | OWR_CSR_RST;
 
-    if(ass)
-        spi_config[id] |= SPI_CTRL_ASS;
+	// Wait for completion
+	while(oc_owr_poll(id));
 
-    if(tx_neg)
-        spi_config[id] |= SPI_CTRL_TXNEG;
-
-    if(rx_neg)
-        spi_config[id] |= SPI_CTRL_RXNEG;
-
-    if(lsb)
-        spi_config[id] |= SPI_CTRL_LSB;
-
-    if(ie)
-        spi_config[id] |= SPI_CTRL_IE;
+	// Read presence status. 0 -> presence detected, 1 -> presence NOT detected
+	//return (owr[id]->CSR & OWR_CSR_DAT) ? 0 : 1;
+	return (~(owr[id]->CSR) & OWR_CSR_DAT);
 }
 
-int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
+int oc_owr_slot(unsigned int id, int port, uint32_t in_bit, uint32_t *out_bit)
 {
-    uint32_t rval;
+	uint32_t rval;
 
-    // Avoid breaking the code when just issuing a read command (out can be null)
-    if (!out)
-        out = &rval;
+	// Avoid breaking the code when just issuing a read command (out_bit can be null).
+	// This is the case when in_bit = 0 (write 0 slot), but not for in_bit = 1
+	// (write 1 and/or read slot)
+	if (!out_bit)
+		out_bit = &rval;
 
-    // Write configuration to SPI core
-    spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
+	owr[id]->CSR = OWR_CSR_SEL(port) | OWR_CSR_CYC | (in_bit & OWR_CSR_DAT);
 
-    // Transmit to core
-    spi[id]->TX0 = in;
+	// Wait for completion
+	while(oc_owr_poll(id));
 
-    // Receive from core
-    spi[id]->SS = (1 << ss);
-    spi[id]->CTRL |= SPI_CTRL_GO_BSY;
+	*out_bit = owr[id]->CSR & OWR_CSR_DAT;
 
-    while(oc_spi_poll(id));
-
-    *out = spi[id]->RX0;
-
-    return 0;
+	return 0;
 }
 
+int oc_owr_read_bit(unsigned int id, int port, uint32_t *out_bit)
+{
+	return oc_owr_slot(id, port, 0x1, out_bit);
+}
+
+int oc_owr_write_bit(unsigned int id, int port, uint32_t in_bit, uint32_t *out_bit)
+{
+	return oc_owr_slot(id, port, in_bit, out_bit);
+}
+
+int read_byte(unsigned int id, int port, uint32_t *out_byte)
+{
+	int i;
+	uint32_t owr_data = 0;
+	uint32_t owr_bit = 0;
+
+	for (i = 0; i < 8; ++i) {
+		oc_owr_read_bit(id, port, &owr_bit);
+		owr_data |= owr_bit << i;
+	}
+
+	*out_byte = owr_data;
+
+	return 0;
+}
+
+int write_byte(unsigned int id, int port, uint32_t in_byte)
+{
+	int i;
+	uint32_t owr_data = 0;
+	uint32_t owr_byte = in_byte;
+	uint32_t owr_bit;
+
+	for (i = 0; i < 8; ++i) {
+		oc_owr_write_bit(id, port, owr_byte & 0x1, &owr_bit);
+		owr_data |= owr_bit << i;
+		owr_byte >> 1;
+	}
+
+	if(owr_data == in_byte)
+		return 0;
+	else
+		return -1;
+}

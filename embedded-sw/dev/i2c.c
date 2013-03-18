@@ -6,88 +6,161 @@
 #include "board.h"      // Board definitions: SPI device structure
 #include "i2c.h"        // SPI device functions
 #include "memmgr.h"     // malloc and free clones
+#include "debug_print.h"
 
 // Global SPI handler.
 i2c_t **i2c;
 
 int i2c_init(void)
 {
-    int i;
-    struct dev_node *dev_p = 0;
+	int i;
+	struct dev_node *dev_p = 0;
 
-    if (!i2c_devl->devices)
-        return -1;
+	if (!i2c_devl->devices)
+		return -1;
 
-    // get all base addresses
-    i2c = (i2c_t **) memmgr_alloc(sizeof(i2c)*i2c_devl->size);
+	// get all base addresses
+	i2c = (i2c_t **) memmgr_alloc(sizeof(i2c)*i2c_devl->size);
 
-    //dbg_print("> i2c size: %d\n", i2c_devl->size);
+	//dbg_print("> i2c size: %d\n", i2c_devl->size);
 
-    for (i = 0, dev_p = i2c_devl->devices; i < i2c_devl->size;
-        ++i, dev_p = dev_p->next) {
-        i2c[i] = (i2c_t *) dev_p->base;
-        // Default configuration
+	for (i = 0, dev_p = i2c_devl->devices; i < i2c_devl->size;
+			++i, dev_p = dev_p->next) {
+		i2c[i] = (i2c_t *) dev_p->base;
+		// Default configuration
+		i2c[i]->CTR = 0;
+		i2c[i]->PREL = DEFAULT_I2C_PRESCALER & 0xFF;
+		i2c[i]->PREH = (DEFAULT_I2C_PRESCALER >> 8) & 0xFF;
+		// Enbale core
+		i2c[i]->CTR = I2C_CTR_EN;
 
-        //dbg_print("> i2c addr[%d]: %08X\n", i, i2c[i]);
-    }
-    //i2c = (i2c_t *)i2c_devl->devices->base;;
-    return 0;
+		// Check if the core is indeed enabled
+		if (!(i2c[i]->CTR & I2C_CTR_EN))
+			return -1;
+
+		//dbg_print("> i2c addr[%d]: %08X\n", i, i2c[i]);
+	}
+	//i2c = (i2c_t *)i2c_devl->devices->base;;
+	return 0;
 }
 
-void spi_exit(void)
+void i2c_exit(void)
 {
-    memmgr_free(spi);
-    memmgr_free(spi_config);
+	memmgr_free(i2c);
 }
 
-int oc_spi_poll(unsigned int id)
+int oc_i2c_poll(unsigned int id)
 {
-    return spi[id]->CTRL & SPI_CTRL_BSY;
+	return (i2c[id]->SR & I2C_SR_TIP) ? 1 : 0;
 }
 
-void oc_spi_config(unsigned int id, int ass, int rx_neg, int tx_neg,
-                    int lsb, int ie)
+int oc_i2c_start(unsigned int id, int addr, int read)
 {
-    spi_config[id] = 0;
+	uint32_t i2c_addr;
 
-    if(ass)
-        spi_config[id] |= SPI_CTRL_ASS;
+	// shift addr bits as the last one represents rw bit (read = 1, write = 0)
+	i2c_addr = I2C_ADDR(addr);
 
-    if(tx_neg)
-        spi_config[id] |= SPI_CTRL_TXNEG;
+	if (read == 1)
+		i2c_addr |= I2C_TXR_READ;
 
-    if(rx_neg)
-        spi_config[id] |= SPI_CTRL_RXNEG;
+	i2c[id]->TXR = i2c_addr;
 
-    if(lsb)
-        spi_config[id] |= SPI_CTRL_LSB;
+	// Start transaction. Generates repeated start condition and write to slave
+	i2c[id]->CR = I2C_CR_STA | I2C_CR_WR;
 
-    if(ie)
-        spi_config[id] |= SPI_CTRL_IE;
+	// Wait for completion
+	while(oc_i2c_poll(id));
+
+	// Check if we received an ACK from slave
+	if (i2c[id]->SR & I2C_SR_RXACK) {
+		dbg_print("> no ack received from slave at addr 0X%2X\n", addr);
+		return -1;
+	}
+
+	return 0;
 }
 
-int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
+int oc_i2c_rx(unsigned int id, uint32_t *out, int last)
 {
-    uint32_t rval;
+	uint32_t i2c_cmd;
 
-    // Avoid breaking the code when just issuing a read command (out can be null)
-    if (!out)
-        out = &rval;
+	i2c_cmd = I2C_CR_RD;
 
-    // Write configuration to SPI core
-    spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
+	// Generates STOP condition and send NACK on completion
+	if(last)
+		i2c_cmd |= I2C_CR_STO | I2C_CR_ACK;
 
-    // Transmit to core
-    spi[id]->TX0 = in;
+	i2c[id]->CR = i2c_cmd;
 
-    // Receive from core
-    spi[id]->SS = (1 << ss);
-    spi[id]->CTRL |= SPI_CTRL_GO_BSY;
+	// Wait for completion
+	while(oc_i2c_poll(id));
 
-    while(oc_spi_poll(id));
+	// Check if we received an ACK from slave
+	if (i2c[id]->SR & I2C_SR_RXACK) {
+		dbg_print("> no ack received from slave at rx transaction\n");
+		return -1;
+	}
 
-    *out = spi[id]->RX0;
+	*out = i2c[id]->RXR & 0xFF;
 
-    return 0;
+	return 0;
 }
 
+int oc_i2c_tx(unsigned int id, uint32_t in, int last)
+{
+	uint32_t i2c_cmd;
+
+	// We don't really care about sizes here as only the 8 LSB
+	// are effectivelly written to the I2C core and no harm is inflicted
+	// by doing this.
+	i2c[id]->TXR = in;
+
+	// Write command
+	i2c_cmd = I2C_CR_WR;
+
+	// Generates STOP condition
+	if(last)
+		i2c_cmd |= I2C_CR_STO;
+
+	i2c[id]->CR = i2c_cmd;
+
+	// Wait for completion
+	while(oc_i2c_poll(id));
+
+	// Check if we received an ACK from slave
+	if (i2c[id]->SR & I2C_SR_RXACK) {
+		dbg_print("> no ack received from slave at tx transaction\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+// This just prints if devices have been found at specified addresses
+int oc_i2c_scan(unsigned int id)
+{
+	int i;
+	uint32_t i2c_addr;
+
+	for (i = 0; i < 128; ++i) {
+		i2c_addr = I2C_ADDR(i) | I2C_TXR_READ;
+
+		i2c[id]->TXR = i2c_addr;
+		i2c[id]->CR = I2C_CR_STA | I2C_CR_WR;
+
+		// Wait for completion
+		while(oc_i2c_poll(id));
+
+		// Check if we received an ACK from slave
+		if (!(i2c[id]->SR & I2C_SR_RXACK)) {
+			dbg_print("> device found at addr 0X%02X\n", i);
+
+			i2c[id]->TXR = 0;
+			i2c[id]->CR = I2C_CR_STO | I2C_CR_WR;
+			while(oc_i2c_poll(id));
+		}
+	}
+
+	return 0;
+}

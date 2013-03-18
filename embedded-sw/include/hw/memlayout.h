@@ -8,20 +8,20 @@
 //#define NUM_GPIO_DEVS 2
 
 /* Simple device nodes for supporting various instances
-    of the same component */
+   of the same component */
 struct dev_node{
-    //int i;
-    unsigned char *base;
-    //unsigned char *end;
-    //struct dev_node *parent;
-    struct dev_node *next;
+	//int i;
+	unsigned char *base;
+	//unsigned char *end;
+	//struct dev_node *parent;
+	struct dev_node *next;
 };
 
 /* List of devices of the same kind (same devid).*/
 struct dev_list{
-    unsigned int devid;
-    unsigned int size;
-    struct dev_node *devices;
+	unsigned int devid;
+	unsigned int size;
+	struct dev_node *devices;
 };
 
 /* Automate the address peripheral discover. use SDB */
@@ -39,7 +39,7 @@ struct dev_list *ebone_cfg_devl;
 struct dev_list *fmc516_devl;
 struct dev_list *spi_devl;
 struct dev_list *i2c_devl;
-struct dev_list *one_wire_devl;
+struct dev_list *owr_devl;
 
 // Peripheral components
 struct dev_list *uart_devl;

@@ -52,6 +52,26 @@
 #define OETH_RX_BUFF_SIZE BUFF_SIZE
 #define OETH_TX_BUFF_SIZE BUFF_SIZE
 
+/****************************/
+/*           IDs            */
+/****************************/
+
+/*
+ * IDs of general components
+ */
+#define GEN_LED_GPIO_ID 0
+#define GEN_BUTTON_GPIO_ID 1
+
+/*
+ * IDs of some FMC516 components
+ */
+#define FMC516_SYS_I2C_ID 0
+#define FMC516_VCXO_I2C_ID 1
+#define FMC516_ISLA216P25_SPI_ID 0
+#define FMC516_LMK02000_SPI_ID 1
+#define FMC516_DS2431_OWR_ID 0
+#define FMC516_DS2432_OWR_ID 1
+
 int board_init();
 int board_update();
 

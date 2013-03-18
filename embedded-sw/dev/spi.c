@@ -48,6 +48,11 @@ int oc_spi_poll(unsigned int id)
     return spi[id]->CTRL & SPI_CTRL_BSY;
 }
 
+int oc_spi_three_mode(unsigned int id)
+{
+    return spi[id]->CTRL & SPI_CTRL_THREE_WIRE;
+}
+
 void oc_spi_config(unsigned int id, int ass, int rx_neg, int tx_neg,
                     int lsb, int ie)
 {
@@ -69,7 +74,45 @@ void oc_spi_config(unsigned int id, int ass, int rx_neg, int tx_neg,
         spi_config[id] |= SPI_CTRL_IE;
 }
 
-int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
+// For use only with spi three-wire mode
+int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
+{
+    // Write configuration to SPI core. SPI_CTRL_DIR = 1
+    spi[id]->CTRL = spi_config[id] | SPI_CTRL_DIR | SPI_CTRL_CHAR_LEN(nbits);
+
+    // Transmit to core
+    spi[id]->TX0 = in;
+
+    spi[id]->SS = (1 << ss);
+
+    // Initiate transaction
+    spi[id]->CTRL |= SPI_CTRL_GO_BSY;
+
+    // Wait for completion
+    while(oc_spi_poll(id));
+
+    return 0;
+}
+
+// For use only with spi three-wire mode
+int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
+{
+    // Write configuration to SPI core. SPI_CTRL_DIR = 0
+    spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
+    spi[id]->SS = (1 << ss);
+
+    // Initiate transaction
+    spi[id]->CTRL |= SPI_CTRL_GO_BSY;
+
+    // Wait for reception
+    while(oc_spi_poll(id));
+
+    *out = spi[id]->RX0;
+
+    return 0;
+}
+
+int oc_spi_txrx(unsigned int id, int ss, int nbits, int write, uint32_t in, uint32_t *out)
 {
     uint32_t rval;
 
@@ -93,4 +136,3 @@ int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
 
     return 0;
 }
-

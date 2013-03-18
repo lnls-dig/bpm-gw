@@ -8,8 +8,26 @@
 #ifndef _REGS_H_
 #define _REGS_H_
 
-#define READ_ONLY 0x1
-#define WRITE_ONLY 0x2
-#define READ_WRITE (READ_ONLY | WRITE_ONLY)
+#include <inttypes.h>
+
+#define REGS_DEFAULT_NO_INIT 0
+#define REGS_DEFAULT_INIT 1
+#define REGS_DEFAULT_END 2
+
+#define REGS_TYPE_READ_ONLY (1 << 0)
+#define REGS_TYPE_WRITE_ONLY (1 << 1)
+#define REGS_TYPE_READ_WRITE (1 << 2)
+#define REGS_TYPE_RESERVED (1 << 3)
+
+#define REGS_DEFAULT_SIZE 4
+#define REGS_DEFAULT_TYPE REGS_READ_WRITE
+
+struct default_dev_regs_t
+{
+	uint8_t type;
+	uint8_t size; // in bytes
+	uint32_t addr;
+	uint32_t val;
+};
 
 #endif

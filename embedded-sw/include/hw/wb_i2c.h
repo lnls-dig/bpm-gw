@@ -20,6 +20,7 @@
 #define I2C_SR 0x00000010
 
 #define I2C_CTR_EN (1<<7)
+#define I2C_TXR_READ (1<<0)
 #define I2C_CR_STA (1<<7)
 #define I2C_CR_STO (1<<6)
 #define I2C_CR_RD (1<<5)
@@ -28,14 +29,16 @@
 #define I2C_SR_RXACK (1<<7)
 #define I2C_SR_TIP (1<<1)
 
+#define I2C_ADDR(x) (((x) << 1) & 0xff)
+
 PACKED struct I2C_WB {
-    uint32_t PREL;
-    uint32_t PREH;
-    uint32_t CTR;
-    uint32_t TXR;
-    uint32_t RXR;
-    uint32_t CR;
-    uint32_t SR;
+	uint32_t PREL;
+	uint32_t PREH;
+	uint32_t CTR;
+	uint32_t TXR;
+	uint32_t RXR;
+	uint32_t CR;
+	uint32_t SR;
 };
 
 #endif
