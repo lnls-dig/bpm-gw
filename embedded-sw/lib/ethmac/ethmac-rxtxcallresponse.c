@@ -97,7 +97,7 @@ struct oeth_private {
 	unsigned short	tx_last; /* Next buffer to be checked if packet sent */
 	unsigned short	tx_full; /* Buffer ring fuul indicator */
 	unsigned short	rx_cur;	 /* Next buffer to be checked if packet
-										 received */
+								received */
 
 	oeth_regs	*regs;			/* Address of controller registers. */
 	oeth_bd		*rx_bd_base;		/* Address of Rx BDs. */
@@ -627,7 +627,7 @@ main ()
 	ethmac_setup(); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
 
 	/* clear tx_done, the tx interrupt handler will set it when it's been
-		transmitted */
+	   transmitted */
 	tx_done = 0;
 	rx_done = 0;
 
