@@ -44,13 +44,14 @@ use work.fmc516_pkg.all;
 entity fmc516_adc_iface is
 generic
 (
-	-- The only supported values are VIRTEX6 and 7SERIES
+    -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
   g_delay_type                              : string := "VARIABLE";
   g_adc_clk_period_values                   : t_clk_values_array;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_clk_default_dly                         : t_default_adc_dly := default_clk_dly;
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+  g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_data_default_dly                        : t_default_adc_dly := default_data_dly;
   g_sim                                     : integer := 0
 );
@@ -86,7 +87,11 @@ port
   -----------------------------
   -- MMCM general signals
   -----------------------------
-  mmcm_adc_locked_o                         : out std_logic
+  mmcm_adc_locked_o                         : out std_logic;
+
+  fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
 );
 
 end fmc516_adc_iface;
@@ -116,7 +121,7 @@ architecture rtl of fmc516_adc_iface is
   --type t_chain_intercon is array (natural range <>) of integer;
 
   -- ADc and Clock chains
-  signal adc_clk_chain						 				  : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
+  signal adc_clk_chain                                        : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
 
   -- Fill out the intercon vector. This vector has c_num_data_chains positions
   -- and means which clock is connected for each data chain (position index): -1,
@@ -131,7 +136,7 @@ architecture rtl of fmc516_adc_iface is
 
   component fmc516_adc_clk
   generic(
-	-- The only supported values are VIRTEX6 and 7SERIES
+    -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           : string := "VIRTEX6";
     g_delay_type                            : string := "VARIABLE";
     g_adc_clock_period                      : real;
@@ -140,6 +145,7 @@ architecture rtl of fmc516_adc_iface is
   );
   port(
     sys_clk_i                               : in std_logic;
+    sys_clk_200Mhz_i                        : in std_logic;
     sys_rst_i                               : in std_logic;
 
     -----------------------------
@@ -147,7 +153,7 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
 
     -- ADC clocks. One clock per ADC channel
-    adc_clk_i                        		    : in std_logic;
+    adc_clk_i                                   : in std_logic;
 
     -----------------------------
     -- ADC Delay signals.
@@ -186,6 +192,7 @@ architecture rtl of fmc516_adc_iface is
   );
   port(
     sys_clk_i                               : in std_logic;
+    sys_clk_200Mhz_i                        : in std_logic;
     sys_rst_n_i                             : in std_logic;
 
     -----------------------------
@@ -193,14 +200,14 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
 
     -- DDR ADC data channels.
-    adc_data_i	                            : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+    adc_data_i                              : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
 
     -----------------------------
     -- Input Clocks from fmc516_adc_clk signals
     -----------------------------
-    adc_clk_bufio_i                        	: in std_logic;
-    adc_clk_bufr_i                        	: in std_logic;
-    adc_clk_bufg_i                        	: in std_logic;
+    adc_clk_bufio_i                         : in std_logic;
+    adc_clk_bufr_i                          : in std_logic;
+    adc_clk_bufg_i                          : in std_logic;
     adc_clk2x_bufg_i                        : in std_logic;
 
     -----------------------------
@@ -223,7 +230,11 @@ architecture rtl of fmc516_adc_iface is
     adc_data_o                              : out std_logic_vector(c_num_adc_bits-1 downto 0);
     adc_data_valid_o                        : out std_logic;
     adc_clk_o                               : out std_logic;
-    adc_clk2x_o                             : out std_logic
+    adc_clk2x_o                             : out std_logic;
+
+    fifo_debug_valid_o                      : out std_logic;
+    fifo_debug_full_o                       : out std_logic;
+    fifo_debug_empty_o                      : out std_logic
   );
   end component;
 
@@ -243,22 +254,25 @@ begin
     gen_clock_chains_check : if g_use_clk_chains(i) = '1' generate
       cmp_fmc516_adc_clk : fmc516_adc_clk
       generic map (
-      	-- The only supported values are VIRTEX6 and 7SERIES
+        -- The only supported values are VIRTEX6 and 7SERIES
         g_fpga_device                       => g_fpga_device,
+        --g_delay_type                        => "VARIABLE",
+        g_delay_type                        => g_delay_type,
         g_adc_clock_period                  => g_adc_clk_period_values(i),
         g_default_adc_clk_delay             => g_clk_default_dly(i),
-        g_sim                              	=> g_sim
+        g_sim                               => g_sim
       )
       port map (
-        sys_clk_i                       		=> sys_clk_i,
-        sys_rst_i                       		=> sys_rst,
+        sys_clk_i                           => sys_clk_i,
+        sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
+        sys_rst_i                           => sys_rst,
 
         -----------------------------
         -- External ports
         -----------------------------
 
         -- ADC clocks. One clock per ADC channel
-        adc_clk_i               					  => adc_in_i(i).adc_clk,
+        adc_clk_i                           => adc_in_i(i).adc_clk,
 
         -----------------------------
         -- ADC Delay signals.
@@ -272,15 +286,15 @@ begin
         -----------------------------
         -- ADC output signals.
         -----------------------------
-        adc_clk_bufio_o                 		=> adc_clk_chain(i).adc_clk_bufio,
-        adc_clk_bufr_o                  		=> adc_clk_chain(i).adc_clk_bufr,
-        adc_clk_bufg_o                  		=> adc_clk_chain(i).adc_clk_bufg,
-        adc_clk2x_bufg_o                  	=> adc_clk_chain(i).adc_clk2x_bufg,
+        adc_clk_bufio_o                     => adc_clk_chain(i).adc_clk_bufio,
+        adc_clk_bufr_o                      => adc_clk_chain(i).adc_clk_bufr,
+        adc_clk_bufg_o                      => adc_clk_chain(i).adc_clk_bufg,
+        adc_clk2x_bufg_o                    => adc_clk_chain(i).adc_clk2x_bufg,
 
         -----------------------------
         -- MMCM general signals
         -----------------------------
-        mmcm_adc_locked_o             			=> adc_clk_chain(i).mmcm_adc_locked
+        mmcm_adc_locked_o                   => adc_clk_chain(i).mmcm_adc_locked
       );
 
     end generate;
@@ -307,48 +321,109 @@ begin
   gen_adc_data_chains : for i in 0 to chain_intercon'length-1 generate
     -- Check if this data chain is to be instanciated
     gen_adc_data_chains_check : if chain_intercon(i) /= -1 generate
-      cmp_fmc516_adc_data : fmc516_adc_data
-        generic map (
-          g_default_adc_data_delay            => g_data_default_dly(i),
-          g_sim                              	=> g_sim
-        )
-        port map (
-          sys_clk_i                         	=> sys_clk_i,
-          sys_rst_n_i                       	=> adc_in_i(i).adc_rst_n,--sys_rst_n_i,
 
-          -----------------------------
-          -- External ports
-          -----------------------------
+      gen_implicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = false generate
+        cmp_fmc516_adc_data : fmc516_adc_data
+          generic map (
+            g_default_adc_data_delay            => g_data_default_dly(i),
+            --g_delay_type                        => "VARIABLE",
+            g_delay_type                        => g_delay_type,
+            g_sim                               => g_sim
+          )
+          port map (
+            sys_clk_i                           => sys_clk_i,
+            sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
+            sys_rst_n_i                         => adc_in_i(i).adc_rst_n,--sys_rst_n_i,
 
-          -- DDR ADC data channels.
-          adc_data_i												  => adc_in_i(i).adc_data,
+            -----------------------------
+            -- External ports
+            -----------------------------
 
-          -----------------------------
-          -- Input Clocks from fmc516_adc_clk signals
-          -----------------------------
-          adc_clk_bufio_i                   	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufio,
-          adc_clk_bufr_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
-          adc_clk_bufg_i                    	=> adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
-          adc_clk2x_bufg_i                  	=> adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
-          --adc_clk_bufg_rst_n_i								=> adc_in_i(i).adc_rst_n,
+            -- DDR ADC data channels.
+            adc_data_i                          => adc_in_i(i).adc_data,
 
-          -----------------------------
-          -- ADC Data Delay signals.
-          -----------------------------
-          -- Pulse this to update the delay value
-          adc_data_dly_pulse_i								=> adc_dly_i(i).adc_data_dly_pulse,
-          adc_data_dly_val_i  								=> adc_dly_i(i).adc_data_dly_val,
-          adc_data_dly_val_o  								=> adc_dly_o(i).adc_data_dly_val,
-          adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
+            -----------------------------
+            -- Input Clocks from fmc516_adc_clk signals
+            -----------------------------
+            adc_clk_bufio_i                     => adc_clk_chain(chain_intercon(i)).adc_clk_bufio,
+            adc_clk_bufr_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
+            adc_clk_bufg_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
+            adc_clk2x_bufg_i                    => adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
+            --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
 
-          -----------------------------
-          -- ADC output signals.
-          -----------------------------
-          adc_data_o													=> adc_out_o(i).adc_data,
-          adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
-          adc_clk_o														=> adc_out_o(i).adc_clk,
-          adc_clk2x_o													=> adc_out_o(i).adc_clk2x
-        );
+            -----------------------------
+            -- ADC Data Delay signals.
+            -----------------------------
+            -- Pulse this to update the delay value
+            adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
+            adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
+            adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
+            adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
+
+            -----------------------------
+            -- ADC output signals.
+            -----------------------------
+            adc_data_o                          => adc_out_o(i).adc_data,
+            adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
+            adc_clk_o                           => adc_out_o(i).adc_clk,
+            adc_clk2x_o                         => adc_out_o(i).adc_clk2x,
+            fifo_debug_valid_o                  => fifo_debug_valid_o(i),
+            fifo_debug_full_o                   => fifo_debug_full_o(i),
+            fifo_debug_empty_o                  => fifo_debug_empty_o(i)
+          );
+        end generate;
+
+      gen_explicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = true generate
+        cmp_fmc516_adc_data : fmc516_adc_data
+          generic map (
+            g_default_adc_data_delay            => g_data_default_dly(i),
+            --g_delay_type                        => "VARIABLE",
+            g_delay_type                        => g_delay_type,
+            g_sim                               => g_sim
+          )
+          port map (
+            sys_clk_i                           => sys_clk_i,
+            sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
+            sys_rst_n_i                         => adc_in_i(i).adc_rst_n,--sys_rst_n_i,
+
+            -----------------------------
+            -- External ports
+            -----------------------------
+
+            -- DDR ADC data channels.
+            adc_data_i                          => adc_in_i(i).adc_data,
+
+            -----------------------------
+            -- Input Clocks from fmc516_adc_clk signals
+            -----------------------------
+            adc_clk_bufio_i                     => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufio,
+            adc_clk_bufr_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufr,
+            adc_clk_bufg_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufg,
+            adc_clk2x_bufg_i                    => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk2x_bufg,
+            --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
+
+            -----------------------------
+            -- ADC Data Delay signals.
+            -----------------------------
+            -- Pulse this to update the delay value
+            adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
+            adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
+            adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
+            adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
+
+            -----------------------------
+            -- ADC output signals.
+            -----------------------------
+            adc_data_o                          => adc_out_o(i).adc_data,
+            adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
+            adc_clk_o                           => adc_out_o(i).adc_clk,
+            adc_clk2x_o                         => adc_out_o(i).adc_clk2x,
+            fifo_debug_valid_o                  => fifo_debug_valid_o(i),
+            fifo_debug_full_o                   => fifo_debug_full_o(i),
+            fifo_debug_empty_o                  => fifo_debug_empty_o(i)
+          );
+        end generate;
+
     end generate;
   end generate;
 

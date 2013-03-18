@@ -2,73 +2,73 @@
 # FMC516 Constraints
 #######################################################################
 
-NET "adc_data_ch0_p_i[0]"           LOC = AB32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[0]"           LOC = AC32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[1]"           LOC = AC33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[1]"           LOC = AB33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[2]"           LOC = AD32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[2]"           LOC = AE32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[3]"           LOC = AD34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[3]"           LOC = AC34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[4]"           LOC = AG31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[4]"           LOC = AF31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[5]"           LOC = AA26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[5]"           LOC = AB26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[6]"           LOC = AA25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[6]"           LOC = Y26  | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_p_i[7]"           LOC = AB28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch0_n_i[7]"           LOC = AC28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch0_p_i[0]"           LOC = AB32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[0]"           LOC = AC32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[1]"           LOC = AC33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[1]"           LOC = AB33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[2]"           LOC = AD32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[2]"           LOC = AE32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[3]"           LOC = AD34 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[3]"           LOC = AC34 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[4]"           LOC = AG31 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[4]"           LOC = AF31 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[5]"           LOC = AA26 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[5]"           LOC = AB26 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[6]"           LOC = AA25 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[6]"           LOC = Y26  | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_p_i[7]"           LOC = AB28 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch0_n_i[7]"           LOC = AC28 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
 
-NET "adc_data_ch1_p_i[0]"           LOC = AN19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[0]"           LOC = AN20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[1]"           LOC = AP19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[1]"           LOC = AN18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[2]"           LOC = AM20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[2]"           LOC = AL20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[3]"           LOC = AM18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[3]"           LOC = AL18 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[4]"           LOC = AK22 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[4]"           LOC = AJ22 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[5]"           LOC = AF19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[5]"           LOC = AE19 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[6]"           LOC = AC20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[6]"           LOC = AD20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_p_i[7]"           LOC = AF20 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch1_n_i[7]"           LOC = AF21 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[0]"           LOC = AN19 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[0]"           LOC = AN20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[1]"           LOC = AP19 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[1]"           LOC = AN18 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[2]"           LOC = AM20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[2]"           LOC = AL20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[3]"           LOC = AM18 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[3]"           LOC = AL18 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[4]"           LOC = AK22 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[4]"           LOC = AJ22 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[5]"           LOC = AF19 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[5]"           LOC = AE19 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[6]"           LOC = AC20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[6]"           LOC = AD20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_p_i[7]"           LOC = AF20 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch1_n_i[7]"           LOC = AF21 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
 
-NET "adc_data_ch2_p_i[0]"           LOC = AJ24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[0]"           LOC = AK24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[1]"           LOC = AL29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[1]"           LOC = AK29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[2]"           LOC = AK27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[2]"           LOC = AJ27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[3]"           LOC = AN30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[3]"           LOC = AM30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[4]"           LOC = AM25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[4]"           LOC = AL25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[5]"           LOC = AP27 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[5]"           LOC = AP26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[6]"           LOC = AK23 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[6]"           LOC = AL24 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_p_i[7]"           LOC = AH25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch2_n_i[7]"           LOC = AJ25 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[0]"           LOC = AJ24 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[0]"           LOC = AK24 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[1]"           LOC = AL29 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[1]"           LOC = AK29 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[2]"           LOC = AK27 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[2]"           LOC = AJ27 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[3]"           LOC = AN30 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[3]"           LOC = AM30 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[4]"           LOC = AM25 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[4]"           LOC = AL25 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[5]"           LOC = AP27 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[5]"           LOC = AP26 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[6]"           LOC = AK23 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[6]"           LOC = AL24 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_p_i[7]"           LOC = AH25 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch2_n_i[7]"           LOC = AJ25 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_0;
 
-NET "adc_data_ch3_p_i[0]"           LOC = AJ31 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[0]"           LOC = AJ32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[1]"           LOC = AH33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[1]"           LOC = AH32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[2]"           LOC = AE28 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[2]"           LOC = AE29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[3]"           LOC = AJ29 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[3]"           LOC = AJ30 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[4]"           LOC = AF26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[4]"           LOC = AE26 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[5]"           LOC = AM33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[5]"           LOC = AL33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[6]"           LOC = AN33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[6]"           LOC = AN34 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_p_i[7]"           LOC = AP32 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
-NET "adc_data_ch3_n_i[7]"           LOC = AP33 | IOSTANDARD = LVDS_25 | TNM = TNM_ADC_DATA_0;
+NET "adc_data_ch3_p_i[0]"           LOC = AJ31 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[0]"           LOC = AJ32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[1]"           LOC = AH33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[1]"           LOC = AH32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[2]"           LOC = AE28 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[2]"           LOC = AE29 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[3]"           LOC = AJ29 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[3]"           LOC = AJ30 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[4]"           LOC = AF26 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[4]"           LOC = AE26 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[5]"           LOC = AM33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[5]"           LOC = AL33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[6]"           LOC = AN33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[6]"           LOC = AN34 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_p_i[7]"           LOC = AP32 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
+NET "adc_data_ch3_n_i[7]"           LOC = AP33 | IOSTANDARD = LVDSEXT_25 | TNM = TNM_ADC_DATA_1;
 
 NET "sys_i2c_scl_b"                 LOC = AK9;  # Not directly connected to FMC HPC pins. There is a level shifter in the middle
 NET "sys_i2c_sda_b"                 LOC = AE9;  # Not directly connected to FMC HPC pins. There is a level shifter in the middle
@@ -208,21 +208,52 @@ TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i"
 
 # Group all IDELAY-related blocks to use a single IDELAYCTRL
 INST "*cmp_fmc516_adc_iface/cmp_idelayctrl"                                   IODELAY_GROUP = adc_idelay;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].cmp_adc_data_iodelay"  IODELAY_GROUP = adc_idelay;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[?].*.*.*/gen_adc_data[?].*.cmp_adc_data_iodelay"  IODELAY_GROUP = adc_idelay;
 INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/cmp_ibufds_clk_iodelay"   IODELAY_GROUP = adc_idelay;
 
 # Overrides default_delay hdl parameter.
 # For Virtex-6: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 4;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 0;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 1;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 3;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
 
 # Overrides default_delay hdl parameter
-INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+ INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+ INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
 
 #######################################################################
 # Button/LEDs Contraints

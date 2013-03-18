@@ -36,6 +36,7 @@ generic
 port
 (
   sys_clk_i                                 : in std_logic;
+  sys_clk_200Mhz_i                          : in std_logic;
   sys_rst_i                                 : in std_logic;
 
   -----------------------------
@@ -139,8 +140,10 @@ begin
     --idatain                                 => adc_clk_ibufgds,
     idatain                                 => adc_clk_i,
     dataout                                 => adc_clk_ibufgds_dly,
-    c                                       => sys_clk_i,
-    ce                                      => adc_clk_dly_pulse_i,
+    -- FIX THIS CLOCK!
+    c                                       => sys_clk_200Mhz_i,
+    --ce                                      => adc_clk_dly_pulse_i,
+    ce                                      => '0',
     inc                                     => adc_clk_dly_incdec_i,
     datain                                  => '0',
     odatain                                 => '0',
@@ -212,29 +215,30 @@ begin
     -- Let the synthesis tools select the best appropriate
     -- compensation method (as dictated in Virtex-6 clocking
     -- resourses guide page 53, note 2)
-    --COMPENSATION         => "ZHOLD",
+    COMPENSATION                          => "ZHOLD",
     STARTUP_WAIT                          => FALSE,
-    DIVCLK_DIVIDE                         => 3,
+    DIVCLK_DIVIDE                         => 4,
     CLKFBOUT_MULT_F                       => 12.000,
     CLKFBOUT_PHASE                        => 0.000,
     CLKFBOUT_USE_FINE_PS                  => FALSE,
     -- adc clock
-    CLKOUT0_DIVIDE_F                      => 4.000,
+    CLKOUT0_DIVIDE_F                      => 3.000,
     CLKOUT0_PHASE                         => 0.000,
     CLKOUT0_DUTY_CYCLE                    => 0.500,
     CLKOUT0_USE_FINE_PS                   => FALSE,
-    -- 2x adc clock
-    CLKOUT1_DIVIDE                        => 2,
+    -- 2x adc clock. This should not be 2x. FIX
+    --CLKOUT1_DIVIDE                        => 2,
+    CLKOUT1_DIVIDE                        => 3,
     CLKOUT1_PHASE                         => 0.000,
     CLKOUT1_DUTY_CYCLE                    => 0.500,
     CLKOUT1_USE_FINE_PS                   => FALSE,
     -- 250 MHZ input clock
     CLKIN1_PERIOD                         => g_adc_clock_period,
-    REF_JITTER1                           => 0.010,
+    REF_JITTER1                           => 0.10,
     -- Not used. Just to bypass Xilinx errors
     -- Just input 250 MHz input clock
     CLKIN2_PERIOD                         => g_adc_clock_period,
-    REF_JITTER2                           => 0.010
+    REF_JITTER2                           => 0.10
   )
   port map(
     -- Output clocks

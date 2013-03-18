@@ -35,6 +35,7 @@ package fmc516_pkg is
   --------------------------------------------------------------------
   type t_real_array is array (natural range <>) of real;
   type t_natural_array is array (natural range <>) of natural;
+  type t_integer_array is array (natural range <>) of integer;
 
   --------------------------------------------------------------------
   -- Specific definitions
@@ -97,16 +98,20 @@ package fmc516_pkg is
   subtype t_clk_values_array is t_real_array(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_data_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
+  subtype t_map_clk_data_chain is t_integer_array(c_num_adc_channels-1 downto 0);
 
   -- Constant default values.
-  constant default_data_dly : t_default_adc_dly := (others => 5);
-  constant default_clk_dly : t_default_adc_dly := (others => 0);
+  constant default_data_dly : t_default_adc_dly := (others => 9);
+  constant default_clk_dly : t_default_adc_dly := (others => 5);
   constant default_adc_clk_period_values : t_clk_values_array :=
-    (0.0, 0.0, 0.0, 4.0);
+    (4.0, 4.0, 4.0, 4.0);
   constant default_clk_use_chain : t_clk_use_chain :=
-    ("0001");
+    ("0010");
   constant default_data_use_chain : t_data_use_chain :=
     ("1111");
+  -- Fallback to general conflict resolution mode. See chain_intercon function
+  constant default_map_clk_data_chain : t_map_clk_data_chain :=
+    (-1, -1, -1, -1);
 
   -- dummy values for fmc516_adc_iface generic definitions
   -- Warning: all clocks are null here! Should be modified
@@ -140,6 +145,9 @@ package fmc516_pkg is
     -- Functions
     function f_chain_intercon(clock_chains : std_logic_vector; data_chains : std_logic_vector)
       return t_chain_intercon;
+
+    function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
+      return boolean;
 end fmc516_pkg;
 
 
@@ -202,5 +210,33 @@ package body fmc516_pkg is
 
     return intercon;
   end f_chain_intercon;
+
+  -- Check if the user specified a explicitly mapping between clocks
+  -- and data chains
+  function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
+    return boolean
+  is
+    constant c_num_chains : natural := map_chain'length;
+    variable i : natural := 0;
+    variable j : natural := 0;
+    variable result : boolean := true;
+  begin
+    for i in 0 to c_num_chains-1 loop
+      if map_chain(i) = -1 then
+        result := false;
+        exit;
+      end if;
+    end loop;
+
+    -- Print the map vector
+    for j in 0 to c_num_chains-1 loop
+      report "[ map vector(" & integer'image(j) & ") = " &
+          Integer'image(map_chain(j)) & " ]"
+      severity note;
+    end loop;
+
+    return result;
+  end f_explicitly_clk_data_map;
+
 end fmc516_pkg;
 

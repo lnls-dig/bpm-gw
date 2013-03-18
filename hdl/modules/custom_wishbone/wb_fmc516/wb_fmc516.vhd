@@ -54,6 +54,7 @@ generic
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+  g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_packet_size                             : natural := 32;
   g_sim                                     : integer := 0
 );
@@ -119,11 +120,14 @@ port
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   sys_spi_clk_o                             : out std_logic;
-  sys_spi_data_b                            : inout std_logic;
+  --sys_spi_data_b                            : inout std_logic;
+  sys_spi_dout_o                            : out std_logic;
+  sys_spi_din_i                             : in std_logic;
   sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
   sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
   sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
   sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+  sys_spi_miosio_oe_n_o                     : out std_logic;
 
   -- External Trigger To/From FMC
   m2c_trig_p_i                              : in std_logic := '0';
@@ -191,7 +195,11 @@ port
   wbs_ack_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   wbs_stall_i                              : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
-  wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0')
+  wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+
+  fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  fifo_debug_empty_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0)
 );
 end wb_fmc516;
 
@@ -331,7 +339,7 @@ architecture rtl of wb_fmc516 is
 
   -- ADC Reset signals
   signal adc_clk_div_rst_int                : std_logic;
-  signal adc_clk_div_rst_n_int              : std_logic;
+  signal adc_clk_div_rst_int_p                : std_logic;
   signal fmc_reset_adcs_int                 : std_logic;
 
   -----------------------------
@@ -405,6 +413,7 @@ architecture rtl of wb_fmc516 is
   signal sys_spi_dout                       : std_logic;
   signal sys_spi_ss_int                     : std_logic_vector(7 downto 0);
   signal sys_spi_clk                        : std_logic;
+  signal sys_spi_miosio_oe_n                : std_logic;
 
   -----------------------------
   -- LMK SPI (microwire) signals
@@ -501,6 +510,7 @@ architecture rtl of wb_fmc516 is
     g_use_clk_chains                        : t_clk_use_chain := default_clk_use_chain;
     g_clk_default_dly                       : t_default_adc_dly := default_clk_dly;
     g_use_data_chains                       : t_data_use_chain := default_data_use_chain;
+    g_map_clk_data_chains                   : t_map_clk_data_chain := default_map_clk_data_chain;
     g_data_default_dly                      : t_default_adc_dly := default_data_dly;
     g_sim                                   : integer := 0
   );
@@ -537,7 +547,11 @@ architecture rtl of wb_fmc516 is
     -----------------------------
     -- MMCM general signals
     -----------------------------
-    mmcm_adc_locked_o                       : out std_logic
+    mmcm_adc_locked_o                       : out std_logic;
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 
@@ -556,7 +570,7 @@ architecture rtl of wb_fmc516 is
     wb_ack_o                                 : out    std_logic;
     wb_stall_o                               : out    std_logic;
     fs_clk_i                                 : in     std_logic;
-    wb_clk_i                                 : in     std_logic;
+    --wb_clk_i                                 : in     std_logic;
     regs_i                                   : in     t_fmc516_in_registers;
     regs_o                                   : out    t_fmc516_out_registers
   );
@@ -715,7 +729,7 @@ begin
     wb_stall_o                              => wb_slv_adp_in.stall,
     fs_clk_i                                => fs_clk(first_used_clk),
     -- Check if this clock is necessary!
-    wb_clk_i                                => sys_clk_i,
+    --wb_clk_i                                => sys_clk_i,
     regs_i                                  => regs_in,
     regs_o                                  => regs_out
   );
@@ -850,64 +864,83 @@ begin
   -- Capture delay signals (clock + data chains) coming from the Wishbone
   -- Register Interface.
   -- Idelay "var_loadable" interface
+  -- CAUTION WITH THE CKOCKS HERE! FIX! Only trust on the data/clock delay
+  -- clocked by fs_clk(first_used_clk)
   gen_adc_dly_var_loadable : for i in 0 to c_num_adc_channels-1 generate
-    p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
+    --p_adc_dly : process (sys_clk_i)
+    p_adc_dly : process (fs_clk(first_used_clk))
     begin
-      if sys_rst_sync_n = '0' then
-        adc_dly_reg(i).clk_dly_reg <= (others => '0');
-        adc_dly_reg(i).data_dly_reg <= (others => '0');
-      elsif rising_edge(sys_clk_i) then
-        -- write to clock register delay
-        if adc_dly_reg(i).clk_load = '1' then
-          adc_dly_reg(i).clk_dly_reg <= adc_dly_reg(i).clk_dly;
-        end if;
+      --if rising_edge(sys_clk_i) then
+      if rising_edge(fs_clk(first_used_clk)) then
+        --if sys_rst_sync_n = '0' then
+        if fs_rst_sync_n(first_used_clk) = '0' then
+          --adc_dly_reg(i).clk_dly_reg <= (others => '0');
+          adc_dly_reg(i).clk_dly_reg <= std_logic_vector(to_unsigned(default_clk_dly(i),
+                                          adc_dly_reg(i).clk_dly_reg'length));
+          --adc_dly_reg(i).data_dly_reg <= (others => '0');
+          adc_dly_reg(i).data_dly_reg <= std_logic_vector(to_unsigned(default_data_dly(i),
+                                          adc_dly_reg(i).data_dly_reg'length));
+        else
+          -- write to clock register delay
+          if adc_dly_reg(i).clk_load = '1' then
+            adc_dly_reg(i).clk_dly_reg <= adc_dly_reg(i).clk_dly;
+          end if;
 
-        -- write to data register delay
-        if adc_dly_reg(i).data_load = '1' then
-          adc_dly_reg(i).data_dly_reg <= adc_dly_reg(i).data_dly;
+          -- write to data register delay
+          if adc_dly_reg(i).data_load = '1' then
+            adc_dly_reg(i).data_dly_reg <= adc_dly_reg(i).data_dly;
+          end if;
+
         end if;
       end if;
     end process;
   end generate;
 
   -- Idelay "variable" interface
+  -- CAUTION WITH THE CKOCKS HERE! FIX! Only trust on the data/clock delay
+  -- clocked by fs_clk(first_used_clk)
   gen_adc_dly_variable : for i in 0 to c_num_adc_channels-1 generate
-    p_adc_dly : process (sys_clk_i, sys_rst_sync_n)
+    --p_adc_dly : process (sys_clk_i)
+    p_adc_dly : process (fs_clk(first_used_clk))
     begin
-      if sys_rst_sync_n = '0' then
-        adc_dly_reg_pulse_clk_int(i) <= '0';
-        adc_dly_reg_pulse_data_int(i) <= '0';
-        adc_dly_reg(i).clk_dly_incdec <= '0';
-        adc_dly_reg(i).data_dly_incdec <= '0';
-      elsif rising_edge(sys_clk_i) then
-        -- Increment/Decrement clk delays
-        if adc_dly_reg(i).clk_dly_inc = '1' then
-          adc_dly_reg(i).clk_dly_incdec <= '1';
-        elsif adc_dly_reg(i).clk_dly_dec = '1' then
-          adc_dly_reg(i).clk_dly_incdec <= '0';
-        end if;
-
-        -- Increment/Decrement data delays
-        if adc_dly_reg(i).data_dly_inc = '1' then
-          adc_dly_reg(i).data_dly_incdec <= '1';
-        elsif adc_dly_reg(i).data_dly_dec = '1' then
-          adc_dly_reg(i).data_dly_incdec <= '0';
-        end if;
-
-        -- Enable delay inc or dec for clk delay
-        if adc_dly_reg(i).clk_dly_inc = '1' or adc_dly_reg(i).clk_dly_dec = '1'  then
-          adc_dly_reg_pulse_clk_int(i) <= '1';
-        else
+      --if rising_edge(sys_clk_i) then
+      if rising_edge(fs_clk(first_used_clk)) then
+        --if sys_rst_sync_n = '0' then
+        if fs_rst_sync_n(first_used_clk) = '0' then
           adc_dly_reg_pulse_clk_int(i) <= '0';
-        end if;
-
-        -- Enable delay inc or dec for data delay
-        if adc_dly_reg(i).data_dly_inc = '1' or adc_dly_reg(i).data_dly_dec = '1' then
-          adc_dly_reg_pulse_data_int(i) <= '1';
-        else
           adc_dly_reg_pulse_data_int(i) <= '0';
-        end if;
+          adc_dly_reg(i).clk_dly_incdec <= '0';
+          adc_dly_reg(i).data_dly_incdec <= '0';
+        else
+          -- Increment/Decrement clk delays
+          if adc_dly_reg(i).clk_dly_inc = '1' then
+            adc_dly_reg(i).clk_dly_incdec <= '1';
+          elsif adc_dly_reg(i).clk_dly_dec = '1' then
+            adc_dly_reg(i).clk_dly_incdec <= '0';
+          end if;
 
+          -- Increment/Decrement data delays
+          if adc_dly_reg(i).data_dly_inc = '1' then
+            adc_dly_reg(i).data_dly_incdec <= '1';
+          elsif adc_dly_reg(i).data_dly_dec = '1' then
+            adc_dly_reg(i).data_dly_incdec <= '0';
+          end if;
+
+          -- Enable delay inc or dec for clk delay
+          if adc_dly_reg(i).clk_dly_inc = '1' or adc_dly_reg(i).clk_dly_dec = '1'  then
+            adc_dly_reg_pulse_clk_int(i) <= '1';
+          else
+            adc_dly_reg_pulse_clk_int(i) <= '0';
+          end if;
+
+          -- Enable delay inc or dec for data delay
+          if adc_dly_reg(i).data_dly_inc = '1' or adc_dly_reg(i).data_dly_dec = '1' then
+            adc_dly_reg_pulse_data_int(i) <= '1';
+          else
+            adc_dly_reg_pulse_data_int(i) <= '0';
+          end if;
+
+        end if;
       end if;
     end process;
   end generate;
@@ -955,9 +988,12 @@ begin
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
+    --g_delay_type                            => "VAR_LOADABLE",
+    g_delay_type                            => "VARIABLE",
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
     g_use_data_chains                       => g_use_data_chains,
+    g_map_clk_data_chains                   => g_map_clk_data_chains,
     g_sim                                   => g_sim
   )
   port map(
@@ -986,7 +1022,11 @@ begin
     -----------------------------
     -- MMCM general signals
     -----------------------------
-    mmcm_adc_locked_o                       => mmcm_adc_locked
+    mmcm_adc_locked_o                       => mmcm_adc_locked,
+
+    fifo_debug_valid_o                      => fifo_debug_valid_o,
+    fifo_debug_full_o                       => fifo_debug_full_o,
+    fifo_debug_empty_o                      => fifo_debug_empty_o
   );
 
   -- Clock and reset assignments
@@ -1014,10 +1054,11 @@ begin
   gen_adc_rsts : if first_used_clk /= -1 generate
     cmp_adc_clk_div_rst_n_extd_pulse : gc_extend_pulse
     generic map (
-      g_width                                 => 8
+      g_width                                 => 64
     )
     port map (
-      clk_i                                   => fs_clk2x(first_used_clk),
+      --clk_i                                   => fs_clk2x(first_used_clk),
+      clk_i                                   => fs_clk(first_used_clk),
       rst_n_i                                 => fs_rst_sync_n(first_used_clk),
       -- input pulse (synchronous to clk_i)
       pulse_i                                 => regs_out.adc_ctl_rst_div_adcs_o,
@@ -1025,25 +1066,28 @@ begin
       extended_o                              => adc_clk_div_rst_int
     );
 
-    adc_clk_div_rst_n_int                     <= not adc_clk_div_rst_int;
+-- DEBUG. Something wrong with the register interface?
+    --adc_clk_div_rst_int_p <= '0';
 
     -- ADC div resets logic
     cmp_clk_div_rst_obufds : obufds
     generic map(
-      IOSTANDARD                                 => "LVDS_25"
+      IOSTANDARD                              => "LVDS_25"
     )
     port map (
       O                                       => adc_clk_div_rst_p_o,
       OB                                      => adc_clk_div_rst_n_o,
-      I                                       => adc_clk_div_rst_n_int
+      --I                                       => adc_clk_div_rst_int_p
+      I                                       => adc_clk_div_rst_int
     );
 
     cmp_fmc_reset_adcs_n_extd_pulse : gc_extend_pulse
     generic map (
-      g_width                                 => 8
+      g_width                                 => 64
     )
     port map (
-      clk_i                                   => fs_clk2x(first_used_clk),
+      --clk_i                                   => fs_clk2x(first_used_clk),
+      clk_i                                   => fs_clk(first_used_clk),
       rst_n_i                                 => fs_rst_sync_n(first_used_clk),
       -- input pulse (synchronous to clk_i)
       pulse_i                                 => regs_out.adc_ctl_rst_adcs_o,
@@ -1051,7 +1095,9 @@ begin
       extended_o                              => fmc_reset_adcs_int
     );
 
+    -- DEBUG ONLY! FIX!
     fmc_reset_adcs_n_o                        <= not fmc_reset_adcs_int;
+    --fmc_reset_adcs_n_o                        <= not regs_out.adc_ctl_rst_adcs_o;
   end generate;
 
   -----------------------------
@@ -1118,15 +1164,20 @@ begin
 
     pad_cs_o                                => sys_spi_ss_int,
     pad_sclk_o                              => sys_spi_clk,
-    --pad_mosi_o                              => sys_spi_dout,
+    pad_mosi_o                              => sys_spi_dout,
     --pad_miso_i                              => sys_spi_din_d(sys_spi_din_d'left),
-    pad_mosi_o                              => open,
-    pad_miso_i                              => '0',
-    pad_miosio_b                            => sys_spi_data_b
+    pad_miso_i                              => sys_spi_din,
+    --pad_mosi_o                              => open,
+    --pad_miso_i                              => '0',
+    --pad_miosio_b                            => sys_spi_data_b
+    oen_o                                   => sys_spi_miosio_oe_n
   );
 
   -- Output SPI clock
   sys_spi_clk_o <= sys_spi_clk;
+  sys_spi_dout_o <= sys_spi_dout;
+  sys_spi_din <= sys_spi_din_i;
+  sys_spi_miosio_oe_n_o <= sys_spi_miosio_oe_n;
 
   -- Assign slave select lines
   sys_spi_cs_adc0_n_o <= sys_spi_ss_int(0);           -- SPI ADC CS channel 0
@@ -1175,8 +1226,7 @@ begin
     pad_cs_o                                => fmc_lmk_uwire_ss_int,
     pad_sclk_o                              => fmc_lmk_uwire_clk,
     pad_mosi_o                              => lmk_uwire_data_o,
-    pad_miso_i                              => '0',
-    pad_miosio_b                            => open
+    pad_miso_i                              => '0'
   );
   --
   -- Output Microwire LMK clock
@@ -1348,12 +1398,15 @@ begin
       );
 
       -- Generate test data
-      p_gen_test_data : process(fs_clk(i), fs_rst_sync_n(i))
+      p_gen_test_data : process(fs_clk(i))
+      --p_gen_test_data : process(fs_clk2x(first_used_clk), fs_rst_sync_n(first_used_clk))
       begin
-        if fs_rst_sync_n(i) = '0' then
-          wbs_test_data(i) <= (others => '0');
-        elsif rising_edge(fs_clk(i)) then
-          wbs_test_data(i) <= wbs_test_data(i) + 1;
+        if rising_edge(fs_clk(i)) then
+          if fs_rst_sync_n(i) = '0' then
+            wbs_test_data(i) <= (others => '0');
+          else
+            wbs_test_data(i) <= wbs_test_data(i) + 1;
+          end if;
         end if;
       end process;
 

@@ -391,12 +391,14 @@ INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/cmp_ibufds_clk_iodelay"   IO
 # Overrides default_delay hdl parameter.
 # For Virtex-6: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 4;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 0;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 1;
+# INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 3;
+# INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 1;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 4;
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[?].cmp_adc_data_iodelay" IDELAY_VALUE = 3;
 
 # Overrides default_delay hdl parameter
 INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
 # INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
 # INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;

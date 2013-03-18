@@ -337,6 +337,7 @@ package custom_wishbone_pkg is
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
     g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
     g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_packet_size                             : natural := 32;
     g_sim                                     : integer := 0
   );
@@ -402,11 +403,14 @@ package custom_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                             : out std_logic;
-    sys_spi_data_b                            : inout std_logic;
+    --sys_spi_data_b                            : inout std_logic;
+    sys_spi_dout_o                            : out std_logic;
+    sys_spi_din_i                             : in std_logic;
     sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+    sys_spi_miosio_oe_n_o                     : out std_logic;
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                              : in std_logic;
@@ -474,7 +478,11 @@ package custom_wishbone_pkg is
     wbs_ack_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
     wbs_stall_i                              : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
     wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
-    wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0')
+    wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 
@@ -488,6 +496,7 @@ package custom_wishbone_pkg is
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
     g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
     g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_packet_size                             : natural := 32;
     g_sim                                     : integer := 0
   );
@@ -544,11 +553,14 @@ package custom_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                             : out std_logic;
-    sys_spi_data_b                            : inout std_logic;
+    --sys_spi_data_b                            : inout std_logic;
+    sys_spi_dout_o                            : out std_logic;
+    sys_spi_din_i                             : in std_logic;
     sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+    sys_spi_miosio_oe_n_o                     : out std_logic;
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                              : in std_logic;
@@ -608,7 +620,11 @@ package custom_wishbone_pkg is
     -- Wishbone Streaming Interface Source
     -----------------------------
     wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
-    wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0)
+    wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 

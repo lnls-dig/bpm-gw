@@ -332,11 +332,36 @@ architecture rtl of dbe_bpm_fmc516 is
   signal fmc516_lmk_lock_int                : std_logic;
 
   signal fmc516_fs_clk                      : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc516_adc_data                    : std_logic_vector(c_num_adc_channels*16-1 downto 0);
+  signal fmc516_adc_valid                   : std_logic_vector(c_num_adc_channels-1 downto 0);
 
+  signal fmc_debug                          : std_logic;
+  signal reset_adc_counter                  : unsigned(6 downto 0) := (others => '0');
+  signal fmc516_fs_rst_n                    : std_logic;
+
+  -- FMC516 Debug
+  signal fmc516_debug_valid_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc516_debug_full_int              : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc516_debug_empty_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
+
+  signal sys_spi_clk_int                    : std_logic;
+  --signal sys_spi_data_int                   : std_logic;
+  signal sys_spi_dout_int                   : std_logic;
+  signal sys_spi_din_int                    : std_logic;
+  signal sys_spi_miosio_oe_n_int            : std_logic;
   signal sys_spi_cs_adc0_n_int              : std_logic;
   signal sys_spi_cs_adc1_n_int              : std_logic;
   signal sys_spi_cs_adc2_n_int              : std_logic;
   signal sys_spi_cs_adc3_n_int              : std_logic;
+
+  signal lmk_lock_int                       : std_logic;
+  signal lmk_sync_int                       : std_logic;
+  signal lmk_uwire_latch_en_int             : std_logic;
+  signal lmk_uwire_data_int                 : std_logic;
+  signal lmk_uwire_clock_int                : std_logic;
+
+  signal fmc_reset_adcs_n_int               : std_logic;
+  signal fmc_reset_adcs_n_out               : std_logic;
 
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
@@ -745,8 +770,13 @@ begin
     --g_address_granularity                   => WORD,
     g_address_granularity                   => BYTE,
     g_adc_clk_period_values                 => default_adc_clk_period_values,
-    g_use_clk_chains                        => default_clk_use_chain,
-    g_use_data_chains                       => default_data_use_chain,
+    --g_use_clk_chains                        => default_clk_use_chain,
+    -- using clock1 from FMC516 (CLK2_ M2C_P, CLK2_ M2C_M pair)
+    -- using clock0 from FMC516.
+    -- BUFIO can drive half-bank only, not the full IO bank
+    g_use_clk_chains                        => "0011",
+    g_use_data_chains                       => "1111",
+    g_map_clk_data_chains                   => (1,0,0,1),
     g_packet_size                           => 32,
     g_sim                                   => 0
   )
@@ -800,12 +830,15 @@ begin
     fmc_leds_o                              => fmc_leds_o,
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-    sys_spi_clk_o                           => sys_spi_clk_o,
-    sys_spi_data_b                          => sys_spi_data_b,
+    sys_spi_clk_o                           => sys_spi_clk_int,--sys_spi_clk_o,
+    --sys_spi_data_b                          => sys_spi_data_b,--sys_spi_data_int,
+    sys_spi_dout_o                          => sys_spi_dout_int,
+    sys_spi_din_i                           => sys_spi_din_int,
     sys_spi_cs_adc0_n_o                     => sys_spi_cs_adc0_n_int,  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                     => sys_spi_cs_adc1_n_int,  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                     => sys_spi_cs_adc2_n_int,  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                     => sys_spi_cs_adc3_n_int,  -- SPI ADC CS channel 3
+    sys_spi_miosio_oe_n_o                   => sys_spi_miosio_oe_n_int,
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                            => m2c_trig_p_i,
@@ -815,11 +848,11 @@ begin
 
     -- LMK (National Semiconductor) is the clock and distribution IC.
     -- uWire interface
-    lmk_lock_i                              => lmk_lock_i,
-    lmk_sync_o                              => lmk_sync_o,
-    lmk_uwire_latch_en_o                    => lmk_uwire_latch_en_o,
-    lmk_uwire_data_o                        => lmk_uwire_data_o,
-    lmk_uwire_clock_o                       => lmk_uwire_clock_o,
+    lmk_lock_i                              => lmk_lock_int,--lmk_lock_i,
+    lmk_sync_o                              => lmk_sync_int,--lmk_sync_o,
+    lmk_uwire_latch_en_o                    => lmk_uwire_latch_en_int,--lmk_uwire_latch_en_o,
+    lmk_uwire_data_o                        => lmk_uwire_data_int,--lmk_uwire_data_o,
+    lmk_uwire_clock_o                       => lmk_uwire_clock_int,--lmk_uwire_clock_o,
 
     -- Programable VCXO via I2C
     vcxo_i2c_sda_b                          => vcxo_i2c_sda_b,
@@ -836,7 +869,8 @@ begin
     -- Internal/External clock distribution selection
     fmc_clk_sel_o                           => fmc_clk_sel_o,
     -- Reset ADCs
-    fmc_reset_adcs_n_o                      => fmc_reset_adcs_n_o,
+    fmc_reset_adcs_n_o                      => fmc_reset_adcs_n_int,--fmc_reset_adcs_n_o,
+    --fmc_reset_adcs_n_o                      => open,--fmc_reset_adcs_n_o,
     --FMC Present status
     fmc_prsnt_m2c_l_i                       => fmc_prsnt_m2c_l_i,
 
@@ -844,15 +878,17 @@ begin
     -- ADC output signals. Continuous flow.
     -----------------------------
     adc_clk_o                               => fmc516_fs_clk,
-    adc_data_o                              => open,
-    adc_data_valid_o                        => open,
+    adc_data_o                              => fmc516_adc_data,
+    adc_data_valid_o                        => fmc516_adc_valid,
 
     -----------------------------
     -- General ADC output signals
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    trig_hw_i                               => '0',
+    --trig_hw_i                               => '0',
+    -- DEBUG!
+    trig_hw_i                               => fmc_debug,
     -- General board status
     fmc_mmcm_lock_o                         => fmc516_mmcm_lock_int,
     fmc_lmk_lock_o                          => fmc516_lmk_lock_int,
@@ -861,7 +897,11 @@ begin
     -- Wishbone Streaming Interface Source
     -----------------------------
     wbs_source_i                            => wbs_fmc516_in_array,
-    wbs_source_o                            => wbs_fmc516_out_array
+    wbs_source_o                            => wbs_fmc516_out_array,
+
+    fifo_debug_valid_o                      => fmc516_debug_valid_int,
+    fifo_debug_full_o                       => fmc516_debug_full_int,
+    fifo_debug_empty_o                      => fmc516_debug_empty_int
   );
 
   gen_wbs_dummy_signals : for i in 0 to c_num_adc_channels-1 generate
@@ -871,10 +911,57 @@ begin
   fmc_mmcm_lock_o                           <= fmc516_mmcm_lock_int;
   fmc_lmk_lock_o                            <= fmc516_lmk_lock_int;
 
+  -- Tri-state buffer for SPI three-wire mode
+  sys_spi_data_b  <= sys_spi_dout_int when sys_spi_miosio_oe_n_int = '0' else 'Z';
+  sys_spi_din_int <= sys_spi_data_b;
+
+  sys_spi_clk_o                             <= sys_spi_clk_int;
+  -- Does this work at all?
+  --sys_spi_data_b                            <= sys_spi_data_int;
   sys_spi_cs_adc0_n_o                       <= sys_spi_cs_adc0_n_int;
   sys_spi_cs_adc1_n_o                       <= sys_spi_cs_adc1_n_int;
   sys_spi_cs_adc2_n_o                       <= sys_spi_cs_adc2_n_int;
   sys_spi_cs_adc3_n_o                       <= sys_spi_cs_adc3_n_int;
+
+  lmk_lock_int                              <= lmk_lock_i;
+  lmk_sync_o                                <= lmk_sync_int;
+  lmk_uwire_latch_en_o                      <= lmk_uwire_latch_en_int;
+  lmk_uwire_data_o                          <= lmk_uwire_data_int;
+  lmk_uwire_clock_o                         <= lmk_uwire_clock_int;
+
+  -- Reset FMC516 ADCs
+  fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
+  fmc516_fs_rst_n                           <= clk_sys_rstn and fmc516_mmcm_lock_int;
+
+  p_fmc516_reset_adcs : process(fmc516_fs_clk(1))
+  begin
+    if rising_edge(fmc516_fs_clk(1)) then
+      if (fmc516_fs_rst_n = '0' or fmc_reset_adcs_n_int = '0') then
+        fmc_reset_adcs_n_out <= '1';
+        reset_adc_counter <= (others => '0');
+      elsif reset_adc_counter = "1111111" then
+        fmc_reset_adcs_n_out <= '1';
+      else
+        reset_adc_counter <= reset_adc_counter + 1;
+        fmc_reset_adcs_n_out <= '0';
+      end if;
+    end if;
+  end process;
+
+  p_debug : process(sys_spi_clk_int)
+  begin
+    if rising_edge(sys_spi_clk_int) then
+      if (clk_sys_rstn = '0') then
+        fmc_debug <= '0';
+      else
+        fmc_debug <= sys_spi_dout_int and
+                       ((not sys_spi_cs_adc0_n_int) or
+                       (not sys_spi_cs_adc1_n_int) or
+                       (not sys_spi_cs_adc2_n_int) or
+                       (not sys_spi_cs_adc3_n_int));
+      end if;
+    end if;
+  end process;
 
   -- The board peripherals components is slave 8
   cmp_xwb_dbe_periph : xwb_dbe_periph
@@ -986,7 +1073,7 @@ begin
     CONTROL3                                => CONTROL3
   );
 
-  cmp_chipscope_ila_0_ethmac : chipscope_ila
+  cmp_chipscope_ila_0_fmc516_clk0 : chipscope_ila
   port map (
     CONTROL                                 => CONTROL0,
     --CLK                                     => clk_sys,
@@ -998,37 +1085,58 @@ begin
   );
 
   -- FMC516 WBS master output data
-  TRIG_ILA0_0                               <= wbs_fmc516_out_array(3).dat &
-                                                 wbs_fmc516_out_array(2).dat;
+  --TRIG_ILA0_0                               <= wbs_fmc516_out_array(3).dat &
+  --                                               wbs_fmc516_out_array(2).dat;
+  TRIG_ILA0_0                               <= fmc516_adc_data(31 downto 16) &
+                                                 fmc516_adc_data(47 downto 32);
+
   -- FMC516 WBS master output data
-  TRIG_ILA0_1                               <= wbs_fmc516_out_array(1).dat &
-                                                 wbs_fmc516_out_array(0).dat;
+  --TRIG_ILA0_1                               <= wbs_fmc516_out_array(1).dat &
+  --                                               wbs_fmc516_out_array(0).dat;
+  --TRIG_ILA0_1                               <= fmc516_adc_data(15 downto 0) &
+  --                                               fmc516_adc_data(47 downto 32);
+  TRIG_ILA0_1                               <= (others => '0');
 
   -- FMC516 WBS master output control signals
-  TRIG_ILA0_2(17 downto 0)                   <= wbs_fmc516_out_array(3).cyc &
-                                                 wbs_fmc516_out_array(3).stb &
-                                                 wbs_fmc516_out_array(3).adr &
-                                                 wbs_fmc516_out_array(3).sel &
-                                                 wbs_fmc516_out_array(3).we &
+  TRIG_ILA0_2(17 downto 0)                   <= wbs_fmc516_out_array(1).cyc &
+                                                 wbs_fmc516_out_array(1).stb &
+                                                 wbs_fmc516_out_array(1).adr &
+                                                 wbs_fmc516_out_array(1).sel &
+                                                 wbs_fmc516_out_array(1).we &
                                                  wbs_fmc516_out_array(2).cyc &
                                                  wbs_fmc516_out_array(2).stb &
                                                  wbs_fmc516_out_array(2).adr &
                                                  wbs_fmc516_out_array(2).sel &
                                                  wbs_fmc516_out_array(2).we;
-  TRIG_ILA0_2(31 downto 18)                  <= (others => '0');
+  TRIG_ILA0_2(18)                            <= fmc_reset_adcs_n_out;
+  TRIG_ILA0_2(22 downto 19)                  <= fmc516_adc_valid;
+  TRIG_ILA0_2(23)                            <= fmc516_mmcm_lock_int;
+  TRIG_ILA0_2(24)                            <= fmc516_lmk_lock_int;
+  TRIG_ILA0_2(25)                            <= fmc516_debug_valid_int(1);
+  TRIG_ILA0_2(26)                            <= fmc516_debug_full_int(1);
+  TRIG_ILA0_2(27)                            <= fmc516_debug_empty_int(1);
+  TRIG_ILA0_2(31 downto 28)                  <= (others => '0');
 
   -- FMC516 WBS master output control signals
-  TRIG_ILA0_3(17 downto 0)                  <= wbs_fmc516_out_array(1).cyc &
-                                                 wbs_fmc516_out_array(1).stb &
-                                                 wbs_fmc516_out_array(1).adr &
-                                                 wbs_fmc516_out_array(1).sel &
-                                                 wbs_fmc516_out_array(1).we &
-                                                 wbs_fmc516_out_array(0).cyc &
-                                                 wbs_fmc516_out_array(0).stb &
-                                                 wbs_fmc516_out_array(0).adr &
-                                                 wbs_fmc516_out_array(0).sel &
-                                                 wbs_fmc516_out_array(0).we;
-  TRIG_ILA0_3(31 downto 18)                 <= (others => '0');
+  --TRIG_ILA0_3(17 downto 0)                  <= wbs_fmc516_out_array(1).cyc &
+  --                                               wbs_fmc516_out_array(1).stb &
+  --                                               wbs_fmc516_out_array(1).adr &
+  --                                               wbs_fmc516_out_array(1).sel &
+  --                                               wbs_fmc516_out_array(1).we &
+  --                                               wbs_fmc516_out_array(0).cyc &
+  --                                               wbs_fmc516_out_array(0).stb &
+  --                                               wbs_fmc516_out_array(0).adr &
+  --                                               wbs_fmc516_out_array(0).sel &
+  --                                               wbs_fmc516_out_array(0).we;
+  --TRIG_ILA0_3(18)                           <= fmc_reset_adcs_n_out;
+  --TRIG_ILA0_3(22 downto 19)                 <= fmc516_adc_valid;
+  --TRIG_ILA0_3(23)                           <= fmc516_mmcm_lock_int;
+  --TRIG_ILA0_3(24)                           <= fmc516_lmk_lock_int;
+  --TRIG_ILA0_3(25)                            <= fmc516_debug_valid_int(1);
+  --TRIG_ILA0_3(26)                            <= fmc516_debug_full_int(1);
+  --TRIG_ILA0_3(27)                            <= fmc516_debug_empty_int(1);
+  --TRIG_ILA0_3(31 downto 28)                 <= (others => '0');
+  TRIG_ILA0_3                                 <= (others => '0');
 
   -- Etherbone debuging signals
   --cmp_chipscope_ila_1_etherbone : chipscope_ila
@@ -1055,26 +1163,65 @@ begin
   --                                              wb_ebone_in.int;
   --TRIG_ILA1_3(31 downto 12)                  <= (others => '0');
 
-  cmp_chipscope_ila_1_ethmac_rx : chipscope_ila
+  --cmp_chipscope_ila_1_ethmac_rx : chipscope_ila
+  --port map (
+  --  CONTROL                                 => CONTROL1,
+  --  CLK                                     => mrx_clk_pad_i,
+  --  TRIG0                                   => TRIG_ILA1_0,
+  --  TRIG1                                   => TRIG_ILA1_1,
+  --  TRIG2                                   => TRIG_ILA1_2,
+  --  TRIG3                                   => TRIG_ILA1_3
+  --);
+  --
+  --TRIG_ILA1_0(7 downto 0)                   <= mrxd_pad_i &
+  --                                               mrxdv_pad_i &
+  --                                               mrxerr_pad_i &
+  --                                               mcoll_pad_i &
+  --                                               mcrs_pad_i;
+  --
+  --TRIG_ILA1_0(31 downto 8)                  <= (others => '0');
+  --TRIG_ILA1_1                               <= (others => '0');
+  --TRIG_ILA1_2                               <= (others => '0');
+  --TRIG_ILA1_3                               <= (others => '0');
+
+  cmp_chipscope_ila_1_fmc516_clk1 : chipscope_ila
   port map (
     CONTROL                                 => CONTROL1,
-    CLK                                     => mrx_clk_pad_i,
+    CLK                                     => fmc516_fs_clk(1),
     TRIG0                                   => TRIG_ILA1_0,
     TRIG1                                   => TRIG_ILA1_1,
     TRIG2                                   => TRIG_ILA1_2,
     TRIG3                                   => TRIG_ILA1_3
   );
 
-  TRIG_ILA1_0(7 downto 0)                   <= mrxd_pad_i &
-                                                 mrxdv_pad_i &
-                                                 mrxerr_pad_i &
-                                                 mcoll_pad_i &
-                                                 mcrs_pad_i;
+    -- FMC516 WBS master output data
+  TRIG_ILA1_0                               <= fmc516_adc_data(15 downto 0) &
+                                                 fmc516_adc_data(63 downto 48);
 
-  TRIG_ILA1_0(31 downto 8)                  <= (others => '0');
+  -- FMC516 WBS master output data
   TRIG_ILA1_1                               <= (others => '0');
-  TRIG_ILA1_2                               <= (others => '0');
-  TRIG_ILA1_3                               <= (others => '0');
+
+  -- FMC516 WBS master output control signals
+  TRIG_ILA1_2(17 downto 0)                   <= wbs_fmc516_out_array(0).cyc &
+                                                 wbs_fmc516_out_array(0).stb &
+                                                 wbs_fmc516_out_array(0).adr &
+                                                 wbs_fmc516_out_array(0).sel &
+                                                 wbs_fmc516_out_array(0).we &
+                                                 wbs_fmc516_out_array(3).cyc &
+                                                 wbs_fmc516_out_array(3).stb &
+                                                 wbs_fmc516_out_array(3).adr &
+                                                 wbs_fmc516_out_array(3).sel &
+                                                 wbs_fmc516_out_array(3).we;
+  TRIG_ILA1_2(18)                            <= fmc_reset_adcs_n_out;
+  TRIG_ILA1_2(22 downto 19)                  <= fmc516_adc_valid;
+  TRIG_ILA1_2(23)                            <= fmc516_mmcm_lock_int;
+  TRIG_ILA1_2(24)                            <= fmc516_lmk_lock_int;
+  TRIG_ILA1_2(25)                            <= fmc516_debug_valid_int(0);
+  TRIG_ILA1_2(26)                            <= fmc516_debug_full_int(0);
+  TRIG_ILA1_2(27)                            <= fmc516_debug_empty_int(0);
+  TRIG_ILA1_2(31 downto 28)                  <= (others => '0');
+
+  TRIG_ILA1_3                                 <= (others => '0');
 
   cmp_chipscope_ila_2_ethmac_tx : chipscope_ila
   port map (
@@ -1129,13 +1276,25 @@ begin
     TRIG3                                   => TRIG_ILA3_3
   );
 
-  TRIG_ILA3_0(3 downto 0)                   <= sys_spi_cs_adc0_n_int &    -- SPI ADC CS channel 0
+  TRIG_ILA3_0(7 downto 0)                   <= sys_spi_clk_int &
+                                                 --sys_spi_data_int &
+                                                 sys_spi_din_int &
+                                                 sys_spi_dout_int &
+                                                 sys_spi_miosio_oe_n_int &
+                                                 sys_spi_cs_adc0_n_int &    -- SPI ADC CS channel 0
                                                  sys_spi_cs_adc1_n_int &  -- SPI ADC CS channel 1
                                                  sys_spi_cs_adc2_n_int &  -- SPI ADC CS channel 2
                                                  sys_spi_cs_adc3_n_int;   -- SPI ADC CS channel 3
 
-  TRIG_ILA3_0(31 downto 4)                  <= (others => '0');
-  TRIG_ILA3_1                               <= (others => '0');
+  TRIG_ILA3_0(31 downto 8)                  <= (others => '0');
+
+  TRIG_ILA3_1(4 downto 0)                   <= lmk_lock_int &
+                                               lmk_sync_int &
+                                               lmk_uwire_latch_en_int &
+                                               lmk_uwire_data_int &
+                                               lmk_uwire_clock_int;
+
+  TRIG_ILA3_1(31 downto 5)                  <= (others => '0');
   TRIG_ILA3_2                               <= (others => '0');
   TRIG_ILA3_3                               <= (others => '0');
 
