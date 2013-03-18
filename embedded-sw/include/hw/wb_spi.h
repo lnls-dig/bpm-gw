@@ -32,31 +32,32 @@
 #define SPI_CTRL_GO_BSY (1<<8)
 #define SPI_CTRL_BSY (1<<8)
 #define SPI_CTRL_CHAR_LEN(x) ((x) & 0x7f)
+#define SPI_CTRL_SS(x) ((x) & 0xff)
 
 #define SPI_LGH_MASK 0x7F
 #define SPI_DIV_MASK 0xFFFF
 
 PACKED struct SPI_WB {
-	union {
-		uint32_t RX0;
-		uint32_t TX0;
-	};
-	union {
-		uint32_t RX1;
-		uint32_t TX1;
-	};
-	union {
-		uint32_t RX2;
-		uint32_t TX2;
-	};
-	union {
-		uint32_t RX3;
-		uint32_t TX3;
-	};
+    union {
+        uint32_t RX0;
+        uint32_t TX0;
+    };
+    union {
+        uint32_t RX1;
+        uint32_t TX1;
+    };
+    union {
+        uint32_t RX2;
+        uint32_t TX2;
+    };
+    union {
+        uint32_t RX3;
+        uint32_t TX3;
+    };
 
-	uint32_t CTRL;
-	uint32_t DIVIDER;
-	uint32_t SS;
+    uint32_t CTRL;
+    uint32_t DIVIDER;
+    uint32_t SS;
 };
 
 #endif

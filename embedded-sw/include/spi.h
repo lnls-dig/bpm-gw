@@ -7,7 +7,8 @@
 /*
  * fsclk = fs_wbclk / (divider+1)*2
  */
-#define DEFAULT_SPI_DIVIDER 100
+#define DEFAULT_SPI_DIVIDER 99
+//#define DEFAULT_SPI_DIVIDER 9
 
 /* Type definitions */
 typedef volatile struct SPI_WB spi_t;

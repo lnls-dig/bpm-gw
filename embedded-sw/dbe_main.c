@@ -367,11 +367,26 @@ void fmc516_test()
 
   pp_printf("> FMC516 ADCs info...\n");
 
+  //pp_printf("> FMC516 ADCs resetting...\n");
+  //delay(LED_DELAY);
+  //fmc516_reset_adcs(FMC516_ID);
+
+  //delay(LED_DELAY);
   for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
     pp_printf("> FMC516_ISLA216_ADC%d calibration progress...\n", i);
     while(!(fmc516_isla216_chkcal_stat(i)));
     pp_printf("done\n");
   }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d port_config: %d\n",
+  //    i, fmc516_isla216_read_byte(0x00, i));
+  //}
+  //
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d user_pat: %d\n",
+  //    i, fmc516_isla216_read_byte(0xC1, i));
+  //}
 
   for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
     pp_printf("> FMC516_ISLA216_ADC%d chip id: %d\n",
@@ -380,13 +395,76 @@ void fmc516_test()
 
   for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
     pp_printf("> FMC516_ISLA216_ADC%d chip version: %d\n",
-      i, fmc516_isla216_get_chipver(FMC516_ISLA216_ADC0));
+      i, fmc516_isla216_get_chipver(i));
   }
 
   for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    fmc516_isla216_test_ramp(i);
-    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+    pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+        ISLA216_TESTIO_REG, i);
   }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_ramp(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //}
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_midscale(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: test miscale enabled!\n", i);
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d: testio reg: 0X%8X\n", i,
+            fmc516_isla216_read_byte(ISLA216_TESTIO_REG, i));
+  }
+
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  delay(LED_DELAY);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  delay(LED_DELAY+12384);
+
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  delay(LED_DELAY);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  delay(LED_DELAY+12384);
+
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  delay(LED_DELAY);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  delay(LED_DELAY+12384);
+
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  delay(LED_DELAY);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  delay(LED_DELAY+12384);
+
+  dbg_print("> initilizing fmc516 delays\n");
+  fmc516_init_delays(0);
 
   pp_printf("> test finished...\n");
 }
