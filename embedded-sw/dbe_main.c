@@ -1,6 +1,8 @@
-#include "gpio.h"       // GPIO device funtions
+#include "gpio.h"         // GPIO device funtions
+#include "i2c.h"          // I2V device functions
+#include "onewire.h"      // Onewire device functions
 #include "dma.h"          // DMA device functions
-#include "fmc150.h"       // FMC150 device functions
+//#include "fmc150.h"     // FMC150 device functions
 #include "fmc516.h"       // FMC516 device functions
 #include "uart.h"         // UART device functions
 #include "memmgr.h"       // memory pool functions
@@ -357,68 +359,9 @@ void button_test()
 //  pp_printf("> FMC150 CDCE72010 initialized\n");
 //}
 
-void fmc516_test()
+
+void print_fmc516_data(unsigned int id)
 {
-  int i;
-
-  pp_printf("-------------------------------------------\n");
-  pp_printf("|                FMC516 test              |\n");
-  pp_printf("-------------------------------------------\n\n");
-
-  pp_printf("> FMC516 ADCs info...\n");
-
-  //pp_printf("> FMC516 ADCs resetting...\n");
-  //delay(LED_DELAY);
-  //fmc516_reset_adcs(FMC516_ID);
-
-  //delay(LED_DELAY);
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d calibration progress...\n", i);
-    while(!(fmc516_isla216_chkcal_stat(i)));
-    pp_printf("done\n");
-  }
-
-  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  pp_printf("> FMC516_ISLA216_ADC%d port_config: %d\n",
-  //    i, fmc516_isla216_read_byte(0x00, i));
-  //}
-  //
-  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  pp_printf("> FMC516_ISLA216_ADC%d user_pat: %d\n",
-  //    i, fmc516_isla216_read_byte(0xC1, i));
-  //}
-
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d chip id: %d\n",
-      i, fmc516_isla216_get_chipid(i));
-  }
-
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d chip version: %d\n",
-      i, fmc516_isla216_get_chipver(i));
-  }
-
-  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
-  //  fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
-  //      ISLA216_TESTIO_REG, i);
-  //}
-
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    fmc516_isla216_test_ramp(i);
-    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
-  }
-
-  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  fmc516_isla216_test_midscale(i);
-  //  pp_printf("> FMC516_ISLA216_ADC%d: test miscale enabled!\n", i);
-  //}
-
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d: testio reg: 0X%8X\n", i,
-            fmc516_isla216_read_byte(ISLA216_TESTIO_REG, i));
-  }
-
   pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY+32);
   pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
@@ -462,8 +405,73 @@ void fmc516_test()
   delay(LED_DELAY);
   pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
   delay(LED_DELAY+79);
+}
 
-  //dbg_print("> initilizing fmc516 delays\n");
+void fmc516_test()
+{
+  int i;
+
+  pp_printf("-------------------------------------------\n");
+  pp_printf("|                FMC516 test              |\n");
+  pp_printf("-------------------------------------------\n\n");
+
+  pp_printf("> FMC516 ADCs info...\n");
+
+  //pp_printf("> FMC516 ADCs resetting...\n");
+  //delay(LED_DELAY);
+  //fmc516_reset_adcs(FMC516_ID);
+
+  //delay(LED_DELAY);
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d calibration progress...\n", i);
+    while(!(fmc516_isla216_chkcal_stat(i)));
+    pp_printf("done\n");
+  }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d port_config: %d\n",
+  //    i, fmc516_isla216_read_byte(0x00, i));
+  //}
+  //
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d user_pat: %d\n",
+  //    i, fmc516_isla216_read_byte(0xC1, i));
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d chip id: %d\n",
+      i, fmc516_isla216_get_chipid(i));
+  }
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d chip version: %d\n",
+      i, fmc516_isla216_get_chipver(i));
+  }
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+        ISLA216_TESTIO_REG, i);
+  }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_ramp(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //}
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_midscale(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: test miscale enabled!\n", i);
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d: testio reg: 0X%8X\n", i,
+            fmc516_isla216_read_byte(ISLA216_TESTIO_REG, i));
+  }
+
+  //print_fmc516_data(DEFAULT_FMC516_ID);
+
+  dbg_print("> initilizing fmc516 delays\n");
   fmc516_sweep_delays(DEFAULT_FMC516_ID);
 
   pp_printf("> test finished...\n");

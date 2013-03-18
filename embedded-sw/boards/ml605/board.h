@@ -67,7 +67,7 @@
 #define TICS_ID 0
 
 /*
- * IDs of some FMC516 components
+ * IDs of FMC516 components
  */
 #define FMC516_SYS_I2C_ID 0
 #define FMC516_VCXO_I2C_ID 1

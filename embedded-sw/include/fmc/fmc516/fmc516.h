@@ -25,6 +25,7 @@ void fmc516_clk_sel(unsigned int id, int ext_clk);
 void fmc516_led0(unsigned int id, int on);
 void fmc516_led1(unsigned int id, int on);
 void fmc516_reset_adcs(unsigned int id);
+void fmc516_resetdiv_adcs(unsigned int id);
 
 void fmc516_update_clk_dly(unsigned int id);
 void fmc516_update_data_dly(unsigned int id);
@@ -40,4 +41,6 @@ uint32_t fmc516_read_adc0(unsigned int id);
 uint32_t fmc516_read_adc1(unsigned int id);
 uint32_t fmc516_read_adc2(unsigned int id);
 uint32_t fmc516_read_adc3(unsigned int id);
+
+void fmc516_fe_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2);
 

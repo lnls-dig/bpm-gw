@@ -99,7 +99,6 @@ void oc_spi_config(unsigned int id, int ass, int rx_neg, int tx_neg,
 // For use only with spi three-wire mode
 int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
 {
-    dbg_print("> oc_spi_three_mode_tx...\n");
     // Write configuration to SPI core. SPI_CTRL_DIR = 1
     spi[id]->CTRL = spi_config[id] | SPI_CTRL_DIR | SPI_CTRL_CHAR_LEN(nbits);
 
@@ -117,7 +116,7 @@ int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
     // Wait for completion
-    dbg_print("> oc_spi_three_mode_tx: waiting to spi...\n");
+    dbg_print("> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 
@@ -132,7 +131,6 @@ int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
 // For use only with spi three-wire mode
 int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
 {
-    dbg_print("> oc_spi_three_mode_rx...\n");
     // Write configuration to SPI core. SPI_CTRL_DIR = 0
     spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
     spi[id]->SS = (1 << ss);
@@ -144,18 +142,16 @@ int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
     // Wait for reception
-    dbg_print("> oc_spi_three_mode_rx: waiting to spi...\n");
+    dbg_print("> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 
     delay(SPI_DELAY);
 
-    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
-    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
-
     *out = spi[id]->RX0;
 
-    dbg_print("> *out: 0x%8X\n", *out);
+    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
+    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
 
     return 0;
 }
@@ -164,7 +160,6 @@ int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
 {
     uint32_t rval;
 
-    dbg_print("> oc_spi_txrx...\n");
     // Avoid breaking the code when just issuing a read command (out can be null)
     if (!out)
         out = &rval;
@@ -179,7 +174,7 @@ int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
     spi[id]->SS = (1 << ss);
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
-    dbg_print("> oc_spi_txrx: waiting to spi...\n");
+    dbg_print("> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 
