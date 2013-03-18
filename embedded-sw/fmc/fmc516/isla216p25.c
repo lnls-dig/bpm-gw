@@ -11,6 +11,7 @@
 #include "spi.h"        // SPI device functions
 #include "isla216p25.h"
 #include "isla216p25_regs.h"
+#include "debug_print.h"
 
 /*
  * Which SPI ID is isla216p25? See board.h for definitions.
@@ -83,16 +84,19 @@ void fmc516_isla216_write_instaddr(int addr, int length, int read, int ss)
 
     fmc516_isla216_write_instaddr_raw(fmc516_isla216_reg, ss);
 }
-
+//ISLA216_CALSTATUS_REG
 // word is 8-bit (1 byte) long for isla216p25
 int fmc516_isla216_read_byte(int addr, int ss)
 {
     uint32_t val;
 
+    // TESTING! LENGTH MUST BE 1
     fmc516_isla216_write_instaddr(addr, 1, 1, ss);
 
     // Read the desired byte
     fmc516_isla216_readw_raw(&val, ss);
+
+    dbg_print("fmc_read_byte: 0X%8X\n", val);
 
     return val & 0xff;
 }
@@ -145,7 +149,8 @@ static void fmc516_isla216_load_regset(const struct default_dev_regs_t *regs, in
 	int i = 0;
 
     while (regs[i].type != REGS_DEFAULT_END){
-        fmc516_isla216_write_byte(regs[i].val, regs[i].addr, ss);
+        if (regs[i].type == REGS_DEFAULT_INIT)
+            fmc516_isla216_write_byte(regs[i].val, regs[i].addr, ss);
         ++i;
     }
 }
@@ -156,7 +161,7 @@ static void fmc516_isla216_load_regset(const struct default_dev_regs_t *regs, in
 
 int fmc516_isla216_chkcal_stat(int ss)
 {
-    return fmc516_isla216_read_byte(ISLA216_CALSTATUS_REG, ss) & ISLA216_CALDONE_MASK;
+    return fmc516_isla216_read_byte(ISLA216_CALSTATUS_REG, ss) & 0x01;
 }
 
 void fmc516_isla216_test_ramp(int ss)
@@ -165,12 +170,18 @@ void fmc516_isla216_test_ramp(int ss)
                                 ISLA216_TESTIO_REG, ss);
 }
 
+void fmc516_isla216_test_midscale(int ss)
+{
+    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_MIDSHORT),
+                                ISLA216_TESTIO_REG, ss);
+}
+
 int fmc516_isla216_get_chipid(int ss)
 {
-    return fmc516_isla216_read_byte(ISLA216_CHIPID_REG, ss) & ISLA216_CHIPID_MASK;
+    return fmc516_isla216_read_byte(ISLA216_CHIPID_REG, ss) & 0xff;
 }
 
 int fmc516_isla216_get_chipver(int ss)
 {
-    return fmc516_isla216_read_byte(ISLA216_CHIPVER_REG, ss) & ISLA216_CHIPVER_MASK;
+    return fmc516_isla216_read_byte(ISLA216_CHIPVER_REG, ss) & 0xff;
 }

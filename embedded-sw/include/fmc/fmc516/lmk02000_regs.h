@@ -38,3 +38,10 @@ const struct default_dev_regs_t lmk02000_regs_default[] =
 	{REGS_DEFAULT_NO_INIT,  4, 0xf, 0x4003e800|15       },
 	{REGS_DEFAULT_END,      0, 0  , 0                   }
 };
+
+//const struct default_dev_regs_t lmk02000_regs_default[] =
+//{
+//    // Power down LMK02000 (1<<26)
+//    {REGS_DEFAULT_INIT,     4, 0xe, (1<<26)|14          },
+//    {REGS_DEFAULT_END,      0, 0  , 0                   }
+//};

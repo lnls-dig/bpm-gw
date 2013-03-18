@@ -136,11 +136,6 @@ int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
     // Write configuration to SPI core. SPI_CTRL_DIR = 0
     spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
     spi[id]->SS = (1 << ss);
-    // TEST ONLY
-    spi[id]->RX0 = 0;
-    //spi[id]->RX1 = 0;
-    //spi[id]->RX2 = 0;
-    //spi[id]->RX3 = 0;
 
     dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
     dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);

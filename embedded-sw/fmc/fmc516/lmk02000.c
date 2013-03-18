@@ -49,7 +49,8 @@ static void fmc516_lmk02000_load_regset(const struct default_dev_regs_t *regs)
     dbg_print("> fmc516_lmk02000_load_regset...\n");
     while (regs[i].type != REGS_DEFAULT_END){
         dbg_print("> fmc516_lmk02000_load_regset while: %d...\n", i);
-        fmc516_lmk02000_write_reg(regs[i].val);
+        if (regs[i].type == REGS_DEFAULT_INIT)
+            fmc516_lmk02000_write_reg(regs[i].val);
         ++i;
     }
 }

@@ -398,16 +398,16 @@ void fmc516_test()
       i, fmc516_isla216_get_chipver(i));
   }
 
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
-    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
-        ISLA216_TESTIO_REG, i);
-  }
-
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  fmc516_isla216_test_ramp(i);
-  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+  //  fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+  //      ISLA216_TESTIO_REG, i);
   //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    fmc516_isla216_test_ramp(i);
+    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  }
 
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
   //  fmc516_isla216_test_midscale(i);
@@ -419,52 +419,52 @@ void fmc516_test()
             fmc516_isla216_read_byte(ISLA216_TESTIO_REG, i));
   }
 
-  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY+32);
-  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY+124);
-  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY+1);
-  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY);
-  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(0));
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
   delay(LED_DELAY+12384);
 
-  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
   delay(LED_DELAY+32);
-  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
   delay(LED_DELAY+124);
-  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
   delay(LED_DELAY+1);
-  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
   delay(LED_DELAY);
-  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(0));
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
   delay(LED_DELAY+12384);
 
-  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
   delay(LED_DELAY+32);
-  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
   delay(LED_DELAY+124);
-  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
   delay(LED_DELAY+1);
-  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
   delay(LED_DELAY);
-  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(0));
-  delay(LED_DELAY+12384);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+456);
 
-  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
   delay(LED_DELAY+32);
-  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
   delay(LED_DELAY+124);
-  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
   delay(LED_DELAY+1);
-  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
   delay(LED_DELAY);
-  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(0));
-  delay(LED_DELAY+12384);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+79);
 
-  dbg_print("> initilizing fmc516 delays\n");
-  fmc516_init_delays(0);
+  //dbg_print("> initilizing fmc516 delays\n");
+  fmc516_sweep_delays(DEFAULT_FMC516_ID);
 
   pp_printf("> test finished...\n");
 }
