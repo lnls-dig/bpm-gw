@@ -1,0 +1,163 @@
+/*
+ * Copyright (C) 2013 LNLS (www.lnls.br)
+ * Author: Lucas Russo <lucas.russo@lnls.br>
+ *
+ * Released according to the GNU GPL, version 2 or any later version.
+ */
+
+#include <inttypes.h>
+
+#include "board.h"      // Board definitions: SPI device structure
+#include "spi.h"        // SPI device functions
+#include "regs.h"
+
+#define FMC516_ISLA216_ADC0 0
+#define FMC516_ISLA216_ADC1 1
+#define FMC516_ISLA216_ADC2 2
+#define FMC516_ISLA216_ADC3 3
+#define FMC516_NUM_ISLA216 4
+
+#define FMC516_ISLA216_RW_SIZE 1
+#define FMC516_ISLA216_RW_OFS 0
+#define FMC516_ISLA216_RW_MASK 0x1
+#define FMC516_ISLA216_RW(x) (((x) << FMC516_ISLA216_RW_OFS) & FMC516_ISLA216_RW_MASK)
+#define FMC516_ISLA216_READ (FMC516_ISLA216_RW(1))
+//#define FMC516_ISLA216_WRITE (~FMC516_ISLA216_READ)
+
+#define FMC516_ISLA216_LENGTH_SIZE 2
+#define FMC516_ISLA216_LENGTH_OFS 1
+#define FMC516_ISLA216_LENGTH_MASK 0x6
+#define FMC516_ISLA216_LENGTH(x) (((x) << FMC516_ISLA216_LENGTH_OFS) & FMC516_ISLA216_LENGTH_MASK)
+
+#define FMC516_ISLA216_ADDR_SIZE 13
+#define FMC516_ISLA216_ADDR_OFS 3
+#define FMC516_ISLA216_ADDR_MASK 0xFFF8
+#define FMC516_ISLA216_ADDR(x) (((x) << FMC516_ISLA216_ADDR_OFS) & FMC516_ISLA216_ADDR_MASK)
+
+#define FMC516_ISLA216_INSTADDR_SIZE (FMC516_ISLA216_RW_SIZE +    \
+                                FMC516_ISLA216_LENGTH_SIZE +    \
+                                FMC516_ISLA216_ADDR_SIZE)
+
+#define FMC516_ISLA216_WORD_SIZE 8
+
+/*
+ *  Internal ISLA216P register description from ISLA216P25
+ *  datasheet Incomplete! Byte addressed!
+ */
+
+#define ISLA216_PORTCONFIG_REG 0x00000000
+//#define ISLA216_RES0_REG 0x00000001
+#define SPI_REG_BURSTEND_REG 0x00000002
+//#define ISLA216_RES1_REG 0x00000003
+//#define ISLA216_RES2_REG 0x00000004
+//#define ISLA216_RES3_REG 0x00000005
+//#define ISLA216_RES4_REG 0x00000006
+//#define ISLA216_RES5_REG 0x00000007
+
+#define ISLA216_CHIPID_REG 0x00000008
+#define ISLA216_CHIPID_MASK 0xff
+
+#define ISLA216_CHIPVER_REG 0x00000009
+#define ISLA216_CHIPVER_MASK 0xff
+
+//#define ISLA216_RES6_REG  0x0000000a
+//#define ISLA216_RES7_REG  0x0000000b
+//#define ISLA216_RES8_REG  0x0000000c
+//#define ISLA216_RES9_REG  0x0000000d
+//#define ISLA216_RES10_REG 0x0000000e
+//#define ISLA216_RES11_REG 0x0000000f
+//
+//#define ISLA216_RES12_REG 0x00000010
+//#define ISLA216_RES13_REG 0x00000011
+//#define ISLA216_RES14_REG 0x00000012
+//#define ISLA216_RES15_REG 0x00000013
+//#define ISLA216_RES16_REG 0x00000014
+//#define ISLA216_RES17_REG 0x00000015
+//#define ISLA216_RES18_REG 0x00000016
+//#define ISLA216_RES19_REG 0x00000017
+
+//#define ISLA216_RES20_REG 0x00000018
+//#define ISLA216_RES21_REG 0x00000019
+//#define ISLA216_RES22_REG 0x0000001a
+//#define ISLA216_RES23_REG 0x0000001b
+//#define ISLA216_RES24_REG 0x0000001c
+//#define ISLA216_RES25_REG 0x0000001d
+//#define ISLA216_RES26_REG 0x0000001e
+//#define ISLA216_RES27_REG 0x0000001f
+
+#define ISLA216_MODESADC0_REG 0x00000025
+#define ISLA216_MODESADC1_REG 0x0000002b
+
+#define ISLA216_CLKDIV_REG 0x00000072
+
+#define ISLA216_OUTMODEA_REG 0x00000073
+#define ISLA216_OUTFMT_MASK 0x00000007
+#define ISLA216_OUTFMT_OFS 0
+#define ISLA216_OUTFMT(x) (((x) << ISLA216_OUTFMT_OFS) & ISLA216_OUTFMT_MASK)
+#define ISLA216_OUTFMT_2COMPL 0
+#define ISLA216_OUTFMT_GRAYCODE (1<<1)
+#define ISLA216_OUTFMT_OFSBIN (1<<2)
+#define ISLA216_OUTMODE_MASK 0x000000E0
+#define ISLA216_OUTMODE_OFS 4
+#define ISLA216_OUTMODE(x) (((x) << ISLA216_OUTMODE_OFS) & ISLA216_OUTMODE_MASK)
+#define ISLA216_OUTMODE_LVDS3 0
+#define ISLA216_OUTMODE_LVDS2 1
+#define ISLA216_OUTMODE_LVCMOS (1<<2)
+
+#define ISLA216_OUTMODEB_REG 0x00000074
+
+#define ISLA216_CALSTATUS_REG 0x000000b6
+#define ISLA216_CALDONE_MASK 0x1
+
+#define ISLA216_TESTIO_REG 0x000000C0
+#define ISLA216_USR_TESTMODE_MASK 0x00000007
+#define ISLA216_USR_TESTMODE_OFS 0
+#define ISLA216_USR_TESTMODE(x) (((x) << ISLA216_USR_TESTMODE_OFS) & ISLA216_USR_TESTMODE_MASK)
+#define ISLA216_USR_TESTIO_USRPAT1 0
+#define ISLA216_USR_TESTIO_CYCPAT13 1
+#define ISLA216_USR_TESTIO_CYCPAT135 2
+#define ISLA216_USR_TESTIO_CYCPAT1357 3
+#define ISLA216_OUT_TESTMODE_MASK 0x000000f0
+#define ISLA216_OUT_TESTMODE_OFS 4
+#define ISLA216_OUT_TESTMODE(x) (((x) << ISLA216_OUT_TESTMODE_OFS) & ISLA216_OUT_TESTMODE_MASK)
+#define ISLA216_OUT_TESTIO_OFF 0
+#define ISLA216_OUT_TESTIO_MIDSHORT 1
+#define ISLA216_OUT_TESTIO_PLUS_FSSHORT 2
+#define ISLA216_OUT_TESTIO_MINUS_FSSHORT 3
+#define ISLA216_OUT_TESTIO_RES0 4
+#define ISLA216_OUT_TESTIO_RES1 5
+#define ISLA216_OUT_TESTIO_RES2 6
+#define ISLA216_OUT_TESTIO_RES3 7
+#define ISLA216_OUT_TESTIO_USRPAT 8
+#define ISLA216_OUT_TESTIO_RES4 9
+#define ISLA216_OUT_TESTIO_RAMP 10
+#define ISLA216_OUT_TESTIO_RES5 11
+#define ISLA216_OUT_TESTIO_RES6 12
+#define ISLA216_OUT_TESTIO_RES7 13
+#define ISLA216_OUT_TESTIO_RES8 14
+#define ISLA216_OUT_TESTIO_RES9 15
+
+/*
+ * ISLA216P Functions
+ */
+int fmc516_isla216_init(int ss);
+int fmc516_isla216_all_init(void);
+
+void fmc516_isla216_write_instaddr(int addr, int length, int read, int ss);
+
+// word is 8-bit (1 byte) long for isla216p25
+int fmc516_isla216_read_byte(int addr, int ss);
+void fmc516_isla216_write_byte(int val, int addr, int ss);
+// Read up to 4 bytes
+int fmc516_isla216_read_n(int addr, int length, int ss);
+// Write up to 4 bytes
+void fmc516_isla216_write_n(int val, int addr, int length, int ss);
+
+/*
+ * Convinient ISLA216P Functions
+ */
+
+int fmc516_isla216_chkcal_stat(int ss);
+void fmc516_isla216_test_ramp(int ss);
+int fmc516_isla216_get_chipid(int ss);
+int fmc516_isla216_get_chipver(int ss);
