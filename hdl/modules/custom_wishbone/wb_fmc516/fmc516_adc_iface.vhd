@@ -361,7 +361,11 @@ begin
             -----------------------------
             adc_clk_bufio_i                     => adc_clk_chain(chain_intercon(i)).adc_clk_bufio,
             adc_clk_bufr_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
-            adc_clk_bufg_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
+            --adc_clk_bufg_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
+            -- This will work only if all the adc data chains are synchronized with clocks
+            -- close enough in frequency. In the default case, all of the clocks are locked
+            -- to the same frequency. No need to have any phase relation.
+            adc_clk_bufg_i                      => adc_clk_chain(first_used_clk).adc_clk_bufg,
             adc_clk2x_bufg_i                    => adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
             --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
 

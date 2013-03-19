@@ -1081,8 +1081,10 @@ begin
   port map (
     CONTROL                                 => CONTROL0,
     --CLK                                     => clk_sys,
-    --CLK                                     => fmc516_fs_clk(0),
-    CLK                                     => fmc516_fs_clk(1),
+    -- TEST. We need to have all adc chain sync to a single clock
+    -- domain
+    CLK                                     => fmc516_fs_clk(0),
+    --CLK                                     => fmc516_fs_clk(1),
     TRIG0                                   => TRIG_ILA0_0,
     TRIG1                                   => TRIG_ILA0_1,
     TRIG2                                   => TRIG_ILA0_2,

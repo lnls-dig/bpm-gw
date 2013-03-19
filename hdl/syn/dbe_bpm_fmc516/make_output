@@ -5614,6 +5614,7 @@ WARNING:Xst:647 - Input <adc_dly_i[3]_adc_clk_dly_pulse> is never used. This por
 WARNING:Xst:647 - Input <adc_dly_i[3]_adc_clk_dly_incdec> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <adc_dly_i[2]_adc_clk_dly_pulse> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <adc_dly_i[2]_adc_clk_dly_incdec> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_adc_iface.vhd" line 269: Output port <adc_clk_bufg_o> of the instance <gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk> is unconnected or connected to loadless signal.
 WARNING:Xst:653 - Signal <adc_dly_o[3]_adc_clk_dly_val> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <adc_dly_o[2]_adc_clk_dly_val> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <adc_dly_o[3]_adc_clk_dly_pulse> is used but never assigned. This sourceless signal will be automatically connected to value GND.
@@ -10492,8 +10493,7 @@ WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <cmp_xwb_ethmac/cmp_
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <cmp_xwb_ethmac/cmp_wrapper_wb_ethmac/cmp_wrapper_ethmac/rxethmac1/rxcounters1/DlyCrcCnt_1> (without init value) has a constant value of 0 in block <dbe_bpm_fmc516>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <cmp_xwb_ethmac/cmp_wrapper_wb_ethmac/cmp_wrapper_ethmac/rxethmac1/rxcounters1/DlyCrcCnt_0> (without init value) has a constant value of 0 in block <dbe_bpm_fmc516>. This FF/Latch will be trimmed during the optimization process.
 INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/instruction_unit/icache/memories[0].way_0_data_ram/reb> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/instruction_unit/icache/memories[0].way_0_tag_ram/reb> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[3].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[0].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[3].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[0].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[3].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> in Unit <dbe_bpm_fmc516> is equivalent to the following 3 FFs/Latches, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[2].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[1].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[0].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> 
 INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/logic_op_x_3> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/direction_x> 
 INFO:Xst:2261 - The FF/Latch <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_8> in Unit <dbe_bpm_fmc516> is equivalent to the following 5 FFs/Latches, which will be removed : <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_7> <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_6> <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_5> <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_4> <cmp_eb_slave_core/TXCTRL/shift_hdr_chk_sum/sh_cnt_3> 
 INFO:Xst:2261 - The FF/Latch <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/rstblk/rd_rst_asreg_d1> in Unit <dbe_bpm_fmc516> is equivalent to the following 3 FFs/Latches, which will be removed : <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/rstblk/wr_rst_asreg_d1> <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/rstblk/rd_rst_asreg_d1> <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/rstblk/wr_rst_asreg_d1> 
@@ -10504,35 +10504,35 @@ INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped
 INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/condition_x_0> in Unit <dbe_bpm_fmc516> is equivalent to the following 2 FFs/Latches, which will be removed : <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/logic_op_x_0> <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/size_x_0> 
 INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/condition_x_1> in Unit <dbe_bpm_fmc516> is equivalent to the following 2 FFs/Latches, which will be removed : <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/logic_op_x_1> <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/size_x_1> 
 INFO:Xst:2261 - The FF/Latch <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/condition_x_2> in Unit <dbe_bpm_fmc516> is equivalent to the following 2 FFs/Latches, which will be removed : <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/logic_op_x_2> <cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/cpu/sign_extend_x> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[1].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[0].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_1> in Unit <dbe_bpm_fmc516> is equivalent to the following 7 FFs/Latches, which will be removed : <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_2> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_3> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_4> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_5> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_6> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_7> <cmp_xwb_ethmac_adapter/cmp_rx_adapter_32_to_16/PIPELINED.A_GREATER_B.scatter/sh_cnt_8> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> in Unit <dbe_bpm_fmc516> is equivalent to the following 3 FFs/Latches, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> 
 INFO:Xst:2261 - The FF/Latch <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_8> in Unit <dbe_bpm_fmc516> is equivalent to the following 7 FFs/Latches, which will be removed : <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_7> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_6> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_5> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_4> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_3> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_2> <cmp_eb_slave_core/TXCTRL/uut/PIPELINED.A_GREATER_B.scatter/sh_cnt_1> 
 INFO:Xst:3203 - The FF/Latch <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d2_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d1_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/gl0.wr/wpntr/gcc0.gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_eb_slave_core/EB/RX_FIFO/wrapped_gen/grf.rf/gl0.wr/wpntr/gcc0.gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d2_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d1_0> 
+INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d2_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d1_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d2_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.wr/wpntr/gic0.gc0.count_d1_0> 
+INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/gl0.rd/rpntr/gc0.count_0> 
 INFO:Xst:3203 - The FF/Latch <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/gl0.wr/wpntr/gcc0.gc0.count_d1_0> in Unit <dbe_bpm_fmc516> is the opposite to the following FF/Latch, which will be removed : <cmp_eb_slave_core/EB/TX_FIFO/wrapped_gen/grf.rf/gl0.wr/wpntr/gcc0.gc0.count_0> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[2].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[1].gen_adc_reset_synch_ch.cmp_reset_fs_synch/s_ff> 
 
 Mapping all equations...
 Building and optimizing final netlist ...
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[2].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[1].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[3].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> in Unit <dbe_bpm_fmc516> is equivalent to the following 2 FFs/Latches, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[2].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> <cmp_xwb_fmc516/cmp_wb_fmc516/gen_adc_reset_synch[1].gen_adc_reset_synch_ch.cmp_reset_fs_synch/rst_n_o> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d2> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d2> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d1> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d2> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d2> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/grstd1.grst_full.rst_d3> 
 INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> 
+INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/rstblk/RST_FULL_GEN> 
 Found area constraint ratio of 100 (+ 5) on block dbe_bpm_fmc516, actual ratio is 12.
-INFO:Xst:2260 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> 
-INFO:Xst:2261 - The FF/Latch <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> in Unit <dbe_bpm_fmc516> is equivalent to the following FF/Latch, which will be removed : <cmp_xwb_fmc516/cmp_wb_fmc516/gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen/cmp_fifo/empty> 
 
 Final Macro Processing ...
 
@@ -10555,8 +10555,8 @@ Unit <dbe_bpm_fmc516> processed.
 Final Register Report
 
 Macro Statistics
-# Registers                                            : 7586
- Flip-Flops                                            : 7586
+# Registers                                            : 7581
+ Flip-Flops                                            : 7581
 # Shift Registers                                      : 12
  2-bit shift register                                  : 3
  3-bit shift register                                  : 1
@@ -10586,11 +10586,11 @@ Clock Signal                                                                    
 -----------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+-------+
 cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/clgen/clk_out                                                   | NONE(fmc_debug)                                                                               | 1     |
 sys_clk_p_i                                                                                                                        | IBUFGDS+BUFG                                                                                  | 11    |
-cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT0                                                                              | 1049  |
+cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT0                                                                              | 2096  |
 sys_clk_p_i                                                                                                                        | MMCM_ADV:CLKOUT0                                                                              | 7257  |
-cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT0                                                                              | 1221  |
 mrx_clk_pad_i                                                                                                                      | BUFGP                                                                                         | 287   |
 mtx_clk_pad_i                                                                                                                      | BUFGP                                                                                         | 1006  |
+cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| BUFR                                                                                          | 171   |
 cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/jtck                                                                       | NONE(cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/jtag_cores/jtag_tap/update_delay)| 23    |
 cmp_chipscope_icon_0/U0/U_ICON/I_YES_BSCAN.U_BS/iDRCK_LOCAL                                                                        | BUFG                                                                                          | 731   |
 cmp_chipscope_icon_0/CONTROL1<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[1].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                   | 1     |
@@ -10723,10 +10723,10 @@ cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_T
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/N0(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/XST_GND:G)   | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36)  | 72    |
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/N0(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/XST_GND:G)   | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36)  | 72    |
 cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_0_fmc516_clk0/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36)    | 56    |
-cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_1_fmc516_clk1/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36)    | 56    |
-cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_2_ethmac_tx/XST_VCC:P)                                                                                                                                                                                                                                                                                                  | NONE(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[12].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[12].u_ramb36/U_RAMB36)    | 56    |
+cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_1_fmc516_clk1/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[0].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[0].u_ramb36/U_RAMB36)    | 56    |
+cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_2_ethmac_tx/XST_VCC:P)                                                                                                                                                                                                                                                                                                  | NONE(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[3].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[3].u_ramb36/U_RAMB36)      | 56    |
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_3_fmc516_periph/XST_VCC:P)                                                                                                                                                                                                                                                                                          | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36)  | 56    |
-cmp_ethmac_buf_ram/U_DPRAM/gen_single_clk.U_RAM_SC/s_we_b<0>(XST_GND:G)                                                                                                                                                                                                                                                                                                                                       | NONE(cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/mem/gbm.gbmg.gbmga.ngecc.bmg/blk_mem_generator/valid.cstr/ramloop[0].ram.r/v6_noinit.ram/SDP.SIMPLE_PRIM18.ram)                                                  | 40    |
+cmp_ethmac_buf_ram/U_DPRAM/gen_single_clk.U_RAM_SC/s_we_b<0>(XST_GND:G)                                                                                                                                                                                                                                                                                                                                       | NONE(cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc516_adc_data/gen_generic_bufr_bufg_fifo.cmp_adc_data_async_fifo/wrapped_gen/grf.rf/mem/gbm.gbmg.gbmga.ngecc.bmg/blk_mem_generator/valid.cstr/ramloop[0].ram.r/v6_noinit.ram/SDP.SIMPLE_PRIM18.ram)                                                  | 48    |
 cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/iCAP_WR_EN(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_G2_SQ.U_CAPCTRL/I_INTCAP_F.U_CAPWE1:Q)                                                                                                                                                                                                                                                           | NONE(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B18KGT0.u_ramb18/U_RAMB18E1)                                                                                                                                                                           | 8     |
 cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/iCAP_WR_EN(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_G2_SQ.U_CAPCTRL/I_INTCAP_F.U_CAPWE1:Q)                                                                                                                                                                                                                                                           | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B18KGT0.u_ramb18/U_RAMB18E1)                                                                                                                                                                           | 8     |
 cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/iCAP_WR_EN(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_G2_SQ.U_CAPCTRL/I_INTCAP_F.U_CAPWE1:Q)                                                                                                                                                                                                                                                               | NONE(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B18KGT0.u_ramb18/U_RAMB18E1)                                                                                                                                                                             | 8     |
@@ -10840,7 +10840,6 @@ WARNING:ConstraintSystem:56 - Constraint <TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN
    named 'TNM_ADC_DATA_3'.
 
 
-
 WARNING:ConstraintSystem:191 - The TNM 'adc_clk2_p_i', does not directly or
    indirectly drive any flip-flops, latches and/or RAMS and cannot be actively
    used by the referencing Period constraint 'TS_adc_clk2_p_i'. If clock manager
@@ -10891,8 +10890,8 @@ NGDBUILD Design Results Summary:
   Number of warnings:  12
 
 Writing NGD file "dbe_bpm_fmc516.ngd" ...
-Total REAL time to NGDBUILD completion:  27 sec
-Total CPU time to NGDBUILD completion:   26 sec
+Total REAL time to NGDBUILD completion:  30 sec
+Total CPU time to NGDBUILD completion:   28 sec
 
 Writing NGDBUILD log file "dbe_bpm_fmc516.bld"...
 
@@ -10945,20 +10944,20 @@ Updating timing models...
 INFO:Map:215 - The Interim Design Summary has been generated in the MAP Report
    (.mrp).
 Running timing-driven placement...
-Total REAL time at the beginning of Placer: 1 mins 
-Total CPU  time at the beginning of Placer: 58 secs 
+Total REAL time at the beginning of Placer: 1 mins 4 secs 
+Total CPU  time at the beginning of Placer: 1 mins 1 secs 
 
 Phase 1.1  Initial Placement Analysis
-Phase 1.1  Initial Placement Analysis (Checksum:f0be85c8) REAL time: 1 mins 12 secs 
+Phase 1.1  Initial Placement Analysis (Checksum:7b4c009e) REAL time: 1 mins 16 secs 
 
 Phase 2.7  Design Feasibility Check
-Phase 2.7  Design Feasibility Check (Checksum:f0be85c8) REAL time: 1 mins 13 secs 
+Phase 2.7  Design Feasibility Check (Checksum:7b4c009e) REAL time: 1 mins 18 secs 
 
 Phase 3.31  Local Placement Optimization
-Phase 3.31  Local Placement Optimization (Checksum:345f749c) REAL time: 1 mins 13 secs 
+Phase 3.31  Local Placement Optimization (Checksum:713d522c) REAL time: 1 mins 18 secs 
 
 Phase 4.37  Local Placement Optimization
-Phase 4.37  Local Placement Optimization (Checksum:345f749c) REAL time: 1 mins 13 secs 
+Phase 4.37  Local Placement Optimization (Checksum:713d522c) REAL time: 1 mins 18 secs 
 
 Phase 5.2  Initial Placement for Architecture Specific Features
 
@@ -11086,10 +11085,10 @@ AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chai
 CLOCKREGION_X0Y0, CLOCKREGION_X0Y1;
 
 
-# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" driven by "BUFR_X0Y3"
+# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" driven by "BUFR_X0Y2"
 INST
 "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/cmp_adc
-_clk_bufr" LOC = "BUFR_X0Y3" ;
+_clk_bufr" LOC = "BUFR_X0Y2" ;
 NET "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" TNM_NET =
 "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" ;
 TIMEGRP "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" AREA_GROUP =
@@ -11098,10 +11097,10 @@ AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chai
 CLOCKREGION_X0Y1, CLOCKREGION_X0Y2, CLOCKREGION_X0Y0;
 
 
-# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" driven by "BUFR_X1Y1"
+# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" driven by "BUFR_X1Y0"
 INST
 "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc516_adc_clk/cmp_adc
-_clk_bufr" LOC = "BUFR_X1Y1" ;
+_clk_bufr" LOC = "BUFR_X1Y0" ;
 NET "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" TNM_NET =
 "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" ;
 TIMEGRP "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" AREA_GROUP =
@@ -11110,41 +11109,41 @@ AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chai
 CLOCKREGION_X0Y0, CLOCKREGION_X0Y1;
 
 
-Phase 5.2  Initial Placement for Architecture Specific Features (Checksum:fd461ba9) REAL time: 1 mins 26 secs 
+Phase 5.2  Initial Placement for Architecture Specific Features (Checksum:904254f6) REAL time: 1 mins 32 secs 
 
 Phase 6.36  Local Placement Optimization
-Phase 6.36  Local Placement Optimization (Checksum:fd461ba9) REAL time: 1 mins 26 secs 
+Phase 6.36  Local Placement Optimization (Checksum:904254f6) REAL time: 1 mins 32 secs 
 
 Phase 7.30  Global Clock Region Assignment
-Phase 7.30  Global Clock Region Assignment (Checksum:fd461ba9) REAL time: 1 mins 26 secs 
+Phase 7.30  Global Clock Region Assignment (Checksum:904254f6) REAL time: 1 mins 32 secs 
 
 Phase 8.3  Local Placement Optimization
-Phase 8.3  Local Placement Optimization (Checksum:fd461ba9) REAL time: 1 mins 27 secs 
+Phase 8.3  Local Placement Optimization (Checksum:904254f6) REAL time: 1 mins 32 secs 
 
 Phase 9.5  Local Placement Optimization
-Phase 9.5  Local Placement Optimization (Checksum:fd461ba9) REAL time: 1 mins 27 secs 
+Phase 9.5  Local Placement Optimization (Checksum:904254f6) REAL time: 1 mins 32 secs 
 
 Phase 10.8  Global Placement
-..........................................................................................................................................................
-....................................................................................................................................................................................................
-............................................................................
-...........
-Phase 10.8  Global Placement (Checksum:c35a8a79) REAL time: 2 mins 24 secs 
+........................................................................................................................................................
+.......................................................................................................................................................................................
+.................................................................................................................
+.....................
+Phase 10.8  Global Placement (Checksum:c2565986) REAL time: 2 mins 15 secs 
 
 Phase 11.5  Local Placement Optimization
-Phase 11.5  Local Placement Optimization (Checksum:c35a8a79) REAL time: 2 mins 24 secs 
+Phase 11.5  Local Placement Optimization (Checksum:c2565986) REAL time: 2 mins 15 secs 
 
 Phase 12.18  Placement Optimization
-Phase 12.18  Placement Optimization (Checksum:c214b3fb) REAL time: 2 mins 50 secs 
+Phase 12.18  Placement Optimization (Checksum:5243e8d2) REAL time: 2 mins 43 secs 
 
 Phase 13.5  Local Placement Optimization
-Phase 13.5  Local Placement Optimization (Checksum:c214b3fb) REAL time: 2 mins 50 secs 
+Phase 13.5  Local Placement Optimization (Checksum:5243e8d2) REAL time: 2 mins 43 secs 
 
 Phase 14.34  Placement Validation
-Phase 14.34  Placement Validation (Checksum:4d8913fb) REAL time: 2 mins 51 secs 
+Phase 14.34  Placement Validation (Checksum:27b2319f) REAL time: 2 mins 44 secs 
 
-Total REAL time to Placer completion: 2 mins 52 secs 
-Total CPU  time to Placer completion: 3 mins 3 secs 
+Total REAL time to Placer completion: 2 mins 45 secs 
+Total CPU  time to Placer completion: 2 mins 57 secs 
 Running post-placement packing...
 Writing output files...
 
@@ -11152,16 +11151,16 @@ Design Summary:
 Number of errors:      0
 Number of warnings:   15
 Slice Logic Utilization:
-  Number of Slice Registers:                10,443 out of 301,440    3%
-    Number used as Flip Flops:              10,435
+  Number of Slice Registers:                10,438 out of 301,440    3%
+    Number used as Flip Flops:              10,430
     Number used as Latches:                      7
     Number used as Latch-thrus:                  0
     Number used as AND/OR logics:                1
-  Number of Slice LUTs:                     13,406 out of 150,720    8%
-    Number used as logic:                   12,308 out of 150,720    8%
-      Number using O6 output only:           9,639
-      Number using O5 output only:             511
-      Number using O5 and O6:                2,158
+  Number of Slice LUTs:                     13,465 out of 150,720    8%
+    Number used as logic:                   12,303 out of 150,720    8%
+      Number using O6 output only:           9,629
+      Number using O5 output only:             513
+      Number using O5 and O6:                2,161
       Number used as ROM:                        0
     Number used as Memory:                     748 out of  58,400    1%
       Number used as Dual Port RAM:             24
@@ -11173,20 +11172,20 @@ Slice Logic Utilization:
         Number using O6 output only:           496
         Number using O5 output only:             0
         Number using O5 and O6:                228
-    Number used exclusively as route-thrus:    350
-      Number with same-slice register load:    310
+    Number used exclusively as route-thrus:    414
+      Number with same-slice register load:    374
       Number with same-slice carry load:        40
       Number with other load:                    0
 
 Slice Logic Distribution:
-  Number of occupied Slices:                 6,153 out of  37,680   16%
-  Number of LUT Flip Flop pairs used:       17,069
-    Number with an unused Flip Flop:         7,753 out of  17,069   45%
-    Number with an unused LUT:               3,663 out of  17,069   21%
-    Number of fully used LUT-FF pairs:       5,653 out of  17,069   33%
-    Number of unique control sets:             556
+  Number of occupied Slices:                 6,001 out of  37,680   15%
+  Number of LUT Flip Flop pairs used:       16,955
+    Number with an unused Flip Flop:         7,729 out of  16,955   45%
+    Number with an unused LUT:               3,490 out of  16,955   20%
+    Number of fully used LUT-FF pairs:       5,736 out of  16,955   33%
+    Number of unique control sets:             552
     Number of slice register sites lost
-      to control set restrictions:           1,722 out of 301,440    1%
+      to control set restrictions:           1,711 out of 301,440    1%
 
   A LUT Flip Flop pair for this architecture represents one LUT paired with
   one Flip Flop within a slice.  A control set is a unique combination of
@@ -11210,8 +11209,8 @@ Specific Feature Utilization:
   Number of RAMB18E1/FIFO18E1s:                 15 out of     832    1%
     Number using RAMB18E1 only:                 15
     Number using FIFO18E1 only:                  0
-  Number of BUFG/BUFGCTRLs:                     11 out of      32   34%
-    Number used as BUFGs:                       11
+  Number of BUFG/BUFGCTRLs:                     10 out of      32   31%
+    Number used as BUFGs:                       10
     Number used as BUFGCTRLs:                    0
   Number of ILOGICE1/ISERDESE1s:                32 out of     720    4%
     Number used as ILOGICE1s:                   32
@@ -11241,9 +11240,9 @@ Specific Feature Utilization:
   Number of RPM macros:           48
 Average Fanout of Non-Clock Nets:                3.91
 
-Peak Memory Usage:  1507 MB
-Total REAL time to MAP completion:  3 mins 6 secs 
-Total CPU time to MAP completion (all processors):   3 mins 17 secs 
+Peak Memory Usage:  1506 MB
+Total REAL time to MAP completion:  3 mins 1 secs 
+Total CPU time to MAP completion (all processors):   3 mins 11 secs 
 
 Mapping completed.
 See MAP report file "dbe_bpm_fmc516_map.mrp" for details.
@@ -11280,16 +11279,16 @@ Device speed data version:  "PRODUCTION 1.17 2012-01-07".
 Device Utilization Summary:
 
 Slice Logic Utilization:
-  Number of Slice Registers:                10,443 out of 301,440    3%
-    Number used as Flip Flops:              10,435
+  Number of Slice Registers:                10,438 out of 301,440    3%
+    Number used as Flip Flops:              10,430
     Number used as Latches:                      7
     Number used as Latch-thrus:                  0
     Number used as AND/OR logics:                1
-  Number of Slice LUTs:                     13,406 out of 150,720    8%
-    Number used as logic:                   12,308 out of 150,720    8%
-      Number using O6 output only:           9,639
-      Number using O5 output only:             511
-      Number using O5 and O6:                2,158
+  Number of Slice LUTs:                     13,465 out of 150,720    8%
+    Number used as logic:                   12,303 out of 150,720    8%
+      Number using O6 output only:           9,629
+      Number using O5 output only:             513
+      Number using O5 and O6:                2,161
       Number used as ROM:                        0
     Number used as Memory:                     748 out of  58,400    1%
       Number used as Dual Port RAM:             24
@@ -11301,17 +11300,17 @@ Slice Logic Utilization:
         Number using O6 output only:           496
         Number using O5 output only:             0
         Number using O5 and O6:                228
-    Number used exclusively as route-thrus:    350
-      Number with same-slice register load:    310
+    Number used exclusively as route-thrus:    414
+      Number with same-slice register load:    374
       Number with same-slice carry load:        40
       Number with other load:                    0
 
 Slice Logic Distribution:
-  Number of occupied Slices:                 6,153 out of  37,680   16%
-  Number of LUT Flip Flop pairs used:       17,069
-    Number with an unused Flip Flop:         7,753 out of  17,069   45%
-    Number with an unused LUT:               3,663 out of  17,069   21%
-    Number of fully used LUT-FF pairs:       5,653 out of  17,069   33%
+  Number of occupied Slices:                 6,001 out of  37,680   15%
+  Number of LUT Flip Flop pairs used:       16,955
+    Number with an unused Flip Flop:         7,729 out of  16,955   45%
+    Number with an unused LUT:               3,490 out of  16,955   20%
+    Number of fully used LUT-FF pairs:       5,736 out of  16,955   33%
     Number of slice register sites lost
       to control set restrictions:               0 out of 301,440    0%
 
@@ -11337,8 +11336,8 @@ Specific Feature Utilization:
   Number of RAMB18E1/FIFO18E1s:                 15 out of     832    1%
     Number using RAMB18E1 only:                 15
     Number using FIFO18E1 only:                  0
-  Number of BUFG/BUFGCTRLs:                     11 out of      32   34%
-    Number used as BUFGs:                       11
+  Number of BUFG/BUFGCTRLs:                     10 out of      32   31%
+    Number used as BUFGs:                       10
     Number used as BUFGCTRLs:                    0
   Number of ILOGICE1/ISERDESE1s:                32 out of     720    4%
     Number used as ILOGICE1s:                   32
@@ -11371,42 +11370,42 @@ Router effort level (-rl):    High
 
 INFO:Timing:3386 - Intersecting Constraints found and resolved.  For more information, see the TSI report.  Please consult the Xilinx
    Command Line Tools User Guide for information on generating a TSI report.
-Starting initial Timing Analysis.  REAL time: 21 secs 
-Finished initial Timing Analysis.  REAL time: 22 secs 
+Starting initial Timing Analysis.  REAL time: 25 secs 
+Finished initial Timing Analysis.  REAL time: 25 secs 
 
-WARNING:Par:288 - The signal cmp_dma/Mram_ring1_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
-WARNING:Par:288 - The signal cmp_dma/Mram_ring5_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal cmp_dma/Mram_ring4_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
+WARNING:Par:288 - The signal cmp_dma/Mram_ring5_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
+WARNING:Par:288 - The signal cmp_dma/Mram_ring1_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal cmp_dma/Mram_ring3_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal cmp_dma/Mram_ring2_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 Starting Router
 
 
-Phase  1  : 111163 unrouted;      REAL time: 26 secs 
+Phase  1  : 111062 unrouted;      REAL time: 30 secs 
 
-Phase  2  : 88605 unrouted;      REAL time: 33 secs 
+Phase  2  : 88574 unrouted;      REAL time: 38 secs 
 
-Phase  3  : 34774 unrouted;      REAL time: 1 mins 18 secs 
+Phase  3  : 35286 unrouted;      REAL time: 1 mins 25 secs 
 
-Phase  4  : 34772 unrouted; (Setup:156414, Hold:24117, Component Switching Limit:0)     REAL time: 1 mins 27 secs 
-
-Updating file: dbe_bpm_fmc516.ncd with current fully routed design.
-
-Phase  5  : 0 unrouted; (Setup:146320, Hold:23587, Component Switching Limit:0)     REAL time: 1 mins 47 secs 
-
-Phase  6  : 0 unrouted; (Setup:146320, Hold:23587, Component Switching Limit:0)     REAL time: 1 mins 48 secs 
+Phase  4  : 35282 unrouted; (Setup:70358, Hold:13358, Component Switching Limit:0)     REAL time: 1 mins 33 secs 
 
 Updating file: dbe_bpm_fmc516.ncd with current fully routed design.
 
-Phase  7  : 0 unrouted; (Setup:50443, Hold:25018, Component Switching Limit:0)     REAL time: 2 mins 40 secs 
+Phase  5  : 0 unrouted; (Setup:64511, Hold:13087, Component Switching Limit:0)     REAL time: 1 mins 54 secs 
 
-Phase  8  : 0 unrouted; (Setup:50443, Hold:25018, Component Switching Limit:0)     REAL time: 2 mins 40 secs 
+Phase  6  : 0 unrouted; (Setup:61249, Hold:13087, Component Switching Limit:0)     REAL time: 1 mins 56 secs 
 
-Phase  9  : 0 unrouted; (Setup:50443, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 41 secs 
+Updating file: dbe_bpm_fmc516.ncd with current fully routed design.
 
-Phase 10  : 0 unrouted; (Setup:50443, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 42 secs 
-Total REAL time to Router completion: 2 mins 42 secs 
-Total CPU time to Router completion: 2 mins 43 secs 
+Phase  7  : 0 unrouted; (Setup:50443, Hold:17746, Component Switching Limit:0)     REAL time: 2 mins 46 secs 
+
+Phase  8  : 0 unrouted; (Setup:50443, Hold:17746, Component Switching Limit:0)     REAL time: 2 mins 46 secs 
+
+Phase  9  : 0 unrouted; (Setup:50443, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 46 secs 
+
+Phase 10  : 0 unrouted; (Setup:50443, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 47 secs 
+Total REAL time to Router completion: 2 mins 47 secs 
+Total CPU time to Router completion: 2 mins 44 secs 
 
 Partition Implementation Status
 -------------------------------
@@ -11424,57 +11423,52 @@ Generating Clock Report
 +---------------------+--------------+------+------+------------+-------------+
 |        Clock Net    |   Resource   |Locked|Fanout|Net Skew(ns)|Max Delay(ns)|
 +---------------------+--------------+------+------+------------+-------------+
-|             clk_sys | BUFGCTRL_X0Y7| No   | 2613 |  0.429     |  2.013      |
+|             clk_sys | BUFGCTRL_X0Y6| No   | 2599 |  0.423     |  2.007      |
 +---------------------+--------------+------+------+------------+-------------+
-| mtx_clk_pad_i_BUFGP | BUFGCTRL_X0Y4| No   |  303 |  0.418     |  2.020      |
-+---------------------+--------------+------+------+------------+-------------+
-|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
-|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
-|adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[1]_adc_clk_bufg | BUFGCTRL_X0Y1| No   |  294 |  0.301     |  2.006      |
+| mtx_clk_pad_i_BUFGP | BUFGCTRL_X0Y3| No   |  285 |  0.439     |  2.048      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
 |adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[0]_adc_clk_bufg | BUFGCTRL_X0Y3| No   |  254 |  0.299     |  2.019      |
+| ain[0]_adc_clk_bufg | BUFGCTRL_X0Y1| No   |  549 |  0.318     |  2.020      |
 +---------------------+--------------+------+------+------------+-------------+
-| mrx_clk_pad_i_BUFGP | BUFGCTRL_X0Y5| No   |  102 |  0.235     |  1.838      |
+| mrx_clk_pad_i_BUFGP | BUFGCTRL_X0Y4| No   |  102 |  0.218     |  1.838      |
 +---------------------+--------------+------+------+------------+-------------+
-|         CONTROL0<0> |BUFGCTRL_X0Y30| No   |  326 |  0.336     |  2.020      |
-+---------------------+--------------+------+------+------------+-------------+
-|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
-|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
-|adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[1]_adc_clk_bufr |  Regional Clk| No   |   46 |  0.183     |  1.081      |
+|         CONTROL0<0> |BUFGCTRL_X0Y30| No   |  329 |  0.311     |  2.047      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
 |adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[0]_adc_clk_bufr |  Regional Clk| No   |   52 |  0.205     |  1.107      |
+| ain[1]_adc_clk_bufr |  Regional Clk| No   |   46 |  0.273     |  1.135      |
 +---------------------+--------------+------+------+------------+-------------+
-|         sys_clk_gen |BUFGCTRL_X0Y31| No   |    5 |  0.003     |  1.831      |
+|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
+|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
+|adc_iface/adc_clk_ch |              |      |      |            |             |
+| ain[0]_adc_clk_bufr |  Regional Clk| No   |   51 |  0.190     |  1.093      |
 +---------------------+--------------+------+------+------------+-------------+
-|          clk_200mhz | BUFGCTRL_X0Y8| No   |    4 |  0.145     |  1.826      |
+|         sys_clk_gen |BUFGCTRL_X0Y31| No   |    5 |  0.002     |  1.828      |
++---------------------+--------------+------+------+------------+-------------+
+|          clk_200mhz | BUFGCTRL_X0Y7| No   |    4 |  0.145     |  1.826      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_lm32/gen_profile |              |      |      |            |             |
 |_medium_icache_debug |              |      |      |            |             |
 |.U_Wrapped_LM32/jtck |              |      |      |            |             |
-|                     |         Local|      |    7 |  1.931     |  3.345      |
+|                     |         Local|      |    7 |  1.503     |  2.397      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc_spi |              |      |      |            |             |
 |/U_Wrapped_SPI/Wrapp |              |      |      |            |             |
 |ed_SPI/clgen/clk_out |              |      |      |            |             |
-|                     |         Local|      |    7 |  0.000     |  1.000      |
+|                     |         Local|      |    7 |  0.000     |  0.396      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL2<13> |         Local|      |    5 |  0.000     |  0.516      |
+|        CONTROL2<13> |         Local|      |    5 |  0.000     |  0.242      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_sys_pll_inst/cmp |              |      |      |            |             |
-|     _mmcm_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.499      |
+|     _mmcm_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.304      |
 +---------------------+--------------+------+------+------------+-------------+
 |MMCM_PHASE_CALIBRATI |              |      |      |            |             |
 |ON_ML_LUT2_104_ML_NE |              |      |      |            |             |
-|               W_CLK |         Local|      |    2 |  0.000     |  0.491      |
+|               W_CLK |         Local|      |    3 |  0.000     |  0.461      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11482,7 +11476,7 @@ Generating Clock Report
 |chains[1].gen_clock_ |              |      |      |            |             |
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/cmp_mmcm |              |      |      |            |             |
-| _adc_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.355      |
+| _adc_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.481      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11490,20 +11484,20 @@ Generating Clock Report
 |chains[0].gen_clock_ |              |      |      |            |             |
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/cmp_mmcm |              |      |      |            |             |
-| _adc_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.354      |
+| _adc_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.479      |
 +---------------------+--------------+------+------+------------+-------------+
 |MMCM_PHASE_CALIBRATI |              |      |      |            |             |
 |ON_ML_LUT2_112_ML_NE |              |      |      |            |             |
-|               W_CLK |         Local|      |    3 |  0.246     |  0.747      |
+|               W_CLK |         Local|      |    2 |  0.000     |  0.735      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL3<13> |         Local|      |    5 |  0.000     |  0.360      |
+|        CONTROL3<13> |         Local|      |    5 |  0.000     |  0.506      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL0<13> |         Local|      |    5 |  0.000     |  0.369      |
+|        CONTROL0<13> |         Local|      |    5 |  0.000     |  0.617      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL1<13> |         Local|      |    5 |  0.000     |  0.500      |
+|        CONTROL1<13> |         Local|      |    5 |  0.000     |  0.570      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_chipscope_icon_0 |              |      |      |            |             |
-|     /U0/iUPDATE_OUT |         Local|      |    1 |  0.000     |  1.888      |
+|     /U0/iUPDATE_OUT |         Local|      |    1 |  0.000     |  2.340      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11511,7 +11505,7 @@ Generating Clock Report
 |chains[1].gen_clock_ |              |      |      |            |             |
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/cmp_mmcm |              |      |      |            |             |
-|  _adc_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.560      |
+|  _adc_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.637      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11519,7 +11513,7 @@ Generating Clock Report
 |chains[0].gen_clock_ |              |      |      |            |             |
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/cmp_mmcm |              |      |      |            |             |
-|  _adc_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  0.877      |
+|  _adc_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  0.728      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11534,11 +11528,11 @@ Generating Clock Report
 |                     |         Local|      |   32 |  0.211     |  1.499      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_sys_pll_inst/cmp |              |      |      |            |             |
-|    _mmcm_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.235      |
+|    _mmcm_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.562      |
 +---------------------+--------------+------+------+------------+-------------+
 |MMCM_PHASE_CALIBRATI |              |      |      |            |             |
 |ON_ML_LUT2_96_ML_NEW |              |      |      |            |             |
-|                _CLK |         Local|      |    3 |  0.128     |  0.496      |
+|                _CLK |         Local|      |    3 |  0.012     |  0.493      |
 +---------------------+--------------+------+------+------------+-------------+
 
 * Net Skew is the difference between the minimum and maximum routing
@@ -11590,29 +11584,21 @@ Asterisk (*) preceding a constraint indicates it was not met.
    ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |    -0.106ns|            |       8|         634
   _clk0_p_i" "RISING"                       |             |            |            |        |            
 ----------------------------------------------------------------------------------------------------------
-  TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     0.016ns|     3.984ns|       0|           0
-  0_p_i" 4 ns HIGH 50%                      | HOLD        |     0.081ns|            |       0|           0
+  TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     0.001ns|     3.999ns|       0|           0
+  0_p_i" 4 ns HIGH 50%                      | HOLD        |     0.021ns|            |       0|           0
 ----------------------------------------------------------------------------------------------------------
-  TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     0.095ns|     3.905ns|       0|           0
-  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |     0.009ns|            |       0|           0
-  _chains_check_cmp_fmc516_adc_clk_adc_clk_ |             |            |            |        |            
-  mmcm_out         = PERIOD TIMEGRP         |             |            |            |        |            
-   "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc516 |             |            |            |        |            
-  _adc_iface_gen_clock_chains_1__gen_clock_ |             |            |            |        |            
-  chains_check_cmp_fmc516_adc_clk_adc_clk_m |             |            |            |        |            
-  mcm_out"         TS_adc_clk1_p_i HIGH 50% |             |            |            |        |            
-----------------------------------------------------------------------------------------------------------
-  TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     0.123ns|     3.877ns|       0|           0
-  1_p_i" 4 ns HIGH 50%                      | HOLD        |     0.020ns|            |       0|           0
-----------------------------------------------------------------------------------------------------------
-  TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     0.257ns|     3.743ns|       0|           0
-  6_adc_iface_gen_clock_chains_0__gen_clock | HOLD        |     0.023ns|            |       0|           0
+  TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     0.185ns|     3.815ns|       0|           0
+  6_adc_iface_gen_clock_chains_0__gen_clock | HOLD        |     0.014ns|            |       0|           0
   _chains_check_cmp_fmc516_adc_clk_adc_clk_ |             |            |            |        |            
   mmcm_out         = PERIOD TIMEGRP         |             |            |            |        |            
    "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc516 |             |            |            |        |            
   _adc_iface_gen_clock_chains_0__gen_clock_ |             |            |            |        |            
   chains_check_cmp_fmc516_adc_clk_adc_clk_m |             |            |            |        |            
   mcm_out"         TS_adc_clk0_p_i HIGH 50% |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     1.059ns|     2.941ns|       0|           0
+  1_p_i" 4 ns HIGH 50%                      | HOLD        |     0.017ns|            |       0|           0
+                                            | MINPERIOD   |     0.668ns|     3.332ns|       0|           0
 ----------------------------------------------------------------------------------------------------------
 
 
@@ -11626,26 +11612,11 @@ Derived Constraints for TS_adc_clk0_p_i
 |           Constraint          | Requirement |-------------+-------------|-------------+-------------|-------------+-------------|
 |                               |             |   Direct    | Derivative  |   Direct    | Derivative  |   Direct    | Derivative  |
 +-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
-|TS_adc_clk0_p_i                |      4.000ns|      3.984ns|      3.743ns|            0|            0|          527|         5580|
-| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      3.743ns|          N/A|            0|            0|         5580|            0|
+|TS_adc_clk0_p_i                |      4.000ns|      3.999ns|      3.815ns|            0|            0|          575|        15671|
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      3.815ns|          N/A|            0|            0|        15671|            0|
 | 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
 | ck_chains_0__gen_clock_chains_|             |             |             |             |             |             |             |
 | check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |             |
-| lk_mmcm_out                   |             |             |             |             |             |             |             |
-+-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
-
-Derived Constraints for TS_adc_clk1_p_i
-+-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
-|                               |   Period    |       Actual Period       |      Timing Errors        |      Paths Analyzed       |
-|           Constraint          | Requirement |-------------+-------------|-------------+-------------|-------------+-------------|
-|                               |             |   Direct    | Derivative  |   Direct    | Derivative  |   Direct    | Derivative  |
-+-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
-|TS_adc_clk1_p_i                |      4.000ns|      3.877ns|      3.905ns|            0|            0|          575|        10123|
-| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      3.905ns|          N/A|            0|            0|        10123|            0|
-| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
-| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |             |
-| check_cmp_fmc516_adc_clk_adc_c|             |             |     INFO:TclTasksC:1850 - process run : Generate Programming File is done.
-        |             |             |             |             |
 | lk_mmcm_out                   |             |             |             |             |             |             |             |
 +-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
 
@@ -11658,10 +11629,10 @@ All signals are completely routed.
 
 WARNING:Par:283 - There are 5 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 2 mins 49 secs 
-Total CPU time to PAR completion: 2 mins 50 secs 
+Total REAL time to PAR completion: 2 mins 55 secs 
+Total CPU time to PAR completion: 2 mins 51 secs 
 
-Peak Memory Usage:  1422 MB
+Peak Memory Usage:  1361 MB
 
 Placer: Placement generated during map.
 Routing: Completed - No errors found.
@@ -11687,13 +11658,13 @@ Loading device for application Rf_Device from file '6vlx240t.nph' in environment
    "dbe_bpm_fmc516" is an NCD, version 3.2, device xc6vlx240t, package ff1156,
 speed -1
 
-Analysis completed Tue Mar 19 14:42:32 2013
+Analysis completed Tue Mar 19 15:18:11 2013
 --------------------------------------------------------------------------------
 
 Generating Report ...
 
 Number of warnings: 0
-Total time: 23 secs 
+Total time: 25 secs 
 
 Process "Generate Post-Place & Route Static Timing" completed successfully
 
@@ -11701,7 +11672,8 @@ Started : "Generate Programming File".
 Running bitgen...
 Command Line: bitgen -intstyle ise -f dbe_bpm_fmc516.ut dbe_bpm_fmc516.ncd
 INFO:Bitgen:40 - Replacing "Auto" with "NoWait" for option "Match_cycle".  Most
-   commonly, bitgen has determined and will use a specific value instead of the
+   commonly, bitgen has determined andINFO:TclTasksC:1850 - process run : Generate Programming File is done.
+ will use a specific value instead of the
    generic command-line value of "Auto".  Alternately, this message appears if
    the same option is specified multiple times on the command-line.  In this
    case, the option listed last will be used.
@@ -11717,11 +11689,11 @@ WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL0<13> is sourced by
 WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL1<13> is sourced by
    a combinatorial pin. This is not good design practice. Use the CE pin to
    control the loading of data into the flip-flop.
-WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring1_RAMD_D1_O> is
+WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring4_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring5_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
-WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring4_RAMD_D1_O> is
+WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring1_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring3_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
