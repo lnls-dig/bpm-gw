@@ -16,7 +16,36 @@ VLOGCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini
 VERILOG_SRC := defines.v \
 wb_fmc516_tb.v \
 timescale.v \
+../../../../modules/ethmac/eth_defines.v \
+../../../../modules/ethmac/eth_random.v \
+../../../../modules/ethmac/eth_txcounters.v \
+../../../../modules/ethmac/eth_clockgen.v \
+../../../../modules/ethmac/eth_receivecontrol.v \
+../../../../modules/ethmac/eth_txethmac.v \
+../../../../modules/ethmac/eth_cop.v \
+../../../../modules/ethmac/eth_registers.v \
+../../../../modules/ethmac/eth_txstatem.v \
+../../../../modules/ethmac/eth_crc.v \
+../../../../modules/ethmac/eth_register.v \
+../../../../modules/ethmac/eth_wishbone.v \
 clk_rst.v \
+../../../../modules/ethmac/timescale.v \
+../../../../modules/ethmac/eth_fifo.v \
+../../../../modules/ethmac/eth_rxcounters.v \
+../../../../modules/ethmac/eth_rxaddrcheck.v \
+../../../../modules/ethmac/eth_maccontrol.v \
+../../../../modules/ethmac/eth_rxethmac.v \
+../../../../modules/ethmac/ethmac_defines.v \
+../../../../modules/ethmac/eth_rxstatem.v \
+../../../../modules/ethmac/eth_macstatus.v \
+../../../../modules/ethmac/eth_shiftreg.v \
+../../../../modules/ethmac/xilinx_dist_ram_16x32.v \
+../../../../modules/ethmac/ethmac.v \
+../../../../modules/ethmac/eth_spram_256x32.v \
+../../../../modules/ethmac/eth_miim.v \
+../../../../modules/ethmac/eth_top.v \
+../../../../modules/ethmac/eth_outputcontrol.v \
+../../../../modules/ethmac/eth_transmitcontrol.v \
 ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v \
 ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v \
 ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.v \
@@ -36,7 +65,36 @@ clk_rst.v \
 VERILOG_OBJ := work/defines/.defines_v \
 work/wb_fmc516_tb/.wb_fmc516_tb_v \
 work/timescale/.timescale_v \
+work/eth_defines/.eth_defines_v \
+work/eth_random/.eth_random_v \
+work/eth_txcounters/.eth_txcounters_v \
+work/eth_clockgen/.eth_clockgen_v \
+work/eth_receivecontrol/.eth_receivecontrol_v \
+work/eth_txethmac/.eth_txethmac_v \
+work/eth_cop/.eth_cop_v \
+work/eth_registers/.eth_registers_v \
+work/eth_txstatem/.eth_txstatem_v \
+work/eth_crc/.eth_crc_v \
+work/eth_register/.eth_register_v \
+work/eth_wishbone/.eth_wishbone_v \
 work/clk_rst/.clk_rst_v \
+work/timescale/.timescale_v \
+work/eth_fifo/.eth_fifo_v \
+work/eth_rxcounters/.eth_rxcounters_v \
+work/eth_rxaddrcheck/.eth_rxaddrcheck_v \
+work/eth_maccontrol/.eth_maccontrol_v \
+work/eth_rxethmac/.eth_rxethmac_v \
+work/ethmac_defines/.ethmac_defines_v \
+work/eth_rxstatem/.eth_rxstatem_v \
+work/eth_macstatus/.eth_macstatus_v \
+work/eth_shiftreg/.eth_shiftreg_v \
+work/xilinx_dist_ram_16x32/.xilinx_dist_ram_16x32_v \
+work/ethmac/.ethmac_v \
+work/eth_spram_256x32/.eth_spram_256x32_v \
+work/eth_miim/.eth_miim_v \
+work/eth_top/.eth_top_v \
+work/eth_outputcontrol/.eth_outputcontrol_v \
+work/eth_transmitcontrol/.eth_transmitcontrol_v \
 work/sockit_owm/.sockit_owm_v \
 work/spi_clgen/.spi_clgen_v \
 work/spi_shift/.spi_shift_v \
@@ -55,6 +113,12 @@ work/jtag_tap/.jtag_tap_v \
 
 VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_common/custom_common_pkg.vhd \
+../../../../modules/ethmac/wb_ethmac.vhd \
+../../../../modules/ethmac/xwb_ethmac.vhd \
+../../../../modules/ethmac/ethmac_pkg.vhd \
+../../../../modules/fabric/wr_fabric_pkg.vhd \
+../../../../modules/fabric/xwb_fabric_sink.vhd \
+../../../../modules/fabric/xwb_fabric_source.vhd \
 ../../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd \
 ../../../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd \
@@ -71,6 +135,9 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd \
 ../../../../modules/custom_wishbone/wb_fmc516/fmc516_pkg.vhd \
+../../../../modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd \
+../../../../modules/custom_wishbone/wb_dbe_periph/wb_dbe_periph.vhd \
+../../../../modules/custom_wishbone/wb_dbe_periph/xwb_dbe_periph.vhd \
 ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd \
 ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_source_gen.vhd \
@@ -173,9 +240,28 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd \
 ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd \
 ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_checksum.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_config.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_core.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_rx_ctrl.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_ctrl.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/etherbone_pkg.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/piso_flag.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/sipo_flag.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/vhdl_2008_workaround_pkg.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/WB_bus_adapter_streaming_sg.vhd \
+../../../../ip_cores/etherbone-core/hdl/eb_slave_core/xetherbone_core.vhd \
 
 VHDL_OBJ := work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd \
+work/wb_ethmac/.wb_ethmac_vhd \
+work/xwb_ethmac/.xwb_ethmac_vhd \
+work/ethmac_pkg/.ethmac_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd \
+work/xwb_fabric_sink/.xwb_fabric_sink_vhd \
+work/xwb_fabric_source/.xwb_fabric_source_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/xwb_stream_sink/.xwb_stream_sink_vhd \
 work/xwb_stream_source/.xwb_stream_source_vhd \
@@ -192,6 +278,9 @@ work/fmc516_adc_iface/.fmc516_adc_iface_vhd \
 work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
 work/wb_fmc516_regs/.wb_fmc516_regs_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd \
+work/xwb_ethmac_adapter/.xwb_ethmac_adapter_vhd \
+work/wb_dbe_periph/.wb_dbe_periph_vhd \
+work/xwb_dbe_periph/.xwb_dbe_periph_vhd \
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
 work/wb_stream_sink_gen/.wb_stream_sink_gen_vhd \
 work/wb_stream_source_gen/.wb_stream_source_gen_vhd \
@@ -294,12 +383,25 @@ work/wbgen2_eic/.wbgen2_eic_vhd \
 work/wbgen2_fifo_async/.wbgen2_fifo_async_vhd \
 work/wbgen2_fifo_sync/.wbgen2_fifo_sync_vhd \
 work/wbgen2_pkg/.wbgen2_pkg_vhd \
+work/eb_main_fsm/.eb_main_fsm_vhd \
+work/eb_checksum/.eb_checksum_vhd \
+work/eb_config/.eb_config_vhd \
+work/eb_slave_core/.eb_slave_core_vhd \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
+work/eb_rx_ctrl/.eb_rx_ctrl_vhd \
+work/eb_tx_ctrl/.eb_tx_ctrl_vhd \
+work/etherbone_pkg/.etherbone_pkg_vhd \
+work/piso_flag/.piso_flag_vhd \
+work/sipo_flag/.sipo_flag_vhd \
+work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg_vhd \
+work/WB_bus_adapter_streaming_sg/.WB_bus_adapter_streaming_sg_vhd \
+work/xetherbone_core/.xetherbone_core_vhd \
 
 LIBS := work fifo_generator_v6_1
 LIB_IND := work/.work fifo_generator_v6_1/.fifo_generator_v6_1
 ## rules #################################
 sim: xilinxsim.ini $(LIB_IND) $(VERILOG_OBJ) $(VHDL_OBJ)
-$(VERILOG_OBJ): $(LIB_IND) xilinxsim.ini 
+$(VERILOG_OBJ): $(LIB_IND) xilinxsim.ini
 $(VHDL_OBJ): $(LIB_IND) xilinxsim.ini
 
 xilinxsim.ini: $(XILINX_INI_PATH)/xilinxsim.ini
@@ -335,8 +437,153 @@ work/timescale/.timescale_v: timescale.v
 		@mkdir -p $(dir $@) && touch $@ 
 
 
+work/eth_defines/.eth_defines_v: ../../../../modules/ethmac/eth_defines.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_random/.eth_random_v: ../../../../modules/ethmac/eth_random.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_txcounters/.eth_txcounters_v: ../../../../modules/ethmac/eth_txcounters.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_clockgen/.eth_clockgen_v: ../../../../modules/ethmac/eth_clockgen.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_receivecontrol/.eth_receivecontrol_v: ../../../../modules/ethmac/eth_receivecontrol.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_txethmac/.eth_txethmac_v: ../../../../modules/ethmac/eth_txethmac.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_cop/.eth_cop_v: ../../../../modules/ethmac/eth_cop.v ../../../../modules/ethmac/eth_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_registers/.eth_registers_v: ../../../../modules/ethmac/eth_registers.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_txstatem/.eth_txstatem_v: ../../../../modules/ethmac/eth_txstatem.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_crc/.eth_crc_v: ../../../../modules/ethmac/eth_crc.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_register/.eth_register_v: ../../../../modules/ethmac/eth_register.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_wishbone/.eth_wishbone_v: ../../../../modules/ethmac/eth_wishbone.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
 work/clk_rst/.clk_rst_v: clk_rst.v timescale.v defines.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/timescale/.timescale_v: ../../../../modules/ethmac/timescale.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_fifo/.eth_fifo_v: ../../../../modules/ethmac/eth_fifo.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_rxcounters/.eth_rxcounters_v: ../../../../modules/ethmac/eth_rxcounters.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_rxaddrcheck/.eth_rxaddrcheck_v: ../../../../modules/ethmac/eth_rxaddrcheck.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_maccontrol/.eth_maccontrol_v: ../../../../modules/ethmac/eth_maccontrol.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_rxethmac/.eth_rxethmac_v: ../../../../modules/ethmac/eth_rxethmac.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/ethmac_defines/.ethmac_defines_v: ../../../../modules/ethmac/ethmac_defines.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_rxstatem/.eth_rxstatem_v: ../../../../modules/ethmac/eth_rxstatem.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_macstatus/.eth_macstatus_v: ../../../../modules/ethmac/eth_macstatus.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_shiftreg/.eth_shiftreg_v: ../../../../modules/ethmac/eth_shiftreg.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/xilinx_dist_ram_16x32/.xilinx_dist_ram_16x32_v: ../../../../modules/ethmac/xilinx_dist_ram_16x32.v 
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/ethmac/.ethmac_v: ../../../../modules/ethmac/ethmac.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_spram_256x32/.eth_spram_256x32_v: ../../../../modules/ethmac/eth_spram_256x32.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_miim/.eth_miim_v: ../../../../modules/ethmac/eth_miim.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_top/.eth_top_v: ../../../../modules/ethmac/eth_top.v ../../../../modules/ethmac/ethmac_defines.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_outputcontrol/.eth_outputcontrol_v: ../../../../modules/ethmac/eth_outputcontrol.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
+		@mkdir -p $(dir $@) && touch $@ 
+
+
+work/eth_transmitcontrol/.eth_transmitcontrol_v: ../../../../modules/ethmac/eth_transmitcontrol.v ../../../../modules/ethmac/timescale.v
+		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../modules/ethmac  $<
 		@mkdir -p $(dir $@) && touch $@ 
 
 
@@ -425,7 +672,8 @@ work/custom_wishbone_pkg/.custom_wishbone_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
-work/fmc516_pkg/.fmc516_pkg_vhd
+work/fmc516_pkg/.fmc516_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/custom_common_pkg/.custom_common_pkg_vhd: ../../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
@@ -434,6 +682,63 @@ work/custom_common_pkg/.custom_common_pkg_vhd: ../../../../modules/custom_common
 
 
 work/custom_common_pkg/.custom_common_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_ethmac/.wb_ethmac_vhd: ../../../../modules/ethmac/wb_ethmac.vhd work/wb_ethmac/.wb_ethmac
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_ethmac/.wb_ethmac: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/ethmac_pkg/.ethmac_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_ethmac/.xwb_ethmac_vhd: ../../../../modules/ethmac/xwb_ethmac.vhd work/xwb_ethmac/.xwb_ethmac
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_ethmac/.xwb_ethmac: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/ethmac_pkg/.ethmac_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/ethmac_pkg/.ethmac_pkg_vhd: ../../../../modules/ethmac/ethmac_pkg.vhd work/ethmac_pkg/.ethmac_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/ethmac_pkg/.ethmac_pkg: \
+work/wishbone_pkg/.wishbone_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd: ../../../../modules/fabric/wr_fabric_pkg.vhd work/wr_fabric_pkg/.wr_fabric_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wr_fabric_pkg/.wr_fabric_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_fabric_sink/.xwb_fabric_sink_vhd: ../../../../modules/fabric/xwb_fabric_sink.vhd work/xwb_fabric_sink/.xwb_fabric_sink
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_fabric_sink/.xwb_fabric_sink: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_fabric_source/.xwb_fabric_source_vhd: ../../../../modules/fabric/xwb_fabric_source.vhd work/xwb_fabric_source/.xwb_fabric_source
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_fabric_source/.xwb_fabric_source: \
+work/genram_pkg/.genram_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd work/wb_stream_pkg/.wb_stream_pkg
@@ -595,6 +900,36 @@ work/fmc516_pkg/.fmc516_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc516/f
 work/fmc516_pkg/.fmc516_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_ethmac_adapter/.xwb_ethmac_adapter_vhd: ../../../../modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd work/xwb_ethmac_adapter/.xwb_ethmac_adapter
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_ethmac_adapter/.xwb_ethmac_adapter: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_dbe_periph/.wb_dbe_periph_vhd: ../../../../modules/custom_wishbone/wb_dbe_periph/wb_dbe_periph.vhd work/wb_dbe_periph/.wb_dbe_periph
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_dbe_periph/.wb_dbe_periph: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xwb_dbe_periph/.xwb_dbe_periph_vhd: ../../../../modules/custom_wishbone/wb_dbe_periph/xwb_dbe_periph.vhd work/xwb_dbe_periph/.xwb_dbe_periph
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xwb_dbe_periph/.xwb_dbe_periph: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd: ../../../../modules/custom_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd work/wb_stream_generic_pkg/.wb_stream_generic_pkg
@@ -1493,5 +1828,129 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd: ../../../../ip_cores/general-cores/modules/wish
 
 
 work/wbgen2_pkg/.wbgen2_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_main_fsm/.eb_main_fsm_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd work/eb_main_fsm/.eb_main_fsm
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_main_fsm/.eb_main_fsm: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
+work/genram_pkg/.genram_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_checksum/.eb_checksum_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_checksum.vhd work/eb_checksum/.eb_checksum
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_checksum/.eb_checksum: \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_config/.eb_config_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_config.vhd work/eb_config/.eb_config
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_config/.eb_config: \
+work/wishbone_pkg/.wishbone_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_slave_core/.eb_slave_core_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_core.vhd work/eb_slave_core/.eb_slave_core
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_slave_core/.eb_slave_core: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd work/eb_hdr_pkg/.eb_hdr_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_hdr_pkg/.eb_hdr_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_rx_ctrl/.eb_rx_ctrl_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_rx_ctrl.vhd work/eb_rx_ctrl/.eb_rx_ctrl
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_rx_ctrl/.eb_rx_ctrl: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/eb_tx_ctrl/.eb_tx_ctrl_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_ctrl.vhd work/eb_tx_ctrl/.eb_tx_ctrl
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/eb_tx_ctrl/.eb_tx_ctrl: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/etherbone_pkg/.etherbone_pkg_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/etherbone_pkg.vhd work/etherbone_pkg/.etherbone_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/etherbone_pkg/.etherbone_pkg: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/piso_flag/.piso_flag_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/piso_flag.vhd work/piso_flag/.piso_flag
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/piso_flag/.piso_flag:
+		@mkdir -p $(dir $@) && touch $@
+
+work/sipo_flag/.sipo_flag_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/sipo_flag.vhd work/sipo_flag/.sipo_flag
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/sipo_flag/.sipo_flag: \
+work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/vhdl_2008_workaround_pkg.vhd work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg:
+		@mkdir -p $(dir $@) && touch $@
+
+work/WB_bus_adapter_streaming_sg/.WB_bus_adapter_streaming_sg_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/WB_bus_adapter_streaming_sg.vhd work/WB_bus_adapter_streaming_sg/.WB_bus_adapter_streaming_sg
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/WB_bus_adapter_streaming_sg/.WB_bus_adapter_streaming_sg: \
+work/vhdl_2008_workaround_pkg/.vhdl_2008_workaround_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/xetherbone_core/.xetherbone_core_vhd: ../../../../ip_cores/etherbone-core/hdl/eb_slave_core/xetherbone_core.vhd work/xetherbone_core/.xetherbone_core
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/xetherbone_core/.xetherbone_core: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 

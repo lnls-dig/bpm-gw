@@ -38,11 +38,11 @@ module WB_TEST_MASTER(
   reg [`WB_BWSEL_WIDTH - 1 : 0]       wb_bwsel = 0;
   wire [`WB_DATA_BUS_WIDTH -1 : 0]    wb_data_i;
   wire wb_ack_i;
-  reg 	wb_cyc = 0;
-  reg 	wb_stb = 0;
-  reg 	wb_we = 0;
-  //reg 	wb_rst = 0;
-  //reg 	wb_clk = 1;
+  reg   wb_cyc = 0;
+  reg   wb_stb = 0;
+  reg   wb_we = 0;
+  //reg   wb_rst = 0;
+  //reg   wb_clk = 1;
   input wb_clk;
 
   reg wb_tb_verbose = 1;
@@ -104,7 +104,8 @@ module WB_TEST_MASTER(
 
     wb_stb<=1;
     wb_cyc<=1;
-    wb_addr <= {2'b00, addr[31:2]};
+    //wb_addr <= {2'b00, addr[31:2]};
+    wb_addr <= addr;
     wb_we <= rw;
 
     if(rw) begin
