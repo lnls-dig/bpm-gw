@@ -9,6 +9,8 @@ CONFIG_PPRINTF =? 1
 #endif
 
 CONFIG_ETHERBONE =? 1
+CONFIG_FMC150 ?= 1
+CONFIG_FMC516 ?= 1
 
 # and don't touch the rest unless you know what you're doing.
 CROSS_COMPILE ?= lm32-elf-
@@ -26,6 +28,8 @@ OBJS_DBE = dbe_main.o
 
 INCLUDE_DIRS = -Iinclude   \
 		-Iinclude/memmgr \
+		-Iinclude/fmc/fmc150 \
+		-Iinclude/fmc/fmc516  \
 		-I$(CURDIR)/pp_printf	\
 		-I$(CURDIR)/lib	\
 		-I$(CURDIR)/lib/ethmac
@@ -49,6 +53,7 @@ include lib/lib.mk
 include dev/dev.mk
 include pp_printf/printf.mk
 include boards/boards.mk
+include fmc/fmc.mk
 
 CFLAGS += $(CFLAGS_PLATFORM) $(CFLAGS_EB) $(INCLUDE_DIRS) \
 	$(CFLAGS_MEMMGR) $(CFLAGS_DEBUG) -ffunction-sections -fdata-sections \
@@ -59,7 +64,7 @@ LDFLAGS = $(LDFLAGS_PLATFORM) \
 
 OBJS = $(OBJS_PLATFORM) $(OBJS_DBE) \
 	$(OBJS_SHELL) $(OBJS_TESTS) $(OBJS_LIB) \
-	$(OBJS_DEV) $(OBJS_BOARD)
+	$(OBJS_DEV) $(OBJS_BOARD) $(OBJS_FMC)
 
 OUTPUT = dbe
 #OUTPUT = dbe_test

@@ -16,9 +16,9 @@ typedef volatile struct ETHMAC_ADAPT ethmac_adapt_t;
 int ethmac_adapt_init(void);
 
 /* User interface */
-int ethmac_adapt_set_base(unsigned int base_rx, unsigned int base_tx);
-int ethmac_adapt_set_length(unsigned int length);
-int ethmac_adapt_go(void);
+int ethmac_adapt_set_base(unsigned int id, unsigned int base_rx, unsigned int base_tx);
+int ethmac_adapt_set_length(unsigned int id, unsigned int length);
+int ethmac_adapt_go(unsigned int id);
 
 #endif
 

@@ -12,13 +12,13 @@
 #include "pp-printf.h"
 
 void debug_print(const char *fmt, ...);
-    //__attribute__((format(printf,1,2)));
+//__attribute__((format(printf,1,2)));
 
 void debug_print2(const char *fmt, const char *data, int len);
 
 #ifdef DEBUG_PRINT
 #define dbg_print(fmt, ...) \
-    pp_printf("%s (%d): "fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+    pp_printf("%s: %s (%d): "fmt, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define dbg_print2(fmt, data, len) \
     debug_print2(fmt, data, len)
 #else

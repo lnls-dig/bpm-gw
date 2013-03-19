@@ -198,4 +198,7 @@ void tx_packet(void* data, int length);
 
 void user_recv(unsigned char* data, int length);
 
+/* ETHMAC init */
+//int ethmac_init(void);
+
 #endif

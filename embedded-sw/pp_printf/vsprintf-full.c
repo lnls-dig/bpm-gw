@@ -225,9 +225,9 @@ static char *number(char *buf, unsigned long num, int base, int size, int precis
 	if (num == 0)
 		tmp[i++] = '0';
 	/* Generic code, for any base:
-		else do {
-		tmp[i++] = (digits[do_div(num,base)] | locase);
-		} while (num != 0);
+	   else do {
+	   tmp[i++] = (digits[do_div(num,base)] | locase);
+	   } while (num != 0);
 	 */
 	else if (base != 10) { /* 8 or 16 */
 		int mask = base - 1;
@@ -430,7 +430,7 @@ int pp_vsprintf(char *buf, const char *fmt, va_list args)
 
 	int field_width;	/* width of output field */
 	int precision;		/* min. # of digits for integers; max
-								number of chars for from string */
+						   number of chars for from string */
 	int qualifier;		/* 'h', 'l', or 'L' for integer fields */
 	/* 'z' support added 23/7/1999 S.H.    */
 	/* 'z' changed to 'Z' --davidm 1/25/99 */
