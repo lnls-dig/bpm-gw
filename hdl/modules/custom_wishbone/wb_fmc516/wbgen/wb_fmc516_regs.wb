@@ -471,6 +471,34 @@ peripheral {
   };
 
   reg {
+    name = "Channel 0 delay control register";
+    prefix = "ch0_dly_ctl";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 30;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
     name = "Channel 1 status register";
     prefix = "ch1_sta";
 
@@ -496,6 +524,7 @@ peripheral {
       access_dev = WRITE_ONLY;
     };
   };
+
 
   reg {
     name = "Channel 1 control register";
@@ -623,6 +652,34 @@ peripheral {
       prefix = "reserved_data_incdec_dly";
       type = SLV;
       size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 delay control register";
+    prefix = "ch1_dly_ctl";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 30;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -787,6 +844,34 @@ peripheral {
   };
 
   reg {
+    name = "Channel 2 delay control register";
+    prefix = "ch2_dly_ctl";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 30;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
     name = "Channel 3 status register";
     prefix = "ch3_sta";
 
@@ -939,6 +1024,34 @@ peripheral {
       prefix = "reserved_data_incdec_dly";
       type = SLV;
       size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 delay control register";
+    prefix = "ch3_dly_ctl";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 30;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };

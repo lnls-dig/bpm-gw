@@ -70,6 +70,9 @@ port
   -- if idelay is in variable or var_loadable mode)
   adc_data_dly_pulse_i                      : in std_logic;
 
+  adc_data_fe_d1_en_i                       : in std_logic;
+  adc_data_fe_d2_en_i                       : in std_logic;
+
   -----------------------------
   -- ADC output signals
   -----------------------------
@@ -104,8 +107,13 @@ architecture rtl of fmc516_adc_data is
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
   -- Delay signals
-  signal adc_data_re                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data rising edge
-  signal adc_data_fe                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data falling edge
+  signal adc_data_re                        : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data rising edge
+  signal adc_data_fe                        : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge
+  signal adc_data_fe_d1                     : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed1
+  signal adc_data_fe_d2                     : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed2
+
+  signal adc_data_d1                        : t_adc_data_delay_array(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed1
+  signal adc_data_d2                        : t_adc_data_delay_array(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed2
 
   -- FIFO signals
   signal adc_fifo_full                      : std_logic;
@@ -124,7 +132,7 @@ architecture rtl of fmc516_adc_data is
   signal sys_rst                            : std_logic;
 
   --attribute IOB : string;
-    --attribute IOB of adc_data_ff: signal is "TRUE";
+  --attribute IOB of adc_data_ff: signal is "TRUE";
 
   -- Built-in FIFO, 512-deep, 16-wide
   component cdc_fifo
@@ -241,8 +249,8 @@ begin
       DDR_CLK_EDGE                          => "SAME_EDGE_PIPELINED"
     )
     port map(
-      q1                                    => adc_data_sdr(2*i+1),--adc_data_re(i),
-      q2                                    => adc_data_sdr(2*i),--adc_data_fe(i),
+      q1                                    => adc_data_re(i),--adc_data_sdr(2*i+1),
+      q2                                    => adc_data_fe(i),--adc_data_sdr(2*i),
       c                                     => adc_clk_bufio_i,
       --c                                     => adc_clk_bufr_i,
       ce                                    => '1',

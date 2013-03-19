@@ -84,8 +84,6 @@ package fmc516_pkg is
 
   type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly_reg;
 
-<<<<<<< HEAD
-=======
   -- ADC falling edge delay control
   type t_adc_dly_ctl is record
     adc_data_fe_d1_en : std_logic;
@@ -94,7 +92,6 @@ package fmc516_pkg is
 
   type t_adc_dly_ctl_array is array (natural range<>) of t_adc_dly_ctl;
 
->>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   type t_adc_out is record
     adc_clk : std_logic;
     adc_clk2x : std_logic;
@@ -287,4 +284,3 @@ package body fmc516_pkg is
   end f_generate_chain_intercon;
 
 end fmc516_pkg;
-

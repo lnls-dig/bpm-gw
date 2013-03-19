@@ -236,10 +236,8 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- Number packet size counter bits
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
-  -- Number of ADC channels
-  --constant c_num_channels                   : natural := 4;
   -- Numbert of bits in Wishbone register interface
-  constant c_periph_addr_size               : natural := 6;
+  constant c_periph_addr_size               : natural := 7;
   constant first_used_clk                   : natural := f_first_used_clk(g_use_clk_chains);
 
   -----------------------------
@@ -324,6 +322,9 @@ architecture rtl of wb_fmc516 is
   -- ADC delay signals.
   signal adc_dly_in                         : t_adc_dly_array(c_num_adc_channels-1 downto 0);
   signal adc_dly_out                        : t_adc_dly_array(c_num_adc_channels-1 downto 0);
+  -- ADC falling edge control signals
+  signal adc_dly_ctl                        : t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
+  signal adc_dly_ctl_in                     : t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
   -- ADC output signals.
   signal adc_out                            : t_adc_out_array(c_num_adc_channels-1 downto 0);
 
@@ -341,7 +342,7 @@ architecture rtl of wb_fmc516 is
 
   -- ADC Reset signals
   signal adc_clk_div_rst_int                : std_logic;
-  signal adc_clk_div_rst_int_p                : std_logic;
+  signal adc_clk_div_rst_int_p              : std_logic;
   signal fmc_reset_adcs_int                 : std_logic;
 
   -----------------------------
@@ -388,13 +389,13 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- Wishbone fanout signals
   -----------------------------
-  --signal wb_out                             : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
-  --signal wb_in                              : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
+  --signal wb_out                           : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
+  --signal wb_in                            : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
     -- Crossbar master/slave arrays
-    signal cbar_slave_in                      : t_wishbone_slave_in_array (c_masters-1 downto 0);
-    signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
-    signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
-    signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+    signal cbar_slave_in                    : t_wishbone_slave_in_array (c_masters-1 downto 0);
+    signal cbar_slave_out                   : t_wishbone_slave_out_array(c_masters-1 downto 0);
+    signal cbar_master_in                   : t_wishbone_master_in_array(c_slaves-1 downto 0);
+    signal cbar_master_out                  : t_wishbone_master_out_array(c_slaves-1 downto 0);
 
   -----------------------------
   -- System I2C signals
@@ -541,6 +542,9 @@ architecture rtl of wb_fmc516 is
     adc_dly_i                               : in t_adc_dly_array(c_num_adc_channels-1 downto 0);
     adc_dly_o                               : out t_adc_dly_array(c_num_adc_channels-1 downto 0);
 
+    -- ADC falling edge delay control
+    adc_dly_ctl_i                           : in t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
+
     -----------------------------
     -- ADC output signals.
     -----------------------------
@@ -551,32 +555,15 @@ architecture rtl of wb_fmc516 is
     -----------------------------
     mmcm_adc_locked_o                       : out std_logic;
 
-    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+    fifo_debug_valid_o                      : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                      : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 
   -- FMC516 Register Wishbone Interface
   component wb_fmc516_regs
   port (
-<<<<<<< HEAD
-    rst_n_i                                  : in     std_logic;
-    clk_sys_i                                : in     std_logic;
-    wb_adr_i                                 : in     std_logic_vector(3 downto 0);
-    wb_dat_i                                 : in     std_logic_vector(31 downto 0);
-    wb_dat_o                                 : out    std_logic_vector(31 downto 0);
-    wb_cyc_i                                 : in     std_logic;
-    wb_sel_i                                 : in     std_logic_vector(3 downto 0);
-    wb_stb_i                                 : in     std_logic;
-    wb_we_i                                  : in     std_logic;
-    wb_ack_o                                 : out    std_logic;
-    wb_stall_o                               : out    std_logic;
-    fs_clk_i                                 : in     std_logic;
-    --wb_clk_i                                 : in     std_logic;
-    regs_i                                   : in     t_fmc516_in_registers;
-    regs_o                                   : out    t_fmc516_out_registers
-=======
     rst_n_i                                 : in     std_logic;
     clk_sys_i                               : in     std_logic;
     wb_adr_i                                : in     std_logic_vector(4 downto 0);
@@ -592,7 +579,6 @@ architecture rtl of wb_fmc516 is
     --wb_clk_i                                : in     std_logic;
     regs_i                                  : in     t_fmc516_in_registers;
     regs_o                                  : out    t_fmc516_out_registers
->>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   );
   end component;
 
@@ -738,7 +724,7 @@ begin
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => wb_slv_adp_out.adr(3 downto 0),
+    wb_adr_i                                => wb_slv_adp_out.adr(4 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
     wb_cyc_i                                => wb_slv_adp_out.cyc,
@@ -834,6 +820,16 @@ begin
   adc_dly_reg(3).clk_dly_dec <= regs_out.ch3_ctl_dec_clk_chain_dly_o;
   adc_dly_reg(3).data_dly_dec <= regs_out.ch3_ctl_dec_data_chain_dly_o;
 
+  -- ADC delay falling edge control
+  adc_dly_ctl(0).adc_data_fe_d1_en <= regs_out.ch0_dly_ctl_fe_dly_o(0);
+  adc_dly_ctl(0).adc_data_fe_d2_en <= regs_out.ch0_dly_ctl_fe_dly_o(1);
+  adc_dly_ctl(1).adc_data_fe_d1_en <= regs_out.ch1_dly_ctl_fe_dly_o(0);
+  adc_dly_ctl(1).adc_data_fe_d2_en <= regs_out.ch1_dly_ctl_fe_dly_o(1);
+  adc_dly_ctl(2).adc_data_fe_d1_en <= regs_out.ch2_dly_ctl_fe_dly_o(0);
+  adc_dly_ctl(2).adc_data_fe_d2_en <= regs_out.ch2_dly_ctl_fe_dly_o(1);
+  adc_dly_ctl(3).adc_data_fe_d1_en <= regs_out.ch3_dly_ctl_fe_dly_o(0);
+  adc_dly_ctl(3).adc_data_fe_d2_en <= regs_out.ch3_dly_ctl_fe_dly_o(1);
+
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
   fmc_clk_sel_o                             <= regs_out.fmc_ctl_clk_sel_o;
@@ -876,15 +872,12 @@ begin
     --adc_dly_out(i).adc_data_dly_pulse <= '0';
   end generate;
 
-<<<<<<< HEAD
-=======
   -- ADC falling edge control signal mangling
   gen_adc_dly_ctl : for i in 0 to c_num_adc_channels-1 generate
     adc_dly_ctl_in(i).adc_data_fe_d1_en <= adc_dly_ctl(i).adc_data_fe_d1_en;
     adc_dly_ctl_in(i).adc_data_fe_d2_en <= adc_dly_ctl(i).adc_data_fe_d2_en;
   end generate;
 
->>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   -----------------------------
   -- Wishbone Delay Register Interface <-> ADC interface (clock + data delays).
   -----------------------------
@@ -1041,6 +1034,8 @@ begin
     -----------------------------
     adc_dly_i                               => adc_dly_in,
     adc_dly_o                               => adc_dly_out,
+
+    adc_dly_ctl_i                           => adc_dly_ctl_in,
 
     -----------------------------
     -- ADC output signals

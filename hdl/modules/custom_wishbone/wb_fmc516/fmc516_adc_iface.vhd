@@ -79,6 +79,9 @@ port
   adc_dly_i                                 : in t_adc_dly_array(c_num_adc_channels-1 downto 0);
   adc_dly_o                                 : out t_adc_dly_array(c_num_adc_channels-1 downto 0);
 
+  -- ADC falling edge delay control
+  adc_dly_ctl_i                             : in t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
+
   -----------------------------
   -- ADC output signals.
   -----------------------------
@@ -224,6 +227,9 @@ architecture rtl of fmc516_adc_iface is
     -- if idelay is in variable or var_loadable mode)
     adc_data_dly_pulse_i                    : in std_logic;
 
+    adc_data_fe_d1_en_i                     : in std_logic;
+    adc_data_fe_d2_en_i                     : in std_logic;
+
     -----------------------------
     -- ADC output signals.
     -----------------------------
@@ -349,57 +355,6 @@ begin
             adc_clk_bufr_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufr,
             adc_clk_bufg_i                      => adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
             adc_clk2x_bufg_i                    => adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
-            --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
-
-            -----------------------------
-            -- ADC Data Delay signals.
-            -----------------------------
-            -- Pulse this to update the delay value
-            adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
-            adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
-            adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
-            adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
-
-            -----------------------------
-            -- ADC output signals.
-            -----------------------------
-            adc_data_o                          => adc_out_o(i).adc_data,
-            adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
-            adc_clk_o                           => adc_out_o(i).adc_clk,
-            adc_clk2x_o                         => adc_out_o(i).adc_clk2x,
-            fifo_debug_valid_o                  => fifo_debug_valid_o(i),
-            fifo_debug_full_o                   => fifo_debug_full_o(i),
-            fifo_debug_empty_o                  => fifo_debug_empty_o(i)
-          );
-        end generate;
-
-      gen_explicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = true generate
-        cmp_fmc516_adc_data : fmc516_adc_data
-          generic map (
-            g_default_adc_data_delay            => g_data_default_dly(i),
-            --g_delay_type                        => "VARIABLE",
-            g_delay_type                        => g_delay_type,
-            g_sim                               => g_sim
-          )
-          port map (
-            sys_clk_i                           => sys_clk_i,
-            sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
-            sys_rst_n_i                         => adc_in_i(i).adc_rst_n,--sys_rst_n_i,
-
-            -----------------------------
-            -- External ports
-            -----------------------------
-
-            -- DDR ADC data channels.
-            adc_data_i                          => adc_in_i(i).adc_data,
-
-            -----------------------------
-            -- Input Clocks from fmc516_adc_clk signals
-            -----------------------------
-            adc_clk_bufio_i                     => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufio,
-            adc_clk_bufr_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufr,
-            adc_clk_bufg_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufg,
-            adc_clk2x_bufg_i                    => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk2x_bufg,
             --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
 
             -----------------------------
