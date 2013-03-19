@@ -37,16 +37,16 @@ int fmc516_init(void)
         fmc516_lmk02000_init();
         dbg_print("> fmc516 addr[%d]: %08X\n", i, dev_p->base);
 
-        delay(100);
+        delay(1000);
         dbg_print("> resetting ADCs\n");
         fmc516_reset_adcs(i);
-        delay(100);
+        delay(1000);
         fmc516_resetdiv_adcs(i);
-        //dbg_print("> ADCs reset values(rst|divrst)): %08X|%08X\n",
-        //    fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_ADCS,
-        //    fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_DIV_ADCS);
+        delay(1000);
+        dbg_print("> ADCs reset values(rst|divrst)): %08X|%08X\n",
+            fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_ADCS,
+            fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_DIV_ADCS);
 
-        delay(100);
         dbg_print("> initilizing fmc516 isla216\n");
         fmc516_isla216_all_init();
     }
@@ -75,11 +75,12 @@ void fmc516_init_regs(unsigned int id)
     fmc516_clk_sel(id, 1);
     fmc516_led1(id, 1);
 
-    // Adjsut the delays of all channels
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 7, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 9, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 9, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 9, commit);
+    // Adjsut the delays of all channels. Don't change these values
+    // unless you really have to!
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 24, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 14, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 15, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
 
     // Delay the falling edge of all channels
     fmc516_fe_dly(id, FMC516_ISLA216_ADC0, 0, 0);
@@ -90,35 +91,28 @@ void fmc516_init_regs(unsigned int id)
 
 void fmc516_sweep_delays(unsigned int id)
 {
-    //int commit = 1;
-    //int i;
+    int commit = 1;
+    int i, j;
 
     dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH0_CTL));
     dbg_print("> ADC%d data delay: %d...\n", 1, FMC516_CH1_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH1_CTL));
     dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH2_CTL));
     dbg_print("> ADC%d data delay: %d...\n", 3, FMC516_CH3_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH3_CTL));
 
-    //for (i = 25; i < 32; ++i){
-    //    dbg_print("> sweeping ADC%d data delay values: %d...\n", 1, i);
-    //    fmc516_adj_delay(id, 1, -1, i, commit);
-    //    delay(200000000);
-    //    dbg_print("> ADC%d data delay: %d...\n", 1, FMC516_CH1_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH1_CTL));
-    //}
-    //
-    //fmc516_adj_delay(id, 1, -1, 27, commit);
-    //
-    //for (i = 0; i < 32; ++i){
-    //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 1, i);
-    //    fmc516_adj_delay(id, 1, i, -1, commit);
-    //    delay(80000000);
-    //    dbg_print("> ADC%d data delay: %d...\n", 1, FMC516_CH1_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH1_CTL));
-    //  }
+    //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+        //for (j = 0; j < 32; ++j) {
+        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 1, j);
+        //    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, -1, j, commit);
+        //    delay(80000000);
+        //    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_CTL));
+        //}
 
-    //for (i = 0; i < 32; ++i){
-    //    dbg_print("> sweeping ADC%d delay values: %d...\n", 2, i);
-    //    fmc516_adj_ch2_delay(id, -1, i, commit);
-    //    delay(50000000);
-    //    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH2_CTL));
+        //for (j = 0; j < 32; ++j) {
+        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 2, j);
+        //    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, -1, j, commit);
+        //    delay(150000000);
+        //    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_CTL));
+        //}
     //}
 }
 
