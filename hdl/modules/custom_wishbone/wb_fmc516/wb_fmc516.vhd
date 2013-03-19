@@ -218,26 +218,13 @@ architecture rtl of wb_fmc516 is
     end if;
   end f_ceil_log2;
 
-  -- Determine first used clock
-  function f_first_used_clk(use_clk_chain : std_logic_vector)
-    return natural
-  is
-  begin
-    for i in 0 to c_num_adc_channels-1 loop
-      if use_clk_chain(i) = '1' then
-        return i;
-      end if;
-    end loop;
-
-    return -1;
-  end f_first_used_clk;
   -----------------------------
   -- General Contants
   -----------------------------
   -- Number packet size counter bits
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
-  -- Numbert of bits in Wishbone register interface
-  constant c_periph_addr_size               : natural := 7;
+  -- Numbert of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
+  constant c_periph_addr_size               : natural := 5+2;
   constant first_used_clk                   : natural := f_first_used_clk(g_use_clk_chains);
 
   -----------------------------

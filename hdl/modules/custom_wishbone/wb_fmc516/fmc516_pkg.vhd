@@ -99,7 +99,10 @@ package fmc516_pkg is
     adc_data_valid : std_logic;
   end record;
 
+  alias t_adc_int is t_adc_out;
+
   type t_adc_out_array is array (natural range <>) of t_adc_out;
+  alias t_adc_int_array is t_adc_out_array;
 
   -- types for fmc516_adc_iface generic definitions
   subtype t_default_adc_dly is t_natural_array(c_num_adc_channels-1 downto 0);
@@ -155,6 +158,9 @@ package fmc516_pkg is
     -- Functions
     function f_chain_intercon(clock_chains : std_logic_vector; data_chains : std_logic_vector)
       return t_chain_intercon;
+
+    function f_first_used_clk(use_clk_chain : std_logic_vector)
+      return natural;
 
     function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
       return boolean;
@@ -219,14 +225,28 @@ package body fmc516_pkg is
     end loop;
 
     -- Print the intercon vector
-    for k in 0 to c_num_chains-1 loop
-      report "[ intercon(" & integer'image(k) & ") = " &
-          Integer'image(intercon(k)) & " ]"
-      severity note;
-    end loop;
+    --for k in 0 to c_num_chains-1 loop
+    --  report "[ intercon(" & integer'image(k) & ") = " &
+    --      Integer'image(intercon(k)) & " ]"
+    --  severity note;
+    --end loop;
 
     return intercon;
   end f_chain_intercon;
+
+  -- Determine first used clock
+  function f_first_used_clk(use_clk_chain : std_logic_vector)
+    return natural
+  is
+  begin
+    for i in 0 to c_num_adc_channels-1 loop
+      if use_clk_chain(i) = '1' then
+        return i;
+      end if;
+    end loop;
+
+    return -1;
+  end f_first_used_clk;
 
   -- Check if the user specified a explicitly mapping between clocks
   -- and data chains
@@ -279,6 +299,13 @@ package body fmc516_pkg is
       -- Fallback to implicit policy in order to map clock to data chains
       intercon := f_chain_intercon(clock_chains, data_chains);
     end if;
+
+    -- Print the intercon vector
+    for i in 0 to c_num_chains-1 loop
+      report "[ intercon(" & integer'image(i) & ") = " &
+          Integer'image(intercon(i)) & " ]"
+      severity note;
+    end loop;
 
     return intercon;
   end f_generate_chain_intercon;

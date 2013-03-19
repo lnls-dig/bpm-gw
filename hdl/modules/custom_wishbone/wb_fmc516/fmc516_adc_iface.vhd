@@ -8,12 +8,17 @@
 -------------------------------------------------------------------------------
 -- Description: ADC Interface with FMC516 ADC board from Curtis Wright.
 --
--- Currently all ADC data is clocked on rising_edge of clk0 (CLK1_M2C_P
--- and CLK1_M2C_N from the FMC Specifications), as this is an
--- IO pin capable of driving regional clocks up to 3 clocks regions (MRCC).
+-- Currently ADC data (channel) 1 and 2 are clocked on rising_edge of clk0
+-- (CLK1_M2C_P and CLK1_M2C_N from the FMC Specifications) and ADC data 0 and 3
+-- are clocked on rising edge of clk1 as they are IO pins capable of driving
+-- regional clocks up to 3 clocks regions (MRCC), but only half of an IO bank.
+-- Hence, in order to use BUFIOs to drive all ILOGIC blocks (e.g., IDDR) of all
+-- ADC channels, we need to use both of the clocks
 --
 -- The generic parameter g_use_clocks specifies which clocks are to be used
--- for acquiring the corresponding adc data. Use with caution!
+-- for acquiring the corresponding adc data. Alternatively, one can use the new
+-- generic parameter (g_map_clk_data_chains) to explicitly map which ADC clock
+-- chain will clock the ADC data chain. Use with caution!
 -------------------------------------------------------------------------------
 -- Copyright (c) 2012 CNPEM
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
@@ -101,6 +106,15 @@ end fmc516_adc_iface;
 
 architecture rtl of fmc516_adc_iface is
 
+  -- Fill out the intercon vector. This vector has c_num_data_chains positions
+  -- and means which clock is connected for each data chain (position index): -1,
+  -- means not to use this data chain; 0..c_num_clock_chains, means the clock
+  -- driving this data chain.
+  constant chain_intercon                   : t_chain_intercon :=
+      f_generate_chain_intercon(g_use_clk_chains, g_use_data_chains, g_map_clk_data_chains);
+
+  constant first_used_clk                   : natural := f_first_used_clk(g_use_clk_chains);
+
   -- Reset generation
   signal sys_rst                            : std_logic;
 
@@ -123,15 +137,9 @@ architecture rtl of fmc516_adc_iface is
   -- Conectivity vector for interconnecting clocks and data chains
   --type t_chain_intercon is array (natural range <>) of integer;
 
-  -- ADc and Clock chains
+  -- ADC and Clock chains
   signal adc_clk_chain                      : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
-
-  -- Fill out the intercon vector. This vector has c_num_data_chains positions
-  -- and means which clock is connected for each data chain (position index): -1,
-  -- means not to use this data chain; 0..c_num_clock_chains, means the clock
-  -- driving this data chain.
-  constant chain_intercon                   : t_chain_intercon :=
-      f_generate_chain_intercon(g_use_clk_chains, g_use_data_chains, g_map_clk_data_chains);
+  signal adc_data_chain_out                 : t_adc_int_array(c_num_adc_channels-1 downto 0);
 
   -----------------------------
   -- Components declaration
@@ -372,6 +380,10 @@ begin
             -----------------------------
             -- ADC output signals.
             -----------------------------
+            --adc_data_o                          => adc_data_chain_out(i).adc_data,
+            --adc_data_valid_o                    => adc_data_chain_out(i).adc_data_valid,
+            --adc_clk_o                           => adc_data_chain_out(i).adc_clk,
+            --adc_clk2x_o                         => adc_data_chain_out(i).adc_clk2x,
             adc_data_o                          => adc_out_o(i).adc_data,
             adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
             adc_clk_o                           => adc_out_o(i).adc_clk,
@@ -380,63 +392,40 @@ begin
             fifo_debug_full_o                   => fifo_debug_full_o(i),
             fifo_debug_empty_o                  => fifo_debug_empty_o(i)
           );
-        --end generate;
-
-      --gen_explicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = true generate
-      --  cmp_fmc516_adc_data : fmc516_adc_data
-      --    generic map (
-      --      g_default_adc_data_delay            => g_data_default_dly(i),
-      --      --g_delay_type                        => "VARIABLE",
-      --      g_delay_type                        => g_delay_type,
-      --      g_sim                               => g_sim
-      --    )
-      --    port map (
-      --      sys_clk_i                           => sys_clk_i,
-      --      sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
-      --      sys_rst_n_i                         => adc_in_i(i).adc_rst_n,--sys_rst_n_i,
-      --
-      --      -----------------------------
-      --      -- External ports
-      --      -----------------------------
-      --
-      --      -- DDR ADC data channels.
-      --      adc_data_i                          => adc_in_i(i).adc_data,
-      --
-      --      -----------------------------
-      --      -- Input Clocks from fmc516_adc_clk signals
-      --      -----------------------------
-      --      adc_clk_bufio_i                     => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufio,
-      --      adc_clk_bufr_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufr,
-      --      adc_clk_bufg_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufg,
-      --      adc_clk2x_bufg_i                    => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk2x_bufg,
-      --      --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
-      --
-      --      -----------------------------
-      --      -- ADC Data Delay signals.
-      --      -----------------------------
-      --      -- Pulse this to update the delay value
-      --      adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
-      --      adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
-      --      adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
-      --      adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
-      --
-      --      adc_data_fe_d1_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d1_en,
-      --      adc_data_fe_d2_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d2_en,
-      --
-      --      -----------------------------
-      --      -- ADC output signals.
-      --      -----------------------------
-      --      adc_data_o                          => adc_out_o(i).adc_data,
-      --      adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
-      --      adc_clk_o                           => adc_out_o(i).adc_clk,
-      --      adc_clk2x_o                         => adc_out_o(i).adc_clk2x,
-      --      fifo_debug_valid_o                  => fifo_debug_valid_o(i),
-      --      fifo_debug_full_o                   => fifo_debug_full_o(i),
-      --      fifo_debug_empty_o                  => fifo_debug_empty_o(i)
-      --    );
-      --  end generate;
 
     end generate;
   end generate;
+
+  -- We have the possibility that some adc data chains are clocked with
+  -- different source-synchronous clocks. In this case, we need to synchronize
+  -- all data chains to a single clock domain. Need to evaluate its real
+  -- necessity
+
+  --cmp_adc_synch_chains : adc_synch_chains
+  --generic map (
+  --  g_chain_intercon                        => g_chain_intercon
+  --)
+  --port map (
+  --  sys_clk_i                               => sys_clk_i,
+  --  --sys_rst_n_i                             => sys_rst_n_i,
+  --  sys_rst_n_i                             => adc_in_i(first_used_clk).adc_rst_n,
+  --
+  --  -----------------------------
+  --  -- ADC Data Input signals. Each data chain is synchronous to its
+  --  -- own clock.
+  --  -----------------------------
+  --  adc_data_i                              => adc_data_chain_out,
+  --  --adc_clk_bufg_i                          => adc_clk_chain(chain_intercon(i)).adc_clk_bufg,
+  --  --adc_data_i                              => adc_in_i(i).adc_data,
+  --  --adc_data_valid_i                        => adc_in_i(i).adc_data_valid,
+  --
+  --  -- Reference clock for synchronization with all data chains
+  --  adc_clk_i                               => adc_clk_chain(first_used_clk).adc_clk_bufg,
+  --
+  --  -----------------------------
+  --  -- ADC output signals. Synchronous to a single clock
+  --  -----------------------------
+  --  adc_data_o                              => adc_out_o
+  --);
 
 end rtl;
