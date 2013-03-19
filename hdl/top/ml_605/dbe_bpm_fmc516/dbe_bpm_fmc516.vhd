@@ -1081,7 +1081,8 @@ begin
   port map (
     CONTROL                                 => CONTROL0,
     --CLK                                     => clk_sys,
-    CLK                                     => fmc516_fs_clk(0),
+    --CLK                                     => fmc516_fs_clk(0),
+    CLK                                     => fmc516_fs_clk(1),
     TRIG0                                   => TRIG_ILA0_0,
     TRIG1                                   => TRIG_ILA0_1,
     TRIG2                                   => TRIG_ILA0_2,
@@ -1195,7 +1196,8 @@ begin
   cmp_chipscope_ila_1_fmc516_clk1 : chipscope_ila
   port map (
     CONTROL                                 => CONTROL1,
-    CLK                                     => fmc516_fs_clk(1),
+    --CLK                                     => fmc516_fs_clk(1),
+    CLK                                     => fmc516_fs_clk(0),
     TRIG0                                   => TRIG_ILA1_0,
     TRIG1                                   => TRIG_ILA1_1,
     TRIG2                                   => TRIG_ILA1_2,

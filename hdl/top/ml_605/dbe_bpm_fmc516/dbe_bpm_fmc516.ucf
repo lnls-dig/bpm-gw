@@ -211,16 +211,16 @@ INST "*cmp_fmc516_adc_iface/cmp_idelayctrl"                                   IO
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay"  IODELAY_GROUP = adc_idelay;
 INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/cmp_ibufds_clk_iodelay"   IODELAY_GROUP = adc_idelay;
 
-# Overrides default_delay hdl parameter.
+# Overrides default_delay hdl parameter for the VARIABLE mode.
 # For Virtex-6: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 7;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 24;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 24;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 24;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 24;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 24;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
 
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 8;
@@ -240,14 +240,14 @@ INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[5].*.cmp_adc
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
 
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 10;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
-INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 9;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[0].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[1].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[2].*.cmp_adc_data_iodelay" IDELAY_VALUE = 26;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[3].*.cmp_adc_data_iodelay" IDELAY_VALUE = 26;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[4].*.cmp_adc_data_iodelay" IDELAY_VALUE = 26;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[5].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[6].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
+INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
 
 # Overrides default_delay hdl parameter
  INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
