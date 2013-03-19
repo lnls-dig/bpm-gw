@@ -84,6 +84,17 @@ package fmc516_pkg is
 
   type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly_reg;
 
+<<<<<<< HEAD
+=======
+  -- ADC falling edge delay control
+  type t_adc_dly_ctl is record
+    adc_data_fe_d1_en : std_logic;
+    adc_data_fe_d2_en : std_logic;
+  end record;
+
+  type t_adc_dly_ctl_array is array (natural range<>) of t_adc_dly_ctl;
+
+>>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   type t_adc_out is record
     adc_clk : std_logic;
     adc_clk2x : std_logic;
@@ -106,7 +117,7 @@ package fmc516_pkg is
   constant default_adc_clk_period_values : t_clk_values_array :=
     (4.0, 4.0, 4.0, 4.0);
   constant default_clk_use_chain : t_clk_use_chain :=
-    ("0010");
+    ("0011");
   constant default_data_use_chain : t_data_use_chain :=
     ("1111");
   -- Fallback to general conflict resolution mode. See chain_intercon function
@@ -150,6 +161,13 @@ package fmc516_pkg is
 
     function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
       return boolean;
+
+    -- Wrapper for generating chain_intercon structure. It will decide
+    -- between explicitly or implicitly mapping for clock/data chains
+    function f_generate_chain_intercon(clock_chains : std_logic_vector;
+                                        data_chains : std_logic_vector;
+                                        map_chain : t_map_clk_data_chain)
+      return t_chain_intercon;
 end fmc516_pkg;
 
 
@@ -195,7 +213,7 @@ package body fmc516_pkg is
       i := i + 1;
     end loop;
 
-    -- If there are remaining data chains unclocked, attribute
+    -- If there are remaining data chains unclocked, assign
     -- them to the last usable clock
     for i in data_chain_idx to c_num_chains-1 loop
       if data_chains(i) = '1' then
@@ -224,7 +242,7 @@ package body fmc516_pkg is
     variable result : boolean := true;
   begin
     for i in 0 to c_num_chains-1 loop
-      if map_chain(i) = -1 then
+      if map_chain(i) < 0 then
         result := false;
         exit;
       end if;
@@ -239,6 +257,34 @@ package body fmc516_pkg is
 
     return result;
   end f_explicitly_clk_data_map;
+
+  function f_generate_chain_intercon(clock_chains : std_logic_vector;
+                                        data_chains : std_logic_vector;
+                                        map_chain : t_map_clk_data_chain)
+    return t_chain_intercon
+  is
+    constant c_num_chains : natural := clock_chains'length;
+    variable intercon : t_chain_intercon(c_num_chains-1 downto 0);
+    variable i : natural := 0;
+  begin
+    -- Check for the sizes
+    assert (clock_chains'length = data_chains'length) report
+      "Vectors clocks and data have different sizes" severity failure;
+    assert (data_chains'length = map_chain'length) report
+      "Vectors data and map_clk have different sizes" severity failure;
+
+    -- Trust the user mapping...
+    if f_explicitly_clk_data_map(map_chain) = true then
+      for i in 0 to c_num_chains-1 loop
+        intercon(i) := map_chain(i);
+      end loop;
+    else --f_explicitly_clk_data_map(map_chain) = false
+      -- Fallback to implicit policy in order to map clock to data chains
+      intercon := f_chain_intercon(clock_chains, data_chains);
+    end if;
+
+    return intercon;
+  end f_generate_chain_intercon;
 
 end fmc516_pkg;
 

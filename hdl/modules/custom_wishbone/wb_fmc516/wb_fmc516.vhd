@@ -560,6 +560,7 @@ architecture rtl of wb_fmc516 is
   -- FMC516 Register Wishbone Interface
   component wb_fmc516_regs
   port (
+<<<<<<< HEAD
     rst_n_i                                  : in     std_logic;
     clk_sys_i                                : in     std_logic;
     wb_adr_i                                 : in     std_logic_vector(3 downto 0);
@@ -575,6 +576,23 @@ architecture rtl of wb_fmc516 is
     --wb_clk_i                                 : in     std_logic;
     regs_i                                   : in     t_fmc516_in_registers;
     regs_o                                   : out    t_fmc516_out_registers
+=======
+    rst_n_i                                 : in     std_logic;
+    clk_sys_i                               : in     std_logic;
+    wb_adr_i                                : in     std_logic_vector(4 downto 0);
+    wb_dat_i                                : in     std_logic_vector(31 downto 0);
+    wb_dat_o                                : out    std_logic_vector(31 downto 0);
+    wb_cyc_i                                : in     std_logic;
+    wb_sel_i                                : in     std_logic_vector(3 downto 0);
+    wb_stb_i                                : in     std_logic;
+    wb_we_i                                 : in     std_logic;
+    wb_ack_o                                : out    std_logic;
+    wb_stall_o                              : out    std_logic;
+    fs_clk_i                                : in     std_logic;
+    --wb_clk_i                                : in     std_logic;
+    regs_i                                  : in     t_fmc516_in_registers;
+    regs_o                                  : out    t_fmc516_out_registers
+>>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   );
   end component;
 
@@ -858,6 +876,15 @@ begin
     --adc_dly_out(i).adc_data_dly_pulse <= '0';
   end generate;
 
+<<<<<<< HEAD
+=======
+  -- ADC falling edge control signal mangling
+  gen_adc_dly_ctl : for i in 0 to c_num_adc_channels-1 generate
+    adc_dly_ctl_in(i).adc_data_fe_d1_en <= adc_dly_ctl(i).adc_data_fe_d1_en;
+    adc_dly_ctl_in(i).adc_data_fe_d2_en <= adc_dly_ctl(i).adc_data_fe_d2_en;
+  end generate;
+
+>>>>>>> 0caa735... various: bug-fixes: temp-mess 12
   -----------------------------
   -- Wishbone Delay Register Interface <-> ADC interface (clock + data delays).
   -----------------------------
@@ -866,16 +893,14 @@ begin
   -- Capture delay signals (clock + data chains) coming from the Wishbone
   -- Register Interface.
   -- Idelay "var_loadable" interface
-  -- CAUTION WITH THE CKOCKS HERE! FIX! Only trust on the data/clock delay
-  -- clocked by fs_clk(first_used_clk)
   gen_adc_dly_var_loadable : for i in 0 to c_num_adc_channels-1 generate
-    --p_adc_dly : process (sys_clk_i)
-    p_adc_dly : process (fs_clk(first_used_clk))
+    p_adc_dly : process (sys_clk_i)
+    --p_adc_dly : process (fs_clk(first_used_clk))
     begin
-      --if rising_edge(sys_clk_i) then
-      if rising_edge(fs_clk(first_used_clk)) then
-        --if sys_rst_sync_n = '0' then
-        if fs_rst_sync_n(first_used_clk) = '0' then
+      if rising_edge(sys_clk_i) then
+      --if rising_edge(fs_clk(first_used_clk)) then
+        if sys_rst_sync_n = '0' then
+        --if fs_rst_sync_n(first_used_clk) = '0' then
           adc_dly_reg(i).clk_dly_reg <= (others => '0');
           --adc_dly_reg(i).clk_dly_reg <= std_logic_vector(to_unsigned(default_clk_dly(i),
           --                                adc_dly_reg(i).clk_dly_reg'length));
@@ -902,16 +927,14 @@ begin
   end generate;
 
   -- Idelay "variable" interface
-  -- CAUTION WITH THE CKOCKS HERE! FIX! Only trust on the data/clock delay
-  -- clocked by fs_clk(first_used_clk)
   gen_adc_dly_variable : for i in 0 to c_num_adc_channels-1 generate
-    --p_adc_dly : process (sys_clk_i)
-    p_adc_dly : process (fs_clk(first_used_clk))
+    p_adc_dly : process (sys_clk_i)
+    --p_adc_dly : process (fs_clk(first_used_clk))
     begin
-      --if rising_edge(sys_clk_i) then
-      if rising_edge(fs_clk(first_used_clk)) then
-        --if sys_rst_sync_n = '0' then
-        if fs_rst_sync_n(first_used_clk) = '0' then
+      if rising_edge(sys_clk_i) then
+      --if rising_edge(fs_clk(first_used_clk)) then
+        if sys_rst_sync_n = '0' then
+        --if fs_rst_sync_n(first_used_clk) = '0' then
           adc_dly_reg_pulse_clk_int(i) <= '0';
           adc_dly_reg_pulse_data_int(i) <= '0';
           adc_dly_reg(i).clk_dly_incdec <= '0';
@@ -1071,9 +1094,6 @@ begin
       extended_o                              => adc_clk_div_rst_int
     );
 
--- DEBUG. Something wrong with the register interface?
-    --adc_clk_div_rst_int_p <= '0';
-
     -- ADC div resets logic
     cmp_clk_div_rst_obufds : obufds
     generic map(
@@ -1082,7 +1102,6 @@ begin
     port map (
       O                                       => adc_clk_div_rst_p_o,
       OB                                      => adc_clk_div_rst_n_o,
-      --I                                       => adc_clk_div_rst_int_p
       I                                       => adc_clk_div_rst_int
     );
 
@@ -1100,9 +1119,7 @@ begin
       extended_o                              => fmc_reset_adcs_int
     );
 
-    -- DEBUG ONLY! FIX!
     fmc_reset_adcs_n_o                        <= not fmc_reset_adcs_int;
-    --fmc_reset_adcs_n_o                        <= not regs_out.adc_ctl_rst_adcs_o;
   end generate;
 
   -----------------------------

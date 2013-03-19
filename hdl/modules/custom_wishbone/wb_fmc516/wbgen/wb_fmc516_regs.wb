@@ -257,7 +257,7 @@ peripheral {
       prefix = "update_clk_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -271,7 +271,7 @@ peripheral {
       prefix = "update_data_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -349,7 +349,7 @@ peripheral {
       description = "ADC clock chain delay";
       prefix = "clk_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -373,7 +373,7 @@ peripheral {
       description = "ADC data chain delay";
       prefix = "data_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -400,7 +400,7 @@ peripheral {
       prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -415,7 +415,7 @@ peripheral {
       prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -439,7 +439,7 @@ peripheral {
       prefix = "inc_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -454,7 +454,7 @@ peripheral {
       prefix = "dec_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -507,7 +507,7 @@ peripheral {
       description = "ADC clock chain delay";
       prefix = "clk_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -531,7 +531,7 @@ peripheral {
       description = "ADC data chain delay";
       prefix = "data_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -558,7 +558,7 @@ peripheral {
       prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -573,7 +573,7 @@ peripheral {
       prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -597,7 +597,7 @@ peripheral {
       prefix = "inc_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -612,7 +612,7 @@ peripheral {
       prefix = "dec_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -665,7 +665,7 @@ peripheral {
       description = "ADC clock chain delay";
       prefix = "clk_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -689,7 +689,7 @@ peripheral {
       description = "ADC data chain delay";
       prefix = "data_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -716,7 +716,7 @@ peripheral {
       prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -731,7 +731,7 @@ peripheral {
       prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -755,7 +755,7 @@ peripheral {
       prefix = "inc_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -770,7 +770,7 @@ peripheral {
       prefix = "dec_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -823,7 +823,7 @@ peripheral {
       description = "ADC clock chain delay";
       prefix = "clk_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -847,7 +847,7 @@ peripheral {
       description = "ADC data chain delay";
       prefix = "data_chain_dly";
       type = SLV;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       size = 5;
       align = 8;
       access_bus = READ_WRITE;
@@ -874,7 +874,7 @@ peripheral {
       prefix = "inc_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -889,7 +889,7 @@ peripheral {
       prefix = "dec_clk_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -913,7 +913,7 @@ peripheral {
       prefix = "inc_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       align = 8;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -928,7 +928,7 @@ peripheral {
       prefix = "dec_data_chain_dly";
       -- Pulse to start
       type = MONOSTABLE;
-      clock = "fs_clk_i";
+      --clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };

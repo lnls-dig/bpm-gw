@@ -3,24 +3,18 @@
 ------------------------------------------------------------------------------
 -- Author     : Lucas Maziero Russo
 -- Company    : CNPEM LNLS-DIG
--- Created    : 2012-29-10
+-- Created    : 2013-18-03
 -- Platform   : FPGA-generic
 -------------------------------------------------------------------------------
--- Description: ADC Interface with FMC516 ADC board from Curtis Wright.
---
--- Currently all ADC data is clocked on rising_edge of clk0 (CLK1_M2C_P
--- and CLK1_M2C_N from the FMC Specifications), as this is an
--- IO pin capable of driving regional clocks up to 3 clocks regions (MRCC).
---
--- The generic parameter g_use_clocks specifies which clocks are to be used
--- for acquiring the corresponding adc data. Use with caution!
+-- Description: Synchronization between all data chains to a single clock
+--                domain
 -------------------------------------------------------------------------------
--- Copyright (c) 2012 CNPEM
+-- Copyright (c) 2013 CNPEM
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author          Description
--- 2012-29-10  1.0      lucas.russo        Created
+-- 2013-18-03  1.0      lucas.russo      Created
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -34,26 +28,11 @@ library work;
 use work.custom_wishbone_pkg.all;
 use work.fmc516_pkg.all;
 
--- Should each channel have its own signal struture?
--- Should each related signal be in a separate struture?
--- If they were we could simplify the internal assignts for the generate statements
--- and make this module more generic and ADC agnostic (=])
---
--- g_clk_default_dly and g_data_default_dly are ignored for now, as the iodelay
--- xilinx primitive in VAR_LOADABLE mode does not consider it
-entity fmc516_adc_iface is
+entity fmc516_adc_sync_chains is
 generic
 (
     -- The only supported values are VIRTEX6 and 7SERIES
-  g_fpga_device                             : string := "VIRTEX6";
-  g_delay_type                              : string := "VARIABLE";
-  g_adc_clk_period_values                   : t_clk_values_array;
-  g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
-  g_clk_default_dly                         : t_default_adc_dly := default_clk_dly;
-  g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
-  g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
-  g_data_default_dly                        : t_default_adc_dly := default_data_dly;
-  g_sim                                     : integer := 0
+    g_chain_intercon                        := t_chain_intercon
 );
 port
 (
@@ -79,6 +58,9 @@ port
   adc_dly_i                                 : in t_adc_dly_array(c_num_adc_channels-1 downto 0);
   adc_dly_o                                 : out t_adc_dly_array(c_num_adc_channels-1 downto 0);
 
+  -- ADC falling edge delay control
+  adc_dly_ctl_i                             : in t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
+
   -----------------------------
   -- ADC output signals.
   -----------------------------
@@ -94,9 +76,9 @@ port
   fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
 );
 
-end fmc516_adc_iface;
+end fmc516_adc_sync_chains;
 
-architecture rtl of fmc516_adc_iface is
+architecture rtl of fmc516_adc_sync_chains is
 
   -- Reset generation
   signal sys_rst                            : std_logic;
@@ -223,6 +205,9 @@ architecture rtl of fmc516_adc_iface is
     -- Pulse this to update the delay value or reset to its default (depending
     -- if idelay is in variable or var_loadable mode)
     adc_data_dly_pulse_i                    : in std_logic;
+
+    adc_data_fe_d1_en_i                     : in std_logic;
+    adc_data_fe_d2_en_i                     : in std_logic;
 
     -----------------------------
     -- ADC output signals.
@@ -360,57 +345,6 @@ begin
             adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
             adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
 
-            -----------------------------
-            -- ADC output signals.
-            -----------------------------
-            adc_data_o                          => adc_out_o(i).adc_data,
-            adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
-            adc_clk_o                           => adc_out_o(i).adc_clk,
-            adc_clk2x_o                         => adc_out_o(i).adc_clk2x,
-            fifo_debug_valid_o                  => fifo_debug_valid_o(i),
-            fifo_debug_full_o                   => fifo_debug_full_o(i),
-            fifo_debug_empty_o                  => fifo_debug_empty_o(i)
-          );
-        end generate;
-
-      gen_explicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = true generate
-        cmp_fmc516_adc_data : fmc516_adc_data
-          generic map (
-            g_default_adc_data_delay            => g_data_default_dly(i),
-            --g_delay_type                        => "VARIABLE",
-            g_delay_type                        => g_delay_type,
-            g_sim                               => g_sim
-          )
-          port map (
-            sys_clk_i                           => sys_clk_i,
-            sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
-            sys_rst_n_i                         => adc_in_i(i).adc_rst_n,--sys_rst_n_i,
-
-            -----------------------------
-            -- External ports
-            -----------------------------
-
-            -- DDR ADC data channels.
-            adc_data_i                          => adc_in_i(i).adc_data,
-
-            -----------------------------
-            -- Input Clocks from fmc516_adc_clk signals
-            -----------------------------
-            adc_clk_bufio_i                     => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufio,
-            adc_clk_bufr_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufr,
-            adc_clk_bufg_i                      => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk_bufg,
-            adc_clk2x_bufg_i                    => adc_clk_chain(g_map_clk_data_chains(i)).adc_clk2x_bufg,
-            --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
-
-            -----------------------------
-            -- ADC Data Delay signals.
-            -----------------------------
-            -- Pulse this to update the delay value
-            adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
-            adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
-            adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
-            adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
-
             adc_data_fe_d1_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d1_en,
             adc_data_fe_d2_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d2_en,
 
@@ -481,6 +415,54 @@ begin
       --    );
       --  end generate;
 
+    end generate;
+  end generate;
+
+  -- We have the possibility that some adc data chains are clocked with
+  -- different source-synchronous clocks. In this case, we need to synchronize
+  -- all data chains to a single clock domain. Here, we picked the first used
+  -- clock
+  cmp_adc_synch_chains : adc_synch_chains
+  generic map (
+
+
+
+  )
+  port map (
+
+
+  );
+
+
+  gen_sync_adc_data_chains : for i in 0 to chain_intercon'length-1 generate
+    -- Check if this data chain is to be instanciated
+    gen_sync_adc_data_chains_check : if chain_intercon(i) /= -1 generate
+
+
+
+
+
+    --generic (
+    --g_data_width : natural;
+    --g_size       : natural;
+    --g_show_ahead : boolean := false;
+    --
+    ---- Read-side flag selection
+    --g_with_rd_empty        : boolean := true;   -- with empty flag
+    --g_with_rd_full         : boolean := false;  -- with full flag
+    --g_with_rd_almost_empty : boolean := false;
+    --g_with_rd_almost_full  : boolean := false;
+    --g_with_rd_count        : boolean := false;  -- with words counter
+    --
+    --g_with_wr_empty        : boolean := false;
+    --g_with_wr_full         : boolean := true;
+    --g_with_wr_almost_empty : boolean := false;
+    --g_with_wr_almost_full  : boolean := false;
+    --g_with_wr_count        : boolean := false;
+    --
+    --g_almost_empty_threshold : integer;  -- threshold for almost empty flag
+    --g_almost_full_threshold  : integer   -- threshold for almost full flag
+    --);
     end generate;
   end generate;
 

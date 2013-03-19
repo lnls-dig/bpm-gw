@@ -140,8 +140,9 @@ begin
     --idatain                                 => adc_clk_ibufgds,
     idatain                                 => adc_clk_i,
     dataout                                 => adc_clk_ibufgds_dly,
-    -- FIX THIS CLOCK!
-    c                                       => sys_clk_200Mhz_i,
+    c                                       => sys_clk_i,
+    --c                                       => sys_clk_200Mhz_i,
+    --c                                       => adc_clk_bufg,
     --ce                                      => adc_clk_dly_pulse_i,
     ce                                      => '0',
     inc                                     => adc_clk_dly_incdec_i,
@@ -215,7 +216,7 @@ begin
     -- Let the synthesis tools select the best appropriate
     -- compensation method (as dictated in Virtex-6 clocking
     -- resourses guide page 53, note 2)
-    COMPENSATION                          => "ZHOLD",
+    --COMPENSATION                          => "ZHOLD",
     STARTUP_WAIT                          => FALSE,
     DIVCLK_DIVIDE                         => 4,
     --DIVCLK_DIVIDE                         => 2,
@@ -311,6 +312,5 @@ begin
   adc_clk_bufr_o                            <= adc_clk_bufr;
   adc_clk_bufg_o                            <= adc_clk_bufg;
   adc_clk2x_bufg_o                          <= adc_clk2x_bufg;
-
 
 end rtl;
