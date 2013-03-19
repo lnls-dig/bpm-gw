@@ -12,7 +12,7 @@
 
 // Global SPI handler.
 spi_t **spi;
-uint32_t *spi_config;
+static uint32_t *spi_config;
 
 int spi_init(void)
 {
@@ -67,7 +67,7 @@ void spi_exit(void)
 
 int oc_spi_poll(unsigned int id)
 {
-    return spi[id]->CTRL & SPI_CTRL_BSY;
+    return (spi[id]->CTRL & SPI_CTRL_BSY) ? 1 : 0;
 }
 
 int oc_spi_three_mode(unsigned int id)

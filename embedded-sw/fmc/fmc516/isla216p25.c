@@ -63,16 +63,6 @@ static void fmc516_isla216_writew_raw(uint32_t val, int ss)
 
 void fmc516_isla216_write_instaddr(int addr, int length, int read, int ss)
 {
-	oc_spi_txrx(FMC516_LMK02000_SPI_ID, FMC516_LMK02000_CS,
-			FMC516_LMK02000_SIZE, val, NULL);
-}
-
-// No readback is available for lmk02000
-/*
-   int fmc516_lmk02000_read_reg(int addr)
-   {
-   }
- */
     uint32_t fmc516_isla216_reg;
 
     // 1-byte length
@@ -146,7 +136,7 @@ void fmc516_isla216_write_n(int val, int addr, int length, int ss)
 
 static void fmc516_isla216_load_regset(const struct default_dev_regs_t *regs, int ss)
 {
-	int i = 0;
+    int i = 0;
 
     while (regs[i].type != REGS_DEFAULT_END){
         if (regs[i].type == REGS_DEFAULT_INIT)

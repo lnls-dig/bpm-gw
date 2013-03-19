@@ -24,6 +24,9 @@
 #define SPI_REG_DIVIDER 0x00000014
 #define SPI_REG_SS 0x00000018
 
+#define SPI_CTRL_THREE_WIRE (1<<16)
+#define SPI_CTRL_RES2 (1<<15)
+#define SPI_CTRL_DIR (1<<14)
 #define SPI_CTRL_ASS (1<<13)
 #define SPI_CTRL_IE (1<<12)
 #define SPI_CTRL_LSB (1<<11)
