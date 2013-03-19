@@ -203,20 +203,25 @@ Global ADC control register.
 @headitem Bits @tab Access @tab Prefix @tab Default @tab Name
 @item @code{0}
 @tab R/W @tab
-@code{UPDATE_DLY}
+@code{UPDATE_CLK_DLY}
 @tab @code{X} @tab 
-Reset/Update ADC clock/data chains delay
+Reset/Update ADC clock chains delay
 @item @code{1}
+@tab R/W @tab
+@code{UPDATE_DATA_DLY}
+@tab @code{X} @tab 
+Reset/Update ADC data chains delay
+@item @code{2}
 @tab R/W @tab
 @code{RST_ADCS}
 @tab @code{X} @tab 
 Reset ADCs
-@item @code{2}
+@item @code{3}
 @tab R/W @tab
 @code{RST_DIV_ADCS}
 @tab @code{X} @tab 
 Reset Div ADCs
-@item @code{31...3}
+@item @code{31...4}
 @tab R/O @tab
 @code{RESERVED}
 @tab @code{X} @tab 
@@ -224,7 +229,8 @@ Reserved
 @end multitable
 @multitable @columnfractions 0.15 0.85
 @headitem Field @tab Description
-@item @code{update_dly} @tab write 1: reset/update clock/data chains to its default @* values or from the values in the delay registers.@* write 0: no effect
+@item @code{update_clk_dly} @tab write 1: reset/update clock chains to its default @* values or from the values in the delay registers.@* write 0: no effect
+@item @code{update_data_dly} @tab write 1: reset/update data chains to its default @* values or from the values in the delay registers.@* write 0: no effect
 @item @code{rst_adcs} @tab Reset and recalibrate ADCs@* write 0: no reset @* write 1: enable ADC reset
 @item @code{rst_div_adcs} @tab Reset for synchronization between multiple ADCs @* write 0: no reset @* write 1: enable ADC div reset
 @item @code{reserved} @tab Ignore on write, read as 0's

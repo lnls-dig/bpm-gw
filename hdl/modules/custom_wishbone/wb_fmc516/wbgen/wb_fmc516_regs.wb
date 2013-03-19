@@ -249,12 +249,26 @@ peripheral {
     prefix = "adc_ctl";
 
     field {
-      name = "Reset/Update ADC clock/data chains delay";
-      description = "write 1: reset/update clock/data chains to its default  \
+      name = "Reset/Update ADC clock chains delay";
+      description = "write 1: reset/update clock chains to its default  \
                       values or from the values in the delay registers.\
                       write 0: no effect";
 
-      prefix = "update_dly";
+      prefix = "update_clk_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reset/Update ADC data chains delay";
+      description = "write 1: reset/update data chains to its default  \
+                      values or from the values in the delay registers.\
+                      write 0: no effect";
+
+      prefix = "update_data_dly";
       -- Pulse to start
       type = MONOSTABLE;
       clock = "fs_clk_i";
@@ -292,7 +306,7 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved";
       type = SLV;
-      size = 29;
+      size = 28;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
