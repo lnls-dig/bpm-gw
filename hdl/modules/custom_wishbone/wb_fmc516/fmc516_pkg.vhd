@@ -110,8 +110,10 @@ package fmc516_pkg is
   constant default_data_use_chain : t_data_use_chain :=
     ("1111");
   -- Fallback to general conflict resolution mode. See chain_intercon function
+  --constant default_map_clk_data_chain : t_map_clk_data_chain :=
+  --  (-1, -1, -1, -1);
   constant default_map_clk_data_chain : t_map_clk_data_chain :=
-    (-1, -1, -1, -1);
+    (1, 0, 0, 1);
 
   -- dummy values for fmc516_adc_iface generic definitions
   -- Warning: all clocks are null here! Should be modified

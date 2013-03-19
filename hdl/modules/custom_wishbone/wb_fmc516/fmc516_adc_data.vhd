@@ -100,6 +100,10 @@ architecture rtl of fmc516_adc_data is
   signal adc_data_ff_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
+  -- Delay signals
+  signal adc_data_re                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data rising edge
+  signal adc_data_fe                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data falling edge
+
   -- FIFO signals
   signal adc_fifo_full                      : std_logic;
   signal adc_fifo_wr                        : std_logic;
@@ -223,14 +227,19 @@ begin
     end generate;
 
     -- DDR to SDR. This component is clocked with BUFIO clock for
-    -- maximum performance
+    -- maximum performance.
+    -- Note that the rising and falling edges are inverted to each other
+    -- as the ISLA216 codes the that in following way:
+    --
+    -- ODD1a EVEN1a ODD2a EVEN2a ...
+    --   ris  fal    ris   fal
     cmp_iddr : iddr
     generic map(
       DDR_CLK_EDGE                          => "SAME_EDGE_PIPELINED"
     )
     port map(
-      q1                                    => adc_data_sdr(2*i),
-      q2                                    => adc_data_sdr(2*i+1),
+      q1                                    => adc_data_sdr(2*i+1),--adc_data_re(i),
+      q2                                    => adc_data_sdr(2*i),--adc_data_fe(i),
       c                                     => adc_clk_bufio_i,
       --c                                     => adc_clk_bufr_i,
       ce                                    => '1',
@@ -242,6 +251,10 @@ begin
 
   -- Output a single value to adc_data_dly_val_o
   adc_data_dly_val_o <= adc_data_dly_val_int(4 downto 0);
+
+  --gen_adc_data_dly_comp : for i in 0 to (c_num_adc_bits/2)-1 generate
+  --
+  --end generate;
 
   -- Some FF to solve timing problem
   p_adc_data_ff : process(adc_clk_bufr_i)

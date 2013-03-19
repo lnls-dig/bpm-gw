@@ -197,7 +197,7 @@ port
   wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
 
-  adc_dly_reg_debug_o                      : out t_adc_dly_array;
+  adc_dly_reg_debug_o                      : out t_adc_dly_reg_array(c_num_adc_channels-1 downto 0);
 
   fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
   fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -239,7 +239,7 @@ architecture rtl of wb_fmc516 is
   -- Number of ADC channels
   --constant c_num_channels                   : natural := 4;
   -- Numbert of bits in Wishbone register interface
-  constant c_periph_addr_size               : natural := 4;
+  constant c_periph_addr_size               : natural := 6;
   constant first_used_clk                   : natural := f_first_used_clk(g_use_clk_chains);
 
   -----------------------------
@@ -846,10 +846,10 @@ begin
 
   -- ADC dly signal mangling
   gen_adc_dly_in : for i in 0 to c_num_adc_channels-1 generate
-    adc_dly_in(i).adc_clk_dly_pulse <= regs_out.adc_ctl_update_dly_o or adc_dly_reg_pulse_clk_int(i);
+    adc_dly_in(i).adc_clk_dly_pulse <= regs_out.adc_ctl_update_clk_dly_o or adc_dly_reg_pulse_clk_int(i);
     adc_dly_in(i).adc_clk_dly_val <= adc_dly_reg(i).clk_dly_reg;
     adc_dly_in(i).adc_clk_dly_incdec <= adc_dly_reg(i).clk_dly_incdec;
-    adc_dly_in(i).adc_data_dly_pulse <= regs_out.adc_ctl_update_dly_o or adc_dly_reg_pulse_data_int(i);
+    adc_dly_in(i).adc_data_dly_pulse <= regs_out.adc_ctl_update_data_dly_o or adc_dly_reg_pulse_data_int(i);
     adc_dly_in(i).adc_data_dly_val <= adc_dly_reg(i).data_dly_reg;
     adc_dly_in(i).adc_data_dly_incdec <= adc_dly_reg(i).data_dly_incdec;
 
@@ -876,12 +876,12 @@ begin
       if rising_edge(fs_clk(first_used_clk)) then
         --if sys_rst_sync_n = '0' then
         if fs_rst_sync_n(first_used_clk) = '0' then
-          --adc_dly_reg(i).clk_dly_reg <= (others => '0');
-          adc_dly_reg(i).clk_dly_reg <= std_logic_vector(to_unsigned(default_clk_dly(i),
-                                          adc_dly_reg(i).clk_dly_reg'length));
-          --adc_dly_reg(i).data_dly_reg <= (others => '0');
-          adc_dly_reg(i).data_dly_reg <= std_logic_vector(to_unsigned(default_data_dly(i),
-                                          adc_dly_reg(i).data_dly_reg'length));
+          adc_dly_reg(i).clk_dly_reg <= (others => '0');
+          --adc_dly_reg(i).clk_dly_reg <= std_logic_vector(to_unsigned(default_clk_dly(i),
+          --                                adc_dly_reg(i).clk_dly_reg'length));
+          adc_dly_reg(i).data_dly_reg <= (others => '0');
+          --adc_dly_reg(i).data_dly_reg <= std_logic_vector(to_unsigned(default_data_dly(i),
+          --                                adc_dly_reg(i).data_dly_reg'length));
         else
           -- write to clock register delay
           if adc_dly_reg(i).clk_load = '1' then
@@ -993,8 +993,8 @@ begin
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
-    --g_delay_type                            => "VAR_LOADABLE",
-    g_delay_type                            => "VARIABLE",
+    g_delay_type                            => "VAR_LOADABLE",
+    --g_delay_type                            => "VARIABLE",
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
     g_use_data_chains                       => g_use_data_chains,
