@@ -411,8 +411,6 @@ architecture rtl of wb_fmc516 is
   -- System SPI signals
   -----------------------------
   signal sys_spi_din                        : std_logic;
-  -- delayed signal
-  signal sys_spi_din_d                      : std_logic_vector(3 downto 0);
   signal sys_spi_dout                       : std_logic;
   signal sys_spi_ss_int                     : std_logic_vector(7 downto 0);
   signal sys_spi_clk                        : std_logic;
@@ -1182,12 +1180,8 @@ begin
     pad_cs_o                                => sys_spi_ss_int,
     pad_sclk_o                              => sys_spi_clk,
     pad_mosi_o                              => sys_spi_dout,
-    --pad_miso_i                              => sys_spi_din_d(sys_spi_din_d'left),
     pad_miso_i                              => sys_spi_din,
-    --pad_mosi_o                              => open,
-    --pad_miso_i                              => '0',
-    --pad_miosio_b                            => sys_spi_data_b
-    oen_o                                   => sys_spi_miosio_oe_n
+    pad_oen_o                               => sys_spi_miosio_oe_n
   );
 
   -- Output SPI clock
@@ -1201,19 +1195,6 @@ begin
   sys_spi_cs_adc1_n_o <= sys_spi_ss_int(1);           -- SPI ADC CS channel 1
   sys_spi_cs_adc2_n_o <= sys_spi_ss_int(2);           -- SPI ADC CS channel 2
   sys_spi_cs_adc3_n_o <= sys_spi_ss_int(3);           -- SPI ADC CS channel 3
-
-  -- Add some FF after the input pin to solve timing problem.
-  --p_adc_spi : process (sys_clk_i)
-  --begin
-  --  if rising_edge(sys_clk_i) then
-  --    if sys_rst_sync_n = '0' then
-  --      sys_spi_din_d <= (others => '0');
-  --    else
-  --      sys_spi_din_d <= sys_spi_din_d(sys_spi_din_d'left-1 downto 0) &
-  --                          sys_spi_din;
-  --    end if;
-  --  end if;
-  --end process;
 
   -- Not used wishbone signals
   cbar_master_in(2).rty                     <= '0';
@@ -1243,7 +1224,8 @@ begin
     pad_cs_o                                => fmc_lmk_uwire_ss_int,
     pad_sclk_o                              => fmc_lmk_uwire_clk,
     pad_mosi_o                              => lmk_uwire_data_o,
-    pad_miso_i                              => '0'
+    pad_miso_i                              => '0',
+    pad_oen_o                               => open
   );
   --
   -- Output Microwire LMK clock
