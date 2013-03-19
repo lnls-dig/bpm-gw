@@ -197,6 +197,8 @@ port
   wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
 
+  adc_dly_reg_debug_o                      : out t_adc_dly_array;
+
   fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
   fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
   fifo_debug_empty_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0)
@@ -894,6 +896,9 @@ begin
         end if;
       end if;
     end process;
+
+    -- Debug interface
+    adc_dly_reg_debug_o(i) <= adc_dly_reg(i);
   end generate;
 
   -- Idelay "variable" interface

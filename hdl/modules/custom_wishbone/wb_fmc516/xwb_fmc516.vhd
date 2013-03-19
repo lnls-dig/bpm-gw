@@ -167,6 +167,8 @@ port
   wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
   wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
 
+  adc_dly_reg_debug_o                       : out t_adc_dly_array;
+
   fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
   fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
   fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
@@ -334,7 +336,13 @@ begin
     wbs_ack_i                                => wbs_ack_int,
     wbs_stall_i                              => wbs_stall_int,
     wbs_err_i                                => wbs_err_int,
-    wbs_rty_i                                => wbs_rty_int
+    wbs_rty_i                                => wbs_rty_int,
+
+    adc_dly_reg_debug_o                      => adc_dly_reg_debug_o,
+
+    fifo_debug_valid_o                       => fifo_debug_valid_o,
+    fifo_debug_full_o                        => fifo_debug_full_o,
+    fifo_debug_empty_o                       => fifo_debug_empty_o
   );
 
   gen_wbs_interfaces : for i in 0 to c_num_adc_channels-1 generate

@@ -344,6 +344,8 @@ architecture rtl of dbe_bpm_fmc516 is
   signal fmc516_debug_full_int              : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc516_debug_empty_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
 
+  signal adc_dly_reg_debug_int              : t_adc_dly_array;
+
   signal sys_spi_clk_int                    : std_logic;
   --signal sys_spi_data_int                   : std_logic;
   signal sys_spi_dout_int                   : std_logic;
@@ -899,6 +901,8 @@ begin
     wbs_source_i                            => wbs_fmc516_in_array,
     wbs_source_o                            => wbs_fmc516_out_array,
 
+    adc_dly_reg_debug_o                     => adc_dly_reg_debug_int,
+
     fifo_debug_valid_o                      => fmc516_debug_valid_int,
     fifo_debug_full_o                       => fmc516_debug_full_int,
     fifo_debug_empty_o                      => fmc516_debug_empty_int
@@ -1095,7 +1099,10 @@ begin
   --                                               wbs_fmc516_out_array(0).dat;
   --TRIG_ILA0_1                               <= fmc516_adc_data(15 downto 0) &
   --                                               fmc516_adc_data(47 downto 32);
-  TRIG_ILA0_1                               <= (others => '0');
+  TRIG_ILA0_1                               <= adc_dly_reg_debug_int(1).clk_load &
+                                                adc_dly_reg_debug_int(1).data_load &
+                                                adc_dly_reg_debug_int(1).clk_dly_reg &
+                                                adc_dly_reg_debug_int(1).data_dly_reg;
 
   -- FMC516 WBS master output control signals
   TRIG_ILA0_2(17 downto 0)                   <= wbs_fmc516_out_array(1).cyc &
