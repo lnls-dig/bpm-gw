@@ -58,6 +58,7 @@ generic
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_data_default_dly                        : t_default_adc_dly := default_data_dly;
+  g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_sim                                     : integer := 0
 );
 port
@@ -152,6 +153,7 @@ architecture rtl of fmc516_adc_iface is
     g_delay_type                            : string := "VARIABLE";
     g_adc_clock_period                      : real;
     g_default_adc_clk_delay                 : natural := 0;
+    g_with_ref_clk                          : boolean := false;
     g_sim                                   : integer := 0
   );
   port(
@@ -274,6 +276,7 @@ begin
         g_delay_type                        => g_delay_type,
         g_adc_clock_period                  => g_adc_clk_period_values(i),
         g_default_adc_clk_delay             => g_clk_default_dly(i),
+        g_with_ref_clk                      => f_with_ref_clk(i, g_ref_clk),
         g_sim                               => g_sim
       )
       port map (
@@ -365,8 +368,8 @@ begin
             -- This will work only if all the adc data chains are synchronized with clocks
             -- close enough in frequency. In the default case, all of the clocks are locked
             -- to the same frequency. No need to have any phase relation.
-            adc_clk_bufg_i                      => adc_clk_chain(first_used_clk).adc_clk_bufg,
-            adc_clk2x_bufg_i                    => adc_clk_chain(chain_intercon(i)).adc_clk2x_bufg,
+            adc_clk_bufg_i                      => adc_clk_chain(g_ref_clk).adc_clk_bufg,
+            adc_clk2x_bufg_i                    => adc_clk_chain(g_ref_clk).adc_clk2x_bufg,
             --adc_clk_bufg_rst_n_i              => adc_in_i(i).adc_rst_n,
 
             -----------------------------

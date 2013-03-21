@@ -110,6 +110,7 @@ package fmc516_pkg is
   subtype t_clk_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_data_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_map_clk_data_chain is t_integer_array(c_num_adc_channels-1 downto 0);
+  subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels-1;
 
   -- Constant default values.
   constant default_data_dly : t_default_adc_dly := (others => 9);
@@ -125,6 +126,8 @@ package fmc516_pkg is
   --  (-1, -1, -1, -1);
   constant default_map_clk_data_chain : t_map_clk_data_chain :=
     (1, 0, 0, 1);
+  -- Reference ADC clock is clock 1
+  constant default_ref_adc_clk : t_ref_adc_clk := 1;
 
   -- dummy values for fmc516_adc_iface generic definitions
   -- Warning: all clocks are null here! Should be modified
@@ -171,6 +174,9 @@ package fmc516_pkg is
                                         data_chains : std_logic_vector;
                                         map_chain : t_map_clk_data_chain)
       return t_chain_intercon;
+
+    function f_with_ref_clk(clk_chain : natural; ref_clk : natural)
+      return boolean;
 end fmc516_pkg;
 
 
@@ -309,5 +315,16 @@ package body fmc516_pkg is
 
     return intercon;
   end f_generate_chain_intercon;
+
+  function f_with_ref_clk(clk_chain : natural; ref_clk : natural)
+    return boolean
+  is
+  begin
+    if clk_chain = ref_clk then
+      return true;
+    else
+      return false;
+    end if;
+  end f_with_ref_clk;
 
 end fmc516_pkg;

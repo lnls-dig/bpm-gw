@@ -211,6 +211,10 @@ architecture rtl of dbe_bpm_fmc516 is
   -- Number of reset clock cycles (FF)
   constant c_button_rst_width               : natural := 255;
 
+  -- number of the ADC reference clock used for all downstream
+  -- FPGA logic
+  constant c_adc_ref_clk                    : natural := 1;
+
   constant c_xwb_etherbone_sdb : t_sdb_device := (
     abi_class     => x"0000", -- undocumented device
     abi_ver_major => x"01",
@@ -779,6 +783,8 @@ begin
     g_use_clk_chains                        => "0011",
     g_use_data_chains                       => "1111",
     g_map_clk_data_chains                   => (1,0,0,1),
+    -- Clock 1 is the adc reference clock
+    g_ref_clk                               => c_adc_ref_clk,
     g_packet_size                           => 32,
     g_sim                                   => 0
   )
@@ -937,9 +943,9 @@ begin
   fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
   fmc516_fs_rst_n                           <= clk_sys_rstn and fmc516_mmcm_lock_int;
 
-  p_fmc516_reset_adcs : process(fmc516_fs_clk(1))
+  p_fmc516_reset_adcs : process(fmc516_fs_clk(c_adc_ref_clk))
   begin
-    if rising_edge(fmc516_fs_clk(1)) then
+    if rising_edge(fmc516_fs_clk(c_adc_ref_clk)) then
       if (fmc516_fs_rst_n = '0' or fmc_reset_adcs_n_int = '0') then
         fmc_reset_adcs_n_out <= '1';
         reset_adc_counter <= (others => '0');
@@ -1083,7 +1089,7 @@ begin
     --CLK                                     => clk_sys,
     -- TEST. We need to have all adc chain sync to a single clock
     -- domain
-    CLK                                     => fmc516_fs_clk(0),
+    CLK                                     => fmc516_fs_clk(c_adc_ref_clk),
     --CLK                                     => fmc516_fs_clk(1),
     TRIG0                                   => TRIG_ILA0_0,
     TRIG1                                   => TRIG_ILA0_1,
@@ -1199,7 +1205,7 @@ begin
   port map (
     CONTROL                                 => CONTROL1,
     --CLK                                     => fmc516_fs_clk(1),
-    CLK                                     => fmc516_fs_clk(0),
+    CLK                                     => fmc516_fs_clk(c_adc_ref_clk),
     TRIG0                                   => TRIG_ILA1_0,
     TRIG1                                   => TRIG_ILA1_1,
     TRIG2                                   => TRIG_ILA1_2,

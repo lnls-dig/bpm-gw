@@ -55,6 +55,7 @@ generic
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+  g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_packet_size                             : natural := 32;
   g_sim                                     : integer := 0
 );
@@ -500,6 +501,7 @@ architecture rtl of wb_fmc516 is
     g_use_data_chains                       : t_data_use_chain := default_data_use_chain;
     g_map_clk_data_chains                   : t_map_clk_data_chain := default_map_clk_data_chain;
     g_data_default_dly                      : t_default_adc_dly := default_data_dly;
+    g_ref_clk                               : t_ref_adc_clk := default_ref_adc_clk;
     g_sim                                   : integer := 0
   );
   port
@@ -1000,6 +1002,7 @@ begin
     g_use_clk_chains                        => g_use_clk_chains,
     g_use_data_chains                       => g_use_data_chains,
     g_map_clk_data_chains                   => g_map_clk_data_chains,
+    g_ref_clk                               => g_ref_clk,
     g_sim                                   => g_sim
   )
   port map(

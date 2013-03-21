@@ -31,6 +31,7 @@ generic
   g_delay_type                              : string := "VARIABLE";
   g_adc_clock_period                        : real;
   g_default_adc_clk_delay                   : natural := 0;
+  g_with_ref_clk                            : boolean := false;
   g_sim                                     : integer := 0
 );
 port
@@ -100,6 +101,7 @@ architecture rtl of fmc516_adc_clk is
   signal adc_clk_fbout                      : std_logic;
   signal adc_clk_mmcm_out                   : std_logic;
   signal adc_clk2x_mmcm_out                 : std_logic;
+  signal mmcm_adc_locked_int                : std_logic;
 
 
 begin
@@ -207,110 +209,123 @@ begin
     O                                       => adc_clk_bufr
   );
 
-  -- ADC Clock PLL. Caution here!
-  cmp_mmcm_adc_clk : MMCM_ADV
-  generic map(
-    BANDWIDTH                             => "OPTIMIZED",
-    CLKOUT4_CASCADE                       => FALSE,
-    CLOCK_HOLD                            => FALSE,
-    -- Let the synthesis tools select the best appropriate
-    -- compensation method (as dictated in Virtex-6 clocking
-    -- resourses guide page 53, note 2)
-    --COMPENSATION                          => "ZHOLD",
-    STARTUP_WAIT                          => FALSE,
-    DIVCLK_DIVIDE                         => 4,
-    --DIVCLK_DIVIDE                         => 2,
-    CLKFBOUT_MULT_F                       => 12.000,
-    --CLKFBOUT_MULT_F                       => 8.000,
-    CLKFBOUT_PHASE                        => 0.000,
-    CLKFBOUT_USE_FINE_PS                  => FALSE,
-    -- adc clock
-    CLKOUT0_DIVIDE_F                      => 3.000,
-    --CLKOUT0_DIVIDE_F                      => 4.000,
-    CLKOUT0_PHASE                         => 0.000,
-    CLKOUT0_DUTY_CYCLE                    => 0.500,
-    CLKOUT0_USE_FINE_PS                   => FALSE,
-    -- 2x adc clock. This should not be 2x. FIX
-    --CLKOUT1_DIVIDE                        => 2,
-    CLKOUT1_DIVIDE                        => 3,
-    --CLKOUT1_DIVIDE                        => 4,
-    CLKOUT1_PHASE                         => 0.000,
-    CLKOUT1_DUTY_CYCLE                    => 0.500,
-    CLKOUT1_USE_FINE_PS                   => FALSE,
-    -- 250 MHZ input clock
-    CLKIN1_PERIOD                         => g_adc_clock_period,
-    REF_JITTER1                           => 0.10,
-    -- Not used. Just to bypass Xilinx errors
-    -- Just input 250 MHz input clock
-    CLKIN2_PERIOD                         => g_adc_clock_period,
-    REF_JITTER2                           => 0.10
-  )
-  port map(
-    -- Output clocks
-    CLKFBOUT                              => adc_clk_fbout,
-    CLKFBOUTB                             => open,
-    CLKOUT0                               => adc_clk_mmcm_out,
-    CLKOUT0B                              => open,
-    CLKOUT1                               => adc_clk2x_mmcm_out,
-    CLKOUT1B                              => open,
-    CLKOUT2                               => open,
-    CLKOUT2B                              => open,
-    CLKOUT3                               => open,
-    CLKOUT3B                              => open,
-    CLKOUT4                               => open,
-    CLKOUT5                               => open,
-    CLKOUT6                               => open,
-    -- Input clock control
-    CLKFBIN                               => adc_clk_fbin,
-    CLKIN1                                => adc_clk_bufr,
-    CLKIN2                                => '0',
-    -- Tied to always select the primary input clock
-    CLKINSEL                              => '1',
-    -- Ports for dynamic reconfiguration
-    DADDR                                 => (others => '0'),
-    DCLK                                  => '0',
-    DEN                                   => '0',
-    DI                                    => (others => '0'),
-    DO                                    => open,
-    DRDY                                  => open,
-    DWE                                   => '0',
-    -- Ports for dynamic phase shift
-    PSCLK                                 => '0',
-    PSEN                                  => '0',
-    PSINCDEC                              => '0',
-    PSDONE                                => open,
-    -- Other control and status signals
-    LOCKED                                => mmcm_adc_locked_o,
-    CLKINSTOPPED                          => open,
-    CLKFBSTOPPED                          => open,
-    PWRDWN                                => '0',
-    RST                                   => sys_rst_i
-  );
 
-  -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
-  cmp_adc_clk_fb_bufg : BUFG
-  port map(
-    O                                       => adc_clk_fbin,
-    I                                       => adc_clk_fbout
-  );
+  gen_with_ref_clk : if g_with_ref_clk = true generate
+    -- ADC Clock PLL. Caution here!
+    cmp_mmcm_adc_clk : MMCM_ADV
+    generic map(
+      BANDWIDTH                             => "OPTIMIZED",
+      CLKOUT4_CASCADE                       => FALSE,
+      CLOCK_HOLD                            => FALSE,
+      -- Let the synthesis tools select the best appropriate
+      -- compensation method (as dictated in Virtex-6 clocking
+      -- resourses guide page 53, note 2)
+      --COMPENSATION                          => "ZHOLD",
+      STARTUP_WAIT                          => FALSE,
+      DIVCLK_DIVIDE                         => 4,
+      --DIVCLK_DIVIDE                         => 2,
+      CLKFBOUT_MULT_F                       => 12.000,
+      --CLKFBOUT_MULT_F                       => 8.000,
+      CLKFBOUT_PHASE                        => 0.000,
+      CLKFBOUT_USE_FINE_PS                  => FALSE,
+      -- adc clock
+      CLKOUT0_DIVIDE_F                      => 3.000,
+      --CLKOUT0_DIVIDE_F                      => 4.000,
+      CLKOUT0_PHASE                         => 0.000,
+      CLKOUT0_DUTY_CYCLE                    => 0.500,
+      CLKOUT0_USE_FINE_PS                   => FALSE,
+      -- 2x adc clock. This should not be 2x. FIX
+      --CLKOUT1_DIVIDE                        => 2,
+      CLKOUT1_DIVIDE                        => 3,
+      --CLKOUT1_DIVIDE                        => 4,
+      CLKOUT1_PHASE                         => 0.000,
+      CLKOUT1_DUTY_CYCLE                    => 0.500,
+      CLKOUT1_USE_FINE_PS                   => FALSE,
+      -- 250 MHZ input clock
+      CLKIN1_PERIOD                         => g_adc_clock_period,
+      REF_JITTER1                           => 0.10,
+      -- Not used. Just to bypass Xilinx errors
+      -- Just input 250 MHz input clock
+      CLKIN2_PERIOD                         => g_adc_clock_period,
+      REF_JITTER2                           => 0.10
+    )
+    port map(
+      -- Output clocks
+      CLKFBOUT                              => adc_clk_fbout,
+      CLKFBOUTB                             => open,
+      CLKOUT0                               => adc_clk_mmcm_out,
+      CLKOUT0B                              => open,
+      CLKOUT1                               => adc_clk2x_mmcm_out,
+      CLKOUT1B                              => open,
+      CLKOUT2                               => open,
+      CLKOUT2B                              => open,
+      CLKOUT3                               => open,
+      CLKOUT3B                              => open,
+      CLKOUT4                               => open,
+      CLKOUT5                               => open,
+      CLKOUT6                               => open,
+      -- Input clock control
+      CLKFBIN                               => adc_clk_fbin,
+      CLKIN1                                => adc_clk_bufr,
+      CLKIN2                                => '0',
+      -- Tied to always select the primary input clock
+      CLKINSEL                              => '1',
+      -- Ports for dynamic reconfiguration
+      DADDR                                 => (others => '0'),
+      DCLK                                  => '0',
+      DEN                                   => '0',
+      DI                                    => (others => '0'),
+      DO                                    => open,
+      DRDY                                  => open,
+      DWE                                   => '0',
+      -- Ports for dynamic phase shift
+      PSCLK                                 => '0',
+      PSEN                                  => '0',
+      PSINCDEC                              => '0',
+      PSDONE                                => open,
+      -- Other control and status signals
+      LOCKED                                => mmcm_adc_locked_int,
+      CLKINSTOPPED                          => open,
+      CLKFBSTOPPED                          => open,
+      PWRDWN                                => '0',
+      RST                                   => sys_rst_i
+    );
 
-  -- Global clock buffer for FPGA logic
-  cmp_adc_out_bufg : BUFG
-  port map(
-    O                                       => adc_clk_bufg,
-    I                                       => adc_clk_mmcm_out
-  );
+    -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
+    cmp_adc_clk_fb_bufg : BUFG
+    port map(
+      O                                       => adc_clk_fbin,
+      I                                       => adc_clk_fbout
+    );
 
-  cmp_adc2x_out_bufg : BUFG
-  port map(
-    O                                       => adc_clk2x_bufg,
-    I                                       => adc_clk2x_mmcm_out
-  );
+    -- Global clock buffer for FPGA logic
+    cmp_adc_out_bufg : BUFG
+    port map(
+      O                                       => adc_clk_bufg,
+      I                                       => adc_clk_mmcm_out
+    );
+
+    cmp_adc2x_out_bufg : BUFG
+    port map(
+      O                                       => adc_clk2x_bufg,
+      I                                       => adc_clk2x_mmcm_out
+    );
+
+  end generate;
 
   -- Output clocks
   adc_clk_bufio_o                           <= adc_clk_bufio;
   adc_clk_bufr_o                            <= adc_clk_bufr;
+
   adc_clk_bufg_o                            <= adc_clk_bufg;
   adc_clk2x_bufg_o                          <= adc_clk2x_bufg;
+
+  gen_true_mmcm_lock_ref_clk : if g_with_ref_clk = true generate
+    mmcm_adc_locked_o                       <= mmcm_adc_locked_int;
+  end generate;
+
+  gen_false_mmcm_lock_ref_clk : if g_with_ref_clk = false generate
+    mmcm_adc_locked_o                       <= '1';
+  end generate;
 
 end rtl;
