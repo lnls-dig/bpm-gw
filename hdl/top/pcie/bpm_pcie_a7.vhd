@@ -270,23 +270,23 @@ entity bpm_pcie_a7 is
                                      -- position indicates a data byte lane and
                                      -- a '0' indicates a control byte lane
     PHY_0_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FD2FF2FF";
-    PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FFE7F3CC0000";
+    PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FF6FF3CC0000";
     PHY_2_BITLANES        : std_logic_vector(47 downto 0) := X"000000000000";
 
     -- control/address/data pin mapping parameters
     CK_BYTE_MAP
      : std_logic_vector(143 downto 0) := X"000000000000000000000000000000000012";
     ADDR_MAP
-     : std_logic_vector(191 downto 0) := X"13712612413513113612A11A11B12112013A11712913B128";
-    BANK_MAP   : std_logic_vector(35 downto 0) := X"132138116";
-    CAS_MAP    : std_logic_vector(11 downto 0) := X"125";
+     : std_logic_vector(191 downto 0) := X"13211A11712A11B13A12512012B126131129116124121128";
+    BANK_MAP   : std_logic_vector(35 downto 0) := X"13613713B";
+    CAS_MAP    : std_logic_vector(11 downto 0) := X"135";
     CKE_ODT_BYTE_MAP : std_logic_vector(7 downto 0) := X"00";
-    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000139";
-    ODT_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000127";
+    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000127";
+    ODT_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000138";
     CS_MAP     : std_logic_vector(119 downto 0) := X"000000000000000000000000000000";
     PARITY_MAP : std_logic_vector(11 downto 0) := X"000";
-    RAS_MAP    : std_logic_vector(11 downto 0) := X"134";
-    WE_MAP     : std_logic_vector(11 downto 0) := X"133";
+    RAS_MAP    : std_logic_vector(11 downto 0) := X"139";
+    WE_MAP     : std_logic_vector(11 downto 0) := X"134";
     DQS_BYTE_MAP
      : std_logic_vector(143 downto 0) := X"000000000000000000000000000003020100";
     DATA0_MAP  : std_logic_vector(95 downto 0) := X"009006002004003007000005";
