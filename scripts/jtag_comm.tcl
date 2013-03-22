@@ -297,8 +297,8 @@ set USER_NUM 963
 # Set the FPGA device number here
 set TARGET_FPGA "XC6VLX240T"
 
-# Try to find an FPGA on the JTAG chain that has mining firmware loaded into it.
-# TODO: Return multiple FPGAs if more than one are found (that have mining firmware).
+# Try to find an FPGA on the JTAG chain that has dbe firmware loaded into it.
+# TODO: Return multiple FPGAs if more than one are found (that have dbe firmware).
 proc find_target_fpga {} {
   global jtag_handle
   global CABLE_NAME
@@ -351,8 +351,8 @@ proc find_target_fpga {} {
     return $validIndex
   }
 
-  puts stderr "ERROR: There are no Xilinx FPGAs with correct firmware loaded on them."
-  puts stderr "Please program your FPGA with correct firmware and re-run this script.\n"
+  puts stderr "ERROR: There are no Xilinx FPGAs with dbe firmware loaded on them."
+  puts stderr "Please program your FPGA with DBE firmware and re-run this script.\n"
 
   return -1
 }
@@ -413,6 +413,3 @@ proc jtagWriteMessage {handle msgFlags msg} {
           flush stdout
   }
 }
-
-
-

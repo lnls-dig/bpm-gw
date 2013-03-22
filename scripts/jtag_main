@@ -68,11 +68,11 @@ proc main {argc argv} {
     global jtag_handle
     global CSE_MSG_INFO
 
-    puts " --- FPGA Mining Tcl Script --- \n\n"
+    puts " --- FPGA DBE Tcl Script --- \n\n"
 
     puts "Looking for and preparing FPGAs...\n"
     if {[fpga_init] == -1} {
-        puts stderr "No mining FPGAs found."
+        puts stderr "No DBE FPGAs found."
         puts "\n\n --- Shutting Down --- \n\n"
         exit
     }
