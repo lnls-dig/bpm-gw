@@ -1,23 +1,23 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    Regs_Group - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    Regs_Group - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
--- 
+-- Dependencies:
+--
+-- Revision:
+--
 -- Revision 1.10 - Readability improved by FOR-LOOP used  19.03.2007
--- 
+--
 -- Revision 1.00 - File Created  06.02.2007
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -63,9 +63,9 @@ entity Regs_Group is
     dlm_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
 
     -- Event Buffer status + reset
-    eb_FIFO_Status  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    eb_FIFO_Rst     : out std_logic;
-    eb_FIFO_ow      : in  std_logic;
+    wb_FIFO_Status  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_Rst     : out std_logic;
+    wb_FIFO_ow      : in  std_logic;
     H2B_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     B2H_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -162,7 +162,7 @@ entity Regs_Group is
 
     -- System error and info
     Tx_TimeOut      : in  std_logic;
-    Tx_eb_TimeOut   : in  std_logic;
+    Tx_wb_TimeOut   : in  std_logic;
     Msg_Routing     : out std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
     pcie_link_width : in  std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
     cfg_dcommand    : in  std_logic_vector(16-1 downto 0);
@@ -240,7 +240,7 @@ entity Regs_Group is
     reg14_rv : in std_logic;
     reg14_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
 
-    --SIMONE debug signals 
+    --SIMONE debug signals
     debug_in_1i : out std_logic_vector(31 downto 0);
     debug_in_2i : out std_logic_vector(31 downto 0);
     debug_in_3i : out std_logic_vector(31 downto 0);
@@ -290,7 +290,7 @@ architecture Behavioral of Regs_Group is
   signal WrDin_r1_not_Zero_Lo   : std_logic_vector(4-1 downto 0);
   signal WrDin_r2_not_Zero_Lo   : std_logic;
 
-  --      Calculation in advance, just for better timing 
+  --      Calculation in advance, just for better timing
   signal Regs_WrDin_Hi19b_True_hq_r2 : std_logic;
   signal Regs_WrDin_Lo7b_True_hq_r2  : std_logic;
   signal Regs_WrDin_Hi19b_True_lq_r2 : std_logic;
@@ -319,19 +319,21 @@ architecture Behavioral of Regs_Group is
   signal Opto_Link_Status_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Opto_Link_Status_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   -- Event Buffer
-  signal eb_FIFO_Status_r1     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal eb_FIFO_Status_o_Hi   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal eb_FIFO_Status_o_Lo   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Status_r1     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Status_o_Hi   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Status_o_Lo   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal H2B_FIFO_Status_r1    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal H2B_FIFO_Status_o_Hi  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal H2B_FIFO_Status_o_Lo  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal B2H_FIFO_Status_r1    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal B2H_FIFO_Status_o_Hi  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal B2H_FIFO_Status_o_Lo  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal eb_FIFO_Rst_i         : std_logic;
-  signal eb_FIFO_Rst_b1        : std_logic;
-  signal eb_FIFO_Rst_b2        : std_logic;
-  signal eb_FIFO_Rst_b3        : std_logic;
+  signal wb_FIFO_Rst_i         : std_logic;
+  signal wb_FIFO_Rst_b1        : std_logic;
+  signal wb_FIFO_Rst_b2        : std_logic;
+  signal wb_FIFO_Rst_b3        : std_logic;
+  signal wb_FIFO_Rst_b4        : std_logic;
+  signal wb_FIFO_Rst_b5        : std_logic;
   signal eb_FIFO_OverWritten   : std_logic;
 
   -- Downstream DMA registers
@@ -614,9 +616,9 @@ architecture Behavioral of Regs_Group is
   signal reg14_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
   signal reg14_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
   signal reg14_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  --signal  debug_in_1i           : std_logic_vector(31 downto 0); 
-  --signal  debug_in_2i           : std_logic_vector(31 downto 0); 
-  --signal  debug_in_3i           : std_logic_vector(31 downto 0); 
+  --signal  debug_in_1i           : std_logic_vector(31 downto 0);
+  --signal  debug_in_2i           : std_logic_vector(31 downto 0);
+  --signal  debug_in_3i           : std_logic_vector(31 downto 0);
 
 
 
@@ -681,7 +683,7 @@ begin
   DG_Mask  <= DG_Mask_i;
 
   -- Event buffer reset
-  eb_FIFO_Rst <= eb_FIFO_Rst_i;
+  wb_FIFO_Rst <= wb_FIFO_Rst_i;
 
   -- MRd channel reset
   MRd_Channel_Rst <= MRd_Channel_Rst_i;
@@ -745,7 +747,7 @@ begin
   -- Message routing method
   Msg_Routing <= General_Control_i(C_GCR_MSG_ROUT_BIT_TOP downto C_GCR_MSG_ROUT_BIT_BOT);
 
-  -- us_MWr_TLP_Param 
+  -- us_MWr_TLP_Param
   us_MWr_Param_Vec <= General_Control_i(13 downto 8);
 
 
@@ -838,7 +840,7 @@ begin
 
 -- ----------------------------------------------
 -- Synchronous Delay : Sys_IRQ_i
--- 
+--
   Synch_Delay_Sys_IRQ :
   process (user_clk, user_lnk_up)
   begin
@@ -855,20 +857,21 @@ begin
 
 -- ----------------------------------------------
 -- Registers writing
--- 
+--
   Regs_WrAddr_i <= Regs_WrAddrA and Regs_WrAddrB;
   Regs_WrMask_i <= Regs_WrMaskA or Regs_WrMaskB;
-  Regs_WrDin_i  <= Regs_WrDinA or Regs_WrDinB;
+  Regs_WrDin_i  <= Regs_WrDinA or
+                   (Regs_WrDinB(C_DBUS_WIDTH/2-1 downto 0) & Regs_WrDinB(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2));
 
 -- ----------------------------------------------
 -- Registers reading
--- 
+--
   Regs_RdAddr_i <= Regs_RdAddr;
   Regs_RdQout   <= Regs_RdQout_i;
 
 -- ----------------------------------------------
 -- Synchronous Delay : Regs_WrEn
--- 
+--
   Synch_Delay_Regs_WrEn :
   process (user_clk)
   begin
@@ -887,7 +890,7 @@ begin
 
 -- ----------------------------------------------
 -- Synchronous Delay : Opto_Link_Status
--- 
+--
   Synch_Delay_Opto_Link_Status :
   process (user_clk)
   begin
@@ -898,13 +901,13 @@ begin
   end process;
 
 -- ----------------------------------------------
--- Synchronous Delay : eb_FIFO_Status
--- 
-  Synch_Delay_eb_FIFO_Status :
+-- Synchronous Delay : wb_FIFO_Status
+--
+  Synch_Delay_wb_FIFO_Status :
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      eb_FIFO_Status_r1 <= eb_FIFO_Status;
+      wb_FIFO_Status_r1 <= wb_FIFO_Status;
     end if;
   end process;
   Synch_Delay_H2B_FIFO_Status :
@@ -924,7 +927,7 @@ begin
 
 -- ----------------------------------------------
 -- Synchronous Delay : Regs_WrAddr
--- 
+--
   Synch_Delay_Regs_WrAddr :
   process (user_clk)
   begin
@@ -938,7 +941,7 @@ begin
 -- Synchronous Delay : dsDMA_Start2
 --                     usDMA_Start2
 --   (Special recipe for 64-bit successive descriptors)
--- 
+--
   Synch_Delay_DMA_Start2 :
   process (user_clk)
   begin
@@ -951,7 +954,7 @@ begin
 
 -- ----------------------------------------------
 -- Synchronous Delay : Regs_WrDin_i
--- 
+--
   Synch_Delay_Regs_WrDin :
   process (user_clk)
   begin
@@ -1018,7 +1021,7 @@ begin
 
 -- -----------------------------------------------------------
 -- Synchronous Delay : DMA Commands Write Valid and not End
--- 
+--
   Synch_Delay_dmaCmd_Wr_Valid_and_End :
   process (user_clk)
   begin
@@ -1044,7 +1047,7 @@ begin
 -- ------------------------------------------------
 -- Synchronous Delay : Regs_WrDin_Hi19b_True_r2 x2
 --                     Regs_WrDin_Lo7b_True_r2 x2
--- 
+--
   Synch_Delay_Regs_WrDin_Hi19b_and_Lo7b_True :
   process (user_clk)
   begin
@@ -1086,7 +1089,7 @@ begin
   end process;
 
 -- ---------------------------------------
--- 
+--
   Write_DMA_Registers_Mux :
   process (user_clk, user_lnk_up)
   begin
@@ -1097,7 +1100,7 @@ begin
     elsif user_clk'event and user_clk = '1' then
 
       if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-        -- and 
+        -- and
         Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(0, C_DECODE_BIT_BOT-2)
         -- and Regs_WrAddr_r1(2-1 downto 0)="00"
       then
@@ -1109,7 +1112,7 @@ begin
       for k in 1 to C_NUM_OF_ADDRESSES-1 loop
 
         if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          -- and 
+          -- and
           Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k, C_DECODE_BIT_BOT-2)
           -- and Regs_WrAddr_r1(2-1 downto 0)="00"
         then
@@ -1119,7 +1122,7 @@ begin
         end if;
 
         if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          -- and 
+          -- and
           Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k-1, C_DECODE_BIT_BOT-2)
           -- and Regs_WrAddr_r1(2-1 downto 0)="00"
         then
@@ -1252,7 +1255,7 @@ begin
 
 --------------------------------------------------------------------------
 --  Data generator status
--- 
+--
   Synch_DG_Status_i :
   process (user_clk, DG_Reset_i)
   begin
@@ -1875,7 +1878,7 @@ begin
       end if;
     end if;
   end process;
----     
+---
 
 -- -------------------------------------------------------
 
@@ -2115,7 +2118,7 @@ begin
           or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAL) = '1'
           or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_LENG) = '1'
           or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_LENG) = '1'
-          ) 
+          )
       then
         us_Param_Modified <= '1';
       else
@@ -2488,7 +2491,7 @@ begin
       elsif Regs_WrEn_r2 = '1' and
         (
 --                    Reg_WrMuxer(CINT_ADDR_DMA_DS_PAH) ='1'
---                 or 
+--                 or
           Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAL) = '1'
           or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAL) = '1'
           or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAH) = '1'
@@ -2689,7 +2692,7 @@ begin
 
 -- --------------------------------------
 -- Identification: Command_is_Reset
--- 
+--
   Synch_Capture_Command_is_Reset :
   process (user_clk, user_lnk_up)
   begin
@@ -2714,7 +2717,7 @@ begin
 
 -- --------------------------------------
 -- Identification: Command_is_Host_iClr
--- 
+--
   Synch_Capture_Command_is_Host_iClr :
   process (user_clk, user_lnk_up)
   begin
@@ -2739,7 +2742,7 @@ begin
 
 -------------------------------------------
 -- Synchronous output: usDMA_Channel_Rst_i
--- 
+--
   Syn_Output_usDMA_Channel_Rst :
   process (user_clk, user_lnk_up)
   begin
@@ -2762,7 +2765,7 @@ begin
 
 -------------------------------------------
 -- Synchronous output: dsDMA_Channel_Rst_i
--- 
+--
   Syn_Output_dsDMA_Channel_Rst :
   process (user_clk, user_lnk_up)
   begin
@@ -2786,7 +2789,7 @@ begin
 
 -- -----------------------------------------------
 -- Synchronous output: MRd_Channel_Rst_i
--- 
+--
   Syn_Output_MRd_Channel_Rst :
   process (user_clk, user_lnk_up)
   begin
@@ -2807,7 +2810,7 @@ begin
 
 -- -----------------------------------------------
 -- Synchronous output: Tx_Reset_i
--- 
+--
   Syn_Output_Tx_Reset :
   process (user_clk, user_lnk_up)
   begin
@@ -2824,22 +2827,26 @@ begin
   end process;
 
 -- -----------------------------------------------
--- Synchronous output: eb_FIFO_Rst_i
--- 
-  Syn_Output_eb_FIFO_Rst :
+-- Synchronous output: wb_FIFO_Rst_i
+--
+  Syn_Output_wb_FIFO_Rst :
   process (user_clk, user_lnk_up)
   begin
     if user_lnk_up = '0' then
-      eb_FIFO_Rst_i  <= '1';
-      eb_FIFO_Rst_b3 <= '1';
-      eb_FIFO_Rst_b2 <= '1';
-      eb_FIFO_Rst_b1 <= '1';
+      wb_FIFO_Rst_i  <= '1';
+      wb_FIFO_Rst_b5 <= '1';
+      wb_FIFO_Rst_b4 <= '1';
+      wb_FIFO_Rst_b3 <= '1';
+      wb_FIFO_Rst_b2 <= '1';
+      wb_FIFO_Rst_b1 <= '1';
     elsif user_clk'event and user_clk = '1' then
 
-      eb_FIFO_Rst_i  <= eb_FIFO_Rst_b1 or eb_FIFO_Rst_b2 or eb_FIFO_Rst_b3;
-      eb_FIFO_Rst_b3 <= eb_FIFO_Rst_b2;
-      eb_FIFO_Rst_b2 <= eb_FIFO_Rst_b1;
-      eb_FIFO_Rst_b1 <= Regs_WrEn_r2
+      wb_FIFO_Rst_i  <= wb_FIFO_Rst_b1 or wb_FIFO_Rst_b2 or wb_FIFO_Rst_b3 or wb_FIFO_Rst_b4 or wb_FIFO_Rst_b5;
+      wb_FIFO_Rst_b5 <= wb_FIFO_Rst_b4;
+      wb_FIFO_Rst_b4 <= wb_FIFO_Rst_b3;
+      wb_FIFO_Rst_b3 <= wb_FIFO_Rst_b2;
+      wb_FIFO_Rst_b2 <= wb_FIFO_Rst_b1;
+      wb_FIFO_Rst_b1 <= Regs_WrEn_r2
                         and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON)
                               and Command_is_Reset_Hi)
                              or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON)
@@ -2849,9 +2856,9 @@ begin
 
 -- -----------------------------------------------
 -- Synchronous output: protocol_rst
--- 
+--
 --            !!!  reset by user_reset  !!!
--- 
+--
   Syn_Output_protocol_rst :
   process (user_clk, user_reset)
   begin
@@ -2873,7 +2880,7 @@ begin
 
 -- -----------------------------------------------
 -- Synchronous Calculation: DMA_us_Transf_Bytes
--- 
+--
   Syn_Calc_DMA_us_Transf_Bytes :
   process (user_clk, user_lnk_up)
   begin
@@ -2893,7 +2900,7 @@ begin
 
 -- -----------------------------------------------
 -- Synchronous Calculation: DMA_ds_Transf_Bytes
--- 
+--
   Syn_Calc_DMA_ds_Transf_Bytes :
   process (user_clk, user_lnk_up)
   begin
@@ -2991,7 +2998,7 @@ begin
 
 ----------------------------------------------------------
 -- Synch Register:  Read Selection
--- 
+--
   Tx_DMA_Reg_RdMuxer :
   process (user_clk, user_lnk_up)
   begin
@@ -3037,7 +3044,7 @@ begin
 
 ----------------------------------------------------------
 -- Synch Register:  CTL_TTake
--- 
+--
   Syn_CTL_ttake :
   process (user_clk, user_lnk_up)
   begin
@@ -3063,7 +3070,7 @@ begin
 
 ----------------------------------------------------------
 -- Synch Register:  class_CTL_Status
--- 
+--
   Syn_class_CTL_Status :
   process (user_clk, user_lnk_up)
   begin
@@ -3077,7 +3084,7 @@ begin
   end process;
 
 -- -------------------------------------------------------
--- 
+--
   Sys_Int_Status_i <= (
     CINT_BIT_DLM_IN_ISR => DLM_irq ,
     CINT_BIT_CTL_IN_ISR => CTL_irq ,
@@ -3301,7 +3308,7 @@ begin
     else (others => '0');
 
   --------------------------------------------------------------------------
-  -- DLM                                                
+  -- DLM
   --------------------------------------------------------------------------
   dlm_rd_o_Hi(32-1 downto 0)
  <= dlm_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_DLM_CLASS) = '1'
@@ -3377,7 +3384,7 @@ begin
   reg08_rd_o_Lo(32-1 downto 0)
  <= reg08_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG08) = '1'
     else (others => '0');
-  
+
   reg09_rd_o_Hi(32-1 downto 0)
  <= reg09_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG09) = '1'
     else (others => '0');
@@ -3385,7 +3392,7 @@ begin
   reg09_rd_o_Lo(32-1 downto 0)
  <= reg09_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG09) = '1'
     else (others => '0');
-  
+
   reg10_rd_o_Hi(32-1 downto 0)
  <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG10) = '1'
     else (others => '0');
@@ -3448,8 +3455,8 @@ begin
 
   --debug_in_1i <= Sys_Int_Status_i(32-1 downto 0);
   --debug_in_2i <= Sys_Int_Enable_i(32-1 downto 0);
-  --debug_in_3i <= "0000000000000000000000000000000" & DAQ_irq; 
-  
+  --debug_in_3i <= "0000000000000000000000000000000" & DAQ_irq;
+
   debug_in_1i <= "0000000000000000000000000000000" & DMA_ds_Done;
   debug_in_2i <= "0000000000000000000000000000000" & DMA_us_Done;
   debug_in_3i <= "0000000000000000" & Sys_IRQ_i(C_NUM_OF_INTERRUPTS-1 downto 0);
@@ -3512,10 +3519,10 @@ begin
       eb_FIFO_OverWritten <= '0';
     elsif user_clk'event and user_clk = '1' then
       Sys_Error_i(CINT_BIT_TX_TOUT_IN_SER) <= Tx_TimeOut;
-      Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_eb_TimeOut;
+      Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_wb_TimeOut;
       Sys_Error_i(CINT_BIT_EB_OVERWRITTEN) <= eb_FIFO_OverWritten;
-      --  !!!!!!!!!!!!!! capture eb_FIFO overflow, temp cleared by MRd_Channel_Rst_i 
-      eb_FIFO_OverWritten                  <= (not MRd_Channel_Rst_i) and (eb_FIFO_ow or eb_FIFO_OverWritten);
+      --  !!!!!!!!!!!!!! capture eb_FIFO overflow, temp cleared by MRd_Channel_Rst_i
+      eb_FIFO_OverWritten                  <= (not MRd_Channel_Rst_i) and (wb_FIFO_ow or eb_FIFO_OverWritten);
     end if;
   end process;
 
@@ -3576,12 +3583,12 @@ begin
   --------------------------------------------------------------------------
   -- FIFO Statuses (read only)
   --------------------------------------------------------------------------
-  eb_FIFO_Status_o_Hi(32-1 downto 0)
- <= eb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_EB_STACON) = '1'
+  wb_FIFO_Status_o_Hi(32-1 downto 0)
+ <= wb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_EB_STACON) = '1'
     else (others => '0');
 
-  eb_FIFO_Status_o_Lo(32-1 downto 0)
- <= eb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_EB_STACON) = '1'
+  wb_FIFO_Status_o_Lo(32-1 downto 0)
+ <= wb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_EB_STACON) = '1'
     else (others => '0');
 
   H2B_FIFO_Status_o_Hi(32-1 downto 0)
@@ -3600,7 +3607,7 @@ begin
  <= B2H_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_B2H_STACON) = '1'
     else (others => '0');
 
-  --S debug_in_4i <=  B2H_FIFO_Status_r1(32-1 downto 0);                
+  --S debug_in_4i <=  B2H_FIFO_Status_r1(32-1 downto 0);
 
   --------------------------------------------------------------------------
   -- Optical Link Status
@@ -3648,7 +3655,7 @@ begin
 
 -----------------------------------------------------
 -- Sequential : Regs_RdQout_i
--- 
+--
   Synch_Regs_RdQout :
   process (user_clk, user_lnk_up)
   begin
@@ -3698,7 +3705,7 @@ begin
 
 --                              or  icap_O_o_Hi         (32-1 downto 0)
         or Opto_Link_Status_o_Hi (32-1 downto 0)
-        or eb_FIFO_Status_o_Hi (32-1 downto 0)
+        or wb_FIFO_Status_o_Hi (32-1 downto 0)
         or H2B_FIFO_Status_o_Hi (32-1 downto 0)
         or B2H_FIFO_Status_o_Hi (32-1 downto 0)
         or dlm_rd_o_Hi
@@ -3760,7 +3767,7 @@ begin
 
 --                              or  icap_O_o_Lo(32-1 downto 0)
         or Opto_Link_Status_o_Lo (32-1 downto 0)
-        or eb_FIFO_Status_o_Lo (32-1 downto 0)
+        or wb_FIFO_Status_o_Lo (32-1 downto 0)
         or H2B_FIFO_Status_o_Lo (32-1 downto 0)
         or B2H_FIFO_Status_o_Lo (32-1 downto 0)
         or dlm_rd_o_Lo
