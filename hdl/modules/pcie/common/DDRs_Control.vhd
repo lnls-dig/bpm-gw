@@ -194,6 +194,7 @@ architecture Behavioral of DDRs_Control is
   signal rpiped_wr_skew      : std_logic;
   signal rpiped_written      : std_logic;
   signal rpiped_written_r    : std_logic;
+  signal rpiped_written_r2    : std_logic;
   signal rpiped_rdconv_cnt   : unsigned(4 downto 0);
 
   -- -- --  Read Pipe Command Channel
@@ -226,8 +227,8 @@ begin
 
   Rst_i <= reset;
 
-  memc_rd_addr(C_DDR_IAWIDTH-1 downto 2) <= ddram_rd_addr(ddram_rd_addr'left downto 2);
-  memc_wr_addr(C_DDR_IAWIDTH-1 downto 2) <= ddram_wr_addr(ddram_wr_addr'left downto 2);
+  memc_rd_addr(C_DDR_IAWIDTH-1 downto 3) <= ddram_rd_addr(ddram_rd_addr'left downto 3);
+  memc_wr_addr(C_DDR_IAWIDTH-1 downto 3) <= ddram_wr_addr(ddram_wr_addr'left downto 3);
 
   memc_cmd_en    <= memc_rd_cmd or memc_wr_cmd_en;
   memc_cmd_instr <= "00" & memc_rd_cmd;
@@ -787,7 +788,8 @@ begin
       rpiped_rdconv_cnt <= (others => '1');
     else
       if rising_edge(memc_ui_clk) then
-        rpiped_written_r <= rpiped_written;
+        rpiped_written_r  <= rpiped_written;
+        rpiped_written_r2 <= rpiped_written_r;
         if memc_rd_valid = '1' then
           memc_rd_data_r1     <= memc_rd_data_conv;
           rpiped_rd_cnt_latch <= rpiped_rd_cnt;
@@ -800,19 +802,16 @@ begin
           memc_rd_data_r1(memc_rd_data_r1'left downto C_DBUS_WIDTH) <=
             memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0);
           memc_rd_data_r1(C_DBUS_WIDTH -1 downto 0) <= (others => '0');
-          memc_rd_shift_r   <= memc_rd_data_r1(memc_rd_data_r1'left - 32 downto memc_rd_data_r1'left - C_DBUS_WIDTH + 1);
-          if rpiped_wr_skew = '1' then
-            rpiped_wen <= not(rpiped_written);
-            rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" & memc_rd_shift_r &
-                          memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - 32+1);
-          else
-            rpiped_wen <= not(rpiped_written);
-            rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" &
-                          memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - C_DBUS_WIDTH+1);
-          end if;
+          memc_rd_shift_r <= memc_rd_data_r1(memc_rd_data_r1'left - 32 downto memc_rd_data_r1'left - C_DBUS_WIDTH + 1);
+        end if;
+        if rpiped_wr_skew = '1' then
+          rpiped_wen <= not(rpiped_written_r or rpiped_written_r2 or rpiped_afull) ;
+          rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" & memc_rd_shift_r &
+                        memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - 32+1);
         else
-          rpiped_wen <= '0';
-          rpiped_Din <= rpiped_Din;
+          rpiped_wen <= not(rpiped_written or rpiped_written_r or rpiped_afull);
+          rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" &
+                        memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - C_DBUS_WIDTH+1);
         end if;
       end if;
     end if;
