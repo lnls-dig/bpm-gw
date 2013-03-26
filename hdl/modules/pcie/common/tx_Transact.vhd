@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    tx_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    tx_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.30 - Memory buffer applied and structure regulated for DPR.   25.03.2008
 --
@@ -18,14 +18,14 @@
 -- Revision 1.10 - x4 timing constraints met.   02.02.2007
 --
 -- Revision 1.06 - BRAM output and FIFO output both registered.  01.02.2007
--- 
+--
 -- Revision 1.04 - Timing improved.     17.01.2007
 --
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -64,10 +64,16 @@ entity tx_Transact is
     us_DMA_Bytes_Add : out std_logic;
     us_DMA_Bytes     : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
 
-    -- Event Buffer FIFO read port
-    eb_FIFO_re    : out std_logic;
-    eb_FIFO_empty : in  std_logic;
-    eb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    -- Wishbone Read interface
+    wb_rdc_sof  : out std_logic;
+    wb_rdc_v    : out std_logic;
+    wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_rdc_full : in std_logic;
+
+    -- Wisbbone Buffer read port
+    wb_FIFO_re    : out std_logic;
+    wb_FIFO_empty : in  std_logic;
+    wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Read interface for Tx port
     Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -113,15 +119,10 @@ entity tx_Transact is
     DDR_FIFO_RdEn   : out std_logic;
     DDR_FIFO_Empty  : in  std_logic;
     DDR_FIFO_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
---      DDR_rdD_sof        : IN    std_logic;
---      DDR_rdD_eof        : IN    std_logic;
---      DDR_rdDout_V       : IN    std_logic;
---      DDR_rdDout         : IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
 
     -- Additional
     Tx_TimeOut    : out std_logic;
-    Tx_eb_TimeOut : out std_logic;
+    Tx_wb_TimeOut : out std_logic;
     Format_Shower : out std_logic;
     mbuf_UserFull : in  std_logic;
     Tx_Reset      : in  std_logic;
@@ -184,6 +185,7 @@ architecture Behavioral of tx_Transact is
   signal mAddr_pioCplD     : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
   signal mAddr_usTlp       : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
   signal DDRAddr_usTlp     : std_logic_vector(C_DDR_IAWIDTH-1 downto 0);
+  signal WBAddr_usTlp      : std_logic_vector(C_WB_AWIDTH-1 downto 0);
   signal Regs_Addr_pioCplD : std_logic_vector(C_EP_AWIDTH-1 downto 0);
   signal DDRAddr_pioCplD   : std_logic_vector(C_DDR_IAWIDTH-1 downto 0);
   --  BAR number
@@ -243,10 +245,10 @@ architecture Behavioral of tx_Transact is
   signal us_DMA_Bytes_i     : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
 
   ---------------------  Memory Reader  -----------------------------
-  --- 
+  ---
   --- Memory reader is the interface to access all sorts of memories
   ---   BRAM, FIFO, Registers, as well as possible DDR SDRAM
-  --- 
+  ---
   -------------------------------------------------------------------
   component
     tx_Mem_Reader
@@ -259,18 +261,20 @@ architecture Behavioral of tx_Transact is
       DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_rdc_full  : in  std_logic;
 
---       DDR_rdD_sof           : IN    std_logic;
---       DDR_rdD_eof           : IN    std_logic;
---       DDR_rdDout_V          : IN    std_logic;
---       DDR_rdDout            : IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
       DDR_FIFO_RdEn   : out std_logic;
       DDR_FIFO_Empty  : in  std_logic;
       DDR_FIFO_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-      eb_FIFO_re    : out std_logic;
-      eb_FIFO_empty : in  std_logic;
-      eb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      -- Wishbone Read interface
+      wb_rdc_sof  : out std_logic;
+      wb_rdc_v    : out std_logic;
+      wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_rdc_full : in std_logic;
+
+      -- Wisbbone Buffer read port
+      wb_FIFO_re    : out std_logic;
+      wb_FIFO_empty : in  std_logic;
+      wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
       Regs_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -293,7 +297,7 @@ architecture Behavioral of tx_Transact is
       mbuf_UserFull : in  std_logic;
 
       Tx_TimeOut    : out std_logic;
-      Tx_eb_TimeOut : out std_logic;
+      Tx_wb_TimeOut : out std_logic;
       mReader_Rst_n : in  std_logic;
       user_clk      : in  std_logic
       );
@@ -311,11 +315,11 @@ architecture Behavioral of tx_Transact is
   signal RdCmd_Ack       : std_logic;
 
   ---------------------  Memory Buffer  -----------------------------
-  --- 
-  --- A unified memory buffer holding the payload for the next tx TLP 
+  ---
+  --- A unified memory buffer holding the payload for the next tx TLP
   ---   34 bits wide, wherein 2 additional framing bits
   ---   temporarily 64 data depth, possibly deepened.
-  --- 
+  ---
   -------------------------------------------------------------------
   component
     mBuf_128x72
@@ -345,12 +349,12 @@ architecture Behavioral of tx_Transact is
   signal mbuf_Qvalid : std_logic;
 
   ---------------------  Output arbitration  ------------------------
-  --- 
-  --- For sake of fairness, the priorities are cycled every time 
-  ---   a service is done, after which the priority of the request 
+  ---
+  --- For sake of fairness, the priorities are cycled every time
+  ---   a service is done, after which the priority of the request
   ---   just serviced is set to the lowest and other lower priorities
   ---   increased and higher stay.
-  --- 
+  ---
   -------------------------------------------------------------------
   component
     Tx_Output_Arbitor
@@ -380,21 +384,17 @@ begin
   us_Last_sof   <= usTLP_is_MWr and not trn_tsof_n_i;
   us_Last_eof   <= usTLP_is_MWr and not s_axis_tx_tlast_i;
 
-  -- Connect inputs 
+  -- Connect inputs
   s_axis_tx_tready_i <= s_axis_tx_tready;
   tx_buf_av_i        <= tx_buf_av;
-
 
   -- Always deasserted
   s_axis_tx_tdsc_i    <= '0';
   s_axis_tx_terrfwd_i <= '0';
---   s_axis_tx_tkeep_i          <= (OTHERS=>'0');
-
 
   -- Upstream DMA transferred bytes counting up
   us_DMA_Bytes_Add <= us_DMA_Bytes_Add_i;
   us_DMA_Bytes     <= us_DMA_Bytes_i;
-
 
   -- Flow controls
   pio_FC_stop <= pio_FC_stop_i;
@@ -402,7 +402,7 @@ begin
 
 ---------------------------------------------------------------------------------
 -- Synchronous Calculation: us_FC_stop, pio_FC_stop
--- 
+--
   Synch_Calc_FC_stop :
   process (user_clk, Tx_Reset)
   begin
@@ -420,13 +420,11 @@ begin
     end if;
   end process;
 
-
   -- Channel buffer read enable
   Irpt_RE    <= Irpt_RE_i;
   pioCplD_RE <= pioCplD_RE_i;
   dsMRd_RE   <= dsMRd_RE_i;
   usTlp_RE   <= usTlp_RE_i;
-
 
 -- -----------------------------------
 --   Synchronized Local reset
@@ -480,18 +478,18 @@ begin
         DDR_rdc_din   => DDR_rdc_din ,  --  OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         DDR_rdc_full  => DDR_rdc_full ,   --  IN    std_logic;
 
---            DDR_rdD_sof     => DDR_rdD_sof     ,  --  IN    std_logic;
---            DDR_rdD_eof     => DDR_rdD_eof     ,  --  IN    std_logic;
---            DDR_rdDout_V    => DDR_rdDout_V    ,  --  IN    std_logic;
---            DDR_rdDout      => DDR_rdDout      ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
         DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic;
         DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- IN  std_logic;
         DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        eb_FIFO_re    => eb_FIFO_re ,   -- OUT std_logic; 
-        eb_FIFO_empty => eb_FIFO_empty ,  -- IN  std_logic; 
-        eb_FIFO_qout  => eb_FIFO_qout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_rdc_sof  => wb_rdc_sof, -- : out std_logic;
+        wb_rdc_v    => wb_rdc_v, --   : out std_logic;
+        wb_rdc_din  => wb_rdc_din, -- : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_rdc_full => wb_rdc_full, --: in std_logic;
+
+        wb_FIFO_re    => wb_FIFO_re ,   -- OUT std_logic;
+        wb_FIFO_empty => wb_FIFO_empty ,  -- IN  std_logic;
+        wb_FIFO_qout  => wb_FIFO_qout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
         Regs_RdAddr => Regs_RdAddr ,  -- OUT std_logic_vector(C_EP_AWIDTH-1 downto 0);
         Regs_RdQout => Regs_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -514,11 +512,10 @@ begin
         mbuf_UserFull => mbuf_UserFull ,  -- IN  std_logic;
 
         Tx_TimeOut    => Tx_TimeOut ,      -- OUT std_logic;
-        Tx_eb_TimeOut => Tx_eb_TimeOut ,   -- OUT std_logic;
+        Tx_wb_TimeOut => Tx_wb_TimeOut ,   -- OUT std_logic;
         mReader_Rst_n => trn_tx_Reset_n ,  -- IN  std_logic;
         user_clk      => user_clk          -- IN  std_logic
         );
-
 
 ------------------------------------------------------------
 ---             Memory buffer
@@ -541,7 +538,7 @@ begin
 
 ---------------------------------------------------------------------------------
 -- Synchronous Delay: mbuf_Qout Valid
--- 
+--
   Synchron_Delay_mbuf_Qvalid :
   process (user_clk, Tx_Reset)
   begin
@@ -558,7 +555,6 @@ begin
     end if;
   end process;
 
-
 ------------------------------------------------------------
 ---             Output arbitration
 ------------------------------------------------------------
@@ -573,10 +569,9 @@ begin
         Ack     => Ack_Indice
         );
 
-
 -----------------------------------------------------
 -- Synchronous Delay: Channel Requests
--- 
+--
   Synchron_Delay_ChRequests :
   process (user_clk)
   begin
@@ -588,10 +583,9 @@ begin
     end if;
   end process;
 
-
 -----------------------------------------------------
 -- Synchronous Delay: Tx_Busy
--- 
+--
   Synchron_Delay_Tx_Busy :
   process (user_clk)
   begin
@@ -604,10 +598,9 @@ begin
     end if;
   end process;
 
-
 -- ---------------------------------------------
 -- Reg : Channel Buffer Qout has Payload
--- 
+--
   Reg_ChBuf_with_Payload :
   process (user_clk)
   begin
@@ -655,11 +648,10 @@ begin
   vec_ChQout_Valid(C_CHAN_INDEX_DMA_DS) <= dsMRd_Qout (C_CHBUF_QVALID_BIT);
   vec_ChQout_Valid(C_CHAN_INDEX_DMA_US) <= usTlp_Qout (C_CHBUF_QVALID_BIT);
 
-
 -- -----------------------------------
 -- Delay : Channel_Buffer_Qout
 --         Bit-mapping is done
--- 
+--
   Delay_Channel_Buffer_Qout :
   process (user_clk, trn_tx_Reset_n)
   begin
@@ -701,11 +693,9 @@ begin
         Irpt_Qout_to_TLP(C_MSG_CODE_BIT_TOP downto C_MSG_CODE_BIT_BOT)   <= Irpt_Qout(C_CHBUF_MSG_CODE_BIT_TOP downto C_CHBUF_MSG_CODE_BIT_BOT);
         -- 2nd headers all zero
         -- ...
-
       else
         Irpt_Qout_to_TLP <= (others => '0');
       end if;
-
 
       if b1_Tx_Indicator(C_CHAN_INDEX_MRD) = '1' then
         pioCplD_Qout_to_TLP                                                                             <= (others => '0');  -- must be 1st argument
@@ -757,7 +747,6 @@ begin
         pioCplD_is_0Leng     <= '0';
       end if;
 
-
       if b1_Tx_Indicator(C_CHAN_INDEX_DMA_US) = '1' then
         usTlp_Qout_to_TLP                                                     <= (others => '0');  -- must be 1st argument
         -- 1st header HI
@@ -781,7 +770,7 @@ begin
         -- 2nd header LO (Address)
         usTlp_Qout_to_TLP(2*C_DBUS_WIDTH-1-32 downto C_DBUS_WIDTH) <= usTlp_Qout(C_CHBUF_HA_BIT_TOP-32 downto C_CHBUF_HA_BIT_BOT);
 
-        -- 
+        --
         if usTlp_Qout(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT)
            = CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG)
         then
@@ -799,6 +788,7 @@ begin
 
         -- Misc
         DDRAddr_usTlp <= usTlp_Qout(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT);
+        WBAddr_usTlp  <= usTlp_Qout(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT);
         mAddr_usTlp   <= usTlp_Qout(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);  -- !! C_CHBUF_MA_BIT_BOT);
         AInc_usTlp    <= usTlp_Qout(C_CHBUF_AINC_BIT);
         BAR_usTlp     <= usTlp_Qout(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT);
@@ -808,11 +798,11 @@ begin
         usTlp_Req_2DW_Leng <= '0';
         usTlp_Qout_to_TLP  <= (others => '0');
         DDRAddr_usTlp      <= (others => '1');
+        WBAddr_usTlp       <= (others => '1');
         mAddr_usTlp        <= (others => '1');
         AInc_usTlp         <= '1';
         BAR_usTlp          <= (others => '1');
       end if;
-
 
       if b1_Tx_Indicator(C_CHAN_INDEX_DMA_DS) = '1' then
         dsMRd_Qout_to_TLP                                                     <= (others => '0');  -- must be 1st argument
@@ -836,7 +826,6 @@ begin
 
     end if;
   end process;
-
 
 -- OR-wired channel buffer outputs
   Trn_Qout_wire <= Irpt_Qout_to_TLP
@@ -903,7 +892,7 @@ begin
             is_CplD         <= '1';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             BAR_value       <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= (C_ALL_ONES(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+2) & mAddr_pioCplD);
+            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+2) & mAddr_pioCplD);
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
 --              elsif BAR_usTlp=CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -911,17 +900,17 @@ begin
 --                StartAddr            <=  C_ALL_ONES(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+4) & mAddr_usTlp & "00";
           elsif BAR_usTlp = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             BAR_value       <= '0' & BAR_usTlp(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= C_ALL_ONES(C_DBUS_WIDTH-1 downto C_DDR_IAWIDTH) & DDRAddr_usTlp;
+            StartAddr       <= C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_DDR_IAWIDTH) & DDRAddr_usTlp;
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';
           elsif BAR_usTlp = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             BAR_value       <= '0' & BAR_usTlp(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= C_ALL_ONES(C_DBUS_WIDTH-1 downto C_DDR_IAWIDTH) & DDRAddr_usTlp;
+            StartAddr       <= C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & WBAddr_usTlp;
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';
           else
             BAR_value <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr <= (C_ALL_ONES(C_DBUS_WIDTH-1 downto C_EP_AWIDTH) & Regs_Addr_pioCplD);
+            StartAddr <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_EP_AWIDTH) & Regs_Addr_pioCplD);
 --                                     and (C_ALL_ONES(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+2) & mAddr_usTlp);
             Shift_1st_QWord <= '1';
             is_CplD         <= '0';
@@ -1229,7 +1218,7 @@ begin
           RdNumber_eq_One     <= '0';
           RdNumber_eq_Two     <= '0';
           StartAddr           <= (others => '0');
---               FixedAddr            <= '0';            
+--               FixedAddr            <= '0';
           BAR_value           <= (others => '0');
           RdCmd_Req           <= '0';
           mbuf_reset          <= '0';
@@ -1246,10 +1235,9 @@ begin
     end if;
   end process;
 
-
 ---------------------------------------------------------------------------------
 -- Synchronous Accumulation: us_DMA_Bytes
--- 
+--
   Synch_Acc_us_DMA_Bytes :
   process (user_clk)
   begin

@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    rx_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    rx_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.20 - Memory space repartitioned.   13.07.2007
 --
@@ -20,8 +20,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -163,16 +163,15 @@ entity rx_Transact is
     -- to Interrupt module
     Sys_IRQ : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-
     -- Event Buffer write port
-    eb_FIFO_we   : out std_logic;
-    eb_FIFO_wsof : out std_logic;
-    eb_FIFO_weof : out std_logic;
-    eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_we   : out std_logic;
+    wb_FIFO_wsof : out std_logic;
+    wb_FIFO_weof : out std_logic;
+    wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-    eb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-    eb_FIFO_Empty      : in  std_logic;
-    eb_FIFO_Reading    : in  std_logic;
+    wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+    wb_FIFO_Empty      : in  std_logic;
+    wb_FIFO_Reading    : in  std_logic;
     pio_reading_status : out std_logic;
 
     Link_Buf_full : in std_logic;
@@ -230,15 +229,15 @@ end entity rx_Transact;
 
 architecture Behavioral of rx_Transact is
 
-  signal eb_FIFO_we_i   : std_logic;
-  signal eb_FIFO_wsof_i : std_logic;
-  signal eb_FIFO_weof_i : std_logic;
-  signal eb_FIFO_din_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_we_i   : std_logic;
+  signal wb_FIFO_wsof_i : std_logic;
+  signal wb_FIFO_weof_i : std_logic;
+  signal wb_FIFO_din_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   ------------------------------------------------------------------
   --  Rx input delay
   --  some calculation in advance, to achieve better timing
-  -- 
+  --
   component
     RxIn_Delay
     port (
@@ -331,7 +330,7 @@ architecture Behavioral of rx_Transact is
   ------------------------------------------------------------------
   --  MRd TLP processing
   --   contains channel buffer for PIO Completions
-  -- 
+  --
   component
     rx_MRd_Transact
     port(
@@ -367,7 +366,7 @@ architecture Behavioral of rx_Transact is
 
   ------------------------------------------------------------------
   --  MWr TLP processing
-  -- 
+  --
   component
     rx_MWr_Transact
     port(
@@ -387,10 +386,10 @@ architecture Behavioral of rx_Transact is
 
 
       -- Event Buffer write port
-      eb_FIFO_we   : out std_logic;
-      eb_FIFO_wsof : out std_logic;
-      eb_FIFO_weof : out std_logic;
-      eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_FIFO_we   : out std_logic;
+      wb_FIFO_wsof : out std_logic;
+      wb_FIFO_weof : out std_logic;
+      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       -- Registers Write Port
       Regs_WrEn   : out std_logic;
@@ -421,15 +420,15 @@ architecture Behavioral of rx_Transact is
       );
   end component;
 
-  signal eb_FIFO_we_MWr   : std_logic;
-  signal eb_FIFO_wsof_MWr : std_logic;
-  signal eb_FIFO_weof_MWr : std_logic;
-  signal eb_FIFO_din_MWr  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_we_MWr   : std_logic;
+  signal wb_FIFO_wsof_MWr : std_logic;
+  signal wb_FIFO_weof_MWr : std_logic;
+  signal wb_FIFO_din_MWr  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
 
   ------------------------------------------------------------------
   --  Cpl/D TLP processing
-  -- 
+  --
   component
     rx_CplD_Transact
     port(
@@ -473,12 +472,11 @@ architecture Behavioral of rx_Transact is
       -- for descriptor of the upstream DMA
       usDMA_dex_Tag : out std_logic_vector(C_TAG_WIDTH-1 downto 0);
 
-
       -- Event Buffer write port
-      eb_FIFO_we   : out std_logic;
-      eb_FIFO_wsof : out std_logic;
-      eb_FIFO_weof : out std_logic;
-      eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_FIFO_we   : out std_logic;
+      wb_FIFO_wsof : out std_logic;
+      wb_FIFO_weof : out std_logic;
+      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       -- Registers Write Port
       Regs_WrEn   : out std_logic;
@@ -503,10 +501,10 @@ architecture Behavioral of rx_Transact is
       );
   end component;
 
-  signal eb_FIFO_we_CplD   : std_logic;
-  signal eb_FIFO_wsof_CplD : std_logic;
-  signal eb_FIFO_weof_CplD : std_logic;
-  signal eb_FIFO_din_CplD  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_we_CplD   : std_logic;
+  signal wb_FIFO_wsof_CplD : std_logic;
+  signal wb_FIFO_weof_CplD : std_logic;
+  signal wb_FIFO_din_CplD  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   signal usDMA_dex_Tag : std_logic_vector(C_TAG_WIDTH-1 downto 0);
   signal dsDMA_dex_Tag : std_logic_vector(C_TAG_WIDTH-1 downto 0);
@@ -516,7 +514,7 @@ architecture Behavioral of rx_Transact is
 
   ------------------------------------------------------------------
   --  Interrupts generation
-  -- 
+  --
   component
     Interrupts
     port(
@@ -552,12 +550,12 @@ architecture Behavioral of rx_Transact is
   ------------------------------------------------------------------
   --  Upstream DMA Channel
   --   contains channel buffer for upstream DMA
-  -- 
+  --
   component
     usDMA_Transact
     port(
 
-      -- command buffer  
+      -- command buffer
       usTlp_Req  : out std_logic;
       usTlp_RE   : in  std_logic;
       usTlp_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
@@ -605,7 +603,7 @@ architecture Behavioral of rx_Transact is
       DMA_TimeOut : out std_logic;
       DMA_Busy    : out std_logic;
 
-      -- To Tx channel   
+      -- To Tx channel
       DMA_us_Status : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       -- Additional
@@ -619,7 +617,7 @@ architecture Behavioral of rx_Transact is
   ------------------------------------------------------------------
   --  Downstream DMA Channel
   --   contains channel buffer for downstream DMA
-  -- 
+  --
   component
     dsDMA_Transact
     port(
@@ -694,16 +692,16 @@ architecture Behavioral of rx_Transact is
 
 begin
 
-  eb_FIFO_we   <= eb_FIFO_we_i;
-  eb_FIFO_wsof <= eb_FIFO_wsof_i;
-  eb_FIFO_weof <= eb_FIFO_weof_i;
-  eb_FIFO_din  <= eb_FIFO_din_i;
+  wb_FIFO_we   <= wb_FIFO_we_i;
+  wb_FIFO_wsof <= wb_FIFO_wsof_i;
+  wb_FIFO_weof <= wb_FIFO_weof_i;
+  wb_FIFO_din  <= wb_FIFO_din_i;
 
 
-  eb_FIFO_we_i   <= eb_FIFO_we_MWr or eb_FIFO_we_CplD;
-  eb_FIFO_wsof_i <= eb_FIFO_wsof_CplD when eb_FIFO_we_CplD = '1' else eb_FIFO_wsof_MWr;
-  eb_FIFO_weof_i <= eb_FIFO_weof_CplD when eb_FIFO_we_CplD = '1' else eb_FIFO_weof_MWr;
-  eb_FIFO_din_i  <= eb_FIFO_din_CplD  when eb_FIFO_we_CplD = '1' else eb_FIFO_din_MWr;
+  wb_FIFO_we_i   <= wb_FIFO_we_MWr or wb_FIFO_we_CplD;
+  wb_FIFO_wsof_i <= wb_FIFO_wsof_CplD when wb_FIFO_we_CplD = '1' else wb_FIFO_wsof_MWr;
+  wb_FIFO_weof_i <= wb_FIFO_weof_CplD when wb_FIFO_we_CplD = '1' else wb_FIFO_weof_MWr;
+  wb_FIFO_din_i  <= wb_FIFO_din_CplD  when wb_FIFO_we_CplD = '1' else wb_FIFO_din_MWr;
 
   -- ------------------------------------------------
   -- Delay of Rx inputs
@@ -773,7 +771,7 @@ begin
   MRd_Channel :
     rx_MRd_Transact
       port map(
-        -- 
+        --
         m_axis_rx_tlast    => m_axis_rx_tlast_dly,  -- IN  std_logic;
         m_axis_rx_tdata    => m_axis_rx_tdata_dly,  -- IN  std_logic_vector(31 downto 0);
         m_axis_rx_tkeep    => m_axis_rx_tkeep_dly,  -- IN  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
@@ -793,9 +791,9 @@ begin
         pioCplD_Qout => pioCplD_Qout,   -- OUT std_logic_vector(127 downto 0);
         pio_FC_stop  => pio_FC_stop,    -- IN  std_logic;
 
-        FIFO_Empty         => eb_FIFO_Empty,       -- IN  std_logic;
-        FIFO_Reading       => eb_FIFO_Reading,     -- IN  std_logic;
-        pio_reading_status => pio_reading_status,  -- OUT std_logic; 
+        FIFO_Empty         => wb_FIFO_Empty,       -- IN  std_logic;
+        FIFO_Reading       => wb_FIFO_Reading,     -- IN  std_logic;
+        pio_reading_status => pio_reading_status,  -- OUT std_logic;
 
         Channel_Rst => MRd_Channel_Rst,  -- IN  std_logic;
 
@@ -826,12 +824,12 @@ begin
         Tlp_has_4KB       => Tlp_has_4KB ,        -- IN  std_logic;
 
         -- Event Buffer write port
-        eb_FIFO_we   => eb_FIFO_we_MWr ,   -- OUT std_logic;
-        eb_FIFO_wsof => eb_FIFO_wsof_MWr ,  -- OUT std_logic;
-        eb_FIFO_weof => eb_FIFO_weof_MWr ,  -- OUT std_logic;
-        eb_FIFO_din  => eb_FIFO_din_MWr ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_we   => wb_FIFO_we_MWr ,   -- OUT std_logic;
+        wb_FIFO_wsof => wb_FIFO_wsof_MWr ,  -- OUT std_logic;
+        wb_FIFO_weof => wb_FIFO_weof_MWr ,  -- OUT std_logic;
+        wb_FIFO_din  => wb_FIFO_din_MWr ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        -- To registers module                          
+        -- To registers module
         Regs_WrEn   => Regs_WrEn0 ,     -- OUT std_logic;
         Regs_WrMask => Regs_WrMask0 ,   -- OUT std_logic_vector(2-1 downto 0);
         Regs_WrAddr => Regs_WrAddr0 ,   -- OUT std_logic_vector(16-1 downto 0);
@@ -859,9 +857,9 @@ begin
         );
 
 
-  -- --------------------------------------------------- 
+  -- ---------------------------------------------------
   -- Processing Completions
-  -- --------------------------------------------------- 
+  -- ---------------------------------------------------
   CplD_Channel :
     rx_CplD_Transact
       port map(
@@ -897,20 +895,20 @@ begin
         tRAM_addrB => tRAM_addrB,       -- IN  std_logic_vector( 6 downto 0);
         tRAM_dinB  => tRAM_dinB,        -- IN  std_logic_vector(47 downto 0);
 
-        -- Downstream channel descriptor tag 
+        -- Downstream channel descriptor tag
         dsDMA_dex_Tag => dsDMA_dex_Tag,  -- OUT std_logic_vector( 7 downto 0);
 
         -- Downstream Tag Map Signal for Busy/Done
         Tag_Map_Clear => Tag_Map_Clear,  -- OUT std_logic_vector(127 downto 0);
 
-        -- Upstream channel descriptor tag 
+        -- Upstream channel descriptor tag
         usDMA_dex_Tag => usDMA_dex_Tag,  -- OUT std_logic_vector( 7 downto 0);
 
         -- Event Buffer write port
-        eb_FIFO_we   => eb_FIFO_we_CplD ,   -- OUT std_logic;
-        eb_FIFO_wsof => eb_FIFO_wsof_CplD ,  -- OUT std_logic;
-        eb_FIFO_weof => eb_FIFO_weof_CplD ,  -- OUT std_logic;
-        eb_FIFO_din  => eb_FIFO_din_CplD ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_we   => wb_FIFO_we_CplD ,   -- OUT std_logic;
+        wb_FIFO_wsof => wb_FIFO_wsof_CplD ,  -- OUT std_logic;
+        wb_FIFO_weof => wb_FIFO_weof_CplD ,  -- OUT std_logic;
+        wb_FIFO_din  => wb_FIFO_din_CplD ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
         -- To registers module
         Regs_WrEn   => Regs_WrEn1,      -- OUT std_logic;
@@ -945,8 +943,8 @@ begin
         usTlp_Req  => usTlp_Req,        -- OUT std_logic;
         usTlp_Qout => usTlp_Qout,       -- OUT std_logic_vector(127 downto 0)
 
-        FIFO_Data_Count => eb_FIFO_data_count,  -- IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-        FIFO_Reading    => eb_FIFO_Reading,     -- IN  std_logic;
+        FIFO_Data_Count => wb_FIFO_data_count,  -- IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+        FIFO_Reading    => wb_FIFO_Reading,     -- IN  std_logic;
 
         -- upstream Control Signals from MWr Channel
         usDMA_Start => usDMA_Start,     -- IN  std_logic;

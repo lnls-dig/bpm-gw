@@ -1,16 +1,16 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    11:09:49 10/18/2006 
--- Design Name: 
--- Module Name:    tlpControl - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    11:09:49 10/18/2006
+-- Design Name:
+-- Module Name:    tlpControl - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.20 - Memory space repartitioned.   13.07.2007
 --
@@ -21,10 +21,10 @@
 -- Revision 1.04 - FIFO added.     20.12.2006
 --
 -- Revision 1.02 - second release. 14.12.2006
--- 
+--
 -- Revision 1.00 - first release.  18.10.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -146,21 +146,29 @@ entity tlpControl is
     debug_in_3i : out std_logic_vector(31 downto 0);
     debug_in_4i : out std_logic_vector(31 downto 0);
 
-    -- Event Buffer FIFO interface
-    eb_FIFO_we    : out std_logic;
-    eb_FIFO_wsof  : out std_logic;
-    eb_FIFO_weof  : out std_logic;
-    eb_FIFO_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    eb_FIFO_re    : out std_logic;
-    eb_FIFO_empty : in  std_logic;
-    eb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    eb_FIFO_ow    : in  std_logic;
+    -- Wishbone write interface
+    wb_FIFO_we    : out std_logic;
+    wb_FIFO_wsof  : out std_logic;
+    wb_FIFO_weof  : out std_logic;
+    wb_FIFO_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_ow    : in  std_logic;
 
-    eb_FIFO_data_count : in std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+    wb_FIFO_data_count : in std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+
+    -- Wishbone Read interface
+    wb_rdc_sof  : out std_logic;
+    wb_rdc_v    : out std_logic;
+    wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_rdc_full : in std_logic;
+
+    -- Wisbbone Buffer read port
+    wb_FIFO_re    : out std_logic;
+    wb_FIFO_empty : in  std_logic;
+    wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     pio_reading_status : out std_logic;
-    eb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    eb_FIFO_Rst        : out std_logic;
+    wb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_Rst        : out std_logic;
 
     H2B_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     B2H_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -332,15 +340,15 @@ architecture Behavioral of tlpControl is
       cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
       cfg_interrupt_assert    : out std_logic;
 
-      -- Event Buffer write port
-      eb_FIFO_we   : out std_logic;
-      eb_FIFO_wsof : out std_logic;
-      eb_FIFO_weof : out std_logic;
-      eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      -- Wishbone write port
+      wb_FIFO_we   : out std_logic;
+      wb_FIFO_wsof : out std_logic;
+      wb_FIFO_weof : out std_logic;
+      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-      eb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-      eb_FIFO_Empty      : in  std_logic;
-      eb_FIFO_Reading    : in  std_logic;
+      wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+      wb_FIFO_Empty      : in  std_logic;
+      wb_FIFO_Reading    : in  std_logic;
       pio_reading_status : out std_logic;
 
       -- Registers Write Port
@@ -507,16 +515,21 @@ architecture Behavioral of tlpControl is
       us_Last_sof : out std_logic;
       us_Last_eof : out std_logic;
 
-
       -- Irpt Channel
       Irpt_Req  : in  std_logic;
       Irpt_RE   : out std_logic;
       Irpt_Qout : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
-      -- Event Buffer FIFO read port
-      eb_FIFO_re    : out std_logic;
-      eb_FIFO_empty : in  std_logic;
-      eb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      -- Wishbone Read interface
+      wb_rdc_sof  : out std_logic;
+      wb_rdc_v    : out std_logic;
+      wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_rdc_full : in std_logic;
+
+      -- Wisbbone Buffer read port
+      wb_FIFO_re    : out std_logic;
+      wb_FIFO_empty : in  std_logic;
+      wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       -- With Rx port
       Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -534,11 +547,6 @@ architecture Behavioral of tlpControl is
       DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_rdc_full  : in  std_logic;
 
---      DDR_rdD_sof        : IN    std_logic;
---      DDR_rdD_eof        : IN    std_logic;
---      DDR_rdDout_V       : IN    std_logic;
---      DDR_rdDout         : IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
       -- DDR payload FIFO Read Port
       DDR_FIFO_RdEn   : out std_logic;
       DDR_FIFO_Empty  : in  std_logic;
@@ -546,7 +554,7 @@ architecture Behavioral of tlpControl is
 
       -- Additional
       Tx_TimeOut    : out std_logic;
-      Tx_eb_TimeOut : out std_logic;
+      Tx_wb_TimeOut : out std_logic;
       Format_Shower : out std_logic;
       Tx_Reset      : in  std_logic;
       mbuf_UserFull : in  std_logic;
@@ -589,9 +597,9 @@ architecture Behavioral of tlpControl is
       dlm_rv : in std_logic;
       dlm_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
 
-      -- Event Buffer status
-      eb_FIFO_Status  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      eb_FIFO_Rst     : out std_logic;
+      -- Wishbone Buffer status
+      wb_FIFO_Status  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_FIFO_Rst     : out std_logic;
       H2B_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       B2H_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -634,7 +642,6 @@ architecture Behavioral of tlpControl is
       dsLeng_Hi19b_True : out std_logic;
       dsLeng_Lo7b_True  : out std_logic;
 
-
       dsDMA_Start       : out std_logic;
       dsDMA_Stop        : out std_logic;
       dsDMA_Start2      : out std_logic;
@@ -666,7 +673,6 @@ architecture Behavioral of tlpControl is
       usLeng_Hi19b_True : out std_logic;
       usLeng_Lo7b_True  : out std_logic;
 
-
       usDMA_Start       : out std_logic;
       usDMA_Stop        : out std_logic;
       usDMA_Start2      : out std_logic;
@@ -685,9 +691,9 @@ architecture Behavioral of tlpControl is
       DLM_irq : in  std_logic;
 
       -- System error and info
-      eb_FIFO_ow      : in  std_logic;
+      wb_FIFO_ow      : in  std_logic;
       Tx_TimeOut      : in  std_logic;
-      Tx_eb_TimeOut   : in  std_logic;
+      Tx_wb_TimeOut   : in  std_logic;
       Msg_Routing     : out std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
       pcie_link_width : in  std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
       cfg_dcommand    : in  std_logic_vector(16-1 downto 0);
@@ -831,7 +837,7 @@ architecture Behavioral of tlpControl is
   signal DDR_wr_din_A_r3   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   -- eb FIFO read enable
-  signal eb_FIFO_RdEn_i : std_logic;
+  signal wb_FIFO_RdEn_i : std_logic;
 
   -- Flow control signals
   signal pio_FC_stop : std_logic;
@@ -936,12 +942,12 @@ architecture Behavioral of tlpControl is
   --      MRd Channel Reset
   signal MRd_Channel_Rst : std_logic;
 
-  --      Tx module Reset  
+  --      Tx module Reset
   signal Tx_Reset : std_logic;
 
   --      Tx time out
   signal Tx_TimeOut    : std_logic;
-  signal Tx_eb_TimeOut : std_logic;
+  signal Tx_wb_TimeOut : std_logic;
 
   -- Registers read port
   signal Regs_RdAddr : std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -981,7 +987,7 @@ begin
   DMA_ds_Busy     <= DMA_ds_Busy_i;
   DMA_ds_Busy_LED <= DMA_ds_Busy_led_i;
 
-  eb_FIFO_re <= eb_FIFO_RdEn_i;
+  wb_FIFO_re <= wb_FIFO_RdEn_i;
 
   DMA_ds_Done <= DMA_ds_Done_i;
   DMA_us_Done <= DMA_us_Done_i;
@@ -1125,7 +1131,7 @@ begin
         -- Transaction receive interface
         m_axis_rx_tlast    => m_axis_rx_tlast,  -- IN  std_logic,
         m_axis_rx_tdata    => m_axis_rx_tdata,  -- IN  std_logic_vector(31 downto 0),
-        m_axis_rx_tkeep    => m_axis_rx_tkeep,  -- IN  STD_LOGIC_VECTOR (  7 downto 0 ); 
+        m_axis_rx_tkeep    => m_axis_rx_tkeep,  -- IN  STD_LOGIC_VECTOR (  7 downto 0 );
         m_axis_rx_terrfwd  => m_axis_rx_terrfwd,   -- IN  std_logic,
         m_axis_rx_tvalid   => m_axis_rx_tvalid,    -- IN  std_logic,
         m_axis_rx_tready   => m_axis_rx_tready,    -- OUT std_logic,
@@ -1174,16 +1180,15 @@ begin
         cfg_interrupt_do        => cfg_interrupt_do ,  -- IN std_logic_VECTOR(7 downto 0);
         cfg_interrupt_assert    => cfg_interrupt_assert ,    -- OUT std_logic;
 
+        -- Wishbone write port
+        wb_FIFO_we   => wb_FIFO_we ,    -- OUT std_logic;
+        wb_FIFO_wsof => wb_FIFO_wsof ,  -- OUT std_logic;
+        wb_FIFO_weof => wb_FIFO_weof ,  -- OUT std_logic;
+        wb_FIFO_din  => wb_FIFO_din ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        -- Event Buffer write port
-        eb_FIFO_we   => eb_FIFO_we ,    -- OUT std_logic; 
-        eb_FIFO_wsof => eb_FIFO_wsof ,  -- OUT std_logic; 
-        eb_FIFO_weof => eb_FIFO_weof ,  -- OUT std_logic; 
-        eb_FIFO_din  => eb_FIFO_din ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-        eb_FIFO_data_count => eb_FIFO_data_count,  -- IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-        eb_FIFO_Empty      => eb_FIFO_Empty ,      -- IN  std_logic;
-        eb_FIFO_Reading    => eb_FIFO_RdEn_i ,     -- IN  std_logic;
+        wb_FIFO_data_count => wb_FIFO_data_count,  -- IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+        wb_FIFO_Empty      => wb_FIFO_Empty ,      -- IN  std_logic;
+        wb_FIFO_Reading    => wb_FIFO_RdEn_i ,     -- IN  std_logic;
         pio_reading_status => pio_reading_status ,  -- OUT std_logic;
 
         -- Register Write
@@ -1312,7 +1317,7 @@ begin
         -- Transaction
         s_axis_tx_tlast   => s_axis_tx_tlast,  -- OUT std_logic,
         s_axis_tx_tdata   => s_axis_tx_tdata,  -- OUT std_logic_vector(31 downto 0),
-        s_axis_tx_tkeep   => s_axis_tx_tkeep,  -- OUT STD_LOGIC_VECTOR (  7 downto 0 ); 
+        s_axis_tx_tkeep   => s_axis_tx_tkeep,  -- OUT STD_LOGIC_VECTOR (  7 downto 0 );
         s_axis_tx_terrfwd => s_axis_tx_terrfwd,  -- OUT std_logic,
         s_axis_tx_tvalid  => s_axis_tx_tvalid,   -- OUT std_logic,
         s_axis_tx_tready  => s_axis_tx_tready,   -- IN  std_logic,
@@ -1348,11 +1353,16 @@ begin
         Irpt_RE   => Irpt_RE,           -- OUT std_logic;
         Irpt_Qout => Irpt_Qout,         -- IN  std_logic_vector(96 downto 0);
 
+        -- Wishbone read command port
+        wb_rdc_sof  => wb_rdc_sof, --out std_logic;
+        wb_rdc_v    => wb_rdc_v, --out std_logic;
+        wb_rdc_din  => wb_rdc_din, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_rdc_full => wb_rdc_full, --in std_logic;
 
-        -- Event Buffer FIFO read port
-        eb_FIFO_re    => eb_FIFO_RdEn_i,  -- OUT std_logic; 
-        eb_FIFO_empty => eb_FIFO_empty ,  -- IN  std_logic; 
-        eb_FIFO_qout  => eb_FIFO_qout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        -- Wisbbone Buffer read port
+        wb_FIFO_re    => wb_FIFO_RdEn_i,  -- OUT std_logic;
+        wb_FIFO_empty => wb_FIFO_empty ,  -- IN  std_logic;
+        wb_FIFO_qout  => wb_FIFO_qout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
         -- Registers read
         Regs_RdAddr => Regs_RdAddr,     -- OUT std_logic_vector(15 downto 0);
@@ -1371,7 +1381,7 @@ begin
         DDR_rdc_full  => DDR_rdc_full ,   -- IN    std_logic;
 
         -- DDR payload FIFO Read Port
-        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic; 
+        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic;
         DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- IN  std_logic;
         DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 --      DDR_rdD_sof         =>  DDR_rdD_sof       ,  -- IN    std_logic;
@@ -1382,7 +1392,7 @@ begin
 
         -- Additional
         Tx_TimeOut    => Tx_TimeOut,     -- OUT std_logic;
-        Tx_eb_TimeOut => Tx_eb_TimeOut,  -- OUT std_logic;
+        Tx_wb_TimeOut => Tx_wb_TimeOut,  -- OUT std_logic;
         Format_Shower => Format_Shower,  -- OUT std_logic;
         Tx_Reset      => Tx_Reset,       -- IN  std_logic;
         mbuf_UserFull => mbuf_UserFull,  -- IN  std_logic;
@@ -1421,9 +1431,9 @@ begin
         dlm_rv => dlm_rv ,              -- IN  std_logic;
         dlm_rd => dlm_rd ,  -- IN  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
 
-        -- Event Buffer status + reset
-        eb_FIFO_Status  => eb_FIFO_Status ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        eb_FIFO_Rst     => eb_FIFO_Rst ,     -- OUT std_logic;
+        -- Wishbone Buffer status + reset
+        wb_FIFO_Status  => wb_FIFO_Status ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_Rst     => wb_FIFO_Rst ,     -- OUT std_logic;
         H2B_FIFO_Status => H2B_FIFO_Status ,
         B2H_FIFO_Status => B2H_FIFO_Status ,
 
@@ -1510,9 +1520,9 @@ begin
         DLM_irq => DLM_irq ,            -- IN  std_logic;
 
         -- System error and info
-        eb_FIFO_ow      => eb_FIFO_ow ,
+        wb_FIFO_ow      => wb_FIFO_ow ,
         Tx_TimeOut      => Tx_TimeOut ,
-        Tx_eb_TimeOut   => Tx_eb_TimeOut ,
+        Tx_wb_TimeOut   => Tx_wb_TimeOut ,
         Msg_Routing     => Msg_Routing ,
         pcie_link_width => pcie_link_width ,
         cfg_dcommand    => cfg_dcommand ,
@@ -1596,7 +1606,7 @@ begin
         debug_in_3i => debug_in_3i,
         debug_in_4i => debug_in_4i,
 
-        -- Common 
+        -- Common
         user_clk    => user_clk ,       -- IN  std_logic;
         user_lnk_up => user_lnk_up ,    -- IN  std_logic,
         user_reset  => user_reset       -- IN  std_logic;

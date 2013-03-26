@@ -210,14 +210,12 @@ VHDL_SRC := ../../ip_cores/pcie/7k325ffg900/bram_x64.vhd \
 ../../ip_cores/pcie/7k325ffg900/mbuf_128x72.vhd \
 ../../ip_cores/pcie/7k325ffg900/prime_FIFO_plain.vhd \
 ../../ip_cores/pcie/7k325ffg900/sfifo_15x128.vhd \
-../../top/pcie/bpm_pcie_k7.vhd \
 ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd \
+../../top/pcie/bpm_pcie_k7.vhd \
 ../../modules/pcie/common/DDR_Blinker.vhd \
 ../../modules/pcie/common/DMA_Calculate.vhd \
 ../../modules/pcie/common/DMA_FSM.vhd \
 ../../modules/pcie/common/FF_tagram64x36.vhd \
-../../modules/pcie/common/FIFO_Wrapper.vhd \
-../../modules/pcie/common/FIFO_Wrapper_Loopback.vhd \
 ../../modules/pcie/common/Interrupts.vhd \
 ../../modules/pcie/common/PCIe_UserLogic_00.vhd \
 ../../modules/pcie/common/Registers.vhd \
@@ -235,6 +233,8 @@ VHDL_SRC := ../../ip_cores/pcie/7k325ffg900/bram_x64.vhd \
 ../../modules/pcie/common/tlpControl.vhd \
 ../../modules/pcie/common/tx_Mem_Reader.vhd \
 ../../modules/pcie/common/tx_Transact.vhd \
+../../modules/pcie/common/wb_transact.vhd \
+../../modules/pcie/common/wb_mem.vhd \
 ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ddr_core.vhd \
 ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_top.vhd \
 
@@ -243,14 +243,12 @@ work/eb_fifo_counted_resized/.eb_fifo_counted_resized_vhd \
 work/mbuf_128x72/.mbuf_128x72_vhd \
 work/prime_FIFO_plain/.prime_FIFO_plain_vhd \
 work/sfifo_15x128/.sfifo_15x128_vhd \
-work/bpm_pcie_k7/.bpm_pcie_k7_vhd \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd \
+work/bpm_pcie_k7/.bpm_pcie_k7_vhd \
 work/DDR_Blinker/.DDR_Blinker_vhd \
 work/DMA_Calculate/.DMA_Calculate_vhd \
 work/DMA_FSM/.DMA_FSM_vhd \
 work/FF_tagram64x36/.FF_tagram64x36_vhd \
-work/FIFO_Wrapper/.FIFO_Wrapper_vhd \
-work/FIFO_Wrapper_Loopback/.FIFO_Wrapper_Loopback_vhd \
 work/Interrupts/.Interrupts_vhd \
 work/PCIe_UserLogic_00/.PCIe_UserLogic_00_vhd \
 work/Registers/.Registers_vhd \
@@ -268,6 +266,8 @@ work/rx_usDMA_Channel/.rx_usDMA_Channel_vhd \
 work/tlpControl/.tlpControl_vhd \
 work/tx_Mem_Reader/.tx_Mem_Reader_vhd \
 work/tx_Transact/.tx_Transact_vhd \
+work/wb_transact/.wb_transact_vhd \
+work/wb_mem/.wb_mem_vhd \
 work/ddr_core/.ddr_core_vhd \
 work/mig_7series_v1_8_ddr_phy_top/.mig_7series_v1_8_ddr_phy_top_vhd \
 
@@ -275,7 +275,7 @@ LIBS := work
 LIB_IND := work/.work
 ## rules #################################
 sim: modelsim.ini $(LIB_IND) $(VERILOG_OBJ) $(VHDL_OBJ)
-$(VERILOG_OBJ): $(VHDL_OBJ) 
+$(VERILOG_OBJ): $(VHDL_OBJ)
 $(VHDL_OBJ): $(LIB_IND) modelsim.ini
 
 modelsim.ini: $(MODELSIM_INI_PATH)/modelsim.ini
@@ -792,6 +792,10 @@ work/sfifo_15x128/.sfifo_15x128_vhd: ../../ip_cores/pcie/7k325ffg900/sfifo_15x12
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
 
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd: ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
 
 work/bpm_pcie_k7/.bpm_pcie_k7_vhd: ../../top/pcie/bpm_pcie_k7.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 
@@ -800,10 +804,6 @@ work/bpm_pcie_k7/.bpm_pcie_k7_vhd: ../../top/pcie/bpm_pcie_k7.vhd
 
 work/bpm_pcie_k7/.bpm_pcie_k7: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
-
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd: ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/DDR_Blinker/.DDR_Blinker_vhd: ../../modules/pcie/common/DDR_Blinker.vhd
@@ -836,22 +836,6 @@ work/FF_tagram64x36/.FF_tagram64x36_vhd: ../../modules/pcie/common/FF_tagram64x3
 
 
 work/FF_tagram64x36/.FF_tagram64x36: \
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
-
-work/FIFO_Wrapper/.FIFO_Wrapper_vhd: ../../modules/pcie/common/FIFO_Wrapper.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/FIFO_Wrapper/.FIFO_Wrapper: \
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
-
-work/FIFO_Wrapper_Loopback/.FIFO_Wrapper_Loopback_vhd: ../../modules/pcie/common/FIFO_Wrapper_Loopback.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/FIFO_Wrapper_Loopback/.FIFO_Wrapper_Loopback: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
 
 work/Interrupts/.Interrupts_vhd: ../../modules/pcie/common/Interrupts.vhd
@@ -986,6 +970,19 @@ work/tx_Transact/.tx_Transact_vhd: ../../modules/pcie/common/tx_Transact.vhd
 
 work/tx_Transact/.tx_Transact: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
+work/wb_transact/.wb_transact_vhd: ../../modules/pcie/common/wb_transact.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_transact/.wb_transact: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
+work/wb_mem/.wb_mem_vhd: ../../modules/pcie/common/wb_mem.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
 
 work/ddr_core/.ddr_core_vhd: ../../ip_cores/pcie/7k325ffg900/ddr_core/user_design/rtl/ddr_core.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 

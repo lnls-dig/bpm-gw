@@ -121,7 +121,10 @@ package abb64Package is
   constant C_DDR_DATAWIDTH : integer range 32 to 512 := 512;
 
   ---       Block RAM address bus width.  Variation requires BRAM core regeneration.
-  constant C_PRAM_AWIDTH : integer range 8 to 28 := 12;
+  constant C_PRAM_AWIDTH : integer range 8 to 29 := 29;
+
+  -- Wishbone endpoint address width
+  constant C_WB_AWIDTH : integer range 24 to 31 := 31;
 
   ---       Width for Interrupt generation counter
   constant C_CNT_GINT_WIDTH : integer := 30;
@@ -371,15 +374,17 @@ package abb64Package is
   constant C_CHBUF_PA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_EP_AWIDTH;  --112;
   constant C_CHBUF_PA_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
 
-
   -- Bit range of BRAM address in Channel Buffer word
-  constant C_CHBUF_MA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_PRAM_AWIDTH-2;  --114;
+  constant C_CHBUF_MA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_PRAM_AWIDTH-2;  --97;
   constant C_CHBUF_MA_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
 
   -- Bit range of DDR address in Channel Buffer word
   constant C_CHBUF_DDA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_DDR_IAWIDTH;  --102;
   constant C_CHBUF_DDA_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
 
+  -- Bit range of Wishbone address in Channel Buffer word
+  constant C_CHBUF_WB_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_WB_AWIDTH;  --97;
+  constant C_CHBUF_WB_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
   ------------------------------------------------------------------------
   -- The Relaxed Ordering bit constant in TLP
   constant C_RELAXED_ORDERING : std_logic := '0';

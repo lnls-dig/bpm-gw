@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    rx_MWr_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    rx_MWr_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.10 - x4 timing constraints met.   02.02.2007
 --
@@ -18,8 +18,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -60,12 +60,11 @@ entity rx_MWr_Transact is
 --      Last_DW_of_TLP     : IN  std_logic;
     Tlp_has_4KB       : in std_logic;
 
-
     -- Event Buffer write port
-    eb_FIFO_we   : out std_logic;
-    eb_FIFO_wsof : out std_logic;
-    eb_FIFO_weof : out std_logic;
-    eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_we   : out std_logic;
+    wb_FIFO_wsof : out std_logic;
+    wb_FIFO_weof : out std_logic;
+    wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Registers Write Port
     Regs_WrEn   : out std_logic;
@@ -163,12 +162,12 @@ architecture Behavioral of rx_MWr_Transact is
   signal tab_wd_i     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   -- Event Buffer write port
-  signal eb_FIFO_we_i   : std_logic;
-  signal eb_FIFO_wsof_i : std_logic;
-  signal eb_FIFO_weof_i : std_logic;
-  signal eb_FIFO_din_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_we_i   : std_logic;
+  signal wb_FIFO_wsof_i : std_logic;
+  signal wb_FIFO_weof_i : std_logic;
+  signal wb_FIFO_din_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  -- 
+  --
   signal Regs_WrEn_i   : std_logic;
   signal Regs_WrMask_i : std_logic_vector(2-1 downto 0);
   signal Regs_WrAddr_i : std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -187,10 +186,10 @@ architecture Behavioral of rx_MWr_Transact is
 begin
 
   -- Event Buffer write
-  eb_FIFO_we   <= eb_FIFO_we_i;
-  eb_FIFO_wsof <= eb_FIFO_wsof_i;
-  eb_FIFO_weof <= eb_FIFO_weof_i;
-  eb_FIFO_din  <= eb_FIFO_din_i;
+  wb_FIFO_we   <= wb_FIFO_we_i;
+  wb_FIFO_wsof <= wb_FIFO_wsof_i;
+  wb_FIFO_weof <= wb_FIFO_weof_i;
+  wb_FIFO_din  <= wb_FIFO_din_i;
 
   -- DDR
   DDR_wr_sof    <= DDR_wr_sof_i;
@@ -253,7 +252,7 @@ begin
 
 -- -----------------------------------------------------------------------
 -- States synchronous
--- 
+--
   Syn_RxTrn_States :
   process (user_clk, user_reset)
   begin
@@ -402,7 +401,7 @@ begin
         end if;
 
 
-      when ST_MWr_LAST_DATA =>          -- Same as ST_MWr_IDLE, to support 
+      when ST_MWr_LAST_DATA =>          -- Same as ST_MWr_IDLE, to support
                                         --  back-to-back transactions
         case MWr_Type is
           when C_TLP_TYPE_IS_MWR_H3 =>
@@ -426,7 +425,7 @@ begin
 
 -- ----------------------------------------------
 -- registers Write Enable
--- 
+--
   RxFSM_Output_Regs_Write_En :
   process (user_clk, user_reset)
   begin
@@ -446,7 +445,6 @@ begin
             Regs_WrMask_i <= "01";
             Regs_WrAddr_i <= m_axis_rx_tdata_i(C_EP_AWIDTH-1 downto 2) & "00";
             Regs_WrDin_i  <= Endian_Invert_64(m_axis_rx_tdata_i(63 downto 32) & X"00000000");
---                  Regs_WrDin_i   <= Endian_Invert_64((m_axis_rx_tdata_r1(31 downto 0)&m_axis_rx_tdata_r1(63 downto 32)));
           else
             Regs_WrEn_i   <= '0';
             Regs_WrMask_i <= (others => '0');
@@ -580,7 +578,7 @@ begin
 
 -- -----------------------------------------------------------------------
 -- Capture: REGS_Space_Sel
--- 
+--
   Syn_Capture_REGS_Space_Sel :
   process (user_clk, user_reset)
   begin
@@ -602,7 +600,7 @@ begin
 -- -----------------------------------------------------------------------
 -- Capture: MWr_Has_4DW_Header
 --        : Tlp_is_Zero_Length
--- 
+--
   Syn_Capture_MWr_Has_4DW_Header :
   process (user_clk, user_reset)
   begin
@@ -625,7 +623,7 @@ begin
 
 -- -----------------------------------------------------------------------
 -- Capture: MWr_Leng_in_Bytes
--- 
+--
   Syn_Capture_MWr_Length_in_Bytes :
   process (user_clk, user_reset)
   begin
@@ -634,8 +632,8 @@ begin
     elsif user_clk'event and user_clk = '1' then
       if trn_rsof_n_i = '0' then
         -- Assume no 4KB length for MWr
-        MWr_Leng_in_Bytes(C_TLP_FLD_WIDTH_OF_LENG+2 downto 2)
- <= Tlp_has_4KB & m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
+        MWr_Leng_in_Bytes(C_TLP_FLD_WIDTH_OF_LENG+2 downto 2) <=
+          Tlp_has_4KB & m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
       else
         MWr_Leng_in_Bytes <= MWr_Leng_in_Bytes;
       end if;
@@ -667,10 +665,10 @@ begin
           if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
             and Tlp_is_Zero_Length = '0'
           then
-            DDR_Space_Sel      <= not m_axis_rx_tdata_i(19) and not m_axis_rx_tdata_i(18);  -- '1';
-            DDR_wr_sof_i       <= not m_axis_rx_tdata_i(19) and not m_axis_rx_tdata_i(18);  -- '1';
+            DDR_Space_Sel      <= '1';
+            DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
-            DDR_wr_v_i         <= m_axis_rx_tvalid_i and not m_axis_rx_tdata_i(19) and not m_axis_rx_tdata_i(18);
+            DDR_wr_v_i         <= m_axis_rx_tvalid_i;
             DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= not m_axis_rx_tdata_i(2);
             DDR_wr_Mask_i      <= (others => '0');
@@ -692,10 +690,10 @@ begin
           if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
             and Tlp_is_Zero_Length = '0'
           then
-            DDR_Space_Sel      <= not m_axis_rx_tdata_i(19+32) and not m_axis_rx_tdata_i(18+32);  -- '1';
-            DDR_wr_sof_i       <= not m_axis_rx_tdata_i(19+32) and not m_axis_rx_tdata_i(18+32);  -- '1';
+            DDR_Space_Sel      <= '1';
+            DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
-            DDR_wr_v_i         <= m_axis_rx_tvalid_i and not m_axis_rx_tdata_i(19+32) and not m_axis_rx_tdata_i(18+32);
+            DDR_wr_v_i         <= m_axis_rx_tvalid_i;
             DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= m_axis_rx_tdata_i(2+32);
             DDR_wr_Mask_i      <= (others => '0');
@@ -738,8 +736,8 @@ begin
             DDR_wr_v_i     <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
             DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
-            DDR_wr_Mask_i  <= ddr_wr_1st_mask_hi & (m_axis_rx_tkeep_r1(3) and m_axis_rx_tkeep_r1(0));
-            DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32));
+            DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(3)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
+            DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
           else
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= '0';
@@ -747,7 +745,7 @@ begin
             DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= (others => '0');
-            DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32));
+            DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
           end if;
           if DDR_wr_v_i = '1' then
             ddr_wr_1st_mask_hi <= '0';
@@ -844,17 +842,17 @@ begin
   end process;
 
 -- ----------------------------------------------
---  Synchronous outputs:  EB FIFO Select       --
+--  Synchronous outputs:  WB FIFO Select       --
 -- ----------------------------------------------
   RxFSM_Output_FIFO_Space_Selected :
   process (user_clk, user_reset)
   begin
     if user_reset = '1' then
       FIFO_Space_Sel <= '0';
-      eb_FIFO_we_i   <= '0';
-      eb_FIFO_wsof_i <= '0';
-      eb_FIFO_weof_i <= '0';
-      eb_FIFO_din_i  <= (others => '0');
+      wb_FIFO_we_i   <= '0';
+      wb_FIFO_wsof_i <= '0';
+      wb_FIFO_weof_i <= '0';
+      wb_FIFO_din_i  <= (others => '0');
 
     elsif user_clk'event and user_clk = '1' then
 
@@ -865,24 +863,24 @@ begin
             and Tlp_is_Zero_Length = '0'
           then
             FIFO_Space_Sel <= '1';
-            eb_FIFO_we_i   <= m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_wsof_i <= m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_weof_i <= m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_din_i  <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
+            wb_FIFO_we_i   <= '1';
+            wb_FIFO_wsof_i <= '1';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
           else
             FIFO_Space_Sel <= '0';
-            eb_FIFO_we_i   <= '0';
-            eb_FIFO_wsof_i <= '0';
-            eb_FIFO_weof_i <= '0';
-            eb_FIFO_din_i  <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
+            wb_FIFO_we_i   <= '0';
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
           end if;
 
         when ST_MWr_1ST_DATA =>
           FIFO_Space_Sel <= FIFO_Space_Sel;
-          eb_FIFO_we_i   <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-          eb_FIFO_wsof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-          eb_FIFO_weof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-          eb_FIFO_din_i  <= Endian_Invert_64 ((m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_i(31 downto 0)));
+          wb_FIFO_we_i   <= '0';
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_din_i  <= Endian_Invert_64((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32)));
 
 
         when ST_MWr4_HEAD2 =>
@@ -890,54 +888,42 @@ begin
             and Tlp_is_Zero_Length = '0'
           then
             FIFO_Space_Sel <= '1';
-            eb_FIFO_we_i   <= '0';
-            eb_FIFO_wsof_i <= '0';
-            eb_FIFO_weof_i <= '0';
-            eb_FIFO_din_i  <= (others => '0');
+            wb_FIFO_we_i   <= m_axis_rx_tvalid_i;
+            wb_FIFO_wsof_i <= '1';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(63 downto 32);
           else
             FIFO_Space_Sel <= '0';
-            eb_FIFO_we_i   <= '0';
-            eb_FIFO_wsof_i <= '0';
-            eb_FIFO_weof_i <= '0';
-            eb_FIFO_din_i  <= (others => '0');
+            wb_FIFO_we_i   <= '0';
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_din_i  <= (others => '0');
           end if;
 
         when ST_MWr4_1ST_DATA =>
-          FIFO_Space_Sel <= FIFO_Space_Sel;
-          eb_FIFO_we_i   <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-          eb_FIFO_wsof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-          eb_FIFO_weof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-          if m_axis_rx_tkeep_i(3) = '0' or m_axis_rx_tkeep_i(0) = '0' then
-            eb_FIFO_din_i <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-          else
-            eb_FIFO_din_i <= Endian_Invert_64 (m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(63 downto 32));
-          end if;
-
-        when ST_MWr_1ST_DATA_THROTTLE =>
-          if MWr_Has_4DW_Header = '1' then
-            FIFO_Space_Sel <= FIFO_Space_Sel;
-            eb_FIFO_we_i   <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-            eb_FIFO_wsof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-            eb_FIFO_weof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- trn_rx_throttle;
-            if m_axis_rx_tkeep_i(3) = '0' or m_axis_rx_tkeep_i(0) = '0' then
-              eb_FIFO_din_i <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-            else
-              eb_FIFO_din_i <= Endian_Invert_64 (m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(63 downto 32));
-            end if;
-          else
-            FIFO_Space_Sel <= FIFO_Space_Sel;
-            eb_FIFO_we_i   <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_wsof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_weof_i <= FIFO_Space_Sel and m_axis_rx_tlast_i;  -- '1';
-            eb_FIFO_din_i  <= Endian_Invert_64 ((m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_i(31 downto 0)));
-          end if;
+          FIFO_Space_Sel <= '0';
+          wb_FIFO_we_i   <= '0';  -- trn_rx_throttle;
+          wb_FIFO_wsof_i <= '0';  -- trn_rx_throttle;
+          wb_FIFO_weof_i <= '0';  -- trn_rx_throttle;
+          wb_FIFO_din_i  <= wb_FIFO_din_i;
 
         when others =>
-          FIFO_Space_Sel <= '0';
-          eb_FIFO_we_i   <= '0';
-          eb_FIFO_wsof_i <= '0';
-          eb_FIFO_weof_i <= '0';
-          eb_FIFO_din_i  <= (others => '0');
+          if m_axis_rx_tlast_r1 = '1' then
+            FIFO_Space_Sel <= '0';
+          else
+            FIFO_Space_Sel <= FIFO_Space_Sel;
+          end if;
+          if FIFO_Space_Sel = '1' then
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= m_axis_rx_tlast_r1;
+            wb_FIFO_we_i   <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
+            wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+          else
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_we_i   <= '0';
+            wb_FIFO_din_i  <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+          end if;
 
       end case;
 

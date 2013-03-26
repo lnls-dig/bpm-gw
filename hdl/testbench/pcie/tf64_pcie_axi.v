@@ -519,7 +519,7 @@ begin
     //  Multiple-descriptor case
     //  
       $display("\n### DMA write & read BAR[2], Multiple-descriptor case ###\n");
-       board.DMA_PA   = 'H789ABC;
+       board.DMA_PA   = 'H789AB8;
        board.DMA_HA   = 'HDF0000;
        board.DMA_BDA  = 'H0BDABDA0;
        board.DMA_Leng = 'H0208;
@@ -534,7 +534,7 @@ begin
        board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
        board.Hdr_Array[2] = `C_ADDR_DMA_DS_PAH;
-       dword_pack_data_store(-1, 0);
+       dword_pack_data_store(0, 0);
        //  Write PA_H
        $display("%d ns:   Write PA_H", $time);
      

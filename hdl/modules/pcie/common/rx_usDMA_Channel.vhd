@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    usDMA_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    usDMA_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.20 - DMA engine shared out.   12.02.2007
 --
@@ -20,8 +20,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ architecture Behavioral of usDMA_Transact is
       DMA_PA_Snout   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DMA_BAR_Number : out std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
 
-      -- 
+      --
       DMA_Snout_Length : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
       DMA_Body_Length  : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
       DMA_Tail_Length  : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
@@ -490,11 +490,11 @@ begin
   usChBuf_ValidRd <= usTlp_RE;          -- usTlp_RE_i and not usTlp_empty_i;
 
 -- -------------------------------------------------
--- 
+--
   DMA_us_Status <= DMA_Status_i;
--- 
+--
 -- Synchronous output: DMA_Status_i
--- 
+--
   US_DMA_Status_Concat :
   process (user_clk, Local_Reset_i)
   begin
@@ -562,7 +562,7 @@ begin
 
 -- ---------------------------------------------
 --  Synchronous delay
--- 
+--
   Synch_Delay_ren_Qout :
   process (Local_Reset_i, user_clk)
   begin
@@ -594,7 +594,7 @@ begin
 
 -- ---------------------------------------------
 --  Request for arbitration
--- 
+--
   Synch_Req_Proc :
   process (Local_Reset_i, user_clk)
   begin
@@ -624,20 +624,9 @@ begin
           FSM_REQ_us  <= REQST_Decision;
 
         when REQST_Decision =>
-          if usTlp_Qout_wire(C_CHBUF_FMT_BIT_TOP) = '1'  -- Has Payload
-            and usTlp_Qout_wire(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT)
-             = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER)
-          then
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_Quantity;
-          else
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= not usDMA_Stop
-                            and not usDMA_Stop2
-                            and not us_FC_stop;
-            FSM_REQ_us <= REQST_nFIFO_Req;
-          end if;
+          usTlp_RE_i  <= '0';
+          usTlp_Req_i <= not usDMA_Stop and not usDMA_Stop2 and not us_FC_stop;
+          FSM_REQ_us  <= REQST_nFIFO_Req;
 
         when REQST_nFIFO_Req =>
           if usTlp_RE = '1' then
@@ -702,7 +691,7 @@ begin
 
 -- ---------------------------------------------
 --  Sending usTlp_Qout
--- 
+--
   Synch_usTlp_Qout :
   process (Local_Reset_i, user_clk)
   begin
@@ -722,7 +711,7 @@ begin
 
 -- ---------------------------------------------
 --  Delay of Empty and prog_Full
--- 
+--
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin
@@ -734,7 +723,7 @@ begin
       usTlp_empty_r3     <= usTlp_empty_r2;
       usTlp_empty_r4     <= usTlp_empty_r3;
       usTlp_prog_Full_r1 <= usTlp_prog_Full;
---         usTlp_Req_i        <= not usTlp_empty_i 
+--         usTlp_Req_i        <= not usTlp_empty_i
 --                           and not usDMA_Stop
 --                           and not usDMA_Stop2
 --                           and not us_FC_stop

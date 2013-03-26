@@ -1,21 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    DMA_FSM - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
+--
+-- Design Name:
+-- Module Name:    DMA_FSM - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --               The state machine controls the DMA routine, writes the channel
 --               buffer, as well as outputs DMA stata.
 --
--- Dependencies: 
+-- Dependencies:
 --
 -- Revision 1.00 - Created. 25.07.2007
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -123,28 +123,28 @@ architecture Behavioral of DMA_FSM is
     , dmaST_Snout
 
     -- dmaST_Stomp: after every ChBuf write, pause a clock before taking
-    --              next write.  This state checks the availability of 
+    --              next write.  This state checks the availability of
     --              the ChBuf (channel buffer) for write.
     , dmaST_Stomp
 
     -- dmaST_Body: TLP's in the middle, always integeral of MAX_SIZE.
     , dmaST_Body
 
-    -- dmaST_Tail: the last TLP, similar with the 1st one, whose size 
+    -- dmaST_Tail: the last TLP, similar with the 1st one, whose size
     --             should be specially calculated.
     , dmaST_Tail
 
 --                                 -- dmaST_Before_Dex: before writing the MRd TLP (for next descriptor)
---                                 --                   information for the next descriptor (if any), 
+--                                 --                   information for the next descriptor (if any),
 --                                 --                   a pause is needed to wait for the ChBuf available.
 --                               , dmaST_Before_Dex
 
-    -- dmaST_NextDex: writing the descriptor MRd TLP information to 
+    -- dmaST_NextDex: writing the descriptor MRd TLP information to
     --                the ChBuf.
     , dmaST_NextDex
 
-    -- dmaST_Await_Dex: after MRd(descriptor) info is written in the ChBuf, 
-    --                  the state machine waits for the descriptor's 
+    -- dmaST_Await_Dex: after MRd(descriptor) info is written in the ChBuf,
+    --                  the state machine waits for the descriptor's
     --                  arrival.
     , dmaST_Await_Dex
     );
@@ -248,7 +248,7 @@ begin
 -- -----------------------------------------
 -- Syn_Delay: DMA_Start
 --            DMA_Start2
--- 
+--
   Syn_Delay_DMA_Starts :
   process (dma_clk)
   begin
@@ -263,9 +263,9 @@ begin
 
 ---- -----------------------------------------
 ---- -----------------------------------------
----- 
+----
 -- States synchronous: DMA
----- 
+----
   Syn_DMA_States :
   process (dma_clk, dma_reset)
   begin
@@ -432,7 +432,7 @@ begin
 
 
 -- -------------------------------------------------------------
--- Synchronous reg: 
+-- Synchronous reg:
 --                  State_Is_LoadParam
 --                  State_Is_Snout
 --                  State_Is_Body
@@ -488,7 +488,7 @@ begin
 
 -------------------------------------------------------------------
 -- Synchronous Output: DMA_Abstract_Buffer_Write
--- 
+--
 -- DMA Channel (downstream and upstream) Buffers (128-bit) definition:
 --     Note: Type not shows in this buffer
 --
@@ -499,14 +499,14 @@ begin
 --   93 ~  30 : Host Address
 --   29 ~  27 : BAR number
 --   26 ~  19 : Tag
--- 
+--
 --   18 ~  17 : Format
 --   16 ~  14 : TC
 --         13 : TD
 --         12 : EP
 --   11 ~  10 : Attribute
 --    9 ~   0 : Length
--- 
+--
   FSM_DMA_Abstract_Buffer_Write :
   process (dma_clk, dma_reset)
   begin
@@ -542,7 +542,7 @@ begin
           ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT) <= DMA_PA_Loaded(C_EP_AWIDTH-1 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Loaded(C_WB_AWIDTH-1 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Loaded(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -556,7 +556,7 @@ begin
 
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-          
+
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Snout_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
           else
@@ -575,7 +575,7 @@ begin
           ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT) <= DMA_PA_Var(C_EP_AWIDTH-1 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Var(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -589,9 +589,9 @@ begin
 
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-          
+
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0'; 
+            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
           else
               ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
           end if;
@@ -609,7 +609,7 @@ begin
           ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT) <= DMA_PA_Var(C_EP_AWIDTH-1 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Var(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -623,7 +623,7 @@ begin
 
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
           ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-          
+
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
           else
@@ -651,7 +651,7 @@ begin
 -- ----------------------------------------------
 -- Synchronous Latch: BDA_nAligned_i
 --                  : Capture design defect
--- 
+--
   Latch_BDA_nAligned :
   process (dma_clk, dma_reset)
   begin

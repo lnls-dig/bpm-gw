@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    tx_Mem_Reader - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    tx_Mem_Reader - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 --
 -- Revision 1.00 - first release. 20.03.2008
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -33,7 +33,6 @@ use work.abb64Package.all;
 
 entity tx_Mem_Reader is
   port (
-
     -- DDR Read Interface
     DDR_rdc_sof   : out std_logic;
     DDR_rdc_eof   : out std_logic;
@@ -48,11 +47,16 @@ entity tx_Mem_Reader is
     DDR_FIFO_Empty  : in  std_logic;
     DDR_FIFO_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
+    -- Wishbone Read interface
+    wb_rdc_sof  : out std_logic;
+    wb_rdc_v    : out std_logic;
+    wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_rdc_full : in std_logic;
 
-    -- Event Buffer read port
-    eb_FIFO_re    : out std_logic;
-    eb_FIFO_empty : in  std_logic;
-    eb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    -- Wisbbone Buffer read port
+    wb_FIFO_re    : out std_logic;
+    wb_FIFO_empty : in  std_logic;
+    wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Register Read interface
     Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -79,7 +83,7 @@ entity tx_Mem_Reader is
 
     -- Common ports
     Tx_TimeOut    : out std_logic;
-    Tx_eb_TimeOut : out std_logic;
+    Tx_wb_TimeOut : out std_logic;
     mReader_Rst_n : in  std_logic;
     user_clk      : in  std_logic
     );
@@ -93,8 +97,8 @@ architecture Behavioral of tx_Mem_Reader is
   type mReaderStates is (St_mR_Idle,      -- Memory reader Idle
                          St_mR_CmdLatch,  -- Capture the read command
                          St_mR_Transfer,  -- Acknowlege the command request
+                         St_mR_wb_A,      -- Wishbone access state A
                          St_mR_DDR_A,     -- DDR access state A
---                                  , St_mR_DDR_B         -- DDR access state B
                          St_mR_DDR_C,     -- DDR access state C
                          St_mR_Last       -- Last word is reached
                          );
@@ -109,7 +113,6 @@ architecture Behavioral of tx_Mem_Reader is
   signal DDR_rdc_Shift_i : std_logic;
   signal DDR_rdc_din_i   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal DDR_rdc_full_i  : std_logic;
-
 
   -- Register read address
   signal Regs_RdAddr_i      : std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -126,27 +129,32 @@ architecture Behavioral of tx_Mem_Reader is
   signal DDR_FIFO_Write_mbuf_r1 : std_logic;
   signal DDR_FIFO_Write_mbuf_r2 : std_logic;
   signal DDR_FIFO_Write_mbuf_r3 : std_logic;
+  signal DDR_FIFO_RdQout_swap   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  -- Event Buffer
-  signal eb_FIFO_Hit               : std_logic;
-  signal eb_FIFO_Write_mbuf        : std_logic;
-  signal eb_FIFO_Write_mbuf_r1     : std_logic;
-  signal eb_FIFO_Write_mbuf_r2     : std_logic;
-  signal eb_FIFO_re_i              : std_logic;
-  signal eb_FIFO_RdEn_Mask_rise    : std_logic;
-  signal eb_FIFO_RdEn_Mask_rise_r1 : std_logic;
-  signal eb_FIFO_RdEn_Mask_rise_r2 : std_logic;
-  signal eb_FIFO_RdEn_Mask_rise_r3 : std_logic;
-  signal eb_FIFO_RdEn_Mask         : std_logic;
-  signal eb_FIFO_RdEn_Mask_r1      : std_logic;
-  signal eb_FIFO_RdEn_Mask_r2      : std_logic;
-  signal ebFIFO_Rd_1DW             : std_logic;
-  signal eb_FIFO_qout_r1           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal eb_FIFO_qout_shift        : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal eb_FIFO_qout_swapped      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  -- Wishbone interface
+  signal wb_rdc_sof_i              : std_logic;
+  signal wb_rdc_v_i                : std_logic;
+  signal wb_rdc_din_i              : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_rdc_full_i             : std_logic;
+  signal wb_FIFO_Hit               : std_logic;
+  signal wb_FIFO_Write_mbuf        : std_logic;
+  signal wb_FIFO_Write_mbuf_r1     : std_logic;
+  signal wb_FIFO_Write_mbuf_r2     : std_logic;
+  signal wb_FIFO_re_i              : std_logic;
+  signal wb_FIFO_RdEn_Mask_rise    : std_logic;
+  signal wb_FIFO_RdEn_Mask_rise_r1 : std_logic;
+  signal wb_FIFO_RdEn_Mask_rise_r2 : std_logic;
+  signal wb_FIFO_RdEn_Mask_rise_r3 : std_logic;
+  signal wb_FIFO_RdEn_Mask         : std_logic;
+  signal wb_FIFO_RdEn_Mask_r1      : std_logic;
+  signal wb_FIFO_RdEn_Mask_r2      : std_logic;
+  signal wb_FIFO_Rd_1Dw            : std_logic;
+  signal wb_FIFO_qout_r1           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_qout_shift        : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_qout_swapped      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   -- Memory data outputs
-  signal eb_FIFO_Dout_wire : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Dout_wire : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal DDR_Dout_wire     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Regs_RdQout_wire  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal mbuf_Din_wire_OR  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -175,8 +183,8 @@ architecture Behavioral of tx_Mem_Reader is
   signal DDR_Rd_Counter      : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
   signal DDR_Rd_Cntr_eq_One  : std_logic;
 
-  signal ebFIFO_Rd_Counter     : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
-  signal ebFIFO_Rd_Cntr_eq_Two : std_logic;
+  signal wb_FIFO_Rd_Counter     : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
+  signal wb_FIFO_Rd_Cntr_eq_Two : std_logic;
 
   signal Address_var  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Address_step : std_logic_vector(4-1 downto 0);
@@ -188,7 +196,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal TimeOut_Counter : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal TO_Cnt_Rst      : std_logic;
   signal Tx_TimeOut_i    : std_logic;
-  signal Tx_eb_TimeOut_i : std_logic;
+  signal Tx_wb_TimeOut_i : std_logic;
 
 
 begin
@@ -199,14 +207,18 @@ begin
 
   -- Time out signal out
   Tx_TimeOut    <= Tx_TimeOut_i;
-  Tx_eb_TimeOut <= Tx_eb_TimeOut_i;
+  Tx_wb_TimeOut <= Tx_wb_TimeOut_i;
 
 ------------------------------------------------------------
 ---             Memory read control
 ------------------------------------------------------------
 
-  -- Event Buffer read
-  eb_FIFO_re <= eb_FIFO_re_i;
+  -- Wishbone Buffer read
+  wb_FIFO_re    <= wb_FIFO_re_i;
+  wb_rdc_sof    <= wb_rdc_sof_i;
+  wb_rdc_v      <= wb_rdc_v_i;
+  wb_rdc_din    <= wb_rdc_din_i;
+  wb_rdc_full_i <= wb_rdc_full;
 
   -- DDR FIFO Read
   DDR_rdc_sof    <= DDR_rdc_sof_i;
@@ -217,8 +229,9 @@ begin
   DDR_rdc_din    <= DDR_rdc_din_i;
   DDR_rdc_full_i <= DDR_rdc_full;
 
+  DDR_FIFO_RdQout_swap <= DDR_FIFO_RdQout(C_DBUS_WIDTH/2-1 downto 0) &
+                          DDR_FIFO_RdQout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
   DDR_FIFO_RdEn <= DDR_FIFO_RdEn_i;
-
 
   -- Register address for read
   Regs_RdAddr <= Regs_RdAddr_i;
@@ -232,13 +245,12 @@ begin
   mbuf_Full_i     <= mbuf_Full;
   mbuf_aFull_i    <= mbuf_aFull;
   mbuf_UserFull_i <= mbuf_UserFull;
-
-  -- 
+  --
   Regs_RdAddr_i <= Address_var(C_EP_AWIDTH-1 downto 0);
 
 -----------------------------------------------------
 -- Synchronous Delay: mbuf_aFull
--- 
+--
   Synchron_Delay_mbuf_aFull :
   process (user_clk)
   begin
@@ -261,9 +273,13 @@ begin
       DDR_rdc_Shift_i <= '0';
       DDR_rdc_din_i   <= (others => '0');
 
-      eb_FIFO_Hit       <= '0';
-      eb_FIFO_re_i      <= '0';
-      eb_FIFO_RdEn_Mask <= '0';
+      wb_rdc_sof_i <= '0';
+      wb_rdc_v_i   <= '0';
+      wb_rdc_din_i <= (others => '0');
+
+      wb_FIFO_Hit       <= '0';
+      wb_FIFO_re_i      <= '0';
+      wb_FIFO_RdEn_Mask <= '0';
 
       DDR_FIFO_Hit       <= '0';
       DDR_FIFO_RdEn_i    <= '0';
@@ -274,8 +290,8 @@ begin
       DDR_Rd_Counter     <= (others => '0');
       DDR_Rd_Cntr_eq_One <= '0';
 
-      ebFIFO_Rd_Counter     <= (others => '0');
-      ebFIFO_Rd_Cntr_eq_Two <= '0';
+      wb_FIFO_Rd_Counter     <= (others => '0');
+      wb_FIFO_Rd_Cntr_eq_Two <= '0';
 
       regs_Rd_Cntr_eq_One <= '0';
       regs_Rd_Cntr_eq_Two <= '0';
@@ -300,7 +316,7 @@ begin
         when St_mR_Idle =>
           if RdCmd_Req_i = '0' then
             TxMReader_State <= St_mR_Idle;
-            eb_FIFO_Hit     <= '0';
+            wb_FIFO_Hit     <= '0';
             Regs_Hit        <= '0';
             Regs_RdEn       <= '0';
             TxTLP_eof_n     <= '1';
@@ -318,7 +334,7 @@ begin
             if BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
                = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
             then
-              eb_FIFO_Hit     <= '0';
+              wb_FIFO_Hit     <= '0';
               DDR_FIFO_Hit    <= '1';
               Regs_Hit        <= '0';
               Regs_RdEn       <= '0';
@@ -327,12 +343,12 @@ begin
             elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
                = CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
             then
-              eb_FIFO_Hit  <= '0';
+              wb_FIFO_Hit  <= '0';
               DDR_FIFO_Hit <= '0';
               Regs_Hit     <= '1';
               Regs_RdEn    <= '1';
               if Shift_1st_QWord = '1' then
-                Address_var(C_EP_AWIDTH-1 downto 0) <= StartAddr(C_EP_AWIDTH-1 downto 0) - "100"; 
+                Address_var(C_EP_AWIDTH-1 downto 0) <= StartAddr(C_EP_AWIDTH-1 downto 0) - "100";
               else
                 Address_var(C_EP_AWIDTH-1 downto 0) <= StartAddr(C_EP_AWIDTH-1 downto 0);
               end if;
@@ -340,14 +356,14 @@ begin
             elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
                = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
             then
-              eb_FIFO_Hit     <= '1';
+              wb_FIFO_Hit     <= '1';
               DDR_FIFO_Hit    <= '0';
               Regs_Hit        <= '0';
               Regs_RdEn       <= '0';
               Address_var     <= Address_var;
-              TxMReader_State <= St_mR_DDR_C;
+              TxMReader_State <= St_mR_wb_A;
             else
-              eb_FIFO_Hit     <= '0';
+              wb_FIFO_Hit     <= '0';
               DDR_FIFO_Hit    <= '0';
               Regs_Hit        <= '0';
               Regs_RdEn       <= '0';
@@ -356,7 +372,6 @@ begin
             end if;
 
           end if;
-
 
         when St_mR_DDR_A =>
           DDR_rdc_sof_i   <= '1';
@@ -372,24 +387,39 @@ begin
           RdCmd_Ack_i     <= '1';
           TxMReader_State <= St_mR_DDR_C;  -- St_mR_DDR_B;
 
+        when St_mR_wb_A =>
+          wb_rdc_sof_i <= '1';
+          wb_rdc_v_i   <= '1';
+          wb_rdc_din_i <= C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_TLP_FLD_WIDTH_OF_LENG+2+32)
+                               & RdNumber & "00"
+                               & StartAddr(C_DBUS_WIDTH-1-32 downto 0);
+          Regs_RdEn    <= '0';
+          wb_FIFO_re_i <= '0';
+          TxTLP_eof_n  <= '1';
+          RdCmd_Ack_i  <= '1';
+          if wb_rdc_full_i = '0' then
+            TxMReader_State <= St_mR_DDR_C;
+          else
+            TxMReader_State <= St_mR_wb_A;
+          end if;
 
         when St_mR_DDR_C =>
           DDR_rdc_sof_i <= '0';
           DDR_rdc_eof_i <= '0';
           DDR_rdc_v_i   <= '0';
           DDR_rdc_din_i <= DDR_rdc_din_i;
+          wb_rdc_sof_i  <= '0';
+          wb_rdc_v_i    <= '0';
+          wb_rdc_din_i  <= wb_rdc_din_i;
           RdCmd_Ack_i   <= '0';
           TxTLP_eof_n   <= '1';
---               if DDR_FIFO_Hit='1' and DDR_FIFO_Empty='1' then
           if DDR_FIFO_Hit = '1' and DDR_FIFO_Empty = '1' and Tx_TimeOut_i = '0' then
             TxMReader_State <= St_mR_DDR_C;
---               elsif eb_FIFO_Hit='1' and eb_FIFO_empty='1' then
-          elsif eb_FIFO_Hit = '1' and eb_FIFO_empty = '1' and Tx_eb_TimeOut_i = '0' then
+          elsif wb_FIFO_Hit = '1' and wb_FIFO_empty = '1' and Tx_wb_TimeOut_i = '0' then
             TxMReader_State <= St_mR_DDR_C;
           else
             TxMReader_State <= St_mR_CmdLatch;
           end if;
-
 
         when St_mR_CmdLatch =>
           RdCmd_Ack_i <= '0';
@@ -417,7 +447,6 @@ begin
             TxMReader_State                     <= St_mR_Transfer;
           end if;
 
-
         when St_mR_Transfer =>
           RdCmd_Ack_i <= '0';
           if DDR_FIFO_Hit = '1' and DDR_FIFO_RdEn_Mask = '1' then
@@ -425,17 +454,17 @@ begin
             Regs_RdEn       <= '0';
             TxTLP_eof_n     <= '0';
             TxMReader_State <= St_mR_Last;
-          elsif eb_FIFO_Hit = '1' and eb_FIFO_RdEn_Mask = '1' then
+          elsif wb_FIFO_Hit = '1' and wb_FIFO_RdEn_Mask = '1' then
             Address_var     <= Address_var;
             Regs_RdEn       <= '0';
             TxTLP_eof_n     <= '0';
             TxMReader_State <= St_mR_Last;
-          elsif eb_FIFO_Hit = '0' and regs_Rd_Cntr_eq_One = '1' then
+          elsif wb_FIFO_Hit = '0' and regs_Rd_Cntr_eq_One = '1' then
             Address_var     <= Address_var;
             Regs_RdEn       <= '0';
             TxTLP_eof_n     <= '0';
             TxMReader_State <= St_mR_Last;
-          elsif eb_FIFO_Hit = '0' and regs_Rd_Cntr_eq_Two = '1' then
+          elsif wb_FIFO_Hit = '0' and regs_Rd_Cntr_eq_Two = '1' then
             Address_var     <= Address_var;
             Regs_RdEn       <= '0';
             TxTLP_eof_n     <= '0';
@@ -452,18 +481,16 @@ begin
             TxMReader_State                     <= St_mR_Transfer;
           end if;
 
-
         when St_mR_Last =>
           Regs_RdEn       <= '0';
           DDR_FIFO_RdEn_i <= '0';
-          TxTLP_eof_n     <= (not DDR_FIFO_Hit) and (not eb_FIFO_Hit);
+          TxTLP_eof_n     <= (not DDR_FIFO_Hit) and (not wb_FIFO_Hit);
           RdCmd_Ack_i     <= '0';
           TxMReader_State <= St_mR_Idle;
 
-
         when others =>
           Address_var     <= Address_var;
-          eb_FIFO_Hit     <= '0';
+          wb_FIFO_Hit     <= '0';
           Regs_RdEn       <= '0';
           DDR_FIFO_RdEn_i <= '0';
           TxTLP_eof_n     <= '1';
@@ -508,21 +535,21 @@ begin
       case TxMReader_State is
 
         when St_mR_Idle =>
-          eb_FIFO_re_i      <= '0';
-          eb_FIFO_RdEn_Mask <= '0';
+          wb_FIFO_re_i      <= '0';
+          wb_FIFO_RdEn_Mask <= '0';
 
         when others =>
-          if ebFIFO_Rd_Cntr_eq_Two = '1'
-            and (eb_FIFO_empty = '0' or Tx_eb_TimeOut_i = '1')
-            and eb_FIFO_re_i = '1'
+          if wb_FIFO_Rd_Cntr_eq_Two = '1'
+            and (wb_FIFO_empty = '0' or Tx_wb_TimeOut_i = '1')
+            and wb_FIFO_re_i = '1'
           then
-            eb_FIFO_RdEn_Mask <= '1';
-            eb_FIFO_re_i      <= '0';
+            wb_FIFO_RdEn_Mask <= '1';
+            wb_FIFO_re_i      <= '0';
           else
-            eb_FIFO_RdEn_Mask <= eb_FIFO_RdEn_Mask;
-            eb_FIFO_re_i      <= eb_FIFO_Hit
+            wb_FIFO_RdEn_Mask <= wb_FIFO_RdEn_Mask;
+            wb_FIFO_re_i      <= wb_FIFO_Hit
                                    and not mbuf_aFull_r1
-                                   and not eb_FIFO_RdEn_Mask;
+                                   and not wb_FIFO_RdEn_Mask;
           end if;
       end case;
 
@@ -654,33 +681,33 @@ begin
              = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
           then
             if RdNumber_eq_One = '1' then
-              ebFIFO_Rd_Counter     <= RdNumber + '1';
-              ebFIFO_Rd_Cntr_eq_Two <= '1';
-              ebFIFO_Rd_1DW         <= '1';
+              wb_FIFO_Rd_Counter     <= RdNumber + '1';
+              wb_FIFO_Rd_Cntr_eq_Two <= '1';
+              wb_FIFO_Rd_1Dw         <= '1';
             else
-              ebFIFO_Rd_Counter     <= RdNumber;
-              ebFIFO_Rd_Cntr_eq_Two <= RdNumber_eq_Two;  -- or RdNumber_eq_One;
-              ebFIFO_Rd_1DW         <= '0';
+              wb_FIFO_Rd_Counter     <= RdNumber;
+              wb_FIFO_Rd_Cntr_eq_Two <= RdNumber_eq_Two;  -- or RdNumber_eq_One;
+              wb_FIFO_Rd_1Dw         <= '0';
             end if;
           else
-            ebFIFO_Rd_Counter     <= (others => '0');
-            ebFIFO_Rd_Cntr_eq_Two <= '0';
-            ebFIFO_Rd_1DW         <= '0';
+            wb_FIFO_Rd_Counter     <= (others => '0');
+            wb_FIFO_Rd_Cntr_eq_Two <= '0';
+            wb_FIFO_Rd_1Dw         <= '0';
           end if;
 
         when others =>
-          ebFIFO_Rd_1DW <= ebFIFO_Rd_1DW;
-          if (eb_FIFO_empty = '0' or Tx_eb_TimeOut_i = '1') and eb_FIFO_re_i = '1'
+          wb_FIFO_Rd_1Dw <= wb_FIFO_Rd_1Dw;
+          if (wb_FIFO_empty = '0' or Tx_wb_TimeOut_i = '1') and wb_FIFO_re_i = '1'
           then
-            ebFIFO_Rd_Counter <= ebFIFO_Rd_Counter - "10";  -- '1';
-            if ebFIFO_Rd_Counter = CONV_STD_LOGIC_VECTOR(4, C_TLP_FLD_WIDTH_OF_LENG) then
-              ebFIFO_Rd_Cntr_eq_Two <= '1';
+            wb_FIFO_Rd_Counter <= wb_FIFO_Rd_Counter - "10";  -- '1';
+            if wb_FIFO_Rd_Counter = CONV_STD_LOGIC_VECTOR(4, C_TLP_FLD_WIDTH_OF_LENG) then
+              wb_FIFO_Rd_Cntr_eq_Two <= '1';
             else
-              ebFIFO_Rd_Cntr_eq_Two <= '0';
+              wb_FIFO_Rd_Cntr_eq_Two <= '0';
             end if;
           else
-            ebFIFO_Rd_Counter     <= ebFIFO_Rd_Counter;
-            ebFIFO_Rd_Cntr_eq_Two <= ebFIFO_Rd_Cntr_eq_Two;
+            wb_FIFO_Rd_Counter     <= wb_FIFO_Rd_Counter;
+            wb_FIFO_Rd_Cntr_eq_Two <= wb_FIFO_Rd_Cntr_eq_Two;
           end if;
 
       end case;
@@ -691,7 +718,7 @@ begin
 
 -----------------------------------------------------
 -- Synchronous Delay: mbuf_writes
--- 
+--
   Synchron_Delay_mbuf_writes :
   process (user_clk)
   begin
@@ -704,12 +731,12 @@ begin
       DDR_FIFO_Write_mbuf_r2 <= DDR_FIFO_Write_mbuf_r1;
       DDR_FIFO_Write_mbuf_r3 <= DDR_FIFO_Write_mbuf_r2;
 
-      eb_FIFO_Write_mbuf    <= eb_FIFO_re_i and (not eb_FIFO_empty or Tx_eb_TimeOut_i);
-      eb_FIFO_Write_mbuf_r1 <= eb_FIFO_Write_mbuf;
-      eb_FIFO_Write_mbuf_r2 <= eb_FIFO_Write_mbuf_r1;
+      wb_FIFO_Write_mbuf    <= wb_FIFO_re_i and (not wb_FIFO_empty or Tx_wb_TimeOut_i);
+      wb_FIFO_Write_mbuf_r1 <= wb_FIFO_Write_mbuf;
+      wb_FIFO_Write_mbuf_r2 <= wb_FIFO_Write_mbuf_r1;
 
-      eb_FIFO_RdEn_Mask_r1 <= eb_FIFO_RdEn_Mask;
-      eb_FIFO_RdEn_Mask_r2 <= eb_FIFO_RdEn_Mask_r1;
+      wb_FIFO_RdEn_Mask_r1 <= wb_FIFO_RdEn_Mask;
+      wb_FIFO_RdEn_Mask_r2 <= wb_FIFO_RdEn_Mask_r1;
 
     end if;
   end process;
@@ -719,32 +746,32 @@ begin
 --  Wires to be OR'ed to build mbuf_Din
 --------------------------------------------------------------------------
 
-  eb_FIFO_Dout_wire <= eb_FIFO_qout_r1 when (eb_FIFO_Hit = '1' and Shift_1st_QWord_k = '0')
-                           else eb_FIFO_qout_shift when (eb_FIFO_Hit = '1' and Shift_1st_QWord_k = '1')
+  wb_FIFO_Dout_wire <= wb_FIFO_qout_r1 when (wb_FIFO_Hit = '1' and Shift_1st_QWord_k = '0')
+                           else wb_FIFO_qout_shift when (wb_FIFO_Hit = '1' and Shift_1st_QWord_k = '1')
                            else (others => '0');
-  DDR_Dout_wire    <= DDR_FIFO_RdQout when DDR_FIFO_Hit = '1' else (others => '0');
+  DDR_Dout_wire    <= DDR_FIFO_RdQout_swap when DDR_FIFO_Hit = '1' else (others => '0');
   Regs_RdQout_wire <= Regs_RdQout  --watch out!
                            when Regs_Hit = '1' else (others => '0');
 
-  mbuf_Din_wire_OR <= eb_FIFO_Dout_wire or DDR_Dout_wire or Regs_RdQout_wire;
+  mbuf_Din_wire_OR <= wb_FIFO_Dout_wire or DDR_Dout_wire or Regs_RdQout_wire;
 
 -----------------------------------------------------
 -- Synchronous Delay: mbuf_WE
--- 
+--
   Synchron_Delay_mbuf_WE :
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
       mbuf_WE_i <= DDR_FIFO_Write_mbuf_r1
                    or Regs_Write_mbuf_r2
-                   or (eb_FIFO_Write_mbuf_r1 or (Shift_1st_QWord_k and eb_FIFO_RdEn_Mask_rise_r1));
+                   or (wb_FIFO_Write_mbuf_r1 or (Shift_1st_QWord_k and wb_FIFO_RdEn_Mask_rise_r1));
     end if;
   end process;
 
 
 -----------------------------------------------------
 -- Synchronous Delay: TxTLP_eof_n
--- 
+--
   Synchron_Delay_TxTLP_eof_n :
   process (user_clk)
   begin
@@ -756,41 +783,41 @@ begin
 
 
 --S SIMONE BEGIN: Mi trovo in lettura dalla FIFO MSB<-->LSB Invertiti...  Provo a togliere lo SWAP!!!
-  eb_FIFO_qout_swapped <= eb_FIFO_qout;
---   eb_FIFO_qout_swapped  <= eb_FIFO_qout(C_DBUS_WIDTH/2+7  downto C_DBUS_WIDTH/2)
---                          & eb_FIFO_qout(C_DBUS_WIDTH/2+15 downto C_DBUS_WIDTH/2+8)
---                          & eb_FIFO_qout(C_DBUS_WIDTH/2+23 downto C_DBUS_WIDTH/2+16)
---                          & eb_FIFO_qout(C_DBUS_WIDTH/2+31 downto C_DBUS_WIDTH/2+24)
+  --wb_FIFO_qout_swapped <= wb_FIFO_qout;
+--   wb_FIFO_qout_swapped  <= wb_FIFO_qout(C_DBUS_WIDTH/2+7  downto C_DBUS_WIDTH/2)
+--                          & wb_FIFO_qout(C_DBUS_WIDTH/2+15 downto C_DBUS_WIDTH/2+8)
+--                          & wb_FIFO_qout(C_DBUS_WIDTH/2+23 downto C_DBUS_WIDTH/2+16)
+--                          & wb_FIFO_qout(C_DBUS_WIDTH/2+31 downto C_DBUS_WIDTH/2+24)
 --
---                          & eb_FIFO_qout(7  downto 0)
---                          & eb_FIFO_qout(15 downto 8)
---                          & eb_FIFO_qout(23 downto 16)
---                          & eb_FIFO_qout(31 downto 24)
+--                          & wb_FIFO_qout(7  downto 0)
+--                          & wb_FIFO_qout(15 downto 8)
+--                          & wb_FIFO_qout(23 downto 16)
+--                          & wb_FIFO_qout(31 downto 24)
 --                          ;
 --S SIMONE END:
 
---   eb_FIFO_qout_swapped  <= eb_FIFO_qout(C_DBUS_WIDTH/2-1 downto 0) & eb_FIFO_qout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
+  wb_FIFO_qout_swapped  <= wb_FIFO_qout(C_DBUS_WIDTH/2-1 downto 0) & wb_FIFO_qout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
 
 
 -----------------------------------------------------
--- Synchronous Delay: eb_FIFO_qout
--- 
-  Synchron_Delay_eb_FIFO_qout :
+-- Synchronous Delay: wb_FIFO_qout
+--
+  Synchron_Delay_wb_FIFO_qout :
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      eb_FIFO_RdEn_Mask_rise    <= eb_FIFO_RdEn_Mask and not eb_FIFO_RdEn_Mask_r1;
-      eb_FIFO_RdEn_Mask_rise_r1 <= eb_FIFO_RdEn_Mask_rise;
-      eb_FIFO_RdEn_Mask_rise_r2 <= eb_FIFO_RdEn_Mask_rise_r1;
-      eb_FIFO_qout_r1           <= eb_FIFO_qout_swapped;
-      eb_FIFO_qout_shift        <= eb_FIFO_qout_r1(C_DBUS_WIDTH/2-1 downto 0)
-                                   & eb_FIFO_qout_swapped(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
+      wb_FIFO_RdEn_Mask_rise    <= wb_FIFO_RdEn_Mask and not wb_FIFO_RdEn_Mask_r1;
+      wb_FIFO_RdEn_Mask_rise_r1 <= wb_FIFO_RdEn_Mask_rise;
+      wb_FIFO_RdEn_Mask_rise_r2 <= wb_FIFO_RdEn_Mask_rise_r1;
+      wb_FIFO_qout_r1           <= wb_FIFO_qout_swapped;
+      wb_FIFO_qout_shift        <= wb_FIFO_qout_r1(C_DBUS_WIDTH/2-1 downto 0)
+                                   & wb_FIFO_qout_swapped(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
     end if;
   end process;
 
 -----------------------------------------------------
 -- Synchronous Delay: mbuf_Din
--- 
+--
   Synchron_Delay_mbuf_Din :
   process (user_clk, mReader_Rst_n)
   begin
@@ -800,9 +827,9 @@ begin
     elsif user_clk'event and user_clk = '1' then
       if Tx_TimeOut_i = '1' and DDR_FIFO_Hit = '1' then
         mbuf_Din_i(C_DBUS_WIDTH-1 downto 0) <= (others => '1');
-      elsif Tx_eb_TimeOut_i = '1' and eb_FIFO_Hit = '1' and is_CplD_k = '1' then
+      elsif Tx_wb_TimeOut_i = '1' and wb_FIFO_Hit = '1' and is_CplD_k = '1' then
         mbuf_Din_i(C_DBUS_WIDTH-1 downto 0) <= (others => '1');
-      elsif Tx_eb_TimeOut_i = '1' and eb_FIFO_Hit = '1' and may_be_MWr_k = '1' then
+      elsif Tx_wb_TimeOut_i = '1' and wb_FIFO_Hit = '1' and may_be_MWr_k = '1' then
         mbuf_Din_i(C_DBUS_WIDTH-1 downto 0) <= (others => '1');
       else
         mbuf_Din_i(C_DBUS_WIDTH-1 downto 0) <= Endian_Invert_64(mbuf_Din_wire_OR);
@@ -811,11 +838,11 @@ begin
       if DDR_FIFO_Hit = '1' then
         mbuf_Din_i(C_DBUS_WIDTH) <= not DDR_FIFO_RdEn_Mask;
         mbuf_Din_i(70)           <= TRem_n_last_QWord;
-      elsif eb_FIFO_Hit = '1' then
-        if Shift_1st_QWord_k = '1' and ebFIFO_Rd_1DW = '0' then
-          mbuf_Din_i(C_DBUS_WIDTH) <= not eb_FIFO_RdEn_Mask_r2;
+      elsif wb_FIFO_Hit = '1' then
+        if Shift_1st_QWord_k = '1' and wb_FIFO_Rd_1Dw = '0' then
+          mbuf_Din_i(C_DBUS_WIDTH) <= not wb_FIFO_RdEn_Mask_r2;
         else
-          mbuf_Din_i(C_DBUS_WIDTH) <= not eb_FIFO_RdEn_Mask_r1;
+          mbuf_Din_i(C_DBUS_WIDTH) <= not wb_FIFO_RdEn_Mask_r1;
         end if;
         mbuf_Din_i(70) <= TRem_n_last_QWord;
       else
@@ -828,7 +855,7 @@ begin
 
 -----------------------------------------------------
 -- Synchronous: Time-out counter
--- 
+--
   Synchron_TimeOut_Counter :
   process (user_clk, TO_Cnt_Rst)
   begin
@@ -841,7 +868,7 @@ begin
 
 -----------------------------------------------------
 -- Synchronous: Tx_TimeOut
--- 
+--
   SynchOUT_Tx_TimeOut :
   process (user_clk, mReader_Rst_n)
   begin
@@ -858,25 +885,25 @@ begin
   end process;
 
 -----------------------------------------------------
--- Synchronous: Tx_eb_TimeOut
--- 
-  SynchOUT_Tx_eb_TimeOut :
+-- Synchronous: Tx_wb_TimeOut
+--
+  SynchOUT_Tx_wb_TimeOut :
   process (user_clk, mReader_Rst_n)
   begin
     if mReader_Rst_n = '0' then
-      Tx_eb_TimeOut_i <= '0';
+      Tx_wb_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
 --         if TimeOut_Counter(3 downto 0)=X"F" then
       if TimeOut_Counter(6 downto 3) = X"F"
         and is_CplD_k = '1'
       then
-        Tx_eb_TimeOut_i <= '1';
+        Tx_wb_TimeOut_i <= '1';
       elsif TimeOut_Counter(8 downto 5) = X"F"
         and may_be_MWr_k = '1'
       then
-        Tx_eb_TimeOut_i <= '1';
+        Tx_wb_TimeOut_i <= '1';
       else
-        Tx_eb_TimeOut_i <= Tx_eb_TimeOut_i;
+        Tx_wb_TimeOut_i <= Tx_wb_TimeOut_i;
       end if;
     end if;
   end process;

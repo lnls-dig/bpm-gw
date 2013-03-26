@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    rx_CplD_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    rx_CplD_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.10 - x4 timing constraints met.   02.02.2007
 --
@@ -18,8 +18,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -86,10 +86,10 @@ entity rx_CplD_Transact is
     usDMA_dex_Tag : out std_logic_vector(C_TAG_WIDTH-1 downto 0);
 
     -- Event Buffer write port
-    eb_FIFO_we   : out std_logic;
-    eb_FIFO_wsof : out std_logic;
-    eb_FIFO_weof : out std_logic;
-    eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_we   : out std_logic;
+    wb_FIFO_wsof : out std_logic;
+    wb_FIFO_weof : out std_logic;
+    wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Registers Write Port
     Regs_WrEn   : out std_logic;
@@ -124,7 +124,7 @@ architecture Behavioral of rx_CplD_Transact is
                            , ST_EBWR_DATA
                            );
 
-  signal EB_Write_State : RxCplDEBStates;
+  signal wb_Write_State : RxCplDEBStates;
 
 
   type RxCplDTrnStates is (ST_CplD_RESET
@@ -133,8 +133,8 @@ architecture Behavioral of rx_CplD_Transact is
 --                          , ST_CplD_HEAD1           -- CplD Header #1
                             , ST_Cpl_HEAD2    -- Cpl Header #2  (not used)
                             , ST_CplD_HEAD2   -- CplD Header #2
-                            , ST_CplD_AFetch_Special   -- 
-                            , ST_CplD_AFetch_Special_Tail  -- 
+                            , ST_CplD_AFetch_Special   --
+                            , ST_CplD_AFetch_Special_Tail  --
                             , ST_CplD_AFetch  -- Target address fetch from tRAM/registers
                             , ST_CplD_AFetch_THROTTLE  -- Target address fetch throttled
                             , ST_CplD_ONLY_1DW  -- Current CplD has only 1 DW
@@ -197,8 +197,8 @@ architecture Behavioral of rx_CplD_Transact is
   signal Addr_Inc : std_logic;
 
   --  Spaces hit
---  signal FIFO_Space_Hit       : std_logic;
-  signal DDR_Space_Hit : std_logic;
+  signal FIFO_Space_Hit : std_logic;
+  signal DDR_Space_Hit  : std_logic;
 
   -- DDR write port
   signal DDR_wr_sof_i   : std_logic;
@@ -211,11 +211,11 @@ architecture Behavioral of rx_CplD_Transact is
   signal DDR_wr_full_i  : std_logic;
 
   -- Event Buffer write port
-  signal eb_FIFO_we_i       : std_logic;
-  signal eb_FIFO_wsof_i     : std_logic;
-  signal eb_FIFO_weof_i     : std_logic;
-  signal eb_FIFO_sof_marker : std_logic;
-  signal eb_FIFO_din_i      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_we_i       : std_logic;
+  signal wb_FIFO_wsof_i     : std_logic;
+  signal wb_FIFO_weof_i     : std_logic;
+  signal wb_FIFO_sof_marker : std_logic;
+  signal wb_FIFO_din_i      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   --  Register write port
   signal Regs_WrEn_i   : std_logic;
@@ -267,16 +267,20 @@ architecture Behavioral of rx_CplD_Transact is
   signal Dex_Tag_Matched_i : std_logic;
 
   -- The top bit of the CplD_Tag is for distinguishing data CplD or descriptor CplD
-  signal MSB_DSP_Tag        : std_logic;
-  signal MSB_DSP_Tag_r1     : std_logic;
-  signal DSP_Tag_on_RAM     : std_logic;
-  signal DSP_Tag_on_RAM_r1  : std_logic;
-  signal DSP_Tag_on_RAM_r2  : std_logic;
-  signal DSP_Tag_on_RAM_r3  : std_logic;
-  signal DSP_Tag_on_RAM_r4p : std_logic;
-  signal DSP_Tag_on_FIFO    : std_logic;
+  signal MSB_DSP_Tag         : std_logic;
+  signal MSB_DSP_Tag_r1      : std_logic;
+  signal DSP_Tag_on_RAM      : std_logic;
+  signal DSP_Tag_on_RAM_r1   : std_logic;
+  signal DSP_Tag_on_RAM_r2   : std_logic;
+  signal DSP_Tag_on_RAM_r3   : std_logic;
+  signal DSP_Tag_on_RAM_r4p  : std_logic;
+  signal DSP_Tag_on_FIFO     : std_logic;
+  signal DSP_Tag_on_FIFO_r1  : std_logic;
+  signal DSP_Tag_on_FIFO_r2  : std_logic;
+  signal DSP_Tag_on_FIFO_r3  : std_logic;
+  signal DSP_Tag_on_FIFO_r4p : std_logic;
   -- ----------------------------------------------------------------------
-  signal FC_pop_i           : std_logic;
+  signal FC_pop_i : std_logic;
 
   signal Tag_Map_Clear_i : std_logic_vector(C_TAG_MAP_WIDTH-1 downto 0);
 
@@ -287,25 +291,6 @@ architecture Behavioral of rx_CplD_Transact is
 
   -- downstream Descriptors' tags
   signal dsDMA_dex_Tag_i : std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-
---  --- ------------------------------------------
---  ---   Dual port Block Memory, used as tag RAM
---  component 
---    v5tagram64x36
---    port (
---            clka     : IN  std_logic;
---            addra    : IN  std_logic_VECTOR(C_TAGRAM_AWIDTH-1 downto 0);
---            wea      : IN  std_logic_vector(0 downto 0);
---            dina     : IN  std_logic_VECTOR(C_TAGRAM_DWIDTH-1 downto 0);
---            douta    : OUT std_logic_VECTOR(C_TAGRAM_DWIDTH-1 downto 0);
---            clkb     : IN  std_logic;
---            addrb    : IN  std_logic_VECTOR(C_TAGRAM_AWIDTH-1 downto 0);
---            web      : IN  std_logic_vector(0 downto 0);
---            dinb     : IN  std_logic_VECTOR(C_TAGRAM_DWIDTH-1 downto 0);
---            doutb    : OUT std_logic_VECTOR(C_TAGRAM_DWIDTH-1 downto 0)
---         );
---  end component;
 
   --- ------------------------------------------
   ---   Dual port Block Memory, used as tag RAM
@@ -361,10 +346,10 @@ architecture Behavioral of rx_CplD_Transact is
 begin
 
   -- Event Buffer write
-  eb_FIFO_we   <= eb_FIFO_we_i;
-  eb_FIFO_wsof <= eb_FIFO_wsof_i;
-  eb_FIFO_weof <= eb_FIFO_weof_i;
-  eb_FIFO_din  <= eb_FIFO_din_i;
+  wb_FIFO_we   <= wb_FIFO_we_i;
+  wb_FIFO_wsof <= wb_FIFO_wsof_i;
+  wb_FIFO_weof <= wb_FIFO_weof_i;
+  wb_FIFO_din  <= wb_FIFO_din_i;
 
   -- DDR
   DDR_wr_sof    <= DDR_wr_sof_i;
@@ -379,13 +364,13 @@ begin
   ds_DMA_Bytes_Add <= ds_DMA_Bytes_Add_i;
   ds_DMA_Bytes     <= ds_DMA_Bytes_i;
 
-  -- 
+  --
   Tag_Map_Clear <= Tag_Map_Clear_i;
 
   --
   FC_pop <= FC_pop_i;
   -- ----------------------------------------------
-  -- 
+  --
   Syn_FC_pop :
   process (user_clk, Local_Reset_i)
   begin
@@ -404,7 +389,7 @@ begin
 
   -- ----------------------------------------------
   -- Synchronous: CplD_is_Payloaded
-  -- 
+  --
   Syn_CplD_is_Payloaded :
   process (user_clk, Local_Reset_i)
   begin
@@ -422,7 +407,7 @@ begin
 
   -- ----------------------------------------------
   -- Synchronous Accumulation: us_DMA_Bytes
-  -- 
+  --
   Syn_ds_DMA_Bytes_Add :
   process (user_clk, Local_Reset_i)
   begin
@@ -443,13 +428,11 @@ begin
 
   end process;
 
-
   -- Registers writing
   Regs_WrEn   <= Regs_WrEn_i;
   Regs_WrMask <= Regs_WrMask_i;
   Regs_WrAddr <= Regs_WrAddr_i;
   Regs_WrDin  <= Regs_WrDin_i;
-
 
   ---  Dex Tag output to us DMA channel
   usDMA_dex_Tag <= usDMA_dex_Tag_i;
@@ -465,7 +448,6 @@ begin
   -- positive reset
   Local_Reset_i <= user_reset;
 
-
   -- Frame signals
   m_axis_rx_tlast_i  <= m_axis_rx_tlast;
   m_axis_rx_tdata_i  <= m_axis_rx_tdata;
@@ -473,11 +455,9 @@ begin
   m_axis_rx_tvalid_i <= m_axis_rx_tvalid;
   m_axis_rx_tready_i <= m_axis_rx_tready;
 
-
   --  BC of the current TLP payloads
   CplD_Leng_in_Bytes <= C_ALL_ZEROS(C_DBUS_WIDTH/2-1 downto C_TLP_FLD_WIDTH_OF_LENG+3)
                         & CplD_Length & "00";
-
 
   -- Exception signals
   m_axis_rx_terrfwd_i <= m_axis_rx_terrfwd;
@@ -487,7 +467,7 @@ begin
 
 -- ---------------------------------------------
 -- Synchronous bit: CplD_State_is_AFetch
--- 
+--
   RxFSM_CplD_State_is_AFetch :
   process (user_clk)
   begin
@@ -507,10 +487,9 @@ begin
     end if;
   end process;
 
-
 -- ---------------------------------------------
 -- Synchronous bit: CplD_State_is_after_AFetch
--- 
+--
   RxFSM_CplD_State_is_after_AFetch :
   process (user_clk)
   begin
@@ -532,7 +511,7 @@ begin
 
 -- ---------------------------------------------
 -- Delay Synchronous Delay: trn_r*
--- 
+--
   Syn_Delay_trn_r_x :
   process (user_clk)
   begin
@@ -569,35 +548,39 @@ begin
   end process;
 
   -- Endian reversed
-  m_axis_rx_tdata_Little    <= Endian_Invert_64(m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(63 downto 32));
-  m_axis_rx_tdata_Little_r1 <= Endian_Invert_64(m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32));
-  m_axis_rx_tdata_Little_r2 <= Endian_Invert_64(m_axis_rx_tdata_r2(31 downto 0) & m_axis_rx_tdata_r2(63 downto 32));
-  m_axis_rx_tdata_Little_r3 <= Endian_Invert_64(m_axis_rx_tdata_r3(31 downto 0) & m_axis_rx_tdata_r3(63 downto 32));
-  m_axis_rx_tdata_Little_r4 <= Endian_Invert_64(m_axis_rx_tdata_r4(31 downto 0) & m_axis_rx_tdata_r4(63 downto 32));
+  m_axis_rx_tdata_Little    <= Endian_Invert_64(m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(31 downto 0));
+  m_axis_rx_tdata_Little_r1 <= Endian_Invert_64(m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+  m_axis_rx_tdata_Little_r2 <= Endian_Invert_64(m_axis_rx_tdata_r2(63 downto 32) & m_axis_rx_tdata_r2(31 downto 0));
+  m_axis_rx_tdata_Little_r3 <= Endian_Invert_64(m_axis_rx_tdata_r3(63 downto 32) & m_axis_rx_tdata_r3(31 downto 0));
+  m_axis_rx_tdata_Little_r4 <= Endian_Invert_64(m_axis_rx_tdata_r4(63 downto 32) & m_axis_rx_tdata_r4(31 downto 0));
 
 -- ---------------------------------------------
   MSB_DSP_Tag     <= CplD_Tag(C_TAG_WIDTH-1);
   DSP_Tag_on_RAM  <= not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2);
   DSP_Tag_on_FIFO <= not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2);
 
--- 
+--
 -- Delay Synchronous: MSB_DSP_Tag_r1
--- 
+--
   Syn_Delay_MSB_DSP_Tag_r1 :
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      MSB_DSP_Tag_r1     <= MSB_DSP_Tag;
-      DSP_Tag_on_RAM_r1  <= DSP_Tag_on_RAM;
-      DSP_Tag_on_RAM_r2  <= DSP_Tag_on_RAM_r1;
-      DSP_Tag_on_RAM_r3  <= DSP_Tag_on_RAM_r2;
-      DSP_Tag_on_RAM_r4p <= DSP_Tag_on_RAM_r2 or DSP_Tag_on_RAM_r3;
+      MSB_DSP_Tag_r1      <= MSB_DSP_Tag;
+      DSP_Tag_on_RAM_r1   <= DSP_Tag_on_RAM;
+      DSP_Tag_on_RAM_r2   <= DSP_Tag_on_RAM_r1;
+      DSP_Tag_on_RAM_r3   <= DSP_Tag_on_RAM_r2;
+      DSP_Tag_on_RAM_r4p  <= DSP_Tag_on_RAM_r2 or DSP_Tag_on_RAM_r3;
+      DSP_Tag_on_FIFO_r1  <= DSP_Tag_on_FIFO;
+      DSP_Tag_on_FIFO_r2  <= DSP_Tag_on_FIFO_r1;
+      DSP_Tag_on_FIFO_r3  <= DSP_Tag_on_FIFO_r2;
+      DSP_Tag_on_FIFO_r4p <= DSP_Tag_on_FIFO_r2 or DSP_Tag_on_FIFO_r3;
     end if;
   end process;
 
--- 
+--
 -- Delay Synchronous: CplD_Leng_in_Bytes
--- 
+--
   Syn_Delay_CplD_Leng_in_Bytes :
   process (user_clk)
   begin
@@ -608,7 +591,7 @@ begin
 
 -- ---------------------------------------------
 -- Delay Synchronous Delay: RxCplDTrn_State
--- 
+--
   RxFSM_Delay_RxTrn_State :
   process (user_clk)
   begin
@@ -620,7 +603,7 @@ begin
 
 -- ----------------------------------------------
 -- States synchronous
--- 
+--
   Syn_RxTrn_States :
   process (user_clk, Local_Reset_i)
   begin
@@ -788,7 +771,7 @@ begin
           RxCplDTrn_NextState <= ST_CplD_DATA;
         end if;
 
-      when ST_CplD_LAST_DATA =>         -- Same as IDLE, to support 
+      when ST_CplD_LAST_DATA =>         -- Same as IDLE, to support
                                         --  back-to-back transactions
         if trn_rx_throttle = '0' then
           case CplD_Type is
@@ -816,7 +799,7 @@ begin
 
 -- -------------------------------------------------
 -- Synchronous Registered: Tag_Map_Clear_i
--- 
+--
   RxTrn_Tag_Map_Clear :
   process (user_clk, Local_Reset_i)
   begin
@@ -843,7 +826,7 @@ begin
 
 -- -------------------------------------------------
 -- Synchronous Registered: CplD_Length
--- 
+--
   RxTrn_CplD_Length :
   process (user_clk, Local_Reset_i)
   begin
@@ -879,7 +862,7 @@ begin
 
 -- -------------------------------------------------
 -- Synchronous outputs: Addr_Inc
--- 
+--
   RxFSM_Output_Addr_Inc :
   process (user_clk, Local_Reset_i)
   begin
@@ -908,7 +891,7 @@ begin
 
 -------------------------------------------------
 -- Calculation at trn_rsof_n
--- 
+--
   Syn_Dex_wrAddress :
   process (user_clk, Local_Reset_i)
   begin
@@ -937,7 +920,7 @@ begin
 
 -- ---------------------------------------------
 -- Reg Synchronous: RegAddr_?s_Dex
--- 
+--
   RxFSM_Reg_RegAddr_xs_Dex :
   process (user_clk, Local_Reset_i)
   begin
@@ -974,7 +957,7 @@ begin
 
 -- ---------------------------------------------
 -- Reg Synchronous Delay: CplD_Tag_on_Dex
--- 
+--
   RxFSM_Delay_CplD_Tag_on_Dex :
   process (user_clk, Local_Reset_i)
   begin
@@ -996,7 +979,7 @@ begin
 
 -------------------------------------------------------
 -- Synchronous outputs: DMA_Registers
--- 
+--
   RxFSM_Output_DMA_Registers :
   process (user_clk, Local_Reset_i)
   begin
@@ -1087,7 +1070,7 @@ begin
 
 -------------------------------------------------------
 -- Synchronous outputs: DMA_Registers write Address
--- 
+--
   RxFSM_Output_DMA_Registers_WrAddr :
   process (user_clk, Local_Reset_i)
   begin
@@ -1132,7 +1115,7 @@ begin
   end process;
 
 -----------------------------------------------------
--- Synchronous Register: 
+-- Synchronous Register:
 --                      dsDMA_dex_Tag_i
 --                      usDMA_dex_Tag_i
 --
@@ -1209,25 +1192,8 @@ begin
         );
 
 
---   dspTag_BRAM:
---   v5tagram64x36
---     port map(
---              clka      =>  user_clk    ,
---              addra     =>  tRAM_addra ,
---              wea       =>  tRAM_wea   ,
---              dina      =>  tRAM_dina  ,
---              douta     =>  tRAM_doutA ,
---              clkb      =>  user_clk    ,
---              addrb     =>  tRAM_addrB ,
---              web       =>  tRAM_weB_i ,
---              dinb      =>  tRAM_dinB  ,
---              doutb     =>  open       
---             );
-
-
--- -----------------------------------------------------------------------------------
 -- Synchronous delay: CplD_is_the_Last
--- 
+--
   Syn_Delay_CplD_is_the_Last :
   process (user_clk)
   begin
@@ -1239,9 +1205,9 @@ begin
 -- -----------------------------------------------------------------------------------
 -- Synchronous output: Updates_tRAM
 --                     Update happens only at data TLP
---                     The last CplD of one MRd does not trigger tRAM update, 
+--                     The last CplD of one MRd does not trigger tRAM update,
 --                         to enable back-to-back transactions.
--- 
+--
   RxFSM_Output_Updates_tRAM :
   process (user_clk, Local_Reset_i)
   begin
@@ -1251,7 +1217,7 @@ begin
     elsif user_clk'event and user_clk = '1' then
 
       Updates_tRAM <= CplD_State_is_AFetch
-                      and DSP_Tag_on_RAM_r1
+                      and (DSP_Tag_on_RAM_r1 or DSP_Tag_on_FIFO_r1)
 --                           and not trn_rx_throttle    -- m_axis_rx_tvalid_r1
                       and not CplD_is_the_Last_r1;
 
@@ -1263,7 +1229,7 @@ begin
 -- Synchronous output: Update_was_too_late
 --                     For 1DW CplD the update might be too late for the
 --                     next CplD with the same TAG
--- 
+--
   RxFSM_Output_Update_was_too_late :
   process (user_clk, Local_Reset_i)
   begin
@@ -1303,7 +1269,7 @@ begin
 
 -- ---------------------------------------------
 -- Delay Synchronous Delay: Updates_tRAM
--- 
+--
   RxFSM_Delay_Updates_tRAM :
   process (user_clk)
   begin
@@ -1315,7 +1281,7 @@ begin
 
 -- ---------------------------------------------
 -- Synchronous Delay: tRAM_DoutA_r2
--- 
+--
   Delay_tRAM_DoutA :
   process (user_clk)
   begin
@@ -1324,7 +1290,7 @@ begin
 ----         if CplD_State_is_AFetch='1' then    -- [ avoid confilict in simulation, can be removed ]
 --            if TLB_Hit='1'
 --               and TLB_Valid='1'               -- [ only for simulation. can be removed for imp.]
---               then 
+--               then
 --               tRAM_DoutA_r1 <= TLB_Content;
 --            else
 --               tRAM_DoutA_r1 <= tRAM_doutA;
@@ -1347,7 +1313,7 @@ begin
 
 -- ---------------------------------------------
 -- Synchronous Output: hazard_content
--- 
+--
   Syn_Reg_hazard_content :
   process (user_clk, Local_Reset_i)
   begin
@@ -1365,7 +1331,7 @@ begin
 
 -- ---------------------------------------------
 -- Synchronous Calculation: tRAM_dina_aInc
--- 
+--
   Syn_Calc_tRAM_dina_aInc :
   process (user_clk, Local_Reset_i)
   begin
@@ -1383,14 +1349,14 @@ begin
 
   tRAM_wea(0) <= Updates_tRAM_r1;
   tRAM_dina   <= tRAM_dina_aInc;
---   tRAM_dina    <=   ('1' & tRAM_dina_aInc(C_TAGRAM_DWIDTH-1-1 downto 0)) 
+--   tRAM_dina    <=   ('1' & tRAM_dina_aInc(C_TAGRAM_DWIDTH-1-1 downto 0))
 --                     when Addr_Inc='1'
 --                     else ('0' & tRAM_DoutA_r2(C_TAGRAM_DWIDTH-1-1 downto 0));
 
 
 -- ---------------------------------------------
 -- Synchronous Calculation: tRAM_DoutA_latch
--- 
+--
   Syn_tRAM_DoutA_latch :
   process (user_clk, Local_Reset_i)
   begin
@@ -1409,7 +1375,7 @@ begin
 
 -- ---------------------------------------------
 -- Synchronous Output: TLB  (not used)
--- 
+--
   Syn_Reg_TLB_Operation :
   process (user_clk, Local_Reset_i)
   begin
@@ -1453,7 +1419,7 @@ begin
 
 -- -------------------------------------------------
 -- Synchronous outputs: DDR_Space_Hit
--- 
+--
   RxFSM_Output_DDR_Space_Hit :
   process (user_clk, Local_Reset_i)
   begin
@@ -1490,7 +1456,7 @@ begin
             DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
-            DDR_wr_Mask_i  <= '0' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
+            DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
           elsif DSP_Tag_on_RAM_r1 = '1' then
             DDR_Space_Hit  <= '1';
             DDR_wr_sof_i   <= '0';
@@ -1537,7 +1503,7 @@ begin
           DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
           DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
-          DDR_wr_Mask_i  <= '0' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
+          DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
 
 
         when ST_CplD_AFetch_Special_Tail =>
@@ -1613,11 +1579,11 @@ begin
           DDR_wr_v_i     <= (DDR_wr_sof_i or not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
           DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
-          DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
+          DDR_wr_din_i   <= m_axis_rx_tdata_r4;
           if DDR_wr_sof_i = '1' then
-            DDR_wr_Mask_i <= "10";
+            DDR_wr_Mask_i <= "01";
           else
-            DDR_wr_Mask_i <= '0' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
+            DDR_wr_Mask_i <= not(m_axis_rx_tkeep_r4(4)) & not(m_axis_rx_tkeep_r4(0));
           end if;
 
       end case;
@@ -1625,83 +1591,116 @@ begin
     end if;
   end process;
 
-  concat_rd <= m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_i(31 downto 0);
+  concat_rd <= m_axis_rx_tdata_r3(31 downto 0) & m_axis_rx_tdata_r4(63 downto 32);
 
 -- -------------------------------------------------
--- Synchronous outputs: eb_FIFO_Write
--- 
+-- Synchronous outputs: wb_FIFO_Write
+--
   RxFSM_Output_FIFO_Space_Hit :
   process (user_clk, Local_Reset_i)
   begin
     if Local_Reset_i = '1' then
-      eb_FIFO_we_i       <= '0';
-      eb_FIFO_wsof_i     <= '0';
-      eb_FIFO_weof_i     <= '0';
-      eb_FIFO_sof_marker <= '0';
-      eb_FIFO_din_i      <= (others => '0');
-      EB_Write_State     <= ST_EBWR_IDLE;
+      FIFO_Space_Hit <= '0';
+      wb_FIFO_wsof_i <= '0';
+      wb_FIFO_weof_i <= '0';
+      wb_FIFO_we_i   <= '0';
+      wb_FIFO_din_i  <= (others => '0');
 
     elsif user_clk'event and user_clk = '1' then
 
-      case EB_Write_State is
+      case RxCplDTrn_State_r1 is
 
-        when ST_EBWR_IDLE =>
-          eb_FIFO_we_i       <= '0';
-          eb_FIFO_wsof_i     <= '0';
-          eb_FIFO_weof_i     <= '0';
-          eb_FIFO_sof_marker <= '0';
-          eb_FIFO_din_i      <= (others => '0');
-          if trn_rx_throttle = '0'
-            and CplD_Type = C_TLP_TYPE_IS_CPLD
-            and m_axis_rx_tdata_i(32) = '0'  -- Odd-DW CplD is illegal
-          then
-            EB_Write_State <= ST_EBWR_TAG;
+        when ST_CplD_RESET =>
+          FIFO_Space_Hit <= '0';
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_we_i   <= '0';
+          wb_FIFO_din_i  <= (others => '0');
+
+        when ST_CplD_AFetch =>
+          if DSP_Tag_on_FIFO_r1 = '1' then
+            FIFO_Space_Hit <= '1';
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_we_i   <= '0';
+            wb_FIFO_din_i  <= (others => '0');
           else
-            EB_Write_State <= ST_EBWR_IDLE;
+            FIFO_Space_Hit <= '0';
+            wb_FIFO_wsof_i <= '0';
+            wb_FIFO_weof_i <= '0';
+            wb_FIFO_we_i   <= '0';
+            wb_FIFO_din_i  <= (others => '0');
           end if;
 
-        when ST_EBWR_TAG =>
-          eb_FIFO_we_i   <= '0';
-          eb_FIFO_wsof_i <= '0';
-          eb_FIFO_weof_i <= '0';
-          eb_FIFO_din_i  <= (others => '0');
-          if trn_rsof_n_i = '0' then
-            eb_FIFO_sof_marker <= '0';
-            EB_Write_State     <= ST_EBWR_TAG;
-          elsif trn_rx_throttle = '0' and DSP_Tag_on_FIFO = '1' then
-            eb_FIFO_sof_marker <= '1';
-            EB_Write_State     <= ST_EBWR_DATA;
+        when ST_CplD_AFetch_Special =>
+          if DSP_Tag_on_FIFO_r1 = '1' then
+            FIFO_Space_Hit <= '1';
           else
-            eb_FIFO_sof_marker <= '0';
-            EB_Write_State     <= ST_EBWR_IDLE;
+            FIFO_Space_Hit <= '0';
+          end if;
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= m_axis_rx_tlast_r4 and FIFO_Space_Hit;
+          wb_FIFO_we_i   <= (not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and FIFO_Space_Hit;
+
+        when ST_CplD_AFetch_Special_Tail =>
+          FIFO_Space_Hit <= FIFO_Space_Hit;
+          wb_FIFO_wsof_i <= FIFO_Space_Hit;  -- '1';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_we_i   <= FIFO_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
+          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
+          else
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
           end if;
 
-        when ST_EBWR_DATA =>
-          eb_FIFO_we_i       <= not trn_rx_throttle;
-          eb_FIFO_wsof_i     <= eb_FIFO_sof_marker and not trn_rx_throttle;
-          eb_FIFO_sof_marker <= eb_FIFO_sof_marker and trn_rx_throttle;
-          eb_FIFO_din_i      <= Endian_Invert_64(concat_rd);
-          if trn_rx_throttle = '0' and m_axis_rx_tlast_i = '1' then
-            eb_FIFO_weof_i <= '1';
-            EB_Write_State <= ST_EBWR_IDLE;
+        when ST_CplD_AFetch_THROTTLE =>
+          FIFO_Space_Hit <= FIFO_Space_Hit;
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_we_i   <= '0';
+          wb_FIFO_din_i  <= wb_FIFO_din_i;
+
+        when ST_CplD_1ST_DATA =>
+          FIFO_Space_Hit <= FIFO_Space_Hit;
+          wb_FIFO_wsof_i <= FIFO_Space_Hit;  -- '1';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_we_i   <= FIFO_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
+          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
+          elsif CplD_State_is_AFetch_r1 = '0' then
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_latch(32-1 downto 0);
           else
-            eb_FIFO_weof_i <= '0';
-            EB_Write_State <= ST_EBWR_DATA;
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
+          end if;
+
+        when ST_CplD_ONLY_1DW =>
+          FIFO_Space_Hit <= FIFO_Space_Hit;
+          wb_FIFO_wsof_i <= FIFO_Space_Hit;  -- '1';
+          wb_FIFO_weof_i <= '0';
+          wb_FIFO_we_i   <= FIFO_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
+          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
+          elsif CplD_State_is_AFetch_r1 = '0' then
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_latch(32-1 downto 0);
+          else
+            wb_FIFO_din_i <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
           end if;
 
         when others =>
-          eb_FIFO_we_i       <= '0';
-          eb_FIFO_wsof_i     <= '0';
-          eb_FIFO_weof_i     <= '0';
-          eb_FIFO_sof_marker <= '0';
-          eb_FIFO_din_i      <= (others => '0');
-          EB_Write_State     <= ST_EBWR_IDLE;
+          if m_axis_rx_tlast_r3 = '1' then
+            FIFO_Space_Hit <= '0';
+          else
+            FIFO_Space_Hit <= FIFO_Space_Hit;
+          end if;
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= m_axis_rx_tlast_r3 and FIFO_Space_Hit;
+          wb_FIFO_we_i   <= (wb_FIFO_wsof_i or not (trn_rx_throttle_r3 and not m_axis_rx_tlast_r3)) and FIFO_Space_Hit;
+          wb_FIFO_din_i  <= Endian_Invert_64(concat_rd);
 
       end case;
 
     end if;
   end process;
-
   -- ---------------------------------
   -- Regenerate trn_rsof_n signal as in old TRN core
   --

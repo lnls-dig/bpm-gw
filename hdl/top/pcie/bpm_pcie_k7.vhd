@@ -1154,101 +1154,109 @@ architecture Behavioral of bpm_pcie_k7 is
 
 
   -- -----------------------------------------------------------------------
-  -- FIFO module
+  -- Wishbone interface module
   -- -----------------------------------------------------------------------
-  component eb_wrapper_loopback
-    port (
-      wr_clk : in  std_logic;
-      wr_en  : in  std_logic;
-      din    : in  std_logic_vector(72-1 downto 0);
-      pfull  : out std_logic;
-      full   : out std_logic;
-
-      rd_clk : in  std_logic;
-      rd_en  : in  std_logic;
-      dout   : out std_logic_vector(72-1 downto 0);
-      pempty : out std_logic;
-      empty  : out std_logic;
-
-      data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      rst        : in  std_logic
+  component wb_transact is
+    generic (
+      C_ASYNFIFO_WIDTH : integer := 72
       );
-  end component;
-
-  component eb_wrapper
     port (
-      --FIFO PCIe-->USER
-      H2B_wr_clk        : in  std_logic;
-      H2B_wr_en         : in  std_logic;
-      H2B_wr_din        : in  std_logic_vector(72-1 downto 0);
-      H2B_wr_pfull      : out std_logic;
-      H2B_wr_full       : out std_logic;
-      H2B_wr_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      H2B_rd_clk        : in  std_logic;
-      H2B_rd_en         : in  std_logic;
-      H2B_rd_dout       : out std_logic_vector(72-1 downto 0);
-      H2B_rd_pempty     : out std_logic;
-      H2B_rd_empty      : out std_logic;
-      H2B_rd_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      H2B_rd_valid      : out std_logic;
-      --FIFO USER-->PCIe
-      B2H_wr_clk        : in  std_logic;
-      B2H_wr_en         : in  std_logic;
-      B2H_wr_din        : in  std_logic_vector(72-1 downto 0);
-      B2H_wr_pfull      : out std_logic;
-      B2H_wr_full       : out std_logic;
-      B2H_wr_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      B2H_rd_clk        : in  std_logic;
-      B2H_rd_en         : in  std_logic;
-      B2H_rd_dout       : out std_logic_vector(72-1 downto 0);
-      B2H_rd_pempty     : out std_logic;
-      B2H_rd_empty      : out std_logic;
-      B2H_rd_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      B2H_rd_valid      : out std_logic;
+      -- PCIE user clk
+      user_clk : in std_logic;
+      -- Write port
+      wr_we   : in std_logic;
+      wr_sof  : in std_logic;
+      wr_eof  : in std_logic;
+      wr_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wr_full : out std_logic;
+      -- Read command port
+      rdc_sof  : in std_logic;
+      rdc_v    : in std_logic;
+      rdc_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      rdc_full : out std_logic;
+      -- Read data port
+      rd_ren   : in std_logic;
+      rd_empty : out std_logic;
+      rd_dout  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+
+      -- Wishbone interface
+      wb_clk : in std_logic;
+      wb_rst : in std_logic;
+      addr_o : out std_logic_vector(28 downto 0);
+      dat_i  : in std_logic_vector(63 downto 0);
+      dat_o  : out std_logic_vector(63 downto 0);
+      we_o   : out std_logic;
+      sel_o  : out std_logic_vector(0 downto 0);
+      stb_o  : out std_logic;
+      ack_i  : in std_logic;
+      cyc_o  : out std_logic;
+
       --RESET from PCIe
-      rst               : in  std_logic
+      rst : in std_logic
       );
   end component;
 
-  signal eb_wclk   : std_logic;
-  signal eb_we     : std_logic;
-  signal eb_wsof   : std_logic;
-  signal eb_weof   : std_logic;
-  signal eb_din    : std_logic_vector(72-1 downto 0);
-  signal eb_pfull  : std_logic;
-  signal eb_full   : std_logic;
-  signal eb_rclk   : std_logic;
-  signal eb_re     : std_logic;
-  signal eb_dout   : std_logic_vector(72-1 downto 0);
-  signal eb_pempty : std_logic;
-  signal eb_empty  : std_logic;
-  signal eb_valid  : std_logic;
-  signal eb_rst    : std_logic;
+  -- WISHBONE SLAVE interface:
+  -- Single-Port RAM with Asynchronous Read
+  --
+  component WB_MEM is
+    generic(
+      AWIDTH : natural range 2 to 29 := 7;
+      DWIDTH : natural range 8 to 128 := 64
+    );
+    port(
+      CLK_I : in  std_logic;
+      ACK_O : out std_logic;
+      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
+      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
+      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
+      STB_I : in  std_logic;
+      WE_I  : in  std_logic
+    );
+  end component;
 
-  signal eb_data_count     : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-  signal H2B_wr_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-  signal B2H_rd_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+  signal wbone_clk     : std_logic;
+  signal wb_wr_we      : std_logic;
+  signal wb_wr_wsof    : std_logic;
+  signal wb_wr_weof    : std_logic;
+  signal wb_wr_din     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_wr_pfull   : std_logic;
+  signal wb_wr_full    : std_logic;
+  signal wb_rdc_sof    : std_logic;
+  signal wb_rdc_v      : std_logic;
+  signal wb_rdc_din    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_rdc_full   : std_logic;
+  signal wb_rdd_ren    : std_logic;
+  signal wb_rdd_dout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_rdd_pempty : std_logic;
+  signal wb_rdd_empty  : std_logic;
+  signal wbone_rst     : std_logic;
+  signal wbone_addr    : std_logic_vector(31 downto 0);
+  signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wbone_we      : std_logic;
+  signal wbone_sel     : std_logic_vector(0 downto 0);
+  signal wbone_stb     : std_logic;
+  signal wbone_ack     : std_logic;
+  signal wbone_cyc     : std_logic;
 
+  signal wb_data_count     : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
+  signal H2B_wr_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
+  signal B2H_rd_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
 
-  signal pio_read_status : std_logic;
-  signal eb_FIFO_ow      : std_logic;
+  signal wb_FIFO_ow : std_logic;
 
-  signal eb_FIFO_Status  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Status  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal H2B_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal B2H_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  signal eb_we_up  : std_logic;
-  signal eb_din_up : std_logic_vector(72-1 downto 0);
-
-  signal tab_sel : std_logic;
-
-  signal user_rd_en         : std_logic                       := '0';
+  signal user_rd_en         : std_logic := '0';
   signal user_rd_dout       : std_logic_vector(72-1 downto 0);
   signal user_rd_pempty     : std_logic;
   signal user_rd_empty      : std_logic;
   signal user_rd_data_count : std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
   signal user_wr_data_count : std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-  signal user_wr_en         : std_logic                       := '0';
+  signal user_wr_en         : std_logic := '0';
   signal user_wr_din        : std_logic_vector(72-1 downto 0) := (others => '0');
   signal user_wr_pfull      : std_logic;
   signal user_wr_full       : std_logic;
@@ -1364,22 +1372,30 @@ architecture Behavioral of bpm_pcie_k7 is
       debug_in_3i : out std_logic_vector(31 downto 0);
       debug_in_4i : out std_logic_vector(31 downto 0);
 
-      -- Event Buffer FIFO interface
-      eb_FIFO_we   : out std_logic;
-      eb_FIFO_wsof : out std_logic;
-      eb_FIFO_weof : out std_logic;
-      eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      -- Wishbone interface
+      wb_FIFO_we   : out std_logic;
+      wb_FIFO_wsof : out std_logic;
+      wb_FIFO_weof : out std_logic;
+      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-      eb_FIFO_re         : out std_logic;
-      eb_FIFO_empty      : in  std_logic;
-      eb_FIFO_qout       : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      eb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+      wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
 
-      eb_FIFO_ow : in std_logic;
+      wb_FIFO_ow : in std_logic;
 
       pio_reading_status : out std_logic;
-      eb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      eb_FIFO_Rst        : out std_logic;
+      wb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_FIFO_Rst        : out std_logic;
+
+      -- Wishbone Read interface
+      wb_rdc_sof  : out std_logic;
+      wb_rdc_v    : out std_logic;
+      wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_rdc_full : in std_logic;
+
+      -- Wisbbone Buffer read port
+      wb_FIFO_re    : out std_logic;
+      wb_FIFO_empty : in  std_logic;
+      wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       H2B_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       B2H_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -1763,8 +1779,8 @@ begin
         fifo_wr_en          => user_wr_en ,
         fifo_rd_valid       => user_rd_valid ,
         fifo_wr_count       => user_wr_data_count,
-        bram_rd_addr        => user_rd_addrB ,
-        bram_wr_addr        => user_wr_addrA ,
+        bram_rd_addr        => user_rd_addrB(11 downto 0) ,
+        bram_wr_addr        => user_wr_addrA(11 downto 0) ,
         bram_wr_din         => user_wr_dinA ,
         bram_wr_en          => user_wr_weA ,
         bram_rd_dout        => user_rd_doutB ,
@@ -2301,23 +2317,27 @@ begin
         debug_in_3i => debug_in_3i,
         debug_in_4i => debug_in_4i,
 
-        -- Event Buffer FIFO interface
-        eb_FIFO_we   => eb_we ,         --  OUT std_logic;
-        eb_FIFO_wsof => eb_wsof ,       --  OUT std_logic;
-        eb_FIFO_weof => eb_weof ,       --  OUT std_logic;
-        eb_FIFO_din  => eb_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        -- Wishbone FIFO interface
+        wb_FIFO_we   => wb_wr_we ,         --  OUT std_logic;
+        wb_FIFO_wsof => wb_wr_wsof ,       --  OUT std_logic;
+        wb_FIFO_weof => wb_wr_weof ,       --  OUT std_logic;
+        wb_FIFO_din  => wb_wr_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        eb_FIFO_re         => eb_re ,   --  OUT std_logic;
-        eb_FIFO_empty      => eb_empty ,       --  IN  std_logic;
-        eb_FIFO_qout       => eb_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        eb_FIFO_data_count => eb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+        wb_FIFO_re         => wb_rdd_ren ,   --  OUT std_logic;
+        wb_FIFO_empty      => wb_rdd_empty ,       --  IN  std_logic;
+        wb_FIFO_qout       => wb_rdd_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_data_count => wb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
 
-        eb_FIFO_ow => eb_FIFO_ow ,      --  IN  std_logic;
+        wb_rdc_sof  => wb_rdc_sof, --out std_logic;
+        wb_rdc_v    => wb_rdc_v, --out std_logic;
+        wb_rdc_din  => wb_rdc_din, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_rdc_full => wb_rdc_full, --in std_logic;
+        wb_FIFO_ow   => wb_FIFO_ow ,      --  IN  std_logic;
 
         pio_reading_status => pio_reading_status ,  --  OUT std_logic;
 
-        eb_FIFO_Status  => eb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        eb_FIFO_Rst     => eb_rst ,     --  OUT std_logic;
+        wb_FIFO_Status  => wb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_Rst     => wbone_rst ,     --  OUT std_logic;
         H2B_FIFO_Status => H2B_FIFO_Status ,
         B2H_FIFO_Status => B2H_FIFO_Status ,
 
@@ -2398,7 +2418,7 @@ begin
         );
 
   -- -----------------------------------------------------------------------
-  --  DDR SDRAM: control module USER LOGIC (2 BRAM Module:
+  --  DDR SDRAM: control module
   -- -----------------------------------------------------------------------
 
   LoopBack_BRAM_Off : if not USE_LOOPBACK_TEST generate
@@ -2514,72 +2534,98 @@ begin
 
   end generate;
 
-  ------------------------ -----------------------
-  -- Event Buffer wrapper (FIFO Module: H2B & B2H)
-  ------------------------ -----------------------
+  Wishbone_intf :
+    wb_transact
+      port map(
+        -- PCIE user clk
+        user_clk => user_clk, --in std_logic;
+        -- Write port
+        wr_we   => wb_wr_we, --in std_logic;
+        wr_sof  => wb_wr_wsof, --in std_logic;
+        wr_eof  => wb_wr_weof, --in std_logic;
+        wr_din  => wb_wr_din, --in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wr_full => wb_wr_full, --out std_logic;
+        -- Read command port
+        rdc_sof  => wb_rdc_sof, --in std_logic;
+        rdc_v    => wb_rdc_v, --in std_logic;
+        rdc_din  => wb_rdc_din, --in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        rdc_full => wb_rdc_full,--out std_logic;
+        -- Read data port
+        rd_ren   => wb_rdd_ren, --in std_logic;
+        rd_empty => wb_rdd_empty, --out std_logic;
+        rd_dout  => wb_rdd_dout, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  LoopBack_FIFO_Off : if not USE_LOOPBACK_TEST generate
+        -- Wishbone interface
+        wb_clk => wbone_clk, --in std_logic;
+        wb_rst => wbone_rst, --in std_logic;
+        addr_o => wbone_addr(28 downto 0), --out std_logic_vector(31 downto 0);
+        dat_i  => wbone_mdin, --in std_logic_vector(63 downto 0);
+        dat_o  => wbone_mdout, --out std_logic_vector(63 downto 0);
+        we_o   => wbone_we, --out std_logic;
+        sel_o  => wbone_sel, --out std_logic_vector(0 downto 0);
+        stb_o  => wbone_stb, --out std_logic;
+        ack_i  => wbone_ack, --in std_logic;
+        cyc_o  => wbone_cyc, --out std_logic;
+        --RESET from PCIe
+        rst => user_reset --in std_logic
+        );
 
-    queue_buffer0 :
-      eb_wrapper
-        port map (
-          H2B_wr_clk        => user_clk ,
-          H2B_wr_en         => eb_we ,
-          H2B_wr_din        => eb_din ,
-          H2B_wr_pfull      => eb_pfull ,
-          H2B_wr_full       => eb_full ,
-          H2B_wr_data_count => H2B_wr_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
+  Wishbone_mem_large: if SIMULATION = "TRUE" generate
 
-          H2B_rd_clk        => ddr_ref_clk_i ,
-          H2B_rd_en         => user_rd_en ,
-          H2B_rd_dout       => user_rd_dout ,
-          H2B_rd_pempty     => user_rd_pempty ,
-          H2B_rd_empty      => user_rd_empty ,
-          H2B_rd_valid      => user_rd_valid ,
-          H2B_rd_data_count => user_rd_data_count ,
+    wb_mem_sim :
+      wb_mem
+        generic map(
+          AWIDTH => 16,
+          DWIDTH => 64
+        )
+        port map(
+          CLK_I => wbone_clk, --in  std_logic;
+          ACK_O => wbone_ack, --out std_logic;
+          ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+          DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+          DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+          STB_I => wbone_stb, --in  std_logic;
+          WE_I  => wbone_we --in  std_logic
+        );
 
-          B2H_wr_clk        => ddr_ref_clk_i ,
-          B2H_wr_en         => user_wr_en ,
-          B2H_wr_din        => user_wr_din ,
-          B2H_wr_pfull      => user_wr_pfull ,
-          B2H_wr_full       => user_wr_full ,
-          B2H_wr_data_count => user_wr_data_count ,
+  end generate;
 
-          B2H_rd_clk        => user_clk ,
-          B2H_rd_en         => eb_re ,
-          B2H_rd_dout       => eb_dout ,
-          B2H_rd_pempty     => eb_pempty ,
-          B2H_rd_empty      => eb_empty ,
-          B2H_rd_valid      => eb_valid ,
-          B2H_rd_data_count => B2H_rd_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
+  Wishbone_mem_sample: if SIMULATION = "FALSE" generate
 
-          rst => eb_rst
-          );
+    wb_mem_syn :
+      wb_mem
+        generic map(
+          AWIDTH => 7,
+          DWIDTH => 64
+        )
+        port map(
+          CLK_I => wbone_clk, --in  std_logic;
+          ACK_O => wbone_ack, --out std_logic;
+          ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+          DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+          DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+          STB_I => wbone_stb, --in  std_logic;
+          WE_I  => wbone_we --in  std_logic
+        );
 
-    --- 64 bits to 32 bits transformation ( --> Count * 2)---
-    B2H_rd_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    B2H_rd_data_count(0) <= '0';
+  end generate;
 
-    H2B_wr_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    H2B_wr_data_count(0) <= '0';
+    --temporary clock assignment
+    wbone_clk <= ddr_ui_clk;
 
     --- Hybrid FIFO Signal used by PCIe interface and Linux Driver
-    eb_FIFO_ow                       <= eb_we_up and eb_full;
-    fifo_reset_done                  <= not eb_rst;
-    eb_din(72-1 downto C_DBUS_WIDTH) <= (others => '0');
-    eb_data_count                    <= B2H_rd_data_count;
+    fifo_reset_done <= not wbone_rst;
+    wb_data_count   <= B2H_rd_data_count;
 
     --- Hybrid FIFO Status used by PCIe interface and Linux Driver ---
     --- read: status ; write: reset H2B and B2H FIFO
-    eb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
+    wb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
  <= (others => '0');
-    eb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
+    wb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    eb_FIFO_Status(2) <= '0';
-    eb_FIFO_Status(1) <= eb_pfull;
-    eb_FIFO_Status(0) <= eb_empty and fifo_reset_done;
+    wb_FIFO_Status(2) <= '0';
+    wb_FIFO_Status(1) <= wb_rdc_full;
+    wb_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
 
     --- Host2Board FIFO status used by user ---
     --- read: H2B status ; write: nothing
@@ -2588,60 +2634,18 @@ begin
     H2B_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= H2B_wr_data_count(C_FIFO_DC_WIDTH downto 1);
     H2B_FIFO_Status(2) <= '0';
-    H2B_FIFO_Status(1) <= eb_pfull;
-    H2B_FIFO_Status(0) <= eb_full and fifo_reset_done;
+    H2B_FIFO_Status(1) <= wb_wr_full;
+    H2B_FIFO_Status(0) <= wb_wr_full and fifo_reset_done;
 
     --- Board2Host FIFO status used by user ---
     --- read: B2H status ; write: nothing
     B2H_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
     B2H_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    B2H_FIFO_Status(2) <= eb_valid;
-    B2H_FIFO_Status(1) <= eb_pempty;
-    B2H_FIFO_Status(0) <= eb_empty and fifo_reset_done;
+    B2H_FIFO_Status(2) <= wb_rdc_v;
+    B2H_FIFO_Status(1) <= wb_rdd_empty;
+    B2H_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
 
-  end generate;
-
-  LoopBack_FIFO_On : if USE_LOOPBACK_TEST generate
-
-    queue_buffer0 :
-      eb_wrapper_loopback
-        port map (
-          wr_clk => user_clk ,          -- eb_wclk   ,
-          wr_en  => eb_we ,
-          din    => eb_din ,
-          pfull  => eb_pfull ,
-          full   => eb_full ,
-
-          rd_clk => user_clk ,          -- eb_rclk   ,
-          rd_en  => eb_re ,
-          dout   => eb_dout ,
-          pempty => eb_pempty ,
-          empty  => eb_empty ,
-
-          data_count => eb_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
-          rst        => eb_rst
-          );
-
-    eb_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    eb_data_count(0)                 <= '0';
-    fifo_reset_done                  <= not eb_rst;
-    eb_FIFO_ow                       <= eb_we_up and eb_full;
-    eb_din(72-1 downto C_DBUS_WIDTH) <= (others => '0');
-
-    eb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
-    eb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
- <= eb_data_count(C_FIFO_DC_WIDTH downto 1);
-    eb_FIFO_Status(2) <= '0';
-    eb_FIFO_Status(1) <= eb_pfull;
-    eb_FIFO_Status(0) <= eb_empty and fifo_reset_done;
-
-
-    H2B_FIFO_Status <= (others => '0');
-    H2B_FIFO_Status <= (others => '0');
-
-  end generate;
 
   u_ddr_core : ddr_core
     generic map (
