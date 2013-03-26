@@ -54,4 +54,5 @@ pa.fromNcd.tcl
 *.txt
 *.xdl
 planAhead*
+*.clk_rgn
 

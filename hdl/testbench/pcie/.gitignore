@@ -9,4 +9,9 @@ xilinxsim.ini
 work*
 fuse*
 glbl.v
+#modelsim stuff
+transcript
+modelsim.in*
+*.wlf
+*.version
 
