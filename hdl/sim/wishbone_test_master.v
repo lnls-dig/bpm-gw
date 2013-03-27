@@ -38,31 +38,31 @@ module WB_TEST_MASTER(
   reg [`WB_BWSEL_WIDTH - 1 : 0]       wb_bwsel = 0;
   wire [`WB_DATA_BUS_WIDTH -1 : 0]    wb_data_i;
   wire wb_ack_i;
-  reg 	wb_cyc = 0;
-  reg 	wb_stb = 0;
-  reg 	wb_we = 0;
-  //reg 	wb_rst = 0;
-  //reg 	wb_clk = 1;
-  input wb_clk;  
-  
+  reg   wb_cyc = 0;
+  reg   wb_stb = 0;
+  reg   wb_we = 0;
+  //reg   wb_rst = 0;
+  //reg   wb_clk = 1;
+  input wb_clk;
+
   reg wb_tb_verbose = 1;
   reg wb_monitor_bus = 1;
   time last_access_t = 0;
   reg [`WB_DATA_BUS_WIDTH -1 : 0] dummy;
-  
+
   // ready signal. 1 indicates that WB_TEST unit is initialized and ready for commands
   reg ready = 0;
-  
+
   // Generated outside this module
   // generate the WB bus clock
   //always #(`WB_CLOCK_PERIOD/2) wb_clk <= ~wb_clk;
-  
+
   // generate the reset and ready signals
   initial begin
     //#(`WB_RESET_DELAY) wb_rst <= 1;
     #(`WB_CLOCK_PERIOD*2) ready <= 1;
   end
-  
+
   // enables/disables displaying information about each read/write operation.
   task verbose;
     input onoff;
@@ -70,14 +70,14 @@ module WB_TEST_MASTER(
     wb_tb_verbose = onoff;
   end
   endtask // wb_verbose
-  
+
   task monitor_bus;
     input onoff;
   begin
     wb_monitor_bus = onoff;
   end
   endtask // monitor_bus
-  
+
   task rw_generic;
     input [`WB_ADDRESS_BUS_WIDTH - 1 : 0] addr;
     input [`WB_DATA_BUS_WIDTH - 1 : 0] data_i;
@@ -85,28 +85,29 @@ module WB_TEST_MASTER(
     input rw;
     input [3:0] size;
   begin : rw_generic_main
-  
+
     // Debug information
     if(wb_tb_verbose) begin
       if(rw)
-        $display("@%0d: WB write %s: addr %x, data %x", 
-            $time, (size==1?"byte":((size==2)?"short":"int")), 
+        $display("@%0d: WB write %s: addr %x, data %x",
+            $time, (size==1?"byte":((size==2)?"short":"int")),
             addr, data_i);
-      else // !rw 
+      else // !rw
         $display("@%0d: WB read %s: addr %x",
-            $time, (size==1?"byte":((size==2)?"short":"int")), 
+            $time, (size==1?"byte":((size==2)?"short":"int")),
           addr);
     end // wb_tb_verbose
-    
+
     if($time != last_access_t) begin
       @(posedge wb_clk);
     end
-  
+
     wb_stb<=1;
     wb_cyc<=1;
-    wb_addr <= {2'b00, addr[31:2]};
+    //wb_addr <= {2'b00, addr[31:2]};
+    wb_addr <= addr;
     wb_we <= rw;
-    
+
     if(rw) begin
       case(size)
         4: begin wb_data_o<=data_i; wb_bwsel <= 4'b1111; end
@@ -129,27 +130,27 @@ module WB_TEST_MASTER(
         end
       endcase // case(size)
     end // if (rw)
-    
+
     #(`WB_CLOCK_PERIOD-1);
-    
-    // Wait for ack. 
+
+    // Wait for ack.
     // FIXME: insert a maximum wait time
     while(wb_ack_i == 0) begin @(posedge wb_clk); end
-    
+
     data_o = wb_data_i;
     wb_cyc <= 0;
     wb_we <= 0;
     wb_stb <= 0;
-    
-    //if(wb_tb_verbose && !rw) 
+
+    //if(wb_tb_verbose && !rw)
     //  $display("@%0d: WB read %s: addr %x, data %x",
-    //      $time, (size==1?"byte":((size==2)?"short":"int")), 
+    //      $time, (size==1?"byte":((size==2)?"short":"int")),
     //      addr, wb_data_i);
-      
+
       last_access_t = $time;
     end
   endtask // rw_generic
-  
+
   task write8;
     input [`WB_ADDRESS_BUS_WIDTH - 1 : 0] addr;
     input [7 : 0] data_i;
@@ -157,7 +158,7 @@ module WB_TEST_MASTER(
     rw_generic(addr, data_i, dummy, 1, 1);
   end
   endtask // write8
-  
+
   task read8;
     input [`WB_ADDRESS_BUS_WIDTH - 1 : 0] addr;
     output [7 : 0] data_o;
@@ -167,7 +168,7 @@ module WB_TEST_MASTER(
     data_o = rval[7:0];
   end
   endtask // read8
-  
+
   task write32;
     input [`WB_ADDRESS_BUS_WIDTH - 1 : 0] addr;
     input [31 : 0] data_i;
@@ -175,7 +176,7 @@ module WB_TEST_MASTER(
     rw_generic(addr, data_i, dummy, 1, 4);
   end
   endtask // write32
-  
+
   task read32;
     input [`WB_ADDRESS_BUS_WIDTH - 1 : 0] addr;
     output [31 : 0] data_o;
@@ -185,15 +186,15 @@ module WB_TEST_MASTER(
     data_o = rval[31:0];
   end
   endtask // read32
-  
-  // bus monitor   
+
+  // bus monitor
   always@(posedge wb_clk) begin
     if(wb_monitor_bus && wb_cyc && wb_stb && wb_ack_i)begin
-      if(wb_we) 
+      if(wb_we)
         $display("@%0d: ACK-Write: addr %x wdata %x bwsel %b", $time, wb_addr, wb_data_o, wb_bwsel);
-      else 
+      else
         $display("@%0d: ACK-Read: addr %x rdata %x", $time, wb_addr, wb_data_i);
     end
   end
-   
+
 endmodule

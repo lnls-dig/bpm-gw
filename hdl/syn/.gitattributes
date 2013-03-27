@@ -1,0 +1,5 @@
+*.gise binary
+*.xise binary
+*.bit binary
+*.cmd binary
+*.log binary

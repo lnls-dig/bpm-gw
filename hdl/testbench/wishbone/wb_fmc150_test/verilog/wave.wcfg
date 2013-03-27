@@ -29,7 +29,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="115" />
+   <WVObjectSize size="132" />
    <wvobject fp_name="/wb_fmc150_tb/s_clk_sys" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">s_clk_sys</obj_property>
       <obj_property name="ObjectShortName">s_clk_sys</obj_property>
@@ -67,112 +67,6 @@
    <wvobject fp_name="/wb_fmc150_tb/s_adc_data_valid" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">s_adc_data_valid</obj_property>
       <obj_property name="ObjectShortName">s_adc_data_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="divider10" type="divider">
-      <obj_property name="label">cmp_wb_source</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">128 128 255</obj_property>
-      <obj_property name="TextColor">230 230 230</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/clk_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">clk_i</obj_property>
-      <obj_property name="ObjectShortName">clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/rst_n_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rst_n_i</obj_property>
-      <obj_property name="ObjectShortName">rst_n_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">src_i</obj_property>
-      <obj_property name="ObjectShortName">src_i</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/addr_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">addr_i[3:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_i[3:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[31:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/dvalid_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">dvalid_i</obj_property>
-      <obj_property name="ObjectShortName">dvalid_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/sof_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sof_i</obj_property>
-      <obj_property name="ObjectShortName">sof_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/eof_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">eof_i</obj_property>
-      <obj_property name="ObjectShortName">eof_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/error_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">error_i</obj_property>
-      <obj_property name="ObjectShortName">error_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/bytesel_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bytesel_i[3:0]</obj_property>
-      <obj_property name="ObjectShortName">bytesel_i[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">src_o</obj_property>
-      <obj_property name="ObjectShortName">src_o</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.adr" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">.adr</obj_property>
-         <obj_property name="ObjectShortName">src_o.adr</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.dat" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">.dat</obj_property>
-         <obj_property name="ObjectShortName">src_o.dat</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.cyc" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">.cyc</obj_property>
-         <obj_property name="ObjectShortName">src_o.cyc</obj_property>
-      </wvobject>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.stb" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">.stb</obj_property>
-         <obj_property name="ObjectShortName">src_o.stb</obj_property>
-      </wvobject>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.we" type="logic" db_ref_id="1">
-         <obj_property name="ElementShortName">.we</obj_property>
-         <obj_property name="ObjectShortName">src_o.we</obj_property>
-      </wvobject>
-      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.sel" type="array" db_ref_id="1">
-         <obj_property name="ElementShortName">.sel</obj_property>
-         <obj_property name="ObjectShortName">src_o.sel</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/dreq_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">dreq_o</obj_property>
-      <obj_property name="ObjectShortName">dreq_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/sim_adc_clk_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sim_adc_clk_i</obj_property>
-      <obj_property name="ObjectShortName">sim_adc_clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/sim_adc_clk2x_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sim_adc_clk2x_i</obj_property>
-      <obj_property name="ObjectShortName">sim_adc_clk2x_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/sim_adc_cha_data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">sim_adc_cha_data_i[13:0]</obj_property>
-      <obj_property name="ObjectShortName">sim_adc_cha_data_i[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/sim_adc_chb_data_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">sim_adc_chb_data_i[13:0]</obj_property>
-      <obj_property name="ObjectShortName">sim_adc_chb_data_i[13:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/sim_adc_data_valid" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">sim_adc_data_valid</obj_property>
-      <obj_property name="ObjectShortName">sim_adc_data_valid</obj_property>
    </wvobject>
    <wvobject fp_name="divider62" type="divider">
       <obj_property name="label">cmp_wb_fmc150_dut</obj_property>
@@ -593,5 +487,181 @@
       <obj_property name="ElementShortName">cdce72010_out_cmd[63:0]</obj_property>
       <obj_property name="ObjectShortName">cdce72010_out_cmd[63:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider144" type="divider">
+      <obj_property name="label">wbs_source</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/clk_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/rst_n_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst_n_i</obj_property>
+      <obj_property name="ObjectShortName">rst_n_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">src_i</obj_property>
+      <obj_property name="ObjectShortName">src_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/addr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">addr_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_i[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/data_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/dvalid_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">dvalid_i</obj_property>
+      <obj_property name="ObjectShortName">dvalid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/sof_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sof_i</obj_property>
+      <obj_property name="ObjectShortName">sof_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/eof_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">eof_i</obj_property>
+      <obj_property name="ObjectShortName">eof_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/error_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">error_i</obj_property>
+      <obj_property name="ObjectShortName">error_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/bytesel_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bytesel_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">bytesel_i[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/dreq_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">dreq_o</obj_property>
+      <obj_property name="ObjectShortName">dreq_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/q_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">q_valid</obj_property>
+      <obj_property name="ObjectShortName">q_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/full" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/we" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/rd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rd</obj_property>
+      <obj_property name="ObjectShortName">rd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/rd_d0" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rd_d0</obj_property>
+      <obj_property name="ObjectShortName">rd_d0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/fin" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">fin[42:0]</obj_property>
+      <obj_property name="ObjectShortName">fin[42:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/fout" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">fout[42:0]</obj_property>
+      <obj_property name="ObjectShortName">fout[42:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/pre_dvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pre_dvalid</obj_property>
+      <obj_property name="ObjectShortName">pre_dvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/pre_eof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pre_eof</obj_property>
+      <obj_property name="ObjectShortName">pre_eof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/pre_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pre_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pre_data[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/pre_addr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pre_addr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">pre_addr[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">src_o</obj_property>
+      <obj_property name="ObjectShortName">src_o</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.adr" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.adr</obj_property>
+         <obj_property name="ObjectShortName">src_o.adr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.dat" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.dat</obj_property>
+         <obj_property name="ObjectShortName">src_o.dat</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.cyc" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.cyc</obj_property>
+         <obj_property name="ObjectShortName">src_o.cyc</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.stb" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.stb</obj_property>
+         <obj_property name="ObjectShortName">src_o.stb</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.we" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">.we</obj_property>
+         <obj_property name="ObjectShortName">src_o.we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/src_o.sel" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">.sel</obj_property>
+         <obj_property name="ObjectShortName">src_o.sel</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_dvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">post_dvalid</obj_property>
+      <obj_property name="ObjectShortName">post_dvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_sof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">post_sof</obj_property>
+      <obj_property name="ObjectShortName">post_sof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_eof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">post_eof</obj_property>
+      <obj_property name="ObjectShortName">post_eof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_bytesel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">post_bytesel[3:0]</obj_property>
+      <obj_property name="ObjectShortName">post_bytesel[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">post_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">post_data[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/post_adr" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">post_adr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">post_adr[3:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/err_status" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">err_status</obj_property>
+      <obj_property name="ObjectShortName">err_status</obj_property>
+      <obj_property name="label">err_status</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/cmp_wb_source_if/cyc_int" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc_int</obj_property>
+      <obj_property name="ObjectShortName">cyc_int</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/s_sof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_sof</obj_property>
+      <obj_property name="ObjectShortName">s_sof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/s_eof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_eof</obj_property>
+      <obj_property name="ObjectShortName">s_eof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc150_tb/cmp_wb_fmc150_dut/s_dvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_dvalid</obj_property>
+      <obj_property name="ObjectShortName">s_dvalid</obj_property>
    </wvobject>
 </wave_config>

@@ -5,11 +5,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.wishbone_pkg.all;
+
 package wb_stream_pkg is
   -- Must be at least 2 bits wide
   constant c_wbs_address_width      : integer := 4;
-  -- Must be at least 16 bits wide
-  constant c_wbs_data_width         : integer := 32;
+  -- Must be at least 16 bits wide. Not a good solution, as streaming interfaces
+  -- might different widths. FIX ME!
+  constant c_wbs_data_width         : integer := 64;
 
   subtype t_wbs_address is
     std_logic_vector(c_wbs_address_width-1 downto 0);
@@ -44,12 +48,16 @@ package wb_stream_pkg is
     sel : t_wbs_byte_select;
   end record;
 
+  subtype t_wbs_sink_in is t_wbs_source_out;
+
   type t_wbs_source_in is record
     ack   : std_logic;
     stall : std_logic;
     err   : std_logic;
     rty   : std_logic;
   end record;
+
+  subtype t_wbs_sink_out is t_wbs_source_in;
 
   --type t_wrf_oob is record
   --  valid: std_logic;
@@ -60,9 +68,6 @@ package wb_stream_pkg is
   --  port_id  : std_logic_vector(5 downto 0);
   --end record;
 
-  subtype t_wbs_sink_in is t_wbs_source_out;
-  subtype t_wbs_sink_out is t_wbs_source_in;
-
   type t_wbs_source_in_array is array (natural range <>) of t_wbs_source_in;
   type t_wbs_source_out_array is array (natural range <>) of t_wbs_source_out;
 
@@ -71,7 +76,9 @@ package wb_stream_pkg is
 
   function f_marshall_wbs_status (stat  : t_wbs_status_reg) return std_logic_vector;
   function f_unmarshall_wbs_status(stat : std_logic_vector) return t_wbs_status_reg;
-  
+
+  function f_packet_num_bits(packet_size : natural) return natural;
+
   constant cc_dummy_wbs_addr : std_logic_vector(c_wbs_address_width-1 downto 0):=
     (others => 'X');
   constant cc_dummy_wbs_dat : std_logic_vector(c_wbs_data_width-1 downto 0) :=
@@ -83,18 +90,18 @@ package wb_stream_pkg is
     ('0', '0', '0', '0');
   constant cc_dummy_snk_in : t_wbs_sink_in :=
     (cc_dummy_wbs_addr, cc_dummy_wbs_dat, '0', '0', '0', cc_dummy_wbs_sel);
-    
+
   -- Components
   component xwb_stream_source
   port (
     clk_i                                   : in std_logic;
     rst_n_i                                 : in std_logic;
-  
-    -- Wishbone Fabric Interface I/O  
+
+    -- Wishbone Fabric Interface I/O
     src_i                                   : in  t_wbs_source_in;
     src_o                                   : out t_wbs_source_out;
-  
-    -- Decoded & buffered logic 
+
+    -- Decoded & buffered logic
     addr_i                                  : in  std_logic_vector(c_wbs_address_width-1 downto 0);
     data_i                                  : in  std_logic_vector(c_wbs_data_width-1 downto 0);
     dvalid_i                                : in  std_logic;
@@ -105,7 +112,7 @@ package wb_stream_pkg is
     dreq_o                                  : out std_logic
   );
   end component;
-  
+
   component xwb_stream_sink
   port (
     clk_i                                   : in std_logic;
@@ -129,10 +136,10 @@ package wb_stream_pkg is
 
 end wb_stream_pkg;
 
-package body wb_stream_pkg is  
-  
+package body wb_stream_pkg is
+
   function f_marshall_wbs_status(stat : t_wbs_status_reg)
-    return std_logic_vector 
+    return std_logic_vector
   is
     -- Wishbone bus data_width is at least 16 bits
     variable tmp : std_logic_vector(c_wbs_data_width-1 downto 0);
@@ -144,9 +151,9 @@ package body wb_stream_pkg is
     tmp(15 downto 8) := stat.match_class;
     return tmp;
   end;
-  
-  function f_unmarshall_wbs_status(stat : std_logic_vector) 
-    return t_wbs_status_reg 
+
+  function f_unmarshall_wbs_status(stat : std_logic_vector)
+    return t_wbs_status_reg
   is
     variable tmp : t_wbs_status_reg;
   begin
@@ -156,6 +163,22 @@ package body wb_stream_pkg is
     tmp.has_crc     := stat(3);
     tmp.match_class := stat(15 downto 8);
     return tmp;
-  end;
+  end f_unmarshall_wbs_status;
+
+  function f_packet_num_bits(packet_size : natural)
+    return natural
+  is
+    -- Slightly different behaviour than the one located at wishbone_pkg.vhd
+    function f_ceil_log2(x : natural) return natural is
+    begin
+      if x <= 2
+      then return 1;
+      else return f_ceil_log2((x+1)/2) +1;
+      end if;
+    end f_ceil_log2;
+
+  begin
+    return f_ceil_log2(packet_size);
+  end f_packet_num_bits;
 
 end wb_stream_pkg;

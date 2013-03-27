@@ -5,14 +5,14 @@
 
 ## variables #############################
 PWD := $(shell pwd)
-TOP_MODULE :=
+TOP_MODULE := 
 FUSE_OUTPUT ?= isim_proj
 
 XILINX_INI_PATH := /opt/Xilinx/13.4/ISE_DS/ISE/vhdl/hdp/lin64
 
 VHPCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini
 ISIM_FLAGS :=
-VLOGCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini
+VLOGCOMP_FLAGS := -intstyle default -incremental -initfile xilinxsim.ini 
 VERILOG_SRC := defines.v \
 wb_fmc150_tb.v \
 timescale.v \
@@ -82,6 +82,9 @@ VHDL_SRC := ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
 ../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
 ../../../../modules/custom_common/reset_synch/reset_synch.vhd \
+../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd \
+../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd \
+../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd \
 ../../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd \
 ../../../../ip_cores/general-cores/modules/common/gc_crc_gen.vhd \
 ../../../../ip_cores/general-cores/modules/common/gc_moving_average.vhd \
@@ -181,6 +184,9 @@ work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
 work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
 work/dac3283_init_mem/.dac3283_init_mem_vhd \
 work/reset_synch/.reset_synch_vhd \
+work/rf_ch_swap/.rf_ch_swap_vhd \
+work/utilities_package/.utilities_package_vhd \
+work/mc_serial_ctrl/.mc_serial_ctrl_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/gc_crc_gen/.gc_crc_gen_vhd \
 work/gc_moving_average/.gc_moving_average_vhd \
@@ -255,7 +261,7 @@ LIBS := work fifo_generator_v6_1
 LIB_IND := work/.work fifo_generator_v6_1/.fifo_generator_v6_1
 ## rules #################################
 sim: xilinxsim.ini $(LIB_IND) $(VERILOG_OBJ) $(VHDL_OBJ)
-$(VERILOG_OBJ): $(VHDL_OBJ)
+$(VERILOG_OBJ): $(VHDL_OBJ) 
 $(VHDL_OBJ): $(LIB_IND) xilinxsim.ini
 
 xilinxsim.ini: $(XILINX_INI_PATH)/xilinxsim.ini
@@ -267,113 +273,113 @@ else
 		fuse work.$(TOP_MODULE) -intstyle ise -incremental -o $(FUSE_OUTPUT)
 endif
 clean:
-		rm -rf ./xilinxsim.ini $(LIBS) fuse.xmsgs fuse.log fuseRelaunch.cmd isim isim.log isim.wdb
+		rm -rf ./xilinxsim.ini $(LIBS) fuse.xmsgs fuse.log fuseRelaunch.cmd isim isim.log isim.wdb 
 .PHONY: clean
 
 work/.work:
-	(mkdir work && touch work/.work && echo "work=work"  >> xilinxsim.ini) || rm -rf work
+	(mkdir work && touch work/.work && echo "work=work"  >> xilinxsim.ini) || rm -rf work 
 
 fifo_generator_v6_1/.fifo_generator_v6_1:
-	(mkdir fifo_generator_v6_1 && touch fifo_generator_v6_1/.fifo_generator_v6_1 && echo "fifo_generator_v6_1=fifo_generator_v6_1"  >> xilinxsim.ini) || rm -rf fifo_generator_v6_1
+	(mkdir fifo_generator_v6_1 && touch fifo_generator_v6_1/.fifo_generator_v6_1 && echo "fifo_generator_v6_1=fifo_generator_v6_1"  >> xilinxsim.ini) || rm -rf fifo_generator_v6_1 
 
-work/defines/.defines_v: defines.v
+work/defines/.defines_v: defines.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/wb_fmc150_tb/.wb_fmc150_tb_v: wb_fmc150_tb.v defines.v timescale.v ../../../../sim/wishbone_test_master.v ../../../../sim/regs/xfmc150_regs_regs.vh
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/timescale/.timescale_v: timescale.v
+work/timescale/.timescale_v: timescale.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/clk_rst/.clk_rst_v: clk_rst.v timescale.v defines.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i . -i ../../../../sim/regs -i ../../../../sim $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/sockit_owm/.sockit_owm_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v
+work/sockit_owm/.sockit_owm_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/spi_clgen/.spi_clgen_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_spi  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/spi_shift/.spi_shift_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_spi  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/spi_top/.spi_top_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_defines.v ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/timescale.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_spi  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/lm32_allprofiles/.lm32_allprofiles_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.v
+work/lm32_allprofiles/.lm32_allprofiles_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/generated  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_mc_arithmetic/.lm32_mc_arithmetic_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_mc_arithmetic.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/jtag_cores/.jtag_cores_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.v
+work/jtag_cores/.jtag_cores_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_adder/.lm32_adder_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_adder.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_addsub/.lm32_addsub_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_addsub.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/lm32_dp_ram/.lm32_dp_ram_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.v
+work/lm32_dp_ram/.lm32_dp_ram_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_logic_op/.lm32_logic_op_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_ram/.lm32_ram_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_ram.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_shifter/.lm32_shifter_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_shifter.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 work/lm32_multiplier/.lm32_multiplier_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/lm32_multiplier.v ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/../../src/lm32_include.v
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
-work/jtag_tap/.jtag_tap_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.v
+work/jtag_tap/.jtag_tap_v: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.v 
 		vlogcomp -work work=./work $(VLOGCOMP_FLAGS) -i ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic  $<
-		@mkdir -p $(dir $@) && touch $@
+		@mkdir -p $(dir $@) && touch $@ 
 
 
 
 work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd: ../../../../modules/custom_wishbone/custom_wishbone_pkg.vhd work/custom_wishbone_pkg/.custom_wishbone_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -383,7 +389,7 @@ work/wb_stream_pkg/.wb_stream_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/custom_common_pkg/.custom_common_pkg_vhd: ../../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -391,15 +397,16 @@ work/custom_common_pkg/.custom_common_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd work/wb_stream_pkg/.wb_stream_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/wb_stream_pkg/.wb_stream_pkg:
+work/wb_stream_pkg/.wb_stream_pkg: \
+work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_stream_sink/.xwb_stream_sink_vhd: ../../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd work/xwb_stream_sink/.xwb_stream_sink
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -409,7 +416,7 @@ work/wb_stream_pkg/.wb_stream_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_stream_source/.xwb_stream_source_vhd: ../../../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd work/xwb_stream_source/.xwb_stream_source
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -419,7 +426,7 @@ work/wb_stream_pkg/.wb_stream_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_fmc150/.wb_fmc150_vhd: ../../../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd work/wb_fmc150/.wb_fmc150
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -432,7 +439,7 @@ work/custom_common_pkg/.custom_common_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_fmc150/.xwb_fmc150_vhd: ../../../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd work/xwb_fmc150/.xwb_fmc150
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -443,7 +450,7 @@ work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd work/xfmc150_regs_pkg/.xfmc150_regs_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -451,7 +458,7 @@ work/xfmc150_regs_pkg/.xfmc150_regs_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_fmc150_port/.wb_fmc150_port_vhd: ../../../../modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd work/wb_fmc150_port/.wb_fmc150_port
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -460,7 +467,7 @@ work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -468,7 +475,7 @@ work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr:
 		@mkdir -p $(dir $@) && touch $@
 
 work/adc_pkg/.adc_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd work/adc_pkg/.adc_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -476,7 +483,7 @@ work/adc_pkg/.adc_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/strobe_lvds/.strobe_lvds_vhd: ../../../../modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd work/strobe_lvds/.strobe_lvds
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -484,7 +491,7 @@ work/strobe_lvds/.strobe_lvds:
 		@mkdir -p $(dir $@) && touch $@
 
 work/ads62p49_ctrl/.ads62p49_ctrl_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd work/ads62p49_ctrl/.ads62p49_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -492,7 +499,7 @@ work/ads62p49_ctrl/.ads62p49_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/amc7823_ctrl/.amc7823_ctrl_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd work/amc7823_ctrl/.amc7823_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -500,7 +507,7 @@ work/amc7823_ctrl/.amc7823_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/cdce72010_ctrl/.cdce72010_ctrl_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd work/cdce72010_ctrl/.cdce72010_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -508,7 +515,7 @@ work/cdce72010_ctrl/.cdce72010_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/dac3283_ctrl/.dac3283_ctrl_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd work/dac3283_ctrl/.dac3283_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -516,7 +523,7 @@ work/dac3283_ctrl/.dac3283_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_adc_if/.fmc150_adc_if_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd work/fmc150_adc_if/.fmc150_adc_if
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -525,7 +532,7 @@ work/adc_pkg/.adc_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_dac_if/.fmc150_dac_if_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd work/fmc150_dac_if/.fmc150_dac_if
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -533,7 +540,7 @@ work/fmc150_dac_if/.fmc150_dac_if:
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_pkg/.fmc150_pkg_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd work/fmc150_pkg/.fmc150_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -541,7 +548,7 @@ work/fmc150_pkg/.fmc150_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_spi_ctrl/.fmc150_spi_ctrl_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd work/fmc150_spi_ctrl/.fmc150_spi_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -549,7 +556,7 @@ work/fmc150_spi_ctrl/.fmc150_spi_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_stellar_cmd/.fmc150_stellar_cmd_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd work/fmc150_stellar_cmd/.fmc150_stellar_cmd
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -557,7 +564,7 @@ work/fmc150_stellar_cmd/.fmc150_stellar_cmd:
 		@mkdir -p $(dir $@) && touch $@
 
 work/fmc150_testbench/.fmc150_testbench_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd work/fmc150_testbench/.fmc150_testbench
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -566,7 +573,7 @@ work/fmc150_pkg/.fmc150_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/pulse2pulse/.pulse2pulse_vhd: ../../../../modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd work/pulse2pulse/.pulse2pulse
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -574,7 +581,7 @@ work/pulse2pulse/.pulse2pulse:
 		@mkdir -p $(dir $@) && touch $@
 
 work/ads62p49_init_mem/.ads62p49_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/ads62p49_init_mem.vhd work/ads62p49_init_mem/.ads62p49_init_mem
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -582,7 +589,7 @@ work/ads62p49_init_mem/.ads62p49_init_mem:
 		@mkdir -p $(dir $@) && touch $@
 
 work/amc7823_init_mem/.amc7823_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/amc7823_init_mem.vhd work/amc7823_init_mem/.amc7823_init_mem
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -590,7 +597,7 @@ work/amc7823_init_mem/.amc7823_init_mem:
 		@mkdir -p $(dir $@) && touch $@
 
 work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_ext.vhd work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -598,7 +605,7 @@ work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext:
 		@mkdir -p $(dir $@) && touch $@
 
 work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd work/cdce72010_init_mem_int/.cdce72010_init_mem_int
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -606,7 +613,7 @@ work/cdce72010_init_mem_int/.cdce72010_init_mem_int:
 		@mkdir -p $(dir $@) && touch $@
 
 work/dac3283_init_mem/.dac3283_init_mem_vhd: ../../../../modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd work/dac3283_init_mem/.dac3283_init_mem
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -614,15 +621,40 @@ work/dac3283_init_mem/.dac3283_init_mem:
 		@mkdir -p $(dir $@) && touch $@
 
 work/reset_synch/.reset_synch_vhd: ../../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/reset_synch/.reset_synch:
 		@mkdir -p $(dir $@) && touch $@
 
+work/rf_ch_swap/.rf_ch_swap_vhd: ../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd work/rf_ch_swap/.rf_ch_swap
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/rf_ch_swap/.rf_ch_swap:
+		@mkdir -p $(dir $@) && touch $@
+
+work/utilities_package/.utilities_package_vhd: ../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd work/utilities_package/.utilities_package
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/utilities_package/.utilities_package:
+		@mkdir -p $(dir $@) && touch $@
+
+work/mc_serial_ctrl/.mc_serial_ctrl_vhd: ../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd work/mc_serial_ctrl/.mc_serial_ctrl
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/mc_serial_ctrl/.mc_serial_ctrl: \
+work/utilities_package/.utilities_package_vhd
+		@mkdir -p $(dir $@) && touch $@
+
 work/gencores_pkg/.gencores_pkg_vhd: ../../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd work/gencores_pkg/.gencores_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -631,7 +663,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_crc_gen/.gc_crc_gen_vhd: ../../../../ip_cores/general-cores/modules/common/gc_crc_gen.vhd work/gc_crc_gen/.gc_crc_gen
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -640,7 +672,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_moving_average/.gc_moving_average_vhd: ../../../../ip_cores/general-cores/modules/common/gc_moving_average.vhd work/gc_moving_average/.gc_moving_average
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -649,7 +681,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_extend_pulse/.gc_extend_pulse_vhd: ../../../../ip_cores/general-cores/modules/common/gc_extend_pulse.vhd work/gc_extend_pulse/.gc_extend_pulse
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -658,7 +690,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_delay_gen/.gc_delay_gen_vhd: ../../../../ip_cores/general-cores/modules/common/gc_delay_gen.vhd work/gc_delay_gen/.gc_delay_gen
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -667,7 +699,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_dual_pi_controller/.gc_dual_pi_controller_vhd: ../../../../ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd work/gc_dual_pi_controller/.gc_dual_pi_controller
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -676,7 +708,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_reset/.gc_reset_vhd: ../../../../ip_cores/general-cores/modules/common/gc_reset.vhd work/gc_reset/.gc_reset
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -684,7 +716,7 @@ work/gc_reset/.gc_reset:
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_serial_dac/.gc_serial_dac_vhd: ../../../../ip_cores/general-cores/modules/common/gc_serial_dac.vhd work/gc_serial_dac/.gc_serial_dac
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -692,7 +724,7 @@ work/gc_serial_dac/.gc_serial_dac:
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_sync_ffs/.gc_sync_ffs_vhd: ../../../../ip_cores/general-cores/modules/common/gc_sync_ffs.vhd work/gc_sync_ffs/.gc_sync_ffs
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -700,7 +732,7 @@ work/gc_sync_ffs/.gc_sync_ffs:
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_arbitrated_mux/.gc_arbitrated_mux_vhd: ../../../../ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd work/gc_arbitrated_mux/.gc_arbitrated_mux
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -710,7 +742,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_pulse_synchronizer/.gc_pulse_synchronizer_vhd: ../../../../ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd work/gc_pulse_synchronizer/.gc_pulse_synchronizer
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -719,7 +751,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_frequency_meter/.gc_frequency_meter_vhd: ../../../../ip_cores/general-cores/modules/common/gc_frequency_meter.vhd work/gc_frequency_meter/.gc_frequency_meter
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -728,7 +760,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_dual_clock_ram/.gc_dual_clock_ram_vhd: ../../../../ip_cores/general-cores/modules/common/gc_dual_clock_ram.vhd work/gc_dual_clock_ram/.gc_dual_clock_ram
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -736,7 +768,7 @@ work/gc_dual_clock_ram/.gc_dual_clock_ram:
 		@mkdir -p $(dir $@) && touch $@
 
 work/gc_wfifo/.gc_wfifo_vhd: ../../../../ip_cores/general-cores/modules/common/gc_wfifo.vhd work/gc_wfifo/.gc_wfifo
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -745,7 +777,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/genram_pkg/.genram_pkg_vhd: ../../../../ip_cores/general-cores/modules/genrams/genram_pkg.vhd work/genram_pkg/.genram_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -753,7 +785,7 @@ work/genram_pkg/.genram_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/memory_loader_pkg/.memory_loader_pkg_vhd: ../../../../ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd work/memory_loader_pkg/.memory_loader_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -762,7 +794,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_shiftreg_fifo/.generic_shiftreg_fifo_vhd: ../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd work/generic_shiftreg_fifo/.generic_shiftreg_fifo
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -771,7 +803,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wishbone_pkg/.wishbone_pkg_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd work/wishbone_pkg/.wishbone_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -780,7 +812,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_dpram/.generic_dpram_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd work/generic_dpram/.generic_dpram
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -790,7 +822,7 @@ work/memory_loader_pkg/.memory_loader_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_dpram_sameclock/.generic_dpram_sameclock_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd work/generic_dpram_sameclock/.generic_dpram_sameclock
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -800,7 +832,7 @@ work/memory_loader_pkg/.memory_loader_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_dpram_dualclock/.generic_dpram_dualclock_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd work/generic_dpram_dualclock/.generic_dpram_dualclock
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -810,7 +842,7 @@ work/memory_loader_pkg/.memory_loader_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_spram/.generic_spram_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd work/generic_spram/.generic_spram
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -819,7 +851,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_async_fifo/.generic_async_fifo_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_async_fifo.vhd work/generic_async_fifo/.generic_async_fifo
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -828,7 +860,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/generic_sync_fifo/.generic_sync_fifo_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/spartan6/generic_sync_fifo.vhd work/generic_sync_fifo/.generic_sync_fifo
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -837,7 +869,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 fifo_generator_v6_1/dummy/.dummy_vhd: ../../../../ip_cores/general-cores/modules/genrams/xilinx/sim_stub/dummy.vhd fifo_generator_v6_1/dummy/.dummy
-		vhpcomp $(VHPCOMP_FLAGS)  -work fifo_generator_v6_1=./fifo_generator_v6_1 $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work fifo_generator_v6_1=./fifo_generator_v6_1 $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -845,7 +877,7 @@ fifo_generator_v6_1/dummy/.dummy:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_async_bridge/.wb_async_bridge_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd work/wb_async_bridge/.wb_async_bridge
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -855,7 +887,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_async_bridge/.xwb_async_bridge_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd work/xwb_async_bridge/.xwb_async_bridge
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -864,7 +896,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_onewire_master/.wb_onewire_master_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd work/wb_onewire_master/.wb_onewire_master
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -874,7 +906,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_onewire_master/.xwb_onewire_master_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd work/xwb_onewire_master/.xwb_onewire_master
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -883,7 +915,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/i2c_master_bit_ctrl/.i2c_master_bit_ctrl_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd work/i2c_master_bit_ctrl/.i2c_master_bit_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -891,7 +923,7 @@ work/i2c_master_bit_ctrl/.i2c_master_bit_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/i2c_master_byte_ctrl/.i2c_master_byte_ctrl_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd work/i2c_master_byte_ctrl/.i2c_master_byte_ctrl
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -899,7 +931,7 @@ work/i2c_master_byte_ctrl/.i2c_master_byte_ctrl:
 		@mkdir -p $(dir $@) && touch $@
 
 work/i2c_master_top/.i2c_master_top_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd work/i2c_master_top/.i2c_master_top
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -907,7 +939,7 @@ work/i2c_master_top/.i2c_master_top:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_i2c_master/.wb_i2c_master_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd work/wb_i2c_master/.wb_i2c_master
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -916,7 +948,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_i2c_master/.xwb_i2c_master_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd work/xwb_i2c_master/.xwb_i2c_master
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -925,7 +957,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_bus_fanout/.xwb_bus_fanout_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd work/xwb_bus_fanout/.xwb_bus_fanout
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -934,7 +966,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_dpram/.xwb_dpram_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd work/xwb_dpram/.xwb_dpram
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -944,7 +976,7 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_gpio_port/.wb_gpio_port_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd work/wb_gpio_port/.wb_gpio_port
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -954,7 +986,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_gpio_port/.xwb_gpio_port_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd work/xwb_gpio_port/.xwb_gpio_port
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -963,7 +995,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_tics/.wb_tics_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd work/wb_tics/.wb_tics
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -972,7 +1004,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_tics/.xwb_tics_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd work/xwb_tics/.xwb_tics
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -981,7 +1013,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/uart_async_rx/.uart_async_rx_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd work/uart_async_rx/.uart_async_rx
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -989,7 +1021,7 @@ work/uart_async_rx/.uart_async_rx:
 		@mkdir -p $(dir $@) && touch $@
 
 work/uart_async_tx/.uart_async_tx_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd work/uart_async_tx/.uart_async_tx
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -997,7 +1029,7 @@ work/uart_async_tx/.uart_async_tx:
 		@mkdir -p $(dir $@) && touch $@
 
 work/uart_baud_gen/.uart_baud_gen_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd work/uart_baud_gen/.uart_baud_gen
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1005,7 +1037,7 @@ work/uart_baud_gen/.uart_baud_gen:
 		@mkdir -p $(dir $@) && touch $@
 
 work/simple_uart_wb/.simple_uart_wb_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd work/simple_uart_wb/.simple_uart_wb
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1014,7 +1046,7 @@ work/simple_uart_pkg/.simple_uart_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/simple_uart_pkg/.simple_uart_pkg_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd work/simple_uart_pkg/.simple_uart_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1022,7 +1054,7 @@ work/simple_uart_pkg/.simple_uart_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_simple_uart/.wb_simple_uart_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd work/wb_simple_uart/.wb_simple_uart
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1033,7 +1065,7 @@ work/simple_uart_pkg/.simple_uart_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_simple_uart/.xwb_simple_uart_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd work/xwb_simple_uart/.xwb_simple_uart
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1042,7 +1074,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/vic_prio_enc/.vic_prio_enc_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd work/vic_prio_enc/.vic_prio_enc
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1050,7 +1082,7 @@ work/vic_prio_enc/.vic_prio_enc:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_slave_vic/.wb_slave_vic_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd work/wb_slave_vic/.wb_slave_vic
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1059,7 +1091,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_vic/.wb_vic_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd work/wb_vic/.wb_vic
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1068,7 +1100,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_vic/.xwb_vic_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd work/xwb_vic/.xwb_vic
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1077,7 +1109,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_spi/.wb_spi_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd work/wb_spi/.wb_spi
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1086,7 +1118,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_spi/.xwb_spi_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd work/xwb_spi/.xwb_spi
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1095,7 +1127,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/sdb_rom/.sdb_rom_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd work/sdb_rom/.sdb_rom
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1104,7 +1136,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_crossbar/.xwb_crossbar_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd work/xwb_crossbar/.xwb_crossbar
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1113,7 +1145,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_sdb_crossbar/.xwb_sdb_crossbar_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd work/xwb_sdb_crossbar/.xwb_sdb_crossbar
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1122,7 +1154,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_lm32/.xwb_lm32_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd work/xwb_lm32/.xwb_lm32
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1131,7 +1163,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_slave_adapter/.wb_slave_adapter_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd work/wb_slave_adapter/.wb_slave_adapter
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1140,7 +1172,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_xilinx_fpga_loader/.wb_xilinx_fpga_loader_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd work/wb_xilinx_fpga_loader/.wb_xilinx_fpga_loader
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1151,7 +1183,7 @@ work/xloader_registers_pkg/.xloader_registers_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_xilinx_fpga_loader/.xwb_xilinx_fpga_loader_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd work/xwb_xilinx_fpga_loader/.xwb_xilinx_fpga_loader
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1160,7 +1192,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xloader_registers_pkg/.xloader_registers_pkg_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd work/xloader_registers_pkg/.xloader_registers_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1169,7 +1201,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xloader_wb/.xloader_wb_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_xilinx_fpga_loader/xloader_wb.vhd work/xloader_wb/.xloader_wb
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1179,7 +1211,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_clock_crossing/.xwb_clock_crossing_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd work/xwb_clock_crossing/.xwb_clock_crossing
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1189,7 +1221,7 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_dma/.xwb_dma_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd work/xwb_dma/.xwb_dma
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1198,7 +1230,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wbgen2_dpssram/.wbgen2_dpssram_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd work/wbgen2_dpssram/.wbgen2_dpssram
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1207,7 +1239,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wbgen2_eic/.wbgen2_eic_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd work/wbgen2_eic/.wbgen2_eic
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1216,7 +1248,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wbgen2_fifo_async/.wbgen2_fifo_async_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd work/wbgen2_fifo_async/.wbgen2_fifo_async
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1226,7 +1258,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wbgen2_fifo_sync/.wbgen2_fifo_sync_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd work/wbgen2_fifo_sync/.wbgen2_fifo_sync
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1235,7 +1267,7 @@ work/wbgen2_pkg/.wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wbgen2_pkg/.wbgen2_pkg_vhd: ../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd work/wbgen2_pkg/.wbgen2_pkg
-		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $<
+		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 

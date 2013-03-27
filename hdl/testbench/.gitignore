@@ -1,0 +1,9 @@
+work/
+fifo_generator*/
+isim/
+isim_proj
+*.xmsgs
+*.log
+*.wdb
+fuseRelaunch.cmd
+*.ini

@@ -7,7 +7,7 @@
 -- Company    : CERN BE-CO-HT
 -- Created    : 2012-01-16
 -- Last update: 2012-01-22
--- Platform   : 
+-- Platform   :
 -- Standard   : VHDL'93
 -------------------------------------------------------------------------------
 -- Description: A simple WB packet streaming sink with builtin FIFO buffer.
@@ -16,20 +16,20 @@
 --
 -- Copyright (c) 2011 CERN
 --
--- This source file is free software; you can redistribute it   
--- and/or modify it under the terms of the GNU Lesser General   
--- Public License as published by the Free Software Foundation; 
--- either version 2.1 of the License, or (at your option) any   
--- later version.                                               
+-- This source file is free software; you can redistribute it
+-- and/or modify it under the terms of the GNU Lesser General
+-- Public License as published by the Free Software Foundation;
+-- either version 2.1 of the License, or (at your option) any
+-- later version.
 --
--- This source is distributed in the hope that it will be       
--- useful, but WITHOUT ANY WARRANTY; without even the implied   
--- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      
--- PURPOSE.  See the GNU Lesser General Public License for more 
--- details.                                                     
+-- This source is distributed in the hope that it will be
+-- useful, but WITHOUT ANY WARRANTY; without even the implied
+-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+-- PURPOSE.  See the GNU Lesser General Public License for more
+-- details.
 --
--- You should have received a copy of the GNU Lesser General    
--- Public License along with this source; if not, download it   
+-- You should have received a copy of the GNU Lesser General
+-- Public License along with this source; if not, download it
 -- from http://www.gnu.org/licenses/lgpl-2.1.html
 --
 -------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ use work.genram_pkg.all;
 use work.wb_stream_pkg.all;
 
 entity xwb_stream_sink is
-  
+
   port (
     clk_i                                       : in std_logic;
     rst_n_i                                     : in std_logic;
@@ -76,39 +76,29 @@ architecture rtl of xwb_stream_sink is
 
   constant c_addr_lsb                           : natural := c_data_msb + 1;
   constant c_addr_msb                           : natural := c_addr_lsb + c_wbs_address_width -1;
-  
+
   constant c_valid_bit                          : natural := c_addr_msb + 1;
-  
+
   constant c_sel_lsb                            : natural := c_valid_bit + 1;
   constant c_sel_msb                            : natural := c_sel_lsb + (c_wbs_data_width/8) - 1;
 
   constant c_eof_bit                            : natural := c_sel_msb + 1;
   constant c_sof_bit                            : natural := c_eof_bit + 1;
-  
+
   alias c_logic_lsb                             is c_valid_bit;
   alias c_logic_msb                             is c_sof_bit;
   constant c_logic_width                        : integer := c_sof_bit - c_valid_bit + 1;
-  
+
   constant c_fifo_width                         : integer := c_sof_bit - c_data_lsb + 1;
-  constant c_fifo_depth                         : integer := 32;  
-  
+  constant c_fifo_depth                         : integer := 32;
+
   constant c_logic_zeros                        : std_logic_vector(c_logic_msb downto c_logic_lsb)
                 := std_logic_vector(to_unsigned(0, c_logic_width));
 
-    --constant c_logic_width                        : integer := 4;
-    --constant c_fifo_width                         : integer := c_wbs_data_width + c_wbs_address_width + 4;
-    --constant c_fifo_depth                         : integer := 32;  
-    --constant c_logic_start                        : integer := c_wbs_data_width + c_wbs_address_width;
-    
-    --subtype c_logic_range is natural range c_wbs_address_width+c_wbs_data_width+c_logic_width-1 downto
---                                               c_wbs_address_width+c_wbs_data_width;  
-    --subtype c_data_range is natural range c_wbs_data_width-1 downto 0;
-    --subtype c_addr_range is natural range c_wbs_address_width-1+c_wbs_data_width downto c_wbs_data_width;
-            
   signal q_valid, full, we, rd                  : std_logic;
   signal fin, fout, fout_reg                    : std_logic_vector(c_fifo_width-1 downto 0);
   signal cyc_d0, rd_d0                          : std_logic;
-  
+
   signal pre_sof, pre_eof, pre_dvalid           : std_logic;
   signal pre_bytesel                            : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
   signal post_sof, post_dvalid                  : std_logic;
@@ -116,9 +106,9 @@ architecture rtl of xwb_stream_sink is
   signal post_data                              : std_logic_vector(c_wbs_data_width-1 downto 0);
   signal post_eof                               : std_logic;
   signal post_bytesel                            : std_logic_vector((c_wbs_data_width/8)-1 downto 0);
-  
+
   signal snk_out : t_wbs_sink_out;
-  
+
 begin  -- rtl
 
   p_delay_cyc_and_rd : process(clk_i)
@@ -206,7 +196,7 @@ begin  -- rtl
   --    post_dvalid <= fout_reg(c_valid_bit);
   --    post_eof <= fout_reg(c_eof_bit);-- and rd_d0;
   --    post_bytesel <= fout_reg(c_sel_msb downto c_sel_lsb);
-  --  else 
+  --  else
   --    post_data <= (others => '0');
   --    post_addr <= (others => '0');
   --    post_sof  <= '0';
@@ -215,7 +205,7 @@ begin  -- rtl
   --    post_bytesel <= (others => '0');
   --  end if;
   --end process;
-  
+
   post_sof  <= fout_reg(c_sof_bit) and rd_d0; --and q_valid;
   post_dvalid <= fout_reg(c_valid_bit);
   post_eof <= fout_reg(c_eof_bit);
@@ -288,7 +278,7 @@ architecture wrapper of wb_stream_sink is
 
   signal snk_in  : t_wbs_sink_in;
   signal snk_out : t_wbs_sink_out;
-  
+
 begin  -- wrapper
 
   cmp_stream_sink_wrapper : xwb_stream_sink
@@ -317,5 +307,5 @@ begin  -- wrapper
   snk_ack_o   <= snk_out.ack;
   snk_err_o   <= snk_out.err;
   snk_rty_o   <= snk_out.rty;
-  
+
 end wrapper;

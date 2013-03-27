@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="./isim.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="custom_common_pkg" />
+            <top_module name="custom_wishbone_pkg" />
+            <top_module name="fmc516_pkg" />
+            <top_module name="fmc516_wbgen2_pkg" />
+            <top_module name="gencores_pkg" />
+            <top_module name="genram_pkg" />
+            <top_module name="math_real" />
+            <top_module name="numeric_std" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_signed" />
+            <top_module name="textio" />
+            <top_module name="vcomponents" />
+            <top_module name="vital_primitives" />
+            <top_module name="vital_timing" />
+            <top_module name="vpkg" />
+            <top_module name="wb_fmc516_tb" />
+            <top_module name="wb_stream_pkg" />
+            <top_module name="wishbone_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="60" />
+   <wvobject fp_name="divider142" type="divider">
+      <obj_property name="label">wb_fmc516_tb</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_100mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_100mhz</obj_property>
+      <obj_property name="ObjectShortName">clk_100mhz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_200mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_200mhz</obj_property>
+      <obj_property name="ObjectShortName">clk_200mhz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_sys" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_sys</obj_property>
+      <obj_property name="ObjectShortName">clk_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/clk_sys_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_sys_n</obj_property>
+      <obj_property name="ObjectShortName">clk_sys_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/sys_rst_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_rst_n</obj_property>
+      <obj_property name="ObjectShortName">sys_rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wb_slv_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wb_slv_in</obj_property>
+      <obj_property name="ObjectShortName">wb_slv_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wb_slv_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wb_slv_out</obj_property>
+      <obj_property name="ObjectShortName">wb_slv_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wbs_src_in" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_src_in</obj_property>
+      <obj_property name="ObjectShortName">wbs_src_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/wbs_src_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_src_out</obj_property>
+      <obj_property name="ObjectShortName">wbs_src_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_clk</obj_property>
+      <obj_property name="ObjectShortName">adc_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_clk_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_clk_n</obj_property>
+      <obj_property name="ObjectShortName">adc_clk_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_ch0_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_ch0_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_ch0_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_ch1_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_ch1_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_ch1_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_ch2_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_ch2_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_ch2_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/adc_ch3_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_ch3_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_ch3_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider114" type="divider">
+      <obj_property name="label">wb_fmc516</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_rst_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fs_rst_n</obj_property>
+      <obj_property name="ObjectShortName">fs_rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_rst_sync_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fs_rst_sync_n</obj_property>
+      <obj_property name="ObjectShortName">fs_rst_sync_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/fs_clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">fs_clk</obj_property>
+      <obj_property name="ObjectShortName">fs_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/sys_clk_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_clk_i</obj_property>
+      <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/sys_rst_n_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_rst_n_i</obj_property>
+      <obj_property name="ObjectShortName">sys_rst_n_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/sys_rst_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_rst_n</obj_property>
+      <obj_property name="ObjectShortName">sys_rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/sys_rst_sync_n" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">sys_rst_sync_n</obj_property>
+      <obj_property name="ObjectShortName">sys_rst_sync_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/adc_clk_chain_rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">adc_clk_chain_rst</obj_property>
+      <obj_property name="ObjectShortName">adc_clk_chain_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/mmcm_adc_locked" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">mmcm_adc_locked</obj_property>
+      <obj_property name="ObjectShortName">mmcm_adc_locked</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_adr_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_adr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_adr_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_dat_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_dat_o[63:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_dat_o[63:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_cyc_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_cyc_o</obj_property>
+      <obj_property name="ObjectShortName">wbs_cyc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stb_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_stb_o</obj_property>
+      <obj_property name="ObjectShortName">wbs_stb_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_we_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_we_o</obj_property>
+      <obj_property name="ObjectShortName">wbs_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_sel_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_sel_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_sel_o[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_ack_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_ack_i</obj_property>
+      <obj_property name="ObjectShortName">wbs_ack_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_stall_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_stall_i</obj_property>
+      <obj_property name="ObjectShortName">wbs_stall_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_err_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_err_i</obj_property>
+      <obj_property name="ObjectShortName">wbs_err_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_rty_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_rty_i</obj_property>
+      <obj_property name="ObjectShortName">wbs_rty_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_dvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_dvalid</obj_property>
+      <obj_property name="ObjectShortName">wbs_dvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_sof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_sof</obj_property>
+      <obj_property name="ObjectShortName">wbs_sof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_eof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_eof</obj_property>
+      <obj_property name="ObjectShortName">wbs_eof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_packet_counter" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_packet_counter[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_packet_counter[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_error" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_error</obj_property>
+      <obj_property name="ObjectShortName">wbs_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/wbs_bytesel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">wbs_bytesel[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wbs_bytesel[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_wb_source_if/post_sof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">post_sof</obj_property>
+      <obj_property name="ObjectShortName">post_sof</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_wb_source_if/post_eof" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">post_eof</obj_property>
+      <obj_property name="ObjectShortName">post_eof</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider121" type="divider">
+      <obj_property name="label">clk_chain0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group120" type="group">
+      <obj_property name="label">clk_chain0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider16" type="divider">
+      <obj_property name="label">clk_chain1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group116" type="group">
+      <obj_property name="label">clk_chain1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/sys_clk_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_clk_i</obj_property>
+         <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/sys_rst_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_rst_i</obj_property>
+         <obj_property name="ObjectShortName">sys_rst_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_p_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_p_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_p_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_n_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_dly_pulse_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_dly_pulse_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_dly_pulse_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_dly_val_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_dly_val_i[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_dly_val_i[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_dly_val_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_dly_val_o[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_dly_val_o[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_bufio_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufio_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufio_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_bufr_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufr_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufr_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/adc_clk_bufg_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_clock_chains(1)\/gen_check_clock_chains/cmp_fmc516_adc_clk/mmcm_adc_locked_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">mmcm_adc_locked_o</obj_property>
+         <obj_property name="ObjectShortName">mmcm_adc_locked_o</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="divider97" type="divider">
+      <obj_property name="label">clk_chain2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group122" type="group">
+      <obj_property name="label">clk_chain2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider56" type="divider">
+      <obj_property name="label">clk_chain3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group128" type="group">
+      <obj_property name="label">clk_chain3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider28" type="divider">
+      <obj_property name="label">data_chain0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group123" type="group">
+      <obj_property name="label">data_chain0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_clk_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_clk_i</obj_property>
+         <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">sys_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_p_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_p_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_p_i[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_n_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_n_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_n_i[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufio_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufio_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufio_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufr_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufr_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufr_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_pulse_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_pulse_i</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_pulse_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_i[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_i[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_o[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_o[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_o[15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_valid_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_valid_o</obj_property>
+         <obj_property name="ObjectShortName">adc_data_valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(0)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_o</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="divider42" type="divider">
+      <obj_property name="label">data_chain1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group124" type="group">
+      <obj_property name="label">data_chain1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_clk_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_clk_i</obj_property>
+         <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">sys_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_p_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_p_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_p_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_n_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_n_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_n_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufio_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufio_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufio_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufr_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufr_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufr_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_pulse_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_pulse_i</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_pulse_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_i[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_i[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_o[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_o[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_o[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_valid_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_valid_o</obj_property>
+         <obj_property name="ObjectShortName">adc_data_valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(1)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_o</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="divider68" type="divider">
+      <obj_property name="label">data_chain2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group125" type="group">
+      <obj_property name="label">data_chain2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_clk_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_clk_i</obj_property>
+         <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">sys_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_p_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_p_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_p_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_n_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_n_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_n_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufio_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufio_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufio_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufr_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufr_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufr_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_pulse_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_pulse_i</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_pulse_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_i[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_i[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_o[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_o[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_o[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_valid_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_valid_o</obj_property>
+         <obj_property name="ObjectShortName">adc_data_valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(2)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_o</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="divider82" type="divider">
+      <obj_property name="label">data_chain3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="group126" type="group">
+      <obj_property name="label">data_chain3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_clk_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_clk_i</obj_property>
+         <obj_property name="ObjectShortName">sys_clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/sys_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">sys_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">sys_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_p_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_p_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_p_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_n_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_n_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_n_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufio_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufio_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufio_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufr_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufr_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufr_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_bufg_rst_n_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_bufg_rst_n_i</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_bufg_rst_n_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_pulse_i" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_pulse_i</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_pulse_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_i" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_i[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_i[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_dly_val_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_dly_val_o[4:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_dly_val_o[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_o" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">adc_data_o[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_data_valid_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_data_valid_o</obj_property>
+         <obj_property name="ObjectShortName">adc_data_valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/wb_fmc516_tb/cmp_wb_fmc516/cmp_fmc516_adc_iface/\gen_adc_data_chains(3)\/gen_adc_data_chains_check/cmp_fmc516_adc_data/adc_clk_o" type="logic" db_ref_id="1">
+         <obj_property name="ElementShortName">adc_clk_o</obj_property>
+         <obj_property name="ObjectShortName">adc_clk_o</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

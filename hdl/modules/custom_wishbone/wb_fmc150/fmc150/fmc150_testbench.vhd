@@ -266,7 +266,7 @@ begin
         cha_data_o          => adc_cha_sdr,
         chb_data_o          => adc_chb_sdr,
         str_o               => adc_str,
-		-- Not used for now. Should it be removed?
+        -- Not used for now. Should it be removed?
         clk_adc_i           => adc_str,--clk_adc,
         delay_update_i      => adc_delay_update_i,
         str_cntvalue_i      => adc_str_cntvaluein_i,

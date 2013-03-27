@@ -1,4 +1,4 @@
-*.S
+*disasm.S
 *.[oa]
 *.ram
 *.elf
