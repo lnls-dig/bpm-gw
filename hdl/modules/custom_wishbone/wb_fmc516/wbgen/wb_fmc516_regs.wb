@@ -492,7 +492,31 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved_fe_dly";
       type = SLV;
-      size = 30;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -679,7 +703,31 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved_fe_dly";
       type = SLV;
-      size = 30;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -865,7 +913,31 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved_fe_dly";
       type = SLV;
-      size = 30;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1051,7 +1123,31 @@ peripheral {
       description = "Ignore on write, read as 0's";
       prefix = "reserved_fe_dly";
       type = SLV;
-      size = 30;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
