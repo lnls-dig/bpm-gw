@@ -73,6 +73,9 @@ port
   adc_data_fe_d1_en_i                       : in std_logic;
   adc_data_fe_d2_en_i                       : in std_logic;
 
+  adc_data_rg_d1_en_i                       : in std_logic;
+  adc_data_rg_d2_en_i                       : in std_logic;
+
   -----------------------------
   -- ADC output signals
   -----------------------------
@@ -100,10 +103,11 @@ architecture rtl of fmc516_adc_data is
   -- ADC data signals
   signal adc_data_ddr_ibufds                : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
   signal adc_data_ddr_dly                   : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+  signal adc_data_fe_sdr                    : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_sdr                       : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff                        : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff_d1                     : std_logic_vector(c_num_adc_bits-1 downto 0);
-  --signal adc_data_ff_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal adc_data_ff_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
   -- Delay signals
@@ -111,9 +115,13 @@ architecture rtl of fmc516_adc_data is
   signal adc_data_fe                        : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge
   signal adc_data_fe_d1                     : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed1
   signal adc_data_fe_d2                     : std_logic_vector(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed2
+  signal adc_data_rg_d1                     : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data delayed1
+  signal adc_data_rg_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data delayed2
 
   signal adc_data_d1                        : t_adc_data_delay_array(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed1
   signal adc_data_d2                        : t_adc_data_delay_array(c_num_adc_bits/2-1 downto 0);  -- ADC data falling edge delayed2
+  signal adc_data_d3                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data delayed1
+  signal adc_data_d4                        : std_logic_vector(c_num_adc_bits-1 downto 0);  -- ADC data delayed1
 
   -- FIFO signals
   signal adc_fifo_full                      : std_logic;
@@ -286,11 +294,31 @@ begin
     adc_data_d2(i)(1) <= adc_data_fe_d2(i) when adc_data_fe_d2_en_i = '1' else adc_data_d1(i)(1);
     adc_data_d2(i)(0) <= adc_data_d1(i)(0);
 
-    -- Grorup all the delayed bits.
-    adc_data_sdr(2*i)  <= adc_data_d2(i)(0);
-    adc_data_sdr(2*i+1)  <= adc_data_d2(i)(1);
+    -- Grorup all the falling edge delayed bits.
+    adc_data_fe_sdr(2*i)  <= adc_data_d2(i)(0);
+    adc_data_fe_sdr(2*i+1)  <= adc_data_d2(i)(1);
 
   end generate;
+
+  -- Delay the whole channel by 1 or 2 cycles
+  p_delay_rg_delay : process(adc_clk_bufr_i)
+  begin
+    if rising_edge (adc_clk_bufr_i) then
+      if sys_rst_n_i = '0' then
+        adc_data_rg_d1 <= (others => '0');
+        adc_data_rg_d2 <= (others => '0');
+      else
+        adc_data_rg_d1 <= adc_data_fe_sdr;
+        adc_data_rg_d2 <= adc_data_rg_d1;
+      end if;
+    end if;
+  end process;
+
+  -- adc data words delay software-controlled via adc_data_rg_d1_en and adc_data_rg_d2_en
+  adc_data_d3 <= adc_data_rg_d1 when adc_data_rg_d1_en_i = '1' else adc_data_fe_sdr;
+  adc_data_d4 <= adc_data_rg_d2 when adc_data_rg_d2_en_i = '1' else adc_data_d3;
+
+  adc_data_sdr <= adc_data_d4;
 
   -- Some FF to solve timing problem
   p_adc_data_ff : process(adc_clk_bufr_i)
@@ -299,11 +327,11 @@ begin
        if sys_rst_n_i = '0' then
          adc_data_ff <= (others => '0');
          adc_data_ff_d1 <= (others => '0');
-         --adc_data_ff_d2 <= (others => '0');
+         adc_data_ff_d2 <= (others => '0');
        else
          adc_data_ff <= adc_data_sdr;
          adc_data_ff_d1 <= adc_data_ff;
-         --adc_data_ff_d2 <= adc_data_ff_d1;
+         adc_data_ff_d2 <= adc_data_ff_d1;
        end if;
     end if;
   end process;
@@ -320,7 +348,7 @@ begin
     --
     --  -- write port
     --  wr_clk                                => adc_clk_bufr_i,
-    --  din                                   => adc_data_ff_d1,
+    --  din                                   => adc_data_ff_d2,
     --  wr_en                                 => adc_fifo_wr,
     --  full                                  => adc_fifo_full,
     --
@@ -341,7 +369,7 @@ begin
     --
     --  -- write port
     --  wr_clk                                => adc_clk_bufr_i,
-    --  din                                   => adc_data_ff_d1,
+    --  din                                   => adc_data_ff_d2,
     --  wr_en                                 => adc_fifo_wr,
     --  full                                  => adc_fifo_full,
     --
@@ -365,7 +393,7 @@ begin
 
       -- write port
       clk_wr_i                              => adc_clk_bufr_i,
-      d_i                                   => adc_data_ff_d1,
+      d_i                                   => adc_data_ff_d2,
       we_i                                  => adc_fifo_wr,
       wr_full_o                             => adc_fifo_full,
 
@@ -393,7 +421,7 @@ begin
 
       -- write port
       clk_wr_i                                => adc_clk_bufr_i,
-      d_i                                     => adc_data_ff_d1,
+      d_i                                     => adc_data_ff_d2,
       we_i                                    => adc_fifo_wr,
       wr_full_o                               => adc_fifo_full,
 

@@ -817,6 +817,16 @@ begin
   adc_dly_ctl(3).adc_data_fe_d1_en <= regs_out.ch3_dly_ctl_fe_dly_o(0);
   adc_dly_ctl(3).adc_data_fe_d2_en <= regs_out.ch3_dly_ctl_fe_dly_o(1);
 
+  -- ADC regular delay control
+  adc_dly_ctl(0).adc_data_rg_d1_en <= regs_out.ch0_dly_ctl_rg_dly_o(0);
+  adc_dly_ctl(0).adc_data_rg_d2_en <= regs_out.ch0_dly_ctl_rg_dly_o(1);
+  adc_dly_ctl(1).adc_data_rg_d1_en <= regs_out.ch1_dly_ctl_rg_dly_o(0);
+  adc_dly_ctl(1).adc_data_rg_d2_en <= regs_out.ch1_dly_ctl_rg_dly_o(1);
+  adc_dly_ctl(2).adc_data_rg_d1_en <= regs_out.ch2_dly_ctl_rg_dly_o(0);
+  adc_dly_ctl(2).adc_data_rg_d2_en <= regs_out.ch2_dly_ctl_rg_dly_o(1);
+  adc_dly_ctl(3).adc_data_rg_d1_en <= regs_out.ch3_dly_ctl_rg_dly_o(0);
+  adc_dly_ctl(3).adc_data_rg_d2_en <= regs_out.ch3_dly_ctl_rg_dly_o(1);
+
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
   fmc_clk_sel_o                             <= regs_out.fmc_ctl_clk_sel_o;
@@ -863,6 +873,8 @@ begin
   gen_adc_dly_ctl : for i in 0 to c_num_adc_channels-1 generate
     adc_dly_ctl_in(i).adc_data_fe_d1_en <= adc_dly_ctl(i).adc_data_fe_d1_en;
     adc_dly_ctl_in(i).adc_data_fe_d2_en <= adc_dly_ctl(i).adc_data_fe_d2_en;
+    adc_dly_ctl_in(i).adc_data_rg_d1_en <= adc_dly_ctl(i).adc_data_rg_d1_en;
+    adc_dly_ctl_in(i).adc_data_rg_d2_en <= adc_dly_ctl(i).adc_data_rg_d2_en;
   end generate;
 
   -----------------------------
