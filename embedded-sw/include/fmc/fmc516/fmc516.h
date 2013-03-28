@@ -42,5 +42,6 @@ uint32_t fmc516_read_adc1(unsigned int id);
 uint32_t fmc516_read_adc2(unsigned int id);
 uint32_t fmc516_read_adc3(unsigned int id);
 
-void fmc516_fe_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2);
+void fmc516_fe_rg_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2,
+                    int rg_dly_d1, int rg_dly_d2);
 

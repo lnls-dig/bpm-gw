@@ -83,10 +83,10 @@ void fmc516_init_regs(unsigned int id)
     fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
 
     // Delay the falling edge of all channels
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC0, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC1, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC2, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC3, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC0, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC1, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC2, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC3, 0, 0, 0, 0);
 }
 
 void fmc516_sweep_delays(unsigned int id)
@@ -232,10 +232,11 @@ uint32_t fmc516_read_adc3(unsigned int id)
 }
 
 // ADC delay falling edge control
-void fmc516_fe_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2)
+void fmc516_fe_rg_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2,
+                    int rg_dly_d1, int rg_dly_d2)
 {
     uint32_t *fmc_ch_handler;
-    uint32_t fe_dly_reg;
+    uint32_t dly_ctl_reg;
 
     switch(ch) {
         case FMC516_ISLA216_ADC0:
@@ -256,15 +257,24 @@ void fmc516_fe_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2)
     }
 
     // Read register value once
-    fe_dly_reg = *fmc_ch_handler;
+    dly_ctl_reg = *fmc_ch_handler;
 
     if (fe_dly_d2)
-        fe_dly_reg |= (fe_dly_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
+        dly_ctl_reg |= (dly_ctl_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
                         FMC516_CH0_DLY_CTL_FE_DLY_W(0x3);
     else if (fe_dly_d1)
-        fe_dly_reg |= (fe_dly_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
+        dly_ctl_reg |= (dly_ctl_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
                         FMC516_CH0_DLY_CTL_FE_DLY_W(0x1);
 
+    if (rg_dly_d2)
+        dly_ctl_reg |= (dly_ctl_reg & ~FMC516_CH0_DLY_CTL_RG_DLY_MASK) |
+                        FMC516_CH0_DLY_CTL_RG_DLY_W(0x3);
+    else if (rg_dly_d1)
+        dly_ctl_reg |= (dly_ctl_reg & ~FMC516_CH0_DLY_CTL_RG_DLY_MASK) |
+                        FMC516_CH0_DLY_CTL_RG_DLY_W(0x1);
+
     // Write register value once
-    *fmc_ch_handler = fe_dly_reg;
+    *fmc_ch_handler = dly_ctl_reg;
+
+    dbg_print("dly_ctl_reg, *fmc_ch_handler = %08X, %08X\n", dly_ctl_reg, *fmc_ch_handler);
 }
