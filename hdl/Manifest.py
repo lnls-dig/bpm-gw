@@ -8,6 +8,7 @@ modules = { "local": [
                 "modules/fabric",
                 "ip_cores/general-cores",
                 "ip_cores/etherbone-core",
+				"ip_cores/dsp-cores",
                 "platform/virtex6/chipscope"]
 #     "git" : [
 #     ]
