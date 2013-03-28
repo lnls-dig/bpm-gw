@@ -240,6 +240,9 @@ architecture rtl of fmc516_adc_iface is
     adc_data_fe_d1_en_i                     : in std_logic;
     adc_data_fe_d2_en_i                     : in std_logic;
 
+    adc_data_rg_d1_en_i                     : in std_logic;
+    adc_data_rg_d2_en_i                     : in std_logic;
+
     -----------------------------
     -- ADC output signals.
     -----------------------------
@@ -381,8 +384,13 @@ begin
             adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
             adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
 
+            -- Falling edge delay control
             adc_data_fe_d1_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d1_en,
             adc_data_fe_d2_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d2_en,
+
+            -- Regular delay control
+            adc_data_rg_d1_en_i                 => adc_dly_ctl_i(i).adc_data_rg_d1_en,
+            adc_data_rg_d2_en_i                 => adc_dly_ctl_i(i).adc_data_rg_d2_en,
 
             -----------------------------
             -- ADC output signals.

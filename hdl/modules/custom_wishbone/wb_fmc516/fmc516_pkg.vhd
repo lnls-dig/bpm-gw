@@ -84,8 +84,10 @@ package fmc516_pkg is
 
   type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly_reg;
 
-  -- ADC falling edge delay control
+  -- ADC falling edge and regular delay control (per channel)
   type t_adc_dly_ctl is record
+    adc_data_rg_d1_en : std_logic;
+    adc_data_rg_d2_en : std_logic;
     adc_data_fe_d1_en : std_logic;
     adc_data_fe_d2_en : std_logic;
   end record;
