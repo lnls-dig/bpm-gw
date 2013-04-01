@@ -448,16 +448,16 @@ void fmc516_test()
       i, fmc516_isla216_get_chipver(i));
   }
 
-  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
-  //  fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
-  //      ISLA216_TESTIO_REG, i);
-  //}
-
   for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    fmc516_isla216_test_ramp(i);
-    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+    pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+        ISLA216_TESTIO_REG, i);
   }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_ramp(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //}
 
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
   //  fmc516_isla216_test_midscale(i);

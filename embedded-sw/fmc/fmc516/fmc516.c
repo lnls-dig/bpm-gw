@@ -84,8 +84,8 @@ void fmc516_init_regs(unsigned int id)
 
     // Delay the falling edge of all channels
     fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC0, 0, 0, 0, 0);
-    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC1, 0, 0, 0, 0);
-    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC2, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC1, 0, 0, 1, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC2, 0, 0, 1, 0);
     fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC3, 0, 0, 0, 0);
 }
 
