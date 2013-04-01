@@ -8,7 +8,7 @@
 -- \   \   \/     Version    : 13.4
 --  \   \         Application: XILINX CORE Generator
 --  /   /         Filename   : chipscope_ila_8192.vhd
--- /___/   /\     Timestamp  : Wed Mar 27 17:21:28 BRT 2013
+-- /___/   /\     Timestamp  : Thu Mar 28 15:52:52 BRT 2013
 -- \   \  /  \
 --  \___\/\___\
 --
