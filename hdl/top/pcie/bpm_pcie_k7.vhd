@@ -135,11 +135,11 @@ entity bpm_pcie_k7 is
                                      -- DDR2 SDRAM: Burst Type (Mode Register).
                                      -- # = "SEQ" - (Sequential),
                                      --   = "INT" - (Interleaved).
-    CL                    : integer := 11;
+    CL                    : integer := 6;
                                      -- in number of clock cycles
                                      -- DDR3 SDRAM: CAS Latency (Mode Register 0).
                                      -- DDR2 SDRAM: CAS Latency (Mode Register).
-    CWL                   : integer := 8;
+    CWL                   : integer := 5;
                                      -- in number of clock cycles
                                      -- DDR3 SDRAM: CAS Write Latency (Mode Register 2).
                                      -- DDR2 SDRAM: Can be ignored
@@ -171,7 +171,7 @@ entity bpm_pcie_k7 is
     --***************************************************************************
     CLKIN_PERIOD          : integer := 5000;
                                      -- Input Clock Period
-    CLKFBOUT_MULT         : integer := 8;
+    CLKFBOUT_MULT         : integer := 4;
                                      -- write PLL VCO multiplier
     DIVCLK_DIVIDE         : integer := 1;
                                      -- write PLL VCO divisor
@@ -374,7 +374,7 @@ entity bpm_pcie_k7 is
     --***************************************************************************
     -- System clock frequency parameters
     --***************************************************************************
-    tCK                   : integer := 1250;
+    tCK                   : integer := 2500;
                                      -- memory tCK paramter.
                                      -- # = Clock Period in pS.
     nCK_PER_CLK           : integer := 4;

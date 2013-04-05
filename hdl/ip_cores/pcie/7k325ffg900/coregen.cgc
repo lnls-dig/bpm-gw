@@ -155,908 +155,908 @@
                      <xilinx:name>./ddr_core/datasheet.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x30C38AE0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x8395366E</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/ddr_core.csv</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x769D4487</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0xA985FAEE</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/docs/phy_only_support_readme.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x5486D221</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/docs/ug586_7Series_MIS.pdf</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>pdf</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x1D500A8B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/log.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xB274787B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x84F29492</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/create_ise.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x7B5FC67A</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_icon_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x8840580F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_ila_basic_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x9999E278</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_ila_rdpath_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xBA2FC48D</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_ila_wrpath_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x406DD61E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_vio_async_in_sync_out_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x8BC74CCB</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ddr_vio_sync_async_out72_cg.xco</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xAC8A5160</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/example_top.cdc</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x107B4E26</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/example_top.cpj</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:49 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3FAF19E5</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/example_top.ucf</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>ucf</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xC52A3F67</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x3A761480</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/example_top.xdc</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xdc</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xF0F5BCFD</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x107FCC20</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/ise_flow.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xB7917183</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/makeproj.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xC06A7DDF</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/readme.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x7CF5ED1C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/rem_files.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x58035546</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/rem_files.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xD74645F2</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/set_ise_prop.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xA78057DD</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/vivado.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xA73AE65D</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/vivado_gui.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x4013EF71</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/par/xst_options.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x4730142E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/example_top.vhd</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x97BC5D85</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0xA2CD0045</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_afifo.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x5EB694C5</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_cmd_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xD26D3287</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_cmd_prbs_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xFFA6D8F6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_data_prbs_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xA164FA2D</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_init_mem_pattern_ctr.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0567753E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_memc_flow_vcontrol.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x75BDA423</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_memc_traffic_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x88786ABD</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_rd_data_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0C569472</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_read_data_path.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x6FBA8B16</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_read_posted_fifo.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0045CF8C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_s7ven_data_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x4BC93CEF</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_tg_prbs_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x2A7F3B3F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_tg_status.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xE43C3397</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_traffic_gen_top.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x95DAA68A</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_vio_init_pattern_bram.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x65F1D06C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_wr_data_gen.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x93F1FE44</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/rtl/traffic_gen/mig_7series_v1_8_write_data_path.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x295B4757</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/ddr3_model.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:00 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:49 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xEC1364CE</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/ddr3_model_parameters.vh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xCF85A93C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/isim_files.prj</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x69B44FAD</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/isim_options.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xF3ED8892</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/isim_run.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x24B566AE</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/readme.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x81E64429</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/sim.do</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x1A391FF6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/sim_tb_top.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x9681DE1C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x940C6557</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/wiredly.v</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x8FF95931</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/xsim_files.prj</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x53562667</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/xsim_options.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xC150D88E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/sim/xsim_run.sh</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x6A43F2A8</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/synth/example_top.lso</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xEEDE3797</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/example_design/synth/example_top.prj</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x8F371EF5</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/mig.prj</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>unknown</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x03E2DB02</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0xDCA11487</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/constraints/ddr_core.ucf</xilinx:name>
                      <xilinx:userFileType>ucf</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xBDB592C1</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0xDF10F3AD</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/constraints/ddr_core.xdc</xilinx:name>
                      <xilinx:userFileType>xdc</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x7C34E42C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x072EE346</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/log.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xB0235CB6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x452FFAFF</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/clocking/mig_7series_v1_8_clk_ibuf.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3C8A5E16</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/clocking/mig_7series_v1_8_infrastructure.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xAC1D0C3F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/clocking/mig_7series_v1_8_iodelay_ctrl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3FD07A2B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/clocking/mig_7series_v1_8_tempmon.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xF6F5428F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_mux.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xBD0FE72A</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_row_col.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x1C4B3897</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_arb_select.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3B1A5A16</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_cntrl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x059A0D8B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_common.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x17A95473</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_compare.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x039688D5</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_mach.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x063B7670</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_queue.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x2270C6C8</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_bank_state.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xC96F53F2</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_col_mach.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x1AA8C0A5</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_mc.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x9A88AB74</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_cntrl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xC0A952D0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_common.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xEC80B268</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_rank_mach.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xBC52F1D3</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/controller/mig_7series_v1_8_round_robin_arb.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x8C3EC48C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ddr_core.vhd</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xD1B6B4DF</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x37176332</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_buf.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x112E712B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_dec_fix.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x4EE07067</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_gen.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xAF0C08A7</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ecc/mig_7series_v1_8_ecc_merge_enc.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x92BF381B</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_mem_intfc.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xF6BE540C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ip_top/mig_7series_v1_8_memc_ui_top_std.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x23B2672C</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x15ECFBF3</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_group_io.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x40E6BD2A</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_byte_lane.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3C1192B7</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_calib_top.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0A773868</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_if_post_fifo.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x82EA1B77</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x3203E402</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_mc_phy_wrapper.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xAF512FE2</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_of_pre_fifo.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x053B454D</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_4lanes.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xF7537397</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_ck_addr_cmd_delay.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xFCE07A03</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0B78B71D</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_dqs_found_cal_hr.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x5C5A9FE0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_init.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0BB8D6D6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_oclkdelay_cal.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xF737E3F3</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_prbs_rdlvl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x7C473159</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_rdlvl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x6F23D4BA</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_tempmon.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xE58B9786</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_top.vhd</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xA7E2F070</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrcal.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x66AAD4D6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_phy_wrlvl.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xAE7B0A4E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/phy/mig_7series_v1_8_ddr_prbs_gen.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x209C16D0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_cmd.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xBC304D7F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_rd_data.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x845EA812</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_top.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xFAB675EF</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core/user_design/rtl/ui/mig_7series_v1_8_ui_wr_data.v</xilinx:name>
                      <xilinx:userFileType>vhdl</xilinx:userFileType>
                      <xilinx:userFileType>verilog</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x4B542323</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core.veo</xilinx:name>
                      <xilinx:userFileType>veo</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xD6B099A6</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x90D80ECB</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core_readme.txt</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:01 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:50 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0xEEF19A2E</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core_xmdf.tcl</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>tcl</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:28:59 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:48 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0DBE81A0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                </xilinx:fileSet>
                <xilinx:fileSet>
@@ -1067,9 +1067,9 @@
                   <xilinx:file>
                      <xilinx:name>./ddr_core.xco</xilinx:name>
                      <xilinx:userFileType>xco</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:02 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0x3E2E3B85</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:51 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x493385F2</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                </xilinx:fileSet>
                <xilinx:fileSet>
@@ -1090,17 +1090,17 @@
                      <xilinx:name>./ddr_core.gise</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>gise</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:05 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:55 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x0A04E3A0</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                   <xilinx:file>
                      <xilinx:name>./ddr_core.xise</xilinx:name>
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>xise</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:05 GMT 2013</xilinx:timeStamp>
-                     <xilinx:checkSum>0xA00CE81F</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:55 GMT 2013</xilinx:timeStamp>
+                     <xilinx:checkSum>0x5D9E4727</xilinx:checkSum>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                </xilinx:fileSet>
                <xilinx:fileSet>
@@ -1113,9 +1113,9 @@
                      <xilinx:userFileType>ignore</xilinx:userFileType>
                      <xilinx:userFileType>txtFlist</xilinx:userFileType>
                      <xilinx:userFileType>txt</xilinx:userFileType>
-                     <xilinx:timeStamp>Tue Feb 19 17:29:05 GMT 2013</xilinx:timeStamp>
+                     <xilinx:timeStamp>Fri Apr 05 12:52:55 GMT 2013</xilinx:timeStamp>
                      <xilinx:checkSum>0x839EF9DF</xilinx:checkSum>
-                     <xilinx:generationId>generationID_706127423</xilinx:generationId>
+                     <xilinx:generationId>generationID_1879581046</xilinx:generationId>
                   </xilinx:file>
                </xilinx:fileSet>
                <xilinx:fileSet>
