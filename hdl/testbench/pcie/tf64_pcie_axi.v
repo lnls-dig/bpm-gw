@@ -204,6 +204,40 @@ begin
 
     $display("%d ns: ### End PIO simulation\n", $time);
 
+    ///////////////////////////////////////////////////////////////////////
+    //  Miscellaneous tests
+    // /////////////////////////////////////////
+    board.Rx_TLP_Length = 'H01;
+     $display("%d ns:   Resetting transmit channel", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = `C_ADDR_TX_CTRL;
+       dword_pack_data_store(32'H0a, 0);
+     
+       TLP_Feed_Rx(`C_BAR0_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+    board.Rx_TLP_Length = 'H02;
+     $display("\n%d ns:   Writing QWORD to DDR space", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 32'H4;
+       dword_pack_data_store(32'H55555555, 0);
+       dword_pack_data_store(32'Haaaaaaaa, 1);
+     
+       TLP_Feed_Rx(`C_BAR1_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+     $display("\n%d ns:   Reading QWORD from DDR space", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 32'H4;
+     
+       TLP_Feed_Rx(`C_BAR1_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+
     //  ///////////////////////////////////////////////////////////////////
     //  DMA write & read BAR[1]
     //  Single-descriptor case

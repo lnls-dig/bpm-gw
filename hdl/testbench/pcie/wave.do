@@ -1360,6 +1360,85 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_cnt
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Valid
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Hit
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tdata
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tkeep
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_terrfwd
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tready
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/IOWr_Type
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/MWr_Type
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Tlp_straddles_4KB
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Tlp_has_4KB
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_we
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_wsof
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_weof
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_din
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrEn
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrMask
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrAddr
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrDin
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_sof
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_eof
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_v
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_FA
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Shift
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Mask
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_din
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_full
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_we
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wd
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_clk
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_reset
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_lnk_up
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/RxMWrTrn_NextState
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/RxMWrTrn_State
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tdata_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tdata_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tkeep_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tkeep_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_terrfwd_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/trn_rsof_n_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/in_packet_reg
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/FIFO_Space_Sel
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_Space_Sel
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/REGS_Space_Sel
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_sof_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_eof_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_v_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_FA_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Shift_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Mask_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/ddr_wr_1st_mask_hi
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_din_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_full_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/dg_table_Sel
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa_odd
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_we_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wd_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_we_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_wsof_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_weof_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_din_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrEn_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrMask_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrAddr_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Regs_WrDin_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tready_i
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/trn_rx_throttle
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/trn_rx_throttle_r1
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/MWr_Has_4DW_Header
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Tlp_is_Zero_Length
+add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/MWr_Leng_in_Bytes
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/user_clk
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/user_reset
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/user_lnk_up
@@ -1669,653 +1748,653 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tRAM_weB
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tRAM_addrB
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tRAM_dinB
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_1Dw
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_Cntr_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_swapped
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Dout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Hit
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r3
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r2
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_swapped
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Dout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_re
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_wb_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_re
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_wb_TimeOut
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
-add wave -noupdate -expand -group EP -expand -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_empty
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_1Dw
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_Cntr_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_shift
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_swapped
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Dout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_empty
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxMReader_State
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_sof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_RdEn_Mask
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_FIFO_Write_mbuf_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Hit
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Write_mbuf_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_re_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_rise_r3
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_RdEn_Mask_r2
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_shift
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_qout_swapped
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/wb_FIFO_Dout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Dout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdQout_wire
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_wire_OR
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Din_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/may_be_MWr_k
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TRem_n_last_QWord
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/regs_Rd_Cntr_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_Rd_Cntr_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_var
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Address_step
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TxTLP_eof_n_r1
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TimeOut_Counter
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/TO_Cnt_Rst
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut_i
+add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_wb_TimeOut_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_re
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_wb_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_clk
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/user_lnk_up
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_re
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/wb_FIFO_qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_Last_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Msg_Routing
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdEn
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_wb_TimeOut
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/take_an_Arbitration
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTLP_is_MWr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TLP_is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_has_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/ChBuf_No_Payload
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_wire
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Trn_Qout_reg
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_Addr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDRAddr_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_pioCplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/AInc_usTlp
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_is_0Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_r1
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Qout_to_TLP
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_Min_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_Req_2DW_Leng
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Irpt_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_i
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_One
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Ack
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_reset
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_WE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Din
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Full
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_aFull
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qout
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Empty
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_RE_ok
+add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_Qvalid
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/user_clk
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/wr_we
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/wr_sof
@@ -2372,300 +2451,300 @@ add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/wb_s
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/wb_stb
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/wb_cyc
 add wave -noupdate -expand -group EP -group wb_Intf /board/EP/Wishbone_intf/rst_i
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
-add wave -noupdate -expand -group EP -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wr_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rd_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_v
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_shift
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdc_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_rden
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rdd_fifo_dout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_instr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_cmd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_end
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memarb_acc_gnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_ui_clk
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddr_rdy
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/reset
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/Rst_i
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_wr_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_Qout_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_qout_lo32b
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_QW_Aligned
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_rd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_mask
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_data
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_sof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_pause
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_full
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_f2m_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_wr_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/wpipe_fill_eof
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/pRAM_addra_inc
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDR_rd_state
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rd_cnt_latch
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_EOF
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_read_valid
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wr_skew
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_written_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_rdconv_cnt
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_wEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_rEn
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipec_Empty
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/ddram_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpipe_arb_req
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_wen
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Din
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_aFull
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/rpiped_Qout
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_cmd
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_r1
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_data_conv
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_rd_shift_r
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_addr
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_data_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/memc_wr_cmd_en
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_ADDR_INCVAL
+add wave -noupdate -expand -group EP -expand -group DDRs_Control /board/EP/LoopBack_BRAM_Off/DDRs_ctrl_module/u_ddr_control/DDRAM_RDCNT_DECVAL
 add wave -noupdate -expand -group EP /board/EP/ddr3_dq
 add wave -noupdate -expand -group EP /board/EP/ddr3_addr
 add wave -noupdate -expand -group EP /board/EP/ddr3_ba
@@ -2937,7 +3016,7 @@ add wave -noupdate -expand -group EP /board/EP/cfg_pciecap_interrupt_msgnum
 add wave -noupdate -expand -group EP /board/EP/localId
 add wave -noupdate -expand -group EP /board/EP/pcie_link_width
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {238919832148 fs} 0}
+WaveRestoreCursors {{Cursor 2} {192414057890 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 338
 configure wave -valuecolwidth 159
@@ -2953,4 +3032,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {238744034656 fs} {239168707936 fs}
+WaveRestoreZoom {192124670304 fs} {192549343584 fs}
