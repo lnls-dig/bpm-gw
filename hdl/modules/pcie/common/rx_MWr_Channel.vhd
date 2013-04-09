@@ -736,7 +736,7 @@ begin
             DDR_wr_v_i     <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
             DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
-            DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(3)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
+            DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(4)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
             DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
           else
             DDR_wr_sof_i   <= '0';

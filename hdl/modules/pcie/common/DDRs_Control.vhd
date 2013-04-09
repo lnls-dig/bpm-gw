@@ -143,6 +143,8 @@ architecture Behavioral of DDRs_Control is
   signal wpipe_aFull        : std_logic;
   signal wpipe_Full         : std_logic;
   signal wpipe_rEn          : std_logic;
+  signal wpipe_rd_en        : std_logic;
+  signal wpipe_ren_stopnow  : std_logic;
   signal wpipe_Qout         : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
   signal wpipe_Empty        : std_logic;
   signal wpipe_Qout_latch   : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
@@ -252,7 +254,7 @@ begin
         full      => wpipe_Full,       -- OUT std_logic;
 
         rd_clk => memc_ui_clk,            -- IN  std_logic;
-        rd_en  => wpipe_rEn,           -- IN  std_logic;
+        rd_en  => wpipe_rd_en,           -- IN  std_logic;
         dout   => wpipe_Qout,          -- OUT std_logic_VECTOR(35 downto 0);
         empty  => wpipe_Empty,         -- OUT std_logic;
 
@@ -262,6 +264,7 @@ begin
   wpipe_wEn <= wr_v;
   wpipe_Din <= wr_mask & wr_shift & '0' & '0' & wr_eof & '0' & '0' & wr_din;
   wr_full   <= wpipe_aFull;
+  wpipe_rd_en <= wpipe_rEn and not(wpipe_ren_stopnow);
   -- ----------------------------------------------------------------------------
   --
   -- ----------------------------------------------------------------------------
@@ -470,6 +473,7 @@ begin
             wpipe_wr_en   <= '0';
           elsif wpipe_Qout(66) = '1' then                -- eof
             wpipe_wr_en <= '1';
+            wpipe_rEn   <= '0'; --!!! insert 1 cycle break, so the state machine can catch up with data flow
             if wpipe_QW_Aligned = '1' then
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
@@ -489,7 +493,6 @@ begin
                                & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71));
               wpipe_wr_data    <= wpipe_qout_lo32b(32-1 downto 0) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
               wpipe_qout_lo32b <= '0' & wpipe_Qout(32-1 downto 0);
-              wpipe_rEn        <= '0'; --!!! insert 1 cycle break, so the state machine can catch up with data flow
             end if;
           else
             wpipe_wr_en  <= '1';
@@ -540,9 +543,12 @@ begin
     if ddr_rdy = '0' then
       wpipe_read_valid <= '0';
     elsif memc_ui_clk'event and memc_ui_clk = '1' then
-      wpipe_read_valid <= wpipe_rEn and not wpipe_Empty;
+      wpipe_read_valid <= wpipe_rd_en and not wpipe_Empty;
     end if;
   end process;
+  -- we have to stop reading FIFO in the same clock cycle that valid EOF flag is present,
+  -- otherwise we lose one word
+  wpipe_ren_stopnow <= wpipe_read_valid and wpipe_Qout(66);
 
   Syn_wPipe_f2m :
   process (memc_ui_clk, ddr_rdy)
@@ -604,6 +610,9 @@ begin
               if wpipe_f2m_cnt = (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) then
                 ddram_wr_valid     <= '1';
                 ddram_wr_cmd_valid <= '1';
+              end if;
+              if wpipe_f2m_cnt >= (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 2) and wpipe_f2m_empty = '0' then
+                wpipe_f2m_rd <= '0'; --stall read because we will now write it to the SDRAM
               end if;
             else
               wpipe_f2m_cnt <= wpipe_f2m_cnt;
@@ -713,12 +722,7 @@ begin
           rpiped_wr_EOF <= '0';
           rpipe_arb_req <= '1';
           memc_rd_cmd   <= '0';
-          if rpipec_Qout(69) = '1' and rpipec_Qout(3+32) = '1' then
-            --if data is shifted and read count is multiple of 2 DWs, then we have to read one more DW
-            rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32)) + "1";
-          else
-            rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32));
-          end if;
+          rpiped_rd_cnt <= unsigned(rpipec_Qout(11+32 downto 2+32));
           DDR_rd_state <= rdst_CMD;
 
         when rdst_CMD =>
