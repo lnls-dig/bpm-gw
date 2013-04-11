@@ -196,10 +196,7 @@ begin
         --idatain                                 => adc_data_ddr_ibufds(i),
         idatain                               => adc_data_i(i),
         dataout                               => adc_data_ddr_dly(i),
-        --c                                     => sys_clk_200Mhz_i,
-        --c                                     => sys_clk_i,
-        c                                     => adc_clk_bufg_i,
-        --ce                                    => adc_data_dly_pulse_i,
+        c                                     => sys_clk_i,
         ce                                    => '0',
         inc                                   => '0',
         datain                                => '0',
@@ -228,9 +225,7 @@ begin
         --idatain                                 => adc_data_ddr_ibufds(i),
         idatain                               => adc_data_i(i),
         dataout                               => adc_data_ddr_dly(i),
-        --c                                     => sys_clk_200Mhz_i,
         c                                     => sys_clk_i,
-        --c                                     => adc_clk_bufg_i,
         ce                                    => adc_data_dly_pulse_i,
         inc                                   => adc_data_dly_incdec_i,
         datain                                => '0',
@@ -346,13 +341,13 @@ begin
   )
   port map(
     rst_n_i                               => sys_rst_n_i,
-  
+
     -- write port
     clk_wr_i                              => adc_clk_bufr_i,
     d_i                                   => adc_data_ff_d2,
     we_i                                  => adc_fifo_wr,
     wr_full_o                             => adc_fifo_full,
-  
+
     -- read port
     clk_rd_i                              => adc_clk_bufg_i,
     q_o                                   => adc_data_bufg_sync,

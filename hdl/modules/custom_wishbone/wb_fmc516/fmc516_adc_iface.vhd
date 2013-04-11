@@ -81,12 +81,12 @@ port
   -----------------------------
   -- ADC Delay signals.
   -----------------------------
-  -- ADC clock + data delays
-  adc_dly_i                                 : in t_adc_dly_array(c_num_adc_channels-1 downto 0);
-  adc_dly_o                                 : out t_adc_dly_array(c_num_adc_channels-1 downto 0);
+  -- ADC fine delay control
+  adc_fn_dly_i                              : in t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+  adc_fn_dly_o                              : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
 
-  -- ADC falling edge delay control
-  adc_dly_ctl_i                             : in t_adc_dly_ctl_array(c_num_adc_channels-1 downto 0);
+  -- ADC coarse delay control (falling edge + regular delay)
+  adc_cs_dly_i                              : in t_adc_cs_dly_array(c_num_adc_channels-1 downto 0);
 
   -----------------------------
   -- ADC output signals.
@@ -135,12 +135,15 @@ architecture rtl of fmc516_adc_iface is
   type t_adc_clk_chain_array is array (natural range <>) of t_adc_clk_chain;
   --type t_adc_data_chain_array is array (natural range <>) of t_adc_data_chain;
 
-  -- Conectivity vector for interconnecting clocks and data chains
-  --type t_chain_intercon is array (natural range <>) of integer;
-
   -- ADC and Clock chains
   signal adc_clk_chain                      : t_adc_clk_chain_array(c_num_adc_channels-1 downto 0);
   signal adc_data_chain_out                 : t_adc_int_array(c_num_adc_channels-1 downto 0);
+
+  type t_adc_fn_dly_val_array is array (natural range <>) of std_logic_vector(4 downto 0);
+
+  -- ADC fine delay internal signal
+  signal adc_fn_clk_dly_int_out             : t_adc_fn_dly_val_array(c_num_adc_channels-1 downto 0);
+  signal adc_fn_data_dly_int_out            : t_adc_fn_dly_val_array(c_num_adc_channels-1 downto 0);
 
   -----------------------------
   -- Components declaration
@@ -166,7 +169,7 @@ architecture rtl of fmc516_adc_iface is
     -----------------------------
 
     -- ADC clocks. One clock per ADC channel
-    adc_clk_i                                   : in std_logic;
+    adc_clk_i                               : in std_logic;
 
     -----------------------------
     -- ADC Delay signals.
@@ -230,7 +233,7 @@ architecture rtl of fmc516_adc_iface is
     adc_data_dly_val_i                      : in std_logic_vector(4 downto 0);
     adc_data_dly_val_o                      : out std_logic_vector(4 downto 0);
 
-  -- idelay variable interface
+    -- idelay variable interface
     adc_data_dly_incdec_i                   : in std_logic;
 
     -- Pulse this to update the delay value or reset to its default (depending
@@ -298,10 +301,10 @@ begin
         -- ADC Delay signals.
         -----------------------------
         -- Pulse this to update the delay value
-        adc_clk_dly_pulse_i                 => adc_dly_i(i).adc_clk_dly_pulse,
-        adc_clk_dly_val_i                   => adc_dly_i(i).adc_clk_dly_val,
-        adc_clk_dly_val_o                   => adc_dly_o(i).adc_clk_dly_val,
-        adc_clk_dly_incdec_i                => adc_dly_i(i).adc_clk_dly_incdec,
+        adc_clk_dly_pulse_i                 => adc_fn_dly_i(i).adc_clk_dly_pulse,
+        adc_clk_dly_val_i                   => adc_fn_dly_i(i).adc_clk_dly_val,
+        adc_clk_dly_val_o                   => adc_fn_clk_dly_int_out(i),
+        adc_clk_dly_incdec_i                => adc_fn_dly_i(i).adc_clk_dly_incdec,
 
         -----------------------------
         -- ADC output signals.
@@ -379,26 +382,23 @@ begin
             -- ADC Data Delay signals.
             -----------------------------
             -- Pulse this to update the delay value
-            adc_data_dly_pulse_i                => adc_dly_i(i).adc_data_dly_pulse,
-            adc_data_dly_val_i                  => adc_dly_i(i).adc_data_dly_val,
-            adc_data_dly_val_o                  => adc_dly_o(i).adc_data_dly_val,
-            adc_data_dly_incdec_i               => adc_dly_i(i).adc_data_dly_incdec,
+            adc_data_dly_pulse_i                => adc_fn_dly_i(i).adc_data_dly_pulse,
+            adc_data_dly_val_i                  => adc_fn_dly_i(i).adc_data_dly_val,
+            --adc_data_dly_val_o                  => adc_fn_dly_o(i).adc_data_dly_val,
+            adc_data_dly_val_o                  => adc_fn_data_dly_int_out(i),
+            adc_data_dly_incdec_i               => adc_fn_dly_i(i).adc_data_dly_incdec,
 
             -- Falling edge delay control
-            adc_data_fe_d1_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d1_en,
-            adc_data_fe_d2_en_i                 => adc_dly_ctl_i(i).adc_data_fe_d2_en,
+            adc_data_fe_d1_en_i                 => adc_cs_dly_i(i).adc_data_fe_d1_en,
+            adc_data_fe_d2_en_i                 => adc_cs_dly_i(i).adc_data_fe_d2_en,
 
             -- Regular delay control
-            adc_data_rg_d1_en_i                 => adc_dly_ctl_i(i).adc_data_rg_d1_en,
-            adc_data_rg_d2_en_i                 => adc_dly_ctl_i(i).adc_data_rg_d2_en,
+            adc_data_rg_d1_en_i                 => adc_cs_dly_i(i).adc_data_rg_d1_en,
+            adc_data_rg_d2_en_i                 => adc_cs_dly_i(i).adc_data_rg_d2_en,
 
             -----------------------------
             -- ADC output signals.
             -----------------------------
-            --adc_data_o                          => adc_data_chain_out(i).adc_data,
-            --adc_data_valid_o                    => adc_data_chain_out(i).adc_data_valid,
-            --adc_clk_o                           => adc_data_chain_out(i).adc_clk,
-            --adc_clk2x_o                         => adc_data_chain_out(i).adc_clk2x,
             adc_data_o                          => adc_out_o(i).adc_data,
             adc_data_valid_o                    => adc_out_o(i).adc_data_valid,
             adc_clk_o                           => adc_out_o(i).adc_clk,
@@ -407,6 +407,11 @@ begin
             fifo_debug_full_o                   => fifo_debug_full_o(i),
             fifo_debug_empty_o                  => fifo_debug_empty_o(i)
           );
+
+          -- The clock delay information for each channel corresponds to the delay
+          -- in its correspondent clock chain, referenced by chain_intercon(i).
+          adc_fn_dly_o(i).adc_data_dly_val <= adc_fn_data_dly_int_out(i);
+          adc_fn_dly_o(i).adc_clk_dly_val <= adc_fn_clk_dly_int_out(chain_intercon(i));
 
     end generate;
   end generate;

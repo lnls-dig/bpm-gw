@@ -481,11 +481,11 @@ package custom_wishbone_pkg is
     wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
     wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
 
-    adc_dly_reg_debug_o                      : out t_adc_dly_reg_array(c_num_adc_channels-1 downto 0);
+    adc_dly_debug_o                          : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
 
-    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+    fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 
@@ -626,7 +626,7 @@ package custom_wishbone_pkg is
     wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
     wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
 
-    adc_dly_reg_debug_o                       : out t_adc_dly_reg_array(c_num_adc_channels-1 downto 0);
+    adc_dly_debug_o                           : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
 
     fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
     fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
