@@ -149,6 +149,7 @@ architecture Behavioral of DDRs_Control is
   signal wpipe_Empty        : std_logic;
   signal wpipe_Qout_latch   : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
   signal wpipe_qout_lo32b   : std_logic_vector(33-1 downto 0);
+  signal wpipe_qout_hi32b   : std_logic_vector(33-1 downto 0);
   signal wpipe_QW_Aligned   : std_logic;
   signal wpipe_read_valid   : std_logic;
   signal wpipe_wr_en        : std_logic;
@@ -219,6 +220,8 @@ architecture Behavioral of DDRs_Control is
   signal memc_rd_addr      : unsigned(31 downto 0) := (others => '0');
   signal memc_rd_cmd       : std_logic;
   signal memc_rd_data_r1   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal memc_rd_data_r2   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal memc_rd_data_r3   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
   signal memc_rd_data_conv : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
   signal memc_rd_shift_r   : std_logic_vector(31 downto 0);
   signal memc_wr_addr      : unsigned(31 downto 0) := (others => '0');
@@ -383,6 +386,7 @@ begin
           pRAM_AddrA_Inc   <= wpipe_Qout(2);
           wpipe_QW_Aligned <= not wpipe_Qout(69);
           wpipe_qout_lo32b <= (32 => '1', others => '0');
+          wpipe_qout_hi32b <= (32 => '1', others => '0');
           wpipe_wr_mask    <= (others => '1');
           wpipe_wr_data    <= wpipe_Qout(C_DBUS_WIDTH-1 downto 0);
           wpipe_rEn        <= not(wpipe_f2m_full);
@@ -412,20 +416,23 @@ begin
             if wpipe_QW_Aligned = '1' then
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
+              wpipe_rEn     <= '0';
               wpipe_wr_mask <= (wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71)
                                & wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70));
               wpipe_wr_data <= wpipe_Qout(C_DBUS_WIDTH-1 downto 0);
             elsif wpipe_Qout(70) = '1' then          -- mask(0)
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
+              wpipe_rEn     <= '0';
               wpipe_wr_mask <= (wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32)
                                & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71));
               wpipe_wr_data <= wpipe_qout_lo32b(32-1 downto 0) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
             elsif wpipe_Qout(71) = '1' then          -- mask(1)
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
-              wpipe_wr_mask <= X"0F";
-              wpipe_wr_data <= wpipe_Qout(C_DBUS_WIDTH-1-32 downto 0) & X"00000000";
+              wpipe_rEn     <= '0';
+              wpipe_wr_mask <= X"0" & wpipe_qout_hi32b(32) & wpipe_qout_hi32b(32) & wpipe_qout_hi32b(32) & wpipe_qout_hi32b(32);
+              wpipe_wr_data <= wpipe_Qout(C_DBUS_WIDTH-1-32 downto 0) & wpipe_qout_hi32b(32-1 downto 0);
             else
               DDR_wr_state     <= wrST_last_Dw;
               wpipe_wr_eof     <= '0';
@@ -458,6 +465,7 @@ begin
               wpipe_wr_mask    <= X"FF";
               wpipe_wr_data    <= wpipe_wr_data;
               wpipe_qout_lo32b <= wpipe_Qout(70) & wpipe_Qout(32-1 downto 0);
+              wpipe_qout_hi32b <= wpipe_Qout(71) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
             end if;
           end if;
 
@@ -477,12 +485,14 @@ begin
             if wpipe_QW_Aligned = '1' then
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
+              wpipe_rEn     <= '0';
               wpipe_wr_mask <= (wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71)
                                & wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70));
               wpipe_wr_data  <= wpipe_Qout(C_DBUS_WIDTH-1 downto 0);
             elsif wpipe_Qout(70) = '1' then              -- mask(0)
               DDR_wr_state  <= wrST_Idle;
               wpipe_wr_eof  <= '1';
+              wpipe_rEn     <= '0';
               wpipe_wr_mask <= (wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32)
                                & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71));
               wpipe_wr_data  <= wpipe_qout_lo32b(32-1 downto 0) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
@@ -802,6 +812,8 @@ begin
         end if;
         if rpiped_written_r = '0' and rpiped_afull = '0' then
           rpiped_rdconv_cnt <= rpiped_rdconv_cnt + 1;
+          memc_rd_data_r2   <= memc_rd_data_r1;
+          memc_rd_data_r3   <= memc_rd_data_r2;
           --memc_rd_data_r1   <= memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0) & (others => '0');
           memc_rd_data_r1(memc_rd_data_r1'left downto C_DBUS_WIDTH) <=
             memc_rd_data_r1(memc_rd_data_r1'left - C_DBUS_WIDTH downto 0);
@@ -811,7 +823,7 @@ begin
         if rpiped_wr_skew = '1' then
           rpiped_wen <= not(rpiped_written_r or rpiped_written_r2 or rpiped_afull) ;
           rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" & memc_rd_shift_r &
-                        memc_rd_data_r1(memc_rd_data_r1'left downto memc_rd_data_r1'left - 32+1);
+                        memc_rd_data_r3(memc_rd_data_r3'left downto memc_rd_data_r3'left - 32+1);
         else
           rpiped_wen <= not(rpiped_written or rpiped_written_r or rpiped_afull);
           rpiped_Din <= "0000" & '0' & (rpiped_wr_EOF and rpiped_written) & "00" &
