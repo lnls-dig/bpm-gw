@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    rx_MRd_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    rx_MRd_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.20 - Literal assignments removed.   30.07.2007
 --
@@ -20,8 +20,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ architecture Behavioral of rx_MRd_Transact is
   signal RxMRdTrn_NextState : RxMRdTrnStates;
   signal RxMRdTrn_State     : RxMRdTrnStates;
 
-  -- trn_rx stubs            
+  -- trn_rx stubs
   signal trn_rsof_n_i         : std_logic;
   signal in_packet_reg        : std_logic;
   signal m_axis_rx_tlast_i    : std_logic;
@@ -210,7 +210,7 @@ begin
 
 -- ------------------------------------------------
 -- Synchronous Delay: m_axis_rx_tdata + m_axis_rx_tbar_hit
--- 
+--
   Synch_Delay_m_axis_rx_tdata :
   process (user_clk)
   begin
@@ -326,7 +326,7 @@ begin
 
 -- ------------------------------------------------
 -- Synchronous calculation: Encoded_BAR_Index
--- 
+--
   Syn_Calc_Encoded_BAR_Index :
   process (user_clk, local_Reset)
   begin
@@ -358,9 +358,9 @@ begin
 
 
 -- ----------------------------------------------------------------------------------
--- 
+--
 -- Synchronous output: MRd FIFO write port
--- 
+--
 -- PIO Channel Buffer (128-bit) definition:
 --     Note: Type not shows in this buffer
 --
@@ -383,7 +383,7 @@ begin
 --         12 : EP
 --   11 ~  10 : Attribute
 --    9 ~   0 : Length
--- 
+--
   RxFSM_Output_pioCplD_WR :
   process (user_clk, local_Reset)
   begin
@@ -453,6 +453,9 @@ begin
                 <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT downto 0);
 --                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
 --                               <= CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
+            elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
+              pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
+                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT downto 0);
             else
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
@@ -479,6 +482,9 @@ begin
                 <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT downto 0);
 --                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
 --                               <= CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
+            elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
+              pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
+                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT downto 0);
             else
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
@@ -497,7 +503,7 @@ begin
           end if;
 
 --              if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR)='1'
---                 or m_axis_rx_tbar_hit_r1(CINT_BRAM_SPACE_BAR)='1' 
+--                 or m_axis_rx_tbar_hit_r1(CINT_BRAM_SPACE_BAR)='1'
 --                 then
           if m_axis_rx_tbar_hit_r1(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0) then
             pioCplD_we <= not Tlp_straddles_4KB;  --'1';
@@ -517,7 +523,7 @@ begin
 -- -----------------------------------------------------------------------
 -- Capture: MRd_Has_4DW_Header
 --        : Tlp_is_Zero_Length
--- 
+--
   Syn_Capture_MRd_Has_4DW_Header :
   process (user_clk, user_reset)
   begin
@@ -557,7 +563,7 @@ begin
 -- -----------------------------------------------------------------------
 -- syn
 --        : pio_reading_status
--- 
+--
   Syn_PIO_Reading_EB_Status :
   process (user_clk, user_reset)
   begin
@@ -617,7 +623,7 @@ begin
 
 -- ---------------------------------------------
 --  Request for arbitration
--- 
+--
   Synch_Req_Proc :
   process (local_Reset, user_clk)
   begin
@@ -658,7 +664,7 @@ begin
           pioCplD_Qout_i   <= pioCplD_Qout_i;
 --             if pioCplD_Qout_wire(C_CHBUF_FMT_BIT_TOP) = '1'  -- Has Payload
 --               and pioCplD_Qout_wire(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                   =CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) 
+--                   =CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER)
 --               then
 --               pioCplD_RE_i  <= '0';
 --               pioCplD_Req_i <= '0';
@@ -730,7 +736,7 @@ begin
 
 -- ---------------------------------------------
 --  Delay of Empty and prog_Full
--- 
+--
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin

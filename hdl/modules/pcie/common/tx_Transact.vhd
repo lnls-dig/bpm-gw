@@ -182,7 +182,7 @@ architecture Behavioral of tx_Transact is
   signal Trn_Qout_reg  : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
   --  Addresses from different channel buffer
-  signal mAddr_pioCplD     : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
+  signal wbaddr_piocpld    : std_logic_vector(C_WB_AWIDTH-1 downto 0);
   signal mAddr_usTlp       : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
   signal DDRAddr_usTlp     : std_logic_vector(C_DDR_IAWIDTH-1 downto 0);
   signal WBAddr_usTlp      : std_logic_vector(C_WB_AWIDTH-1 downto 0);
@@ -667,7 +667,7 @@ begin
       usTlp_Req_2DW_Leng   <= '0';
 
       Regs_Addr_pioCplD <= (others => '1');
-      mAddr_pioCplD     <= (others => '1');
+      wbaddr_piocpld    <= (others => '1');
       mAddr_usTlp       <= (others => '1');
       AInc_usTlp        <= '1';
       BAR_pioCplD       <= (others => '1');
@@ -732,7 +732,7 @@ begin
 
         -- Misc
         Regs_Addr_pioCplD <= pioCplD_Qout(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
-        mAddr_pioCplD     <= pioCplD_Qout(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);  -- !! C_CHBUF_MA_BIT_BOT);
+        wbaddr_piocpld    <= pioCplD_Qout(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT);
         DDRAddr_pioCplD   <= pioCplD_Qout(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT);
         BAR_pioCplD       <= pioCplD_Qout(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT);
         pioCplD_is_0Leng  <= pioCplD_Qout(C_CHBUF_0LENG_BIT);
@@ -741,7 +741,7 @@ begin
         pioCplD_Req_2DW_Leng <= '0';
         pioCplD_Qout_to_TLP  <= (others => '0');
         Regs_Addr_pioCplD    <= (others => '1');
-        mAddr_pioCplD        <= (others => '1');
+        wbaddr_piocpld       <= (others => '1');
         DDRAddr_pioCplD      <= (others => '1');
         BAR_pioCplD          <= (others => '1');
         pioCplD_is_0Leng     <= '0';
@@ -892,7 +892,7 @@ begin
             is_CplD         <= '1';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             BAR_value       <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+2) & mAddr_pioCplD);
+            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & wbaddr_piocpld);
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
 --              elsif BAR_usTlp=CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
