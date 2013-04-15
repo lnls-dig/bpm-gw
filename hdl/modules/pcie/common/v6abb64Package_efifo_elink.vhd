@@ -71,7 +71,7 @@ package abb64Package is
 
   ---       Address width for endpoint device/peripheral
   --
-  constant C_EP_AWIDTH : integer range 10 to 30 := 16;
+  constant C_EP_AWIDTH : integer range 10 to 30 := 10;
 
   ---       Buffer width from the PCIe Core
   constant C_TBUF_AWIDTH : integer := 6;  -- 4;  -- 5;
@@ -371,7 +371,7 @@ package abb64Package is
   constant C_CHBUF_0LENG_BIT : integer := C_CHBUF_AINC_BIT+1;  --96;
 
   -- Bit range of peripheral address in Channel Buffer word
-  constant C_CHBUF_PA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_EP_AWIDTH;  --112;
+  constant C_CHBUF_PA_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_EP_AWIDTH;  --118;
   constant C_CHBUF_PA_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
 
   -- Bit range of BRAM address in Channel Buffer word
@@ -425,8 +425,8 @@ package abb64Package is
   constant C_LOWEST_PRIORITY : std_logic_vector (C_ARBITRATE_WIDTH-1 downto 0) := (0 => '1', others => '0');
 
   ------------------------------------------------------------------------
-  constant C_DECODE_BIT_TOP : integer := C_EP_AWIDTH-1;       -- 15;
-  constant C_DECODE_BIT_BOT : integer := C_DECODE_BIT_TOP-1;  -- 14;
+  constant C_DECODE_BIT_TOP : integer := C_EP_AWIDTH-1;       -- 9;
+  constant C_DECODE_BIT_BOT : integer := C_DECODE_BIT_TOP-1;  -- 8;
 
 
   ------------------------------------------------------------------------
