@@ -103,6 +103,8 @@ architecture rtl of fmc516_adc_clk is
   signal adc_clk2x_mmcm_out                 : std_logic;
   signal mmcm_adc_locked_int                : std_logic;
 
+  -- Clock delay signals
+  signal adc_clk_dly_val_int                : std_logic_vector(4 downto 0);
 
 begin
   -----------------------------
@@ -130,33 +132,60 @@ begin
   --
   -- HIGH_PERFORMANCE_MODE = TRUE reduces the output
   -- jitter in exchange of increase power dissipation
-  cmp_ibufds_clk_iodelay : iodelaye1
-  generic map(
-    IDELAY_TYPE                             => g_delay_type,
-    IDELAY_VALUE                            => g_default_adc_clk_delay,
-    SIGNAL_PATTERN                          => "CLOCK",
-    HIGH_PERFORMANCE_MODE                   => TRUE,
-    DELAY_SRC                               => "I"
-  )
-  port map(
-    --idatain                                 => adc_clk_ibufgds,
-    idatain                                 => adc_clk_i,
-    dataout                                 => adc_clk_ibufgds_dly,
-    c                                       => sys_clk_i,
-    --c                                       => sys_clk_200Mhz_i,
-    --c                                       => adc_clk_bufg,
-    --ce                                      => adc_clk_dly_pulse_i,
-    ce                                      => '0',
-    inc                                     => adc_clk_dly_incdec_i,
-    datain                                  => '0',
-    odatain                                 => '0',
-    clkin                                   => '0',
-    rst                                     => adc_clk_dly_pulse_i,
-    cntvaluein                              => adc_clk_dly_val_i,
-    cntvalueout                             => adc_clk_dly_val_o,
-    cinvctrl                                => '0',
-    t                                       => '1'
-  );
+  gen_adc_clk_var_loadable_iodelay : if g_delay_type = "VAR_LOADABLE" generate
+    cmp_ibufds_clk_iodelay : iodelaye1
+    generic map(
+      IDELAY_TYPE                             => g_delay_type,
+      IDELAY_VALUE                            => g_default_adc_clk_delay,
+      SIGNAL_PATTERN                          => "CLOCK",
+      HIGH_PERFORMANCE_MODE                   => TRUE,
+      DELAY_SRC                               => "I"
+    )
+    port map(
+      idatain                                 => adc_clk_i,
+      dataout                                 => adc_clk_ibufgds_dly,
+      c                                       => sys_clk_i,
+      ce                                      => '0',
+      --inc                                     => adc_clk_dly_incdec_i,
+      inc                                     => '0',
+      datain                                  => '0',
+      odatain                                 => '0',
+      clkin                                   => '0',
+      rst                                     => adc_clk_dly_pulse_i,
+      cntvaluein                              => adc_clk_dly_val_i,
+      cntvalueout                             => adc_clk_dly_val_int,
+      cinvctrl                                => '0',
+      t                                       => '1'
+    );
+  end generate;
+
+  gen_adc_clk_variable_iodelay : if g_delay_type = "VARIABLE" generate
+    cmp_ibufds_clk_iodelay : iodelaye1
+    generic map(
+      IDELAY_TYPE                             => g_delay_type,
+      IDELAY_VALUE                            => g_default_adc_clk_delay,
+      SIGNAL_PATTERN                          => "CLOCK",
+      HIGH_PERFORMANCE_MODE                   => TRUE,
+      DELAY_SRC                               => "I"
+    )
+    port map(
+      idatain                                 => adc_clk_i,
+      dataout                                 => adc_clk_ibufgds_dly,
+      c                                       => sys_clk_i,
+      ce                                      => adc_clk_dly_pulse_i,
+      inc                                     => adc_clk_dly_incdec_i,
+      datain                                  => '0',
+      odatain                                 => '0',
+      clkin                                   => '0',
+      rst                                     => '0',
+      cntvaluein                              => adc_clk_dly_val_i,
+      cntvalueout                             => adc_clk_dly_val_int,
+      cinvctrl                                => '0',
+      t                                       => '1'
+    );
+  end generate;
+
+  adc_clk_dly_val_o <= adc_clk_dly_val_int;
 
   -- Generate BUFMR and connect directly to BUFIO/BUFR
   --

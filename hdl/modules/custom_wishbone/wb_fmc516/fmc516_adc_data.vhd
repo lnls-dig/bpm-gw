@@ -196,10 +196,7 @@ begin
         --idatain                                 => adc_data_ddr_ibufds(i),
         idatain                               => adc_data_i(i),
         dataout                               => adc_data_ddr_dly(i),
-        --c                                     => sys_clk_200Mhz_i,
-        --c                                     => sys_clk_i,
-        c                                     => adc_clk_bufg_i,
-        --ce                                    => adc_data_dly_pulse_i,
+        c                                     => sys_clk_i,
         ce                                    => '0',
         inc                                   => '0',
         datain                                => '0',
@@ -228,9 +225,7 @@ begin
         --idatain                                 => adc_data_ddr_ibufds(i),
         idatain                               => adc_data_i(i),
         dataout                               => adc_data_ddr_dly(i),
-        --c                                     => sys_clk_200Mhz_i,
         c                                     => sys_clk_i,
-        --c                                     => adc_clk_bufg_i,
         ce                                    => adc_data_dly_pulse_i,
         inc                                   => adc_data_dly_incdec_i,
         datain                                => '0',
@@ -339,100 +334,26 @@ begin
   -- On the other hand, BUFG and BUFR/BUFIO are not guaranteed to be phase-matched,
   -- as they drive independently clock nets. Hence, a FIFO is needed to employ
   -- a clock domain crossing.
-  gen_generic_bufr_bufg_fifo : if g_sim = 0 generate
-    -- Xilinx coregen async 250 MHz fifo, 512 depth, 16-bit width,
-    -- built-in fifo primitive, stardard fifo (no fall through)
-    --cmp_adc_data_async_fifo : cdc_fifo
-    --port map (
-    --  rst                                   => sys_rst,
-    --
-    --  -- write port
-    --  wr_clk                                => adc_clk_bufr_i,
-    --  din                                   => adc_data_ff_d2,
-    --  wr_en                                 => adc_fifo_wr,
-    --  full                                  => adc_fifo_full,
-    --
-    --  -- read port
-    --  rd_clk                                => adc_clk_bufg_i,
-    --  dout                                  => adc_data_bufg_sync,
-    --  rd_en                                 => adc_fifo_rd,
-    --  valid                                 => adc_fifo_valid,
-    --  empty                                 => adc_fifo_empty
-    --);
+  cmp_adc_data_async_fifo : generic_async_fifo
+  generic map(
+    g_data_width                          => c_num_adc_bits,
+    g_size                                => async_fifo_size
+  )
+  port map(
+    rst_n_i                               => sys_rst_n_i,
 
-    -- Xilinx coregen async 250 MHz fifo, 16 depth, 16-bit width,
-    -- distributed ram primitive, stardard fifo (no fall through),
-    -- cycle accurate simulation model
-    --cmp_adc_data_async_fifo : adc_data_cdc_fifo
-    --port map (
-    --  rst                                   => sys_rst,
-    --
-    --  -- write port
-    --  wr_clk                                => adc_clk_bufr_i,
-    --  din                                   => adc_data_ff_d2,
-    --  wr_en                                 => adc_fifo_wr,
-    --  full                                  => adc_fifo_full,
-    --
-    --  -- read port
-    --  rd_clk                                => adc_clk_bufg_i,
-    --  dout                                  => adc_data_bufg_sync,
-    --  rd_en                                 => adc_fifo_rd,
-    --  valid                                 => adc_fifo_valid,
-    --  empty                                 => adc_fifo_empty
-    --);
-    --
-    --adc_data_valid_out                      <= adc_fifo_valid;
+    -- write port
+    clk_wr_i                              => adc_clk_bufr_i,
+    d_i                                   => adc_data_ff_d2,
+    we_i                                  => adc_fifo_wr,
+    wr_full_o                             => adc_fifo_full,
 
-    cmp_adc_data_async_fifo : generic_async_fifo
-    generic map(
-      g_data_width                          => c_num_adc_bits,
-      g_size                                => async_fifo_size
-    )
-    port map(
-      rst_n_i                               => sys_rst_n_i,
-
-      -- write port
-      clk_wr_i                              => adc_clk_bufr_i,
-      d_i                                   => adc_data_ff_d2,
-      we_i                                  => adc_fifo_wr,
-      wr_full_o                             => adc_fifo_full,
-
-      -- read port
-      clk_rd_i                              => adc_clk_bufg_i,
-      q_o                                   => adc_data_bufg_sync,
-      rd_i                                  => adc_fifo_rd,
-      rd_empty_o                            => adc_fifo_empty
-    );
-
-  end generate;
-
-  -- Instanciate a inferred async fifo as the xilinx primitives
-  -- are not cycle accurate in behavioural simulation for ISim
-  gen_inferred_bufr_bufg_fifo : if g_sim = 1 generate
-    cmp_inferred_async_fifo : inferred_async_fifo
-    generic map (
-      g_data_width                            => c_num_adc_bits,
-      g_size                                  => async_fifo_size,
-      g_almost_empty_threshold                => 3,
-      g_almost_full_threshold                 => async_fifo_size-3
-    )
-    port map(
-      rst_n_i                                 => sys_rst_n_i,
-
-      -- write port
-      clk_wr_i                                => adc_clk_bufr_i,
-      d_i                                     => adc_data_ff_d2,
-      we_i                                    => adc_fifo_wr,
-      wr_full_o                               => adc_fifo_full,
-
-      -- read port
-      clk_rd_i                                => adc_clk_bufg_i,
-      q_o                                     => adc_data_bufg_sync,
-      rd_i                                    => adc_fifo_rd,
-      rd_empty_o                              => adc_fifo_empty
-    );
-
-  end generate;
+    -- read port
+    clk_rd_i                              => adc_clk_bufg_i,
+    q_o                                   => adc_data_bufg_sync,
+    rd_i                                  => adc_fifo_rd,
+    rd_empty_o                            => adc_fifo_empty
+  );
 
   --Generate valid signal for adc_data_o.
   --Just delay the valid adc_fifo_rd signal as the fifo takes
@@ -441,10 +362,10 @@ begin
   p_gen_valid : process (adc_clk_bufg_i)
   begin
     if rising_edge (adc_clk_bufg_i) then
-      if sys_rst_n_i = '0' then
+      adc_data_valid_out <= adc_fifo_rd;
+
+      if adc_fifo_empty = '1' then
         adc_data_valid_out <= '0';
-      else
-        adc_data_valid_out <= adc_fifo_rd;
       end if;
     end if;
   end process;

@@ -49,7 +49,7 @@ package fmc516_pkg is
 
   type t_adc_in_array is array (natural range <>) of t_adc_in;
 
-  type t_adc_dly is record
+  type t_adc_fn_dly is record
     adc_clk_dly_pulse : std_logic;
     adc_clk_dly_val : std_logic_vector(4 downto 0);
     adc_clk_dly_incdec : std_logic;
@@ -58,41 +58,33 @@ package fmc516_pkg is
     adc_data_dly_incdec : std_logic;
   end record;
 
-  type t_adc_dly_array is array (natural range <>) of t_adc_dly;
+  type t_adc_fn_dly_array is array (natural range <>) of t_adc_fn_dly;
 
   -- Internal structure for generate statements
 
   -- ADC Data/Clock delay registers for generate statements
-  type t_adc_dly_reg is record
-    -- registers to signals coming from wishbone register interface
-    -- ext_load mode
-    clk_dly_reg : std_logic_vector(4 downto 0);
-    data_dly_reg : std_logic_vector(4 downto 0);
-    clk_dly_incdec : std_logic;
-    data_dly_incdec : std_logic;
-
-    -- signals from wishbone register interface
-    clk_dly : std_logic_vector(4 downto 0);
-    clk_dly_inc : std_logic;
-    clk_dly_dec : std_logic;
-    data_dly : std_logic_vector(4 downto 0);
-    data_dly_inc : std_logic;
-    data_dly_dec : std_logic;
-    clk_load : std_logic;
-    data_load : std_logic;
+  type t_adc_fn_dly_int is record
+    adc_clk_dly : std_logic_vector(4 downto 0);
+    adc_clk_dly_inc : std_logic;
+    adc_clk_dly_dec : std_logic;
+    adc_clk_load : std_logic;
+    adc_data_dly : std_logic_vector(4 downto 0);
+    adc_data_dly_inc : std_logic;
+    adc_data_dly_dec : std_logic;
+    adc_data_load : std_logic;
   end record;
 
-  type t_adc_dly_reg_array  is array (natural range<>) of t_adc_dly_reg;
+  type t_adc_fn_dly_int_array  is array (natural range<>) of t_adc_fn_dly_int;
 
-  -- ADC falling edge and regular delay control (per channel)
-  type t_adc_dly_ctl is record
+  -- ADC coarse delay control (falling edge or whole chain)
+  type t_adc_cs_dly is record
     adc_data_rg_d1_en : std_logic;
     adc_data_rg_d2_en : std_logic;
     adc_data_fe_d1_en : std_logic;
     adc_data_fe_d2_en : std_logic;
   end record;
 
-  type t_adc_dly_ctl_array is array (natural range<>) of t_adc_dly_ctl;
+  type t_adc_cs_dly_array is array (natural range<>) of t_adc_cs_dly;
 
   type t_adc_out is record
     adc_clk : std_logic;

@@ -340,8 +340,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 0 control register";
-    prefix = "ch0_ctl";
+    name = "Channel 0 fine delay register";
+    prefix = "ch0_fn_dly";
 
     -- Registers for VAR_LOADABLE mode iodelay
     field {
@@ -471,8 +471,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 0 delay control register";
-    prefix = "ch0_dly_ctl";
+    name = "Channel 0 coarse delay register";
+    prefix = "ch0_cs_dly";
 
     field {
       name = "Falling edge data delay";
@@ -551,8 +551,8 @@ peripheral {
 
 
   reg {
-    name = "Channel 1 control register";
-    prefix = "ch1_ctl";
+    name = "Channel 1 fine delay register";
+    prefix = "ch1_fn_dly";
 
     -- Registers for VAR_LOADABLE mode iodelay
     field {
@@ -682,8 +682,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 1 delay control register";
-    prefix = "ch1_dly_ctl";
+    name = "Channel 1 coarse delay register";
+    prefix = "ch1_cs_dly";
 
     field {
       name = "Falling edge data delay";
@@ -761,8 +761,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 2 control register";
-    prefix = "ch2_ctl";
+    name = "Channel 2 fine delay register";
+    prefix = "ch2_fn_dly";
 
     -- Registers for VAR_LOADABLE mode iodelay
     field {
@@ -892,8 +892,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 2 delay control register";
-    prefix = "ch2_dly_ctl";
+    name = "Channel 2 coarse delay register";
+    prefix = "ch2_cs_dly";
 
     field {
       name = "Falling edge data delay";
@@ -971,8 +971,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 3 control register";
-    prefix = "ch3_ctl";
+    name = "Channel 3 fine delay register";
+    prefix = "ch3_fn_dly";
 
     -- Registers for VAR_LOADABLE mode iodelay
     field {
@@ -1102,8 +1102,8 @@ peripheral {
   };
 
   reg {
-    name = "Channel 3 delay control register";
-    prefix = "ch3_dly_ctl";
+    name = "Channel 3 coarse delay register";
+    prefix = "ch3_cs_dly";
 
     field {
       name = "Falling edge data delay";

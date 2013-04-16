@@ -40,17 +40,17 @@
 <span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Global ADC Status register</a></span><br/>
 <span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Global ADC Control register</a></span><br/>
 <span style="margin-left: 20px; ">3.6. <A href="#sect_3_6">Channel 0 status register</a></span><br/>
-<span style="margin-left: 20px; ">3.7. <A href="#sect_3_7">Channel 0 control register</a></span><br/>
-<span style="margin-left: 20px; ">3.8. <A href="#sect_3_8">Channel 0 delay control register</a></span><br/>
+<span style="margin-left: 20px; ">3.7. <A href="#sect_3_7">Channel 0 fine delay register</a></span><br/>
+<span style="margin-left: 20px; ">3.8. <A href="#sect_3_8">Channel 0 coarse delay register</a></span><br/>
 <span style="margin-left: 20px; ">3.9. <A href="#sect_3_9">Channel 1 status register</a></span><br/>
-<span style="margin-left: 20px; ">3.10. <A href="#sect_3_10">Channel 1 control register</a></span><br/>
-<span style="margin-left: 20px; ">3.11. <A href="#sect_3_11">Channel 1 delay control register</a></span><br/>
+<span style="margin-left: 20px; ">3.10. <A href="#sect_3_10">Channel 1 fine delay register</a></span><br/>
+<span style="margin-left: 20px; ">3.11. <A href="#sect_3_11">Channel 1 coarse delay register</a></span><br/>
 <span style="margin-left: 20px; ">3.12. <A href="#sect_3_12">Channel 2 status register</a></span><br/>
-<span style="margin-left: 20px; ">3.13. <A href="#sect_3_13">Channel 2 control register</a></span><br/>
-<span style="margin-left: 20px; ">3.14. <A href="#sect_3_14">Channel 2 delay control register</a></span><br/>
+<span style="margin-left: 20px; ">3.13. <A href="#sect_3_13">Channel 2 fine delay register</a></span><br/>
+<span style="margin-left: 20px; ">3.14. <A href="#sect_3_14">Channel 2 coarse delay register</a></span><br/>
 <span style="margin-left: 20px; ">3.15. <A href="#sect_3_15">Channel 3 status register</a></span><br/>
-<span style="margin-left: 20px; ">3.16. <A href="#sect_3_16">Channel 3 control register</a></span><br/>
-<span style="margin-left: 20px; ">3.17. <A href="#sect_3_17">Channel 3 delay control register</a></span><br/>
+<span style="margin-left: 20px; ">3.16. <A href="#sect_3_16">Channel 3 fine delay register</a></span><br/>
+<span style="margin-left: 20px; ">3.17. <A href="#sect_3_17">Channel 3 coarse delay register</a></span><br/>
 <h3><a name="sect_1_0">1. Memory map summary</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -180,13 +180,13 @@ CH0_STA
 REG
 </td>
 <td >
-<A href="#CH0_CTL">Channel 0 control register</a>
+<A href="#CH0_FN_DLY">Channel 0 fine delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch0_ctl
+fmc516_ch0_fn_dly
 </td>
 <td  class="td_code">
-CH0_CTL
+CH0_FN_DLY
 </td>
 </tr>
 <tr class="tr_even">
@@ -197,13 +197,13 @@ CH0_CTL
 REG
 </td>
 <td >
-<A href="#CH0_DLY_CTL">Channel 0 delay control register</a>
+<A href="#CH0_CS_DLY">Channel 0 coarse delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch0_dly_ctl
+fmc516_ch0_cs_dly
 </td>
 <td  class="td_code">
-CH0_DLY_CTL
+CH0_CS_DLY
 </td>
 </tr>
 <tr class="tr_odd">
@@ -231,13 +231,13 @@ CH1_STA
 REG
 </td>
 <td >
-<A href="#CH1_CTL">Channel 1 control register</a>
+<A href="#CH1_FN_DLY">Channel 1 fine delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch1_ctl
+fmc516_ch1_fn_dly
 </td>
 <td  class="td_code">
-CH1_CTL
+CH1_FN_DLY
 </td>
 </tr>
 <tr class="tr_odd">
@@ -248,13 +248,13 @@ CH1_CTL
 REG
 </td>
 <td >
-<A href="#CH1_DLY_CTL">Channel 1 delay control register</a>
+<A href="#CH1_CS_DLY">Channel 1 coarse delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch1_dly_ctl
+fmc516_ch1_cs_dly
 </td>
 <td  class="td_code">
-CH1_DLY_CTL
+CH1_CS_DLY
 </td>
 </tr>
 <tr class="tr_even">
@@ -282,13 +282,13 @@ CH2_STA
 REG
 </td>
 <td >
-<A href="#CH2_CTL">Channel 2 control register</a>
+<A href="#CH2_FN_DLY">Channel 2 fine delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch2_ctl
+fmc516_ch2_fn_dly
 </td>
 <td  class="td_code">
-CH2_CTL
+CH2_FN_DLY
 </td>
 </tr>
 <tr class="tr_even">
@@ -299,13 +299,13 @@ CH2_CTL
 REG
 </td>
 <td >
-<A href="#CH2_DLY_CTL">Channel 2 delay control register</a>
+<A href="#CH2_CS_DLY">Channel 2 coarse delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch2_dly_ctl
+fmc516_ch2_cs_dly
 </td>
 <td  class="td_code">
-CH2_DLY_CTL
+CH2_CS_DLY
 </td>
 </tr>
 <tr class="tr_odd">
@@ -333,13 +333,13 @@ CH3_STA
 REG
 </td>
 <td >
-<A href="#CH3_CTL">Channel 3 control register</a>
+<A href="#CH3_FN_DLY">Channel 3 fine delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch3_ctl
+fmc516_ch3_fn_dly
 </td>
 <td  class="td_code">
-CH3_CTL
+CH3_FN_DLY
 </td>
 </tr>
 <tr class="tr_odd">
@@ -350,13 +350,13 @@ CH3_CTL
 REG
 </td>
 <td >
-<A href="#CH3_DLY_CTL">Channel 3 delay control register</a>
+<A href="#CH3_CS_DLY">Channel 3 coarse delay register</a>
 </td>
 <td  class="td_code">
-fmc516_ch3_dly_ctl
+fmc516_ch3_cs_dly
 </td>
 <td  class="td_code">
-CH3_DLY_CTL
+CH3_CS_DLY
 </td>
 </tr>
 </table>
@@ -1020,7 +1020,7 @@ fmc516_ch0_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 0 control register:</b>
+<b>Channel 0 fine delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -1037,75 +1037,7 @@ fmc516_ch0_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_clk_chain_dly_o[4:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_clk_chain_dly_i[4:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_clk_chain_dly_load_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_reserved_clk_chain_dly_i[2:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_data_chain_dly_o[4:0]
+fmc516_ch0_fn_dly_clk_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1122,7 +1054,7 @@ fmc516_ch0_ctl_data_chain_dly_o[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_data_chain_dly_i[4:0]
+fmc516_ch0_fn_dly_clk_chain_dly_i[4:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1139,7 +1071,7 @@ fmc516_ch0_ctl_data_chain_dly_i[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_data_chain_dly_load_o
+fmc516_ch0_fn_dly_clk_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1156,7 +1088,7 @@ fmc516_ch0_ctl_data_chain_dly_load_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_reserved_data_chain_dly_i[2:0]
+fmc516_ch0_fn_dly_reserved_clk_chain_dly_i[2:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1173,41 +1105,7 @@ fmc516_ch0_ctl_reserved_data_chain_dly_i[2:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_inc_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_dec_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_ctl_reserved_clk_incdec_dly_o[5:0]
+fmc516_ch0_fn_dly_data_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1224,7 +1122,24 @@ fmc516_ch0_ctl_reserved_clk_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_inc_data_chain_dly_o
+fmc516_ch0_fn_dly_data_chain_dly_i[4:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_data_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1241,7 +1156,24 @@ fmc516_ch0_ctl_inc_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_dec_data_chain_dly_o
+fmc516_ch0_fn_dly_reserved_data_chain_dly_i[2:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_inc_clk_chain_dly_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1258,7 +1190,75 @@ fmc516_ch0_ctl_dec_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_ctl_reserved_data_incdec_dly_o[5:0]
+fmc516_ch0_fn_dly_dec_clk_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_reserved_clk_incdec_dly_o[5:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_inc_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_dec_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_fn_dly_reserved_data_incdec_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1292,7 +1292,7 @@ fmc516_ch0_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 0 delay control register:</b>
+<b>Channel 0 coarse delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -1309,24 +1309,7 @@ fmc516_ch0_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_dly_ctl_fe_dly_o[1:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch0_dly_ctl_reserved_fe_dly_o[5:0]
+fmc516_ch0_cs_dly_fe_dly_o[1:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1343,7 +1326,7 @@ fmc516_ch0_dly_ctl_reserved_fe_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_dly_ctl_rg_dly_o[1:0]
+fmc516_ch0_cs_dly_reserved_fe_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1360,7 +1343,24 @@ fmc516_ch0_dly_ctl_rg_dly_o[1:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch0_dly_ctl_reserved_rg_dly_o[21:0]
+fmc516_ch0_cs_dly_rg_dly_o[1:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch0_cs_dly_reserved_rg_dly_o[21:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1462,7 +1462,7 @@ fmc516_ch1_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 1 control register:</b>
+<b>Channel 1 fine delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -1479,75 +1479,7 @@ fmc516_ch1_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_clk_chain_dly_o[4:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_clk_chain_dly_i[4:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_clk_chain_dly_load_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_reserved_clk_chain_dly_i[2:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_data_chain_dly_o[4:0]
+fmc516_ch1_fn_dly_clk_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1564,7 +1496,7 @@ fmc516_ch1_ctl_data_chain_dly_o[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_data_chain_dly_i[4:0]
+fmc516_ch1_fn_dly_clk_chain_dly_i[4:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1581,7 +1513,7 @@ fmc516_ch1_ctl_data_chain_dly_i[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_data_chain_dly_load_o
+fmc516_ch1_fn_dly_clk_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1598,7 +1530,7 @@ fmc516_ch1_ctl_data_chain_dly_load_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_reserved_data_chain_dly_i[2:0]
+fmc516_ch1_fn_dly_reserved_clk_chain_dly_i[2:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1615,41 +1547,7 @@ fmc516_ch1_ctl_reserved_data_chain_dly_i[2:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_inc_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_dec_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_ctl_reserved_clk_incdec_dly_o[5:0]
+fmc516_ch1_fn_dly_data_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1666,7 +1564,24 @@ fmc516_ch1_ctl_reserved_clk_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_inc_data_chain_dly_o
+fmc516_ch1_fn_dly_data_chain_dly_i[4:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_data_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1683,7 +1598,24 @@ fmc516_ch1_ctl_inc_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_dec_data_chain_dly_o
+fmc516_ch1_fn_dly_reserved_data_chain_dly_i[2:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_inc_clk_chain_dly_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1700,7 +1632,75 @@ fmc516_ch1_ctl_dec_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_ctl_reserved_data_incdec_dly_o[5:0]
+fmc516_ch1_fn_dly_dec_clk_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_reserved_clk_incdec_dly_o[5:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_inc_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_dec_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_fn_dly_reserved_data_incdec_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1734,7 +1734,7 @@ fmc516_ch1_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 1 delay control register:</b>
+<b>Channel 1 coarse delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -1751,24 +1751,7 @@ fmc516_ch1_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_dly_ctl_fe_dly_o[1:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch1_dly_ctl_reserved_fe_dly_o[5:0]
+fmc516_ch1_cs_dly_fe_dly_o[1:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1785,7 +1768,7 @@ fmc516_ch1_dly_ctl_reserved_fe_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_dly_ctl_rg_dly_o[1:0]
+fmc516_ch1_cs_dly_reserved_fe_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1802,7 +1785,24 @@ fmc516_ch1_dly_ctl_rg_dly_o[1:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch1_dly_ctl_reserved_rg_dly_o[21:0]
+fmc516_ch1_cs_dly_rg_dly_o[1:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch1_cs_dly_reserved_rg_dly_o[21:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1904,7 +1904,7 @@ fmc516_ch2_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 2 control register:</b>
+<b>Channel 2 fine delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -1921,75 +1921,7 @@ fmc516_ch2_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_clk_chain_dly_o[4:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_clk_chain_dly_i[4:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_clk_chain_dly_load_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_reserved_clk_chain_dly_i[2:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_data_chain_dly_o[4:0]
+fmc516_ch2_fn_dly_clk_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2006,7 +1938,7 @@ fmc516_ch2_ctl_data_chain_dly_o[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_data_chain_dly_i[4:0]
+fmc516_ch2_fn_dly_clk_chain_dly_i[4:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2023,7 +1955,7 @@ fmc516_ch2_ctl_data_chain_dly_i[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_data_chain_dly_load_o
+fmc516_ch2_fn_dly_clk_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2040,7 +1972,7 @@ fmc516_ch2_ctl_data_chain_dly_load_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_reserved_data_chain_dly_i[2:0]
+fmc516_ch2_fn_dly_reserved_clk_chain_dly_i[2:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2057,41 +1989,7 @@ fmc516_ch2_ctl_reserved_data_chain_dly_i[2:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_inc_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_dec_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_ctl_reserved_clk_incdec_dly_o[5:0]
+fmc516_ch2_fn_dly_data_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2108,7 +2006,24 @@ fmc516_ch2_ctl_reserved_clk_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_inc_data_chain_dly_o
+fmc516_ch2_fn_dly_data_chain_dly_i[4:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_data_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2125,7 +2040,24 @@ fmc516_ch2_ctl_inc_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_dec_data_chain_dly_o
+fmc516_ch2_fn_dly_reserved_data_chain_dly_i[2:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_inc_clk_chain_dly_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2142,7 +2074,75 @@ fmc516_ch2_ctl_dec_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_ctl_reserved_data_incdec_dly_o[5:0]
+fmc516_ch2_fn_dly_dec_clk_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_reserved_clk_incdec_dly_o[5:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_inc_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_dec_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_fn_dly_reserved_data_incdec_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2176,7 +2176,7 @@ fmc516_ch2_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 2 delay control register:</b>
+<b>Channel 2 coarse delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -2193,24 +2193,7 @@ fmc516_ch2_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_dly_ctl_fe_dly_o[1:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch2_dly_ctl_reserved_fe_dly_o[5:0]
+fmc516_ch2_cs_dly_fe_dly_o[1:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2227,7 +2210,7 @@ fmc516_ch2_dly_ctl_reserved_fe_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_dly_ctl_rg_dly_o[1:0]
+fmc516_ch2_cs_dly_reserved_fe_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2244,7 +2227,24 @@ fmc516_ch2_dly_ctl_rg_dly_o[1:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch2_dly_ctl_reserved_rg_dly_o[21:0]
+fmc516_ch2_cs_dly_rg_dly_o[1:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch2_cs_dly_reserved_rg_dly_o[21:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2346,7 +2346,7 @@ fmc516_ch3_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 3 control register:</b>
+<b>Channel 3 fine delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -2363,75 +2363,7 @@ fmc516_ch3_sta_reserved_i[15:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_clk_chain_dly_o[4:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_clk_chain_dly_i[4:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_clk_chain_dly_load_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_reserved_clk_chain_dly_i[2:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_data_chain_dly_o[4:0]
+fmc516_ch3_fn_dly_clk_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2448,7 +2380,7 @@ fmc516_ch3_ctl_data_chain_dly_o[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_data_chain_dly_i[4:0]
+fmc516_ch3_fn_dly_clk_chain_dly_i[4:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2465,7 +2397,7 @@ fmc516_ch3_ctl_data_chain_dly_i[4:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_data_chain_dly_load_o
+fmc516_ch3_fn_dly_clk_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2482,7 +2414,7 @@ fmc516_ch3_ctl_data_chain_dly_load_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_reserved_data_chain_dly_i[2:0]
+fmc516_ch3_fn_dly_reserved_clk_chain_dly_i[2:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2499,41 +2431,7 @@ fmc516_ch3_ctl_reserved_data_chain_dly_i[2:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_inc_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_dec_clk_chain_dly_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_ctl_reserved_clk_incdec_dly_o[5:0]
+fmc516_ch3_fn_dly_data_chain_dly_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2550,7 +2448,24 @@ fmc516_ch3_ctl_reserved_clk_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_inc_data_chain_dly_o
+fmc516_ch3_fn_dly_data_chain_dly_i[4:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_data_chain_dly_load_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2567,7 +2482,24 @@ fmc516_ch3_ctl_inc_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_dec_data_chain_dly_o
+fmc516_ch3_fn_dly_reserved_data_chain_dly_i[2:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_inc_clk_chain_dly_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2584,7 +2516,75 @@ fmc516_ch3_ctl_dec_data_chain_dly_o
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_ctl_reserved_data_incdec_dly_o[5:0]
+fmc516_ch3_fn_dly_dec_clk_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_reserved_clk_incdec_dly_o[5:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_inc_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_dec_data_chain_dly_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_fn_dly_reserved_data_incdec_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2618,7 +2618,7 @@ fmc516_ch3_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 3 delay control register:</b>
+<b>Channel 3 coarse delay register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -2635,24 +2635,7 @@ fmc516_ch3_ctl_reserved_data_incdec_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_dly_ctl_fe_dly_o[1:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-fmc516_ch3_dly_ctl_reserved_fe_dly_o[5:0]
+fmc516_ch3_cs_dly_fe_dly_o[1:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2669,7 +2652,7 @@ fmc516_ch3_dly_ctl_reserved_fe_dly_o[5:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_dly_ctl_rg_dly_o[1:0]
+fmc516_ch3_cs_dly_reserved_fe_dly_o[5:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2686,7 +2669,24 @@ fmc516_ch3_dly_ctl_rg_dly_o[1:0]
 
 </td>
 <td  class="td_pblock_right">
-fmc516_ch3_dly_ctl_reserved_rg_dly_o[21:0]
+fmc516_ch3_cs_dly_rg_dly_o[1:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+fmc516_ch3_cs_dly_reserved_rg_dly_o[21:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -4329,15 +4329,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH0_CTL"></a>
-<h3><a name="sect_3_7">3.7. Channel 0 control register</a></h3>
+<a name="CH0_FN_DLY"></a>
+<h3><a name="sect_3_7">3.7. Channel 0 fine delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch0_ctl
+fmc516_ch0_fn_dly
 </td>
 </tr>
 <tr>
@@ -4353,7 +4353,7 @@ fmc516_ch0_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH0_CTL
+CH0_FN_DLY
 </td>
 </tr>
 <tr>
@@ -4623,15 +4623,15 @@ RESERVED_DATA_INCDEC_DLY
 </b>[<i>read/write</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH0_DLY_CTL"></a>
-<h3><a name="sect_3_8">3.8. Channel 0 delay control register</a></h3>
+<a name="CH0_CS_DLY"></a>
+<h3><a name="sect_3_8">3.8. Channel 0 coarse delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch0_dly_ctl
+fmc516_ch0_cs_dly
 </td>
 </tr>
 <tr>
@@ -4647,7 +4647,7 @@ fmc516_ch0_dly_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH0_DLY_CTL
+CH0_CS_DLY
 </td>
 </tr>
 <tr>
@@ -5155,15 +5155,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH1_CTL"></a>
-<h3><a name="sect_3_10">3.10. Channel 1 control register</a></h3>
+<a name="CH1_FN_DLY"></a>
+<h3><a name="sect_3_10">3.10. Channel 1 fine delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch1_ctl
+fmc516_ch1_fn_dly
 </td>
 </tr>
 <tr>
@@ -5179,7 +5179,7 @@ fmc516_ch1_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH1_CTL
+CH1_FN_DLY
 </td>
 </tr>
 <tr>
@@ -5449,15 +5449,15 @@ RESERVED_DATA_INCDEC_DLY
 </b>[<i>read/write</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH1_DLY_CTL"></a>
-<h3><a name="sect_3_11">3.11. Channel 1 delay control register</a></h3>
+<a name="CH1_CS_DLY"></a>
+<h3><a name="sect_3_11">3.11. Channel 1 coarse delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch1_dly_ctl
+fmc516_ch1_cs_dly
 </td>
 </tr>
 <tr>
@@ -5473,7 +5473,7 @@ fmc516_ch1_dly_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH1_DLY_CTL
+CH1_CS_DLY
 </td>
 </tr>
 <tr>
@@ -5981,15 +5981,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH2_CTL"></a>
-<h3><a name="sect_3_13">3.13. Channel 2 control register</a></h3>
+<a name="CH2_FN_DLY"></a>
+<h3><a name="sect_3_13">3.13. Channel 2 fine delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch2_ctl
+fmc516_ch2_fn_dly
 </td>
 </tr>
 <tr>
@@ -6005,7 +6005,7 @@ fmc516_ch2_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH2_CTL
+CH2_FN_DLY
 </td>
 </tr>
 <tr>
@@ -6275,15 +6275,15 @@ RESERVED_DATA_INCDEC_DLY
 </b>[<i>read/write</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH2_DLY_CTL"></a>
-<h3><a name="sect_3_14">3.14. Channel 2 delay control register</a></h3>
+<a name="CH2_CS_DLY"></a>
+<h3><a name="sect_3_14">3.14. Channel 2 coarse delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch2_dly_ctl
+fmc516_ch2_cs_dly
 </td>
 </tr>
 <tr>
@@ -6299,7 +6299,7 @@ fmc516_ch2_dly_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH2_DLY_CTL
+CH2_CS_DLY
 </td>
 </tr>
 <tr>
@@ -6807,15 +6807,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH3_CTL"></a>
-<h3><a name="sect_3_16">3.16. Channel 3 control register</a></h3>
+<a name="CH3_FN_DLY"></a>
+<h3><a name="sect_3_16">3.16. Channel 3 fine delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch3_ctl
+fmc516_ch3_fn_dly
 </td>
 </tr>
 <tr>
@@ -6831,7 +6831,7 @@ fmc516_ch3_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH3_CTL
+CH3_FN_DLY
 </td>
 </tr>
 <tr>
@@ -7101,15 +7101,15 @@ RESERVED_DATA_INCDEC_DLY
 </b>[<i>read/write</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CH3_DLY_CTL"></a>
-<h3><a name="sect_3_17">3.17. Channel 3 delay control register</a></h3>
+<a name="CH3_CS_DLY"></a>
+<h3><a name="sect_3_17">3.17. Channel 3 coarse delay register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-fmc516_ch3_dly_ctl
+fmc516_ch3_cs_dly
 </td>
 </tr>
 <tr>
@@ -7125,7 +7125,7 @@ fmc516_ch3_dly_ctl
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CH3_DLY_CTL
+CH3_CS_DLY
 </td>
 </tr>
 <tr>
