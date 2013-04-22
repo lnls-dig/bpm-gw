@@ -80,8 +80,8 @@ module pcie_core # (
   parameter         AER_CAP_PERMIT_ROOTERR_UPDATE = "FALSE",
 
   parameter [31:0]  BAR0 = 32'hFFFFFC00,
-  parameter [31:0]  BAR1 = 32'hF0000000,
-  parameter [31:0]  BAR2 = 32'hFFF00000,
+  parameter [31:0]  BAR1 = 32'hC0000000,
+  parameter [31:0]  BAR2 = 32'hFFFFFC00,
   parameter [31:0]  BAR3 = 32'h00000000,
   parameter [31:0]  BAR4 = 32'h00000000,
   parameter [31:0]  BAR5 = 32'h00000000,

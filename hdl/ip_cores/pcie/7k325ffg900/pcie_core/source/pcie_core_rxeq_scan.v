@@ -231,7 +231,8 @@ begin
                 fsm              <=  FSM_CONVERGE;
                 preset_done      <=  1'd0;
                 converge_cnt     <= 22'd0;
-                new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : 18'd4;
+              //new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : 18'd4;  // Default
+                new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : 18'd5;  // Optimized for Gen3 RX JTOL
                 new_txcoeff_done <=  1'd0;
                 lffs_sel         <= (PCIE_RXEQ_MODE_GEN3 == 0) ? 1'd0 : 1'd1;
                 adapt_done       <=  1'd0; 
@@ -291,7 +292,6 @@ begin
                 else
                     fsm <= (converge_cnt == converge_max_bypass_cnt) ? FSM_NEW_TXCOEFF_REQ : FSM_CONVERGE;
                 
-
                 preset_done      <= 1'd0;
                 converge_cnt     <= converge_cnt + 1'd1;
                 new_txcoeff      <= new_txcoeff;

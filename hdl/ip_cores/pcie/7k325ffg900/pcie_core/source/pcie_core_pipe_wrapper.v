@@ -53,7 +53,7 @@
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_wrapper.v
 //  Description  :  PIPE Wrapper for 7 Series Transceiver
-//  Version      :  18.1
+//  Version      :  20.0
 //------------------------------------------------------------------------------
 
 //---------- PIPE Wrapper Hierarchy --------------------------------------------
@@ -65,7 +65,7 @@
 //              pipe_user.v
 //              pipe_rate.v or gtp_pipe_rate.v
 //              pipe_sync.v 
-//              pipe_drp.v
+//              pipe_drp.v or gtp_pipe_drp.v
 //              pipe_eq.v
 //                  rxeq_scan.v
 //              gt_wrapper.v
@@ -83,13 +83,15 @@
 //  PCIE_GT_DEVICE                : "GTX" (default)
 //                                : "GTH"
 //                                : "GTP"
-//  PCIE_USE_MODE                 : "1.0" = GTX IES 325T or GTP IES use mode.
+//  PCIE_USE_MODE                 : "1.0" = GTX IES 325T or GTP IES/GES use mode.
 //                                : "1.1" = GTX IES 485T use mode.
 //                                : "2.0" = GTH IES 690T use mode for 1.0 silicon.
-//                                : "2.1" = GTH GES 690T use mode for 1.2 silicon.  SW model use "2.0"
+//                                : "2.1" = GTH GES 690T use mode for 1.2 and 2.0 silicon.  SW model use "2.0"
 //                                : "3.0" = GTX GES 325T or 485T use mode (default).
 //  PCIE_PLL_SEL                  : "CPLL" (default)
 //                                : "QPLL"
+//  PCIE_AUX_CDR_GEN3_EN          : "FALSE" Use Primary CDR for Gen3 only (default) (GTH 2.0) 
+//                                : "TRUE"  Use AUX CDR for Gen3 only (GTH 2.0)
 //  PCIE_LPM_DFE                  : "DFE" for Gen1/Gen2 only (GTX, GTH)
 //                                : "LPM" for Gen1/Gen2 only (default) (GTX, GTH)
 //  PCIE_LPM_DFE_GEN3             : "DFE" for Gen3 only (GTX, GTH)
@@ -128,7 +130,7 @@
 //                                : 5 = 500.00 MHz
 //  PCIE_TX_EIDLE_ASSERT_DELAY    : 3'd0 to 3'd7 (default = 3'd4)
 //  PCIE_RXEQ_MODE_GEN3           : 0 = Return same TX coefficients 
-//                                : 1 = Return TX preset #4
+//                                : 1 = Return TX preset #5
 //  PCIE_OOBCLK_MODE              : 0 = Reference clock
 //                                : 1 =  62.50 MHz (default)
 //                                : 2 =  50.00 MHz (requires 1 BUFG)
@@ -156,10 +158,12 @@ module pcie_core_pipe_wrapper #
 (
 
     parameter PCIE_SIM_MODE                 = "FALSE",      // PCIe sim mode 
+    parameter PCIE_SIM_SPEEDUP              = "FALSE",      // PCIe sim speedup
     parameter PCIE_SIM_TX_EIDLE_DRIVE_LEVEL = "1",          // PCIe sim TX electrical idle drive level 
     parameter PCIE_GT_DEVICE                = "GTX",        // PCIe GT device
     parameter PCIE_USE_MODE                 = "3.0",        // PCIe use mode
     parameter PCIE_PLL_SEL                  = "CPLL",       // PCIe PLL select for Gen1/Gen2 (GTX/GTH) only
+    parameter PCIE_AUX_CDR_GEN3_EN          = "FALSE",      // PCIe AUX CDR for Gen3 (GTH 2.0) only
     parameter PCIE_LPM_DFE                  = "LPM",        // PCIe LPM or DFE mode for Gen1/Gen2 only
     parameter PCIE_LPM_DFE_GEN3             = "DFE",        // PCIe LPM or DFE mode for Gen3      only
     parameter PCIE_EXT_CLK                  = "FALSE",      // PCIe external clock
@@ -252,7 +256,7 @@ module pcie_core_pipe_wrapper #
     output      [(PCIE_LANE*3)-1:0] PIPE_RXBUFSTATUS,       // PCLK       | RXUSRCLK
     
     //---------- PIPE User Ports ---------------------------
-  //input                           PIPE_MMCM_RST_N,        // Async      | Async
+    input                           PIPE_MMCM_RST_N,        // Async      | Async
     input       [PCIE_LANE-1:0]     PIPE_RXSLIDE,           // PCLK       | RXUSRCLK
     
     output      [PCIE_LANE-1:0]     PIPE_CPLL_LOCK,         // Async      | Async
@@ -300,7 +304,7 @@ module pcie_core_pipe_wrapper #
     //---------- FSM Ports ---------------------------------
     output      [10:0]              PIPE_RST_FSM,           // PCLK       | PCLK
     output      [11:0]              PIPE_QRST_FSM,          // PCLK       | PCLK
-    output      [(PCIE_LANE*24)-1:0]PIPE_RATE_FSM,          // PCLK       | PCLK
+    output      [(PCIE_LANE*31)-1:0]PIPE_RATE_FSM,          // PCLK       | PCLK
     output      [(PCIE_LANE*6)-1:0] PIPE_SYNC_FSM_TX,       // PCLK       | PCLK
     output      [(PCIE_LANE*7)-1:0] PIPE_SYNC_FSM_RX,       // PCLK       | PCLK
     output      [(PCIE_LANE*7)-1:0] PIPE_DRP_FSM,           // DCLK       | DCLK
@@ -351,10 +355,13 @@ module pcie_core_pipe_wrapper #
     wire                            rst_rxusrclk_reset;
     wire                            rst_dclk_reset;   
     wire                            rst_gtreset;
+    wire                            rst_drp_start;
+    wire                            rst_drp_x16x20_mode;
+    wire                            rst_drp_x16;
     wire                            rst_userrdy;
     wire                            rst_txsync_start;
     wire                            rst_idle;
-    wire        [10:0]              rst_fsm;
+    wire        [14:0]              rst_fsm;
     
     //------------------------------------------------------
     wire                            gtp_rst_qpllreset;      // GTP
@@ -402,8 +409,10 @@ module pcie_core_pipe_wrapper #
     wire        [PCIE_LANE-1:0]     rate_txpmareset;
     wire        [PCIE_LANE-1:0]     rate_rxpmareset;
     wire        [(PCIE_LANE*2)-1:0] rate_sysclksel;
-    wire        [PCIE_LANE-1:0]     rate_drp_start;
     wire        [PCIE_LANE-1:0]     rate_pclk_sel;
+    wire        [PCIE_LANE-1:0]     rate_drp_start;
+    wire        [PCIE_LANE-1:0]     rate_drp_x16x20_mode;
+    wire        [PCIE_LANE-1:0]     rate_drp_x16;
     wire        [PCIE_LANE-1:0]     rate_gen3;
     wire        [(PCIE_LANE*3)-1:0] rate_rate;
     wire        [PCIE_LANE-1:0]     rate_resetovrd_start;
@@ -412,7 +421,7 @@ module pcie_core_pipe_wrapper #
     wire        [PCIE_LANE-1:0]     rate_rxsync_start;
     wire        [PCIE_LANE-1:0]     rate_rxsync;
     wire        [PCIE_LANE-1:0]     rate_idle;
-    wire        [(PCIE_LANE*24)-1:0]rate_fsm;
+    wire        [(PCIE_LANE*31)-1:0]rate_fsm;
 
     //---------- PIPE Sync Module Output -------------------
     wire        [PCIE_LANE-1:0]     sync_txphdlyreset;
@@ -496,6 +505,7 @@ module pcie_core_pipe_wrapper #
     wire        [PCIE_LANE-1:0]     gt_rxcdrlock;
     wire        [PCIE_LANE-1:0]     gt_txresetdone;
     wire        [PCIE_LANE-1:0]     gt_rxresetdone;
+    wire        [PCIE_LANE-1:0]     gt_rxpmaresetdone;
     wire        [PCIE_LANE-1:0]     gt_rxvalid;
     wire        [PCIE_LANE-1:0]     gt_phystatus;
     wire        [(PCIE_LANE*3)-1:0] gt_rxstatus;
@@ -594,8 +604,8 @@ generate
             .CLK_CLK                        (PIPE_CLK),
             .CLK_TXOUTCLK                   (gt_txoutclk[0]),       // Reference clock from lane 0
             .CLK_RXOUTCLK_IN                (gt_rxoutclk),         
-            .CLK_RST_N                      (1'b1),  
-          //.CLK_RST_N                      (PIPE_MMCM_RST_N),      // Allow system reset for error recovery             
+            .CLK_RST_N                      (1'b1),                 
+          // .CLK_RST_N                      (PIPE_MMCM_RST_N),      // Allow system reset for error recovery             
             .CLK_PCLK_SEL                   (rate_pclk_sel),     
             .CLK_GEN3                       (rate_gen3[0]),          
             
@@ -642,9 +652,10 @@ generate
         pcie_core_gtp_pipe_reset #
         (
         
+            .PCIE_SIM_SPEEDUP               (PCIE_SIM_SPEEDUP),                 // PCIe sim mode
           //.PCIE_PLL_SEL                   (PCIE_PLL_SEL),                     // removed for GTP               
           //.PCIE_POWER_SAVING              (PCIE_POWER_SAVING),                // removed for GTP                                
-            .PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // PCIe TX buffer enable for Gen1/Gen2 only
+          //.PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // PCIe TX buffer enable for Gen1/Gen2 only
             .PCIE_LANE                      (PCIE_LANE)                         // PCIe number of lanes
         
         )
@@ -656,6 +667,8 @@ generate
             .RST_RXUSRCLK                   (clk_rxusrclk),
             .RST_DCLK                       (clk_dclk),
             .RST_RST_N                      (reset_n_reg2),
+            .RST_DRP_DONE                   (drp_done),
+            .RST_RXPMARESETDONE             (gt_rxpmaresetdone),
             .RST_PLLLOCK                    (&qpll_qplllock), 
           //.RST_QPLL_IDLE                  (qrst_idle),                        // removed for GTP  
             .RST_RATE_IDLE                  (rate_idle),
@@ -671,6 +684,8 @@ generate
             .RST_RXUSRCLK_RESET             (rst_rxusrclk_reset),
             .RST_DCLK_RESET                 (rst_dclk_reset),
             .RST_GTRESET                    (rst_gtreset),
+            .RST_DRP_START                  (rst_drp_start),
+            .RST_DRP_X16                    (rst_drp_x16),
             .RST_USERRDY                    (rst_userrdy),
             .RST_TXSYNC_START               (rst_txsync_start),
             .RST_IDLE                       (rst_idle),
@@ -679,8 +694,8 @@ generate
         );
         
         //---------- Default ---------------------------------------------------
-        assign gtp_rst_qpllreset = rst_cpllreset;
-        assign gtp_rst_qpllpd    = rst_cpllpd;
+        assign gtp_rst_qpllreset   = rst_cpllreset;
+        assign gtp_rst_qpllpd      = rst_cpllpd;
         
         end
 
@@ -692,6 +707,8 @@ generate
         pcie_core_pipe_reset #
         (
         
+            .PCIE_SIM_SPEEDUP               (PCIE_SIM_SPEEDUP),                 // PCIe sim mode
+            .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),                   // PCIe GT Device
             .PCIE_PLL_SEL                   (PCIE_PLL_SEL),                     // PCIe PLL select for Gen1/Gen2 only
             .PCIE_POWER_SAVING              (PCIE_POWER_SAVING),                // PCIe power saving
             .PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // PCIe TX buffer enable for Gen1/Gen2 only
@@ -705,7 +722,9 @@ generate
             .RST_CLK                        (clk_pclk),                         
             .RST_RXUSRCLK                   (clk_rxusrclk),                     
             .RST_DCLK                       (clk_dclk),                         
-            .RST_RST_N                      (reset_n_reg2),                     
+            .RST_RST_N                      (reset_n_reg2),   
+            .RST_DRP_DONE                   (drp_done),
+            .RST_RXPMARESETDONE             (gt_rxpmaresetdone),                  
             .RST_CPLLLOCK                   (gt_cplllock),                      
             .RST_QPLL_IDLE                  (qrst_idle),                        
             .RST_RATE_IDLE                  (rate_idle),                        
@@ -720,7 +739,10 @@ generate
             .RST_CPLLPD                     (rst_cpllpd),                       
             .RST_RXUSRCLK_RESET             (rst_rxusrclk_reset),               
             .RST_DCLK_RESET                 (rst_dclk_reset),                   
-            .RST_GTRESET                    (rst_gtreset),                      
+            .RST_GTRESET                    (rst_gtreset), 
+            .RST_DRP_START                  (rst_drp_start),
+            .RST_DRP_X16X20_MODE            (rst_drp_x16x20_mode),
+            .RST_DRP_X16                    (rst_drp_x16),                     
             .RST_USERRDY                    (rst_userrdy),                      
             .RST_TXSYNC_START               (rst_txsync_start),                 
             .RST_IDLE                       (rst_idle),                         
@@ -803,7 +825,7 @@ generate
         begin : pipe_jtag_m
         
         //-------------PIPE JTAG Master Module ---------------------------------
-        pcie_core_pipe_jtag_m #
+        pipe_jtag_m #
         (
             .PCIE_LANE                  (PCIE_LANE)
         )
@@ -901,9 +923,10 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
     
         begin : gtp_pipe_rate
         
-        pcie_core_gtp_pipe_rate
-     //(                                                                                                           
-                                                                                                                            
+        pcie_core_gtp_pipe_rate #
+       (                                                                                                           
+                       
+            .PCIE_SIM_SPEEDUP               (PCIE_SIM_SPEEDUP)                  // PCIe sim speedup                                                                                                        
           //.PCIE_USE_MODE                  (PCIE_USE_MODE),                    // removed for GTP                                    
           //.PCIE_PLL_SEL                   (PCIE_PLL_SEL),                     // removed for GTP               
           //.PCIE_POWER_SAVING              (PCIE_POWER_SAVING),                // removed for GTP                                
@@ -911,20 +934,21 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
           //.PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // removed for GTP          
           //.PCIE_RXBUF_EN                  (PCIE_RXBUF_EN)                     // removed for GTP          
                                                                                                                             
-      //)                                                                                                           
+        )                                                                                                           
         gtp_pipe_rate_i
         (
     
             //---------- Input -----------------------------
             .RATE_CLK                       (clk_pclk),
             .RATE_RST_N                     (!rst_cpllreset),
-            .RATE_RST_IDLE                  (rst_idle),    
+          //.RATE_RST_IDLE                  (rst_idle),                         // removed for GTP
           //.RATE_ACTIVE_LANE               (user_active_lane[i]),              // removed for GTP 
             .RATE_RATE_IN                   (PIPE_RATE),   
           //.RATE_CPLLLOCK                  (gt_cplllock[i]),                   // removed for GTP
           //.RATE_QPLLLOCK                  (qpll_qplllock[i>>2])               // removed for GTP
           //.RATE_MMCM_LOCK                 (clk_mmcm_lock),                    // removed for GTP
-          //.RATE_DRP_DONE                  (drp_done[i]),                      // removed for GTP
+            .RATE_DRP_DONE                  (drp_done[i]),                       
+            .RATE_RXPMARESETDONE            (gt_rxpmaresetdone[i]),         
           //.RATE_TXRESETDONE               (gt_txresetdone[i]),                // removed for GTP
           //.RATE_RXRESETDONE               (gt_rxresetdone[i]),                // removed for GTP
             .RATE_TXRATEDONE                (gt_txratedone[i]),
@@ -942,8 +966,9 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
           //.RATE_TXPMARESET                (rate_txpmareset[i]),               // removed for GTP 
           //.RATE_RXPMARESET                (rate_rxpmareset[i]),               // removed for GTP
           //.RATE_SYSCLKSEL                 (rate_sysclksel[(2*i)+1:(2*i)]),    // removed for GTP
-          //.RATE_DRP_START                 (rate_drp_start[i]),                // removed for GTP
-            .RATE_PCLK_SEL                  (rate_pclk_sel[i]),        
+            .RATE_DRP_START                 (rate_drp_start[i]),                
+            .RATE_DRP_X16                   (rate_drp_x16[i]),
+            .RATE_PCLK_SEL                  (rate_pclk_sel[i]),       
           //.RATE_GEN3                      (rate_gen3[i]),                     // removed for GTP
             .RATE_RATE_OUT                  (rate_rate[(3*i)+2:(3*i)]),      
           //.RATE_RESETOVRD_START           (rate_resetovrd_start[i]),          // removed for GTP
@@ -952,7 +977,7 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
           //.RATE_RXSYNC_START              (rate_rxsync_start[i]),             // removed for GTP
           //.RATE_RXSYNC                    (rate_rxsync[i]),                   // removed for GTP
             .RATE_IDLE                      (rate_idle[i]),                     
-            .RATE_FSM                       (rate_fsm[(24*i)+23:(24*i)])       
+            .RATE_FSM                       (rate_fsm[(31*i)+30:(31*i)])       
         );
     
         //---------- Default for GTP -----------------------
@@ -963,7 +988,6 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
         assign rate_txpmareset[i]            = 1'd0;
         assign rate_rxpmareset[i]            = 1'd0;
         assign rate_sysclksel[(2*i)+1:(2*i)] = 2'b0;
-        assign rate_drp_start[i]             = 1'd0;
         assign rate_gen3[i]                  = 1'd0;
         assign rate_resetovrd_start[i]       = 1'd0;
         assign rate_rxsync_start[i]          = 1'd0;
@@ -979,6 +1003,8 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
         pcie_core_pipe_rate #
         (
         
+            .PCIE_SIM_SPEEDUP               (PCIE_SIM_SPEEDUP), // PCIe sim speedup 
+            .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),   // PCIe GT device
             .PCIE_USE_MODE                  (PCIE_USE_MODE),    // PCIe use mode
             .PCIE_PLL_SEL                   (PCIE_PLL_SEL),     // PCIe PLL select for Gen1/Gen2 only
             .PCIE_POWER_SAVING              (PCIE_POWER_SAVING),// PCIe power saving
@@ -999,7 +1025,8 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
             .RATE_CPLLLOCK                  (gt_cplllock[i]),                                   
             .RATE_QPLLLOCK                  (qpll_qplllock[i>>2]),                              
             .RATE_MMCM_LOCK                 (clk_mmcm_lock),                                    
-            .RATE_DRP_DONE                  (drp_done[i]),                                      
+            .RATE_DRP_DONE                  (drp_done[i]),      
+            .RATE_RXPMARESETDONE            (gt_rxpmaresetdone[i]),                                
             .RATE_TXRESETDONE               (gt_txresetdone[i]),                                
             .RATE_RXRESETDONE               (gt_rxresetdone[i]),                                
             .RATE_TXRATEDONE                (gt_txratedone[i]),                                 
@@ -1017,7 +1044,9 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
             .RATE_TXPMARESET                (rate_txpmareset[i]),                               
             .RATE_RXPMARESET                (rate_rxpmareset[i]),                               
             .RATE_SYSCLKSEL                 (rate_sysclksel[(2*i)+1:(2*i)]),                    
-            .RATE_DRP_START                 (rate_drp_start[i]),                                
+            .RATE_DRP_START                 (rate_drp_start[i]),  
+            .RATE_DRP_X16X20_MODE           (rate_drp_x16x20_mode[i]),      
+            .RATE_DRP_X16                   (rate_drp_x16[i]),                        
             .RATE_PCLK_SEL                  (rate_pclk_sel[i]),                                 
             .RATE_GEN3                      (rate_gen3[i]),                                     
             .RATE_RATE_OUT                  (rate_rate[(3*i)+2:(3*i)]),                         
@@ -1027,7 +1056,7 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
             .RATE_RXSYNC_START              (rate_rxsync_start[i]),
             .RATE_RXSYNC                    (rate_rxsync[i]),
             .RATE_IDLE                      (rate_idle[i]),
-            .RATE_FSM                       (rate_fsm[(24*i)+23:(24*i)])
+            .RATE_FSM                       (rate_fsm[(31*i)+30:(31*i)])
             
         );    
         
@@ -1104,42 +1133,94 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
     assign rxphaligndone_s[i] = (PCIE_LANE == 1)        ? 1'd0                  : &gt_rxphaligndone[PCIE_LANE:1];
     
     
+    //---------- GTP PIPE DRP Module -------------------------------------------
+    if (PCIE_GT_DEVICE == "GTP")
     
-    //---------- PIPE DRP Module -----------------------------------------------
+        begin : gtp_pipe_drp
+       
+        //---------- GTP PIPE DRP Module ---------------------------------------
+    pcie_core_gtp_pipe_drp 
+      //(
+        
+          //.PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),                   // removed for GTP
+          //.PCIE_USE_MODE                  (PCIE_USE_MODE),                    // removed for GTP
+          //.PCIE_PLL_SEL                   (PCIE_PLL_SEL),                     // removed for GTP
+          //.PCIE_ASYNC_EN                  (PCIE_ASYNC_EN),                    // removed for GTP
+          //.PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // removed for GTP
+          //.PCIE_RXBUF_EN                  (PCIE_RXBUF_EN),                    // removed for GTP
+          //.PCIE_TXSYNC_MODE               (PCIE_TXSYNC_MODE),                 // removed for GTP
+          //.PCIE_RXSYNC_MODE               (PCIE_RXSYNC_MODE)                  // removed for GTP
+        
+      //)
+        gtp_pipe_drp_i
+        (
+            
+            //---------- Input ---------------------------------
+            .DRP_CLK                        (clk_dclk),
+            .DRP_RST_N                      (!rst_dclk_reset),
+          //.DRP_GTXRESET                   (rst_gtreset),                      // removed for GTP
+            .DRP_X16                        (rst_drp_x16 || rate_drp_x16[i]),
+          //.DRP_RATE                       (PIPE_RATE),                        // removed for GTP
+            .DRP_START                      (rst_drp_start || rate_drp_start[i]),                      
+            .DRP_DO                         (gt_do[(16*i)+15:(16*i)]),
+            .DRP_RDY                        (gt_rdy[i]),
+            
+            //---------- Output --------------------------------
+            .DRP_ADDR                       (drp_addr[(9*i)+8:(9*i)]),
+            .DRP_EN                         (drp_en[i]),  
+            .DRP_DI                         (drp_di[(16*i)+15:(16*i)]),   
+            .DRP_WE                         (drp_we[i]),
+            .DRP_DONE                       (drp_done[i]),
+            .DRP_FSM                        (drp_fsm[(7*i)+6:(7*i)])
+            
+        );
+        
+        end
+       
+    else
+    
+        begin : pipe_drp 
+        
+        //---------- PIPE DRP Module -------------------------------------------
     pcie_core_pipe_drp #
-    (
-    
-        .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),   // PCIe GT device
-        .PCIE_USE_MODE                  (PCIE_USE_MODE),    // PCIe use mode
-        .PCIE_PLL_SEL                   (PCIE_PLL_SEL),     // PCIe PLL select for Gen1/Gen2 only
-        .PCIE_ASYNC_EN                  (PCIE_ASYNC_EN),    // PCIe async enable
-        .PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),    // PCIe TX buffer enable for Gen1/Gen2 only
-        .PCIE_RXBUF_EN                  (PCIE_RXBUF_EN),    // PCIe RX buffer enable for Gen3      only
-        .PCIE_TXSYNC_MODE               (PCIE_TXSYNC_MODE), // PCIe TX sync mode
-        .PCIE_RXSYNC_MODE               (PCIE_RXSYNC_MODE)  // PCIe RX sync mode
-    
-    )
-    pipe_drp_i
-    (
+        (
         
-        //---------- Input ---------------------------------
-        .DRP_CLK                        (clk_dclk),
-        .DRP_RST_N                      (!rst_dclk_reset),
-        .DRP_GTXRESET                   (rst_gtreset),
-        .DRP_RATE                       (PIPE_RATE),
-        .DRP_START                      (rate_drp_start[i]),                      
-        .DRP_DO                         (gt_do[(16*i)+15:(16*i)]),
-        .DRP_RDY                        (gt_rdy[i]),
+            .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),                   // PCIe GT device
+            .PCIE_USE_MODE                  (PCIE_USE_MODE),                    // PCIe use mode
+            .PCIE_PLL_SEL                   (PCIE_PLL_SEL),                     // PCIe PLL select for Gen1/Gen2 only
+            .PCIE_AUX_CDR_GEN3_EN           (PCIE_AUX_CDR_GEN3_EN),             // PCIe AUX CDR Gen3 enable
+            .PCIE_ASYNC_EN                  (PCIE_ASYNC_EN),                    // PCIe async enable
+            .PCIE_TXBUF_EN                  (PCIE_TXBUF_EN),                    // PCIe TX buffer enable for Gen1/Gen2 only
+            .PCIE_RXBUF_EN                  (PCIE_RXBUF_EN),                    // PCIe RX buffer enable for Gen3      only
+            .PCIE_TXSYNC_MODE               (PCIE_TXSYNC_MODE),                 // PCIe TX sync mode
+            .PCIE_RXSYNC_MODE               (PCIE_RXSYNC_MODE)                  // PCIe RX sync mode
         
-        //---------- Output --------------------------------
-        .DRP_ADDR                       (drp_addr[(9*i)+8:(9*i)]),
-        .DRP_EN                         (drp_en[i]),  
-        .DRP_DI                         (drp_di[(16*i)+15:(16*i)]),   
-        .DRP_WE                         (drp_we[i]),
-        .DRP_DONE                       (drp_done[i]),
-        .DRP_FSM                        (drp_fsm[(7*i)+6:(7*i)])
+        )
+        pipe_drp_i
+        (
+            
+            //---------- Input ---------------------------------
+            .DRP_CLK                        (clk_dclk),
+            .DRP_RST_N                      (!rst_dclk_reset),
+            .DRP_GTXRESET                   (rst_gtreset),
+            .DRP_RATE                       (PIPE_RATE),
+            .DRP_X16X20_MODE                (rst_drp_x16x20_mode || rate_drp_x16x20_mode[i]),
+            .DRP_X16                        (rst_drp_x16         || rate_drp_x16[i]),
+            .DRP_START                      (rst_drp_start || rate_drp_start[i]),                      
+            .DRP_DO                         (gt_do[(16*i)+15:(16*i)]),
+            .DRP_RDY                        (gt_rdy[i]),
+            
+            //---------- Output --------------------------------
+            .DRP_ADDR                       (drp_addr[(9*i)+8:(9*i)]),
+            .DRP_EN                         (drp_en[i]),  
+            .DRP_DI                         (drp_di[(16*i)+15:(16*i)]),   
+            .DRP_WE                         (drp_we[i]),
+            .DRP_DONE                       (drp_done[i]),
+            .DRP_FSM                        (drp_fsm[(7*i)+6:(7*i)])
+            
+        );
         
-    );
+        end
 
 
     
@@ -1258,6 +1339,7 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
         assign eq_txeq_precursor[(5*i)+4:(5*i)]        =  5'h00;
         assign eq_txeq_maincursor[(7*i)+6:(7*i)]       =  7'h00;
         assign eq_txeq_postcursor[(5*i)+4:(5*i)]       =  5'h00;
+        assign eq_rxeq_adapt_done[i]                   =  1'd0;
         assign PIPE_TXEQ_COEFF[(18*i)+17:(18*i)]       = 18'd0;
         assign PIPE_TXEQ_DONE[i]                       =  1'd0;
         assign PIPE_TXEQ_FSM[(6*i)+5:(6*i)]            =  6'd0;
@@ -1391,6 +1473,7 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
     (
     
         .PCIE_SIM_MODE                  (PCIE_SIM_MODE),                        // PCIe sim mode
+        .PCIE_SIM_SPEEDUP               (PCIE_SIM_SPEEDUP),                     // PCIe sim speedup
         .PCIE_SIM_TX_EIDLE_DRIVE_LEVEL  (PCIE_SIM_TX_EIDLE_DRIVE_LEVEL),        // PCIe sim TX electrical idle drive level 
         .PCIE_GT_DEVICE                 (PCIE_GT_DEVICE),                       // PCIe GT device
         .PCIE_USE_MODE                  (PCIE_USE_MODE),                        // PCIe use mode
@@ -1455,6 +1538,7 @@ generate for (i=0; i<PCIE_LANE; i=i+1)
                                     
         .GT_TXRESETDONE                 (gt_txresetdone[i]),
         .GT_RXRESETDONE                 (gt_rxresetdone[i]),
+        .GT_RXPMARESETDONE              (gt_rxpmaresetdone[i]),
         
         //---------- GT TX Data Ports ----------------------
         .GT_TXDATA                      (PIPE_TXDATA[(32*i)+31:(32*i)]),
@@ -1717,10 +1801,10 @@ assign PIPE_TXOUTCLK_OUT = gt_txoutclk[0];
 assign PIPE_RXOUTCLK_OUT = gt_rxoutclk;
 assign PIPE_PCLK_SEL_OUT = rate_pclk_sel;
 assign PIPE_GEN3_OUT     = rate_gen3[0];
-                                              
-assign PIPE_RXEQ_ADAPT_DONE = eq_rxeq_adapt_done;
-//assign PIPE_RXEQ_CONVERGE   = user_rx_converge;                    
-                        
+
+//assign PIPE_RXEQ_CONVERGE   = user_rx_converge;
+assign PIPE_RXEQ_ADAPT_DONE = (PCIE_GT_DEVICE == "GTP") ? {PCIE_LANE{1'd0}} : eq_rxeq_adapt_done;
+
 assign PIPE_RST_FSM      = 0;//rst_fsm;
 assign PIPE_QRST_FSM     = 0;//qrst_fsm;
 assign PIPE_RATE_FSM     = 0;//rate_fsm;
@@ -1737,10 +1821,10 @@ assign PIPE_DEBUG_0      = (PCIE_DEBUG_MODE == 1) ? gt_txresetdone              
 assign PIPE_DEBUG_1      = (PCIE_DEBUG_MODE == 1) ? gt_rxresetdone                  : {PCIE_LANE{1'b0}};
 assign PIPE_DEBUG_2      = (PCIE_DEBUG_MODE == 1) ? gt_phystatus                    : {PCIE_LANE{1'b0}};
 assign PIPE_DEBUG_3      = (PCIE_DEBUG_MODE == 1) ? gt_rxvalid                      : {PCIE_LANE{1'b0}};
-assign PIPE_DEBUG_4      = (PCIE_DEBUG_MODE == 1) ? gt_txphaligndone                : {PCIE_LANE{1'b0}};
-assign PIPE_DEBUG_5      = (PCIE_DEBUG_MODE == 1) ? gt_rxphaligndone[PCIE_LANE-1:0] : {PCIE_LANE{1'b0}};
-assign PIPE_DEBUG_6      = (PCIE_DEBUG_MODE == 1) ? gt_rxcommadet                   : {PCIE_LANE{1'b0}};
-assign PIPE_DEBUG_7      = (PCIE_DEBUG_MODE == 1) ? gt_rxbyteisaligned              : {PCIE_LANE{1'b0}};
+assign PIPE_DEBUG_4      = (PCIE_DEBUG_MODE == 1) ? clk_dclk                        : {PCIE_LANE{1'b0}};
+assign PIPE_DEBUG_5      = (PCIE_DEBUG_MODE == 1) ? drp_mux_en                      : {PCIE_LANE{1'b0}};
+assign PIPE_DEBUG_6      = (PCIE_DEBUG_MODE == 1) ? drp_mux_we                      : {PCIE_LANE{1'b0}};
+assign PIPE_DEBUG_7      = (PCIE_DEBUG_MODE == 1) ? gt_rdy                          : {PCIE_LANE{1'b0}};
 assign PIPE_DEBUG_8      = (PCIE_DEBUG_MODE == 1) ? user_rx_converge                : {PCIE_LANE{1'b0}};
 assign PIPE_DEBUG_9      = (PCIE_DEBUG_MODE == 1) ? PIPE_TXELECIDLE                 : {PCIE_LANE{1'b0}};
 

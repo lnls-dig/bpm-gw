@@ -68,7 +68,7 @@ module pcie_core_qpll_wrapper #
     
     parameter PCIE_SIM_MODE    = "FALSE",                   // PCIe sim mode
     parameter PCIE_GT_DEVICE   = "GTX",                     // PCIe GT device
-    parameter PCIE_USE_MODE    = "1.1",                     // PCIe use mode
+    parameter PCIE_USE_MODE    = "3.0",                     // PCIe use mode
     parameter PCIE_PLL_SEL     = "CPLL",                    // PCIe PLL select for Gen1/Gen2 only
     parameter PCIE_REFCLK_FREQ = 0                          // PCIe reference clock frequency
  
@@ -147,22 +147,22 @@ generate if (PCIE_GT_DEVICE == "GTP")
         //---------- Clock Attributes ------------------------------------------                                                     
         .PLL0_CFG                       (27'h01F024C),                          // Optimized for IES                                                  
         .PLL1_CFG                       (27'h01F024C),                          // Optimized for IES                                                  
-      //.PLL_CLKOUT_CFG                 (8'd0),                                 // Optimized for IES                                                   
-      //.PLL0_DMON_CFG                  (1'b0),                                 // Optimized for IES
-      //.PLL1_DMON_CFG                  (1'b0),                                 // Optimized for IES
-        .PLL0_FBDIV                     (GTP_QPLL_FBDIV),                       // Optimized for IES                                                   
+        .PLL_CLKOUT_CFG                 (8'd0),                                 // Optimized for IES                                                   
+        .PLL0_DMON_CFG                  (1'b0),                                 // Optimized for IES                                                  
+        .PLL1_DMON_CFG                  (1'b0),                                 // Optimized for IES                                      
+        .PLL0_FBDIV                     (GTP_QPLL_FBDIV),                       // Optimized for IES                                                  
         .PLL1_FBDIV                     (GTP_QPLL_FBDIV),                       // Optimized for IES                                                   
-        .PLL0_FBDIV_45                  (5),                                    // Optimized for IES                                                   
-        .PLL1_FBDIV_45                  (5),                                    // Optimized for IES                                                   
-      //.PLL0_INIT_CFG                  (24'h00001E),                           // Optimized for IES
-      //.PLL1_INIT_CFG                  (24'h00001E),                           // Optimized for IES                                                   
-      //.PLL0_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES
-      //.PLL1_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES                                                   
+        .PLL0_FBDIV_45                  (5),                                    // Optimized for IES                                                  
+        .PLL1_FBDIV_45                  (5),                                    // Optimized for IES                                                  
+        .PLL0_INIT_CFG                  (24'h00001E),                           // Optimized for IES                                                  
+        .PLL1_INIT_CFG                  (24'h00001E),                           // Optimized for IES                                                   
+        .PLL0_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES    
+        .PLL1_LOCK_CFG                  ( 9'h1E8),                              // Optimized for IES                                                                                                                   
         .PLL0_REFCLK_DIV                (1),                                    // Optimized for IES                                                  
         .PLL1_REFCLK_DIV                (1),                                    // Optimized for IES                                                  
                                                                                                                                      
         //---------- MISC ------------------------------------------------------                                                     
-        .BIAS_CFG                       (64'h0000000000000001),                 // Optimized for IES                                                 
+        .BIAS_CFG                       (64'h0000000000050001),                 // Optimized for GES                                                 
       //.COMMON_CFG                     (32'd0),                                //                                                                                                   
         .RSVD_ATTR0                     (16'd0),                                //                                                   
         .RSVD_ATTR1                     (16'd0)                                 //                                                   
@@ -248,14 +248,14 @@ else if (PCIE_GT_DEVICE == "GTH")
         //---------- Simulation Attributes -------------------------------------
         .SIM_QPLLREFCLK_SEL             (3'b001),                               //
         .SIM_RESET_SPEEDUP              (PCIE_SIM_MODE),                        //
-        .SIM_VERSION                    (PCIE_USE_MODE),                        // 
+        .SIM_VERSION                    ("2.0"),                                // 
         
         //---------- Clock Attributes ------------------------------------------
-        .QPLL_CFG                       (27'h0480181),                          // QPLL for Gen3, optimized for IES
-        .QPLL_CLKOUT_CFG                ( 4'd0),                                //
+        .QPLL_CFG                       (27'h04801C7),                          // QPLL for Gen3, optimized for GES
+        .QPLL_CLKOUT_CFG                ( 4'b1111),                             // Optimized for GES
         .QPLL_COARSE_FREQ_OVRD          ( 6'b010000),                           // 
         .QPLL_COARSE_FREQ_OVRD_EN       ( 1'd0),                                // 
-        .QPLL_CP                        (10'h0FF),                              // Optimized for IES and PCIe PLL BW
+        .QPLL_CP                        (10'h0FF),                              // * Optimized for IES and PCIe PLL BW 
         .QPLL_CP_MONITOR_EN             ( 1'd0),                                //
         .QPLL_DMONITOR_SEL              ( 1'd0),                                //
         .QPLL_FBDIV                     (QPLL_FBDIV),                           // 
@@ -269,9 +269,9 @@ else if (PCIE_GT_DEVICE == "GTH")
         .QPLL_VTRL_RESET                ( 2'd0),                                // GTH new
     
         //---------- MISC ------------------------------------------------------
-        .BIAS_CFG	                      (64'h0000040000001000),                 // Optimized for IES
+        .BIAS_CFG	                      (64'h0000040000001050),                 // Optimized for GES
         .COMMON_CFG	                    (32'd0),                                // 
-      //.RCAL_CFG                       ( 2'b00),                               // GTH new
+        .RCAL_CFG                       ( 2'b00),                               // GTH new
         .RSVD_ATTR0                     (16'd0),                                // GTH
         .RSVD_ATTR1                     (16'd0)                                 // GTH    
     )

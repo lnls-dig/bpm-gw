@@ -53,7 +53,7 @@
 //------------------------------------------------------------------------------
 //  Filename     :  qpll_drp.v
 //  Description  :  QPLL DRP Module for 7 Series Transceiver
-//  Version      :  15.2
+//  Version      :  18.2
 //------------------------------------------------------------------------------
 
 
@@ -70,6 +70,7 @@ module pcie_core_qpll_drp #
     parameter PCIE_USE_MODE    = "3.0",                     // PCIe use mode
     parameter PCIE_PLL_SEL     = "CPLL",                    // PCIe PLL select for Gen1/Gen2 only
     parameter PCIE_REFCLK_FREQ = 0,                         // PCIe reference clock frequency
+    parameter LOAD_CNT_MAX     = 2'd3,                      // Load max count
     parameter INDEX_MAX        = 3'd6                       // Index max count
         
 )
@@ -114,9 +115,10 @@ module pcie_core_qpll_drp #
     reg                 rdy_reg2;
     
     //---------- Internal Signals --------------------------
-    reg         [ 2:0]  index   =  3'd0;
-    reg                 mode    =  1'd0;
-    reg         [ 5:0]  crscode =  6'd0;
+    reg         [ 1:0]  load_cnt =  2'd0;
+    reg         [ 2:0]  index    =  3'd0;
+    reg                 mode     =  1'd0;
+    reg         [ 5:0]  crscode  =  6'd0;
     
     //---------- Output Registers --------------------------
     reg         [ 7:0]  addr    =  8'd0;
@@ -257,6 +259,29 @@ assign data_qpll_lpf                 = (gen3_reg2) ? GEN3_QPLL_LPF   : GEN12_QPL
 assign data_qpll_coarse_freq_ovrd    =  NORM_QPLL_COARSE_FREQ_OVRD;
 assign data_qpll_coarse_freq_ovrd_en = (ovrd_reg2) ? OVRD_QPLL_COARSE_FREQ_OVRD_EN : NORM_QPLL_COARSE_FREQ_OVRD_EN;
 assign data_qpll_lock_cfg            = (ovrd_reg2) ? OVRD_QPLL_LOCK_CFG            : NORM_QPLL_LOCK_CFG;
+
+
+//---------- Load Counter ------------------------------------------------------
+always @ (posedge DRP_CLK)
+begin
+
+    if (!DRP_RST_N)
+        load_cnt <= 2'd0;
+    else
+    
+        //---------- Increment Load Counter ----------------
+        if ((fsm == FSM_LOAD) && (load_cnt < LOAD_CNT_MAX))
+            load_cnt <= load_cnt + 2'd1;
+            
+        //---------- Hold Load Counter ---------------------
+        else if ((fsm == FSM_LOAD) && (load_cnt == LOAD_CNT_MAX))
+            load_cnt <= load_cnt;
+            
+        //---------- Reset Load Counter --------------------
+        else
+            load_cnt <= 2'd0;
+        
+end 
 
 
 
@@ -405,7 +430,7 @@ begin
         FSM_LOAD :
         
             begin
-            fsm   <= FSM_READ;
+            fsm   <= (load_cnt == LOAD_CNT_MAX) ? FSM_READ : FSM_LOAD;
             index <= index;
             mode  <= mode;
             done  <= 1'd0;
@@ -513,7 +538,7 @@ end
 assign DRP_ADDR      = addr;
 assign DRP_EN        = (fsm == FSM_READ) || (fsm == FSM_WRITE);
 assign DRP_DI        = di;
-assign DRP_WE        = (fsm == FSM_WRITE) || (fsm == FSM_WRDY);
+assign DRP_WE        = (fsm == FSM_WRITE); // || (fsm == FSM_WRDY);
 assign DRP_DONE      = done;
 assign DRP_QPLLRESET = (fsm == FSM_QPLLRESET);
 assign DRP_CRSCODE   = crscode;

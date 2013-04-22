@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.4
-# Date: Mon Jan  7 12:20:59 2013
+# Date: Mon Apr 15 16:55:07 2013
 #
 ##############################################################
 #
@@ -76,14 +76,14 @@ CSET bar0_type=Memory
 CSET bar1_64bit=false
 CSET bar1_enabled=true
 CSET bar1_prefetchable=false
-CSET bar1_scale=Megabytes
-CSET bar1_size=256
+CSET bar1_scale=Gigabytes
+CSET bar1_size=1
 CSET bar1_size_vector=1M
 CSET bar1_type=Memory
 CSET bar2_64bit=false
 CSET bar2_enabled=true
 CSET bar2_prefetchable=false
-CSET bar2_scale=Megabytes
+CSET bar2_scale=Kilobytes
 CSET bar2_size=1
 CSET bar2_size_vector=1M
 CSET bar2_type=Memory
@@ -263,4 +263,4 @@ CSET xlnx_ref_board=None
 MISC pkg_timestamp=2012-11-30T13:01:13Z
 # END Extra information
 GENERATE
-# CRC:  26bb8af
+# CRC: 3a3b9d83

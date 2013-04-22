@@ -251,8 +251,8 @@ module pcie_core_gt_top #
   localparam                         PCIE_LINK_SPEED = (PL_FAST_TRAIN == "TRUE") ? 2 : 3;
 
 // The parameter PCIE_OOBCLK_MODE_ENABLE value should be "0" for simulation and for synthesis it should be 1
-  localparam                         PCIE_OOBCLK_MODE_ENABLE = (PL_FAST_TRAIN == "TRUE") ? 0 : 1;
-  //localparam                         PCIE_OOBCLK_MODE_ENABLE =  1;
+  //localparam                         PCIE_OOBCLK_MODE_ENABLE = (PL_FAST_TRAIN == "TRUE") ? 0 : 1;
+  localparam                         PCIE_OOBCLK_MODE_ENABLE =  1;
 
   localparam              PCIE_TX_EIDLE_ASSERT_DELAY = (PL_FAST_TRAIN == "TRUE") ? 4 : 2;
 
@@ -344,6 +344,11 @@ endgenerate
   pcie_core_pipe_wrapper #
   (
     .PCIE_SIM_MODE                  ( PL_FAST_TRAIN ),
+ 
+    // synthesis translate_off
+    .PCIE_SIM_SPEEDUP               ( "TRUE" ),
+    // synthesis translate_on
+
     .PCIE_EXT_CLK                   ( PCIE_EXT_CLK ),
     .PCIE_TXBUF_EN                  ( PCIE_TXBUF_EN ),
     .PCIE_ASYNC_EN                  ( PCIE_ASYNC_EN ),
@@ -425,6 +430,7 @@ endgenerate
     .PIPE_RXBUFSTATUS               ( ),
 
     //---------- PIPE User Ports ---------------------------
+    .PIPE_MMCM_RST_N                ( sys_rst_n ),        // Async      | Async
     .PIPE_RXSLIDE                   ( {1*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
 
     .PIPE_CPLL_LOCK                 ( plllkdet ),
