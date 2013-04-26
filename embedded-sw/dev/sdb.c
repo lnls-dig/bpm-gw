@@ -92,8 +92,8 @@ static unsigned char *find_device_deep(unsigned int base, unsigned int sdb,
 			record->device.sdb_component.addr_first.low);
 }
 
-static void find_device_deep_all_rec(struct dev_node **dev, unsigned int base,
-		unsigned int sdb, unsigned int devid)
+static void find_device_deep_all_rec(struct dev_node **dev, unsigned int *size,
+		unsigned int base, unsigned int sdb, unsigned int devid)
 {
 	sdb_record_t *record = (sdb_record_t *) sdb;
 	int records = record->interconnect.sdb_records;
@@ -101,9 +101,8 @@ static void find_device_deep_all_rec(struct dev_node **dev, unsigned int base,
 
 	for (i = 0; i < records; ++i, ++record) {
 		if (record->empty.record_type == SDB_BRIDGE) {
-			find_device_deep_all_rec(dev, base +
-					record->bridge.sdb_component.
-					addr_first.low,
+			find_device_deep_all_rec(dev, size, base +
+					record->bridge.sdb_component.addr_first.low,
 					record->bridge.sdb_child.low,
 					devid);
 		}
@@ -117,6 +116,7 @@ static void find_device_deep_all_rec(struct dev_node **dev, unsigned int base,
 			(*dev)->next = 0;
 			// Pass new node address
 			dev = &(*dev)->next;
+			(*size)++;
 		}
 	}
 }
@@ -129,10 +129,11 @@ static struct dev_list *find_device_deep_all(unsigned int base, unsigned int sdb
 
 	// Initialize structure
 	dev->devid = devid;
+	dev->size = 0;
 	dev->devices = 0;
 
 	// Fill device list with the appropriate nodes
-	find_device_deep_all_rec(&(dev->devices), base, sdb, devid);
+	find_device_deep_all_rec(&(dev->devices), &(dev->size), base, sdb, devid);
 
 	return dev;
 }
@@ -184,23 +185,21 @@ void sdb_print_devices(void)
 
 void sdb_find_devices(void)
 {
-	//BASE_DMA = find_device(0xcababa56);
-	//BASE_DMA = (unsigned char *)0x20000400;
-	//BASE_FMA150 = find_device(0xf8c150c1);
-	//BASE_FMA150 = (unsigned char *)0x20000500;
-	//BASE_UART = find_device(0x8a5719ae);
-	//BASE_UART = (unsigned char *)0x20000600;
-	//BASE_GPIO = find_device(0x35aa6b95);
-	//BASE_GPIO = (unsigned char *)0x20000700;
-
+	// Enumerate devices
+	// get the second device form this list. Just for testing! with the etherbone
+	// core
+	mem_devl = find_device_all(0x66cfeb52);
+	dma_devl = find_device_all(0xcababa56);
 	ethmac_devl = find_device_all(0xf8cfeb16);
 	ethmac_adapt_devl = find_device_all(0x2ff9a28e);
 	ebone_cfg_devl = find_device_all(0x68202b22);
-	dma_devl = find_device_all(0xcababa56);
-	fmc150_devl = find_device_all(0xf8c150c1);
+
+	fmc516_devl = find_device_all(0x27b95341);
+	spi_devl = find_device_all(0x40286417);
+	i2c_devl = find_device_all(0x97b6323d);
+	owr_devl = find_device_all(0x525fbb09);
+
 	uart_devl = find_device_all(0x8a5719ae);
 	gpio_devl = find_device_all(0x35aa6b95);
-	// get the second device form this list. Just for testing! with the etherbone
-	// core
-	ethmac_buf_devl = find_device_all(0x66cfeb52);
+	tics_devl = find_device_all(0xfdafb9dd);
 }

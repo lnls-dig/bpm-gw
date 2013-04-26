@@ -1,6 +1,9 @@
-#include "gpio.h"       // GPIO device funtions
+#include "gpio.h"         // GPIO device funtions
+#include "i2c.h"          // I2V device functions
+#include "onewire.h"      // Onewire device functions
 #include "dma.h"          // DMA device functions
-#include "fmc150.h"       // FMC150 device functions
+//#include "fmc150.h"     // FMC150 device functions
+#include "fmc516.h"       // FMC516 device functions
 #include "uart.h"         // UART device functions
 #include "memmgr.h"       // memory pool functions
 #include "board.h"        // board definitions
@@ -26,20 +29,13 @@
 
 #define NUM_LEDS 8
 #define NUM_LED_ITER 4
-#define NUM_FMC150_TRIES 5
+//#define NUM_FMC150_TRIES 5
 
-/* Ethernet MAC + Etherbone testing */
-//unsigned char myIP[]  = { 10, 0, 18, 100 };
-//unsigned char myMAC[] = { ETH_MACADDR0, ETH_MACADDR1, ETH_MACADDR2, ETH_MACADDR3, ETH_MACADDR4, ETH_MACADDR5 };
-//unsigned char allMAC[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-
-/* His info */
-//volatile int sawARP = 0;
-//volatile static int sawPING = 0;
-//volatile static int hisBodyLen;
-//static unsigned char hisBody[1516];
-//unsigned char hisIP[4];
-//unsigned char hisMAC[6];
+#define NUM_BUTTONS 8
+#define TEST_BUTTONS_MASK 0x00000003
+#define TEST_BUTTONS_TRIES 10
+#define TEST_BUTTONS_ITER 2
+#define TEST_BUTTONS_DELAY (100000000/4/5)
 
 static volatile int eb_done;
 
@@ -133,9 +129,9 @@ void user_recv(unsigned char* data, int length) {
 
             eb_done = 0;
             //ethmac_adapt->length = iplen + 16;
-            ethmac_adapt_set_length(iplen + 16);
+            ethmac_adapt_set_length(0, iplen + 16);
             //ethmac_adapt->doit = 1;
-            ethmac_adapt_go();
+            ethmac_adapt_go(0);
             while (!eb_done);
 
             dbg_print("> EBONE request\n");
@@ -183,15 +179,30 @@ int dbe_init(void)
         return -1;
     }
 
+    if(spi_init() == -1){
+        pp_printf("> error initializing SPI! Exiting...\n");
+        return -1;
+    }
+
+    if(i2c_init() == -1){
+        pp_printf("> error initializing I2C! Exiting...\n");
+        return -1;
+    }
+
+    if(owr_init() == -1){
+        pp_printf("> error initializing Onewire! Exiting...\n");
+        return -1;
+    }
+
     //if(fmc150_init() == -1){
     //  pp_printf("> Error initializing FMC150! Exiting...\n");
     //  return -1;
     //}
 
-    //if(fmc516_init() == -1){
-    //  pp_printf("> Error initializing FMC516! Exiting...\n");
-    //  return -1;
-    //}
+    if(fmc516_init() == -1){
+      pp_printf("> Error initializing FMC516! Exiting...\n");
+      return -1;
+    }
 
     // Ethernet initilization
     if(ethmac_adapt_init() == -1){
@@ -205,6 +216,16 @@ int dbe_init(void)
         return -1;
     }
 
+    return 0;
+}
+
+int dbe_exit()
+{
+    gpio_exit();
+    uart_exit();
+    fmc516_exit();
+
+    //always succeeds
     return 0;
 }
 
@@ -259,11 +280,12 @@ void leds_test(void)
     pp_printf("-------------------------------------------\n\n");
 
     pp_printf("leds_test:\n");
+    pp_printf("> blinking leds\n");
     /* Rotate the LEDs  */
     for ( j = 0; j < NUM_LED_ITER; ++j)
         for (i = 0; i < NUM_LEDS; ++i){
             // Set led at position i
-            gpio_out(i, 1);
+            gpio_out(0, i, 1);
 
             /* Each loop iteration takes 4 cycles.
              * It runs at 100MHz.
@@ -272,15 +294,53 @@ void leds_test(void)
             delay(LED_DELAY);
 
             // Clear led at position i
-            gpio_out(i, 0);
+            gpio_out(0, i, 0);
         }
 
-    pp_printf("> testing leds\n");
     // End test with 4 leds set
-    gpio_out(0, 1);
-    gpio_out(2, 1);
-    gpio_out(4, 1);
-    gpio_out(6, 1);
+    gpio_out(0, 0, 1);
+    gpio_out(0, 2, 1);
+    gpio_out(0, 4, 1);
+    gpio_out(0, 6, 1);
+
+    pp_printf("> test passed!\n");
+}
+
+void button_test()
+{
+    int i, j;
+    unsigned int button_pressed = 0;
+
+    pp_printf("-------------------------------------------\n");
+    pp_printf("|               Button test               |\n");
+    pp_printf("-------------------------------------------\n\n");
+
+    pp_printf("buttons_test:\n");
+    pp_printf("> press (switch) buttons ");
+
+    for (i = 0; i < TEST_BUTTONS_ITER-1; ++i)
+        pp_printf("%d, ", i);
+
+    pp_printf("%d\n", TEST_BUTTONS_ITER);
+
+    for (i = 0; i < TEST_BUTTONS_TRIES; ++i) {
+        for (j = 0; j < TEST_BUTTONS_ITER; ++j) {
+            if ((!(button_pressed & (0x1 << j))) & gpio_in(1, j)) {
+                button_pressed |= 1 << j;
+                pp_printf("button%d pressed!\n", j);
+            }
+        }
+
+        if (button_pressed == TEST_BUTTONS_MASK) {
+            pp_printf("> test passed!\n");
+            return;
+        }
+
+        pp_printf("> remaining time to press buttons: %ds\n", (TEST_BUTTONS_TRIES-i));
+        delay(TEST_BUTTONS_DELAY);
+    }
+
+    pp_printf("> test failed!\n");
 }
 
 //void fmc150_test()
@@ -298,6 +358,124 @@ void leds_test(void)
 //
 //  pp_printf("> FMC150 CDCE72010 initialized\n");
 //}
+
+
+void print_fmc516_data(unsigned int id)
+{
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
+  delay(LED_DELAY);
+  pp_printf("> ADC data0 %d\n", fmc516_read_adc0(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+12384);
+
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
+  delay(LED_DELAY);
+  pp_printf("> ADC data1 %d\n", fmc516_read_adc1(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+12384);
+
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY);
+  pp_printf("> ADC data2 %d\n", fmc516_read_adc2(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+456);
+
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+32);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+124);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+1);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY);
+  pp_printf("> ADC data3 %d\n", fmc516_read_adc3(DEFAULT_FMC516_ID));
+  delay(LED_DELAY+79);
+}
+
+void fmc516_test()
+{
+  int i;
+
+  pp_printf("-------------------------------------------\n");
+  pp_printf("|                FMC516 test              |\n");
+  pp_printf("-------------------------------------------\n\n");
+
+  pp_printf("> FMC516 ADCs info...\n");
+
+  //pp_printf("> FMC516 ADCs resetting...\n");
+  //delay(LED_DELAY);
+  //fmc516_reset_adcs(FMC516_ID);
+
+  //delay(LED_DELAY);
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d calibration progress...\n", i);
+    while(!(fmc516_isla216_chkcal_stat(i)));
+    pp_printf("done\n");
+  }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d port_config: %d\n",
+  //    i, fmc516_isla216_read_byte(0x00, i));
+  //}
+  //
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d user_pat: %d\n",
+  //    i, fmc516_isla216_read_byte(0xC1, i));
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d chip id: %d\n",
+      i, fmc516_isla216_get_chipid(i));
+  }
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d chip version: %d\n",
+      i, fmc516_isla216_get_chipver(i));
+  }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+  //  fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+  //      ISLA216_TESTIO_REG, i);
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    fmc516_isla216_test_ramp(i);
+    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  }
+
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_midscale(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: test miscale enabled!\n", i);
+  //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    pp_printf("> FMC516_ISLA216_ADC%d: testio reg: 0X%8X\n", i,
+            fmc516_isla216_read_byte(ISLA216_TESTIO_REG, i));
+  }
+
+  //print_fmc516_data(DEFAULT_FMC516_ID);
+
+  dbg_print("> initilizing fmc516 delays\n");
+  fmc516_sweep_delays(DEFAULT_FMC516_ID);
+
+  pp_printf("> test finished...\n");
+}
 
 int main(void)
 {
@@ -322,7 +500,7 @@ int main(void)
     /* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
 
     /* Configure EB DMA */
-    ethmac_adapt_set_base((unsigned int)hisBody, (unsigned int)hisBody);
+    ethmac_adapt_set_base(0, (unsigned int)hisBody, (unsigned int)hisBody);
     int_add(4, &set_eb_done, 0);
 
     print_header();
@@ -333,11 +511,14 @@ int main(void)
     /* Test leds */
     leds_test();
 
+    /* Test button */
+    button_test();
+
     /* FMC150 test */
     //fmc150_test();
 
     /* FMC516 test */
-    //fmc516_test();
+    fmc516_test();
 
     print_end_header();
 
@@ -353,6 +534,8 @@ int main(void)
             sendECHO();
         }
     }
+
+    dbe_exit();
 
     return 0;
 }

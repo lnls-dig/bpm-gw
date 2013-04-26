@@ -16,7 +16,7 @@
 // dynamic defined through SDB
 //#define ETH0_BASE 0x30015000U   //ethmac_devl
 //#define ETH0_BUF  0x20000000U   //ethmac_buf_devl
-#define ETH0_BASE 0x70000000U   //ethmac_devl
+#define ETH0_BASE 0x30005000U   //ethmac_devl
 #define ETH0_BUF  0x20000000U   //ethmac_buf_devl
 #define ETH0_IRQ 0
 //#define ETH0_PHY 0
@@ -51,6 +51,30 @@
 #define BUFF_SIZE (0x800)
 #define OETH_RX_BUFF_SIZE BUFF_SIZE
 #define OETH_TX_BUFF_SIZE BUFF_SIZE
+
+/****************************/
+/*           IDs            */
+/****************************/
+
+/*
+ * IDs of general components
+ */
+#define GEN_LED_GPIO_ID 0
+#define GEN_BUTTON_GPIO_ID 1
+
+#define FMC150_ID 0
+#define FMC516_ID 0
+#define TICS_ID 0
+
+/*
+ * IDs of FMC516 components
+ */
+#define FMC516_SYS_I2C_ID 0
+#define FMC516_VCXO_I2C_ID 1
+#define FMC516_ISLA216P25_SPI_ID 0
+#define FMC516_LMK02000_SPI_ID 1
+#define FMC516_DS2431_OWR_ID 0
+#define FMC516_DS2432_OWR_ID 1
 
 int board_init();
 int board_update();
