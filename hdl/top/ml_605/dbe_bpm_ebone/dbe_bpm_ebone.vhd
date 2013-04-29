@@ -155,26 +155,26 @@ architecture rtl of dbe_bpm_ebone is
     date          => x"20130701",
     name          => "ETHMAC_ADAPTER     ")));
 
-    -- WB SDB (Self describing bus) layout
+  -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
     ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 128KB RAM
       1 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"10000000"),   -- Second port to the same memory
       2 => f_sdb_embed_device(f_xwb_dpram(c_dpram_ethbuf_size),
                                                           x"20000000"),   -- 64KB RAM
-      --3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"30014000"),   -- DMA control port
-      --4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30015000"),   -- Ethernet MAC control port
-      --5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30016000"),   -- Ethernet Adapter control port
-      --6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30017000"),   -- Etherbone control port
-      --7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"30018000"),   -- UART control port
-      --8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"30019000"),   -- GPIO LED
-      --9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"3001A000")    -- GPIO Button
-      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"60000000"),   -- DMA control port
-      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"70000000"),   -- Ethernet MAC control port
-      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"80000000"),   -- Ethernet Adapter control port
-      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"90000000"),   -- Etherbone control port
-      7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"A0000000"),   -- UART control port
-      8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"B0000000"),   -- GPIO LED
-      9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"C0000000")    -- GPIO Button
+      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"30140000"),   -- DMA control port
+      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30150000"),   -- Ethernet MAC control port
+      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30160000"),   -- Ethernet Adapter control port
+      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30170000"),   -- Etherbone control port
+      7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"30180000"),   -- UART control port
+      8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"30190000"),   -- GPIO LED
+      9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"301A0000")    -- GPIO Button
+      --3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"60000000"),   -- DMA control port
+      --4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"70000000"),   -- Ethernet MAC control port
+      --5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"80000000"),   -- Ethernet Adapter control port
+      --6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"90000000"),   -- Etherbone control port
+      --7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"A0000000"),   -- UART control port
+      --8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"B0000000"),   -- GPIO LED
+      --9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"C0000000")    -- GPIO Button
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
@@ -220,7 +220,6 @@ architecture rtl of dbe_bpm_ebone is
   signal mtxen_pad_int                      : std_logic;
   signal mtxerr_pad_int                     : std_logic;
   signal mdc_pad_int                        : std_logic;
-
 
   -- Ethrnet MAC adapter signals
   signal irq_rx_done                        : std_logic;
@@ -504,7 +503,7 @@ begin
     g_size                                  => c_dpram_ethbuf_size,
     g_init_file                             => "",
     g_must_have_init_file                   => false,
-    g_slave1_interface_mode                 => CLASSIC,
+    g_slave1_interface_mode                 => PIPELINED,
     --g_slave2_interface_mode                 => PIPELINED,
     g_slave1_granularity                    => BYTE
     --g_slave2_granularity                    => BYTE
@@ -524,9 +523,9 @@ begin
   cmp_xwb_ethmac : xwb_ethmac
   generic map (
     --g_ma_interface_mode                     => PIPELINED,
-    g_ma_interface_mode                     => CLASSIC, -- NOT used for now
+    g_ma_interface_mode                     => PIPELINED,
     --g_ma_address_granularity                => WORD,
-    g_ma_address_granularity                => BYTE,    -- NOT used for now
+    g_ma_address_granularity                => BYTE,
     g_sl_interface_mode                     => PIPELINED,
     --g_sl_interface_mode                     => CLASSIC,
     --g_sl_address_granularity                => WORD
