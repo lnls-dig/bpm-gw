@@ -40,20 +40,19 @@ port(
   wb_dat_i                                  : in std_logic_vector(31 downto 0);
   wb_dat_o                                  : out std_logic_vector(31 downto 0);
   wb_adr_i                                  : in std_logic_vector(11 downto 0);
-  wb_sel_i                                    : in std_logic_vector(3 downto 0);
-  wb_we_i                                      : in std_logic;
-  wb_cyc_i                                    : in std_logic;
-  wb_stb_i                                    : in std_logic;
-  wb_ack_o                                    : out std_logic;
-  wb_err_o                                    : out std_logic;
+  wb_sel_i                                  : in std_logic_vector(3 downto 0);
+  wb_we_i                                   : in std_logic;
+  wb_cyc_i                                  : in std_logic;
+  wb_stb_i                                  : in std_logic;
+  wb_ack_o                                  : out std_logic;
+  wb_err_o                                  : out std_logic;
   wb_stall_o                                : out std_logic;
   --wb_rty_o                                  : out std_logic;
-  wb_rty_o                                  : out std_logic;
 
   -- WISHBONE master
   m_wb_adr_o                                : out std_logic_vector(31 downto 0);
   m_wb_sel_o                                : out std_logic_vector(3 downto 0);
-  m_wb_we_o                                    : out std_logic;
+  m_wb_we_o                                 : out std_logic;
   m_wb_dat_o                                : out std_logic_vector(31 downto 0);
   m_wb_dat_i                                : in std_logic_vector(31 downto 0);
   m_wb_cyc_o                                : out std_logic;
@@ -62,7 +61,6 @@ port(
   m_wb_err_i                                : in std_logic;
   m_wb_stall_i                              : in std_logic;
   --m_wb_rty_i                                : in std_logic;
-  m_wb_rty_i                                : in std_logic;
 
   -- PHY TX
   mtx_clk_pad_i                             : in std_logic;
@@ -71,11 +69,11 @@ port(
   mtxerr_pad_o                              : out std_logic;
 
   -- PHY RX
-  mrx_clk_pad_i                                : in std_logic;
+  mrx_clk_pad_i                             : in std_logic;
   mrxd_pad_i                                : in std_logic_vector(3 downto 0);
-  mrxdv_pad_i                                  : in std_logic;
+  mrxdv_pad_i                               : in std_logic;
   mrxerr_pad_i                              : in std_logic;
-  mcoll_pad_i                                  : in std_logic;
+  mcoll_pad_i                               : in std_logic;
   mcrs_pad_i                                : in std_logic;
 
   -- MII
@@ -85,7 +83,7 @@ port(
   md_padoe_o                                : out std_logic;
 
   -- Interrupt
-  int_o                                          : out std_logic
+  int_o                                     : out std_logic
 );
 end wb_ethmac;
 
@@ -112,17 +110,17 @@ architecture rtl of wb_ethmac is
     wb_dat_i                                : in std_logic_vector(31 downto 0);
     wb_dat_o                                : out std_logic_vector(31 downto 0);
     wb_adr_i                                : in std_logic_vector(11 downto 2);
-    wb_sel_i                                  : in std_logic_vector(3 downto 0);
-    wb_we_i                                    : in std_logic;
-    wb_cyc_i                                  : in std_logic;
-    wb_stb_i                                  : in std_logic;
-    wb_ack_o                                  : out std_logic;
-    wb_err_o                                  : out std_logic;
+    wb_sel_i                                : in std_logic_vector(3 downto 0);
+    wb_we_i                                 : in std_logic;
+    wb_cyc_i                                : in std_logic;
+    wb_stb_i                                : in std_logic;
+    wb_ack_o                                : out std_logic;
+    wb_err_o                                : out std_logic;
 
     -- WISHBONE master
     m_wb_adr_o                              : out std_logic_vector(31 downto 0);
     m_wb_sel_o                              : out std_logic_vector(3 downto 0);
-    m_wb_we_o                                  : out std_logic;
+    m_wb_we_o                               : out std_logic;
     m_wb_dat_o                              : out std_logic_vector(31 downto 0);
     m_wb_dat_i                              : in std_logic_vector(31 downto 0);
     m_wb_cyc_o                              : out std_logic;
@@ -137,11 +135,11 @@ architecture rtl of wb_ethmac is
     mtxerr_pad_o                            : out std_logic;
 
     -- PHY RX
-    mrx_clk_pad_i                              : in std_logic;
+    mrx_clk_pad_i                           : in std_logic;
     mrxd_pad_i                              : in std_logic_vector(3 downto 0);
-    mrxdv_pad_i                                : in std_logic;
+    mrxdv_pad_i                             : in std_logic;
     mrxerr_pad_i                            : in std_logic;
-    mcoll_pad_i                                : in std_logic;
+    mcoll_pad_i                             : in std_logic;
     mcrs_pad_i                              : in std_logic;
 
     -- MII
@@ -151,7 +149,7 @@ architecture rtl of wb_ethmac is
     md_padoe_o                              : out std_logic;
 
     -- Interrupt
-    int_o                                        : out std_logic
+    int_o                                   : out std_logic
   );
   end component;
 
@@ -187,12 +185,9 @@ begin
     sl_dat_o                                => wb_dat_o,
     sl_ack_o                                => wb_ack_o,
     sl_stall_o                              => wb_stall_o,
-    --sl_int_o                                => wb_int_o,
-    sl_rty_o                                => wb_rty_o,
+    --sl_rty_o                                => wb_rty_o,
     sl_err_o                                => wb_err_o
   );
-
-  --wb_rty_o                                  <= '0';
 
   -- Unused slave signals
   wb_sl_out.rty                             <= '0';
@@ -200,41 +195,37 @@ begin
   wb_sl_out.int                             <= '0';
 
   ---- ETHMAC master interface is byte addressed, classic wishbone
-  -- NOT used for now
-  --cmp_ma_iface_slave_adapter : wb_slave_adapter
-  --generic map (
-  --  g_master_use_struct                     => false,
-  --  --g_master_mode                           => g_ma_interface_mode,
-  --  --g_master_granularity                    => g_ma_address_granularity,
-  --  g_master_mode                           => CLASSIC,
-  --  g_master_granularity                    => BYTE,
-  --  g_slave_use_struct                      => true,
-  --  g_slave_mode                            => CLASSIC,
-  --  g_slave_granularity                     => BYTE
-  --)
-  --port map (
-  --  clk_sys_i                               => wb_clk_i,
-  --  rst_n_i                                 => rst_n,
-  --  slave_i                                 => wb_ma_out,
-  --  slave_o                                 => wb_ma_in,
-  --  ma_adr_o                                => m_wb_adr_o,
-  --  ma_dat_o                                => m_wb_dat_o,
-  --  ma_sel_o                                => m_wb_sel_o,
-  --  ma_cyc_o                                => m_wb_cyc_o,
-  --  ma_stb_o                                => m_wb_stb_o,
-  --  ma_we_o                                 => m_wb_we_o,
-  --  ma_dat_i                                => m_wb_dat_i,
-  --  ma_ack_i                                => m_wb_ack_i,
-  --  ma_stall_i                              => m_wb_stall_i,
-  --  --ma_int_i                                => m_wb_int_i,
-  --  ma_rty_i                                => m_wb_rty_i,
-  --  ma_err_i                                => m_wb_err_i
-  --);
+  cmp_ma_iface_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => false,
+    g_master_mode                           => g_ma_interface_mode,
+    g_master_granularity                    => g_ma_address_granularity,
+    g_slave_use_struct                      => true,
+    g_slave_mode                            => CLASSIC,
+    g_slave_granularity                     => BYTE
+  )
+  port map (
+    clk_sys_i                               => wb_clk_i,
+    rst_n_i                                 => rst_n,
+    slave_i                                 => wb_ma_out,
+    slave_o                                 => wb_ma_in,
+    ma_adr_o                                => m_wb_adr_o,
+    ma_dat_o                                => m_wb_dat_o,
+    ma_sel_o                                => m_wb_sel_o,
+    ma_cyc_o                                => m_wb_cyc_o,
+    ma_stb_o                                => m_wb_stb_o,
+    ma_we_o                                 => m_wb_we_o,
+    ma_dat_i                                => m_wb_dat_i,
+    ma_ack_i                                => m_wb_ack_i,
+    ma_stall_i                              => m_wb_stall_i,
+    --ma_rty_i                                => m_wb_rty_i,
+    ma_err_i                                => m_wb_err_i
+  );
 
   -- Unused slave signals
-  --wb_ma_in.rty                              <= '0';
-  --wb_ma_in.stall                            <= '0';
-  --wb_ma_in.int                              <= '0';
+  wb_ma_in.rty                              <= '0';
+  wb_ma_in.stall                            <= '0';
+  wb_ma_in.int                              <= '0';
 
   cmp_wrapper_ethmac : ethmac
   port map (
@@ -264,25 +255,25 @@ begin
     --wb_err_o                                => wb_err_o,
 
     -- WISHBONE master
-    --m_wb_adr_o                              => wb_ma_out.adr,
-    --m_wb_sel_o                              => wb_ma_out.sel,
-    --m_wb_we_o                               => wb_ma_out.we,
-    --m_wb_dat_o                              => wb_ma_out.dat,
-    --m_wb_dat_i                              => wb_ma_in.dat,
-    --m_wb_cyc_o                              => wb_ma_out.cyc,
-    --m_wb_stb_o                              => wb_ma_out.stb,
-    --m_wb_ack_i                              => wb_ma_in.ack,
-    --m_wb_err_i                              => wb_ma_in.err,
+    m_wb_adr_o                              => wb_ma_out.adr,
+    m_wb_sel_o                              => wb_ma_out.sel,
+    m_wb_we_o                               => wb_ma_out.we,
+    m_wb_dat_o                              => wb_ma_out.dat,
+    m_wb_dat_i                              => wb_ma_in.dat,
+    m_wb_cyc_o                              => wb_ma_out.cyc,
+    m_wb_stb_o                              => wb_ma_out.stb,
+    m_wb_ack_i                              => wb_ma_in.ack,
+    m_wb_err_i                              => wb_ma_in.err,
 
-    m_wb_adr_o                              => m_wb_adr_o,
-    m_wb_sel_o                              => m_wb_sel_o,
-    m_wb_we_o                               => m_wb_we_o,
-    m_wb_dat_o                              => m_wb_dat_o,
-    m_wb_dat_i                              => m_wb_dat_i,
-    m_wb_cyc_o                              => m_wb_cyc_o,
-    m_wb_stb_o                              => m_wb_stb_o,
-    m_wb_ack_i                              => m_wb_ack_i,
-    m_wb_err_i                              => m_wb_err_i,
+    --m_wb_adr_o                              => m_wb_adr_o,
+    --m_wb_sel_o                              => m_wb_sel_o,
+    --m_wb_we_o                               => m_wb_we_o,
+    --m_wb_dat_o                              => m_wb_dat_o,
+    --m_wb_dat_i                              => m_wb_dat_i,
+    --m_wb_cyc_o                              => m_wb_cyc_o,
+    --m_wb_stb_o                              => m_wb_stb_o,
+    --m_wb_ack_i                              => m_wb_ack_i,
+    --m_wb_err_i                              => m_wb_err_i,
 
     -- PHY TX
     mtx_clk_pad_i                           => mtx_clk_pad_i,
