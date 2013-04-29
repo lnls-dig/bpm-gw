@@ -9,8 +9,8 @@ CONFIG_PPRINTF =? 1
 #endif
 
 CONFIG_ETHERBONE =? 1
-CONFIG_FMC150 ?= 1
-CONFIG_FMC516 ?= 1
+CONFIG_FMC150 ?= 0
+CONFIG_FMC516 ?= 0
 
 # and don't touch the rest unless you know what you're doing.
 CROSS_COMPILE ?= lm32-elf-
@@ -41,7 +41,7 @@ CFLAGS_MEMMGR = -DDEBUG_MEMMGR_FATAL=1 \
 	-DDEBUG_MEMMGR_SUPPORT_STATS=1 \
 	-DPOOL_SIZE=2048
 
-CFLAGS_DEBUG = -DDEBUG_PRINT=1 -DFMC150_DEBUG=1
+CFLAGS_DEBUG = -DDBE_DBG=1
 
 CFLAGS_PLATFORM  = -mmultiply-enabled -mbarrel-shift-enabled
 LDFLAGS_PLATFORM = -mmultiply-enabled -mbarrel-shift-enabled \

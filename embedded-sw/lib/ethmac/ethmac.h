@@ -45,44 +45,53 @@ typedef unsigned int uint;
 
 /* Ethernet configuration registers */
 typedef struct _oeth_regs {
-	uint    moder;          /* Mode Register */
-	uint    int_src;        /* Interrupt Source Register */
-	uint    int_mask;       /* Interrupt Mask Register */
-	uint    ipgt;           /* Back to Bak Inter Packet Gap Register */
-	uint    ipgr1;          /* Non Back to Back Inter Packet Gap Register 1 */
-	uint    ipgr2;          /* Non Back to Back Inter Packet Gap Register 2 */
-	uint    packet_len;     /* Packet Length Register (min. and max.) */
-	uint    collconf;       /* Collision and Retry Configuration Register */
-	uint    tx_bd_num;      /* Transmit Buffer Descriptor Number Register */
-	uint    ctrlmoder;      /* Control Module Mode Register */
-	uint    miimoder;       /* MII Mode Register */
-	uint    miicommand;     /* MII Command Register */
-	uint    miiaddress;     /* MII Address Register */
-	uint    miitx_data;     /* MII Transmit Data Register */
-	uint    miirx_data;     /* MII Receive Data Register */
-	uint    miistatus;      /* MII Status Register */
-	uint    mac_addr0;      /* MAC Individual Address Register 0 */
-	uint    mac_addr1;      /* MAC Individual Address Register 1 */
-	uint    hash_addr0;     /* Hash Register 0 */
-	uint    hash_addr1;     /* Hash Register 1 */
+  uint    moder;          /* Mode Register */
+  uint    int_src;        /* Interrupt Source Register */
+  uint    int_mask;       /* Interrupt Mask Register */
+  uint    ipgt;           /* Back to Bak Inter Packet Gap Register */
+  uint    ipgr1;          /* Non Back to Back Inter Packet Gap Register 1 */
+  uint    ipgr2;          /* Non Back to Back Inter Packet Gap Register 2 */
+  uint    packet_len;     /* Packet Length Register (min. and max.) */
+  uint    collconf;       /* Collision and Retry Configuration Register */
+  uint    tx_bd_num;      /* Transmit Buffer Descriptor Number Register */
+  uint    ctrlmoder;      /* Control Module Mode Register */
+  uint    miimoder;       /* MII Mode Register */
+  uint    miicommand;     /* MII Command Register */
+  uint    miiaddress;     /* MII Address Register */
+  uint    miitx_data;     /* MII Transmit Data Register */
+  uint    miirx_data;     /* MII Receive Data Register */
+  uint    miistatus;      /* MII Status Register */
+  uint    mac_addr0;      /* MAC Individual Address Register 0 */
+  uint    mac_addr1;      /* MAC Individual Address Register 1 */
+  uint    hash_addr0;     /* Hash Register 0 */
+  uint    hash_addr1;     /* Hash Register 1 */
 } oeth_regs;
 
 /* Ethernet buffer descriptor */
 typedef struct _oeth_bd {
 #if 0
-	ushort  len;            /* Buffer length */
-	ushort  status;         /* Buffer status */
+  ushort  len;            /* Buffer length */
+  ushort  status;         /* Buffer status */
 #else
-	uint    len_status;
+  uint    len_status;
 #endif
-	uint    addr;           /* Buffer address */
+  uint    addr;           /* Buffer address */
 } oeth_bd;
 
-// From board.h
-#define ETH_BASE_ADD    ETH0_BASE
+typedef volatile oeth_regs ethmac_t;
+typedef volatile oeth_bd ethmac_bd_t;
+typedef volatile unsigned long ethmac_buf_t;
 
-#define OETH_REG_BASE           ETH_BASE_ADD
-#define OETH_BD_BASE            (ETH_BASE_ADD + 0x400)
+//Just one device supported
+#define OETH_ID                 0
+#define OETH_BUF_ID             0
+
+// From board.h
+//#define ETH_BASE_ADD    ETH0_BASE
+
+//#define OETH_REG_BASE           ETH_BASE_ADD
+//#define OETH_BD_BASE            (ETH_BASE_ADD + 0x400)
+#define OETH_BD_BASE_OFFS       0x400
 #define OETH_TOTAL_BD           128
 #define OETH_MAXBUF_LEN         0x600
 
@@ -100,11 +109,11 @@ typedef struct _oeth_bd {
 #define OETH_TX_BD_DEFER        0x0002 /* Tx BD Defer Status */
 #define OETH_TX_BD_CARRIER      0x0001 /* Tx BD Carrier Sense Lost Status */
 #define OETH_TX_BD_STATS        (OETH_TX_BD_UNDERRUN            | \
-		OETH_TX_BD_RETRY                | \
-		OETH_TX_BD_RETLIM               | \
-		OETH_TX_BD_LATECOL              | \
-		OETH_TX_BD_DEFER                | \
-		OETH_TX_BD_CARRIER)
+    OETH_TX_BD_RETRY                | \
+    OETH_TX_BD_RETLIM               | \
+    OETH_TX_BD_LATECOL              | \
+    OETH_TX_BD_DEFER                | \
+    OETH_TX_BD_CARRIER)
 
 /* Rx BD */
 #define OETH_RX_BD_EMPTY        0x8000 /* Rx BD Empty */
@@ -120,13 +129,13 @@ typedef struct _oeth_bd {
 #define OETH_RX_BD_CRCERR       0x0002 /* Rx BD CRC Error Status */
 #define OETH_RX_BD_LATECOL      0x0001 /* Rx BD Late Collision Status */
 #define OETH_RX_BD_STATS        (OETH_RX_BD_MISS                | \
-		OETH_RX_BD_OVERRUN              | \
-		OETH_RX_BD_INVSIMB              | \
-		OETH_RX_BD_DRIBBLE              | \
-		OETH_RX_BD_TOOLONG              | \
-		OETH_RX_BD_SHORT                | \
-		OETH_RX_BD_CRCERR               | \
-		OETH_RX_BD_LATECOL)
+    OETH_RX_BD_OVERRUN              | \
+    OETH_RX_BD_INVSIMB              | \
+    OETH_RX_BD_DRIBBLE              | \
+    OETH_RX_BD_TOOLONG              | \
+    OETH_RX_BD_SHORT                | \
+    OETH_RX_BD_CRCERR               | \
+    OETH_RX_BD_LATECOL)
 
 /* MODER Register */
 #define OETH_MODER_RXEN         0x00000001 /* Receive Enable  */
@@ -191,7 +200,8 @@ typedef struct _oeth_bd {
 
 void eth_mii_write(char phynum, short regnum, short data);
 short eth_mii_read(char phynum, short regnum);
-void ethmac_setup(int phynum, unsigned int buf);
+//void ethmac_setup(int phynum, unsigned int buf);
+void ethmac_setup(int phynum);
 void ethmac_halt(void);
 void oeth_interrupt(void* arg);
 void tx_packet(void* data, int length);
@@ -199,6 +209,6 @@ void tx_packet(void* data, int length);
 void user_recv(unsigned char* data, int length);
 
 /* ETHMAC init */
-//int ethmac_init(void);
+int ethmac_init(void);
 
 #endif

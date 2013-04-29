@@ -6,6 +6,7 @@ ifeq ($(CONFIG_PPRINTF),0)
 endif
 
 OBJS_LIB += lib/util.o lib/int.o lib/arp.o lib/icmp.o lib/ipv4.o lib/debug_print.o
+#OBJS_LIB += lib/util.o lib/int.o lib/debug_print.o
 
 ifdef CONFIG_ETHERBONE
 	#OBJS_LIB += lib/bootp.o
