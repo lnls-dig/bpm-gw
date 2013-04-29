@@ -8,7 +8,7 @@
 //int needIP = 1;
 //static uint8_t myIP[4];
 
-unsigned char myIP[]  = { 10, 0, 18, 136 };
+unsigned char myIP[]  = { 10, 0, 18, 148 };
 unsigned char myMAC[] = { ETH_MACADDR0, ETH_MACADDR1, ETH_MACADDR2, ETH_MACADDR3, ETH_MACADDR4, ETH_MACADDR5 };
 unsigned char allMAC[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 unsigned char hisIP[4];
@@ -16,17 +16,17 @@ unsigned char hisMAC[6];
 
 unsigned int ipv4_checksum(unsigned short *buf, int shorts)
 {
-	int i;
-	unsigned int sum;
+  int i;
+  unsigned int sum;
 
-	sum = 0;
-	for (i = 0; i < shorts; ++i)
-		sum += buf[i];
+  sum = 0;
+  for (i = 0; i < shorts; ++i)
+    sum += buf[i];
 
-	sum = (sum >> 16) + (sum & 0xffff);
-	sum += (sum >> 16);
+  sum = (sum >> 16) + (sum & 0xffff);
+  sum += (sum >> 16);
 
-	return (~sum & 0xffff);
+  return (~sum & 0xffff);
 }
 
 //static int bootp_retry = 0;
