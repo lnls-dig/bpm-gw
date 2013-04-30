@@ -1,7 +1,10 @@
-# choose your board here.
+# Autodependencies generatation by Scott McPeak, November 2001,
+# from article "Autodependencies with GNU make"
+
+# Choose your board here.
 BOARD = ml605
 
-# some configurations
+# Some configurations
 CONFIG_PPRINTF =? 1
 
 #ifeq ($(CONFIG_PPRINTF),1)
@@ -12,7 +15,7 @@ CONFIG_ETHERBONE =? 1
 CONFIG_FMC150 ?= 0
 CONFIG_FMC516 ?= 0
 
-# and don't touch the rest unless you know what you're doing.
+# Don't touch the rest unless you know what you're doing.
 CROSS_COMPILE ?= lm32-elf-
 
 CC =		$(CROSS_COMPILE)gcc
@@ -30,9 +33,9 @@ INCLUDE_DIRS = -Iinclude   \
 		-Iinclude/memmgr \
 		-Iinclude/fmc/fmc150 \
 		-Iinclude/fmc/fmc516  \
-		-I$(CURDIR)/pp_printf	\
-		-I$(CURDIR)/lib	\
-		-I$(CURDIR)/lib/ethmac
+		-Ipp_printf	\
+		-Ilib	\
+		-Ilib/ethmac
 
 CFLAGS = -Wall
 #-include $(CURDIR)/include/generated/autoconf.h
@@ -98,10 +101,36 @@ include/board.h:
 
 clean:
 	rm -f $(OBJS) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).ram $(OUTPUT)_disasm.S $(OUTPUT).vhd include/board.h
+	find . -iname "*.d" -exec rm '{}' \;
 	make clean -C tools
 
+# Pull in dependency info for *existing* .o files and don't complain if the
+# corresponding .d file is not found
+-include $(OBJS:.o=.d)
+
+# Compile and generate dependency info;
 %.o: %.c
 	${CC} $(CFLAGS) $(INCLUDE_DIRS) $(LIB_DIR) -c $*.c -o $@
+# create the dependency files "target: pre-requisites"
+	${CC} -MM $(CFLAGS) $*.c > $*.d
+
+# Workaround to make objects in different folders have
+# the correct target path. e.g., "dir/bar.o: dir/bar.c dir/foo.h"
+# instead of "bar.o: dir/bar.c dir/foo.h"
+	@mv -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+
+# All prereqs listed will also become command-less,
+# prereq-less targets. In this way, the prereq file will be
+# treated as changed and the target will be rebuilt
+#   sed:    strip the target (everything before colon)
+#   sed:    remove any continuation backslashes
+#   fmt -1: list words one per line
+#   sed:    strip leading spaces
+#   sed:    add trailing colons
+	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
+                sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	@rm -f $*.d.tmp
 
 tools:
 	$(MAKE) -C tools
