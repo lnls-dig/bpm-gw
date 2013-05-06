@@ -337,6 +337,8 @@ package custom_wishbone_pkg is
   --  g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   --  g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
   --  g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
+  --  g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+  --  g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   --  g_packet_size                             : natural := 32;
   --  g_sim                                     : integer := 0
   --);
@@ -402,11 +404,14 @@ package custom_wishbone_pkg is
   --
   --  -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   --  sys_spi_clk_o                             : out std_logic;
-  --  sys_spi_data_b                            : inout std_logic;
+  --  --sys_spi_data_b                            : inout std_logic;
+  --  sys_spi_dout_o                            : out std_logic;
+  --  sys_spi_din_i                             : in std_logic;
   --  sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
   --  sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
   --  sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
   --  sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+  --  sys_spi_miosio_oe_n_o                     : out std_logic;
   --
   --  -- External Trigger To/From FMC
   --  m2c_trig_p_i                              : in std_logic;
@@ -474,7 +479,13 @@ package custom_wishbone_pkg is
   --  wbs_ack_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   --  wbs_stall_i                              : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
   --  wbs_err_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
-  --  wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0')
+  --  wbs_rty_i                                : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+  --
+  --  adc_dly_debug_o                          : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+  --
+  --  fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  --  fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  --  fifo_debug_empty_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0)
   --);
   --end component;
   --
@@ -488,6 +499,8 @@ package custom_wishbone_pkg is
   --  g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   --  g_use_clk_chains                          : t_clk_use_chain := dummy_clk_use_chain;
   --  g_use_data_chains                         : t_data_use_chain := dummy_data_use_chain;
+  --  g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+  --  g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   --  g_packet_size                             : natural := 32;
   --  g_sim                                     : integer := 0
   --);
@@ -544,11 +557,14 @@ package custom_wishbone_pkg is
   --
   --  -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   --  sys_spi_clk_o                             : out std_logic;
-  --  sys_spi_data_b                            : inout std_logic;
+  --  --sys_spi_data_b                            : inout std_logic;
+  --  sys_spi_dout_o                            : out std_logic;
+  --  sys_spi_din_i                             : in std_logic;
   --  sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
   --  sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
   --  sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
   --  sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+  --  sys_spi_miosio_oe_n_o                     : out std_logic;
   --
   --  -- External Trigger To/From FMC
   --  m2c_trig_p_i                              : in std_logic;
@@ -607,8 +623,14 @@ package custom_wishbone_pkg is
   --  -----------------------------
   --  -- Wishbone Streaming Interface Source
   --  -----------------------------
-  --  wbs_source_i                              : in t_wbs_source_in64;
-  --  wbs_source_o                              : out t_wbs_source_out64
+  --  wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
+  --  wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
+  --
+  --  adc_dly_debug_o                           : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+  --
+  --  fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  --  fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  --  fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
   --);
   --end component;
 
@@ -634,6 +656,83 @@ package custom_wishbone_pkg is
 
     irq_tx_done_o                             : out std_logic;
     irq_rx_done_o                             : out std_logic
+  );
+  end component;
+
+  component wb_dbe_periph
+  generic(
+    -- NOT used!
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    -- NOT used!
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
+    g_num_leds                                : natural                        := 8;
+    g_num_buttons                             : natural                        := 8
+  );
+  port(
+    clk_sys_i                                 : in std_logic;
+    rst_n_i                                   : in std_logic;
+
+    -- UART
+    uart_rxd_i                                : in  std_logic;
+    uart_txd_o                                : out std_logic;
+
+    -- LEDs
+    led_out_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+    led_in_i                                  : in  std_logic_vector(g_num_leds-1 downto 0);
+    led_oen_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+
+    -- Buttons
+    button_out_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+    button_in_i                               : in  std_logic_vector(g_num_buttons-1 downto 0);
+    button_oen_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+
+    -- Wishbone
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic
+  );
+  end component;
+
+  component xwb_dbe_periph
+  generic(
+    -- NOT used!
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    -- NOT used!
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
+    g_num_leds                                : natural                        := 8;
+    g_num_buttons                             : natural                        := 8
+  );
+  port(
+    clk_sys_i                                 : in std_logic;
+    rst_n_i                                   : in std_logic;
+
+    -- UART
+    uart_rxd_i                                : in  std_logic;
+    uart_txd_o                                : out std_logic;
+
+    -- LEDs
+    led_out_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+    led_in_i                                  : in  std_logic_vector(g_num_leds-1 downto 0);
+    led_oen_o                                 : out std_logic_vector(g_num_leds-1 downto 0);
+
+    -- Buttons
+    button_out_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+    button_in_i                               : in  std_logic_vector(g_num_buttons-1 downto 0);
+    button_oen_o                              : out std_logic_vector(g_num_buttons-1 downto 0);
+
+    -- Wishbone
+    slave_i                                   : in  t_wishbone_slave_in;
+    slave_o                                   : out t_wishbone_slave_out
   );
   end component;
 
@@ -776,5 +875,22 @@ package custom_wishbone_pkg is
     version       => x"00000001",
     date          => x"20121124",
     name          => "OCORES_1_WIRE      ")));
+
+  -- Simple TICs counter Interface
+  constant c_xwb_tics_counter_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"000000000000000F",
+    product => (
+    vendor_id     => x"000000000000CE42",     -- CERN
+    device_id     => x"FDAFB9DD",
+    version       => x"00000001",
+    date          => x"20130225",
+    name          => "CERN_TICS_COUNTER  ")));
 
 end custom_wishbone_pkg;
