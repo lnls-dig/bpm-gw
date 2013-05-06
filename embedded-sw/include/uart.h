@@ -17,6 +17,7 @@ int uart_init(void);
 int uart_exit(void);
 void uart_write_byte(unsigned int id, int b);
 void uart_write_string(unsigned int id, char *s);
+void uart_write(unsigned int id, const char *s, int nbytes);
 int puts(const char *s);
 int uart_poll(unsigned int id);
 int uart_read_byte(unsigned int id);

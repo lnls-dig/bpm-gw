@@ -43,16 +43,39 @@
 #include "ethmac.h"
 #include "board.h"
 #include "debug_print.h"
+#include "memmgr.h"
+#include "lwip/netif.h"
 
-// Global ETHMAC handler.
-static ethmac_t **ethmac;
-static ethmac_bd_t **ethmac_bd;
-static ethmac_buf_t **ethmac_buf;
+/* Global ETHMAC handler */
+//static ethmac_t **ethmac;
+//static ethmac_bd_t **ethmac_bd;
+//static ethmac_buf_t **ethmac_buf;
+
+/* lwIP input function. To be called when new packets arrive */
+extern void ethernetif_input(struct netif *netif);
+//extern struct netif *netif;
+
+/* The buffer descriptors track the ring buffers.
+ */
+typedef struct _oeth_private {
+  unsigned short  tx_next;  /* Next buffer to be sent */
+  unsigned short  tx_last;  /* Next buffer to be checked if packet sent */
+  unsigned short  tx_full;  /* Buffer ring full indicator */
+  unsigned short  rx_cur;   /* Next buffer to be checked if packet received */
+
+  ethmac_t      *regs;          /* Address of controller registers. */
+  ethmac_bd_t   *rx_bd_base;    /* Address of Rx BDs. */
+  ethmac_bd_t   *tx_bd_base;    /* Address of Tx BDs. */
+  ethmac_buf_t  *buf;            /* Buffer for rx/tx packets */
+} oeth_private;
+
+oeth_private *ethmac_private;
 
 int ethmac_init()
 {
     int i;
     struct dev_node *dev_p = 0;
+    struct dev_node *ethmac_buf_dev_p = 0;
 
     if (!ethmac_devl->devices)
         return -1;
@@ -62,36 +85,62 @@ int ethmac_init()
       return -1;
 
     // alloc structures for all devices
-    ethmac = (ethmac_t **) memmgr_alloc(sizeof(ethmac_t *)*ethmac_devl->size);
-    ethmac_bd = (ethmac_bd_t **) memmgr_alloc(sizeof(ethmac_bd_t *)*ethmac_devl->size);
-    ethmac_buf = (ethmac_buf_t **) memmgr_alloc(sizeof(ethmac_buf_t *)*ethmac_devl->size);
+    //ethmac = (ethmac_t **) memmgr_alloc(sizeof(ethmac_t *)*ethmac_devl->size);
+    //ethmac_bd = (ethmac_bd_t **) memmgr_alloc(sizeof(ethmac_bd_t *)*ethmac_devl->size);
+    //ethmac_buf = (ethmac_buf_t **) memmgr_alloc(sizeof(ethmac_buf_t *)*ethmac_devl->size);
+    ethmac_private = (oeth_private *) memmgr_alloc(sizeof(oeth_private *)*ethmac_devl->size);
+
+    /* Search for ethmac buffer. Must be the last device on the list */
+    for (i = 0, ethmac_buf_dev_p = mem_devl->devices; i < mem_devl->size-1;
+            ++i, ethmac_buf_dev_p = ethmac_buf_dev_p->next);
 
     for (i = 0, dev_p = ethmac_devl->devices; i < ethmac_devl->size;
             ++i, dev_p = dev_p->next) {
-        ethmac[i] = (ethmac_t *) dev_p->base;
-        ethmac_bd[i] = (ethmac_bd_t *) (dev_p->base + OETH_BD_BASE_OFFS);
-        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac addr[%d]: %08X\n", i, ethmac[i]);
-        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac_bd addr[%d]: %08X\n", i, ethmac_bd[i]);
+        //ethmac[i] = (ethmac_t *) dev_p->base;
+        //ethmac_bd[i] = (ethmac_bd_t *) (dev_p->base + OETH_BD_BASE_OFFS);
+
+        ethmac_private[i].regs = (ethmac_t *) dev_p->base;
+        ethmac_private[i].tx_bd_base = (ethmac_bd_t *) (dev_p->base + OETH_BD_BASE_OFFS);
+        ethmac_private[i].rx_bd_base = (ethmac_bd_t *) (dev_p->base + OETH_BD_BASE_OFFS) + OETH_RXBD_NUM;
+
+        /* set all devices to the same buffer. FIXME! */
+        ethmac_private[i].buf = (ethmac_buf_t *) ethmac_buf_dev_p->base;
+
+        /* Zero all bd pointers */
+        ethmac_private[i].tx_next = 0;
+        ethmac_private[i].tx_last = 0;
+        ethmac_private[i].tx_full = 0;
+        ethmac_private[i].rx_cur = 0;
+
+        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac regs addr[%d]: %08X\n", i, ethmac_private[i].regs);
+        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac_bd tx addr[%d]: %08X\n", i, ethmac_private[i].tx_bd_base);
+        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac_bd rx addr[%d]: %08X\n", i, ethmac_private[i].rx_bd_base);
+        DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac_buf addr[%d]: %08X\n", i,  ethmac_private[i].buf);
     }
 
-    DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac size: %d\n", ethmac_devl->size);
-
-    // ethmac buffer must be the last device on the list
-    for (i = 0, dev_p = mem_devl->devices; i < mem_devl->size-1;
-            ++i, dev_p = dev_p->next);
-    ethmac_buf[OETH_BUF_ID] = (ethmac_buf_t *) dev_p->base;
-
-    DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac_buf[%d]: %08X\n", OETH_BUF_ID, ethmac_buf[OETH_BUF_ID]);
+    //ethmac_private[i].buf = ethmac_buf[OETH_BUF_ID] = (ethmac_buf_t *) dev_p->base;
 
     return 0;
 }
 
-static int next_tx_buf_num;
+void ethmac_exit()
+{
+  //memmgr_free(ethmac);
+  //memmgr_free(ethmac_bd);
+  //memmgr_free(ethmac_buf);
+  memmgr_free(ethmac_private);
+}
+
+/* Should be in a structure along with other private info */
+/* next tx buffer descriptor number */
+//static int next_tx_buf_num;
+/* next rx buffer descriptor number */
+//static int next_rx_buf_num;
 
 void eth_mii_write(char phynum, short regnum, short data)
 {
-  //static volatile oeth_regs *regs = ethmac[OETH_ID];
-  volatile oeth_regs *regs = ethmac[OETH_ID];
+  //volatile oeth_regs *regs = ethmac[OETH_ID];
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
   regs->miiaddress = (regnum << 8) | phynum;
   regs->miitx_data = data;
   regs->miicommand = OETH_MIICOMMAND_WCTRLDATA;
@@ -101,8 +150,8 @@ void eth_mii_write(char phynum, short regnum, short data)
 
 short eth_mii_read(char phynum, short regnum)
 {
-  //static volatile oeth_regs *regs = ethmac[OETH_ID];
-  volatile oeth_regs *regs = ethmac[OETH_ID];
+  //volatile oeth_regs *regs = ethmac[OETH_ID];
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
   regs->miiaddress = (regnum << 8) | phynum;
   regs->miicommand = OETH_MIICOMMAND_RSTAT;
   regs->miicommand = 0;
@@ -114,13 +163,10 @@ short eth_mii_read(char phynum, short regnum)
 void ethmac_setup(int phynum)
 {
   // from arch/or32/drivers/open_eth.c
-  volatile oeth_regs *regs;
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
   unsigned short cr;
 
-  DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "setting up ethmac...\n");
-
-  regs = ethmac[OETH_ID];
-  DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "regs addr = 0X%08X\n", regs);
+  DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> setting up ethmac...\n");
 
   /* Reset MII mode module */
   regs->miimoder = OETH_MIIMODER_RST; /* MII Reset ON */
@@ -139,7 +185,8 @@ void ethmac_setup(int phynum)
 
   /* Set min/max packet length
    */
-  regs->packet_len = 0x00400600;
+  /* regs->packet_len = 0x00400600; */
+  regs->packet_len = OETH_PKTLEN_MINFL << 16 | OETH_PKTLEN_MAXFL;
 
   /* Set IPGT register to recomended value
    */
@@ -198,18 +245,20 @@ void ethmac_setup(int phynum)
 
   /* Initialize TXBD pointer
    */
-  tx_bd = (volatile oeth_bd *)ethmac_bd[OETH_ID];
+  //tx_bd = (volatile oeth_bd *)ethmac_bd[OETH_ID];
+  tx_bd = ethmac_private[OETH_ID].tx_bd_base;
   DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> tx_bd = 0X%08X\n", tx_bd);
 
   /* Initialize RXBD pointer
    */
 
-  rx_bd = ((volatile oeth_bd *)ethmac_bd[OETH_ID]) + OETH_TXBD_NUM;
+  //rx_bd = ((volatile oeth_bd *)ethmac_bd[OETH_ID]) + OETH_TXBD_NUM;
+  rx_bd = ethmac_private[OETH_ID].rx_bd_base;
   DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> rx_bd = 0X%08X\n", rx_bd);
 
   /* Preallocated ethernet buffer setup */
   //unsigned long mem_addr = buf;
-  unsigned long mem_addr = (unsigned long) ethmac_buf[OETH_BUF_ID];
+  unsigned long mem_addr = (unsigned long) ethmac_private[OETH_ID].buf;
   DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> ethmac buffer addr = 0X%08X\n", mem_addr);
 
   // Setup TX Buffers
@@ -257,35 +306,137 @@ void ethmac_setup(int phynum)
    */
   regs->moder |= (OETH_MODER_RXEN | OETH_MODER_TXEN);
 
-  next_tx_buf_num = 0; // init tx buffer pointer
+  //next_tx_buf_num = 0; // init tx buffer pointer
+  //next_rx_buf_num = 0; // init rx buffer pointer
 
   return;
 }
 
+/* Enable RX in ethernet MAC */
+void oeth_enable_rx(void)
+{
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
+  regs->moder |= OETH_MODER_RXEN;
+}
+
+/* Disable RX in ethernet MAC */
+void oeth_disable_rx(void)
+{
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;;
+  regs->moder &= ~(OETH_MODER_RXEN);
+}
+
+/* Disable RX and TX */
 void ethmac_halt(void)
 {
-  volatile oeth_regs *regs;
-
-  regs = ethmac[OETH_ID];
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;;
 
   // Disable receive and transmit
   regs->moder &= ~(OETH_MODER_RXEN | OETH_MODER_TXEN);
 }
 
+int num_tx_ready_bd(void)
+{
+  volatile oeth_bd *tx_bd = ethmac_private[OETH_ID].tx_bd_base;
+  int num_tx_ready_bd = 0;
+  int i;
+
+  /* Go through the TX buffs, search for unused one */
+  for(i = 0; i < OETH_TXBD_NUM; ++i) {
+    // Looking for buffer ready for transmit
+    if((tx_bd[i].len_status & OETH_TX_BD_READY))
+      num_tx_ready_bd++;
+  }
+
+  return num_tx_ready_bd;
+}
+
+// Wait here until all packets have been transmitted
+int all_tx_bd_clear(void)
+{
+  return (num_tx_ready_bd() == 0) ? 1 : 0;
+}
+
+/* Wait for at least num tx bd are clear */
+void wait_for_tx_bd_clear(int num_tx_clear)
+{
+  int num_tx_ready;
+
+  /* Caller should have check this. */
+  if (num_tx_clear > OETH_TXBD_NUM)
+    num_tx_clear = OETH_TXBD_NUM;
+  else if (num_tx_clear < 0)
+    num_tx_clear = 0;
+
+  num_tx_ready = OETH_TXBD_NUM - num_tx_clear;
+
+  while(num_tx_ready_bd() > num_tx_ready);
+}
+
+void ethphy_set_10mbit(int phynum)
+{
+  while(!all_tx_bd_clear());
+  // Hardset PHY to just use 10Mbit mode
+  short cr = eth_mii_read(phynum, MII_BMCR);
+  cr &= ~BMCR_ANENABLE; // Clear auto negotiate bit
+  cr &= ~BMCR_SPEED100; // Clear fast eth. bit
+  eth_mii_write(phynum, MII_BMCR, cr);
+}
+
+void ethphy_set_100mbit(int phynum)
+{
+  while(!all_tx_bd_clear());
+  // Hardset PHY to just use 100Mbit mode
+  short cr = eth_mii_read(phynum, MII_BMCR);
+  cr |= BMCR_ANENABLE; // Clear auto negotiate bit
+  cr |= BMCR_SPEED100; // Clear fast eth. bit
+  eth_mii_write(phynum, MII_BMCR, cr);
+}
+
+/* Only call this function after oeth_check_rx_bd */
+void rx_packet(void *data, int length)
+{
+  unsigned short rx_cur = ethmac_private[OETH_ID].rx_cur;
+  volatile oeth_bd *rx_bd  = &ethmac_private[OETH_ID].rx_bd_base[rx_cur];
+  unsigned char* buf = (unsigned char *)ethmac_private[OETH_ID].buf;
+
+  /*
+  * Process the incoming frame.
+  */
+  DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> processing incoming packet\n");
+
+  //rx_bd = ((volatile oeth_bd *)ethmac_bd[OETH_ID]) + OETH_TXBD_NUM;
+  //rx_bd = &ethmac_private[OETH_ID].rx_bd_base[rx_cur];
+
+  /* Copy data from buf to data */
+  memcpy(data, buf, length);
+
+  /* finish up */
+  rx_bd->len_status &= ~OETH_RX_BD_STATS; /* Clear stats */
+  rx_bd->len_status |= OETH_RX_BD_EMPTY; /* Mark RX BD as empty */
+
+  /* next RX to read */
+  /*next_rx_buf_num = (next_rx_buf_num + 1) & OETH_RXBD_NUM_MASK;*/
+  /*ethmac_private[OETH_ID].rx_cur = (ethmac_private[OETH_ID].rx_cur + 1) & OETH_RXBD_NUM_MASK;*/
+}
+
 /* Setup buffer descriptors with data */
 /* length is in BYTES */
-void tx_packet(void* data, int length)
+void tx_packet(void *data, int length)
 {
-  volatile oeth_regs *regs;
-  regs = ethmac[OETH_ID];
+  unsigned short tx_cur = ethmac_private[OETH_ID].tx_next;
+  volatile oeth_bd *tx_bd  = &ethmac_private[OETH_ID].tx_bd_base[tx_cur];
 
-  volatile oeth_bd *tx_bd;
+  //volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
+  //regs = ethmac[OETH_ID];
+  //volatile oeth_bd *tx_bd = &ethmac_private[OETH_ID].tx_bd_base[next_tx_buf_num];
+
   volatile int i;
 
   DBE_DEBUG(DBG_ETH | DBE_DBG_INFO, "> sending tx_packet\n");
 
-  tx_bd = (volatile oeth_bd *) ethmac_bd[OETH_BUF_ID];
-  tx_bd = (volatile oeth_bd *) &tx_bd[next_tx_buf_num];
+  //tx_bd = (volatile oeth_bd *) ethmac_bd[OETH_BUF_ID];
+  //tx_bd = (volatile oeth_bd *) &tx_bd[next_tx_buf_num];
 
   // If it's in use - wait
   while ((tx_bd->len_status & OETH_TX_BD_IRQ));
@@ -317,96 +468,107 @@ void tx_packet(void* data, int length)
   /* Send it on its way.  Tell controller its ready, interrupt when sent
    * and to put the CRC on the end.
    */
-  tx_bd->len_status |= (OETH_TX_BD_READY  | OETH_TX_BD_CRC | OETH_TX_BD_IRQ);
+  tx_bd->len_status |= (OETH_TX_BD_READY | OETH_TX_BD_CRC | OETH_TX_BD_IRQ);
 
-  next_tx_buf_num = (next_tx_buf_num + 1) & OETH_TXBD_NUM_MASK;
+  /* next_tx_buf_num = (next_tx_buf_num + 1) & OETH_TXBD_NUM_MASK; */
+  ethmac_private[OETH_ID].tx_next = (ethmac_private[OETH_ID].tx_next + 1) & OETH_TXBD_NUM_MASK;
 
   return;
 }
 
-static void oeth_rx(void)
+int oeth_check_rx_bd()
 {
-  volatile oeth_regs *regs;
-  regs = ethmac[OETH_ID];
-
-  volatile oeth_bd *rx_bdp;
-  int   pkt_len, i;
-  int   bad = 0;
+  volatile oeth_bd *rx_bd = ethmac_private[OETH_ID].rx_bd_base;
+  int i;
+  int bad = 0;
 
   DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "oeth_rx:\n");
 
-  rx_bdp = ((volatile oeth_bd *)ethmac_bd[OETH_ID]) + OETH_TXBD_NUM;
-
   /* Find RX buffers marked as having received data */
-  for(i = 0; i < OETH_RXBD_NUM; i++)
-  {
+  for(i = 0; i < OETH_RXBD_NUM; i++) {
     DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> rxbd_num: %d\n", i);
-    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> rxbd[%d]: 0X%08X\n", i, rx_bdp[i]);
-    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> rxbd[%d].addr: 0X%08X\n", i, rx_bdp[i].addr);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> rxbd[%d]: 0X%08X\n", i, rx_bd[i]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> rxbd[%d].addr: 0X%08X\n", i, rx_bd[i].addr);
 
     bad=0;
     /* Looking for buffer descriptors marked not empty */
-    if(!(rx_bdp[i].len_status & OETH_RX_BD_EMPTY)){
+    if(!(rx_bd[i].len_status & OETH_RX_BD_EMPTY)){
       /* Check status for errors.
        */
-      DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> len_status: 0X%8X\n", rx_bdp[i].len_status);
-      if (rx_bdp[i].len_status & (OETH_RX_BD_TOOLONG | OETH_RX_BD_SHORT)) {
+      DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> len_status: 0X%8X\n", rx_bd[i].len_status);
+      if (rx_bd[i].len_status & (OETH_RX_BD_TOOLONG | OETH_RX_BD_SHORT)) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> short!\n");
       }
-      if (rx_bdp[i].len_status & OETH_RX_BD_DRIBBLE) {
+      if (rx_bd[i].len_status & OETH_RX_BD_DRIBBLE) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> dribble!\n");
       }
-      if (rx_bdp[i].len_status & OETH_RX_BD_CRCERR) {
+      if (rx_bd[i].len_status & OETH_RX_BD_CRCERR) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> CRC error!\n");
       }
-      if (rx_bdp[i].len_status & OETH_RX_BD_OVERRUN) {
+      if (rx_bd[i].len_status & OETH_RX_BD_OVERRUN) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> overrun!\n");
       }
-      if (rx_bdp[i].len_status & OETH_RX_BD_MISS) {
+      if (rx_bd[i].len_status & OETH_RX_BD_MISS) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> missed!\n");
       }
-      if (rx_bdp[i].len_status & OETH_RX_BD_LATECOL) {
+      if (rx_bd[i].len_status & OETH_RX_BD_LATECOL) {
         bad = 1;
         DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> late collision!\n");
       }
+
       if (bad) {
-        rx_bdp[i].len_status &= ~OETH_RX_BD_STATS;
-        rx_bdp[i].len_status |= OETH_RX_BD_EMPTY;
-      }
-      else {
-        /*
-         * Process the incoming frame.
-         */
-        unsigned char* buf = (unsigned char*)rx_bdp[i].addr;
+        rx_bd[i].len_status &= ~OETH_RX_BD_STATS;
+        rx_bd[i].len_status |= OETH_RX_BD_EMPTY;
 
-        DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> processing incoming packet\n");
-        pkt_len = rx_bdp[i].len_status >> 16;
-        DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> len_status: 0X%8X\n", rx_bdp[i].len_status);
-        user_recv(buf, pkt_len);
-
-        /* finish up */
-        rx_bdp[i].len_status &= ~OETH_RX_BD_STATS; /* Clear stats */
-        rx_bdp[i].len_status |= OETH_RX_BD_EMPTY; /* Mark RX BD as empty */
+        /* Return error code */
+        return -1;
       }
-    } else {
-      DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> empty!\n");
+
+      /* RX BD to be read next */
+      ethmac_private[OETH_ID].rx_cur = i;
+      //next_rx_buf_num = i;
+      /* On successfully receiveing data returns the packet length */
+      return rx_bd[i].len_status >> 16;
     }
   }
+
+  return -1;
 }
 
-static void oeth_tx(void)
+/* Drop the current RX packet on the BD */
+void oeth_drop_rx_bd()
 {
-  volatile oeth_bd *tx_bd;
+  unsigned short rx_cur = ethmac_private[OETH_ID].rx_cur;
+  volatile oeth_bd *rx_bd = &ethmac_private[OETH_ID].rx_bd_base[rx_cur];
+
+  rx_bd->len_status &= ~OETH_RX_BD_STATS;
+  rx_bd->len_status |= OETH_RX_BD_EMPTY;
+}
+
+/* Interrupt routines */
+static void oeth_rx(void *int_ctx)
+{
+  struct netif *netif = (struct netif*) int_ctx;
+
+  /* Pass frames directly to lwIP */
+  ethernetif_input(netif);
+
+  /* Mark BD as empty */
+  /*rx_bdp[i].len_status &= ~OETH_RX_BD_STATS;
+  rx_bdp[i].len_status |= OETH_RX_BD_EMPTY; */
+}
+
+static void oeth_tx(void *int_ctx)
+{
+  volatile oeth_bd *tx_bd = ethmac_private[OETH_ID].tx_bd_base;
   int i;
 
-  DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "oeth_tx:\n");
-
-  tx_bd = (volatile oeth_bd *)ethmac_bd[OETH_ID]; /* Search from beginning*/
+  DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> oeth_tx trace\n");
 
   /* Go through the TX buffs, search for one that was just sent */
   for(i = 0; i < OETH_TXBD_NUM; i++)
@@ -425,11 +587,9 @@ static void oeth_tx(void)
 
 /* The interrupt handler.
  */
-void oeth_interrupt(void* arg)
+void oeth_interrupt(void *int_ctx)
 {
-
-  volatile oeth_regs *regs;
-  regs = ethmac[OETH_ID];
+  volatile oeth_regs *regs = ethmac_private[OETH_ID].regs;
 
   uint  int_events;
   int serviced;
@@ -448,7 +608,7 @@ void oeth_interrupt(void* arg)
   if (int_events & (OETH_INT_RXF | OETH_INT_RXE)) {
     serviced |= 0x1;
     DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> interrupt on rx line\n");
-    oeth_rx();
+    oeth_rx(int_ctx);
   }
 
   /* Handle transmit event in its own function.
@@ -456,7 +616,7 @@ void oeth_interrupt(void* arg)
   if (int_events & (OETH_INT_TXB | OETH_INT_TXE)) {
     serviced |= 0x2;
     DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> interrupt on tx line\n");
-    oeth_tx();
+    oeth_tx(int_ctx);
     serviced |= 0x2;
   }
 
@@ -467,7 +627,7 @@ void oeth_interrupt(void* arg)
     serviced |= 0x4;
     DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> receive busy\n");
     if (!(int_events & (OETH_INT_RXF | OETH_INT_RXE))) {
-      oeth_rx();
+      oeth_rx(int_ctx);
     }
   }
 
