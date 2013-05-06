@@ -229,8 +229,8 @@ begin
   DDR_rdc_din    <= DDR_rdc_din_i;
   DDR_rdc_full_i <= DDR_rdc_full;
 
-  DDR_FIFO_RdQout_swap <= DDR_FIFO_RdQout(C_DBUS_WIDTH/2-1 downto 0) &
-                          DDR_FIFO_RdQout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
+  DDR_FIFO_RdQout_swap <= Endian_Invert_64(DDR_FIFO_RdQout(C_DBUS_WIDTH/2-1 downto 0) &
+                          DDR_FIFO_RdQout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2));
   DDR_FIFO_RdEn <= DDR_FIFO_RdEn_i;
 
   -- Register address for read
