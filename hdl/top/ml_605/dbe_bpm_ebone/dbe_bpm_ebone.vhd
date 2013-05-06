@@ -102,7 +102,7 @@ architecture rtl of dbe_bpm_ebone is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 10;            -- LED, Button,
+  constant c_slaves                         : natural := 8;            -- LED, Button,
   -- General Dual-port memory, Buffer Single-por memory, UART, DMA control port, MAC,
   --Etherbone
   -- Number of masters
@@ -122,6 +122,9 @@ architecture rtl of dbe_bpm_ebone is
 
   -- Number of reset clock cycles (FF)
   constant c_button_rst_width               : natural := 255;
+
+  -- TICs counter period. 100MHz clock -> msec granularity
+  constant c_tics_cntr_period               : natural := 100000;
 
   constant c_xwb_etherbone_sdb : t_sdb_device := (
     abi_class     => x"0000", -- undocumented device
@@ -155,6 +158,9 @@ architecture rtl of dbe_bpm_ebone is
     date          => x"20130701",
     name          => "ETHMAC_ADAPTER     ")));
 
+  -- General peripherals layout. UART, LEDs (GPIO), Buttons (GPIO) and Tics counter
+  constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
+
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
     ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 128KB RAM
@@ -165,9 +171,7 @@ architecture rtl of dbe_bpm_ebone is
       4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30150000"),   -- Ethernet MAC control port
       5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30160000"),   -- Ethernet Adapter control port
       6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30170000"),   -- Etherbone control port
-      7 => f_sdb_embed_device(c_xwb_uart_sdb,             x"30180000"),   -- UART control port
-      8 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"30190000"),   -- GPIO LED
-      9 => f_sdb_embed_device(c_xwb_gpio32_sdb,           x"301A0000")    -- GPIO Button
+      7 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"30180000")    -- General peripherals control port
       --3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"60000000"),   -- DMA control port
       --4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"70000000"),   -- Ethernet MAC control port
       --5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"80000000"),   -- Ethernet Adapter control port
@@ -478,7 +482,7 @@ begin
   cmp_ram : xwb_dpram
   generic map(
     g_size                                  => c_dpram_size, -- must agree with sw/target/lm32/ram.ld:LENGTH / 4
-    g_init_file                             => "../../../embedded-sw/dbe.ram",
+    g_init_file                             => "../../../embedded-sw/dbe_lwip.ram",
     --"../../top/ml_605/dbe_bpm_simple/sw/main.ram",
     g_must_have_init_file                   => true,
     g_slave1_interface_mode                 => PIPELINED,
@@ -636,70 +640,106 @@ begin
   cbar_slave_i(7)                           <= wb_ebone_out;
   wb_ebone_in                               <= cbar_slave_o(7);
 
-  -- Slave 7 is the UART
-  cmp_uart : xwb_simple_uart
-  generic map (
-    g_interface_mode                        => PIPELINED,
-    g_address_granularity                   => BYTE
-  )
-  port map (
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-    slave_i                                 => cbar_master_o(7),
-    slave_o                                 => cbar_master_i(7),
-    uart_rxd_i                              => uart_rxd_i,
-    uart_txd_o                              => uart_txd_o
-  );
-
-  -- Slave 8 is the LED driver
-  cmp_leds : xwb_gpio_port
+-- The board peripherals components is slave 7
+  cmp_xwb_dbe_periph : xwb_dbe_periph
   generic map(
-    g_interface_mode                        => CLASSIC,
-    g_address_granularity                   => BYTE,
-    g_num_pins                              => c_leds_num_pins,
-    g_with_builtin_tristates                => false
+    -- NOT used!
+    --g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    -- NOT used!
+    --g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_cntr_period                             => c_tics_cntr_period,
+    g_num_leds                                => c_leds_num_pins,
+    g_num_buttons                             => c_buttons_num_pins
   )
   port map(
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
+    clk_sys_i                                 => clk_sys,
+    rst_n_i                                   => clk_sys_rstn,
+
+    -- UART
+    uart_rxd_i                                => uart_rxd_i,
+    uart_txd_o                                => uart_txd_o,
+
+    -- LEDs
+    led_out_o                                 => gpio_leds_int,
+    led_in_i                                  => gpio_leds_int,
+    led_oen_o                                 => open,
+
+    -- Buttons
+    button_out_o                              => open,
+    button_in_i                               => buttons_i,
+    button_oen_o                              => open,
 
     -- Wishbone
-    slave_i                                 => cbar_master_o(8),
-    slave_o                                 => cbar_master_i(8),
-    desc_o                                  => open,    -- Not implemented
-
-    --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
-
-    gpio_out_o                              => gpio_leds_int,
-    gpio_in_i                               => gpio_leds_int,
-    gpio_oen_o                              => open
+    slave_i                                   => cbar_master_o(7),
+    slave_o                                   => cbar_master_i(7)
   );
 
   leds_o <= gpio_leds_int;
 
-  -- Slave 9 is the Button driver
-  cmp_buttons : xwb_gpio_port
-  generic map(
-    g_interface_mode                        => CLASSIC,
-    g_address_granularity                   => BYTE,
-    g_num_pins                              => c_buttons_num_pins,
-    g_with_builtin_tristates                => false
-  )
-  port map(
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-
-    -- Wishbone
-    slave_i                                 => cbar_master_o(9),
-    slave_o                                 => cbar_master_i(9),
-    desc_o                                  => open,    -- Not implemented
-
-    --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
-
-    gpio_out_o                              => open,
-    gpio_in_i                               => buttons_i,
-    gpio_oen_o                              => open
-  );
+  ---- Slave 7 is the UART
+  --cmp_uart : xwb_simple_uart
+  --generic map (
+  --  g_interface_mode                        => PIPELINED,
+  --  g_address_granularity                   => BYTE
+  --)
+  --port map (
+  --  clk_sys_i                               => clk_sys,
+  --  rst_n_i                                 => clk_sys_rstn,
+  --  slave_i                                 => cbar_master_o(7),
+  --  slave_o                                 => cbar_master_i(7),
+  --  uart_rxd_i                              => uart_rxd_i,
+  --  uart_txd_o                              => uart_txd_o
+  --);
+  --
+  ---- Slave 8 is the LED driver
+  --cmp_leds : xwb_gpio_port
+  --generic map(
+  --  g_interface_mode                        => CLASSIC,
+  --  g_address_granularity                   => BYTE,
+  --  g_num_pins                              => c_leds_num_pins,
+  --  g_with_builtin_tristates                => false
+  --)
+  --port map(
+  --  clk_sys_i                               => clk_sys,
+  --  rst_n_i                                 => clk_sys_rstn,
+  --
+  --  -- Wishbone
+  --  slave_i                                 => cbar_master_o(8),
+  --  slave_o                                 => cbar_master_i(8),
+  --  desc_o                                  => open,    -- Not implemented
+  --
+  --  --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
+  --
+  --  gpio_out_o                              => gpio_leds_int,
+  --  gpio_in_i                               => gpio_leds_int,
+  --  gpio_oen_o                              => open
+  --);
+  --
+  --leds_o <= gpio_leds_int;
+  --
+  ---- Slave 9 is the Button driver
+  --cmp_buttons : xwb_gpio_port
+  --generic map(
+  --  g_interface_mode                        => CLASSIC,
+  --  g_address_granularity                   => BYTE,
+  --  g_num_pins                              => c_buttons_num_pins,
+  --  g_with_builtin_tristates                => false
+  --)
+  --port map(
+  --  clk_sys_i                               => clk_sys,
+  --  rst_n_i                                 => clk_sys_rstn,
+  --
+  --  -- Wishbone
+  --  slave_i                                 => cbar_master_o(9),
+  --  slave_o                                 => cbar_master_i(9),
+  --  desc_o                                  => open,    -- Not implemented
+  --
+  --  --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
+  --
+  --  gpio_out_o                              => open,
+  --  gpio_in_i                               => buttons_i,
+  --  gpio_oen_o                              => open
+  --);
 
   ---- Xilinx Chipscope
   cmp_chipscope_icon_0 : chipscope_icon_4_port
