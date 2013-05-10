@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2012 LNLS (www.lnls.br)
  * Author: Lucas Russo <lucas.russo@lnls.br>
+ * Parts taken from lwIP debug system
  *
  * Released according to the GNU GPL, version 2 or any later version.
  */

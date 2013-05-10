@@ -179,6 +179,12 @@ typedef volatile unsigned long ethmac_buf_t;
 #define OETH_CTRLMODER_RXFLOW   0x00000002 /* Receive Control Flow Enable */
 #define OETH_CTRLMODER_TXFLOW   0x00000004 /* Transmit Control Flow Enable */
 
+/* Packet Length Register */
+#define OETH_PKTLEN_MINFL       0x00000040 /* Minimum frame length = 64B */
+#define OETH_PKTLEN_DEFAULT_ETH 0x000005F0 /* Default maximum ethernet frame length = 1518B */
+#define OETH_PKTLEN_EXTRA       0x00000010 /* Extra frame length space = 16B*/
+#define OETH_PKTLEN_MAXFL       (OETH_PKTLEN_DEFAULT_ETH+OETH_PKTLEN_EXTRA) /* Maximum frame length = 1536B */
+
 /* MII Mode Register */
 #define OETH_MIIMODER_CLKDIV    0x000000FF /* Clock Divider */
 #define OETH_MIIMODER_NOPRE     0x00000100 /* No Preamble */
@@ -198,17 +204,29 @@ typedef volatile unsigned long ethmac_buf_t;
 #define OETH_MIISTATUS_BUSY     0x00000002 /* MII Busy */
 #define OETH_MIISTATUS_NVALID   0x00000004 /* Data in MII Status Register is invalid */
 
+/* ETHMAC init */
+int ethmac_init(void);
+void ethmac_exit(void);
+
+void ethmac_setup(int phynum);
+
 void eth_mii_write(char phynum, short regnum, short data);
 short eth_mii_read(char phynum, short regnum);
-//void ethmac_setup(int phynum, unsigned int buf);
-void ethmac_setup(int phynum);
+void ethphy_set_10mbit(int phynum);
+void ethphy_set_100mbit(int phynum);
+
+void oeth_disable_tx(void);
+void oeth_disable_rx(void);
+int num_tx_ready_bd(void);
+int all_tx_bd_clear(void);
+void wait_for_tx_bd_clear(int num_tx_clear);
+
 void ethmac_halt(void);
 void oeth_interrupt(void* arg);
 void tx_packet(void* data, int length);
+void rx_packet(void* data, int length);
 
-void user_recv(unsigned char* data, int length);
-
-/* ETHMAC init */
-int ethmac_init(void);
+int oeth_check_rx_bd();
+void oeth_drop_rx_bd();
 
 #endif

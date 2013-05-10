@@ -57,8 +57,16 @@ void uart_write_string(unsigned int id, char *s)
         uart_write_byte(id, *(s++));
 }
 
+void uart_write(unsigned int id, const char *s, int nbytes)
+{
+  int i;
+
+  for(i = 0; i < nbytes; ++i)
+    uart_write_byte(DEFAULT_UART, *(s++));
+}
+
 // Only for use with puts
-void uart_default_write_string(char *s)
+static void uart_default_write_string(char *s)
 {
     while (*s)
         uart_write_byte(DEFAULT_UART, *(s++));
