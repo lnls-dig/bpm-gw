@@ -197,10 +197,10 @@ architecture rtl of dbe_bpm_dsp is
   --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone
 
   --constant c_dpram_size                     : natural := 131072/4; -- in 32-bit words (128KB)
-  constant c_dpram_size                     : natural := 90112/4; -- in 32-bit words (90KB)
+  constant c_dpram_size                       : natural := 90112/4; -- in 32-bit words (90KB)
   --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
   --constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
-  constant c_dpram_ethbuf_size              : natural := 16384/4; -- in 32-bit words (16KB)
+  constant c_dpram_ethbuf_size                : natural := 16384/4; -- in 32-bit words (16KB)
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -1152,8 +1152,8 @@ begin
     clk_5565000                             => open
   );
 
-  cmp_ddc_bpm_476_066_cw: ddc_bpm_476_066_cw
-  --cmp_ddc_bpm_476_066_hov_cw: ddc_bpm_476_066_hov_cw
+  --cmp_ddc_bpm_476_066_cw: ddc_bpm_476_066_cw
+  cmp_ddc_bpm_476_066_hov_cw: ddc_bpm_476_066_hov_cw
   port map (
     adc_ch0_i                               => fmc516_adc_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb),
     adc_ch1_i                               => fmc516_adc_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb),
@@ -1164,9 +1164,9 @@ begin
     ce_clr                                  => dsp_sysce_clr,
     clk                                     => dsp_sysclk,-- clock period = 8.8823 ns (112.58345248415387 Mhz)
 
-    --kx                                      => dsp_kx,
-    --ky                                      => dsp_ky,
-    --ksum                                    => dsp_ksum,
+    kx                                      => dsp_kx,
+    ky                                      => dsp_ky,
+    ksum                                    => dsp_ksum,
 
     del_sig_div_fofb_thres_i                => dsp_del_sig_div_thres,
     del_sig_div_tbt_thres_i                 => dsp_del_sig_div_thres,
