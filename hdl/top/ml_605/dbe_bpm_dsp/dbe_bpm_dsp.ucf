@@ -119,20 +119,29 @@ NET "fmc_lmk_lock_o"                LOC="AD21"  |  IOSTANDARD = "LVCMOS25";
 #######################################################################
 
 # 250 MHz Clock
+# 112 MHz Clock
 # The CLOCK_DEDICATED_ROUTE﻿=FALSE workaround is typically for source clocks which
 # are not assigned to global clock input pins
 
+#NET "adc_clk0_p_i" TNM_NET = "adc_clk0_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+#TIMESPEC "TS_adc_clk0_p_i" = PERIOD "adc_clk0_p_i" 4 ns HIGH 50%;
 NET "adc_clk0_p_i" TNM_NET = "adc_clk0_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
-TIMESPEC "TS_adc_clk0_p_i" = PERIOD "adc_clk0_p_i" 4 ns HIGH 50%;
+TIMESPEC "TS_adc_clk0_p_i" = PERIOD "adc_clk0_p_i" 8.882 ns HIGH 50%;
 
+#NET "adc_clk1_p_i" TNM_NET = "adc_clk1_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+#TIMESPEC "TS_adc_clk1_p_i" = PERIOD "adc_clk1_p_i" 4 ns HIGH 50%;
 NET "adc_clk1_p_i" TNM_NET = "adc_clk1_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
-TIMESPEC "TS_adc_clk1_p_i" = PERIOD "adc_clk1_p_i" 4 ns HIGH 50%;
+TIMESPEC "TS_adc_clk1_p_i" = PERIOD "adc_clk1_p_i" 8.882 ns HIGH 50%;
 
+#NET "adc_clk2_p_i" TNM_NET = "adc_clk2_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+#TIMESPEC "TS_adc_clk2_p_i" = PERIOD "adc_clk2_p_i" 4 ns HIGH 50%;
 NET "adc_clk2_p_i" TNM_NET = "adc_clk2_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
-TIMESPEC "TS_adc_clk2_p_i" = PERIOD "adc_clk2_p_i" 4 ns HIGH 50%;
+TIMESPEC "TS_adc_clk2_p_i" = PERIOD "adc_clk2_p_i" 8.882 ns HIGH 50%;
 
+#NET "adc_clk3_p_i" TNM_NET = "adc_clk3_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+#TIMESPEC "TS_adc_clk3_p_i" = PERIOD "adc_clk3_p_i" 4 ns HIGH 50%;
 NET "adc_clk3_p_i" TNM_NET = "adc_clk3_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
-TIMESPEC "TS_adc_clk3_p_i" = PERIOD "adc_clk3_p_i" 4 ns HIGH 50%;
+TIMESPEC "TS_adc_clk3_p_i" = PERIOD "adc_clk3_p_i" 8.882 ns HIGH 50%;
 
 NET "adc_clk0_p_i"                  LOC = "AP20" | IOSTANDARD = LVDS_25;
 NET "adc_clk0_n_i"                  LOC = "AP21" | IOSTANDARD = LVDS_25;
@@ -154,7 +163,7 @@ NET "adc_clk3_n_i"                  LOC = "AF34" | IOSTANDARD = LVDS_25;
 #Output Clock to Data Propagation Delay (LVDS Mode):
 # tdc Rising/Falling Edge -0.1 (min) 0.16 (typ) 0.5 (max) ns
 #
-#Constraint recommended by an Intersil Employee
+#Constraint recommended by Intersil
 #
 #TIMEGRP "datain18_p_group" OFFSET = IN -200 ps VALID 1200 ps BEFORE "clkin18_p" RISING;
 #
@@ -183,15 +192,23 @@ NET "adc_clk3_n_i"                  LOC = "AF34" | IOSTANDARD = LVDS_25;
 
 TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk0_p_i" RISING;
 TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk0_p_i" FALLING;
+#TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk0_p_i" RISING;
+#TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk0_p_i" FALLING;
 
 TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk1_p_i" RISING;
 TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk1_p_i" FALLING;
+#TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk1_p_i" RISING;
+#TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk1_p_i" FALLING;
 
 TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk2_p_i" RISING;
 TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk2_p_i" FALLING;
+#TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk2_p_i" RISING;
+#TIMEGRP "TNM_ADC_DATA_2" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk2_p_i" FALLING;
 
 TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i" RISING;
 TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i" FALLING;
+#TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk3_p_i" RISING;
+#TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 2000 ps BEFORE "adc_clk3_p_i" FALLING;
 
 #######################################################################
 # CDC FIFO Constraints
@@ -209,7 +226,7 @@ TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN -200 ps VALID 1200 ps BEFORE "adc_clk3_p_i"
 # Group all IDELAY-related blocks to use a single IDELAYCTRL
 INST "*cmp_fmc516_adc_iface/cmp_idelayctrl"                                   IODELAY_GROUP = adc_idelay;
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay"  IODELAY_GROUP = adc_idelay;
-INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/cmp_ibufds_clk_iodelay"   IODELAY_GROUP = adc_idelay;
+INST "*cmp_fmc516_adc_iface/gen_clock_chains[?].*.*/*.cmp_ibufds_clk_iodelay"   IODELAY_GROUP = adc_idelay;
 
 # Overrides default_delay hdl parameter for the VARIABLE mode.
 # For Virtex-6: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps
@@ -250,10 +267,10 @@ INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[6].*.cmp_adc
 INST "*cmp_fmc516_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[7].*.cmp_adc_data_iodelay" IDELAY_VALUE = 25;
 
 # Overrides default_delay hdl parameter
- INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
- INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
-# INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+ INST "*cmp_fmc516_adc_iface/gen_clock_chains[0].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+ INST "*cmp_fmc516_adc_iface/gen_clock_chains[1].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[2].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
+# INST "*cmp_fmc516_adc_iface/gen_clock_chains[3].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 5;
 
 #######################################################################
 # Button/LEDs Contraints
