@@ -26,7 +26,7 @@ int spi_init(void)
     spi = (spi_t **) memmgr_alloc(sizeof(spi)*spi_devl->size);
     spi_config = (uint32_t *) memmgr_alloc(sizeof(spi_config)*spi_devl->size);
 
-    dbg_print("> spi size: %d\n", spi_devl->size);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi size: %d\n", spi_devl->size);
 
     for (i = 0, dev_p = spi_devl->devices; i < spi_devl->size;
         ++i, dev_p = dev_p->next) {
@@ -35,25 +35,25 @@ int spi_init(void)
         spi[i]->DIVIDER = DEFAULT_SPI_DIVIDER & SPI_DIV_MASK;
         spi_config[i] = SPI_CTRL_ASS | SPI_CTRL_TXNEG;
         spi[i]->CTRL = spi_config[i];
-        dbg_print("> spi addr[%d]: %08X\n", i, spi[i]);
-        dbg_print("> spi rx0 addr[%d]: %08X\n", i, &spi[i]->RX0);
-        dbg_print("> spi tx0 addr[%d]: %08X\n", i, &spi[i]->TX0);
-        dbg_print("> spi rx1 addr[%d]: %08X\n", i, &spi[i]->RX1);
-        dbg_print("> spi tx1 addr[%d]: %08X\n", i, &spi[i]->TX1);
-        dbg_print("> spi rx2 addr[%d]: %08X\n", i, &spi[i]->RX2);
-        dbg_print("> spi tx2 addr[%d]: %08X\n", i, &spi[i]->TX2);
-        dbg_print("> spi rx3 addr[%d]: %08X\n", i, &spi[i]->RX3);
-        dbg_print("> spi tx3 addr[%d]: %08X\n", i, &spi[i]->TX3);
-        dbg_print("> spi ctrl addr[%d]: %08X\n", i, &spi[i]->CTRL);
-        dbg_print("> spi divider addr[%d]: %08X\n", i, &spi[i]->DIVIDER);
-        dbg_print("> spi ss addr[%d]: %08X\n", i, &spi[i]->SS);
-        dbg_print("> reading some fields back:\n");
-        dbg_print("> spi ctrl_busy: %08X\n", spi[i]->CTRL & SPI_CTRL_GO_BSY);
-        dbg_print("> spi ctrl_ass: %08X\n", spi[i]->CTRL & SPI_CTRL_ASS);
-        dbg_print("> spi ctrl_txneg: %08X\n", spi[i]->CTRL & SPI_CTRL_TXNEG);
-        dbg_print("> spi ctrl_lsb: %08X\n", spi[i]->CTRL & SPI_CTRL_LSB);
-        dbg_print("> spi ctrl_dir: %08X\n", spi[i]->CTRL & SPI_CTRL_DIR);
-        dbg_print("> spi ctrl_three_mode: %08X\n", spi[i]->CTRL & SPI_CTRL_THREE_WIRE);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi addr[%d]: %08X\n", i, spi[i]);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi rx0 addr[%d]: %08X\n", i, &spi[i]->RX0);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi tx0 addr[%d]: %08X\n", i, &spi[i]->TX0);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi rx1 addr[%d]: %08X\n", i, &spi[i]->RX1);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi tx1 addr[%d]: %08X\n", i, &spi[i]->TX1);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi rx2 addr[%d]: %08X\n", i, &spi[i]->RX2);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi tx2 addr[%d]: %08X\n", i, &spi[i]->TX2);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi rx3 addr[%d]: %08X\n", i, &spi[i]->RX3);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi tx3 addr[%d]: %08X\n", i, &spi[i]->TX3);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl addr[%d]: %08X\n", i, &spi[i]->CTRL);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi divider addr[%d]: %08X\n", i, &spi[i]->DIVIDER);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ss addr[%d]: %08X\n", i, &spi[i]->SS);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> reading some fields back:\n");
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_busy: %08X\n", spi[i]->CTRL & SPI_CTRL_GO_BSY);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_ass: %08X\n", spi[i]->CTRL & SPI_CTRL_ASS);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_txneg: %08X\n", spi[i]->CTRL & SPI_CTRL_TXNEG);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_lsb: %08X\n", spi[i]->CTRL & SPI_CTRL_LSB);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_dir: %08X\n", spi[i]->CTRL & SPI_CTRL_DIR);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_INFO, "> spi ctrl_three_mode: %08X\n", spi[i]->CTRL & SPI_CTRL_THREE_WIRE);
     }
     //spi = (spi_t *)spi_devl->devices->base;;
     return 0;
@@ -107,8 +107,8 @@ int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
     //spi[id]->TX1 = 0;
     //spi[id]->TX2 = 0;
     //spi[id]->TX3 = 0;
-    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
-    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
 
     spi[id]->SS = (1 << ss);
 
@@ -116,14 +116,14 @@ int oc_spi_three_mode_tx(unsigned int id, int ss, int nbits, uint32_t in)
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
     // Wait for completion
-    dbg_print("> waiting for spi...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 
     delay(SPI_DELAY);
 
-    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
-    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
 
     return 0;
 }
@@ -135,14 +135,14 @@ int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
     spi[id]->CTRL = spi_config[id] | SPI_CTRL_CHAR_LEN(nbits);
     spi[id]->SS = (1 << ss);
 
-    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
-    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
 
     // Initiate transaction
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
     // Wait for reception
-    dbg_print("> waiting for spi...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 
@@ -150,8 +150,8 @@ int oc_spi_three_mode_rx(unsigned int id, int ss, int nbits, uint32_t *out)
 
     *out = spi[id]->RX0;
 
-    dbg_print("> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
-    dbg_print("> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->TX0: 0x%8X\n", spi[id]->TX0);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> spi[id]->RX0: 0x%8X\n", spi[id]->RX0);
 
     return 0;
 }
@@ -174,7 +174,7 @@ int oc_spi_txrx(unsigned int id, int ss, int nbits, uint32_t in, uint32_t *out)
     spi[id]->SS = (1 << ss);
     spi[id]->CTRL |= SPI_CTRL_GO_BSY;
 
-    dbg_print("> waiting for spi...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> waiting for spi...\n");
     while(oc_spi_poll(id))
        delay(SPI_DELAY);
 

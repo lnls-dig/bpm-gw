@@ -22,7 +22,7 @@ static void fmc516_lmk02000_load_regset(const struct default_dev_regs_t *regs);
 
 int fmc516_lmk02000_init(void)
 {
-    dbg_print("> fmc516_lmk02000_init...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> fmc516_lmk02000_init...\n");
     fmc516_lmk02000_load_regset(lmk02000_regs_default);
     return 0;
 }
@@ -30,7 +30,7 @@ int fmc516_lmk02000_init(void)
 // lmk02000 has 28 msb value and 4 lsb addr
 void fmc516_lmk02000_write_reg(int val)
 {
-    dbg_print("> fmc516_lmk02000_write_reg...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> fmc516_lmk02000_write_reg...\n");
     oc_spi_txrx(FMC516_LMK02000_SPI_ID, FMC516_LMK02000_CS,
                     FMC516_LMK02000_SIZE, val, 0);
 }
@@ -46,9 +46,9 @@ static void fmc516_lmk02000_load_regset(const struct default_dev_regs_t *regs)
 {
     int i = 0;
 
-    dbg_print("> fmc516_lmk02000_load_regset...\n");
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> fmc516_lmk02000_load_regset...\n");
     while (regs[i].type != REGS_DEFAULT_END){
-        dbg_print("> fmc516_lmk02000_load_regset while: %d...\n", i);
+        DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "> fmc516_lmk02000_load_regset while: %d...\n", i);
         if (regs[i].type == REGS_DEFAULT_INIT)
             fmc516_lmk02000_write_reg(regs[i].val);
         ++i;

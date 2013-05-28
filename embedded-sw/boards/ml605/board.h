@@ -38,7 +38,7 @@
  * Buffer size
  */
 //#define BUFF_SIZE (0x600-4)
-#define BUFF_SIZE (0x600)
+#define BUFF_SIZE (0x800)
 #define OETH_RX_BUFF_SIZE BUFF_SIZE
 #define OETH_TX_BUFF_SIZE BUFF_SIZE
 
@@ -60,7 +60,7 @@
  * IDs of FMC516 components
  */
 #define FMC516_SYS_I2C_ID 0
-#define FMC516_VCXO_I2C_ID 1
+#define FMC516_SI57X_I2C_ID 1
 #define FMC516_ISLA216P25_SPI_ID 0
 #define FMC516_LMK02000_SPI_ID 1
 #define FMC516_DS2431_OWR_ID 0

@@ -1,6 +1,7 @@
 #include "board.h"          // Board definitions: DMA device structure
 #include "dma.h"                // DMA device functions
 #include "memmgr.h"
+#include "debug_print.h"
 
 // Global DMA handler.
 //dma_t *dma;
@@ -17,14 +18,14 @@ int dma_init(void)
     // get all base addresses
     dma = (dma_t **) memmgr_alloc(sizeof(dma_t *)*dma_devl->size);
 
-    //dbg_print("> dma size: %d\n", dma_devl->size);
-
     for (i = 0, dev_p = dma_devl->devices; i < dma_devl->size;
             ++i, dev_p = dev_p->next) {
         dma[i] = (dma_t *) dev_p->base;
-        //dbg_print("> dma addr[%d]: %08X\n", i, gpio[i]);
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> dma addr[%d]: %08X\n", i, dma[i]);
     }
-    //dma = (dma_t *)dma_devl->devices->base;//BASE_GPIO;
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> dma size: %d\n", dma_devl->size);
+
     return 0;
 }
 

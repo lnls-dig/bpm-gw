@@ -29,6 +29,8 @@
 #define DBE_DBG_HALT    (0x1)
 
 void debug_print(const char *fmt, ...);
+//__attribute__((format(printf,1,2)));
+
 void debug_print2(const char *fmt, const char *data, int len);
 
 #ifdef DBE_DBG

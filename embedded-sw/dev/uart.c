@@ -27,10 +27,10 @@ int uart_init(void)
             ++i, dev_p = dev_p->next) {
         uart[i] = (uart_t *) dev_p->base;
         uart[i]->BCR = CALC_BAUD(UART_BAUDRATE);
-        dbg_print("> uart addr[%d]: %08X\n", i, dev_p->base);
+        DBE_DEBUG(DBG_UART | DBE_DBG_INFO, "> uart addr[%d]: %08X\n", i, dev_p->base);
     }
 
-    dbg_print("> uart size: %d\n", uart_devl->size);
+    DBE_DEBUG(DBG_UART | DBE_DBG_INFO, "> uart size: %d\n", uart_devl->size);
     //uart = (uart_t *)uart_devl->devices->base;//BASE_GPIO;
     return 0;
 }

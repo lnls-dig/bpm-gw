@@ -86,7 +86,7 @@ int fmc516_isla216_read_byte(int addr, int ss)
     // Read the desired byte
     fmc516_isla216_readw_raw(&val, ss);
 
-    dbg_print("fmc_read_byte: 0X%8X\n", val);
+    DBE_DEBUG(DBG_SPI | DBE_DBG_TRACE, "fmc_read_byte: 0X%8X\n", val);
 
     return val & 0xff;
 }

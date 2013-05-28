@@ -20,10 +20,10 @@ int gpio_init()
     for (i = 0, dev_p = gpio_devl->devices; i < gpio_devl->size;
             ++i, dev_p = dev_p->next) {
         gpio[i] = (gpio_t *) dev_p->base;
-        dbg_print("> gpio addr[%d]: %08X\n", i, dev_p->base);
+        DBE_DEBUG(DBG_GPIO | DBE_DBG_TRACE, "> gpio addr[%d]: %08X\n", i, dev_p->base);
     }
 
-    dbg_print("> gpio size: %d\n", gpio_devl->size);
+    DBE_DEBUG(DBG_GPIO | DBE_DBG_TRACE, "> gpio size: %d\n", gpio_devl->size);
     //gpio = (gpio_t *)gpio_devl->devices->base;//BASE_GPIO;
     return 0;
 }
