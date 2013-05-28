@@ -22,4 +22,4 @@ genramvhd: genramvhd.o
 				${CC} -c $^ $(CFLAGS) -O0
 
 clean:
-	rm -f $(ALL) *.o
+	rm -f genraminit genramvhd *.o

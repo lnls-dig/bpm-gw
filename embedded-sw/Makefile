@@ -5,15 +5,16 @@
 BOARD = ml605
 
 # Some configurations
-CONFIG_PPRINTF =? 1
+CONFIG_PPRINTF ?= y
 
 #ifeq ($(CONFIG_PPRINTF),1)
 	#CONFIG_PRINT_BUFSIZE = 200
 #endif
 
-CONFIG_ETHERBONE =? 1
-CONFIG_FMC150 ?= 0
-CONFIG_FMC516 ?= 0
+CONFIG_ETHERBONE ?= y
+CONFIG_LWIP ?= n
+CONFIG_FMC150 ?= n
+CONFIG_FMC516 ?= y
 
 # Don't touch the rest unless you know what you're doing.
 CROSS_COMPILE ?= lm32-elf-
@@ -25,12 +26,15 @@ OBJCOPY =	$(CROSS_COMPILE)objcopy
 SIZE =		$(CROSS_COMPILE)size
 AR =		$(CROSS_COMPILE)ar
 
--include $(CURDIR)/.config
+# -include $(CURDIR)/.config
 
 TOPDIR=.
 
-OBJS_DBE = dbe_lwip.o
-#OBJS_DBE = dbe_main.o
+ifeq ($(CONFIG_LWIP),y)
+	OBJS_DBE = dbe_lwip.o
+else
+	OBJS_DBE = dbe_main.o
+endif
 #OBJS_DBE = dbe_main_test.o
 
 INCLUDE_DIRS = -Iinclude   \
@@ -47,8 +51,6 @@ CFLAGS_MEMMGR = -DDEBUG_MEMMGR_FATAL=1 \
 CFLAGS_DEBUG = -DDBE_DBG=1 -DLWIP_DEBUG=1
 
 CFLAGS_PLATFORM  = -mmultiply-enabled -mbarrel-shift-enabled
-#LDFLAGS_PLATFORM = -mmultiply-enabled -mbarrel-shift-enabled \
-#	-nostdlib -T arch/lm32/ram.ld
 LDFLAGS_PLATFORM = -mmultiply-enabled -mbarrel-shift-enabled \
 	-nostdlib -T arch/lm32/ram.ld
 
@@ -75,8 +77,11 @@ OBJS = $(OBJS_PLATFORM) $(OBJS_DBE) \
 	$(OBJS_SHELL) $(OBJS_TESTS) $(OBJS_LIB) \
 	$(OBJS_DEV) $(OBJS_BOARD) $(OBJS_FMC)
 
-OUTPUT = dbe_lwip
-#OUTPUT = dbe
+ifeq ($(CONFIG_LWIP),y)
+	OUTPUT = dbe_lwip
+else
+	OUTPUT = dbe_nolwip
+endif
 #OUTPUT = dbe_test
 
 REVISION=$(shell git describe --dirty --always)
