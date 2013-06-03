@@ -122,16 +122,16 @@ NET "fmc_lmk_lock_o"                LOC="AD21"  |  IOSTANDARD = "LVCMOS25";
 # The CLOCK_DEDICATED_ROUTE﻿=FALSE workaround is typically for source clocks which
 # are not assigned to global clock input pins
 
-NET "adc_clk0_p_i" TNM_NET = "adc_clk0_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+NET "adc_clk0_p_i" TNM_NET = "adc_clk0_p_i";
 TIMESPEC "TS_adc_clk0_p_i" = PERIOD "adc_clk0_p_i" 4 ns HIGH 50%;
 
-NET "adc_clk1_p_i" TNM_NET = "adc_clk1_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+NET "adc_clk1_p_i" TNM_NET = "adc_clk1_p_i";
 TIMESPEC "TS_adc_clk1_p_i" = PERIOD "adc_clk1_p_i" 4 ns HIGH 50%;
 
-NET "adc_clk2_p_i" TNM_NET = "adc_clk2_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+NET "adc_clk2_p_i" TNM_NET = "adc_clk2_p_i";
 TIMESPEC "TS_adc_clk2_p_i" = PERIOD "adc_clk2_p_i" 4 ns HIGH 50%;
 
-NET "adc_clk3_p_i" TNM_NET = "adc_clk3_p_i" | CLOCK_DEDICATED_ROUTE=FALSE;
+NET "adc_clk3_p_i" TNM_NET = "adc_clk3_p_i";
 TIMESPEC "TS_adc_clk3_p_i" = PERIOD "adc_clk3_p_i" 4 ns HIGH 50%;
 
 NET "adc_clk0_p_i"                  LOC = "AP20" | IOSTANDARD = LVDS_25;
