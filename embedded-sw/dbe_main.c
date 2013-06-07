@@ -454,10 +454,10 @@ void fmc516_test()
   //      ISLA216_TESTIO_REG, i);
   //}
 
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    fmc516_isla216_test_ramp(i);
-    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
-  }
+  //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+  //  fmc516_isla216_test_ramp(i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //}
 
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
   //  fmc516_isla216_test_midscale(i);
