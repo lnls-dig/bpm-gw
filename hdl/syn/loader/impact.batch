@@ -1,7 +1,0 @@
-setMode -bscan
-setCable -port auto
-identify
-assignFile -p 2 -file ../dbe_bpm_fmc516/dbe_bpm_fmc516.bit
-program -p 2 
-closeCable
-quit

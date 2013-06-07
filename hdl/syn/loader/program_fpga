@@ -1,3 +1,0 @@
-#!/bin/bash
-
-impact -batch impact.batch
