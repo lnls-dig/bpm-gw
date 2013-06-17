@@ -71,9 +71,9 @@ void fmc516_init_regs(unsigned int id)
 
     dbg_print("> Leds and clock select\n");
 
-    // No test data. External reference on. Led0 on. Led1 on. VCXO off
+    // No test data. External reference on. Led0 on. VCXO off
     fmc516_clk_sel(id, 1);
-    fmc516_led1(id, 1);
+    fmc516_led0(id, 1);
 
     // Adjsut the delays of all channels. Don't change these values
     // unless you really have to!
