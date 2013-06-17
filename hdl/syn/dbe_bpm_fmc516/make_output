@@ -1257,8 +1257,8 @@ Elaborating entity <wr_pf_ss> (architecture <xilinx>) with generics from library
 Elaborating entity <wr_handshaking_flags> (architecture <xilinx>) with generics from library <fifo_generator_v6_1>.
 
 Elaborating entity <output_blk> (architecture <xilinx>) with generics from library <fifo_generator_v6_1>.
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" Line 642. Case statement is complete. others clause is never selected
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" Line 706: Assignment to s_wb_cyc ignored, since the identifier is never used
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" Line 689. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" Line 753: Assignment to s_eb_rx_stall ignored, since the identifier is never used
 
 Elaborating entity <eb_config> (architecture <behavioral>) with generics from library <work>.
 WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_core.vhd" Line 80: Net <WB_master_i_rty> does not have a driver.
@@ -1437,7 +1437,7 @@ Elaborating entity <generic_shiftreg_fifo> (architecture <rtl>) with generics fr
 Elaborating entity <gc_ext_pulse_sync> (architecture <rtl>) with generics from library <work>.
 
 Elaborating entity <gc_extend_pulse> (architecture <rtl>) with generics from library <work>.
-WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" Line 419: Net <vcxo_i2c_scl_oe_n> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" Line 420: Net <vcxo_i2c_scl_oe_n> does not have a driver.
 
 Elaborating entity <xwb_dbe_periph> (architecture <rtl>) with generics from library <work>.
 
@@ -1486,8 +1486,11 @@ Elaborating entity <wb_tics> (architecture <behaviour>) with generics from libra
 
 Elaborating entity <wb_slave_adapter> (architecture <rtl>) with generics from library <work>.
 WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd" Line 65: Net <wb_out_err> does not have a driver.
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 456: <chipscope_icon_4_port> remains a black-box since it has no binding entity.
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 466: <chipscope_ila> remains a black-box since it has no binding entity.
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 457: <chipscope_icon_4_port> remains a black-box since it has no binding entity.
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 467: <chipscope_ila> remains a black-box since it has no binding entity.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 356: Net <sys_spi_dout_int> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 357: Net <sys_spi_din_int> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" Line 358: Net <sys_spi_miosio_oe_n_int> does not have a driver.
 
 =========================================================================
 *                           HDL Synthesis                               *
@@ -1495,52 +1498,53 @@ WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc51
 
 Synthesizing Unit <dbe_bpm_fmc516>.
     Related source file is "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd".
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 524: Output port <synced_o> of the instance <cmp_button_sys_ffs> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 524: Output port <npulse_o> of the instance <cmp_button_sys_ffs> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_dat> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_ack> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_err> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_rty> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_stall> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 633: Output port <slave2_o_int> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <wbs_source_o[3]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <wbs_source_o[2]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <wbs_source_o[1]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <wbs_source_o[0]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <trig_hw_o> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[3]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[2]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[1]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[1]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 772: Output port <adc_dly_debug_o[0]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 525: Output port <synced_o> of the instance <cmp_button_sys_ffs> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 525: Output port <npulse_o> of the instance <cmp_button_sys_ffs> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_dat> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_ack> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_err> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_rty> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_stall> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 634: Output port <slave2_o_int> of the instance <cmp_ethmac_buf_ram> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <wbs_source_o[3]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <wbs_source_o[2]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <wbs_source_o[1]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <wbs_source_o[0]_dat> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_clk_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_data_dly_val> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <trig_hw_o> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[3]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[2]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[1]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[1]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_clk_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_clk_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_data_dly_pulse> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 773: Output port <adc_dly_debug_o[0]_adc_data_dly_incdec> of the instance <cmp_xwb_fmc516> is unconnected or connected to loadless signal.
 INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 977: Output port <led_oen_o> of the instance <cmp_xwb_dbe_periph> is unconnected or connected to loadless signal.
 INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 977: Output port <button_out_o> of the instance <cmp_xwb_dbe_periph> is unconnected or connected to loadless signal.
 INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.vhd" line 977: Output port <button_oen_o> of the instance <cmp_xwb_dbe_periph> is unconnected or connected to loadless signal.
+WARNING:Xst:653 - Signal <sys_spi_dout_int> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <sys_spi_din_int> is used but never assigned. This sourceless signal will be automatically connected to value GND.
+WARNING:Xst:653 - Signal <sys_spi_miosio_oe_n_int> is used but never assigned. This sourceless signal will be automatically connected to value GND.
     Found 7-bit register for signal <reset_adc_counter>.
-    Found 1-bit register for signal <fmc_debug>.
     Found 1-bit register for signal <fmc_reset_adcs_n_o>.
     Found 7-bit adder for signal <reset_adc_counter[6]_GND_15_o_add_10_OUT> created at line 1241.
-    Found 1-bit tristate buffer for signal <md_pad_b> created at line 708
-    Found 1-bit tristate buffer for signal <sys_spi_data_b> created at line 925
+    Found 1-bit tristate buffer for signal <md_pad_b> created at line 709
     Summary:
 	inferred   1 Adder/Subtractor(s).
-	inferred   9 D-type flip-flop(s).
-	inferred   2 Tristate(s).
+	inferred   8 D-type flip-flop(s).
+	inferred   1 Tristate(s).
 Unit <dbe_bpm_fmc516> synthesized.
 
 Synthesizing Unit <clk_gen>.
@@ -3542,7 +3546,7 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/ethmac/eth_wishbone.v" li
     Found 2-bit adder for signal <RxByteCnt[1]_GND_287_o_add_235_OUT> created at line 2098.
     Found 2-bit adder for signal <RxValidBytes[1]_GND_287_o_add_241_OUT> created at line 2117.
     Found 4x2-bit Read Only RAM for signal <TxPointerLSB[1]_GND_287_o_wide_mux_213_OUT>
-    Found 4x6-bit Read Only RAM for signal <_n1579>
+    Found 4x6-bit Read Only RAM for signal <_n1552>
     Found 1-bit 4-to-1 multiplexer for signal <TxValidBytesLatched[1]_TxByteCnt[1]_Mux_201_o> created at line 1630.
     Found 8-bit 4-to-1 multiplexer for signal <TxPointerLSB[1]_TxData_wb[7]_wide_mux_202_OUT> created at line 1648.
     Found 8-bit 4-to-1 multiplexer for signal <TxByteCnt[1]_TxDataLatched[7]_wide_mux_204_OUT> created at line 1660.
@@ -3854,7 +3858,7 @@ WARNING:Xst:653 - Signal <wb_slave_o_int> is used but never assigned. This sourc
     | Inputs             | 13                                             |
     | Outputs            | 8                                              |
     | Clock              | clk_i (rising_edge)                            |
-    | Reset              | _n0498 (positive)                              |
+    | Reset              | _n0497 (positive)                              |
     | Reset type         | synchronous                                    |
     | Reset State        | idle                                           |
     | Power Up State     | idle                                           |
@@ -4056,10 +4060,10 @@ WARNING:Xst:647 - Input <config_master_i_rty> is never used. This port will be p
 WARNING:Xst:647 - Input <config_master_i_int> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <WB_master_i_rty> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <WB_master_i_int> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 251: Output port <count_o> of the instance <TX_FIFO> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 251: Output port <almost_empty_o> of the instance <TX_FIFO> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 287: Output port <full_o> of the instance <RX_FIFO> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 287: Output port <almost_empty_o> of the instance <RX_FIFO> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 265: Output port <count_o> of the instance <TX_FIFO> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 265: Output port <almost_empty_o> of the instance <TX_FIFO> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 315: Output port <full_o> of the instance <RX_FIFO> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_main_fsm.vhd" line 315: Output port <almost_empty_o> of the instance <RX_FIFO> is unconnected or connected to loadless signal.
 WARNING:Xst:653 - Signal <EB_RX_o_dat> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <EB_RX_o_rty> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <EB_RX_o_int> is used but never assigned. This sourceless signal will be automatically connected to value GND.
@@ -4100,14 +4104,13 @@ WARNING:Xst:653 - Signal <EB_RX_o_int> is used but never assigned. This sourcele
     Found 8-bit register for signal <s_EB_RX_CUR_CYCLE_WR_CNT>.
     Found 8-bit register for signal <s_EB_RX_CUR_CYCLE_RD_CNT>.
     Found 32-bit register for signal <s_EB_TX_base_wr_adr>.
+    Found 1-bit register for signal <s_WB_CYC>.
     Found 1-bit register for signal <s_EB_RX_ACK>.
     Found 1-bit register for signal <EB_TX_o_cyc>.
     Found 32-bit register for signal <EB_TX_o_adr>.
     Found 1-bit register for signal <TX_silent_o>.
     Found 16-bit register for signal <s_EB_packet_length>.
     Found 1-bit register for signal <s_ADR_CONFIG>.
-    Found 1-bit register for signal <s_WB_master_o_cyc>.
-    Found 1-bit register for signal <s_config_master_o_cyc>.
     Found 1-bit register for signal <s_WB_STB>.
     Found 1-bit register for signal <s_WB_WE>.
     Found 4-bit register for signal <s_WB_SEL>.
@@ -4132,7 +4135,7 @@ INFO:Xst:1799 - State error is never reached in FSM <s_state_TX>.
     | Inputs             | 23                                             |
     | Outputs            | 9                                              |
     | Clock              | clk_i (rising_edge)                            |
-    | Reset              | nRst_i_INV_1013_o (positive)                   |
+    | Reset              | nRst_i_INV_1014_o (positive)                   |
     | Reset type         | synchronous                                    |
     | Reset State        | idle                                           |
     | Power Up State     | idle                                           |
@@ -4146,38 +4149,38 @@ INFO:Xst:1799 - State error is never reached in FSM <s_state_TX>.
     | Inputs             | 19                                             |
     | Outputs            | 16                                             |
     | Clock              | clk_i (rising_edge)                            |
-    | Reset              | nRst_i_INV_1013_o (positive)                   |
+    | Reset              | nRst_i_INV_1014_o (positive)                   |
     | Reset type         | synchronous                                    |
     | Reset State        | idle                                           |
     | Power Up State     | idle                                           |
     | Encoding           | auto                                           |
     | Implementation     | LUT                                            |
     -----------------------------------------------------------------------
-    Found 16-bit adder for signal <s_EB_RX_byte_cnt[15]_GND_404_o_add_19_OUT> created at line 1241.
-    Found 4-bit adder for signal <s_EB_probe_wait_cnt[3]_GND_404_o_add_45_OUT> created at line 1241.
-    Found 8-bit adder for signal <s_EB_RX_CUR_CYCLE_WR_CNT[7]_GND_404_o_add_160_OUT> created at line 1241.
-    Found 8-bit adder for signal <s_EB_RX_CUR_CYCLE_WR_CNT[7]_GND_404_o_add_161_OUT> created at line 1241.
-    Found 32-bit adder for signal <s_WB_ADR[31]_GND_404_o_add_168_OUT> created at line 1241.
-    Found 9-bit subtractor for signal <GND_404_o_GND_404_o_sub_32_OUT<8:0>> created at line 1308.
-    Found 9-bit subtractor for signal <GND_404_o_GND_404_o_sub_36_OUT<8:0>> created at line 1308.
-    Found 15-bit subtractor for signal <GND_404_o_GND_404_o_sub_50_OUT<14:0>> created at line 1308.
-    Found 16-bit subtractor for signal <GND_404_o_GND_404_o_sub_157_OUT<15:0>> created at line 1308.
-    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_174_OUT<7:0>> created at line 1308.
-    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_187_OUT<7:0>> created at line 1308.
-    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_229_OUT<7:0>> created at line 1308.
-    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_232_OUT<7:0>> created at line 1308.
-    Found 4-bit comparator greater for signal <s_fifo_rx_am_empty_INV_1019_o> created at line 322
-    Found 16-bit comparator greater for signal <s_EB_RX_byte_cnt[15]_s_EB_packet_length[15]_LessThan_67_o> created at line 457
-    Found 8-bit comparator greater for signal <GND_404_o_s_EB_RX_CUR_CYCLE_WR_CNT[7]_LessThan_96_o> created at line 537
-    Found 8-bit comparator greater for signal <GND_404_o_s_EB_RX_CUR_CYCLE_RD_CNT[7]_LessThan_108_o> created at line 572
-    Found 16-bit comparator equal for signal <s_EB_RX_byte_cnt[15]_s_EB_packet_length[15]_equal_125_o> created at line 612
-    Found 4-bit comparator greater for signal <GND_404_o_s_EB_probe_wait_cnt[3]_LessThan_140_o> created at line 669
-    Found 8-bit comparator greater for signal <GND_404_o_s_EB_TX_zeropad_cnt[7]_LessThan_231_o> created at line 947
+    Found 16-bit adder for signal <s_EB_RX_byte_cnt[15]_GND_404_o_add_17_OUT> created at line 1241.
+    Found 4-bit adder for signal <s_EB_probe_wait_cnt[3]_GND_404_o_add_43_OUT> created at line 1241.
+    Found 8-bit adder for signal <s_EB_RX_CUR_CYCLE_WR_CNT[7]_GND_404_o_add_158_OUT> created at line 1241.
+    Found 8-bit adder for signal <s_EB_RX_CUR_CYCLE_WR_CNT[7]_GND_404_o_add_159_OUT> created at line 1241.
+    Found 32-bit adder for signal <s_WB_ADR[31]_GND_404_o_add_166_OUT> created at line 1241.
+    Found 9-bit subtractor for signal <GND_404_o_GND_404_o_sub_30_OUT<8:0>> created at line 1308.
+    Found 9-bit subtractor for signal <GND_404_o_GND_404_o_sub_34_OUT<8:0>> created at line 1308.
+    Found 15-bit subtractor for signal <GND_404_o_GND_404_o_sub_48_OUT<14:0>> created at line 1308.
+    Found 16-bit subtractor for signal <GND_404_o_GND_404_o_sub_155_OUT<15:0>> created at line 1308.
+    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_172_OUT<7:0>> created at line 1308.
+    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_185_OUT<7:0>> created at line 1308.
+    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_225_OUT<7:0>> created at line 1308.
+    Found 8-bit subtractor for signal <GND_404_o_GND_404_o_sub_228_OUT<7:0>> created at line 1308.
+    Found 4-bit comparator greater for signal <s_fifo_rx_am_empty_INV_1019_o> created at line 363
+    Found 16-bit comparator greater for signal <s_EB_RX_byte_cnt[15]_s_EB_packet_length[15]_LessThan_65_o> created at line 504
+    Found 8-bit comparator greater for signal <GND_404_o_s_EB_RX_CUR_CYCLE_WR_CNT[7]_LessThan_94_o> created at line 584
+    Found 8-bit comparator greater for signal <GND_404_o_s_EB_RX_CUR_CYCLE_RD_CNT[7]_LessThan_106_o> created at line 619
+    Found 16-bit comparator equal for signal <s_EB_RX_byte_cnt[15]_s_EB_packet_length[15]_equal_123_o> created at line 659
+    Found 4-bit comparator greater for signal <GND_404_o_s_EB_probe_wait_cnt[3]_LessThan_138_o> created at line 716
+    Found 8-bit comparator greater for signal <GND_404_o_s_EB_TX_zeropad_cnt[7]_LessThan_227_o> created at line 986
     Summary:
 	inferred  13 Adder/Subtractor(s).
-	inferred 360 D-type flip-flop(s).
+	inferred 359 D-type flip-flop(s).
 	inferred   7 Comparator(s).
-	inferred  55 Multiplexer(s).
+	inferred  65 Multiplexer(s).
 	inferred   2 Finite State Machine(s).
 Unit <eb_main_fsm> synthesized.
 
@@ -5158,107 +5161,103 @@ Synthesizing Unit <wb_fmc516>.
         g_ref_clk = 1
         g_packet_size = 32
         g_sim = 0
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 631: Output port <slave_o[0]_int> of the instance <cmp_interconnect> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_dat> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_adr_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_dat_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_sel_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_ack> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_err> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_rty> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_stall> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <slave_o_int> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_cyc_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_stb_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 668: Output port <ma_we_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_fmc_ctl_reserved_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_trig_cfg_reserved_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch0_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch0_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch0_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch0_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch1_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch1_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch1_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch1_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch2_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch2_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch2_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch2_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch3_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch3_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch3_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 711: Output port <regs_o_ch3_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[3]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[3]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[3]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[3]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[2]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[2]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[2]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[2]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[1]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[1]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[1]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[1]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[0]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[0]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[0]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_fn_dly_o[0]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_out_o[3]_adc_clk2x> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_out_o[2]_adc_clk2x> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_out_o[1]_adc_clk2x> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 998: Output port <adc_out_o[0]_adc_clk2x> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1122: Output port <desc_o> of the instance <cmp_fmc_sys_i2c> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1160: Output port <desc_o> of the instance <cmp_fmc_spi> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1204: Output port <desc_o> of the instance <cmp_fmc_lmk_uwire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1204: Output port <pad_oen_o> of the instance <cmp_fmc_lmk_uwire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1243: Output port <desc_o> of the instance <cmp_vcxo_i2c> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1243: Output port <scl_padoen_o> of the instance <cmp_vcxo_i2c> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1285: Output port <desc_o> of the instance <cmp_ds2431_onewire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1285: Output port <owr_pwren_o> of the instance <cmp_ds2431_onewire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1318: Output port <desc_o> of the instance <cmp_ds2432_onewire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1318: Output port <owr_pwren_o> of the instance <cmp_ds2432_onewire> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <dreq_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <dreq_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <dreq_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1353: Output port <dreq_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 632: Output port <slave_o[0]_int> of the instance <cmp_interconnect> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_dat> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_adr_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_dat_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_sel_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_ack> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_err> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_rty> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_stall> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <slave_o_int> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_cyc_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_stb_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 669: Output port <ma_we_o> of the instance <cmp_slave_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_fmc_ctl_reserved_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_trig_cfg_reserved_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch0_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch0_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch0_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch0_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch1_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch1_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch1_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch1_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch2_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch2_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch2_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch2_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch3_fn_dly_reserved_clk_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch3_fn_dly_reserved_data_incdec_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch3_cs_dly_reserved_fe_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 712: Output port <regs_o_ch3_cs_dly_reserved_rg_dly_o> of the instance <cmp_wb_fmc516_port> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[3]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[3]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[3]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[3]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[2]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[2]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[2]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[2]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[1]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[1]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[1]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[1]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[0]_adc_clk_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[0]_adc_clk_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[0]_adc_data_dly_pulse> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 999: Output port <adc_fn_dly_o[0]_adc_data_dly_incdec> of the instance <cmp_fmc516_adc_iface> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1124: Output port <desc_o> of the instance <cmp_fmc_sys_i2c> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1162: Output port <desc_o> of the instance <cmp_fmc_spi> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1208: Output port <desc_o> of the instance <cmp_fmc_lmk_uwire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1208: Output port <pad_oen_o> of the instance <cmp_fmc_lmk_uwire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1247: Output port <desc_o> of the instance <cmp_vcxo_i2c> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1247: Output port <scl_padoen_o> of the instance <cmp_vcxo_i2c> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1289: Output port <desc_o> of the instance <cmp_ds2431_onewire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1289: Output port <owr_pwren_o> of the instance <cmp_ds2431_onewire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1322: Output port <desc_o> of the instance <cmp_ds2432_onewire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1322: Output port <owr_pwren_o> of the instance <cmp_ds2432_onewire> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <dreq_o> of the instance <gen_wbs_interfaces[0].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <dreq_o> of the instance <gen_wbs_interfaces[1].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <dreq_o> of the instance <gen_wbs_interfaces[2].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel32_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel64_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_adr128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_dat128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <src_sel128_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" line 1357: Output port <dreq_o> of the instance <gen_wbs_interfaces[3].gen_wbs_interfaces_ch.cmp_wb_stream_source_gen> is unconnected or connected to loadless signal.
 WARNING:Xst:653 - Signal <vcxo_i2c_scl_oe_n> is used but never assigned. This sourceless signal will be automatically connected to value GND.
     Found 5-bit register for signal <adc_fn_dly_in[0]_adc_data_dly_val>.
     Found 5-bit register for signal <adc_fn_dly_in[1]_adc_clk_dly_val>.
@@ -5288,21 +5287,22 @@ WARNING:Xst:653 - Signal <vcxo_i2c_scl_oe_n> is used but never assigned. This so
     Found 1-bit register for signal <adc_dly_pulse_data_int_2>.
     Found 1-bit register for signal <adc_dly_pulse_clk_int_3>.
     Found 1-bit register for signal <adc_dly_pulse_data_int_3>.
-    Found 16-bit adder for signal <wbs_test_data[0][15]_GND_594_o_add_88_OUT> created at line 1241.
-    Found 16-bit adder for signal <wbs_test_data[1][15]_GND_594_o_add_92_OUT> created at line 1241.
-    Found 16-bit adder for signal <wbs_test_data[2][15]_GND_594_o_add_96_OUT> created at line 1241.
-    Found 16-bit adder for signal <wbs_test_data[3][15]_GND_594_o_add_100_OUT> created at line 1241.
-    Found 1-bit tristate buffer for signal <sys_i2c_scl_b> created at line 1144
-    Found 1-bit tristate buffer for signal <sys_i2c_sda_b> created at line 1147
-    Found 1-bit tristate buffer for signal <vcxo_i2c_scl_o> created at line 1267
-    Found 1-bit tristate buffer for signal <vcxo_i2c_sda_b> created at line 1269
-    Found 1-bit tristate buffer for signal <fmc_id_dq_b> created at line 1306
-    Found 1-bit tristate buffer for signal <fmc_key_dq_b> created at line 1339
+    Found 16-bit adder for signal <wbs_test_data[0][15]_GND_594_o_add_89_OUT> created at line 1241.
+    Found 16-bit adder for signal <wbs_test_data[1][15]_GND_594_o_add_93_OUT> created at line 1241.
+    Found 16-bit adder for signal <wbs_test_data[2][15]_GND_594_o_add_97_OUT> created at line 1241.
+    Found 16-bit adder for signal <wbs_test_data[3][15]_GND_594_o_add_101_OUT> created at line 1241.
+    Found 1-bit tristate buffer for signal <sys_i2c_scl_b> created at line 1146
+    Found 1-bit tristate buffer for signal <sys_i2c_sda_b> created at line 1149
+    Found 1-bit tristate buffer for signal <sys_spi_data_b> created at line 1187
+    Found 1-bit tristate buffer for signal <vcxo_i2c_scl_o> created at line 1271
+    Found 1-bit tristate buffer for signal <vcxo_i2c_sda_b> created at line 1273
+    Found 1-bit tristate buffer for signal <fmc_id_dq_b> created at line 1310
+    Found 1-bit tristate buffer for signal <fmc_key_dq_b> created at line 1343
     Summary:
 	inferred   4 Adder/Subtractor(s).
 	inferred 120 D-type flip-flop(s).
 	inferred  16 Multiplexer(s).
-	inferred   6 Tristate(s).
+	inferred   7 Tristate(s).
 Unit <wb_fmc516> synthesized.
 
 Synthesizing Unit <reset_synch>.
@@ -7152,9 +7152,9 @@ WARNING:Xst:653 - Signal <s_oe_n> is used but never assigned. This sourceless si
     Found 1-bit register for signal <data<1>>.
     Found 1-bit register for signal <data<0>>.
     Found 8-bit subtractor for signal <len[6]_cnt[7]_sub_3_OUT> created at line 98.
-    Found 8-bit subtractor for signal <cnt[7]_GND_836_o_sub_4_OUT> created at line 98.
+    Found 8-bit subtractor for signal <cnt[7]_GND_837_o_sub_4_OUT> created at line 98.
     Found 8-bit subtractor for signal <len[6]_cnt[7]_sub_9_OUT> created at line 99.
-    Found 8-bit adder for signal <cnt[7]_GND_836_o_add_6_OUT> created at line 99.
+    Found 8-bit adder for signal <cnt[7]_GND_837_o_add_6_OUT> created at line 99.
     Found 1-bit 128-to-1 multiplexer for signal <tx_bit_pos[6]_data[127]_Mux_19_o> created at line 147.
     Found 1-bit 128-to-1 multiplexer for signal <rx_bit_pos[6]_data[127]_Mux_20_o> created at line 260.
     Summary:
@@ -7276,8 +7276,8 @@ WARNING:Xst:2935 - Signal 'owr_sel', unconnected in block 'sockit_owm', is tied 
     Found 1-bit register for signal <owr_oen>.
     Found 1-bit register for signal <owr_smp>.
     Found 17-bit adder for signal <n0139[16:0]> created at line 305.
-    Found 8-bit subtractor for signal <GND_852_o_GND_852_o_sub_37_OUT<7:0>> created at line 392.
-    Found 8-bit subtractor for signal <GND_852_o_GND_852_o_sub_38_OUT<7:0>> created at line 393.
+    Found 8-bit subtractor for signal <GND_853_o_GND_853_o_sub_37_OUT<7:0>> created at line 392.
+    Found 8-bit subtractor for signal <GND_853_o_GND_853_o_sub_38_OUT<7:0>> created at line 393.
     Found 1-bit shifter logical left for signal <owr_e> created at line 100
     Found 16-bit comparator equal for signal <pls> created at line 309
     Found 8-bit comparator equal for signal <cnt[7]_t_rstp[7]_equal_43_o> created at line 399
@@ -7362,8 +7362,8 @@ Synthesizing Unit <generic_shiftreg_fifo>.
     Found 1-bit register for signal <empty>.
     Found 5-bit register for signal <pointer>.
     Found 25-bit register for signal <fifo_store<31>>.
-    Found 5-bit adder for signal <pointer[4]_GND_858_o_add_65_OUT> created at line 142.
-    Found 5-bit subtractor for signal <GND_858_o_GND_858_o_sub_67_OUT<4:0>> created at line 144.
+    Found 5-bit adder for signal <pointer[4]_GND_859_o_add_65_OUT> created at line 142.
+    Found 5-bit subtractor for signal <GND_859_o_GND_859_o_sub_67_OUT<4:0>> created at line 144.
 INFO:Xst:3019 - HDL ADVISOR - 800 flip-flops were inferred for signal <fifo_store>. You may be trying to describe a RAM in a way that is incompatible with block and distributed RAM resources available on Xilinx devices, or with a specific template that is not supported. Please review the Xilinx resources documentation and the XST user manual for coding guidelines. Taking advantage of RAM resources will lead to improved device usage and reduced synthesis time.
     Found 25-bit 32-to-1 multiplexer for signal <q_o> created at line 109.
     Summary:
@@ -7385,8 +7385,8 @@ Synthesizing Unit <gc_ext_pulse_sync>.
     Found 1-bit register for signal <s_sync_pulse<0>>.
     Found 1-bit register for signal <s_sync_pulse<1>>.
     Found 1-bit register for signal <s_output_pulse>.
-    Found 2-bit adder for signal <s_pulse_length_cnt[1]_GND_1919_o_add_2_OUT> created at line 1241.
-    Found 2-bit subtractor for signal <GND_1919_o_GND_1919_o_sub_9_OUT<1:0>> created at line 1308.
+    Found 2-bit adder for signal <s_pulse_length_cnt[1]_GND_1920_o_add_2_OUT> created at line 1241.
+    Found 2-bit subtractor for signal <GND_1920_o_GND_1920_o_sub_9_OUT<1:0>> created at line 1308.
     Summary:
 	inferred   2 Adder/Subtractor(s).
 	inferred   9 D-type flip-flop(s).
@@ -7398,7 +7398,7 @@ Synthesizing Unit <gc_extend_pulse_3>.
         g_width = 20000000
     Found 32-bit register for signal <cntr>.
     Found 1-bit register for signal <extended_int>.
-    Found 32-bit subtractor for signal <GND_1920_o_GND_1920_o_sub_2_OUT<31:0>> created at line 1308.
+    Found 32-bit subtractor for signal <GND_1921_o_GND_1921_o_sub_2_OUT<31:0>> created at line 1308.
     Summary:
 	inferred   1 Adder/Subtractor(s).
 	inferred  33 D-type flip-flop(s).
@@ -7562,7 +7562,7 @@ Synthesizing Unit <uart_baud_gen>.
         g_baud_acc_width = 16
     Found 8-bit register for signal <Baud_sreg>.
     Found 17-bit register for signal <Baud8GeneratorAcc>.
-    Found 17-bit adder for signal <GND_1937_o_Baud8GeneratorInc[16]_add_1_OUT> created at line 39.
+    Found 17-bit adder for signal <GND_1938_o_Baud8GeneratorInc[16]_add_1_OUT> created at line 39.
     Summary:
 	inferred   1 Adder/Subtractor(s).
 	inferred  25 D-type flip-flop(s).
@@ -7581,7 +7581,7 @@ Synthesizing Unit <uart_async_tx>.
     | Inputs             | 2                                              |
     | Outputs            | 6                                              |
     | Clock              | clk_sys_i (rising_edge)                        |
-    | Reset              | rst_n_i_INV_1530_o (positive)                  |
+    | Reset              | rst_n_i_INV_1521_o (positive)                  |
     | Reset type         | synchronous                                    |
     | Reset State        | 0000                                           |
     | Encoding           | auto                                           |
@@ -7611,15 +7611,15 @@ Synthesizing Unit <uart_async_rx>.
     | Inputs             | 3                                              |
     | Outputs            | 3                                              |
     | Clock              | clk_sys_i (rising_edge)                        |
-    | Reset              | rst_n_i_INV_1540_o (positive)                  |
+    | Reset              | rst_n_i_INV_1531_o (positive)                  |
     | Reset type         | synchronous                                    |
     | Reset State        | 0000                                           |
     | Encoding           | auto                                           |
     | Implementation     | LUT                                            |
     -----------------------------------------------------------------------
-    Found 2-bit adder for signal <RxD_cnt_inv[1]_GND_1939_o_add_4_OUT> created at line 1241.
-    Found 4-bit adder for signal <GND_1939_o_GND_1939_o_add_16_OUT> created at line 1241.
-    Found 2-bit subtractor for signal <GND_1939_o_GND_1939_o_sub_7_OUT<1:0>> created at line 1308.
+    Found 2-bit adder for signal <RxD_cnt_inv[1]_GND_1940_o_add_4_OUT> created at line 1241.
+    Found 4-bit adder for signal <GND_1940_o_GND_1940_o_add_16_OUT> created at line 1241.
+    Found 2-bit subtractor for signal <GND_1940_o_GND_1940_o_sub_7_OUT<1:0>> created at line 1308.
     Summary:
 	inferred   2 Adder/Subtractor(s).
 	inferred  19 D-type flip-flop(s).
@@ -7733,8 +7733,8 @@ WARNING:Xst:653 - Signal <wb_out_int> is used but never assigned. This sourceles
     Found 1-bit register for signal <wb_out_ack>.
     Found 32-bit register for signal <wb_out_dat>.
     Found 24-bit register for signal <cntr_div>.
-    Found 24-bit adder for signal <cntr_div[23]_GND_1949_o_add_3_OUT> created at line 1241.
-    Found 32-bit adder for signal <cntr_tics[31]_GND_1949_o_add_7_OUT> created at line 1241.
+    Found 24-bit adder for signal <cntr_div[23]_GND_1950_o_add_3_OUT> created at line 1241.
+    Found 32-bit adder for signal <cntr_tics[31]_GND_1950_o_add_7_OUT> created at line 1241.
     Summary:
 	inferred   2 Adder/Subtractor(s).
 	inferred  90 D-type flip-flop(s).
@@ -7822,8 +7822,8 @@ Macro Statistics
  8-bit addsub                                          : 3
  8-bit subtractor                                      : 14
  9-bit subtractor                                      : 6
-# Registers                                            : 2027
- 1-bit register                                        : 1347
+# Registers                                            : 2025
+ 1-bit register                                        : 1345
  10-bit register                                       : 3
  11-bit register                                       : 15
  14-bit register                                       : 2
@@ -7880,9 +7880,9 @@ Macro Statistics
  8-bit comparator greater                              : 6
  8-bit comparator lessequal                            : 1
  8-bit comparator not equal                            : 2
-# Multiplexers                                         : 1961
+# Multiplexers                                         : 1971
  1-bit 128-to-1 multiplexer                            : 4
- 1-bit 2-to-1 multiplexer                              : 1369
+ 1-bit 2-to-1 multiplexer                              : 1373
  1-bit 3-to-1 multiplexer                              : 5
  1-bit 4-to-1 multiplexer                              : 41
  1-bit 8-to-1 multiplexer                              : 3
@@ -7900,12 +7900,12 @@ Macro Statistics
  29-bit 2-to-1 multiplexer                             : 8
  3-bit 2-to-1 multiplexer                              : 21
  30-bit 2-to-1 multiplexer                             : 4
- 32-bit 2-to-1 multiplexer                             : 137
+ 32-bit 2-to-1 multiplexer                             : 141
  32-bit 25-to-1 multiplexer                            : 1
  32-bit 3-to-1 multiplexer                             : 3
  32-bit 7-to-1 multiplexer                             : 4
  32-bit 8-to-1 multiplexer                             : 2
- 4-bit 2-to-1 multiplexer                              : 74
+ 4-bit 2-to-1 multiplexer                              : 76
  4-bit 6-to-1 multiplexer                              : 2
  48-bit 2-to-1 multiplexer                             : 9
  5-bit 2-to-1 multiplexer                              : 16
@@ -7942,8 +7942,8 @@ Reading core <../../platform/virtex6/chipscope/icon_4_port/chipscope_icon_4_port
 Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_2_ethmac_tx>.
 Loading core <chipscope_icon_4_port> for timing and area information for instance <cmp_chipscope_icon_0>.
 Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_3_fmc516_periph>.
-Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_0_fmc516_clk0>.
 Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_1_fmc516_clk1>.
+Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_0_fmc516_clk0>.
 INFO:Xst:1901 - Instance U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[0].u_ramb36/U_RAMB36 in unit U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[0].u_ramb36/U_RAMB36 of type RAMB36 has been replaced by RAMB36E1
 INFO:Xst:1901 - Instance U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36 in unit U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[1].u_ramb36/U_RAMB36 of type RAMB36 has been replaced by RAMB36E1
 INFO:Xst:1901 - Instance U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[2].u_ramb36/U_RAMB36 in unit U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[2].u_ramb36/U_RAMB36 of type RAMB36 has been replaced by RAMB36E1
@@ -7968,22 +7968,22 @@ WARNING:Xst:1290 - Hierarchical block <grss.gdc.dc> is unconnected in block <gl0
    It will be removed from the design.
 WARNING:Xst:1290 - Hierarchical block <gwhf.whf> is unconnected in block <gl0.wr>.
    It will be removed from the design.
-INFO:Xst:2261 - The FF/Latch <regs_o_ch0_fn_dly_clk_chain_dly_load_o> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch0_fn_dly_data_chain_dly_load_o> 
-INFO:Xst:2261 - The FF/Latch <regs_o_ch1_fn_dly_clk_chain_dly_load_o> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch1_fn_dly_data_chain_dly_load_o> 
-INFO:Xst:2261 - The FF/Latch <fmc516_ch3_cs_dly_rg_dly_swb_delay> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch3_cs_dly_fe_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch2_cs_dly_fe_dly_swb_delay> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch2_cs_dly_rg_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch0_cs_dly_fe_dly_swb_delay> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch0_cs_dly_rg_dly_swb_delay> 
+INFO:Xst:2261 - The FF/Latch <fmc516_ch3_cs_dly_rg_dly_swb_delay> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch3_cs_dly_fe_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch1_cs_dly_fe_dly_swb_delay> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch1_cs_dly_rg_dly_swb_delay> 
+INFO:Xst:2261 - The FF/Latch <regs_o_ch0_fn_dly_clk_chain_dly_load_o> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch0_fn_dly_data_chain_dly_load_o> 
+INFO:Xst:2261 - The FF/Latch <regs_o_ch1_fn_dly_clk_chain_dly_load_o> in Unit <cmp_wb_fmc516_port> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch1_fn_dly_data_chain_dly_load_o> 
 INFO:Xst:2261 - The FF/Latch <counter_comp_0> in Unit <RXCTRL> is equivalent to the following 6 FFs/Latches, which will be removed : <counter_comp_5> <counter_comp_6> <counter_comp_7> <counter_comp_8> <counter_comp_9> <counter_comp_10> 
-INFO:Xst:2261 - The FF/Latch <s_EB_TX_HDR_EB_MAGIC_0> in Unit <EB> is equivalent to the following 12 FFs/Latches, which will be removed : <s_EB_TX_HDR_EB_MAGIC_1> <s_EB_TX_HDR_EB_MAGIC_2> <s_EB_TX_HDR_EB_MAGIC_3> <s_EB_TX_HDR_EB_MAGIC_5> <s_EB_TX_HDR_EB_MAGIC_6> <s_EB_TX_HDR_EB_MAGIC_9> <s_EB_TX_HDR_EB_MAGIC_10> <s_EB_TX_HDR_EB_MAGIC_11> <s_EB_TX_HDR_EB_MAGIC_14> <s_EB_TX_HDR_VER_0> <s_EB_TX_HDR_ADDR_SIZE_2> <s_EB_TX_HDR_PORT_SIZE_2> 
 INFO:Xst:2261 - The FF/Latch <s_EB_TX_HDR_EB_MAGIC_4> in Unit <EB> is equivalent to the following 14 FFs/Latches, which will be removed : <s_EB_TX_HDR_EB_MAGIC_7> <s_EB_TX_HDR_EB_MAGIC_8> <s_EB_TX_HDR_EB_MAGIC_12> <s_EB_TX_HDR_EB_MAGIC_13> <s_EB_TX_HDR_EB_MAGIC_15> <s_EB_TX_HDR_VER_1> <s_EB_TX_HDR_VER_2> <s_EB_TX_HDR_VER_3> <s_EB_TX_HDR_ADDR_SIZE_0> <s_EB_TX_HDR_ADDR_SIZE_1> <s_EB_TX_HDR_ADDR_SIZE_3> <s_EB_TX_HDR_PORT_SIZE_0> <s_EB_TX_HDR_PORT_SIZE_1> <s_EB_TX_HDR_PORT_SIZE_3> 
+INFO:Xst:2261 - The FF/Latch <s_EB_TX_HDR_EB_MAGIC_0> in Unit <EB> is equivalent to the following 12 FFs/Latches, which will be removed : <s_EB_TX_HDR_EB_MAGIC_1> <s_EB_TX_HDR_EB_MAGIC_2> <s_EB_TX_HDR_EB_MAGIC_3> <s_EB_TX_HDR_EB_MAGIC_5> <s_EB_TX_HDR_EB_MAGIC_6> <s_EB_TX_HDR_EB_MAGIC_9> <s_EB_TX_HDR_EB_MAGIC_10> <s_EB_TX_HDR_EB_MAGIC_11> <s_EB_TX_HDR_EB_MAGIC_14> <s_EB_TX_HDR_VER_0> <s_EB_TX_HDR_ADDR_SIZE_2> <s_EB_TX_HDR_PORT_SIZE_2> 
 INFO:Xst:2261 - The FF/Latch <sh_chk_en> in Unit <TXCTRL> is equivalent to the following FF/Latch, which will be removed : <calc_chk_en> 
-INFO:Xst:2261 - The FF/Latch <s_ETH_end_2> in Unit <TXCTRL> is equivalent to the following FF/Latch, which will be removed : <s_ETH_end_3> 
+INFO:Xst:2261 - The FF/Latch <ETH_TX_TYP_0> in Unit <TXCTRL> is equivalent to the following 34 FFs/Latches, which will be removed : <ETH_TX_TYP_1> <ETH_TX_TYP_2> <ETH_TX_TYP_3> <ETH_TX_TYP_4> <ETH_TX_TYP_5> <ETH_TX_TYP_6> <ETH_TX_TYP_7> <ETH_TX_TYP_8> <ETH_TX_TYP_9> <ETH_TX_TYP_10> <ETH_TX_TYP_12> <ETH_TX_TYP_13> <ETH_TX_TYP_14> <ETH_TX_TYP_15> <IPV4_TX_VER_0> <IPV4_TX_VER_1> <IPV4_TX_VER_3> <IPV4_TX_IHL_1> <IPV4_TX_IHL_3> <IPV4_TX_FLG_0> <IPV4_TX_FLG_2> <IPV4_TX_TTL_0> <IPV4_TX_TTL_1> <IPV4_TX_TTL_2> <IPV4_TX_TTL_3> <IPV4_TX_TTL_4> <IPV4_TX_TTL_5> <IPV4_TX_TTL_7> <IPV4_TX_PRO_1> <IPV4_TX_PRO_2> <IPV4_TX_PRO_3> <IPV4_TX_PRO_5> <IPV4_TX_PRO_6> <IPV4_TX_PRO_7> 
 INFO:Xst:2261 - The FF/Latch <s_src_padding_o_dat_1> in Unit <TXCTRL> is equivalent to the following 7 FFs/Latches, which will be removed : <s_src_padding_o_dat_2> <s_src_padding_o_dat_3> <s_src_padding_o_dat_5> <s_src_padding_o_dat_8> <s_src_padding_o_dat_10> <s_src_padding_o_dat_13> <s_src_padding_o_dat_14> 
 INFO:Xst:2261 - The FF/Latch <s_src_padding_o_dat_0> in Unit <TXCTRL> is equivalent to the following 7 FFs/Latches, which will be removed : <s_src_padding_o_dat_4> <s_src_padding_o_dat_6> <s_src_padding_o_dat_7> <s_src_padding_o_dat_9> <s_src_padding_o_dat_11> <s_src_padding_o_dat_12> <s_src_padding_o_dat_15> 
-INFO:Xst:2261 - The FF/Latch <s_ETH_end_0> in Unit <TXCTRL> is equivalent to the following 2 FFs/Latches, which will be removed : <s_ETH_end_1> <s_ETH_end_4> 
-INFO:Xst:2261 - The FF/Latch <ETH_TX_TYP_0> in Unit <TXCTRL> is equivalent to the following 34 FFs/Latches, which will be removed : <ETH_TX_TYP_1> <ETH_TX_TYP_2> <ETH_TX_TYP_3> <ETH_TX_TYP_4> <ETH_TX_TYP_5> <ETH_TX_TYP_6> <ETH_TX_TYP_7> <ETH_TX_TYP_8> <ETH_TX_TYP_9> <ETH_TX_TYP_10> <ETH_TX_TYP_12> <ETH_TX_TYP_13> <ETH_TX_TYP_14> <ETH_TX_TYP_15> <IPV4_TX_VER_0> <IPV4_TX_VER_1> <IPV4_TX_VER_3> <IPV4_TX_IHL_1> <IPV4_TX_IHL_3> <IPV4_TX_FLG_0> <IPV4_TX_FLG_2> <IPV4_TX_TTL_0> <IPV4_TX_TTL_1> <IPV4_TX_TTL_2> <IPV4_TX_TTL_3> <IPV4_TX_TTL_4> <IPV4_TX_TTL_5> <IPV4_TX_TTL_7> <IPV4_TX_PRO_1> <IPV4_TX_PRO_2> <IPV4_TX_PRO_3> <IPV4_TX_PRO_5> <IPV4_TX_PRO_6> <IPV4_TX_PRO_7> 
+INFO:Xst:2261 - The FF/Latch <s_ETH_end_2> in Unit <TXCTRL> is equivalent to the following FF/Latch, which will be removed : <s_ETH_end_3> 
 INFO:Xst:2261 - The FF/Latch <ETH_TX_TYP_11> in Unit <TXCTRL> is equivalent to the following 7 FFs/Latches, which will be removed : <IPV4_TX_VER_2> <IPV4_TX_IHL_0> <IPV4_TX_IHL_2> <IPV4_TX_FLG_1> <IPV4_TX_TTL_6> <IPV4_TX_PRO_0> <IPV4_TX_PRO_4> 
+INFO:Xst:2261 - The FF/Latch <s_ETH_end_0> in Unit <TXCTRL> is equivalent to the following 2 FFs/Latches, which will be removed : <s_ETH_end_1> <s_ETH_end_4> 
 INFO:Xst:2261 - The FF/Latch <i_dat_o_0> in Unit <instruction_unit> is equivalent to the following 3 FFs/Latches, which will be removed : <i_dat_o_8> <i_dat_o_16> <i_dat_o_24> 
 INFO:Xst:2261 - The FF/Latch <i_dat_o_1> in Unit <instruction_unit> is equivalent to the following 3 FFs/Latches, which will be removed : <i_dat_o_9> <i_dat_o_17> <i_dat_o_25> 
 INFO:Xst:2261 - The FF/Latch <i_dat_o_2> in Unit <instruction_unit> is equivalent to the following 3 FFs/Latches, which will be removed : <i_dat_o_10> <i_dat_o_18> <i_dat_o_26> 
@@ -8626,9 +8626,9 @@ WARNING:Xst:2677 - Node <s_EB_RX_HDR_PORT_SIZE_0> of sequential type is unconnec
 WARNING:Xst:2677 - Node <s_EB_RX_HDR_PORT_SIZE_1> of sequential type is unconnected in block <EB>.
 WARNING:Xst:2677 - Node <s_EB_RX_HDR_PORT_SIZE_3> of sequential type is unconnected in block <EB>.
 WARNING:Xst:2404 -  FFs/Latches <ack_sreg<6:1>> (without init value) have a constant value of 0 in block <simple_uart_wb>.
-WARNING:Xst:2404 -  FFs/Latches <s_EB_TX_HDR_VER<3:1>> (without init value) have a constant value of 0 in block <eb_main_fsm>.
 WARNING:Xst:2404 -  FFs/Latches <s_EB_TX_HDR_EB_MAGIC<15:15>> (without init value) have a constant value of 0 in block <eb_main_fsm>.
 WARNING:Xst:2404 -  FFs/Latches <s_EB_TX_HDR_ADDR_SIZE<3:3>> (without init value) have a constant value of 0 in block <eb_main_fsm>.
+WARNING:Xst:2404 -  FFs/Latches <s_EB_TX_HDR_VER<3:1>> (without init value) have a constant value of 0 in block <eb_main_fsm>.
 WARNING:Xst:2404 -  FFs/Latches <s_EB_TX_HDR_PORT_SIZE<3:3>> (without init value) have a constant value of 0 in block <eb_main_fsm>.
 WARNING:Xst:2404 -  FFs/Latches <ETH_TX_TYP<15:12>> (without init value) have a constant value of 0 in block <EB_TX_CTRL>.
 WARNING:Xst:2404 -  FFs/Latches <IPV4_TX_VER<3:3>> (without init value) have a constant value of 0 in block <EB_TX_CTRL>.
@@ -8794,7 +8794,7 @@ INFO:Xst:3218 - HDL ADVISOR - The RAM <Mram_TxPointerLSB[1]_GND_287_o_wide_mux_2
     |     diA            | connected to signal <GND>           |          |
     |     doA            | connected to internal node          |          |
     -----------------------------------------------------------------------
-INFO:Xst:3218 - HDL ADVISOR - The RAM <Mram__n1579> will be implemented on LUTs either because you have described an asynchronous read or because of currently unsupported block RAM features. If you have described an asynchronous read, making it synchronous would allow you to take advantage of available block RAM resources, for optimized device usage and improved timings. Please refer to your documentation for coding guidelines.
+INFO:Xst:3218 - HDL ADVISOR - The RAM <Mram__n1552> will be implemented on LUTs either because you have described an asynchronous read or because of currently unsupported block RAM features. If you have described an asynchronous read, making it synchronous would allow you to take advantage of available block RAM resources, for optimized device usage and improved timings. Please refer to your documentation for coding guidelines.
     -----------------------------------------------------------------------
     | ram_type           | Distributed                         |          |
     -----------------------------------------------------------------------
@@ -9289,8 +9289,8 @@ Macro Statistics
 # Accumulators                                         : 3
  11-bit up accumulator                                 : 2
  6-bit up loadable accumulator                         : 1
-# Registers                                            : 7813
- Flip-Flops                                            : 7813
+# Registers                                            : 7811
+ Flip-Flops                                            : 7811
 # Shift Registers                                      : 100
  32-bit dynamic shift register                         : 100
 # Comparators                                          : 105
@@ -9321,9 +9321,9 @@ Macro Statistics
  8-bit comparator greater                              : 6
  8-bit comparator lessequal                            : 1
  8-bit comparator not equal                            : 2
-# Multiplexers                                         : 2369
+# Multiplexers                                         : 2379
  1-bit 128-to-1 multiplexer                            : 4
- 1-bit 2-to-1 multiplexer                              : 1802
+ 1-bit 2-to-1 multiplexer                              : 1806
  1-bit 3-to-1 multiplexer                              : 5
  1-bit 4-to-1 multiplexer                              : 41
  1-bit 7-to-1 multiplexer                              : 64
@@ -9340,12 +9340,12 @@ Macro Statistics
  29-bit 2-to-1 multiplexer                             : 8
  3-bit 2-to-1 multiplexer                              : 18
  30-bit 2-to-1 multiplexer                             : 2
- 32-bit 2-to-1 multiplexer                             : 116
+ 32-bit 2-to-1 multiplexer                             : 120
  32-bit 25-to-1 multiplexer                            : 1
  32-bit 3-to-1 multiplexer                             : 3
  32-bit 7-to-1 multiplexer                             : 2
  32-bit 8-to-1 multiplexer                             : 2
- 4-bit 2-to-1 multiplexer                              : 68
+ 4-bit 2-to-1 multiplexer                              : 70
  4-bit 6-to-1 multiplexer                              : 2
  48-bit 2-to-1 multiplexer                             : 9
  5-bit 2-to-1 multiplexer                              : 14
@@ -9395,7 +9395,6 @@ WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <EB_TX_o_adr_28> (wi
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <EB_TX_o_adr_29> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <EB_TX_o_adr_30> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <EB_TX_o_adr_31> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
-WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_VER> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_EB_MAGIC_0> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_EB_MAGIC_1> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_EB_MAGIC_2> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
@@ -9414,6 +9413,7 @@ WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_EB_MAGI
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_ADDR_SIZE_0> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_ADDR_SIZE_1> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_ADDR_SIZE_2> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
+WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_VER> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_PORT_SIZE_0> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_PORT_SIZE_1> (without init value) has a constant value of 0 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <s_EB_TX_HDR_PORT_SIZE_2> (without init value) has a constant value of 1 in block <eb_main_fsm>. This FF/Latch will be trimmed during the optimization process.
@@ -9572,14 +9572,14 @@ WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <rx_ram_o_dat_14> (w
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <rx_ram_o_dat_13> (without init value) has a constant value of 0 in block <xwb_ethmac_adapter>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <rx_ram_o_dat_12> (without init value) has a constant value of 0 in block <xwb_ethmac_adapter>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <rx_ram_o_dat_11> (without init value) has a constant value of 0 in block <xwb_ethmac_adapter>. This FF/Latch will be trimmed during the optimization process.
-INFO:Xst:2261 - The FF/Latch <regs_o_ch0_fn_dly_clk_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch0_fn_dly_data_chain_dly_load_o> 
-INFO:Xst:2261 - The FF/Latch <regs_o_ch1_fn_dly_clk_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch1_fn_dly_data_chain_dly_load_o> 
-INFO:Xst:2261 - The FF/Latch <fmc516_ch3_cs_dly_rg_dly_swb_delay> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch3_cs_dly_fe_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch2_cs_dly_rg_dly_swb_delay> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch2_cs_dly_fe_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch0_cs_dly_fe_dly_swb_delay> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch0_cs_dly_rg_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <regs_o_ch2_fn_dly_data_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch2_fn_dly_clk_chain_dly_load_o> 
 INFO:Xst:2261 - The FF/Latch <regs_o_ch3_fn_dly_clk_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch3_fn_dly_data_chain_dly_load_o> 
+INFO:Xst:2261 - The FF/Latch <fmc516_ch3_cs_dly_rg_dly_swb_delay> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch3_cs_dly_fe_dly_swb_delay> 
 INFO:Xst:2261 - The FF/Latch <fmc516_ch1_cs_dly_rg_dly_swb_delay> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <fmc516_ch1_cs_dly_fe_dly_swb_delay> 
+INFO:Xst:2261 - The FF/Latch <regs_o_ch0_fn_dly_clk_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch0_fn_dly_data_chain_dly_load_o> 
+INFO:Xst:2261 - The FF/Latch <regs_o_ch1_fn_dly_clk_chain_dly_load_o> in Unit <wb_fmc516_regs> is equivalent to the following FF/Latch, which will be removed : <regs_o_ch1_fn_dly_data_chain_dly_load_o> 
 INFO:Xst:2261 - The FF/Latch <sh_chk_en> in Unit <EB_TX_CTRL> is equivalent to the following FF/Latch, which will be removed : <calc_chk_en> 
 INFO:Xst:2261 - The FF/Latch <i_dat_o_0> in Unit <lm32_instruction_unit_medium_icache_debug> is equivalent to the following 3 FFs/Latches, which will be removed : <i_dat_o_8> <i_dat_o_16> <i_dat_o_24> 
 INFO:Xst:2261 - The FF/Latch <i_dat_o_1> in Unit <lm32_instruction_unit_medium_icache_debug> is equivalent to the following 3 FFs/Latches, which will be removed : <i_dat_o_9> <i_dat_o_17> <i_dat_o_25> 
@@ -10616,8 +10616,8 @@ Unit <dbe_bpm_fmc516> processed.
 Final Register Report
 
 Macro Statistics
-# Registers                                            : 7780
- Flip-Flops                                            : 7780
+# Registers                                            : 7778
+ Flip-Flops                                            : 7778
 # Shift Registers                                      : 12
  2-bit shift register                                  : 3
  3-bit shift register                                  : 1
@@ -10645,17 +10645,17 @@ Clock Information:
 -----------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+-------+
 Clock Signal                                                                                                                       | Clock buffer(FF name)                                                                         | Load  |
 -----------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+-------+
-cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/clgen/clk_out                                                   | NONE(fmc_debug)                                                                               | 1     |
 sys_clk_p_i                                                                                                                        | IBUFGDS+BUFG                                                                                  | 11    |
-cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT0                                                                              | 2200  |
-sys_clk_p_i                                                                                                                        | MMCM_ADV:CLKOUT0                                                                              | 7256  |
+cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT0                                                                              | 1419  |
+sys_clk_p_i                                                                                                                        | MMCM_ADV:CLKOUT0                                                                              | 7255  |
 mrx_clk_pad_i                                                                                                                      | BUFGP                                                                                         | 287   |
 mtx_clk_pad_i                                                                                                                      | BUFGP                                                                                         | 1006  |
 cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| BUFR                                                                                          | 267   |
 cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/jtck                                                                       | NONE(cmp_lm32/gen_profile_medium_icache_debug.U_Wrapped_LM32/jtag_cores/jtag_tap/update_delay)| 23    |
 cmp_chipscope_icon_0/U0/U_ICON/I_YES_BSCAN.U_BS/iDRCK_LOCAL                                                                        | BUFG                                                                                          | 731   |
-cmp_chipscope_icon_0/CONTROL1<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[1].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                   | 1     |
+cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/adc_clk_ibufgds_dly| MMCM_ADV:CLKOUT1                                                                              | 781   |
 cmp_chipscope_icon_0/CONTROL0<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[0].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                   | 1     |
+cmp_chipscope_icon_0/CONTROL1<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[1].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                   | 1     |
 cmp_chipscope_icon_0/CONTROL3<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[3].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                 | 1     |
 cmp_chipscope_icon_0/CONTROL2<13>(cmp_chipscope_icon_0/U0/U_ICON/U_CTRL_OUT/F_NCP[2].F_CMD[9].U_LCE:O)                             | NONE(*)(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_STAT/U_DIRTY_LDC)                     | 1     |
 cmp_chipscope_icon_0/U0/iUPDATE_OUT                                                                                                | NONE(cmp_chipscope_icon_0/U0/U_ICON/U_iDATA_CMD)                                              | 1     |
@@ -10783,10 +10783,10 @@ cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_T
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36/N0(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36/XST_GND:G)   | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36)  | 72    |
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/N0(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/XST_GND:G)   | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[8].u_ramb36/U_RAMB36)  | 72    |
 cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/N0(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/XST_GND:G)   | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[9].u_ramb36/U_RAMB36)  | 72    |
-cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_0_fmc516_clk0/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36)    | 56    |
-cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_1_fmc516_clk1/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[6].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[6].u_ramb36/U_RAMB36)    | 56    |
-cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_2_ethmac_tx/XST_VCC:P)                                                                                                                                                                                                                                                                                                  | NONE(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[10].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[10].u_ramb36/U_RAMB36)    | 56    |
-cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_3_fmc516_periph/XST_VCC:P)                                                                                                                                                                                                                                                                                          | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[5].u_ramb36/U_RAMB36)  | 56    |
+cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_0_fmc516_clk0/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[2].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[2].u_ramb36/U_RAMB36)    | 56    |
+cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_1_fmc516_clk1/XST_VCC:P)                                                                                                                                                                                                                                                                                              | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[12].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[12].u_ramb36/U_RAMB36)  | 56    |
+cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_2_ethmac_tx/XST_VCC:P)                                                                                                                                                                                                                                                                                                  | NONE(cmp_chipscope_ila_2_ethmac_tx/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[13].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[13].u_ramb36/U_RAMB36)    | 56    |
+cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_STAT/U_ECR_glue_set(cmp_chipscope_ila_3_fmc516_periph/XST_VCC:P)                                                                                                                                                                                                                                                                                          | NONE(cmp_chipscope_ila_3_fmc516_periph/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B36KGT0.G_RAMB36[7].u_ramb36/U_RAMB36)  | 56    |
 cmp_ethmac_buf_ram/U_DPRAM/gen_single_clk.U_RAM_SC/s_we_b<0>(XST_GND:G)                                                                                                                                                                                                                                                                                                                                       | NONE(cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc516_adc_data/cmp_adc_data_async_fifo/wrapped_gen/grf.rf/mem/gbm.gbmg.gbmga.ngecc.bmg/blk_mem_generator/valid.cstr/ramloop[0].ram.r/v6_noinit.ram/SDP.SIMPLE_PRIM18.ram)                                                                             | 48    |
 cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/iCAP_WR_EN(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_G2_SQ.U_CAPCTRL/I_INTCAP_F.U_CAPWE1:Q)                                                                                                                                                                                                                                                           | NONE(cmp_chipscope_ila_0_fmc516_clk0/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B18KGT0.u_ramb18/U_RAMB18E1)                                                                                                                                                                           | 8     |
 cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/iCAP_WR_EN(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_G2_SQ.U_CAPCTRL/I_INTCAP_F.U_CAPWE1:Q)                                                                                                                                                                                                                                                           | NONE(cmp_chipscope_ila_1_fmc516_clk1/U0/I_NO_D.U_ILA/U_CAPSTOR/I_CASE1.I_YES_TB.U_TRACE_BUFFER/U_RAM/I_V6.U_CS_BRAM_CASCADE_V6/I_DEPTH_LTEQ_32K.U_SBRAM_0/I_B18KGT0.u_ramb18/U_RAMB18E1)                                                                                                                                                                           | 8     |
@@ -10831,8 +10831,8 @@ Loading design module "../../platform/virtex6/chipscope/chipscope_ila.ngc"...
 Loading design module
 "../../platform/virtex6/chipscope/icon_4_port/chipscope_icon_4_port.ngc"...
 	/dbe_bpm_fmc516/dbe_bpm_fmc516
-	/dbe_bpm_fmc516/cmp_chipscope_ila_1_fmc516_clk1
 	/dbe_bpm_fmc516/cmp_chipscope_ila_0_fmc516_clk0
+	/dbe_bpm_fmc516/cmp_chipscope_ila_1_fmc516_clk1
 	/dbe_bpm_fmc516/cmp_chipscope_ila_3_fmc516_periph
 	/dbe_bpm_fmc516/cmp_chipscope_ila_2_ethmac_tx
 
@@ -10852,7 +10852,7 @@ Annotating constraints to design from ucf file
 Resolving constraint associations...
 Checking Constraint Associations...
 WARNING:ConstraintSystem:137 - Constraint <NET "adc_clk2_p_i" TNM_NET =
-   "adc_clk2_p_i" |>
+   "adc_clk2_p_i";>
    [/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.ucf(1
    31)]: No appropriate instances for the TNM constraint are driven by
    "adc_clk2_p_i".
@@ -10864,7 +10864,7 @@ WARNING:ConstraintSystem:56 - Constraint <TIMESPEC "TS_adc_clk2_p_i" = PERIOD
    'adc_clk2_p_i'.
 
 WARNING:ConstraintSystem:137 - Constraint <NET "adc_clk3_p_i" TNM_NET =
-   "adc_clk3_p_i" |>
+   "adc_clk3_p_i";>
    [/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.ucf(1
    34)]: No appropriate instances for the TNM constraint are driven by
    "adc_clk3_p_i".
@@ -10898,6 +10898,7 @@ WARNING:ConstraintSystem:56 - Constraint <TIMEGRP "TNM_ADC_DATA_3" OFFSET = IN
    [/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_fmc516/dbe_bpm_fmc516.ucf(1
    94)]: Unable to find an active 'TimeGrp' or 'TNM' or 'TPSync' constraint
    named 'TNM_ADC_DATA_3'.
+
 
 
 WARNING:ConstraintSystem:191 - The TNM 'adc_clk2_p_i', does not directly or
@@ -10950,8 +10951,8 @@ NGDBUILD Design Results Summary:
   Number of warnings:  12
 
 Writing NGD file "dbe_bpm_fmc516.ngd" ...
-Total REAL time to NGDBUILD completion:  26 sec
-Total CPU time to NGDBUILD completion:   26 sec
+Total REAL time to NGDBUILD completion:  30 sec
+Total CPU time to NGDBUILD completion:   27 sec
 
 Writing NGDBUILD log file "dbe_bpm_fmc516.bld"...
 
@@ -10987,13 +10988,6 @@ WARNING:MapLib:701 - Signal adc_clk2_p_i connected to top level port
 WARNING:MapLib:701 - Signal adc_clk2_n_i connected to top level port
    adc_clk2_n_i has been removed.
 Running directed packing...
-WARNING:Pack:2515 - The LUT-1 inverter
-   "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/shift/s_o
-   e_n1_INV_0" failed to join the OLOGIC comp matched to output buffer
-   "sys_spi_data_b_IOBUF/OBUFT".  This may result in suboptimal timing.  The
-   LUT-1 inverter
-   cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc_spi/U_Wrapped_SPI/Wrapped_SPI/shift/s_oe
-   _n1_INV_0 drives multiple loads.
 WARNING:Pack:1186 - One or more I/O components have conflicting property values.
     For each occurrence, the system will use the property value attached to the
    pad.  Otherwise, the system will use the first property value read.  To view
@@ -11001,23 +10995,133 @@ WARNING:Pack:1186 - One or more I/O components have conflicting property values.
    option).
 Running delay-based LUT packing...
 Updating timing models...
+WARNING:Pack:1653 - At least one timing constraint is impossible to meet because component delays alone exceed the constraint. A timing
+   constraint summary below shows the failing constraints (preceded with an Asterisk (*)). Please use the Timing Analyzer (GUI) or TRCE
+   (command line) with the Mapped NCD and PCF files to identify which constraints and paths are failing because of the component delays
+   alone. If the failing path(s) is mapped to Xilinx components as expected, consider relaxing the constraint. If it is not mapped to
+   components as expected, re-evaluate your HDL and how synthesis is optimizing the path. To allow the tools to bypass this error, set the
+   environment variable XIL_TIMING_ALLOW_IMPOSSIBLE to 1.
+
+
+   For more information about the Timing Analyzer, consult the Xilinx Timing Analyzer Reference manual; for more information on TRCE,
+   consult the Xilinx Command Line Tools User Guide "TRACE" chapter.
+INFO:Timing:3386 - Intersecting Constraints found and resolved.  For more 
+   information, see the TSI report.  Please consult the Xilinx Command Line 
+   Tools User Guide for information on generating a TSI report.
+INFO:Timing:3284 - This timing report was generated using estimated delay 
+   information.  For accurate numbers, please refer to the post Place and Route 
+   timing report.
+Asterisk (*) preceding a constraint indicates it was not met.
+   This may be due to a setup or hold violation.
+
+----------------------------------------------------------------------------------------------------------
+  Constraint                                |    Check    | Worst Case |  Best Case | Timing |   Timing   
+                                            |             |    Slack   | Achievable | Errors |    Score   
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -0.2 | SETUP       |    -2.308ns|     2.108ns|      16|       35349
+   ns VALID 1.2 ns BEFORE COMP "adc_clk1_p_ | HOLD        |     2.392ns|            |       0|           0
+  i" "FALLING"                              |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -0.2 | SETUP       |    -2.307ns|     2.107ns|      16|       35333
+   ns VALID 1.2 ns BEFORE COMP "adc_clk1_p_ | HOLD        |     2.390ns|            |       0|           0
+  i" "RISING"                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -0.2 | SETUP       |    -0.903ns|     0.703ns|      16|       13044
+   ns VALID 1.2 ns BEFORE COMP "adc_clk0_p_ | HOLD        |     1.228ns|            |       0|           0
+  i" "FALLING"                              |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -0.2 | SETUP       |    -0.902ns|     0.702ns|      16|       13028
+   ns VALID 1.2 ns BEFORE COMP "adc_clk0_p_ | HOLD        |     1.226ns|            |       0|           0
+  i" "RISING"                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |    -0.394ns|     2.394ns|      54|       16741
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |    -0.163ns|            |     273|       20881
+  _chains_check_cmp_fmc516_adc_clk_adc_clk2 | MINPERIOD   |    -0.222ns|     2.222ns|      16|        3552
+  x_mmcm_out = PERIOD TIMEGRP "cmp_xwb_fmc5 |             |            |            |        |            
+  16_cmp_wb_fmc516_cmp_fmc516_adc_iface_gen |             |            |            |        |            
+  _clock_chains_1__gen_clock_chains_check_c |             |            |            |        |            
+  mp_fmc516_adc_clk_adc_clk2x_mmcm_out" TS_ |             |            |            |        |            
+  adc_clk1_p_i / 2 HIGH 50%                 |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     2.740ns|     1.260ns|       0|           0
+  1_p_i" 4 ns HIGH 50%                      | HOLD        |    -0.320ns|            |     350|       71584
+                                            | MINLOWPULSE |     1.666ns|     2.334ns|       0|           0
+----------------------------------------------------------------------------------------------------------
+* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     1.606ns|     2.394ns|       0|           0
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |    -0.320ns|            |     319|       27069
+  _chains_check_cmp_fmc516_adc_clk_adc_clk_ |             |            |            |        |            
+  mmcm_out = PERIOD TIMEGRP "cmp_xwb_fmc516 |             |            |            |        |            
+  _cmp_wb_fmc516_cmp_fmc516_adc_iface_gen_c |             |            |            |        |            
+  lock_chains_1__gen_clock_chains_check_cmp |             |            |            |        |            
+  _fmc516_adc_clk_adc_clk_mmcm_out" TS_adc_ |             |            |            |        |            
+  clk1_p_i HIGH 50%                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     2.921ns|     1.079ns|       0|           0
+  0_p_i" 4 ns HIGH 50%                      | HOLD        |    -0.100ns|            |      40|        3384
+                                            | MINPERIOD   |     0.668ns|     3.332ns|       0|           0
+----------------------------------------------------------------------------------------------------------
+
+
+Derived Constraint Report
+Review Timing Report for more details on the following derived constraints.
+To create a Timing Report, run "trce -v 12 -fastpaths -o design_timing_report design.ncd design.pcf"
+or "Run Timing Analysis" from Timing Analyzer (timingan).
+Derived Constraints for TS_adc_clk1_p_i
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+---
+----------+
+|                               |   Period    |       Actual Period       |      Timing Errors        |      Paths
+Analyzed       |
+|           Constraint          | Requirement
+|-------------+-------------|-------------+-------------|-------------+-------------|
+|                               |             |   Direct    | Derivative  |   Direct    | Derivative  |   Direct    |
+Derivative  |
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+---
+----------+
+|TS_adc_clk1_p_i                |      4.000ns|      2.334ns|      4.788ns|          350|          662|          991|   
+    15703|
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      2.000ns|      2.394ns|          N/A|          343|            0|         5159|   
+        0|
+| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |   
+         |
+| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |   
+         |
+| check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |   
+         |
+| lk2x_mmcm_out                 |             |             |             |             |             |             |   
+         |
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      2.394ns|          N/A|          319|            0|        10544|   
+        0|
+| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |   
+         |
+| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |   
+         |
+| check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |   
+         |
+| lk_mmcm_out                   |             |             |             |             |             |             |   
+         |
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+---
+----------+
+
+8 constraints not met.
+
+
 INFO:Map:215 - The Interim Design Summary has been generated in the MAP Report
    (.mrp).
 Running timing-driven placement...
-Total REAL time at the beginning of Placer: 59 secs 
-Total CPU  time at the beginning of Placer: 57 secs 
+Total REAL time at the beginning of Placer: 1 mins 5 secs 
+Total CPU  time at the beginning of Placer: 59 secs 
 
 Phase 1.1  Initial Placement Analysis
-Phase 1.1  Initial Placement Analysis (Checksum:e1dd2fc5) REAL time: 1 mins 11 secs 
+Phase 1.1  Initial Placement Analysis (Checksum:35e98f6f) REAL time: 1 mins 18 secs 
 
 Phase 2.7  Design Feasibility Check
-Phase 2.7  Design Feasibility Check (Checksum:e1dd2fc5) REAL time: 1 mins 12 secs 
+Phase 2.7  Design Feasibility Check (Checksum:35e98f6f) REAL time: 1 mins 19 secs 
 
 Phase 3.31  Local Placement Optimization
-Phase 3.31  Local Placement Optimization (Checksum:9ea7bd47) REAL time: 1 mins 12 secs 
+Phase 3.31  Local Placement Optimization (Checksum:27e47980) REAL time: 1 mins 19 secs 
 
 Phase 4.37  Local Placement Optimization
-Phase 4.37  Local Placement Optimization (Checksum:9ea7bd47) REAL time: 1 mins 12 secs 
+Phase 4.37  Local Placement Optimization (Checksum:27e47980) REAL time: 1 mins 19 secs 
 
 Phase 5.2  Initial Placement for Architecture Specific Features
 
@@ -11145,6 +11249,18 @@ AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chai
 CLOCKREGION_X0Y0, CLOCKREGION_X0Y1;
 
 
+# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" driven by "BUFR_X0Y2"
+INST
+"cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/cmp_adc
+_clk_bufr" LOC = "BUFR_X0Y2" ;
+NET "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" TNM_NET =
+"TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" ;
+TIMEGRP "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" AREA_GROUP =
+"CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" ;
+AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" RANGE =
+CLOCKREGION_X0Y1, CLOCKREGION_X0Y2, CLOCKREGION_X0Y0;
+
+
 # Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[0]_adc_clk_bufr" driven by "BUFR_X1Y0"
 INST
 "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc516_adc_clk/cmp_adc
@@ -11157,53 +11273,41 @@ AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chai
 CLOCKREGION_X0Y0, CLOCKREGION_X0Y1;
 
 
-# Regional-Clock "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" driven by "BUFR_X0Y3"
-INST
-"cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc516_adc_clk/cmp_adc
-_clk_bufr" LOC = "BUFR_X0Y3" ;
-NET "cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" TNM_NET =
-"TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" ;
-TIMEGRP "TN_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" AREA_GROUP =
-"CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" ;
-AREA_GROUP "CLKAG_cmp_xwb_fmc516/cmp_wb_fmc516/cmp_fmc516_adc_iface/adc_clk_chain[1]_adc_clk_bufr" RANGE =
-CLOCKREGION_X0Y1, CLOCKREGION_X0Y2, CLOCKREGION_X0Y0;
-
-
-Phase 5.2  Initial Placement for Architecture Specific Features (Checksum:e5063655) REAL time: 1 mins 25 secs 
+Phase 5.2  Initial Placement for Architecture Specific Features (Checksum:c53a7cb3) REAL time: 1 mins 40 secs 
 
 Phase 6.36  Local Placement Optimization
-Phase 6.36  Local Placement Optimization (Checksum:e5063655) REAL time: 1 mins 25 secs 
+Phase 6.36  Local Placement Optimization (Checksum:c53a7cb3) REAL time: 1 mins 40 secs 
 
 Phase 7.30  Global Clock Region Assignment
-Phase 7.30  Global Clock Region Assignment (Checksum:e5063655) REAL time: 1 mins 25 secs 
+Phase 7.30  Global Clock Region Assignment (Checksum:c53a7cb3) REAL time: 1 mins 40 secs 
 
 Phase 8.3  Local Placement Optimization
-Phase 8.3  Local Placement Optimization (Checksum:e5063655) REAL time: 1 mins 25 secs 
+Phase 8.3  Local Placement Optimization (Checksum:c53a7cb3) REAL time: 1 mins 41 secs 
 
 Phase 9.5  Local Placement Optimization
-Phase 9.5  Local Placement Optimization (Checksum:e5063655) REAL time: 1 mins 25 secs 
+Phase 9.5  Local Placement Optimization (Checksum:c53a7cb3) REAL time: 1 mins 41 secs 
 
 Phase 10.8  Global Placement
-..............................................................................................................
-......................................................................................................................................................................................
-................................................................................................
-.....................
-Phase 10.8  Global Placement (Checksum:464bdd91) REAL time: 2 mins 3 secs 
+..................................................................................................................
+.........................................................................................................................................................................................................
+...................................................................................................
+..........................
+Phase 10.8  Global Placement (Checksum:6999d638) REAL time: 2 mins 28 secs 
 
 Phase 11.5  Local Placement Optimization
-Phase 11.5  Local Placement Optimization (Checksum:464bdd91) REAL time: 2 mins 3 secs 
+Phase 11.5  Local Placement Optimization (Checksum:6999d638) REAL time: 2 mins 28 secs 
 
 Phase 12.18  Placement Optimization
-Phase 12.18  Placement Optimization (Checksum:ac43b6c0) REAL time: 2 mins 29 secs 
+Phase 12.18  Placement Optimization (Checksum:dd7edbf0) REAL time: 3 mins 8 secs 
 
 Phase 13.5  Local Placement Optimization
-Phase 13.5  Local Placement Optimization (Checksum:ac43b6c0) REAL time: 2 mins 29 secs 
+Phase 13.5  Local Placement Optimization (Checksum:dd7edbf0) REAL time: 3 mins 8 secs 
 
 Phase 14.34  Placement Validation
-Phase 14.34  Placement Validation (Checksum:789e5ade) REAL time: 2 mins 29 secs 
+Phase 14.34  Placement Validation (Checksum:7c245257) REAL time: 3 mins 9 secs 
 
-Total REAL time to Placer completion: 2 mins 31 secs 
-Total CPU  time to Placer completion: 2 mins 42 secs 
+Total REAL time to Placer completion: 3 mins 13 secs 
+Total CPU  time to Placer completion: 3 mins 16 secs 
 Running post-placement packing...
 Writing output files...
 
@@ -11211,16 +11315,16 @@ Design Summary:
 Number of errors:      0
 Number of warnings:   15
 Slice Logic Utilization:
-  Number of Slice Registers:                10,633 out of 301,440    3%
-    Number used as Flip Flops:              10,626
+  Number of Slice Registers:                10,631 out of 301,440    3%
+    Number used as Flip Flops:              10,624
     Number used as Latches:                      6
     Number used as Latch-thrus:                  0
     Number used as AND/OR logics:                1
-  Number of Slice LUTs:                     13,532 out of 150,720    8%
-    Number used as logic:                   12,356 out of 150,720    8%
-      Number using O6 output only:           9,743
+  Number of Slice LUTs:                     13,519 out of 150,720    8%
+    Number used as logic:                   12,359 out of 150,720    8%
+      Number using O6 output only:           9,690
       Number using O5 output only:             511
-      Number using O5 and O6:                2,102
+      Number using O5 and O6:                2,158
       Number used as ROM:                        0
     Number used as Memory:                     748 out of  58,400    1%
       Number used as Dual Port RAM:             24
@@ -11232,20 +11336,20 @@ Slice Logic Utilization:
         Number using O6 output only:           496
         Number using O5 output only:             0
         Number using O5 and O6:                228
-    Number used exclusively as route-thrus:    428
-      Number with same-slice register load:    388
+    Number used exclusively as route-thrus:    412
+      Number with same-slice register load:    372
       Number with same-slice carry load:        40
       Number with other load:                    0
 
 Slice Logic Distribution:
-  Number of occupied Slices:                 6,201 out of  37,680   16%
-  Number of LUT Flip Flop pairs used:       17,209
-    Number with an unused Flip Flop:         7,795 out of  17,209   45%
-    Number with an unused LUT:               3,677 out of  17,209   21%
-    Number of fully used LUT-FF pairs:       5,737 out of  17,209   33%
-    Number of unique control sets:             549
+  Number of occupied Slices:                 6,185 out of  37,680   16%
+  Number of LUT Flip Flop pairs used:       17,210
+    Number with an unused Flip Flop:         7,779 out of  17,210   45%
+    Number with an unused LUT:               3,691 out of  17,210   21%
+    Number of fully used LUT-FF pairs:       5,740 out of  17,210   33%
+    Number of unique control sets:             550
     Number of slice register sites lost
-      to control set restrictions:           1,684 out of 301,440    1%
+      to control set restrictions:           1,678 out of 301,440    1%
 
   A LUT Flip Flop pair for this architecture represents one LUT paired with
   one Flip Flop within a slice.  A control set is a unique combination of
@@ -11269,14 +11373,14 @@ Specific Feature Utilization:
   Number of RAMB18E1/FIFO18E1s:                 15 out of     832    1%
     Number using RAMB18E1 only:                 15
     Number using FIFO18E1 only:                  0
-  Number of BUFG/BUFGCTRLs:                     10 out of      32   31%
-    Number used as BUFGs:                       10
+  Number of BUFG/BUFGCTRLs:                     11 out of      32   34%
+    Number used as BUFGs:                       11
     Number used as BUFGCTRLs:                    0
   Number of ILOGICE1/ISERDESE1s:                32 out of     720    4%
     Number used as ILOGICE1s:                   32
     Number used as ISERDESE1s:                   0
-  Number of OLOGICE1/OSERDESE1s:                 3 out of     720    1%
-    Number used as OLOGICE1s:                    3
+  Number of OLOGICE1/OSERDESE1s:                 4 out of     720    1%
+    Number used as OLOGICE1s:                    4
     Number used as OSERDESE1s:                   0
   Number of BSCANs:                              2 out of       4   50%
   Number of BUFHCEs:                             0 out of     144    0%
@@ -11300,9 +11404,9 @@ Specific Feature Utilization:
   Number of RPM macros:           48
 Average Fanout of Non-Clock Nets:                3.90
 
-Peak Memory Usage:  1507 MB
-Total REAL time to MAP completion:  2 mins 45 secs 
-Total CPU time to MAP completion (all processors):   2 mins 55 secs 
+Peak Memory Usage:  1503 MB
+Total REAL time to MAP completion:  3 mins 28 secs 
+Total CPU time to MAP completion (all processors):   3 mins 29 secs 
 
 Mapping completed.
 See MAP report file "dbe_bpm_fmc516_map.mrp" for details.
@@ -11339,16 +11443,16 @@ Device speed data version:  "PRODUCTION 1.17 2012-01-07".
 Device Utilization Summary:
 
 Slice Logic Utilization:
-  Number of Slice Registers:                10,633 out of 301,440    3%
-    Number used as Flip Flops:              10,626
+  Number of Slice Registers:                10,631 out of 301,440    3%
+    Number used as Flip Flops:              10,624
     Number used as Latches:                      6
     Number used as Latch-thrus:                  0
     Number used as AND/OR logics:                1
-  Number of Slice LUTs:                     13,532 out of 150,720    8%
-    Number used as logic:                   12,356 out of 150,720    8%
-      Number using O6 output only:           9,743
+  Number of Slice LUTs:                     13,519 out of 150,720    8%
+    Number used as logic:                   12,359 out of 150,720    8%
+      Number using O6 output only:           9,690
       Number using O5 output only:             511
-      Number using O5 and O6:                2,102
+      Number using O5 and O6:                2,158
       Number used as ROM:                        0
     Number used as Memory:                     748 out of  58,400    1%
       Number used as Dual Port RAM:             24
@@ -11360,17 +11464,17 @@ Slice Logic Utilization:
         Number using O6 output only:           496
         Number using O5 output only:             0
         Number using O5 and O6:                228
-    Number used exclusively as route-thrus:    428
-      Number with same-slice register load:    388
+    Number used exclusively as route-thrus:    412
+      Number with same-slice register load:    372
       Number with same-slice carry load:        40
       Number with other load:                    0
 
 Slice Logic Distribution:
-  Number of occupied Slices:                 6,201 out of  37,680   16%
-  Number of LUT Flip Flop pairs used:       17,209
-    Number with an unused Flip Flop:         7,795 out of  17,209   45%
-    Number with an unused LUT:               3,677 out of  17,209   21%
-    Number of fully used LUT-FF pairs:       5,737 out of  17,209   33%
+  Number of occupied Slices:                 6,185 out of  37,680   16%
+  Number of LUT Flip Flop pairs used:       17,210
+    Number with an unused Flip Flop:         7,779 out of  17,210   45%
+    Number with an unused LUT:               3,691 out of  17,210   21%
+    Number of fully used LUT-FF pairs:       5,740 out of  17,210   33%
     Number of slice register sites lost
       to control set restrictions:               0 out of 301,440    0%
 
@@ -11396,14 +11500,14 @@ Specific Feature Utilization:
   Number of RAMB18E1/FIFO18E1s:                 15 out of     832    1%
     Number using RAMB18E1 only:                 15
     Number using FIFO18E1 only:                  0
-  Number of BUFG/BUFGCTRLs:                     10 out of      32   31%
-    Number used as BUFGs:                       10
+  Number of BUFG/BUFGCTRLs:                     11 out of      32   34%
+    Number used as BUFGs:                       11
     Number used as BUFGCTRLs:                    0
   Number of ILOGICE1/ISERDESE1s:                32 out of     720    4%
     Number used as ILOGICE1s:                   32
     Number used as ISERDESE1s:                   0
-  Number of OLOGICE1/OSERDESE1s:                 3 out of     720    1%
-    Number used as OLOGICE1s:                    3
+  Number of OLOGICE1/OSERDESE1s:                 4 out of     720    1%
+    Number used as OLOGICE1s:                    4
     Number used as OSERDESE1s:                   0
   Number of BSCANs:                              2 out of       4   50%
   Number of BUFHCEs:                             0 out of     144    0%
@@ -11430,40 +11534,131 @@ Router effort level (-rl):    High
 
 INFO:Timing:3386 - Intersecting Constraints found and resolved.  For more information, see the TSI report.  Please consult the Xilinx
    Command Line Tools User Guide for information on generating a TSI report.
-Starting initial Timing Analysis.  REAL time: 22 secs 
-Finished initial Timing Analysis.  REAL time: 22 secs 
+Starting initial Timing Analysis.  REAL time: 23 secs 
+WARNING:Par:450 - At least one timing constraint is impossible to meet because component switching limit violations have been detected for a
+   constrained component. A timing constraint summary below shows the failing constraints (preceded with an Asterisk (*)). Please use the
+   Timing Analyzer (GUI) or TRCE (command line) with the Mapped NCD and PCF files to evaluate the component switching limit violations in
+   more detail. Evaluate the datasheet for alternative configurations for the component that could allow the frequencies requested in the
+   constraint. Otherwise, the timing constraint covering this component might need to be modified to satisfy the component switching limits
+   specified in the datasheet.
 
-WARNING:Par:288 - The signal cmp_dma/Mram_ring4_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
-WARNING:Par:288 - The signal cmp_dma/Mram_ring2_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
+INFO:Timing:3386 - Intersecting Constraints found and resolved.  For more 
+   information, see the TSI report.  Please consult the Xilinx Command Line 
+   Tools User Guide for information on generating a TSI report.
+INFO:Timing:3284 - This timing report was generated using estimated delay 
+   information.  For accurate numbers, please refer to the post Place and Route 
+   timing report.
+Asterisk (*) preceding a constraint indicates it was not met.
+   This may be due to a setup or hold violation.
+
+----------------------------------------------------------------------------------------------------------
+  Constraint                                |    Check    | Worst Case |  Best Case | Timing |   Timing   
+                                            |             |    Slack   | Achievable | Errors |    Score   
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -0.2 | SETUP       |     2.078ns|    -2.278ns|       0|           0
+   ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |    -2.780ns|            |      16|       31101
+  _clk0_p_i" "RISING"                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -0.2 | SETUP       |     2.077ns|    -2.277ns|       0|           0
+   ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |    -2.778ns|            |      16|       31069
+  _clk0_p_i" "FALLING"                      |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -0.2 | SETUP       |    -1.921ns|     1.721ns|      16|       24151
+   ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |     0.933ns|            |       0|           0
+  _clk1_p_i" "FALLING"                      |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TIMEGRP "TNM_ADC_DATA_1" OFFSET = IN -0.2 | SETUP       |    -1.920ns|     1.720ns|      16|       24135
+   ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |     0.931ns|            |       0|           0
+  _clk1_p_i" "RISING"                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |    -1.262ns|     3.262ns|     528|      221057
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |     0.195ns|            |       0|           0
+  _chains_check_cmp_fmc516_adc_clk_adc_clk2 | MINPERIOD   |    -0.222ns|     2.222ns|      16|        3552
+  x_mmcm_out         = PERIOD TIMEGRP       |             |            |            |        |            
+     "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc5 |             |            |            |        |            
+  16_adc_iface_gen_clock_chains_1__gen_cloc |             |            |            |        |            
+  k_chains_check_cmp_fmc516_adc_clk_adc_clk |             |            |            |        |            
+  2x_mmcm_out"         TS_adc_clk1_p_i / 2  |             |            |            |        |            
+  HIGH 50%                                  |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |    -0.891ns|     4.891ns|       9|        4787
+  0_p_i" 4 ns HIGH 50%                      | HOLD        |     0.130ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+* TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |    -0.013ns|     4.013ns|       4|          52
+  1_p_i" 4 ns HIGH 50%                      | HOLD        |    -0.699ns|            |      45|       11622
+----------------------------------------------------------------------------------------------------------
+* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     0.417ns|     3.583ns|       0|           0
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |    -0.042ns|            |       1|          42
+  _chains_check_cmp_fmc516_adc_clk_adc_clk_ |             |            |            |        |            
+  mmcm_out         = PERIOD TIMEGRP         |             |            |            |        |            
+   "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc516 |             |            |            |        |            
+  _adc_iface_gen_clock_chains_1__gen_clock_ |             |            |            |        |            
+  chains_check_cmp_fmc516_adc_clk_adc_clk_m |             |            |            |        |            
+  mcm_out"         TS_adc_clk1_p_i HIGH 50% |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+
+
+Derived Constraint Report
+Review Timing Report for more details on the following derived constraints.
+To create a Timing Report, run "trce -v 12 -fastpaths -o design_timing_report design.ncd design.pcf"
+or "Run Timing Analysis" from Timing Analyzer (timingan).
+Derived Constraints for TS_adc_clk1_p_i
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|                               |   Period    |       Actual Period       |      Timing Errors        |      Paths Analyzed       |
+|           Constraint          | Requirement |-------------+-------------|-------------+-------------|-------------+-------------|
+|                               |             |   Direct    | Derivative  |   Direct    | Derivative  |   Direct    | Derivative  |
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|TS_adc_clk1_p_i                |      4.000ns|      4.013ns|      6.524ns|           49|          545|          991|        15703|
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      2.000ns|      3.262ns|          N/A|          544|            0|         5159|            0|
+| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
+| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |             |
+| check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |             |
+| lk2x_mmcm_out                 |             |             |             |             |             |             |             |
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      3.583ns|          N/A|            1|            0|        10544|            0|
+| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
+| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |             |
+| check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |             |
+| lk_mmcm_out                   |             |             |             |             |             |             |             |
++-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+
+8 constraints not met.
+
+
+Finished initial Timing Analysis.  REAL time: 24 secs 
+
 WARNING:Par:288 - The signal cmp_dma/Mram_ring1_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
+WARNING:Par:288 - The signal cmp_dma/Mram_ring2_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal cmp_dma/Mram_ring3_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal cmp_dma/Mram_ring5_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
+WARNING:Par:288 - The signal cmp_dma/Mram_ring4_RAMD_D1_O has no load.  PAR will not attempt to route this signal.
 Starting Router
 
 
-Phase  1  : 111343 unrouted;      REAL time: 27 secs 
+Phase  1  : 111636 unrouted;      REAL time: 28 secs 
 
-Phase  2  : 87508 unrouted;      REAL time: 36 secs 
+Phase  2  : 87718 unrouted;      REAL time: 37 secs 
 
-Phase  3  : 34188 unrouted;      REAL time: 1 mins 22 secs 
+Phase  3  : 34200 unrouted;      REAL time: 1 mins 23 secs 
 
-Phase  4  : 34193 unrouted; (Setup:60739, Hold:15691, Component Switching Limit:0)     REAL time: 1 mins 32 secs 
+Phase  4  : 34413 unrouted; (Setup:356422, Hold:14230, Component Switching Limit:3552)     REAL time: 1 mins 34 secs 
 
 Updating file: dbe_bpm_fmc516.ncd with current fully routed design.
 
-Phase  5  : 0 unrouted; (Setup:60739, Hold:15087, Component Switching Limit:0)     REAL time: 1 mins 50 secs 
+Phase  5  : 0 unrouted; (Setup:358759, Hold:13604, Component Switching Limit:3552)     REAL time: 1 mins 56 secs 
 
-Phase  6  : 0 unrouted; (Setup:60739, Hold:15087, Component Switching Limit:0)     REAL time: 1 mins 53 secs 
+Phase  6  : 0 unrouted; (Setup:357716, Hold:13604, Component Switching Limit:3552)     REAL time: 2 mins 3 secs 
 
-Phase  7  : 0 unrouted; (Setup:51918, Hold:15085, Component Switching Limit:0)     REAL time: 2 mins 43 secs 
+Updating file: dbe_bpm_fmc516.ncd with current fully routed design.
 
-Phase  8  : 0 unrouted; (Setup:51918, Hold:15085, Component Switching Limit:0)     REAL time: 2 mins 43 secs 
+Phase  7  : 0 unrouted; (Setup:357716, Hold:13604, Component Switching Limit:3552)     REAL time: 3 mins 8 secs 
 
-Phase  9  : 0 unrouted; (Setup:51918, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 43 secs 
+Phase  8  : 0 unrouted; (Setup:357716, Hold:13604, Component Switching Limit:3552)     REAL time: 3 mins 8 secs 
 
-Phase 10  : 0 unrouted; (Setup:51708, Hold:1244, Component Switching Limit:0)     REAL time: 2 mins 44 secs 
-Total REAL time to Router completion: 2 mins 44 secs 
-Total CPU time to Router completion: 2 mins 45 secs 
+Phase  9  : 0 unrouted; (Setup:357717, Hold:1244, Component Switching Limit:3552)     REAL time: 3 mins 11 secs 
+
+Phase 10  : 0 unrouted; (Setup:351652, Hold:1244, Component Switching Limit:3552)     REAL time: 3 mins 13 secs 
+Total REAL time to Router completion: 3 mins 13 secs 
+Total CPU time to Router completion: 3 mins 6 secs 
 
 Partition Implementation Status
 -------------------------------
@@ -11481,32 +11676,38 @@ Generating Clock Report
 +---------------------+--------------+------+------+------------+-------------+
 |        Clock Net    |   Resource   |Locked|Fanout|Net Skew(ns)|Max Delay(ns)|
 +---------------------+--------------+------+------+------------+-------------+
-|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
-|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
-|adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[0]_adc_clk_bufr |  Regional Clk| No   |   71 |  0.262     |  1.109      |
+|             clk_sys | BUFGCTRL_X0Y6| No   | 2650 |  0.436     |  2.020      |
++---------------------+--------------+------+------+------------+-------------+
+| mtx_clk_pad_i_BUFGP | BUFGCTRL_X0Y3| No   |  292 |  0.426     |  2.048      |
++---------------------+--------------+------+------+------------+-------------+
+| mrx_clk_pad_i_BUFGP | BUFGCTRL_X0Y4| No   |  102 |  0.190     |  1.837      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
 |adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[1]_adc_clk_bufg | BUFGCTRL_X0Y1| No   |  506 |  0.339     |  2.045      |
+| ain[1]_adc_clk_bufr |  Regional Clk| No   |   71 |  0.220     |  1.079      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
 |adc_iface/adc_clk_ch |              |      |      |            |             |
-| ain[1]_adc_clk_bufr |  Regional Clk| No   |   71 |  0.262     |  1.135      |
+| ain[0]_adc_clk_bufr |  Regional Clk| No   |   72 |  0.341     |  1.190      |
 +---------------------+--------------+------+------+------------+-------------+
-| mtx_clk_pad_i_BUFGP | BUFGCTRL_X0Y2| No   |  300 |  0.442     |  2.048      |
+|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
+|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
+|adc_iface/adc_clk_ch |              |      |      |            |             |
+| ain[1]_adc_clk_bufg | BUFGCTRL_X0Y2| No   |  325 |  0.310     |  2.008      |
 +---------------------+--------------+------+------+------------+-------------+
-|             clk_sys | BUFGCTRL_X0Y5| No   | 2632 |  0.440     |  2.020      |
+|         CONTROL0<0> |BUFGCTRL_X0Y29| No   |  325 |  0.390     |  2.047      |
 +---------------------+--------------+------+------+------------+-------------+
-|         CONTROL0<0> |BUFGCTRL_X0Y29| No   |  327 |  0.358     |  2.047      |
+|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
+|b_fmc516/cmp_fmc516_ |              |      |      |            |             |
+|adc_iface/adc_clk_ch |              |      |      |            |             |
+|ain[1]_adc_clk2x_buf |              |      |      |            |             |
+|                   g | BUFGCTRL_X0Y0| No   |  196 |  0.300     |  2.019      |
 +---------------------+--------------+------+------+------------+-------------+
-| mrx_clk_pad_i_BUFGP | BUFGCTRL_X0Y3| No   |  106 |  0.244     |  1.837      |
+|         sys_clk_gen |BUFGCTRL_X0Y31| No   |    5 |  0.004     |  1.821      |
 +---------------------+--------------+------+------+------------+-------------+
-|         sys_clk_gen |BUFGCTRL_X0Y31| No   |    5 |  0.003     |  1.833      |
-+---------------------+--------------+------+------+------------+-------------+
-|          clk_200mhz | BUFGCTRL_X0Y6| No   |    4 |  0.145     |  1.826      |
+|          clk_200mhz | BUFGCTRL_X0Y7| No   |    4 |  0.145     |  1.826      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11515,34 +11716,30 @@ Generating Clock Report
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/gen_with |              |      |      |            |             |
 |_ref_clk.cmp_mmcm_ad |              |      |      |            |             |
-|     c_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.492      |
+|     c_clk_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.710      |
 +---------------------+--------------+------+------+------------+-------------+
-|cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
-|b_fmc516/cmp_fmc_spi |              |      |      |            |             |
-|/U_Wrapped_SPI/Wrapp |              |      |      |            |             |
-|ed_SPI/clgen/clk_out |              |      |      |            |             |
-|                     |         Local|      |    7 |  0.000     |  0.799      |
+|        CONTROL3<13> |         Local|      |    5 |  0.000     |  0.352      |
 +---------------------+--------------+------+------+------------+-------------+
 |MMCM_PHASE_CALIBRATI |              |      |      |            |             |
 |ON_ML_LUT2_96_ML_NEW |              |      |      |            |             |
-|                _CLK |         Local|      |    3 |  0.133     |  0.354      |
+|                _CLK |         Local|      |    3 |  0.121     |  0.479      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_sys_pll_inst/cmp |              |      |      |            |             |
-|     _mmcm_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.636      |
+|     _mmcm_ML_NEW_I1 |         Local|      |    3 |  0.000     |  1.348      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_sys_pll_inst/cmp |              |      |      |            |             |
-|    _mmcm_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.562      |
+|    _mmcm_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.479      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_lm32/gen_profile |              |      |      |            |             |
 |_medium_icache_debug |              |      |      |            |             |
 |.U_Wrapped_LM32/jtck |              |      |      |            |             |
-|                     |         Local|      |    7 |  0.683     |  2.747      |
+|                     |         Local|      |    7 |  1.838     |  3.365      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL2<13> |         Local|      |    5 |  0.000     |  0.600      |
+|        CONTROL2<13> |         Local|      |    5 |  0.000     |  0.518      |
 +---------------------+--------------+------+------+------------+-------------+
 |MMCM_PHASE_CALIBRATI |              |      |      |            |             |
 |ON_ML_LUT2_104_ML_NE |              |      |      |            |             |
-|               W_CLK |         Local|      |    3 |  0.133     |  0.485      |
+|               W_CLK |         Local|      |    2 |  0.000     |  0.731      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11551,16 +11748,14 @@ Generating Clock Report
 |chains_check.cmp_fmc |              |      |      |            |             |
 |516_adc_clk/gen_with |              |      |      |            |             |
 |_ref_clk.cmp_mmcm_ad |              |      |      |            |             |
-|    c_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.358      |
+|    c_clk_ML_NEW_OUT |         Local|      |    2 |  0.000     |  0.482      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_chipscope_icon_0 |              |      |      |            |             |
-|     /U0/iUPDATE_OUT |         Local|      |    1 |  0.000     |  1.963      |
+|     /U0/iUPDATE_OUT |         Local|      |    1 |  0.000     |  2.009      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL3<13> |         Local|      |    5 |  0.000     |  0.479      |
+|        CONTROL1<13> |         Local|      |    5 |  0.000     |  0.354      |
 +---------------------+--------------+------+------+------------+-------------+
-|        CONTROL0<13> |         Local|      |    5 |  0.000     |  0.632      |
-+---------------------+--------------+------+------+------------+-------------+
-|        CONTROL1<13> |         Local|      |    5 |  0.000     |  0.518      |
+|        CONTROL0<13> |         Local|      |    5 |  0.000     |  0.819      |
 +---------------------+--------------+------+------+------------+-------------+
 |cmp_xwb_fmc516/cmp_w |              |      |      |            |             |
 |b_fmc516/cmp_fmc516_ |              |      |      |            |             |
@@ -11583,15 +11778,16 @@ the minimum and maximum path delays which includes logic delays.
 * The fanout is the number of component pins not the individual BEL loads,
 for example SLICE loads not FF loads.
 
-Timing Score: 52952 (Setup: 51708, Hold: 1244, Component Switching Limit: 0)
+Timing Score: 356448 (Setup: 351652, Hold: 1244, Component Switching Limit: 3552)
 
-WARNING:Par:468 - Your design did not meet timing.  The following are some suggestions to assist you to meet timing in your design.
+WARNING:Par:468 - Your design did not meet timing.  The following are some suggestions to assist you to meet timing in
+   your design.
 
    Review the timing report using Timing Analyzer (In ISE select "Post-Place &
    Route Static Timing Report"). Go to the failing constraint(s) and evaluate the failing paths for each constraint.
 
-   Try the Design Goal and Strategies for Timing Performance(In ISE select Project -> Design Goals & Strategies) to ensure the best options
-   are set in the tools for timing closure.
+   Try the Design Goal and Strategies for Timing Performance(In ISE select Project -> Design Goals & Strategies) to
+   ensure the best options are set in the tools for timing closure.
 
    Use the Xilinx "SmartXplorer" script to try special combinations of
    options known to produce very good results.
@@ -11616,6 +11812,19 @@ Asterisk (*) preceding a constraint indicates it was not met.
    ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |     1.026ns|            |       0|           0
   _clk1_p_i" "RISING"                       |             |            |            |        |            
 ----------------------------------------------------------------------------------------------------------
+* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |    -1.285ns|     3.285ns|     602|      289217
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |     0.021ns|            |       0|           0
+  _chains_check_cmp_fmc516_adc_clk_adc_clk2 | MINPERIOD   |    -0.222ns|     2.222ns|      16|        3552
+  x_mmcm_out         = PERIOD TIMEGRP       |             |            |            |        |            
+     "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc5 |             |            |            |        |            
+  16_adc_iface_gen_clock_chains_1__gen_cloc |             |            |            |        |            
+  k_chains_check_cmp_fmc516_adc_clk_adc_clk |             |            |            |        |            
+  2x_mmcm_out"         TS_adc_clk1_p_i / 2  |             |            |            |        |            
+  HIGH 50%                                  |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |    -0.345ns|     4.345ns|      64|       11992
+  1_p_i" 4 ns HIGH 50%                      | HOLD        |     0.014ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
 * TIMEGRP "TNM_ADC_DATA_0" OFFSET = IN -0.2 | SETUP       |    -0.137ns|    -0.063ns|      15|        1365
    ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |    -0.103ns|            |       8|         610
   _clk0_p_i" "FALLING"                      |             |            |            |        |            
@@ -11624,8 +11833,8 @@ Asterisk (*) preceding a constraint indicates it was not met.
    ns VALID 1.2 ns BEFORE COMP         "adc | HOLD        |    -0.106ns|            |       8|         634
   _clk0_p_i" "RISING"                       |             |            |            |        |            
 ----------------------------------------------------------------------------------------------------------
-* TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |    -0.118ns|     4.118ns|      21|        1265
-  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |     0.010ns|            |       0|           0
+  TS_cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc51 | SETUP       |     0.084ns|     3.916ns|       0|           0
+  6_adc_iface_gen_clock_chains_1__gen_clock | HOLD        |     0.015ns|            |       0|           0
   _chains_check_cmp_fmc516_adc_clk_adc_clk_ |             |            |            |        |            
   mmcm_out         = PERIOD TIMEGRP         |             |            |            |        |            
    "cmp_xwb_fmc516_cmp_wb_fmc516_cmp_fmc516 |             |            |            |        |            
@@ -11633,11 +11842,8 @@ Asterisk (*) preceding a constraint indicates it was not met.
   chains_check_cmp_fmc516_adc_clk_adc_clk_m |             |            |            |        |            
   mcm_out"         TS_adc_clk1_p_i HIGH 50% |             |            |            |        |            
 ----------------------------------------------------------------------------------------------------------
-  TS_adc_clk1_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     0.014ns|     3.986ns|       0|           0
-  1_p_i" 4 ns HIGH 50%                      | HOLD        |     0.033ns|            |       0|           0
-----------------------------------------------------------------------------------------------------------
-  TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     1.134ns|     2.866ns|       0|           0
-  0_p_i" 4 ns HIGH 50%                      | HOLD        |     0.039ns|            |       0|           0
+  TS_adc_clk0_p_i = PERIOD TIMEGRP "adc_clk | SETUP       |     0.689ns|     3.311ns|       0|           0
+  0_p_i" 4 ns HIGH 50%                      | HOLD        |     0.021ns|            |       0|           0
                                             | MINPERIOD   |     0.668ns|     3.332ns|       0|           0
 ----------------------------------------------------------------------------------------------------------
 
@@ -11652,15 +11858,20 @@ Derived Constraints for TS_adc_clk1_p_i
 |           Constraint          | Requirement |-------------+-------------|-------------+-------------|-------------+-------------|
 |                               |             |   Direct    | Derivative  |   Direct    | Derivative  |   Direct    | Derivative  |
 +-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
-|TS_adc_clk1_p_i                |      4.000ns|      3.986ns|      4.118ns|            0|           21|          991|        15691|
-| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      4.118ns|          N/A|           21|            0|        15691|            0|
+|TS_adc_clk1_p_i                |      4.000ns|      4.345ns|      6.570ns|           64|          618|          991|        15703|
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      2.000ns|      3.285ns|          N/A|          618|            0|         5159|            0|
+| 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
+| ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |             |
+| check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |             |
+| lk2x_mmcm_out                 |             |             |             |             |             |             |             |
+| TS_cmp_xwb_fmc516_cmp_wb_fmc51|      4.000ns|      3.916ns|          N/A|            0|            0|        10544|            0|
 | 6_cmp_fmc516_adc_iface_gen_clo|             |             |             |             |             |             |             |
 | ck_chains_1__gen_clock_chains_|             |             |             |             |             |             |             |
 | check_cmp_fmc516_adc_clk_adc_c|             |             |             |             |             |             |             |
 | lk_mmcm_out                   |             |             |             |             |             |             |             |
 +-------------------------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
 
-5 constraints not met.
+6 constraints not met.
 
 
 Generating Pad Report.
@@ -11669,17 +11880,17 @@ All signals are completely routed.
 
 WARNING:Par:283 - There are 5 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 2 mins 52 secs 
-Total CPU time to PAR completion: 2 mins 53 secs 
+Total REAL time to PAR completion: 3 mins 20 secs 
+Total CPU time to PAR completion: 3 mins 13 secs 
 
-Peak Memory Usage:  1367 MB
+Peak Memory Usage:  1433 MB
 
 Placer: Placement generated during map.
 Routing: Completed - No errors found.
-Timing: Completed - 99 errors found.
+Timing: Completed - 776 errors found.
 
 Number of error messages: 0
-Number of warning messages: 8
+Number of warning messages: 9
 Number of info messages: 1
 
 Writing design to file dbe_bpm_fmc516.ncd
@@ -11698,7 +11909,7 @@ Loading device for application Rf_Device from file '6vlx240t.nph' in environment
    "dbe_bpm_fmc516" is an NCD, version 3.2, device xc6vlx240t, package ff1156,
 speed -1
 
-Analysis completed Tue Apr 16 17:54:02 2013
+Analysis completed Mon Jun 17 17:49:52 2013
 --------------------------------------------------------------------------------
 
 Generating Report ...
@@ -11716,27 +11927,27 @@ INFO:Bitgen:40 - Replacing "Auto" with "NoWait" for option "Match_cycle".  Most
    generic command-line value of "Auto".  Alternately, this message appears if
    the same option is specified multiple times on the command-line.  In this
    case, the option listed last will be used.
-WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL2<13> is sourced by
-   a combinatorial pin. This is not good design practice. Use the CE pin to
-   control the loading of data into the flip-flop.
 WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL3<13> is sourced by
    a combinatorial pin. This is not good design practice. Use the CE pin to
    control the loading of data into the flip-flop.
-WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL0<13> is sourced by
+WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL2<13> is sourced by
    a combinatorial pin. This is not good design practice. Use the CE pin to
    control the loading of data into the flip-flop.
 WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL1<13> is sourced by
    a combinatorial pin. This is not good design practice. Use the CE pin to
    control the loading of data into the flip-flop.
-WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring4_RAMD_D1_O> is
+WARNING:PhysDesignRules:372 - Gated clock. Clock net CONTROL0<13> is sourced by
+   a combinatorial pin. This is not good design practice. Use the CE pin to
+   control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring1_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring2_RAMD_D1_O> is
-   incomplete. The signal does not drive any load pins in the design.
-WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring1_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring3_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring5_RAMD_D1_O> is
+   incomplete. The signal does not drive any load pins in the design.
+WARNING:PhysDesignRules:367 - The signal <cmp_dma/Mram_ring4_RAMD_D1_O> is
    incomplete. The signal does not drive any load pins in the design.
 
 Process "Generate Programming File" completed successfully

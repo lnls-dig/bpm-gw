@@ -336,6 +336,7 @@ architecture rtl of dbe_bpm_fmc516 is
   signal fmc516_lmk_lock_int                : std_logic;
 
   signal fmc516_fs_clk                      : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc516_fs_clk2x                    : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc516_adc_data                    : std_logic_vector(c_num_adc_channels*16-1 downto 0);
   signal fmc516_adc_valid                   : std_logic_vector(c_num_adc_channels-1 downto 0);
 
@@ -838,15 +839,15 @@ begin
     fmc_leds_o                              => fmc_leds_o,
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-    sys_spi_clk_o                           => sys_spi_clk_int,--sys_spi_clk_o,
-    --sys_spi_data_b                          => sys_spi_data_b,--sys_spi_data_int,
-    sys_spi_dout_o                          => sys_spi_dout_int,
-    sys_spi_din_i                           => sys_spi_din_int,
+    sys_spi_clk_o                           => sys_spi_clk_int,
+    sys_spi_data_b                          => sys_spi_data_b,
+    --sys_spi_dout_o                          => sys_spi_dout_int,
+    --sys_spi_din_i                           => sys_spi_din_int,
     sys_spi_cs_adc0_n_o                     => sys_spi_cs_adc0_n_int,  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                     => sys_spi_cs_adc1_n_int,  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                     => sys_spi_cs_adc2_n_int,  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                     => sys_spi_cs_adc3_n_int,  -- SPI ADC CS channel 3
-    sys_spi_miosio_oe_n_o                   => sys_spi_miosio_oe_n_int,
+    --sys_spi_miosio_oe_n_o                   => sys_spi_miosio_oe_n_int,
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                            => m2c_trig_p_i,
@@ -886,6 +887,7 @@ begin
     -- ADC output signals. Continuous flow.
     -----------------------------
     adc_clk_o                               => fmc516_fs_clk,
+    adc_clk2x_o                             => fmc516_fs_clk2x,
     adc_data_o                              => fmc516_adc_data,
     adc_data_valid_o                        => fmc516_adc_valid,
 
@@ -894,9 +896,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    --trig_hw_i                               => '0',
-    -- DEBUG!
-    trig_hw_i                               => fmc_debug,
+    trig_hw_i                               => '0',
     -- General board status
     fmc_mmcm_lock_o                         => fmc516_mmcm_lock_int,
     fmc_lmk_lock_o                          => fmc516_lmk_lock_int,
@@ -922,12 +922,10 @@ begin
   fmc_lmk_lock_o                            <= fmc516_lmk_lock_int;
 
   -- Tri-state buffer for SPI three-wire mode
-  sys_spi_data_b  <= sys_spi_dout_int when sys_spi_miosio_oe_n_int = '0' else 'Z';
-  sys_spi_din_int <= sys_spi_data_b;
+  --sys_spi_data_b  <= sys_spi_dout_int when sys_spi_miosio_oe_n_int = '0' else 'Z';
+  --sys_spi_din_int <= sys_spi_data_b;
 
   sys_spi_clk_o                             <= sys_spi_clk_int;
-  -- Does this work at all?
-  --sys_spi_data_b                            <= sys_spi_data_int;
   sys_spi_cs_adc0_n_o                       <= sys_spi_cs_adc0_n_int;
   sys_spi_cs_adc1_n_o                       <= sys_spi_cs_adc1_n_int;
   sys_spi_cs_adc2_n_o                       <= sys_spi_cs_adc2_n_int;
@@ -941,7 +939,9 @@ begin
 
   -- Reset FMC516 ADCs
   fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
-  fmc516_fs_rst_n                           <= clk_sys_rstn and fmc516_mmcm_lock_int;
+  --fmc516_fs_rst_n                           <= clk_sys_rstn and fmc516_mmcm_lock_int;
+  -- Do not use mmcm_lock as reset.
+  fmc516_fs_rst_n                           <= clk_sys_rstn;
 
   p_fmc516_reset_adcs : process(fmc516_fs_clk(c_adc_ref_clk))
   begin
@@ -958,20 +958,20 @@ begin
     end if;
   end process;
 
-  p_debug : process(sys_spi_clk_int)
-  begin
-    if rising_edge(sys_spi_clk_int) then
-      if (clk_sys_rstn = '0') then
-        fmc_debug <= '0';
-      else
-        fmc_debug <= sys_spi_dout_int and
-                       ((not sys_spi_cs_adc0_n_int) or
-                       (not sys_spi_cs_adc1_n_int) or
-                       (not sys_spi_cs_adc2_n_int) or
-                       (not sys_spi_cs_adc3_n_int));
-      end if;
-    end if;
-  end process;
+  --p_debug : process(sys_spi_clk_int)
+  --begin
+  --  if rising_edge(sys_spi_clk_int) then
+  --    if (clk_sys_rstn = '0') then
+  --      fmc_debug <= '0';
+  --    else
+  --      fmc_debug <= sys_spi_dout_int and
+  --                     ((not sys_spi_cs_adc0_n_int) or
+  --                     (not sys_spi_cs_adc1_n_int) or
+  --                     (not sys_spi_cs_adc2_n_int) or
+  --                     (not sys_spi_cs_adc3_n_int));
+  --    end if;
+  --  end if;
+  --end process;
 
   -- The board peripherals components is slave 8
   cmp_xwb_dbe_periph : xwb_dbe_periph
@@ -1087,8 +1087,6 @@ begin
   port map (
     CONTROL                                 => CONTROL0,
     --CLK                                     => clk_sys,
-    -- TEST. We need to have all adc chain sync to a single clock
-    -- domain
     CLK                                     => fmc516_fs_clk(c_adc_ref_clk),
     --CLK                                     => fmc516_fs_clk(1),
     TRIG0                                   => TRIG_ILA0_0,
