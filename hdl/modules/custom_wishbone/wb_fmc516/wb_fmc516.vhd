@@ -121,14 +121,14 @@ port
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   sys_spi_clk_o                             : out std_logic;
-  --sys_spi_data_b                            : inout std_logic;
-  sys_spi_dout_o                            : out std_logic;
-  sys_spi_din_i                             : in std_logic;
+  sys_spi_data_b                            : inout std_logic;
+  --sys_spi_dout_o                            : out std_logic;
+  --sys_spi_din_i                             : in std_logic;
   sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
   sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
   sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
   sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
-  sys_spi_miosio_oe_n_o                     : out std_logic;
+  --sys_spi_miosio_oe_n_o                     : out std_logic;
 
   -- External Trigger To/From FMC
   m2c_trig_p_i                              : in std_logic := '0';
@@ -167,6 +167,7 @@ port
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
   --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
   --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
@@ -1060,6 +1061,7 @@ begin
 
   -- Output ADC signals to external FPGA
   adc_clk_o                                <= fs_clk;
+  adc_clk2x_o                              <= fs_clk2x;
   adc_data_o                               <= adc_data;
   adc_data_valid_o                         <= adc_valid;
 
@@ -1180,9 +1182,11 @@ begin
 
   -- Output SPI clock
   sys_spi_clk_o <= sys_spi_clk;
-  sys_spi_dout_o <= sys_spi_dout;
-  sys_spi_din <= sys_spi_din_i;
-  sys_spi_miosio_oe_n_o <= sys_spi_miosio_oe_n;
+  --sys_spi_dout_o <= sys_spi_dout;
+  --sys_spi_din <= sys_spi_din_i;
+  sys_spi_data_b  <= sys_spi_dout when sys_spi_miosio_oe_n = '0' else 'Z';
+  sys_spi_din <= sys_spi_data_b;
+  --sys_spi_miosio_oe_n_o <= sys_spi_miosio_oe_n;
 
   -- Assign slave select lines
   sys_spi_cs_adc0_n_o <= sys_spi_ss_int(0);           -- SPI ADC CS channel 0
@@ -1228,7 +1232,7 @@ begin
   -- Output latch enable signal
   lmk_uwire_latch_en_o <= fmc_lmk_uwire_ss_int(0);
 
-  -- ???
+  -- Deprecated
   lmk_sync_o <= '0';
 
   -- Not used wishbone signals

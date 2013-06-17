@@ -404,14 +404,14 @@ package custom_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                             : out std_logic;
-    --sys_spi_data_b                            : inout std_logic;
-    sys_spi_dout_o                            : out std_logic;
-    sys_spi_din_i                             : in std_logic;
+    sys_spi_data_b                            : inout std_logic;
+    --sys_spi_dout_o                            : out std_logic;
+    --sys_spi_din_i                             : in std_logic;
     sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
-    sys_spi_miosio_oe_n_o                     : out std_logic;
+    --sys_spi_miosio_oe_n_o                     : out std_logic;
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                              : in std_logic;
@@ -450,6 +450,7 @@ package custom_wishbone_pkg is
     -- ADC output signals. Continuous flow
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
     --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
     --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
@@ -557,14 +558,14 @@ package custom_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                             : out std_logic;
-    --sys_spi_data_b                            : inout std_logic;
-    sys_spi_dout_o                            : out std_logic;
-    sys_spi_din_i                             : in std_logic;
+    sys_spi_data_b                            : inout std_logic;
+    --sys_spi_dout_o                            : out std_logic;
+    --sys_spi_din_i                             : in std_logic;
     sys_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
-    sys_spi_miosio_oe_n_o                     : out std_logic;
+    --sys_spi_miosio_oe_n_o                     : out std_logic;
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                              : in std_logic;
@@ -603,6 +604,7 @@ package custom_wishbone_pkg is
     -- ADC output signals. Continuous flow
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
     --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
     --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
