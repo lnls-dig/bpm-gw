@@ -1259,7 +1259,7 @@ begin
 
     scl_pad_i                               => '0',
     scl_pad_o                               => sys_i2c_scl_out,
-    scl_padoen_o                            => open,
+    scl_padoen_o                            => vcxo_i2c_scl_oe_n,
     sda_pad_i                               => vcxo_i2c_sda_in,
     sda_pad_o                               => vcxo_i2c_sda_out,
     sda_padoen_o                            => vcxo_i2c_sda_oe_n
