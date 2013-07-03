@@ -76,11 +76,11 @@ void fmc516_init_regs(unsigned int id)
     fmc516_led0(id, 1);
 
     // Adjsut the delays of all channels. Don't change these values
-    // unless you really have to!
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 24, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 14, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 15, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
+    // unless you really have to! Put this in a generic structure!
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 14, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 19, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 21, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 14, commit);
 
     // Delay the falling edge of all channels
     fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC0, 0, 0, 0, 0);
