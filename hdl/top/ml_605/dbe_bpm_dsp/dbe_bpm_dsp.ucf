@@ -306,7 +306,13 @@ NET "uart_txd_o"                    LOC = J25 | IOSTANDARD = LVCMOS25;
 
 NET "sys_clk_n_i"                   LOC = H9 | IOSTANDARD = LVDS_25;
 NET "sys_clk_p_i"                   LOC = J9 | IOSTANDARD = LVDS_25;
-NET "sys_rst_button_i"              LOC = H10 | IOSTANDARD = "SSTL15" | TIG;
+NET "sys_rst_button_i"              LOC = H10 | IOSTANDARD = SSTL15 | TIG;
+
+NET "clk_sys"                       TNM_NET = "sys_clk_group";
+NET "clk_200mhz"                    TNM_NET = "sys_clk200_group";
+
+TIMESPEC "TS_sys_clk_group"         = PERIOD "sys_clk_group" 10 ns; # 100 MHz
+TIMESPEC "TS_sys_clk200_group"      = PERIOD "sys_clk200_group" 5 ns; # 200 MHz
 
 #######################################################################
 # Ethernet Contraints. MII 10/100 Mode
