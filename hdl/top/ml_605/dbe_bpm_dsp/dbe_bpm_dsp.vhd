@@ -221,7 +221,7 @@ architecture rtl of dbe_bpm_dsp is
 
   -- DSP constants
   constant c_dsp_ref_num_bits               : natural := 24;
-  constant c_dsp_ref_num_sum_bits           : natural := c_dsp_ref_num_bits + 2;
+  constant c_dsp_pos_num_bits               : natural := 26;
 
   constant c_xwb_etherbone_sdb : t_sdb_device := (
     abi_class     => x"0000", -- undocumented device
@@ -357,6 +357,7 @@ architecture rtl of dbe_bpm_dsp is
   signal fmc516_lmk_lock_int                : std_logic;
 
   signal fmc516_fs_clk                      : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc516_fs_clk2x                    : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc516_adc_data                    : std_logic_vector(c_num_adc_channels*16-1 downto 0);
   signal fmc516_adc_valid                   : std_logic_vector(c_num_adc_channels-1 downto 0);
 
@@ -395,9 +396,9 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_sysce_clr                      : std_logic;
   signal dsp_sysclk                         : std_logic;
 
-  signal dsp_kx                             : std_logic_vector(23 downto 0);
-  signal dsp_ky                             : std_logic_vector(23 downto 0);
-  signal dsp_ksum                           : std_logic_vector(23 downto 0);
+  signal dsp_kx                             : std_logic_vector(24 downto 0);
+  signal dsp_ky                             : std_logic_vector(24 downto 0);
+  signal dsp_ksum                           : std_logic_vector(24 downto 0);
 
   signal dsp_del_sig_div_thres              : std_logic_vector(25 downto 0);
 
@@ -438,27 +439,41 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
   signal dsp_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
 
-  signal dsp_x_tbt                          : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_y_tbt                          : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_q_tbt                          : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_sum_tbt                        : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
+  signal dsp_x_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_y_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_q_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_sum_tbt                        : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
 
-  signal dsp_x_fofb                         : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_y_fofb                         : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_q_fofb                         : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_sum_fofb                       : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
+  signal dsp_x_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_y_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_q_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_sum_fofb                       : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
 
-  signal dsp_x_monit                        : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_y_monit                        : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_q_monit                        : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
-  signal dsp_sum_monit                      : std_logic_vector(c_dsp_ref_num_bits-1  downto 0);
+  signal dsp_x_monit                        : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_y_monit                        : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_q_monit                        : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
+  signal dsp_sum_monit                      : std_logic_vector(c_dsp_pos_num_bits-1  downto 0);
 
-  signal dsp_ce_1                           : std_logic;
-  signal dsp_ce_35                          : std_logic;
-  signal dsp_ce_1113                        : std_logic;
-  signal dsp_ce_2782500                     : std_logic;
-  signal dsp_ce_5565000                     : std_logic;
-  signal dsp_ce_11130000                    : std_logic;
+  signal dsp_tbt_decim_q_ch01_incorrect     : std_logic;
+  signal dsp_tbt_decim_q_ch23_incorrect     : std_logic;
+  signal dsp_fofb_decim_q_01_missing        : std_logic;
+  signal dsp_fofb_decim_q_23_missing        : std_logic;
+  signal dsp_monit_cic_unexpected           : std_logic;
+  signal dsp_monit_cfir_incorrect           : std_logic;
+  signal dsp_monit_pfir_incorrect           : std_logic;
+
+  signal dsp_clk_ce_1                       : std_logic;
+  signal dsp_clk_ce_2                       : std_logic;
+  signal dsp_clk_ce_35                      : std_logic;
+  signal dsp_clk_ce_70                      : std_logic;
+  signal dsp_clk_ce_1390000                 : std_logic;
+  signal dsp_clk_ce_1112                    : std_logic;
+  signal dsp_clk_ce_2224                    : std_logic;
+  signal dsp_clk_ce_22240000                : std_logic;
+  signal dsp_clk_ce_5000                    : std_logic;
+  signal dsp_clk_ce_556                     : std_logic;
+  signal dsp_clk_ce_2780000                 : std_logic;
+  signal dsp_clk_ce_5560000                 : std_logic;
 
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
@@ -995,14 +1010,14 @@ begin
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     sys_spi_clk_o                           => sys_spi_clk_int,--sys_spi_clk_o,
-    --sys_spi_data_b                          => sys_spi_data_b,--sys_spi_data_int,
-    sys_spi_dout_o                          => sys_spi_dout_int,
-    sys_spi_din_i                           => sys_spi_din_int,
+    sys_spi_data_b                          => sys_spi_data_b,
+    --sys_spi_dout_o                          => sys_spi_dout_int,
+    --sys_spi_din_i                           => sys_spi_din_int,
     sys_spi_cs_adc0_n_o                     => sys_spi_cs_adc0_n_int,  -- SPI ADC CS channel 0
     sys_spi_cs_adc1_n_o                     => sys_spi_cs_adc1_n_int,  -- SPI ADC CS channel 1
     sys_spi_cs_adc2_n_o                     => sys_spi_cs_adc2_n_int,  -- SPI ADC CS channel 2
     sys_spi_cs_adc3_n_o                     => sys_spi_cs_adc3_n_int,  -- SPI ADC CS channel 3
-    sys_spi_miosio_oe_n_o                   => sys_spi_miosio_oe_n_int,
+    --sys_spi_miosio_oe_n_o                   => sys_spi_miosio_oe_n_int,
 
     -- External Trigger To/From FMC
     m2c_trig_p_i                            => m2c_trig_p_i,
@@ -1033,8 +1048,7 @@ begin
     -- Internal/External clock distribution selection
     fmc_clk_sel_o                           => fmc_clk_sel_o,
     -- Reset ADCs
-    fmc_reset_adcs_n_o                      => fmc_reset_adcs_n_int,--fmc_reset_adcs_n_o,
-    --fmc_reset_adcs_n_o                      => open,--fmc_reset_adcs_n_o,
+    fmc_reset_adcs_n_o                      => fmc_reset_adcs_n_o,--fmc_reset_adcs_n_int,
     --FMC Present status
     fmc_prsnt_m2c_l_i                       => fmc_prsnt_m2c_l_i,
 
@@ -1042,6 +1056,7 @@ begin
     -- ADC output signals. Continuous flow.
     -----------------------------
     adc_clk_o                               => fmc516_fs_clk,
+    adc_clk2x_o                             => fmc516_fs_clk2x,
     adc_data_o                              => fmc516_adc_data,
     adc_data_valid_o                        => fmc516_adc_valid,
 
@@ -1050,9 +1065,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    --trig_hw_i                               => '0',
-    -- DEBUG!
-    trig_hw_i                               => fmc_debug,
+    trig_hw_i                               => '0',
     -- General board status
     fmc_mmcm_lock_o                         => fmc516_mmcm_lock_int,
     fmc_lmk_lock_o                          => fmc516_lmk_lock_int,
@@ -1077,13 +1090,7 @@ begin
   fmc_mmcm_lock_o                           <= fmc516_mmcm_lock_int;
   fmc_lmk_lock_o                            <= fmc516_lmk_lock_int;
 
-  -- Tri-state buffer for SPI three-wire mode
-  sys_spi_data_b  <= sys_spi_dout_int when sys_spi_miosio_oe_n_int = '0' else 'Z';
-  sys_spi_din_int <= sys_spi_data_b;
-
   sys_spi_clk_o                             <= sys_spi_clk_int;
-  -- Does this work at all?
-  --sys_spi_data_b                            <= sys_spi_data_int;
   sys_spi_cs_adc0_n_o                       <= sys_spi_cs_adc0_n_int;
   sys_spi_cs_adc1_n_o                       <= sys_spi_cs_adc1_n_int;
   sys_spi_cs_adc2_n_o                       <= sys_spi_cs_adc2_n_int;
@@ -1096,73 +1103,34 @@ begin
   lmk_uwire_clock_o                         <= lmk_uwire_clock_int;
 
   -- Reset FMC516 ADCs
-  fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
-  fmc516_fs_rst_n                           <= clk_sys_rstn and fmc516_mmcm_lock_int;
+  --fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
+  fmc516_fs_rst_n                           <= clk_sys_rstn;
 
-  p_fmc516_reset_adcs : process(fmc516_fs_clk(c_adc_ref_clk))
-  begin
-    if rising_edge(fmc516_fs_clk(c_adc_ref_clk)) then
-      if (fmc516_fs_rst_n = '0' or fmc_reset_adcs_n_int = '0') then
-        fmc_reset_adcs_n_out <= '0';
-        reset_adc_counter <= (others => '0');
-      elsif reset_adc_counter = "1111111" then
-        fmc_reset_adcs_n_out <= '1';
-      else
-        reset_adc_counter <= reset_adc_counter + 1;
-        fmc_reset_adcs_n_out <= '0';
-      end if;
-    end if;
-  end process;
+ --p_fmc516_reset_adcs : process(fmc516_fs_clk(c_adc_ref_clk))
+ --begin
+ --  if rising_edge(fmc516_fs_clk(c_adc_ref_clk)) then
+ --    if (fmc516_fs_rst_n = '0' or fmc_reset_adcs_n_int = '0') then
+ --      fmc_reset_adcs_n_out <= '0';
+ --      reset_adc_counter <= (others => '0');
+ --    elsif reset_adc_counter = "1111111" then
+ --      fmc_reset_adcs_n_out <= '1';
+ --    else
+ --      reset_adc_counter <= reset_adc_counter + 1;
+ --      fmc_reset_adcs_n_out <= '0';
+ --    end if;
+ --  end if;
+ --end process;
 
-  p_debug : process(sys_spi_clk_int)
-  begin
-    if rising_edge(sys_spi_clk_int) then
-      if (clk_sys_rstn = '0') then
-        fmc_debug <= '0';
-      else
-        fmc_debug <= sys_spi_dout_int and
-                       ((not sys_spi_cs_adc0_n_int) or
-                       (not sys_spi_cs_adc1_n_int) or
-                       (not sys_spi_cs_adc2_n_int) or
-                       (not sys_spi_cs_adc3_n_int));
-      end if;
-    end if;
-  end process;
-
-  cmp_default_clock_driver : default_clock_driver
-  port map (
-    sysce                                   => dsp_sysce,
-    sysce_clr                               => dsp_sysce_clr,
-    sysclk                                  => dsp_sysclk,
-    ce_1                                    => dsp_ce_1,
-    ce_35                                   => dsp_ce_35,
-    ce_1113                                 => dsp_ce_1113,
-    ce_11130000                             => dsp_ce_11130000,
-    ce_2782500                              => dsp_ce_2782500,
-    ce_5565000                              => dsp_ce_5565000,
-    ce_logic_1                              => open,
-    ce_logic_1113                           => open,
-    ce_logic_2782500                        => open,
-    ce_logic_5565000                        => open,
-    clk_1                                   => open,
-    clk_35                                  => open,
-    clk_1113                                => open,
-    clk_11130000                            => open,
-    clk_2782500                             => open,
-    clk_5565000                             => open
-  );
-
-  --cmp_ddc_bpm_476_066_cw: ddc_bpm_476_066_cw
-  cmp_ddc_bpm_476_066_hov_cw: ddc_bpm_476_066_hov_cw
+  cmp_position_calc: position_calc
   port map (
     adc_ch0_i                               => fmc516_adc_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb),
     adc_ch1_i                               => fmc516_adc_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb),
     adc_ch2_i                               => fmc516_adc_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb),
     adc_ch3_i                               => fmc516_adc_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb),
 
-    ce                                      => dsp_sysce,
-    ce_clr                                  => dsp_sysce_clr,
-    clk                                     => dsp_sysclk,-- clock period = 8.8823 ns (112.58345248415387 Mhz)
+    --ce                                      => dsp_sysce,
+    --ce_clr                                  => dsp_sysce_clr,
+    clk                                     => dsp_sysclk,-- clock period = 4.4411 ns (225.166904968 Mhz)
 
     kx                                      => dsp_kx,
     ky                                      => dsp_ky,
@@ -1191,28 +1159,36 @@ begin
     --mix_ch3_i_o                             => out std_logic_vector(23 downto 0);
     --mix_ch3_q_o                             => out std_logic_vector(23 downto 0);
 
-    poly35_ch0_i_o                          => dsp_poly35_ch0,
+    tbt_decim_ch0_i_o                       => dsp_poly35_ch0,
+    --tbt_decim_ch0_i_o                       => open,
     --poly35_ch0_q_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch1_i_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch1_q_o                          => out std_logic_vector(23 downto 0);
-    poly35_ch2_i_o                          => dsp_poly35_ch2,
+    tbt_decim_ch2_i_o                       => dsp_poly35_ch2,
+    --tbt_decim_ch2_i_o                       => open,
     --poly35_ch2_q_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch3_i_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch3_q_o                          => out std_logic_vector(23 downto 0);
+
+    tbt_decim_q_ch01_incorrect_o            => dsp_tbt_decim_q_ch01_incorrect,
+    tbt_decim_q_ch23_incorrect_o            => dsp_tbt_decim_q_ch23_incorrect,
 
     tbt_amp_ch0_o                           => dsp_tbt_amp_ch0,
     tbt_amp_ch1_o                           => dsp_tbt_amp_ch1,
     tbt_amp_ch2_o                           => dsp_tbt_amp_ch2,
     tbt_amp_ch3_o                           => dsp_tbt_amp_ch3,
 
-    cic_fofb_ch0_i_o                        => dsp_cic_fofb_ch0, --out std_logic_vector(23 downto 0);
+    fofb_decim_ch0_i_o                      => dsp_cic_fofb_ch0, --out std_logic_vector(23 downto 0);
     --cic_fofb_ch0_q_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch1_i_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch1_q_o                        => out std_logic_vector(24 downto 0);
-    cic_fofb_ch2_i_o                        => dsp_cic_fofb_ch2, --out std_logic_vector(23 downto 0);
+    fofb_decim_ch2_i_o                      => dsp_cic_fofb_ch2, --out std_logic_vector(23 downto 0);
     --cic_fofb_ch2_q_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch3_i_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch3_q_o                        => out std_logic_vector(24 downto 0);
+
+    fofb_decim_q_01_missing_o               => dsp_fofb_decim_q_01_missing,
+    fofb_decim_q_23_missing_o               => dsp_fofb_decim_q_23_missing,
 
     fofb_amp_ch0_o                          => dsp_fofb_amp_ch0,
     fofb_amp_ch1_o                          => dsp_fofb_amp_ch1,
@@ -1237,22 +1213,48 @@ begin
     x_monit_o                               => dsp_x_monit,
     y_monit_o                               => dsp_y_monit,
     q_monit_o                               => dsp_q_monit,
-    sum_monit_o                             => dsp_sum_monit
+    sum_monit_o                             => dsp_sum_monit,
+
+    monit_cic_unexpected_o                  => dsp_monit_cic_unexpected,
+    monit_cfir_incorrect_o                  => dsp_monit_cfir_incorrect,
+    monit_pfir_incorrect_o                  => dsp_monit_pfir_incorrect,
+
+    clk_ce_1_o                              => dsp_clk_ce_1,
+    clk_ce_1112_o                           => dsp_clk_ce_1112,
+    clk_ce_1390000_o                        => dsp_clk_ce_1390000,
+    clk_ce_2_o                              => dsp_clk_ce_2,
+    clk_ce_2224_o                           => dsp_clk_ce_2224,
+    clk_ce_22240000_o                       => dsp_clk_ce_22240000,
+    clk_ce_2780000_o                        => dsp_clk_ce_2780000,
+    clk_ce_35_o                             => dsp_clk_ce_35,
+    clk_ce_5000_o                           => dsp_clk_ce_5000,
+    clk_ce_556_o                            => dsp_clk_ce_556,
+    clk_ce_5560000_o                        => dsp_clk_ce_5560000,
+    clk_ce_70_o                             => dsp_clk_ce_70
   );
+
+  --dsp_poly35_ch0 <= (others => '0');
+  --dsp_poly35_ch2 <= (others => '0');
+  --
+  --dsp_monit_amp_ch0 <= (others => '0');
+  --dsp_monit_amp_ch1 <= (others => '0');
+  --dsp_monit_amp_ch2 <= (others => '0');
+  --dsp_monit_amp_ch3 <= (others => '0');
 
   -- Signals for the DSP chain
   dsp_sysce                                 <= '1';
   dsp_sysce_clr                             <= '0';
-  dsp_sysclk                                <= fmc516_fs_clk(c_adc_ref_clk);
+  --dsp_sysclk                                <= fmc516_fs_clk(c_adc_ref_clk);
+  dsp_sysclk                                <= fmc516_fs_clk2x(c_adc_ref_clk);  -- oversampled DSP chain
   dsp_del_sig_div_thres                     <= "00000000000000001000000000"; -- aprox 1.22e-4 FIX26_22
 
   --dsp_kx                                    <= "100110001001011010000000"; -- 10000000 UFIX24_0
-  dsp_kx                                    <= "100000000000000000000000"; -- ??? UFIX24_0
+  dsp_kx                                    <= "0100000000000000000000000"; -- ??? UFIX25_0
   --dsp_kx                                    <= "00100110001001011010000000"; -- 10000000 UFIX26_0
   --dsp_ky                                    <= "100110001001011010000000"; -- 10000000 UFIX24_0
-  dsp_ky                                    <= "100000000000000000000000"; -- ??? UFIX24_0
+  dsp_ky                                    <= "0100000000000000000000000"; -- ??? UFIX25_0
   --dsp_ky                                    <= "00100110001001011010000000"; -- 10000000 UFIX26_0
-  dsp_ksum                                  <= "100000000000000000000000"; -- 1.0 FIX24_23
+  dsp_ksum                                  <= "0111111111111111111111111"; -- 1.0 FIX25_24
   --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
   --dsp_ksum                                  <= "100000000000000000000000"; -- 1.0 FIX24_23
   --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
@@ -1376,24 +1378,29 @@ begin
     TRIG4                                   => TRIG_ILA1_4
   );
 
-  TRIG_ILA1_0(0)                            <= dsp_ce_1;
-  TRIG_ILA1_0(1)                            <= dsp_ce_35;
-  TRIG_ILA1_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA1_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA1_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA1_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA1_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA1_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA1_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA1_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA1_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA1_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA1_0(7 downto 6)                   <= (others => '0');
 
   --TRIG_ILA1_1(dsp_bpf_ch0'range)            <= dsp_bpf_ch0;
   --TRIG_ILA1_2(dsp_bpf_ch2'range)            <= dsp_bpf_ch2;
-  TRIG_ILA1_1(dsp_poly35_ch0'range)         <= dsp_poly35_ch0;
-  TRIG_ILA1_2(dsp_poly35_ch2'range)         <= dsp_poly35_ch2;
-  TRIG_ILA1_3(dsp_cic_fofb_ch0'range)       <= dsp_cic_fofb_ch0;
-  TRIG_ILA1_4(dsp_cic_fofb_ch2'range)       <= dsp_cic_fofb_ch2;
+  --TRIG_ILA1_1(dsp_poly35_ch0'range)         <= dsp_poly35_ch0;
+  --TRIG_ILA1_2(dsp_poly35_ch2'range)         <= dsp_poly35_ch2;
+  --TRIG_ILA1_3(dsp_cic_fofb_ch0'range)       <= dsp_cic_fofb_ch0;
+  --TRIG_ILA1_4(dsp_cic_fofb_ch2'range)       <= dsp_cic_fofb_ch2;
   TRIG_ILA1_1(dsp_monit_amp_ch0'range)      <= dsp_monit_amp_ch0;
   TRIG_ILA1_2(dsp_monit_amp_ch1'range)      <= dsp_monit_amp_ch1;
   TRIG_ILA1_3(dsp_monit_amp_ch2'range)      <= dsp_monit_amp_ch2;
   TRIG_ILA1_4(dsp_monit_amp_ch3'range)      <= dsp_monit_amp_ch3;
+
+  TRIG_ILA1_4(dsp_monit_amp_ch3'left+3 downto
+      dsp_monit_amp_ch3'left+1)             <= dsp_monit_cic_unexpected &
+                                                dsp_monit_cfir_incorrect &
+                                                dsp_monit_pfir_incorrect;
 
   -- TBT amplitudes data
   cmp_chipscope_ila_8192_tbt_amp : chipscope_ila_8192
@@ -1407,18 +1414,21 @@ begin
     TRIG4                                   => TRIG_ILA2_4
   );
 
-  TRIG_ILA2_0(0)                            <= dsp_ce_1;
-  TRIG_ILA2_0(1)                            <= dsp_ce_35;
-  TRIG_ILA2_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA2_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA2_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA2_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA2_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA2_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA2_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA2_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA2_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA2_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA2_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA2_1(dsp_tbt_amp_ch0'range)        <= dsp_tbt_amp_ch0;
   TRIG_ILA2_2(dsp_tbt_amp_ch1'range)        <= dsp_tbt_amp_ch1;
   TRIG_ILA2_3(dsp_tbt_amp_ch2'range)        <= dsp_tbt_amp_ch2;
   TRIG_ILA2_4(dsp_tbt_amp_ch3'range)        <= dsp_tbt_amp_ch3;
+  TRIG_ILA2_4(dsp_tbt_amp_ch3'left+2 downto
+      dsp_tbt_amp_ch3'left+1)               <= dsp_tbt_decim_q_ch01_incorrect &
+                                                  dsp_tbt_decim_q_ch23_incorrect;
 
   -- TBT position data
   cmp_chipscope_ila_8192_tbt_pos : chipscope_ila_8192
@@ -1432,12 +1442,12 @@ begin
     TRIG4                                   => TRIG_ILA3_4
   );
 
-  TRIG_ILA3_0(0)                            <= dsp_ce_1;
-  TRIG_ILA3_0(1)                            <= dsp_ce_35;
-  TRIG_ILA3_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA3_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA3_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA3_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA3_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA3_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA3_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA3_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA3_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA3_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA3_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA3_1(dsp_x_tbt'range)              <= dsp_x_tbt;
@@ -1457,19 +1467,21 @@ begin
     TRIG4                                   => TRIG_ILA4_4
   );
 
-  TRIG_ILA4_0(0)                            <= dsp_ce_1;
-  TRIG_ILA4_0(1)                            <= dsp_ce_35;
-  TRIG_ILA4_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA4_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA4_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA4_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA4_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA4_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA4_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA4_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA4_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA4_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA4_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA4_1(dsp_fofb_amp_ch0'range)       <= dsp_fofb_amp_ch0;
   TRIG_ILA4_2(dsp_fofb_amp_ch1'range)       <= dsp_fofb_amp_ch1;
   TRIG_ILA4_3(dsp_fofb_amp_ch2'range)       <= dsp_fofb_amp_ch2;
   TRIG_ILA4_4(dsp_fofb_amp_ch3'range)       <= dsp_fofb_amp_ch3;
-
+  TRIG_ILA4_4(dsp_fofb_amp_ch3'left+2 downto
+      dsp_fofb_amp_ch3'left+1)              <= dsp_fofb_decim_q_01_missing &
+                                                dsp_fofb_decim_q_23_missing;
   -- FOFB position data
   cmp_chipscope_ila_8192_fofb_pos : chipscope_ila_8192
   port map (
@@ -1482,12 +1494,12 @@ begin
     TRIG4                                   => TRIG_ILA5_4
   );
 
-  TRIG_ILA5_0(0)                            <= dsp_ce_1;
-  TRIG_ILA5_0(1)                            <= dsp_ce_35;
-  TRIG_ILA5_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA5_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA5_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA5_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA5_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA5_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA5_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA5_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA5_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA5_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA5_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA5_1(dsp_x_fofb'range)             <= dsp_x_fofb;
@@ -1507,12 +1519,12 @@ begin
     TRIG4                                   => TRIG_ILA6_4
   );
 
-  TRIG_ILA6_0(0)                            <= dsp_ce_1;
-  TRIG_ILA6_0(1)                            <= dsp_ce_35;
-  TRIG_ILA6_0(2)                            <= dsp_ce_1113;
-  TRIG_ILA6_0(3)                            <= dsp_ce_2782500;
-  TRIG_ILA6_0(4)                            <= dsp_ce_5565000;
-  TRIG_ILA6_0(5)                            <= dsp_ce_11130000;
+  TRIG_ILA6_0(0)                            <= dsp_clk_ce_2;
+  TRIG_ILA6_0(1)                            <= dsp_clk_ce_70;
+  TRIG_ILA6_0(2)                            <= dsp_clk_ce_2224;
+  TRIG_ILA6_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA6_0(4)                            <= dsp_clk_ce_2780000;
+  TRIG_ILA6_0(5)                            <= dsp_clk_ce_22240000;
   TRIG_ILA6_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA6_1(dsp_x_monit'range)            <= dsp_x_monit;
