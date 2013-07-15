@@ -342,6 +342,23 @@ begin
        TLP_Feed_Rx(`C_BAR1_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
     board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+    /////////////////////////////////////////////////////////
+    // Miscellaneous Wishbone tests
+    // //////////////////////////////////////
+    //
+    board.Rx_TLP_Length = 'H04;
+     $display("\n%d ns:   Write double QWORD to Wishbone space", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 32'H00000000;
+       dword_pack_data_store(32'HFFFFFFFF, 0);
+       dword_pack_data_store(32'HFFFFFFFE, 1);
+       dword_pack_data_store(32'HFFFFFFFD, 2);
+       dword_pack_data_store(32'HFFFFFFFC, 3);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
     //  ///////////////////////////////////////////////////////////////////
     //  DMA write & read BAR[1]
     //  Single-descriptor case
