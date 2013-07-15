@@ -877,9 +877,9 @@ begin
 
         when ST_MWr_1ST_DATA =>
           FIFO_Space_Sel <= FIFO_Space_Sel;
-          wb_FIFO_we_i   <= '0';
+          wb_FIFO_we_i   <= FIFO_Space_Sel;
           wb_FIFO_wsof_i <= '0';
-          wb_FIFO_weof_i <= '0';
+          wb_FIFO_weof_i <= m_axis_rx_tlast_i;
           wb_FIFO_din_i  <= Endian_Invert_64((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32)));
 
 
@@ -908,21 +908,21 @@ begin
           wb_FIFO_din_i  <= wb_FIFO_din_i;
 
         when others =>
-          if m_axis_rx_tlast_r1 = '1' then
+          if m_axis_rx_tlast_i = '1' then
             FIFO_Space_Sel <= '0';
           else
             FIFO_Space_Sel <= FIFO_Space_Sel;
           end if;
           if FIFO_Space_Sel = '1' then
             wb_FIFO_wsof_i <= '0';
-            wb_FIFO_weof_i <= m_axis_rx_tlast_r1;
-            wb_FIFO_we_i   <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
-            wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+            wb_FIFO_weof_i <= m_axis_rx_tlast_i;
+            wb_FIFO_we_i   <= not trn_rx_throttle;  -- m_axis_rx_tvalid_r1;
+            wb_FIFO_din_i  <= Endian_Invert_64((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32)));
           else
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= '0';
             wb_FIFO_we_i   <= '0';
-            wb_FIFO_din_i  <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+            wb_FIFO_din_i  <= wb_FIFO_din_i;
           end if;
 
       end case;

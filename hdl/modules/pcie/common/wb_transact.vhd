@@ -154,6 +154,7 @@ begin
           when st_IDLE =>
             wb_stb    <= '0';
             wb_cyc    <= '0';
+            wb_we     <= '0';
             wb_sel    <= (others => '0');
             rpiped_we <= '0';
             if wpipe_empty = '0' then
