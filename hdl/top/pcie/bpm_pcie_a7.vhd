@@ -1,28 +1,31 @@
 ----------------------------------------------------------------------------------
--- Company:
--- Engineer:
+-- Company: Creotech
+-- Engineer: Adrian Byszuk (adrian.byszuk@gmail.com)
 --
--- Create Date:    09:12:51 01 Feb 2010
 -- Design Name:
--- Module Name:    pcieDMA - Behavioral
+-- Module Name:    bpm_pcie_a7 - Behavioral
 -- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
+-- Target Devices: XC7A200T on AC uTCA card from OHWR
+-- Tool versions: ISE 14.4, ISE 14.6
+-- Description: This is TOP module for the versatile firmware for PCIe communication.
+-- It provides DMA engine with scatter-gather (linked list) functionality.
+-- DDR memory is supported through BAR1. Wishbone endpoint is accessible through BAR2.
 --
--- Dependencies:
+-- Dependencies: Xilinx PCIe core for 7 series. Xilinx DDR core for 7 series.
 --
--- Revision:
+-- Revision: 2.00 - Original file completely rewritten by abyszuk.
 --
 -- Revision 1.00 - File Released
 --
--- Additional Comments:
+-- Additional Comments: This file can be used both as TOP module for independent operation, or
+-- instantiated in another projects. To use it in your project, change INSTANTIATED generic to
+-- "TRUE" and uncomment relevant interface sections in entity declaration. ATTENTION: you also
+-- have to comment out dummy signal with names exactly the same as port names (it was necessary so
+-- that XST won't complain about missing signal names).
 --
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
-use IEEE.STD_LOGIC_ARITH.all;
-use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
@@ -34,442 +37,99 @@ use UNISIM.VComponents.all;
 
 entity bpm_pcie_a7 is
   generic (
+    SIMULATION   : string := "FALSE";
+    INSTANTIATED : string := "FALSE";
+    -- ****
+    -- PCIe core parameters
+    -- ****
     constant pcieLanes : integer := 4;
     PL_FAST_TRAIN      : string  := "FALSE";
-    PIPE_SIM_MODE      : string := "FALSE";
-    SIMULATION         : string := "FALSE";
-
-
-    -- *** GENERICs copied from the example project generated with DDR core *** --
-
+    PIPE_SIM_MODE      : string  := "FALSE";
     --***************************************************************************
-    -- The following parameters refer to width of various ports
+    -- Necessary parameters for DDR core support
+    -- (dependent on memory chip connected to FPGA, not to be modified at will)
     --***************************************************************************
-    BANK_WIDTH            : integer := 3;
-                                     -- # of memory Bank Address bits.
-    CK_WIDTH              : integer := 1;
-                                     -- # of CK/CK# outputs to memory.
-    COL_WIDTH             : integer := 10;
-                                     -- # of memory Column Address bits.
-    CS_WIDTH              : integer := 1;
-                                     -- # of unique CS outputs to memory.
-    nCS_PER_RANK          : integer := 1;
-                                     -- # of unique CS outputs per rank for phy
-    CKE_WIDTH             : integer := 1;
-                                     -- # of CKE outputs to memory.
-    DATA_BUF_ADDR_WIDTH   : integer := 5;
-    DQ_CNT_WIDTH          : integer := 5;
-                                     -- = ceil(log2(DQ_WIDTH))
-    DQ_PER_DM             : integer := 8;
-    DM_WIDTH              : integer := 4;
-                                     -- # of DM (data mask)
-    DQ_WIDTH              : integer := 32;
-                                     -- # of DQ (data)
-    DQS_WIDTH             : integer := 4;
-    DQS_CNT_WIDTH         : integer := 2;
-                                     -- = ceil(log2(DQS_WIDTH))
-    DRAM_WIDTH            : integer := 8;
-                                     -- # of DQ per DQS
-    ECC                   : string  := "OFF";
-    nBANK_MACHS           : integer := 4;
-    RANKS                 : integer := 1;
-                                     -- # of Ranks.
-    ODT_WIDTH             : integer := 1;
-                                     -- # of ODT outputs to memory.
-    ROW_WIDTH             : integer := 16;
-                                     -- # of memory Row Address bits.
-    ADDR_WIDTH            : integer := 30;
-                                     -- # = RANK_WIDTH + BANK_WIDTH
-                                     --     + ROW_WIDTH + COL_WIDTH;
-                                     -- Chip Select is always tied to low for
-                                     -- single rank devices
-    USE_CS_PORT          : integer := 0;
-                                     -- # = 1, When Chip Select (CS#) output is enabled
-                                     --   = 0, When Chip Select (CS#) output is disabled
-                                     -- If CS_N disabled, user must connect
-                                     -- DRAM CS_N input(s) to ground
-    USE_DM_PORT           : integer := 1;
-                                     -- # = 1, When Data Mask option is enabled
-                                     --   = 0, When Data Mask option is disbaled
-                                     -- When Data Mask option is disabled in
-                                     -- MIG Controller Options page, the logic
-                                     -- related to Data Mask should not get
-                                     -- synthesized
-    USE_ODT_PORT          : integer := 1;
-                                     -- # = 1, When ODT output is enabled
-                                     --   = 0, When ODT output is disabled
-    PHY_CONTROL_MASTER_BANK : integer := 1;
-                                     -- The bank index where master PHY_CONTROL resides,
-                                     -- equal to the PLL residing bank
-    MEM_DENSITY             : string  := "4Gb";
-                                     -- Indicates the density of the Memory part
-                                     -- Added for the sake of Vivado simulations
-    MEM_SPEEDGRADE          : string  := "125";
-                                     -- Indicates the Speed grade of Memory Part
-                                     -- Added for the sake of Vivado simulations
-    MEM_DEVICE_WIDTH        : integer := 8;
-                                     -- Indicates the device width of the Memory Part
-                                     -- Added for the sake of Vivado simulations
-
-    --***************************************************************************
-    -- The following parameters are mode register settings
-    --***************************************************************************
-    AL                    : string  := "0";
-                                     -- DDR3 SDRAM:
-                                     -- Additive Latency (Mode Register 1).
-                                     -- # = "0", "CL-1", "CL-2".
-                                     -- DDR2 SDRAM:
-                                     -- Additive Latency (Extended Mode Register).
-    nAL                   : integer := 0;
-                                     -- # Additive Latency in number of clock
-                                     -- cycles.
-    BURST_MODE            : string  := "8";
-                                     -- DDR3 SDRAM:
-                                     -- Burst Length (Mode Register 0).
-                                     -- # = "8", "4", "OTF".
-                                     -- DDR2 SDRAM:
-                                     -- Burst Length (Mode Register).
-                                     -- # = "8", "4".
-    BURST_TYPE            : string  := "SEQ";
-                                     -- DDR3 SDRAM: Burst Type (Mode Register 0).
-                                     -- DDR2 SDRAM: Burst Type (Mode Register).
-                                     -- # = "SEQ" - (Sequential),
-                                     --   = "INT" - (Interleaved).
-    CL                    : integer := 6;
-                                     -- in number of clock cycles
-                                     -- DDR3 SDRAM: CAS Latency (Mode Register 0).
-                                     -- DDR2 SDRAM: CAS Latency (Mode Register).
-    CWL                   : integer := 5;
-                                     -- in number of clock cycles
-                                     -- DDR3 SDRAM: CAS Write Latency (Mode Register 2).
-                                     -- DDR2 SDRAM: Can be ignored
-    OUTPUT_DRV            : string  := "HIGH";
-                                     -- Output Driver Impedance Control (Mode Register 1).
-                                     -- # = "HIGH" - RZQ/7,
-                                     --   = "LOW" - RZQ/6.
-    RTT_NOM               : string  := "40";
-                                     -- RTT_NOM (ODT) (Mode Register 1).
-                                     --   = "120" - RZQ/2,
-                                     --   = "60"  - RZQ/4,
-                                     --   = "40"  - RZQ/6.
-    RTT_WR                : string  := "OFF";
-                                     -- RTT_WR (ODT) (Mode Register 2).
-                                     -- # = "OFF" - Dynamic ODT off,
-                                     --   = "120" - RZQ/2,
-                                     --   = "60"  - RZQ/4,
-    ADDR_CMD_MODE         : string  := "1T" ;
-                                     -- # = "1T", "2T".
-    REG_CTRL              : string  := "OFF";
-                                     -- # = "ON" - RDIMMs,
-                                     --   = "OFF" - Components, SODIMMs, UDIMMs.
-    CA_MIRROR             : string  := "OFF";
-                                     -- C/A mirror opt for DDR3 dual rank
-
-    --***************************************************************************
-    -- The following parameters are multiplier and divisor factors for PLLE2.
-    -- Based on the selected design frequency these parameters vary.
-    --***************************************************************************
-    CLKIN_PERIOD          : integer := 5000;
-                                     -- Input Clock Period
-    CLKFBOUT_MULT         : integer := 4;
-                                     -- write PLL VCO multiplier
-    DIVCLK_DIVIDE         : integer := 1;
-                                     -- write PLL VCO divisor
-    CLKOUT0_PHASE         : real    := 337.5;
-                                     -- Phase for PLL output clock (CLKOUT0)
-    CLKOUT0_DIVIDE        : integer := 2;
-                                     -- VCO output divisor for PLL output clock (CLKOUT0)
-    CLKOUT1_DIVIDE        : integer := 2;
-                                     -- VCO output divisor for PLL output clock (CLKOUT1)
-    CLKOUT2_DIVIDE        : integer := 32;
-                                     -- VCO output divisor for PLL output clock (CLKOUT2)
-    CLKOUT3_DIVIDE        : integer := 8;
-                                     -- VCO output divisor for PLL output clock (CLKOUT3)
-
-    --***************************************************************************
-    -- Memory Timing Parameters. These parameters varies based on the selected
-    -- memory part.
-    --***************************************************************************
-    tCKE                  : integer := 5000;
-                                     -- memory tCKE paramter in pS
-    tFAW                  : integer := 30000;
-                                     -- memory tRAW paramter in pS.
-    tRAS                  : integer := 35000;
-                                     -- memory tRAS paramter in pS.
-    tRCD                  : integer := 13750;
-                                     -- memory tRCD paramter in pS.
-    tREFI                 : integer := 7800000;
-                                     -- memory tREFI paramter in pS.
-    tRFC                  : integer := 300000;
-                                     -- memory tRFC paramter in pS.
-    tRP                   : integer := 13750;
-                                     -- memory tRP paramter in pS.
-    tRRD                  : integer := 6000;
-                                     -- memory tRRD paramter in pS.
-    tRTP                  : integer := 7500;
-                                     -- memory tRTP paramter in pS.
-    tWTR                  : integer := 7500;
-                                     -- memory tWTR paramter in pS.
-    tZQI                  : integer := 128000000;
-                                     -- memory tZQI paramter in nS.
-    tZQCS                 : integer := 64;
-                                     -- memory tZQCS paramter in clock cycles.
-
-    --***************************************************************************
-    -- Simulation parameters
-    --***************************************************************************
-    SIM_BYPASS_INIT_CAL   : string  := "FAST";
+    constant DDR_DQ_WIDTH      : integer := 32;
+    constant DDR_PAYLOAD_WIDTH : integer := 256;
+    constant DDR_DQS_WIDTH     : integer := 4;
+    constant DDR_DM_WIDTH      : integer := 4;
+    constant DDR_ROW_WIDTH     : integer := 16;
+    constant DDR_BANK_WIDTH    : integer := 3;
+    constant DDR_CK_WIDTH      : integer := 1;
+    constant DDR_CKE_WIDTH     : integer := 1;
+    constant DDR_ODT_WIDTH     : integer := 1;
+    SIM_BYPASS_INIT_CAL        : string  := "FAST"
                                      -- # = "OFF" -  Complete memory init &
                                      --              calibration sequence
                                      -- # = "SKIP" - Not supported
                                      -- # = "FAST" - Complete memory init & use
                                      --              abbreviated calib sequence
-
-    --SIMULATION            : string  := "FALSE";
-                                     -- Should be TRUE during design simulations and
-                                     -- FALSE during implementations
-
-    --***************************************************************************
-    -- The following parameters varies based on the pin out entered in MIG GUI.
-    -- Do not change any of these parameters directly by editing the RTL.
-    -- Any changes required should be done through GUI and the design regenerated.
-    --***************************************************************************
-    BYTE_LANES_B0         : std_logic_vector(3 downto 0) := "1111";
-                                     -- Byte lanes used in an IO column.
-    BYTE_LANES_B1         : std_logic_vector(3 downto 0) := "1110";
-                                     -- Byte lanes used in an IO column.
-    BYTE_LANES_B2         : std_logic_vector(3 downto 0) := "0000";
-                                     -- Byte lanes used in an IO column.
-    BYTE_LANES_B3         : std_logic_vector(3 downto 0) := "0000";
-                                     -- Byte lanes used in an IO column.
-    BYTE_LANES_B4         : std_logic_vector(3 downto 0) := "0000";
-                                     -- Byte lanes used in an IO column.
-    DATA_CTL_B0           : std_logic_vector(3 downto 0) := "1111";
-                                     -- Indicates Byte lane is data byte lane
-                                     -- or control Byte lane. '1' in a bit
-                                     -- position indicates a data byte lane and
-                                     -- a '0' indicates a control byte lane
-    DATA_CTL_B1           : std_logic_vector(3 downto 0) := "0000";
-                                     -- Indicates Byte lane is data byte lane
-                                     -- or control Byte lane. '1' in a bit
-                                     -- position indicates a data byte lane and
-                                     -- a '0' indicates a control byte lane
-    DATA_CTL_B2           : std_logic_vector(3 downto 0) := "0000";
-                                     -- Indicates Byte lane is data byte lane
-                                     -- or control Byte lane. '1' in a bit
-                                     -- position indicates a data byte lane and
-                                     -- a '0' indicates a control byte lane
-    DATA_CTL_B3           : std_logic_vector(3 downto 0) := "0000";
-                                     -- Indicates Byte lane is data byte lane
-                                     -- or control Byte lane. '1' in a bit
-                                     -- position indicates a data byte lane and
-                                     -- a '0' indicates a control byte lane
-    DATA_CTL_B4           : std_logic_vector(3 downto 0) := "0000";
-                                     -- Indicates Byte lane is data byte lane
-                                     -- or control Byte lane. '1' in a bit
-                                     -- position indicates a data byte lane and
-                                     -- a '0' indicates a control byte lane
-    PHY_0_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FD2FF2FF";
-    PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FF6FF3CC0000";
-    PHY_2_BITLANES        : std_logic_vector(47 downto 0) := X"000000000000";
-
-    -- control/address/data pin mapping parameters
-    CK_BYTE_MAP
-     : std_logic_vector(143 downto 0) := X"000000000000000000000000000000000012";
-    ADDR_MAP
-     : std_logic_vector(191 downto 0) := X"13211A11712A11B13A12512012B126131129116124121128";
-    BANK_MAP   : std_logic_vector(35 downto 0) := X"13613713B";
-    CAS_MAP    : std_logic_vector(11 downto 0) := X"135";
-    CKE_ODT_BYTE_MAP : std_logic_vector(7 downto 0) := X"00";
-    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000127";
-    ODT_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000138";
-    CS_MAP     : std_logic_vector(119 downto 0) := X"000000000000000000000000000000";
-    PARITY_MAP : std_logic_vector(11 downto 0) := X"000";
-    RAS_MAP    : std_logic_vector(11 downto 0) := X"139";
-    WE_MAP     : std_logic_vector(11 downto 0) := X"134";
-    DQS_BYTE_MAP
-     : std_logic_vector(143 downto 0) := X"000000000000000000000000000003020100";
-    DATA0_MAP  : std_logic_vector(95 downto 0) := X"009006002004003007000005";
-    DATA1_MAP  : std_logic_vector(95 downto 0) := X"017014010015013011016019";
-    DATA2_MAP  : std_logic_vector(95 downto 0) := X"024026023027022025020029";
-    DATA3_MAP  : std_logic_vector(95 downto 0) := X"034037031035033036032039";
-    DATA4_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA5_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA6_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA7_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA8_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA9_MAP  : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA10_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA11_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA12_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA13_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA14_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA15_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA16_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    DATA17_MAP : std_logic_vector(95 downto 0) := X"000000000000000000000000";
-    MASK0_MAP  : std_logic_vector(107 downto 0) := X"000000000000000038028012001";
-    MASK1_MAP  : std_logic_vector(107 downto 0) := X"000000000000000000000000000";
-
-    SLOT_0_CONFIG         : std_logic_vector(7 downto 0) := "00000001";
-                                     -- Mapping of Ranks.
-    SLOT_1_CONFIG         : std_logic_vector(7 downto 0) := "00000000";
-                                     -- Mapping of Ranks.
-    MEM_ADDR_ORDER
-     : string  := "BANK_ROW_COLUMN";
-
-    --***************************************************************************
-    -- IODELAY and PHY related parameters
-    --***************************************************************************
-    IODELAY_HP_MODE       : string  := "ON";
-                                     -- to phy_top
-    IBUF_LPWR_MODE        : string  := "OFF";
-                                     -- to phy_top
-    DATA_IO_IDLE_PWRDWN   : string  := "ON";
-                                     -- # = "ON", "OFF"
-    BANK_TYPE             : string  := "HR_IO";
-                                     -- # = "HP_IO", "HPL_IO", "HR_IO", "HRL_IO"
-    DATA_IO_PRIM_TYPE     : string  := "HR_LP";
-                                     -- # = "HP_LP", "HR_LP", "DEFAULT"
-    CKE_ODT_AUX           : string  := "FALSE";
-    USER_REFRESH          : string  := "OFF";
-    WRLVL                 : string  := "ON";
-                                     -- # = "ON" - DDR3 SDRAM
-                                     --   = "OFF" - DDR2 SDRAM.
-    ORDERING              : string  := "NORM";
-                                     -- # = "NORM", "STRICT", "RELAXED".
-    CALIB_ROW_ADD         : std_logic_vector(15 downto 0) := X"0000";
-                                     -- Calibration row address will be used for
-                                     -- calibration read and write operations
-    CALIB_COL_ADD         : std_logic_vector(11 downto 0) := X"000";
-                                     -- Calibration column address will be used for
-                                     -- calibration read and write operations
-    CALIB_BA_ADD          : std_logic_vector(2 downto 0) := "000";
-                                     -- Calibration bank address will be used for
-                                     -- calibration read and write operations
-    TCQ                   : integer := 100;
-    IODELAY_GRP           : string  := "IODELAY_MIG";
-                                     -- It is associated to a set of IODELAYs with
-                                     -- an IDELAYCTRL that have same IODELAY CONTROLLER
-                                     -- clock frequency.
-    SYSCLK_TYPE           : string  := "DIFFERENTIAL";
-                                     -- System clock type DIFFERENTIAL, SINGLE_ENDED,
-                                     -- NO_BUFFER
-    REFCLK_TYPE           : string  := "USE_SYSTEM_CLOCK";
-                                     -- Reference clock type DIFFERENTIAL, SINGLE_ENDED
-                                     -- NO_BUFFER, USE_SYSTEM_CLOCK
-
-    DRAM_TYPE             : string  := "DDR3";
-    CAL_WIDTH             : string  := "HALF";
-    STARVE_LIMIT          : integer := 2;
-                                     -- # = 2,3,4.
-
-    --***************************************************************************
-    -- Referece clock frequency parameters
-    --***************************************************************************
-    REFCLK_FREQ           : real    := 200.0;
-                                     -- IODELAYCTRL reference clock frequency
-    DIFF_TERM_REFCLK      : string  := "TRUE";
-                                     -- Differential Termination for idelay
-                                     -- reference clock input pins
-    --***************************************************************************
-    -- System clock frequency parameters
-    --***************************************************************************
-    tCK                   : integer := 2500;
-                                     -- memory tCK paramter.
-                                     -- # = Clock Period in pS.
-    nCK_PER_CLK           : integer := 4;
-                                     -- # of memory CKs per fabric CLK
-    DIFF_TERM_SYSCLK      : string  := "FALSE";
-                                     -- Differential Termination for System
-                                     -- clock input pins
-
-    --***************************************************************************
-    -- Debug parameters
-    --***************************************************************************
-    DEBUG_PORT            : string  := "OFF";
-                                     -- # = "ON" Enable debug signals/controls.
-                                     --   = "OFF" Disable debug signals/controls.
-
-    --***************************************************************************
-    -- Temparature monitor parameter
-    --***************************************************************************
-    TEMP_MON_CONTROL         : string  := "INTERNAL";
-                                     -- # = "INTERNAL", "EXTERNAL"
-
-    RST_ACT_LOW           : integer := 1
-                                     -- =1 for active low reset,
-                                     -- =0 for active high.
     );
   port (
     --DDR3 memory pins
-    ddr3_dq      : inout std_logic_vector(DQ_WIDTH-1 downto 0);
-    ddr3_dqs_p   : inout std_logic_vector(DQS_WIDTH-1 downto 0);
-    ddr3_dqs_n   : inout std_logic_vector(DQS_WIDTH-1 downto 0);
-    ddr3_addr    : out   std_logic_vector(ROW_WIDTH-1 downto 0);
-    ddr3_ba      : out   std_logic_vector(BANK_WIDTH-1 downto 0);
+    ddr3_dq      : inout std_logic_vector(DDR_DQ_WIDTH-1 downto 0);
+    ddr3_dqs_p   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+    ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+    ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
+    ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
     ddr3_ras_n   : out   std_logic;
     ddr3_cas_n   : out   std_logic;
     ddr3_we_n    : out   std_logic;
     ddr3_reset_n : out   std_logic;
-    ddr3_ck_p    : out   std_logic_vector(CK_WIDTH-1 downto 0);
-    ddr3_ck_n    : out   std_logic_vector(CK_WIDTH-1 downto 0);
-    ddr3_cke     : out   std_logic_vector(CKE_WIDTH-1 downto 0);
-    ddr3_dm      : out   std_logic_vector(DM_WIDTH-1 downto 0);
-    ddr3_odt     : out   std_logic_vector(ODT_WIDTH-1 downto 0);
+    ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+    ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+    ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
+    ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
     pci_exp_rxp : in  std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_rxn : in  std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_txp : out std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_txn : out std_logic_vector(pcieLanes - 1 downto 0);
     -- Necessity signals
-    ddr_sys_clk_p : in std_logic;
-    ddr_sys_clk_n : in std_logic;
-    sys_clk_p     : in std_logic;         --100 MHz PCIe Clock
-    sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic          --Reset
+    ddr_sys_clk_p : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
+    ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
+    sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
+    sys_clk_n     : in std_logic; --100 MHz PCIe Clock
+    sys_rst_n     : in std_logic --Reset to PCIe and DDR cores
+
+    -- DDR memory controller interface --
+    -- uncomment when instantiating in another project
+    --memc_ui_clk    : out std_logic;
+    --memc_cmd_rdy   : out std_logic;
+    --memc_cmd_en    : in  std_logic;
+    --memc_cmd_instr : in  std_logic_vector(2 downto 0);
+    --memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+    --memc_wr_en     : in  std_logic;
+    --memc_wr_end    : in  std_logic;
+    --memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    --memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    --memc_wr_rdy    : out std_logic;
+    --memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    --memc_rd_valid  : out std_logic;
+    ---- memory arbiter interface
+    --memarb_acc_req : in  std_logic;
+    --memarb_acc_gnt : out std_logic;
+    --/ DDR memory controller interface
+
+    -- Wishbone interface --
+    -- uncomment when instantiating in another project
+    --CLK_I : in  std_logic;
+    --RST_I : in  std_logic;
+    --ACK_I : in  std_logic;
+    --DAT_I : in  std_logic_vector(63 downto 0);
+    --ADR_O : out std_logic_vector(29 downto 0);
+    --DAT_O : out std_logic_vector(63 downto 0);
+    --WE_O  : out std_logic;
+    --STB_O : out std_logic;
+    --CYC_O : out std_logic
+    --/ Wishbone interface
     );
 end entity bpm_pcie_a7;
 
 architecture Behavioral of bpm_pcie_a7 is
-  -------------------------------------------------------
-  -------- Constants & functions helpful in DDR core instatiation
-  -------------------------------------------------------
-  -- clogb2 function - ceiling of log base 2
-  function clogb2 (size : integer) return integer is
-    variable base : integer := 1;
-    variable inp : integer := 0;
-  begin
-    inp := size - 1;
-    while (inp > 1) loop
-      inp := inp/2 ;
-      base := base + 1;
-    end loop;
-    return base;
-  end function;
 
-  constant RANK_WIDTH : integer := clogb2(RANKS);
-
-  function XWIDTH return integer is
-  begin
-    if(CS_WIDTH = 1) then
-      return 0;
-    else
-      return RANK_WIDTH;
-    end if;
-  end function;
-
-  constant DATA_WIDTH            : integer := C_DBUS_WIDTH;
-  constant PAYLOAD_WIDTH         : integer := C_DBUS_WIDTH;
-  constant DATA_BUF_OFFSET_WIDTH : integer := 1;
-  constant CMD_PIPE_PLUS1        : string  := "ON";
-                                     -- add pipeline stage between MC and PHY
-  constant ECC_WIDTH         : integer := 0;
-  constant ECC_TEST          : string  := "OFF";
-  constant MC_ERR_ADDR_WIDTH : integer := XWIDTH + BANK_WIDTH + ROW_WIDTH
-                                          + COL_WIDTH + DATA_BUF_OFFSET_WIDTH;
-  constant tPRDI : integer := 1000000;
-                                     -- memory tPRDI paramter in pS.
-
+  constant DDR_ADDR_WIDTH : integer := 30;
 
   component pcie_core
     generic (
@@ -718,175 +378,35 @@ architecture Behavioral of bpm_pcie_a7 is
 
   component ddr_core
     generic(
-      BANK_WIDTH              : integer;
-      CK_WIDTH                : integer;
-      COL_WIDTH               : integer;
-      CS_WIDTH                : integer;
-      nCS_PER_RANK            : integer;
-      CKE_WIDTH               : integer;
-      DATA_BUF_ADDR_WIDTH     : integer;
-      DQ_CNT_WIDTH            : integer;
-      DQ_PER_DM               : integer;
-      DM_WIDTH                : integer;
-      DQ_WIDTH                : integer;
-      DQS_WIDTH               : integer;
-      DQS_CNT_WIDTH           : integer;
-      DRAM_WIDTH              : integer;
-      ECC                     : string;
-      DATA_WIDTH              : integer;
-      ECC_TEST                : string;
-      PAYLOAD_WIDTH           : integer;
-      ECC_WIDTH               : integer;
-      MC_ERR_ADDR_WIDTH       : integer;
-      nBANK_MACHS             : integer;
-      RANKS                   : integer;
-      ODT_WIDTH               : integer;
-      ROW_WIDTH               : integer;
-      ADDR_WIDTH              : integer;
-      USE_CS_PORT             : integer;
-      USE_DM_PORT             : integer;
-      USE_ODT_PORT            : integer;
-      PHY_CONTROL_MASTER_BANK : integer;
-      AL                      : string;
-      nAL                     : integer;
-      BURST_MODE              : string;
-      BURST_TYPE              : string;
-      CL                      : integer;
-      CWL                     : integer;
-      OUTPUT_DRV              : string;
-      RTT_NOM                 : string;
-      RTT_WR                  : string;
-      ADDR_CMD_MODE           : string;
-      REG_CTRL                : string;
-      CA_MIRROR               : string;
-      CLKIN_PERIOD            : integer;
-      CLKFBOUT_MULT           : integer;
-      DIVCLK_DIVIDE           : integer;
-      CLKOUT0_PHASE           : real;
-      CLKOUT0_DIVIDE          : integer;
-      CLKOUT1_DIVIDE          : integer;
-      CLKOUT2_DIVIDE          : integer;
-      CLKOUT3_DIVIDE          : integer;
-      tCKE                    : integer;
-      tFAW                    : integer;
-      tRAS                    : integer;
-      tRCD                    : integer;
-      tREFI                   : integer;
-      tRFC                    : integer;
-      tRP                     : integer;
-      tRRD                    : integer;
-      tRTP                    : integer;
-      tWTR                    : integer;
-      tZQI                    : integer;
-      tZQCS                   : integer;
-      tPRDI                   : integer;
       SIM_BYPASS_INIT_CAL     : string;
       SIMULATION              : string;
-      BYTE_LANES_B0           : std_logic_vector(3 downto 0);
-      BYTE_LANES_B1           : std_logic_vector(3 downto 0);
-      BYTE_LANES_B2           : std_logic_vector(3 downto 0);
-      BYTE_LANES_B3           : std_logic_vector(3 downto 0);
-      BYTE_LANES_B4           : std_logic_vector(3 downto 0);
-      DATA_CTL_B0             : std_logic_vector(3 downto 0);
-      DATA_CTL_B1             : std_logic_vector(3 downto 0);
-      DATA_CTL_B2             : std_logic_vector(3 downto 0);
-      DATA_CTL_B3             : std_logic_vector(3 downto 0);
-      DATA_CTL_B4             : std_logic_vector(3 downto 0);
-      PHY_0_BITLANES          : std_logic_vector(47 downto 0);
-      PHY_1_BITLANES          : std_logic_vector(47 downto 0);
-      PHY_2_BITLANES          : std_logic_vector(47 downto 0);
-      CK_BYTE_MAP             : std_logic_vector(143 downto 0);
-      ADDR_MAP                : std_logic_vector(191 downto 0);
-      BANK_MAP                : std_logic_vector(35 downto 0);
-      CAS_MAP                 : std_logic_vector(11 downto 0);
-      CKE_ODT_BYTE_MAP        : std_logic_vector(7 downto 0);
-      CKE_MAP                 : std_logic_vector(95 downto 0);
-      ODT_MAP                 : std_logic_vector(95 downto 0);
-      CS_MAP                  : std_logic_vector(119 downto 0);
-      PARITY_MAP              : std_logic_vector(11 downto 0);
-      RAS_MAP                 : std_logic_vector(11 downto 0);
-      WE_MAP                  : std_logic_vector(11 downto 0);
-      DQS_BYTE_MAP            : std_logic_vector(143 downto 0);
-      DATA0_MAP               : std_logic_vector(95 downto 0);
-      DATA1_MAP               : std_logic_vector(95 downto 0);
-      DATA2_MAP               : std_logic_vector(95 downto 0);
-      DATA3_MAP               : std_logic_vector(95 downto 0);
-      DATA4_MAP               : std_logic_vector(95 downto 0);
-      DATA5_MAP               : std_logic_vector(95 downto 0);
-      DATA6_MAP               : std_logic_vector(95 downto 0);
-      DATA7_MAP               : std_logic_vector(95 downto 0);
-      DATA8_MAP               : std_logic_vector(95 downto 0);
-      DATA9_MAP               : std_logic_vector(95 downto 0);
-      DATA10_MAP              : std_logic_vector(95 downto 0);
-      DATA11_MAP              : std_logic_vector(95 downto 0);
-      DATA12_MAP              : std_logic_vector(95 downto 0);
-      DATA13_MAP              : std_logic_vector(95 downto 0);
-      DATA14_MAP              : std_logic_vector(95 downto 0);
-      DATA15_MAP              : std_logic_vector(95 downto 0);
-      DATA16_MAP              : std_logic_vector(95 downto 0);
-      DATA17_MAP              : std_logic_vector(95 downto 0);
-      MASK0_MAP               : std_logic_vector(107 downto 0);
-      MASK1_MAP               : std_logic_vector(107 downto 0);
-      SLOT_0_CONFIG           : std_logic_vector(7 downto 0);
-      SLOT_1_CONFIG           : std_logic_vector(7 downto 0);
-      MEM_ADDR_ORDER          : string;
-      IODELAY_HP_MODE         : string;
-      IBUF_LPWR_MODE          : string;
-      DATA_IO_IDLE_PWRDWN     : string;
-      BANK_TYPE               : string;
-      DATA_IO_PRIM_TYPE       : string;
-      CKE_ODT_AUX             : string;
-      USER_REFRESH            : string;
-      WRLVL                   : string;
-      ORDERING                : string;
-      CALIB_ROW_ADD           : std_logic_vector(15 downto 0);
-      CALIB_COL_ADD           : std_logic_vector(11 downto 0);
-      CALIB_BA_ADD            : std_logic_vector(2 downto 0);
-      TCQ                     : integer;
-      CMD_PIPE_PLUS1          : string;
-      tCK                     : integer;
-      nCK_PER_CLK             : integer;
-      DIFF_TERM_SYSCLK        : string;
-      DEBUG_PORT              : string;
-      TEMP_MON_CONTROL        : string;
-
-
-      IODELAY_GRP      : string;
-      SYSCLK_TYPE      : string;
-      REFCLK_TYPE      : string;
-      REFCLK_FREQ      : real;
-      DIFF_TERM_REFCLK : string;
-
-      DRAM_TYPE    : string;
-      CAL_WIDTH    : string;
-      STARVE_LIMIT : integer;
 
       RST_ACT_LOW : integer
       );
     port(
-      ddr3_dq      : inout std_logic_vector(DQ_WIDTH-1 downto 0);
-      ddr3_dqs_p   : inout std_logic_vector(DQS_WIDTH-1 downto 0);
-      ddr3_dqs_n   : inout std_logic_vector(DQS_WIDTH-1 downto 0);
-      ddr3_addr    : out   std_logic_vector(ROW_WIDTH-1 downto 0);
-      ddr3_ba      : out   std_logic_vector(BANK_WIDTH-1 downto 0);
+      ddr3_dq      : inout std_logic_vector(DDR_DQ_WIDTH-1 downto 0);
+      ddr3_dqs_p   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+      ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+      ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
+      ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
       ddr3_ras_n   : out   std_logic;
       ddr3_cas_n   : out   std_logic;
       ddr3_we_n    : out   std_logic;
       ddr3_reset_n : out   std_logic;
-      ddr3_ck_p    : out   std_logic_vector(CK_WIDTH-1 downto 0);
-      ddr3_ck_n    : out   std_logic_vector(CK_WIDTH-1 downto 0);
-      ddr3_cke     : out   std_logic_vector(CKE_WIDTH-1 downto 0);
-      ddr3_dm      : out   std_logic_vector(DM_WIDTH-1 downto 0);
-      ddr3_odt     : out   std_logic_vector(ODT_WIDTH-1 downto 0);
+      ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+      ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+      ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+      ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
+      ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
 
-      app_addr            : in  std_logic_vector(ADDR_WIDTH-1 downto 0);
+      app_addr            : in  std_logic_vector(DDR_ADDR_WIDTH-1 downto 0);
       app_cmd             : in  std_logic_vector(2 downto 0);
       app_en              : in  std_logic;
-      app_wdf_data        : in  std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)-1 downto 0);
+      app_wdf_data        : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
       app_wdf_end         : in  std_logic;
-      app_wdf_mask        : in  std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)/8-1 downto 0);
+      app_wdf_mask        : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
       app_wdf_wren        : in  std_logic;
-      app_rd_data         : out std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)-1 downto 0);
+      app_rd_data         : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
       app_rd_data_end     : out std_logic;
       app_rd_data_valid   : out std_logic;
       app_rdy             : out std_logic;
@@ -902,8 +422,7 @@ architecture Behavioral of bpm_pcie_a7 is
       init_calib_complete : out std_logic;
 
       -- System Clock Ports
-      sys_clk_p : in std_logic;
-      sys_clk_n : in std_logic;
+      sys_clk_i : in std_logic;
 
       sys_rst : in std_logic
       );
@@ -1052,7 +571,8 @@ architecture Behavioral of bpm_pcie_a7 is
       SIMULATION       : string;
       DATA_WIDTH       : integer;
       ADDR_WIDTH       : integer;
-      DDR_UI_DATAWIDTH : integer
+      DDR_UI_DATAWIDTH : integer;
+      DDR_DQ_WIDTH     : integer
       );
     port (
       --ext logic interface to memory core
@@ -1145,100 +665,108 @@ architecture Behavioral of bpm_pcie_a7 is
   signal DDR_Blinker : std_logic;
 
   signal user_wr_weA   : std_logic_vector(7 downto 0)               := (others => '0');
-  signal user_wr_addrA : std_logic_vector(C_PRAM_AWIDTH-1 downto 0) := (others => '0');
+  signal user_wr_addrA : std_logic_vector(11 downto 0) := (others => '0');
   signal user_wr_dinA  : std_logic_vector(C_DBUS_WIDTH-1 downto 0)  := (others => '0');
-  signal user_rd_addrB : std_logic_vector(C_PRAM_AWIDTH-1 downto 0) := (others => '0');
+  signal user_rd_addrB : std_logic_vector(11 downto 0) := (others => '0');
   signal user_rd_doutB : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
 
   -- -----------------------------------------------------------------------
-  -- FIFO module
+  -- Wishbone interface module
   -- -----------------------------------------------------------------------
-  component eb_wrapper_loopback
-    port (
-      wr_clk : in  std_logic;
-      wr_en  : in  std_logic;
-      din    : in  std_logic_vector(72-1 downto 0);
-      pfull  : out std_logic;
-      full   : out std_logic;
-
-      rd_clk : in  std_logic;
-      rd_en  : in  std_logic;
-      dout   : out std_logic_vector(72-1 downto 0);
-      pempty : out std_logic;
-      empty  : out std_logic;
-
-      data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      rst        : in  std_logic
+  component wb_transact is
+    generic (
+      C_ASYNFIFO_WIDTH : integer := 72
       );
-  end component;
-
-  component eb_wrapper
     port (
-      --FIFO PCIe-->USER
-      H2B_wr_clk        : in  std_logic;
-      H2B_wr_en         : in  std_logic;
-      H2B_wr_din        : in  std_logic_vector(72-1 downto 0);
-      H2B_wr_pfull      : out std_logic;
-      H2B_wr_full       : out std_logic;
-      H2B_wr_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      H2B_rd_clk        : in  std_logic;
-      H2B_rd_en         : in  std_logic;
-      H2B_rd_dout       : out std_logic_vector(72-1 downto 0);
-      H2B_rd_pempty     : out std_logic;
-      H2B_rd_empty      : out std_logic;
-      H2B_rd_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      H2B_rd_valid      : out std_logic;
-      --FIFO USER-->PCIe
-      B2H_wr_clk        : in  std_logic;
-      B2H_wr_en         : in  std_logic;
-      B2H_wr_din        : in  std_logic_vector(72-1 downto 0);
-      B2H_wr_pfull      : out std_logic;
-      B2H_wr_full       : out std_logic;
-      B2H_wr_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      B2H_rd_clk        : in  std_logic;
-      B2H_rd_en         : in  std_logic;
-      B2H_rd_dout       : out std_logic_vector(72-1 downto 0);
-      B2H_rd_pempty     : out std_logic;
-      B2H_rd_empty      : out std_logic;
-      B2H_rd_data_count : out std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-      B2H_rd_valid      : out std_logic;
+      -- PCIE user clk
+      user_clk : in std_logic;
+      -- Write port
+      wr_we   : in std_logic;
+      wr_sof  : in std_logic;
+      wr_eof  : in std_logic;
+      wr_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wr_full : out std_logic;
+      -- Read command port
+      rdc_sof  : in std_logic;
+      rdc_v    : in std_logic;
+      rdc_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      rdc_full : out std_logic;
+      -- Read data port
+      rd_ren   : in std_logic;
+      rd_empty : out std_logic;
+      rd_dout  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+
+      -- Wishbone interface
+      wb_clk : in std_logic;
+      wb_rst : in std_logic;
+      addr_o : out std_logic_vector(28 downto 0);
+      dat_i  : in std_logic_vector(63 downto 0);
+      dat_o  : out std_logic_vector(63 downto 0);
+      we_o   : out std_logic;
+      sel_o  : out std_logic_vector(0 downto 0);
+      stb_o  : out std_logic;
+      ack_i  : in std_logic;
+      cyc_o  : out std_logic;
+
       --RESET from PCIe
-      rst               : in  std_logic
+      rst : in std_logic
       );
   end component;
 
-  signal eb_wclk   : std_logic;
-  signal eb_we     : std_logic;
-  signal eb_wsof   : std_logic;
-  signal eb_weof   : std_logic;
-  signal eb_din    : std_logic_vector(72-1 downto 0);
-  signal eb_pfull  : std_logic;
-  signal eb_full   : std_logic;
-  signal eb_rclk   : std_logic;
-  signal eb_re     : std_logic;
-  signal eb_dout   : std_logic_vector(72-1 downto 0);
-  signal eb_pempty : std_logic;
-  signal eb_empty  : std_logic;
-  signal eb_valid  : std_logic;
-  signal eb_rst    : std_logic;
+  -- WISHBONE SLAVE interface:
+  -- Single-Port RAM with Asynchronous Read
+  --
+  component WB_MEM is
+    generic(
+      AWIDTH : natural range 2 to 29 := 7;
+      DWIDTH : natural range 8 to 128 := 64
+    );
+    port(
+      CLK_I : in  std_logic;
+      ACK_O : out std_logic;
+      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
+      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
+      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
+      STB_I : in  std_logic;
+      WE_I  : in  std_logic
+    );
+  end component;
 
-  signal eb_data_count     : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-  signal H2B_wr_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-  signal B2H_rd_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+  signal wbone_clk     : std_logic;
+  signal wb_wr_we      : std_logic;
+  signal wb_wr_wsof    : std_logic;
+  signal wb_wr_weof    : std_logic;
+  signal wb_wr_din     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_wr_pfull   : std_logic;
+  signal wb_wr_full    : std_logic;
+  signal wb_rdc_sof    : std_logic;
+  signal wb_rdc_v      : std_logic;
+  signal wb_rdc_din    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_rdc_full   : std_logic;
+  signal wb_rdd_ren    : std_logic;
+  signal wb_rdd_dout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_rdd_pempty : std_logic;
+  signal wb_rdd_empty  : std_logic;
+  signal wbone_rst     : std_logic;
+  signal wbone_addr    : std_logic_vector(31 downto 0);
+  signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wbone_we      : std_logic;
+  signal wbone_sel     : std_logic_vector(0 downto 0);
+  signal wbone_stb     : std_logic;
+  signal wbone_ack     : std_logic;
+  signal wbone_cyc     : std_logic;
 
+  signal wb_data_count     : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
+  signal H2B_wr_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
+  signal B2H_rd_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
 
-  signal pio_read_status : std_logic;
-  signal eb_FIFO_ow      : std_logic;
+  signal wb_FIFO_ow : std_logic;
 
-  signal eb_FIFO_Status  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal wb_FIFO_Status  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal H2B_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal B2H_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-  signal eb_we_up  : std_logic;
-  signal eb_din_up : std_logic_vector(72-1 downto 0);
-
-  signal tab_sel : std_logic;
 
   signal user_rd_en         : std_logic                       := '0';
   signal user_rd_dout       : std_logic_vector(72-1 downto 0);
@@ -1362,22 +890,30 @@ architecture Behavioral of bpm_pcie_a7 is
       debug_in_3i : out std_logic_vector(31 downto 0);
       debug_in_4i : out std_logic_vector(31 downto 0);
 
-      -- Event Buffer FIFO interface
-      eb_FIFO_we   : out std_logic;
-      eb_FIFO_wsof : out std_logic;
-      eb_FIFO_weof : out std_logic;
-      eb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      -- Wishbone interface
+      wb_FIFO_we   : out std_logic;
+      wb_FIFO_wsof : out std_logic;
+      wb_FIFO_weof : out std_logic;
+      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-      eb_FIFO_re         : out std_logic;
-      eb_FIFO_empty      : in  std_logic;
-      eb_FIFO_qout       : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      eb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+      wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
 
-      eb_FIFO_ow : in std_logic;
+      wb_FIFO_ow : in std_logic;
 
       pio_reading_status : out std_logic;
-      eb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      eb_FIFO_Rst        : out std_logic;
+      wb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_FIFO_Rst        : out std_logic;
+
+      -- Wishbone Read interface
+      wb_rdc_sof  : out std_logic;
+      wb_rdc_v    : out std_logic;
+      wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_rdc_full : in std_logic;
+
+      -- Wisbbone Buffer read port
+      wb_FIFO_re    : out std_logic;
+      wb_FIFO_empty : in  std_logic;
+      wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       H2B_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       B2H_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -1720,14 +1256,14 @@ architecture Behavioral of bpm_pcie_a7 is
   signal DMA_ds_Busy : std_logic;
 
   ----- DDR core User Interface signals -----------------------
-  signal app_addr          : std_logic_vector(ADDR_WIDTH-1 downto 0);
+  signal app_addr          : std_logic_vector(DDR_ADDR_WIDTH-1 downto 0);
   signal app_cmd           : std_logic_vector(2 downto 0);
   signal app_en            : std_logic;
-  signal app_wdf_data      : std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)-1 downto 0);
+  signal app_wdf_data      : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal app_wdf_end       : std_logic;
-  signal app_wdf_mask      : std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)/8-1 downto 0);
+  signal app_wdf_mask      : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
   signal app_wdf_wren      : std_logic;
-  signal app_rd_data       : std_logic_vector((nCK_PER_CLK*2*PAYLOAD_WIDTH)-1 downto 0);
+  signal app_rd_data       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal app_rd_data_end   : std_logic;
   signal app_rd_data_valid : std_logic;
   signal app_rdy           : std_logic;
@@ -1738,6 +1274,18 @@ architecture Behavioral of bpm_pcie_a7 is
   signal ddr_ui_clk        : std_logic;
   signal ddr_ui_reset      : std_logic;
   signal ddr_calib_done    : std_logic;
+
+--to prevent <signal_name> is not declared errors
+  signal clk_i  : std_logic;
+  signal rst_i  : std_logic;
+  signal dat_i  : std_logic_vector(63 downto 0);
+  signal ack_i  : std_logic;
+  signal addr_o : std_logic_vector(28 downto 0);
+  signal we_o   : std_logic;
+  signal sel_o  : std_logic;
+  signal stb_o  : std_logic;
+  signal cyc_o  : std_logic;
+--COMMENT OUT WHEN INSTANTIATING AS COMPONENT
 
 begin
 
@@ -2193,7 +1741,6 @@ begin
   theTlpControl :
     tlpControl
       port map (
-
         mbuf_UserFull => '0' ,
         trn_Blinker   => trn_Blinker ,
 
@@ -2299,23 +1846,27 @@ begin
         debug_in_3i => debug_in_3i,
         debug_in_4i => debug_in_4i,
 
-        -- Event Buffer FIFO interface
-        eb_FIFO_we   => eb_we ,         --  OUT std_logic;
-        eb_FIFO_wsof => eb_wsof ,       --  OUT std_logic;
-        eb_FIFO_weof => eb_weof ,       --  OUT std_logic;
-        eb_FIFO_din  => eb_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        -- Wishbone FIFO interface
+        wb_FIFO_we   => wb_wr_we ,         --  OUT std_logic;
+        wb_FIFO_wsof => wb_wr_wsof ,       --  OUT std_logic;
+        wb_FIFO_weof => wb_wr_weof ,       --  OUT std_logic;
+        wb_FIFO_din  => wb_wr_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-        eb_FIFO_re         => eb_re ,   --  OUT std_logic;
-        eb_FIFO_empty      => eb_empty ,       --  IN  std_logic;
-        eb_FIFO_qout       => eb_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        eb_FIFO_data_count => eb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+        wb_FIFO_re         => wb_rdd_ren ,   --  OUT std_logic;
+        wb_FIFO_empty      => wb_rdd_empty ,       --  IN  std_logic;
+        wb_FIFO_qout       => wb_rdd_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_data_count => wb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
 
-        eb_FIFO_ow => eb_FIFO_ow ,      --  IN  std_logic;
+        wb_rdc_sof  => wb_rdc_sof, --out std_logic;
+        wb_rdc_v    => wb_rdc_v, --out std_logic;
+        wb_rdc_din  => wb_rdc_din, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_rdc_full => wb_rdc_full, --in std_logic;
+        wb_FIFO_ow  => wb_FIFO_ow ,      --  IN  std_logic;
 
         pio_reading_status => pio_reading_status ,  --  OUT std_logic;
 
-        eb_FIFO_Status  => eb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        eb_FIFO_Rst     => eb_rst ,     --  OUT std_logic;
+        wb_FIFO_Status  => wb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_FIFO_Rst     => wbone_rst ,     --  OUT std_logic;
         H2B_FIFO_Status => H2B_FIFO_Status ,
         B2H_FIFO_Status => B2H_FIFO_Status ,
 
@@ -2405,8 +1956,9 @@ begin
       generic map (
         SIMULATION => SIMULATION,
         DATA_WIDTH => C_DBUS_WIDTH,
-        ADDR_WIDTH => ADDR_WIDTH,
-        DDR_UI_DATAWIDTH => nCK_PER_CLK*2*PAYLOAD_WIDTH
+        ADDR_WIDTH => DDR_ADDR_WIDTH,
+        DDR_UI_DATAWIDTH => DDR_PAYLOAD_WIDTH,
+        DDR_DQ_WIDTH => DDR_DQ_WIDTH
         )
       port map(
         -- connect your own signals here
@@ -2512,72 +2064,113 @@ begin
 
   end generate;
 
-  ------------------------ -----------------------
-  -- Event Buffer wrapper (FIFO Module: H2B & B2H)
-  ------------------------ -----------------------
+  Wishbone_intf :
+    wb_transact
+      port map(
+        -- PCIE user clk
+        user_clk => user_clk, --in std_logic;
+        -- Write port
+        wr_we   => wb_wr_we, --in std_logic;
+        wr_sof  => wb_wr_wsof, --in std_logic;
+        wr_eof  => wb_wr_weof, --in std_logic;
+        wr_din  => wb_wr_din, --in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wr_full => wb_wr_full, --out std_logic;
+        -- Read command port
+        rdc_sof  => wb_rdc_sof, --in std_logic;
+        rdc_v    => wb_rdc_v, --in std_logic;
+        rdc_din  => wb_rdc_din, --in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        rdc_full => wb_rdc_full,--out std_logic;
+        -- Read data port
+        rd_ren   => wb_rdd_ren, --in std_logic;
+        rd_empty => wb_rdd_empty, --out std_logic;
+        rd_dout  => wb_rdd_dout, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  LoopBack_FIFO_Off : if not USE_LOOPBACK_TEST generate
+        -- Wishbone interface
+        wb_clk => wbone_clk, --in std_logic;
+        wb_rst => wbone_rst, --in std_logic;
+        addr_o => wbone_addr(28 downto 0), --out std_logic_vector(31 downto 0);
+        dat_i  => wbone_mdin, --in std_logic_vector(63 downto 0);
+        dat_o  => wbone_mdout, --out std_logic_vector(63 downto 0);
+        we_o   => wbone_we, --out std_logic;
+        sel_o  => wbone_sel, --out std_logic_vector(0 downto 0);
+        stb_o  => wbone_stb, --out std_logic;
+        ack_i  => wbone_ack, --in std_logic;
+        cyc_o  => wbone_cyc, --out std_logic;
+        --RESET from PCIe
+        rst => user_reset --in std_logic
+        );
 
-    queue_buffer0 :
-      eb_wrapper
-        port map (
-          H2B_wr_clk        => user_clk ,
-          H2B_wr_en         => eb_we ,
-          H2B_wr_din        => eb_din ,
-          H2B_wr_pfull      => eb_pfull ,
-          H2B_wr_full       => eb_full ,
-          H2B_wr_data_count => H2B_wr_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
+  Wishbone_ext: if INSTANTIATED = "TRUE" generate
 
-          H2B_rd_clk        => ddr_ref_clk_i ,
-          H2B_rd_en         => user_rd_en ,
-          H2B_rd_dout       => user_rd_dout ,
-          H2B_rd_pempty     => user_rd_pempty ,
-          H2B_rd_empty      => user_rd_empty ,
-          H2B_rd_valid      => user_rd_valid ,
-          H2B_rd_data_count => user_rd_data_count ,
+    wbone_clk  <= CLK_I;
+    wbone_rst  <= RST_I;
+    wbone_mdin <= DAT_I;
+    wbone_ack  <= ACK_I;
+    ADDR_O     <= wbone_addr;
+    WE_O       <= wbone_we;
+    SEL_O      <= wbone_sel(0);
+    STB_O      <= wbone_stb;
+    CYC_O      <= wbone_cyc;
 
-          B2H_wr_clk        => ddr_ref_clk_i ,
-          B2H_wr_en         => user_wr_en ,
-          B2H_wr_din        => user_wr_din ,
-          B2H_wr_pfull      => user_wr_pfull ,
-          B2H_wr_full       => user_wr_full ,
-          B2H_wr_data_count => user_wr_data_count ,
+  end generate;
 
-          B2H_rd_clk        => user_clk ,
-          B2H_rd_en         => eb_re ,
-          B2H_rd_dout       => eb_dout ,
-          B2H_rd_pempty     => eb_pempty ,
-          B2H_rd_empty      => eb_empty ,
-          B2H_rd_valid      => eb_valid ,
-          B2H_rd_data_count => B2H_rd_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
+  Wishbone_int : if INSTANTIATED = "FALSE" generate
+    --temporary clock assignment
+    wbone_clk <= ddr_ui_clk;
 
-          rst => eb_rst
+    Wishbone_mem_large: if (SIMULATION = "TRUE") generate
+      wb_mem_sim :
+        wb_mem
+          generic map(
+            AWIDTH => 16,
+            DWIDTH => 64
+          )
+          port map(
+            CLK_I => wbone_clk, --in  std_logic;
+            ACK_O => wbone_ack, --out std_logic;
+            ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+            STB_I => wbone_stb, --in  std_logic;
+            WE_I  => wbone_we --in  std_logic
           );
 
-    --- 64 bits to 32 bits transformation ( --> Count * 2)---
-    B2H_rd_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    B2H_rd_data_count(0) <= '0';
+    end generate;
 
-    H2B_wr_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    H2B_wr_data_count(0) <= '0';
+    Wishbone_mem_sample: if (SIMULATION = "TRUE") generate
+      wb_mem_syn :
+        wb_mem
+          generic map(
+            AWIDTH => 7,
+            DWIDTH => 64
+          )
+          port map(
+            CLK_I => wbone_clk, --in  std_logic;
+            ACK_O => wbone_ack, --out std_logic;
+            ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+            STB_I => wbone_stb, --in  std_logic;
+            WE_I  => wbone_we --in  std_logic
+          );
+
+    end generate;
+
+  end generate;
 
     --- Hybrid FIFO Signal used by PCIe interface and Linux Driver
-    eb_FIFO_ow                       <= eb_we_up and eb_full;
-    fifo_reset_done                  <= not eb_rst;
-    eb_din(72-1 downto C_DBUS_WIDTH) <= (others => '0');
-    eb_data_count                    <= B2H_rd_data_count;
+    fifo_reset_done <= not wbone_rst;
+    wb_data_count   <= B2H_rd_data_count;
 
     --- Hybrid FIFO Status used by PCIe interface and Linux Driver ---
     --- read: status ; write: reset H2B and B2H FIFO
-    eb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
+    wb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
  <= (others => '0');
-    eb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
+    wb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    eb_FIFO_Status(2) <= '0';
-    eb_FIFO_Status(1) <= eb_pfull;
-    eb_FIFO_Status(0) <= eb_empty and fifo_reset_done;
+    wb_FIFO_Status(2) <= '0';
+    wb_FIFO_Status(1) <= wb_rdc_full;
+    wb_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
 
     --- Host2Board FIFO status used by user ---
     --- read: H2B status ; write: nothing
@@ -2586,206 +2179,24 @@ begin
     H2B_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= H2B_wr_data_count(C_FIFO_DC_WIDTH downto 1);
     H2B_FIFO_Status(2) <= '0';
-    H2B_FIFO_Status(1) <= eb_pfull;
-    H2B_FIFO_Status(0) <= eb_full and fifo_reset_done;
+    H2B_FIFO_Status(1) <= wb_wr_full;
+    H2B_FIFO_Status(0) <= wb_wr_full and fifo_reset_done;
 
     --- Board2Host FIFO status used by user ---
     --- read: B2H status ; write: nothing
     B2H_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
     B2H_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
  <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    B2H_FIFO_Status(2) <= eb_valid;
-    B2H_FIFO_Status(1) <= eb_pempty;
-    B2H_FIFO_Status(0) <= eb_empty and fifo_reset_done;
-
-  end generate;
-
-  LoopBack_FIFO_On : if USE_LOOPBACK_TEST generate
-
-    queue_buffer0 :
-      eb_wrapper_loopback
-        port map (
-          wr_clk => user_clk ,          -- eb_wclk   ,
-          wr_en  => eb_we ,
-          din    => eb_din ,
-          pfull  => eb_pfull ,
-          full   => eb_full ,
-
-          rd_clk => user_clk ,          -- eb_rclk   ,
-          rd_en  => eb_re ,
-          dout   => eb_dout ,
-          pempty => eb_pempty ,
-          empty  => eb_empty ,
-
-          data_count => eb_data_count(C_EMU_FIFO_DC_WIDTH-1+1 downto 1) ,
-          rst        => eb_rst
-          );
-
-    eb_data_count(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1)
- <= C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_EMU_FIFO_DC_WIDTH+1);
-    eb_data_count(0)                 <= '0';
-    fifo_reset_done                  <= not eb_rst;
-    eb_FIFO_ow                       <= eb_we_up and eb_full;
-    eb_din(72-1 downto C_DBUS_WIDTH) <= (others => '0');
-
-    eb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
-    eb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
- <= eb_data_count(C_FIFO_DC_WIDTH downto 1);
-    eb_FIFO_Status(2) <= '0';
-    eb_FIFO_Status(1) <= eb_pfull;
-    eb_FIFO_Status(0) <= eb_empty and fifo_reset_done;
-
-
-    H2B_FIFO_Status <= (others => '0');
-    H2B_FIFO_Status <= (others => '0');
-
-  end generate;
+    B2H_FIFO_Status(2) <= wb_rdc_v;
+    B2H_FIFO_Status(1) <= wb_rdd_empty;
+    B2H_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
 
   u_ddr_core : ddr_core
     generic map (
-      TCQ                     => TCQ,
-      ADDR_CMD_MODE           => ADDR_CMD_MODE,
-      AL                      => AL,
-      PAYLOAD_WIDTH           => PAYLOAD_WIDTH,
-      BANK_WIDTH              => BANK_WIDTH,
-      BURST_MODE              => BURST_MODE,
-      BURST_TYPE              => BURST_TYPE,
-      CA_MIRROR               => CA_MIRROR,
-      CK_WIDTH                => CK_WIDTH,
-      COL_WIDTH               => COL_WIDTH,
-      CMD_PIPE_PLUS1          => CMD_PIPE_PLUS1,
-      CS_WIDTH                => CS_WIDTH,
-      nCS_PER_RANK            => nCS_PER_RANK,
-      CKE_WIDTH               => CKE_WIDTH,
-      DATA_WIDTH              => DATA_WIDTH,
-      DATA_BUF_ADDR_WIDTH     => DATA_BUF_ADDR_WIDTH,
-      DQ_CNT_WIDTH            => DQ_CNT_WIDTH,
-      DQ_PER_DM               => DQ_PER_DM,
-      DQ_WIDTH                => DQ_WIDTH,
-      DQS_CNT_WIDTH           => DQS_CNT_WIDTH,
-      DQS_WIDTH               => DQS_WIDTH,
-      DRAM_WIDTH              => DRAM_WIDTH,
-      ECC                     => ECC,
-      ECC_WIDTH               => ECC_WIDTH,
-      ECC_TEST                => ECC_TEST,
-      MC_ERR_ADDR_WIDTH       => MC_ERR_ADDR_WIDTH,
-      nAL                     => nAL,
-      nBANK_MACHS             => nBANK_MACHS,
-      CKE_ODT_AUX             => CKE_ODT_AUX,
-      ORDERING                => ORDERING,
-      OUTPUT_DRV              => OUTPUT_DRV,
-      IBUF_LPWR_MODE          => IBUF_LPWR_MODE,
-      IODELAY_HP_MODE         => IODELAY_HP_MODE,
-      DATA_IO_IDLE_PWRDWN     => DATA_IO_IDLE_PWRDWN,
-      BANK_TYPE               => BANK_TYPE,
-      DATA_IO_PRIM_TYPE       => DATA_IO_PRIM_TYPE,
-      REG_CTRL                => REG_CTRL,
-      RTT_NOM                 => RTT_NOM,
-      RTT_WR                  => RTT_WR,
-      CL                      => CL,
-      CWL                     => CWL,
-      tCKE                    => tCKE,
-      tFAW                    => tFAW,
-      tPRDI                   => tPRDI,
-      tRAS                    => tRAS,
-      tRCD                    => tRCD,
-      tREFI                   => tREFI,
-      tRFC                    => tRFC,
-      tRP                     => tRP,
-      tRRD                    => tRRD,
-      tRTP                    => tRTP,
-      tWTR                    => tWTR,
-      tZQI                    => tZQI,
-      tZQCS                   => tZQCS,
-      USER_REFRESH            => USER_REFRESH,
-      WRLVL                   => WRLVL,
-      DEBUG_PORT              => DEBUG_PORT,
-      RANKS                   => RANKS,
-      ODT_WIDTH               => ODT_WIDTH,
-      ROW_WIDTH               => ROW_WIDTH,
-      ADDR_WIDTH              => ADDR_WIDTH,
-      SIM_BYPASS_INIT_CAL     => SIM_BYPASS_INIT_CAL,
-      SIMULATION              => SIMULATION,
-      BYTE_LANES_B0           => BYTE_LANES_B0,
-      BYTE_LANES_B1           => BYTE_LANES_B1,
-      BYTE_LANES_B2           => BYTE_LANES_B2,
-      BYTE_LANES_B3           => BYTE_LANES_B3,
-      BYTE_LANES_B4           => BYTE_LANES_B4,
-      DATA_CTL_B0             => DATA_CTL_B0,
-      DATA_CTL_B1             => DATA_CTL_B1,
-      DATA_CTL_B2             => DATA_CTL_B2,
-      DATA_CTL_B3             => DATA_CTL_B3,
-      DATA_CTL_B4             => DATA_CTL_B4,
-      PHY_0_BITLANES          => PHY_0_BITLANES,
-      PHY_1_BITLANES          => PHY_1_BITLANES,
-      PHY_2_BITLANES          => PHY_2_BITLANES,
-      CK_BYTE_MAP             => CK_BYTE_MAP,
-      ADDR_MAP                => ADDR_MAP,
-      BANK_MAP                => BANK_MAP,
-      CAS_MAP                 => CAS_MAP,
-      CKE_ODT_BYTE_MAP        => CKE_ODT_BYTE_MAP,
-      CKE_MAP                 => CKE_MAP,
-      ODT_MAP                 => ODT_MAP,
-      CS_MAP                  => CS_MAP,
-      PARITY_MAP              => PARITY_MAP,
-      RAS_MAP                 => RAS_MAP,
-      WE_MAP                  => WE_MAP,
-      DQS_BYTE_MAP            => DQS_BYTE_MAP,
-      DATA0_MAP               => DATA0_MAP,
-      DATA1_MAP               => DATA1_MAP,
-      DATA2_MAP               => DATA2_MAP,
-      DATA3_MAP               => DATA3_MAP,
-      DATA4_MAP               => DATA4_MAP,
-      DATA5_MAP               => DATA5_MAP,
-      DATA6_MAP               => DATA6_MAP,
-      DATA7_MAP               => DATA7_MAP,
-      DATA8_MAP               => DATA8_MAP,
-      DATA9_MAP               => DATA9_MAP,
-      DATA10_MAP              => DATA10_MAP,
-      DATA11_MAP              => DATA11_MAP,
-      DATA12_MAP              => DATA12_MAP,
-      DATA13_MAP              => DATA13_MAP,
-      DATA14_MAP              => DATA14_MAP,
-      DATA15_MAP              => DATA15_MAP,
-      DATA16_MAP              => DATA16_MAP,
-      DATA17_MAP              => DATA17_MAP,
-      MASK0_MAP               => MASK0_MAP,
-      MASK1_MAP               => MASK1_MAP,
-      CALIB_ROW_ADD           => CALIB_ROW_ADD,
-      CALIB_COL_ADD           => CALIB_COL_ADD,
-      CALIB_BA_ADD            => CALIB_BA_ADD,
-      SLOT_0_CONFIG           => SLOT_0_CONFIG,
-      SLOT_1_CONFIG           => SLOT_1_CONFIG,
-      MEM_ADDR_ORDER          => MEM_ADDR_ORDER,
-      USE_CS_PORT             => USE_CS_PORT,
-      USE_DM_PORT             => USE_DM_PORT,
-      USE_ODT_PORT            => USE_ODT_PORT,
-      PHY_CONTROL_MASTER_BANK => PHY_CONTROL_MASTER_BANK,
-      TEMP_MON_CONTROL        => TEMP_MON_CONTROL,
-      DM_WIDTH                => DM_WIDTH,
-      nCK_PER_CLK             => nCK_PER_CLK,
-      tCK                     => tCK,
-      DIFF_TERM_SYSCLK        => DIFF_TERM_SYSCLK,
-      CLKIN_PERIOD            => CLKIN_PERIOD,
-      CLKFBOUT_MULT           => CLKFBOUT_MULT,
-      DIVCLK_DIVIDE           => DIVCLK_DIVIDE,
-      CLKOUT0_PHASE           => CLKOUT0_PHASE,
-      CLKOUT0_DIVIDE          => CLKOUT0_DIVIDE,
-      CLKOUT1_DIVIDE          => CLKOUT1_DIVIDE,
-      CLKOUT2_DIVIDE          => CLKOUT2_DIVIDE,
-      CLKOUT3_DIVIDE          => CLKOUT3_DIVIDE,
+      SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
+      SIMULATION          => SIMULATION,
 
-      SYSCLK_TYPE      => SYSCLK_TYPE,
-      REFCLK_TYPE      => REFCLK_TYPE,
-      REFCLK_FREQ      => REFCLK_FREQ,
-      DIFF_TERM_REFCLK => DIFF_TERM_REFCLK,
-      IODELAY_GRP      => IODELAY_GRP,
-
-      CAL_WIDTH    => CAL_WIDTH,
-      STARVE_LIMIT => STARVE_LIMIT,
-      DRAM_TYPE    => DRAM_TYPE,
-
-      RST_ACT_LOW => RST_ACT_LOW
+      RST_ACT_LOW => 1
     )
     port map (
       -- Memory interface ports
@@ -2827,10 +2238,7 @@ begin
       ui_clk_sync_rst   => ddr_ui_reset,
 
       -- System Clock Ports
-      sys_clk_p => ddr_sys_clk_p,
-      sys_clk_n => ddr_sys_clk_n,
-      -- Reference Clock Ports
-      --clk_ref_i => ddr_ref_clk,
+      sys_clk_i => ddr_sys_clk_p,
 
       sys_rst => sys_reset_n_c
     );
