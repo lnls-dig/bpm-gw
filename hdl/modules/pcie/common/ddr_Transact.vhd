@@ -34,7 +34,8 @@ entity DDR_Transact is
     SIMULATION       : string;
     DATA_WIDTH       : integer;
     ADDR_WIDTH       : integer;
-    DDR_UI_DATAWIDTH : integer
+    DDR_UI_DATAWIDTH : integer;
+    DDR_DQ_WIDTH     : integer
     );
   port (
     --ext logic interface to memory core
@@ -106,9 +107,11 @@ architecture Behavioral of DDR_Transact is
   -- ----------------------------------------------------------------------------
   component DDRs_Control
     generic (
-      C_ASYNFIFO_WIDTH : integer := 72;
-      DATA_WIDTH       : integer := 64;
-      P_SIMULATION     : string  := "FALSE"
+      C_ASYNFIFO_WIDTH  : integer := 72;
+      DATA_WIDTH        : integer := 64;
+      DDR_DQ_WIDTH      : integer;
+      DDR_PAYLOAD_WIDTH : integer;
+      P_SIMULATION      : string  := "FALSE"
       );
     port (
       -- FPGA interface --
@@ -138,11 +141,11 @@ architecture Behavioral of DDR_Transact is
       memc_cmd_addr  : out  std_logic_vector(31 downto 0);
       memc_wr_en     : out  std_logic;
       memc_wr_end    : out  std_logic;
-      memc_wr_mask   : out  std_logic_vector(C_DDR_DATAWIDTH/8-1 downto 0);
-      memc_wr_data   : out  std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+      memc_wr_mask   : out  std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
+      memc_wr_data   : out  std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
       memc_wr_rdy    : in   std_logic;
       memc_rd_en     : out  std_logic;
-      memc_rd_data   : in   std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+      memc_rd_data   : in   std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
       memc_rd_valid  : in   std_logic;
 
       -- memory arbiter interface
@@ -169,11 +172,11 @@ architecture Behavioral of DDR_Transact is
   signal pcie_cmd_addr  : std_logic_vector(31 downto 0);
   signal pcie_wr_en     : std_logic;
   signal pcie_wr_end    : std_logic;
-  signal pcie_wr_mask   : std_logic_vector(C_DDR_DATAWIDTH/8-1 downto 0);
-  signal pcie_wr_data   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal pcie_wr_mask   : std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
+  signal pcie_wr_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
   signal pcie_wr_rdy    : std_logic;
   signal pcie_rd_en     : std_logic;
-  signal pcie_rd_data   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal pcie_rd_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
   signal pcie_rd_valid  : std_logic;
   signal pcie_arb_gnt   : std_logic;
   signal pcie_arb_req   : std_logic;
@@ -184,11 +187,11 @@ architecture Behavioral of DDR_Transact is
   signal ext_cmd_addr  : std_logic_vector(ADDR_WIDTH-1 downto 0);
   signal ext_wr_en     : std_logic;
   signal ext_wr_end    : std_logic;
-  signal ext_wr_mask   : std_logic_vector(C_DDR_DATAWIDTH/8-1 downto 0);
-  signal ext_wr_data   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal ext_wr_mask   : std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
+  signal ext_wr_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
   signal ext_wr_rdy    : std_logic;
   signal ext_rd_en     : std_logic;
-  signal ext_rd_data   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal ext_rd_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
   signal ext_rd_valid  : std_logic;
   signal ext_arb_gnt   : std_logic;
   signal ext_arb_req   : std_logic;
@@ -306,7 +309,9 @@ begin
 
   u_ddr_control : DDRs_Control
     generic map (
-      P_SIMULATION => SIMULATION
+      P_SIMULATION => SIMULATION,
+      DDR_DQ_WIDTH => DDR_DQ_WIDTH,
+      DDR_PAYLOAD_WIDTH => DDR_UI_DATAWIDTH
       )
     port map (
       -- FPGA interface --

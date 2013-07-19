@@ -20,6 +20,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+use IEEE.MATH_REAL.all;
 
 library work;
 use work.abb64Package.all;
@@ -33,7 +34,9 @@ entity DDRs_Control is
   generic (
     C_ASYNFIFO_WIDTH : integer := 72;
     DATA_WIDTH       : integer := 64;
-    P_SIMULATION     : string  := "FALSE"
+    P_SIMULATION     : string  := "FALSE";
+    DDR_DQ_WIDTH     : integer;
+    DDR_PAYLOAD_WIDTH : integer
     );
   port (
     -- FPGA interface --
@@ -63,11 +66,11 @@ entity DDRs_Control is
     memc_cmd_addr  : out  std_logic_vector(31 downto 0);
     memc_wr_en     : out  std_logic;
     memc_wr_end    : out  std_logic;
-    memc_wr_mask   : out  std_logic_vector(C_DDR_DATAWIDTH/8-1 downto 0);
-    memc_wr_data   : out  std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+    memc_wr_mask   : out  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    memc_wr_data   : out  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
     memc_wr_rdy    : in   std_logic;
     memc_rd_en     : out  std_logic;
-    memc_rd_data   : in   std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+    memc_rd_data   : in   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
     memc_rd_valid  : in   std_logic;
 
     -- Memory arbiter interface
@@ -83,8 +86,14 @@ end entity DDRs_Control;
 
 architecture Behavioral of DDRs_Control is
 
-  constant DDRAM_RDCNT_DECVAL : integer := C_DDR_DATAWIDTH/C_DBUS_WIDTH;--2DW counted
-  constant DDRAM_ADDR_INCVAL : integer := DDRAM_RDCNT_DECVAL*8;--byte counted
+  constant DDRAM_RDCNT_DECVAL : integer := DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH;--2DW counted
+  constant DDRAM_ADDR_INCVAL  : integer := DDRAM_RDCNT_DECVAL*8;--byte counted
+
+  constant WPIPE_F2M_ASHIFT_BTOP : integer := integer(log2(real(DDR_DQ_WIDTH)))-1;
+  constant WPIPE_F2M_ASHIFT_BBOT : integer := WPIPE_F2M_ASHIFT_BTOP-2;
+  constant RPIPE_ASHIFT_BTOP     : integer := integer(log2(real(DDR_DQ_WIDTH)))-1;
+  constant RPIPE_ASHIFT_BBOT     : integer := RPIPE_ASHIFT_BTOP-2;
+
   -- ----------------------------------------------------------------------------
   --
   -- ----------------------------------------------------------------------------
@@ -228,10 +237,10 @@ architecture Behavioral of DDRs_Control is
   -- DDR UI & width conversion signals
   signal memc_rd_addr      : unsigned(31 downto 0) := (others => '0');
   signal memc_rd_cmd       : std_logic;
-  signal memc_rd_data_r1   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
-  signal memc_rd_data_r2   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
-  signal memc_rd_data_r3   : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
-  signal memc_rd_data_conv : std_logic_vector(C_DDR_DATAWIDTH-1 downto 0);
+  signal memc_rd_data_r1   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_data_r2   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_data_r3   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_data_conv : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal memc_rd_shift_r   : std_logic_vector(31 downto 0);
   signal memc_wr_addr      : unsigned(31 downto 0) := (others => '0');
   signal memc_wr_data_en   : std_logic;
@@ -300,12 +309,12 @@ begin
   wpipe_f2m_din(74-1 downto 0) <= wpipe_wr_eof & wpipe_wr_sof & wpipe_wr_mask & wpipe_wr_data;
   --stall FIFO readout when data was written, but command wasn't yet
   --or if EOF bit is valid
-  --or if it's last word in a C_DDR_DATAWIDTH block
+  --or if it's last word in a DDR_PAYLOAD_WIDTH block
   wpipe_f2m_rd_en <= wpipe_f2m_rd and memc_wr_rdy and not(not(ddram_wr_valid) and ddram_wr_cmd_valid)
                      and not(wpipe_f2m_qout(73) and wpipe_f2m_valid)
                      and wpipe_f2m_rd_fin;
 
-  wpipe_f2m_rd_fin <= '0' when wpipe_f2m_cnt >= (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) and wpipe_f2m_valid = '1' else '1';
+  wpipe_f2m_rd_fin <= '0' when wpipe_f2m_cnt >= (DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH - 1) and wpipe_f2m_valid = '1' else '1';
   --keep requesting arbiter access if there's any data left to write
   wpipe_f2m_arb_req <= '1' when ((wpipe_f2m_cnt /= 0) or wpipe_f2m_empty_r1 = '0') else '0';
   memc_wr_data_en   <= ddram_wr_valid;
@@ -618,7 +627,7 @@ begin
         ddram_wr_addr   <= ddram_wr_addr;
         ddram_wr_valid  <= ddram_wr_valid;
         ddram_wr_cmd_valid <= ddram_wr_cmd_valid;
-        if wpipe_f2m_cnt = C_DDR_DATAWIDTH/C_DBUS_WIDTH then
+        if wpipe_f2m_cnt = DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH then
           wpipe_f2m_rd   <= '0';
           wpipe_f2m_cnt  <= wpipe_f2m_cnt;
           wpipe_fill_eof <= '0';
@@ -629,6 +638,7 @@ begin
             ddram_wr_cmd_valid <= '0';
             wpipe_f2m_cnt      <= (others => '0');
             ddram_wr_addr      <= ddram_wr_addr + DDRAM_ADDR_INCVAL - wpipe_f2m_shift_start;
+            wpipe_f2m_shift_start <= (others => '0'); --no longer needed after 1st write
           end if;
         else
           ddram_wr_valid     <= '0';
@@ -648,14 +658,14 @@ begin
               if wpipe_f2m_qout(72) = '1' then --wpipe_wr_sof
                 --because first write access can be unaligned with respect to DDR core PAYLOAD_WIDTH
                 --we have to preload respective registers with correct values
-                wpipe_f2m_cnt         <= '0' & unsigned(wpipe_f2m_qout(5 downto 3));
+                wpipe_f2m_cnt         <= '0' & unsigned(wpipe_f2m_qout(WPIPE_F2M_ASHIFT_BTOP downto WPIPE_F2M_ASHIFT_BBOT));
                 ddram_wr_mask         <= (others => '1');
                 ddram_wr_addr         <= unsigned(wpipe_f2m_qout(C_DDR_IAWIDTH-1 downto 0));
-                wpipe_f2m_shift_start <= unsigned(wpipe_f2m_qout(5 downto 3));
+                wpipe_f2m_shift_start <= unsigned(wpipe_f2m_qout(WPIPE_F2M_ASHIFT_BTOP downto WPIPE_F2M_ASHIFT_BBOT));
               else
                 wpipe_f2m_cnt <= wpipe_f2m_cnt + 1;
               end if;
-              if wpipe_f2m_cnt = (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) then
+              if wpipe_f2m_cnt = (DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH - 1) then
                 ddram_wr_valid     <= '1';
                 ddram_wr_cmd_valid <= '1';
                 wpipe_f2m_rd       <= '0';
@@ -670,7 +680,7 @@ begin
             ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <= x"FF";
             wpipe_f2m_cnt <= wpipe_f2m_cnt + 1;
             wpipe_f2m_rd  <= '0';
-            if wpipe_f2m_cnt = (C_DDR_DATAWIDTH/C_DBUS_WIDTH - 1) then
+            if wpipe_f2m_cnt = (DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH - 1) then
               ddram_wr_valid     <= '1';
               ddram_wr_cmd_valid <= '1';
             end if;
@@ -782,7 +792,7 @@ begin
         when rdst_CMD =>
           rpipec_rEn            <= '0';
           ddram_rd_addr         <= ddram_rd_addr;
-          rpiped_rd_shift_start <= "000" & ddram_rd_addr(5 downto 3);
+          rpiped_rd_shift_start <= "000" & ddram_rd_addr(RPIPE_ASHIFT_BTOP downto RPIPE_ASHIFT_BBOT);
           rpiped_wr_EOF         <= '0';
           rpipe_arb_req         <= '1';
           rpiped_rd_cnt         <= rpiped_rd_cnt;
@@ -820,7 +830,7 @@ begin
 
         when rdst_WAIT =>
           if rpiped_written = '1' then
-            -- if read access data_count/address combination spans across more than one C_DDR_DATAWIDTH,
+            -- if read access data_count/address combination spans across more than one DDR_PAYLOAD_WIDTH,
             -- we try to make only the first access unaligned, rpiped_rd_shift_start should be equal 0
             -- after first access
             ddram_rd_addr <= ddram_rd_addr + DDRAM_ADDR_INCVAL - rpiped_rd_shift_start*DDRAM_RDCNT_DECVAL;
@@ -896,15 +906,15 @@ begin
     end if;
   end process;
   rpiped_written <= '1' when rpiped_rdconv_cnt >= (rpiped_rd_cnt_latch) or
-                            rpiped_rdconv_cnt >= C_DDR_DATAWIDTH/C_DBUS_WIDTH else '0';
+                            rpiped_rdconv_cnt >= DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH else '0';
 
   rpiped_omit_skew <= '1' when rpiped_rd_shift_start >= rpiped_rdconv_cnt else '0';
   rpiped_omit      <= '1' when rpiped_rd_shift_start > rpiped_rdconv_cnt else '0';
 
   --FIXME: assuming that DATAWIDTH is multiple of DBUS_WIDTH
   memc_rd_data_connect:
-  for i in 0 to C_DDR_DATAWIDTH/C_DBUS_WIDTH -1 generate
-    constant ratio : integer := C_DDR_DATAWIDTH/C_DBUS_WIDTH;
+  for i in 0 to DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH -1 generate
+    constant ratio : integer := DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH;
   begin
     memc_rd_data_conv((ratio - i)*C_DBUS_WIDTH-1 downto ((ratio - i - 1)*C_DBUS_WIDTH)) <=
       memc_rd_data(C_DBUS_WIDTH*(i+1) - 1 downto C_DBUS_WIDTH*i);
