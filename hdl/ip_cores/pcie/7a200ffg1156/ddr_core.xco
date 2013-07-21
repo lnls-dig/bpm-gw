@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 14.4
-# Date: Fri Mar 15 17:09:34 2013
+# Xilinx Core Generator version 14.6
+# Date: Sun Jul 21 13:48:36 2013
 #
 ##############################################################
 #
@@ -12,7 +12,7 @@
 #
 ##############################################################
 #
-#  Generated from component: xilinx.com:ip:mig_7series:1.8
+#  Generated from component: xilinx.com:ip:mig_7series:1.9
 #
 ##############################################################
 #
@@ -36,14 +36,14 @@ SET verilogsim = false
 SET vhdlsim = true
 # END Project Options
 # BEGIN Select
-SELECT MIG_7_Series family Xilinx,_Inc. 1.8
+SELECT MIG_7_Series family Xilinx,_Inc. 1.9
 # END Select
 # BEGIN Parameters
 CSET component_name=ddr_core
 CSET xml_input_file=./ddr_core/mig.prj
 # END Parameters
 # BEGIN Extra information
-MISC pkg_timestamp=2012-12-18T05:23:34Z
+MISC pkg_timestamp=2013-06-08T23:00:50Z
 # END Extra information
 GENERATE
-# CRC: 824ca431
+# CRC: c12266bc

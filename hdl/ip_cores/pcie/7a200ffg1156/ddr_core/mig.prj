@@ -9,9 +9,10 @@
     <LowPower_En>ON</LowPower_En>
     <XADC_En>Enabled</XADC_En>
     <TargetFPGA>xc7a200t-ffg1156/-2</TargetFPGA>
-    <Version>1.8</Version>
-    <SystemClock>Differential</SystemClock>
+    <Version>1.9</Version>
+    <SystemClock>No Buffer</SystemClock>
     <ReferenceClock>Use System Clock</ReferenceClock>
+    <SysResetPolarity>ACTIVE LOW</SysResetPolarity>
     <BankSelectionFlag>FALSE</BankSelectionFlag>
     <InternalVref>0</InternalVref>
     <dci_hr_inouts_inputs>50 Ohms</dci_hr_inouts_inputs>
@@ -22,6 +23,12 @@
         <VccAuxIO>1.8V</VccAuxIO>
         <PHYRatio>4:1</PHYRatio>
         <InputClkFreq>200</InputClkFreq>
+        <UIExtraClocks>0</UIExtraClocks>
+        <MMCMClkOut0> 1.000</MMCMClkOut0>
+        <MMCMClkOut1>1</MMCMClkOut1>
+        <MMCMClkOut2>1</MMCMClkOut2>
+        <MMCMClkOut3>1</MMCMClkOut3>
+        <MMCMClkOut4>1</MMCMClkOut4>
         <DataWidth>32</DataWidth>
         <DeepMemory>1</DeepMemory>
         <DataMask>1</DataMask>
@@ -106,12 +113,7 @@
             <Pin VCCAUX_IO="" IOSTANDARD="SSTL15" PADName="AN1" SLEW="FAST" name="ddr3_ras_n" IN_TERM="" />
             <Pin VCCAUX_IO="" IOSTANDARD="LVCMOS15" PADName="AJ9" SLEW="FAST" name="ddr3_reset_n" IN_TERM="" />
             <Pin VCCAUX_IO="" IOSTANDARD="SSTL15" PADName="AM1" SLEW="FAST" name="ddr3_we_n" IN_TERM="" />
-            <Pin VCCAUX_IO="" IOSTANDARD="DIFF_SSTL15" PADName="AL7" SLEW="" name="sys_clk_n" IN_TERM="" />
-            <Pin VCCAUX_IO="" IOSTANDARD="DIFF_SSTL15" PADName="AK7" SLEW="" name="sys_clk_p" IN_TERM="" />
         </PinSelection>
-        <System_Clock>
-            <Pin PADName="AK7/AL7(CC_P/N)" Bank="32" name="sys_clk_p/n" />
-        </System_Clock>
         <System_Control>
             <Pin PADName="No connect" Bank="Select Bank" name="sys_rst" />
             <Pin PADName="No connect" Bank="Select Bank" name="init_calib_complete" />

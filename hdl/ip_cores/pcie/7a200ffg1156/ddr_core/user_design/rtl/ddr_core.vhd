@@ -49,7 +49,7 @@
 --   ____  ____
 --  /   /\/   /
 -- /___/  \  /    Vendor             : Xilinx
--- \   \   \/     Version            : 1.8
+-- \   \   \/     Version            : 1.9
 --  \   \         Application        : MIG
 --  /   /         Filename           : ddr_core.vhd
 -- /___/   /\     Date Last Modified : $Date: 2011/06/02 08:35:03 $
@@ -113,6 +113,9 @@ entity ddr_core is
    PAYLOAD_WIDTH         : integer := 32;
    ECC_WIDTH             : integer := 8;
    MC_ERR_ADDR_WIDTH     : integer := 31;
+   MEM_ADDR_ORDER
+     : string  := "BANK_ROW_COLUMN";
+
       
    nBANK_MACHS           : integer := 4;
    RANKS                 : integer := 1;
@@ -141,6 +144,10 @@ entity ddr_core is
    USE_ODT_PORT          : integer := 1;
                                      -- # = 1, When ODT output is enabled
                                      --   = 0, When ODT output is disabled
+                                     -- Parameter configuration for Dynamic ODT support:
+                                     -- USE_ODT_PORT = 0, RTT_NOM = "DISABLED", RTT_WR = "60/120".
+                                     -- This configuration allows to save ODT pin mapping from FPGA.
+                                     -- The user can tie the ODT input of DRAM to HIGH.
    PHY_CONTROL_MASTER_BANK : integer := 1;
                                      -- The bank index where master PHY_CONTROL resides,
                                      -- equal to the PLL residing bank
@@ -359,8 +366,6 @@ entity ddr_core is
                                      -- Mapping of Ranks.
    SLOT_1_CONFIG         : std_logic_vector(7 downto 0) := "00000000";
                                      -- Mapping of Ranks.
-   MEM_ADDR_ORDER
-     : string  := "BANK_ROW_COLUMN";
 
    --***************************************************************************
    -- IODELAY and PHY related parameters
@@ -396,12 +401,16 @@ entity ddr_core is
                                      -- It is associated to a set of IODELAYs with
                                      -- an IDELAYCTRL that have same IODELAY CONTROLLER
                                      -- clock frequency.
-   SYSCLK_TYPE           : string  := "DIFFERENTIAL";
+   SYSCLK_TYPE           : string  := "NO_BUFFER";
                                      -- System clock type DIFFERENTIAL, SINGLE_ENDED,
                                      -- NO_BUFFER
    REFCLK_TYPE           : string  := "USE_SYSTEM_CLOCK";
                                      -- Reference clock type DIFFERENTIAL, SINGLE_ENDED
                                      -- NO_BUFFER, USE_SYSTEM_CLOCK
+   SYS_RST_PORT          : string  := "FALSE";
+                                     -- "TRUE" - if pin is selected for sys_rst
+                                     --          and IBUF will be instantiated.
+                                     -- "FALSE" - if pin is not selected for sys_rst
       
    CMD_PIPE_PLUS1        : string  := "ON";
                                      -- add pipeline stage between MC and PHY
@@ -426,7 +435,7 @@ entity ddr_core is
                                      -- # = Clock Period in pS.
    nCK_PER_CLK           : integer := 4;
                                      -- # of memory CKs per fabric CLK
-   DIFF_TERM_SYSCLK      : string  := "FALSE";
+   DIFF_TERM_SYSCLK      : string  := "TRUE";
                                      -- Differential Termination for System
                                      -- clock input pins
 
@@ -470,9 +479,8 @@ entity ddr_core is
    ddr3_odt                       : out   std_logic_vector(ODT_WIDTH-1 downto 0);
 
    -- Inputs
-   -- Differential system clocks
-   sys_clk_p                      : in    std_logic;
-   sys_clk_n                      : in    std_logic;
+   -- Single-ended system clock
+   sys_clk_i                      : in    std_logic;
    
    -- user interface signals
    app_addr             : in    std_logic_vector(ADDR_WIDTH-1 downto 0);
@@ -502,7 +510,9 @@ entity ddr_core is
    
       
 
-   -- System reset
+   -- System reset - Default polarity of sys_rst pin is Active Low.
+   -- System reset polarity will change based on the option 
+   -- selected in GUI.
       sys_rst                     : in    std_logic
  );
 
@@ -549,12 +559,13 @@ architecture arch_ddr_core of ddr_core is
 
 
 
-  component mig_7series_v1_8_iodelay_ctrl is
+  component mig_7series_v1_9_iodelay_ctrl is
     generic(
       TCQ              : integer;
       IODELAY_GRP      : string;
       REFCLK_TYPE      : string;
       SYSCLK_TYPE      : string;
+      SYS_RST_PORT     : string;
       RST_ACT_LOW      : integer;
       DIFF_TERM_REFCLK : string
       );
@@ -564,11 +575,12 @@ architecture arch_ddr_core of ddr_core is
       clk_ref_i        : in  std_logic;
       sys_rst          : in  std_logic;
       clk_ref          : out std_logic;
+      sys_rst_o        : out std_logic;
       iodelay_ctrl_rdy : out std_logic
    );
-  end component mig_7series_v1_8_iodelay_ctrl;
+  end component mig_7series_v1_9_iodelay_ctrl;
 
-  component mig_7series_v1_8_clk_ibuf is
+  component mig_7series_v1_9_clk_ibuf is
     generic (
       SYSCLK_TYPE      : string;
       DIFF_TERM_SYSCLK : string
@@ -579,9 +591,9 @@ architecture arch_ddr_core of ddr_core is
       sys_clk_i   : in  std_logic;
       mmcm_clk    : out std_logic
       );
-  end component mig_7series_v1_8_clk_ibuf;
+  end component mig_7series_v1_9_clk_ibuf;
 
-  component mig_7series_v1_8_infrastructure is
+  component mig_7series_v1_9_infrastructure is
     generic (
       TCQ             : integer;
       CLKIN_PERIOD    : integer;
@@ -605,14 +617,20 @@ architecture arch_ddr_core of ddr_core is
       freq_refclk       : out std_logic;
       sync_pulse        : out std_logic;
       auxout_clk        : out std_logic;
+      ui_addn_clk_0     : out std_logic;
+      ui_addn_clk_1     : out std_logic;
+      ui_addn_clk_2     : out std_logic;
+      ui_addn_clk_3     : out std_logic;
+      ui_addn_clk_4     : out std_logic;
       pll_locked        : out std_logic;
+      mmcm_locked       : out std_logic;
       rstdiv0           : out std_logic;
       rst_phaser_ref    : out std_logic;
       ref_dll_lock      : in  std_logic
    );
-  end component mig_7series_v1_8_infrastructure;
+  end component mig_7series_v1_9_infrastructure;
       
-  component mig_7series_v1_8_tempmon is
+  component mig_7series_v1_9_tempmon is
     generic (
       TCQ              : integer;
       TEMP_MON_CONTROL : string;
@@ -626,9 +644,9 @@ architecture arch_ddr_core of ddr_core is
       device_temp_i  : in  std_logic_vector(11 downto 0);
       device_temp    : out std_logic_vector(11 downto 0)
       );
-  end component mig_7series_v1_8_tempmon;
+  end component mig_7series_v1_9_tempmon;
 
-  component mig_7series_v1_8_memc_ui_top_std is
+  component mig_7series_v1_9_memc_ui_top_std is
     generic (
       TCQ                   : integer;
       PAYLOAD_WIDTH         : integer;
@@ -880,7 +898,7 @@ architecture arch_ddr_core of ddr_core is
       dbg_phy_oclkdelay_cal            : out std_logic_vector(255 downto 0);
       dbg_oclkdelay_rd_data            : out std_logic_vector(DRAM_WIDTH*16-1 downto 0)
       );
-  end component mig_7series_v1_8_memc_ui_top_std;
+  end component mig_7series_v1_9_memc_ui_top_std;
       
 
   -- Signal declarations
@@ -890,6 +908,7 @@ architecture arch_ddr_core of ddr_core is
   signal clk_ref              : std_logic;
   signal iodelay_ctrl_rdy     : std_logic;
   signal clk_ref_in           : std_logic;
+  signal sys_rst_o            : std_logic;
   signal freq_refclk                 : std_logic;
   signal mem_refclk                  : std_logic;
   signal pll_locked                  : std_logic;
@@ -904,8 +923,11 @@ architecture arch_ddr_core of ddr_core is
       
   signal init_calib_complete_i       : std_logic;
 
-  signal sys_clk_i      : std_logic;
+  signal sys_clk_p       : std_logic;
+  signal sys_clk_n          : std_logic;
   signal mmcm_clk           : std_logic;
+  signal clk_ref_p               : std_logic;
+  signal clk_ref_n               : std_logic;
   signal clk_ref_i               : std_logic;
   signal device_temp             : std_logic_vector(11 downto 0);
   signal device_temp_i           : std_logic_vector(11 downto 0);
@@ -983,8 +1005,6 @@ architecture arch_ddr_core of ddr_core is
   signal dbg_data_offset_1           : std_logic_vector(5 downto 0);
   signal dbg_data_offset_2           : std_logic_vector(5 downto 0);
   signal all_zeros                   : std_logic_vector(2*nCK_PER_CLK-1 downto 0) := (others => '0');
-  signal clk_ref_p                   : std_logic := '0';
-  signal clk_ref_n                   : std_logic := '0';
   
 
 begin
@@ -998,7 +1018,8 @@ begin
   ui_clk <= clk;
   ui_clk_sync_rst <= rst;
   
-  sys_clk_i <= '0';
+  sys_clk_p <= '0';
+  sys_clk_n <= '0';
   clk_ref_i <= '0';
   init_calib_complete         <= init_calib_complete_i;
       
@@ -1012,13 +1033,14 @@ begin
     clk_ref_in <= clk_ref_i;
   end generate;
 
-  u_mig_7series_v1_8_iodelay_ctrl : mig_7series_v1_8_iodelay_ctrl
+  u_iodelay_ctrl : mig_7series_v1_9_iodelay_ctrl
     generic map
     (
      TCQ              => TCQ,
      IODELAY_GRP      => IODELAY_GRP,
      REFCLK_TYPE      => REFCLK_TYPE,
      SYSCLK_TYPE      => SYSCLK_TYPE,
+     SYS_RST_PORT     => SYS_RST_PORT,
      RST_ACT_LOW      => RST_ACT_LOW,
      DIFF_TERM_REFCLK => DIFF_TERM_REFCLK
      )
@@ -1026,6 +1048,7 @@ begin
       (
        -- Outputs
        iodelay_ctrl_rdy => iodelay_ctrl_rdy,
+       sys_rst_o        => sys_rst_o,
        clk_ref          => clk_ref,
        -- Inputs
        clk_ref_p        => clk_ref_p,
@@ -1033,7 +1056,7 @@ begin
        clk_ref_i        => clk_ref_in,
        sys_rst          => sys_rst
        );
-  u_ddr3_clk_ibuf : mig_7series_v1_8_clk_ibuf
+  u_ddr3_clk_ibuf : mig_7series_v1_9_clk_ibuf
     generic map
       (
        SYSCLK_TYPE      => SYSCLK_TYPE,
@@ -1049,7 +1072,7 @@ begin
   -- Temperature monitoring logic
 
   temp_mon_enabled : if (TEMP_MON_EN = "ON") generate
-    u_mig_7series_v1_8_tempmon : mig_7series_v1_8_tempmon
+    u_tempmon : mig_7series_v1_9_tempmon
       generic map
         (
          TCQ              => TCQ,
@@ -1072,7 +1095,7 @@ begin
   end generate;
        
 
-  u_ddr3_infrastructure : mig_7series_v1_8_infrastructure
+  u_ddr3_infrastructure : mig_7series_v1_9_infrastructure
     generic map
       (
        TCQ                => TCQ,
@@ -1097,17 +1120,23 @@ begin
        freq_refclk      => freq_refclk,
        sync_pulse       => sync_pulse,
        auxout_clk       => open,
+       ui_addn_clk_0    => open,
+       ui_addn_clk_1    => open,
+       ui_addn_clk_2    => open,
+       ui_addn_clk_3    => open,
+       ui_addn_clk_4    => open,
        pll_locked       => pll_locked,
+       mmcm_locked      => open,
        rst_phaser_ref   => rst_phaser_ref,
        -- Inputs
        mmcm_clk         => mmcm_clk,
-       sys_rst          => sys_rst,
+       sys_rst          => sys_rst_o,
        iodelay_ctrl_rdy => iodelay_ctrl_rdy,
        ref_dll_lock     => ref_dll_lock
        );
 
 
-  u_mig_7series_v1_8_memc_ui_top_std : mig_7series_v1_8_memc_ui_top_std
+  u_memc_ui_top_std : mig_7series_v1_9_memc_ui_top_std
     generic map (
       TCQ                              => TCQ,
       ADDR_CMD_MODE                    => ADDR_CMD_MODE,
