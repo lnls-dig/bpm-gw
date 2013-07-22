@@ -229,7 +229,7 @@ INST "*/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/ddr_by
 INST "*/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/ddr_byte_group_io/*slave_ts" LOC=OLOGIC_X1Y57;
 
 INST "*/u_ddr3_infrastructure/plle2_i" LOC=PLLE2_ADV_X1Y0;
-INST "*/u_ddr3_infrastructure/mmcm_i" LOC=MMCME2_ADV_X1Y0;
+INST "*/u_ddr3_infrastructure/gen_mmcm.mmcm_i" LOC=MMCME2_ADV_X1Y0;
 
 ###############################################################################
 # Timing Constraints
@@ -268,7 +268,7 @@ NET "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/qpll_reset.qpll_reset_i/*" TIG;
 
 ####### DDR ###########
 NET "ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
-TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
+TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 8 ns;
           
 # Note: the following CLOCK_DEDICATED_ROUTE constraint will cause a warning in place similar
 # to the following:
@@ -276,7 +276,8 @@ TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
 #   placed at an optimal clock IOB / PLL site pair.
 # This warning can be ignored.  See the Users Guide for more information.
 NET "ddr_sys_clk_p" CLOCK_DEDICATED_ROUTE = BACKBONE;
-PIN "*/u_ddr3_infrastructure/plle2_i.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
+PIN "DDR_int_clk.*.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
+#PIN "*/u_ddr3_infrastructure/plle2_i.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
 
 
 NET "*/iserdes_clk" TNM_NET = "TNM_ISERDES_CLK";

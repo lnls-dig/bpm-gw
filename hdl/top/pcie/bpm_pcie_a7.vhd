@@ -1274,6 +1274,13 @@ architecture Behavioral of bpm_pcie_a7 is
   signal ddr_ui_clk        : std_logic;
   signal ddr_ui_reset      : std_logic;
   signal ddr_calib_done    : std_logic;
+  signal ddr_sys_clk_i     : std_logic;
+
+  -- additional clocking signal when using project as standalone
+  signal pll_clkin    : std_logic;
+  signal pll_clkout0  : std_logic;
+  signal pll_clkfbout : std_logic;
+  signal pll_locked   : std_logic;
 
 --to prevent <signal_name> is not declared errors
   signal clk_i  : std_logic;
@@ -2238,8 +2245,72 @@ begin
       ui_clk_sync_rst   => ddr_ui_reset,
 
       -- System Clock Ports
-      sys_clk_i => ddr_sys_clk_p,
+      sys_clk_i => ddr_sys_clk_i,
 
       sys_rst => sys_reset_n_c
     );
+
+  DDR_ext_clk: if INSTANTIATED = "TRUE" generate
+    ddr_sys_clk_i <= ddr_sys_clk_p;
+  end generate;
+
+  DDR_int_clk: if INSTANTIATED = "FALSE" generate
+
+    ddr_inclk_buf : IBUFGDS
+      port map
+       (O  => pll_clkin,
+        I  => ddr_sys_clk_p,
+        IB => ddr_sys_clk_n
+      );
+
+    plle2_adv_inst : PLLE2_ADV
+    generic map
+     (BANDWIDTH            => "HIGH",
+      COMPENSATION         => "ZHOLD",
+      DIVCLK_DIVIDE        => 5,
+      CLKFBOUT_MULT        => 64,
+      CLKFBOUT_PHASE       => 0.000,
+      CLKOUT0_DIVIDE       => 8,
+      CLKOUT0_PHASE        => 0.000,
+      CLKOUT0_DUTY_CYCLE   => 0.500,
+      CLKIN1_PERIOD        => 8.000,
+      REF_JITTER1          => 0.010)
+    port map
+      -- Output clocks
+     (CLKFBOUT            => pll_clkfbout,
+      CLKOUT0             => pll_clkout0,
+      CLKOUT1             => open,
+      CLKOUT2             => open,
+      CLKOUT3             => open,
+      CLKOUT4             => open,
+      CLKOUT5             => open,
+      -- Input clock control
+      CLKFBIN             => pll_clkfbout,
+      CLKIN1              => pll_clkin,
+      CLKIN2              => '0',
+      -- Tied to always select the primary input clock
+      CLKINSEL            => '1',
+      -- Ports for dynamic reconfiguration
+      DADDR               => (others => '0'),
+      DCLK                => '0',
+      DEN                 => '0',
+      DI                  => (others => '0'),
+      DO                  => open,
+      DRDY                => open,
+      DWE                 => '0',
+      -- Other control and status signals
+      LOCKED              => pll_locked,
+      PWRDWN              => '0',
+      RST                 => sys_reset_c);
+
+    -- Output buffering
+    -------------------------------------
+    clkout1_buf : BUFG
+      port map
+      (O   => ddr_sys_clk_i,
+       I   => pll_clkout0
+      );
+
+   end generate;
+
 end Behavioral;
