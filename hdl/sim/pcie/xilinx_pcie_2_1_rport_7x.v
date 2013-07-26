@@ -87,8 +87,8 @@ module xilinx_pcie_2_1_rport_7x # (
   input                           sys_clk,
   input                           sys_rst_n,
 
-  input  [0:0]              pci_exp_rxn, pci_exp_rxp,
-  output [0:0]              pci_exp_txn, pci_exp_txp
+  input  [3:0]              pci_exp_rxn, pci_exp_rxp,
+  output [3:0]              pci_exp_txn, pci_exp_txp
 
 );
 
@@ -194,15 +194,15 @@ module xilinx_pcie_2_1_rport_7x # (
   // Wires used for external clocking connectivity
   wire                                        PIPE_PCLK_IN;
   wire                                        PIPE_RXUSRCLK_IN;
-  wire  [0:0]    PIPE_RXOUTCLK_IN;
+  wire  [3:0]    PIPE_RXOUTCLK_IN;
   wire                                        PIPE_DCLK_IN;
   wire                                        PIPE_USERCLK1_IN;
   wire                                        PIPE_USERCLK2_IN;
   wire                                        PIPE_MMCM_LOCK_IN;
 
   wire                                        PIPE_TXOUTCLK_OUT;
-  wire [0:0]     PIPE_RXOUTCLK_OUT;
-  wire [0:0]     PIPE_PCLK_SEL_OUT;
+  wire [3:0]     PIPE_RXOUTCLK_OUT;
+  wire [3:0]     PIPE_PCLK_SEL_OUT;
   wire                                        PIPE_GEN3_OUT;
   wire                                        PIPE_OOBCLK_IN;
 
@@ -220,7 +220,7 @@ module xilinx_pcie_2_1_rport_7x # (
       (
         .PCIE_ASYNC_EN                   ("FALSE"),              // PCIe async enable
         .PCIE_TXBUF_EN                   ("FALSE"),              // PCIe TX buffer enable for Gen1/Gen2 only
-        .PCIE_LANE                       (6'h01),     // PCIe number of lanes
+        .PCIE_LANE                       (6'h04),     // PCIe number of lanes
         .PCIE_LINK_SPEED               ( 2 ),
         .PCIE_REFCLK_FREQ                (0),     // PCIe reference clock frequency
         .PCIE_USERCLK1_FREQ              (USER_CLK_FREQ +1),     // PCIe user clock 1 frequency

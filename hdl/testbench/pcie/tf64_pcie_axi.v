@@ -48,6 +48,10 @@ begin
     board.RP.cfg_usrapp.TSK_WRITE_CFG_DW(32'h00000001, 32'h00000007, 4'b1110);
     board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
 
+    $display("\n  Wait for DDR memory core to finish calibration...");
+    wait (board.EP.ddr_calib_done == 1);
+    $display("done");
+
     $display("\n%d ns: ####  Starting test...  ####\n", $time);
     // Initialization: TLP
     # 400
@@ -62,6 +66,7 @@ begin
     
       TLP_Feed_Rx(`C_BAR0_HIT);
       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+      TSK_TX_CLK_EAT(10); //wait before issuing transaction so that design has time to reset
 
 
          // Test MRd with 4-DW header  BAR[0]

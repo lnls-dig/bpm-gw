@@ -86,11 +86,11 @@ parameter DATA_BUF_ADDR_WIDTH   = 5;
 parameter DQ_CNT_WIDTH          = 6;
                                  // = ceil(log2(DQ_WIDTH))
 parameter DQ_PER_DM             = 8;
-parameter DM_WIDTH              = 8;
+parameter DM_WIDTH              = 4;
                                  // # of DM (data mask)
-parameter DQ_WIDTH              = 64;
+parameter DQ_WIDTH              = 32;
                                  // # of DQ (data)
-parameter DQS_WIDTH             = 8;
+parameter DQS_WIDTH             = 4;
 parameter DQS_CNT_WIDTH         = 3;
                                  // = ceil(log2(DQS_WIDTH))
 parameter DRAM_WIDTH            = 8;
@@ -101,14 +101,14 @@ parameter RANKS                 = 1;
                                  // # of Ranks.
 parameter ODT_WIDTH             = 1;
                                  // # of ODT outputs to memory.
-parameter ROW_WIDTH             = 14;
+parameter ROW_WIDTH             = 16;
                                  // # of memory Row Address bits.
 parameter ADDR_WIDTH            = 28;
                                  // # = RANK_WIDTH + BANK_WIDTH
                                  //     + ROW_WIDTH + COL_WIDTH;
                                  // Chip Select is always tied to low for
                                  // single rank devices
-parameter USE_CS_PORT          = 1;
+parameter USE_CS_PORT          = 0;
                                  // # = 1, When CS output is enabled
                                  //   = 0, When CS output is disabled
                                  // If CS_N disabled, user must connect
@@ -183,7 +183,7 @@ parameter CA_MIRROR             = "OFF";
 // The following parameters are multiplier and divisor factors for PLLE2.
 // Based on the selected design frequency these parameters vary.
 //***************************************************************************
-parameter CLKIN_PERIOD          = 5000;
+parameter CLKIN_PERIOD          = 8000;
                                  // Input Clock Period
 parameter CLKFBOUT_MULT         = 8;
                                  // write PLL VCO multiplier
@@ -442,10 +442,10 @@ wire               rp_sys_clk;
 //
 // PCI-Express Serial Interconnect
 //
-wire  [0:0]  ep_pci_exp_txn;
-wire  [0:0]  ep_pci_exp_txp;
-wire  [0:0]  rp_pci_exp_txn;
-wire  [0:0]  rp_pci_exp_txp;
+wire  [3:0]  ep_pci_exp_txn;
+wire  [3:0]  ep_pci_exp_txp;
+wire  [3:0]  rp_pci_exp_txn;
+wire  [3:0]  rp_pci_exp_txp;
 
 //
 // DDR signals
@@ -545,9 +545,10 @@ parameter PIPE_SIM_MODE = "TRUE";
 defparam board.RP.rport.PIPE_SIM_MODE = "TRUE";
 `endif
 
-bpm_pcie_k7 # (
+bpm_pcie_a7 # (
   .PL_FAST_TRAIN("TRUE"),
   .PIPE_SIM_MODE(PIPE_SIM_MODE),
+  .pcieLanes(4),
   .SIMULATION("TRUE")
 )
 EP (
@@ -577,7 +578,7 @@ EP (
   .ddr3_ck_p            (ddr3_ck_p_fpga),
   .ddr3_ck_n            (ddr3_ck_n_fpga),
   .ddr3_cke             (ddr3_cke_fpga),
-  .ddr3_cs_n            (ddr3_cs_n_fpga),
+//  .ddr3_cs_n            (ddr3_cs_n_fpga),
   .ddr3_dm              (ddr3_dm_fpga),
   .ddr3_odt             (ddr3_odt_fpga)
 );
@@ -620,10 +621,10 @@ xilinx_pcie_2_1_rport_7x # (
   .PL_FAST_TRAIN("TRUE"),
   .ALLOW_X8_GEN2("FALSE"),
   .C_DATA_WIDTH(64),
-  .LINK_CAP_MAX_LINK_WIDTH(6'h01),
+  .LINK_CAP_MAX_LINK_WIDTH(6'h04),
   .DEVICE_ID(16'h7100),
-  .LINK_CAP_MAX_LINK_SPEED(4'h2),
-  .LINK_CTRL2_TARGET_LINK_SPEED(4'h2),
+  .LINK_CAP_MAX_LINK_SPEED(4'h1),
+  .LINK_CTRL2_TARGET_LINK_SPEED(4'h1),
   .DEV_CAP_MAX_PAYLOAD_SUPPORTED(2),
   .TRN_DW("FALSE"),
   .VC0_TX_LASTPACKET(29),
@@ -631,7 +632,7 @@ xilinx_pcie_2_1_rport_7x # (
   .VC0_CPL_INFINITE("TRUE"),
   .VC0_TOTAL_CREDITS_PD(437),
   .VC0_TOTAL_CREDITS_CD(461),
-  .USER_CLK_FREQ(1),
+  .USER_CLK_FREQ(2),
   .USER_CLK2_DIV2("FALSE")
 )
 RP (
@@ -713,7 +714,8 @@ end
 
 always @( * )
   ddr3_cs_n_sdram_tmp   <=  #(TPROP_PCB_CTRL) ddr3_cs_n_fpga;
-assign ddr3_cs_n_sdram =  ddr3_cs_n_sdram_tmp;
+//assign ddr3_cs_n_sdram =  ddr3_cs_n_sdram_tmp;
+assign ddr3_cs_n_sdram =  {(CS_WIDTH*nCS_PER_RANK){1'b0}};
 
 always @( * )
   ddr3_dm_sdram_tmp <=  #(TPROP_PCB_DATA) ddr3_dm_fpga;//DM signal generation
