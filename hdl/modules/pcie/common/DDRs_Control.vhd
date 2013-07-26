@@ -86,13 +86,15 @@ end entity DDRs_Control;
 
 architecture Behavioral of DDRs_Control is
 
-  constant DDRAM_RDCNT_DECVAL : integer := DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH;--2DW counted
-  constant DDRAM_ADDR_INCVAL  : integer := DDRAM_RDCNT_DECVAL*8;--byte counted
+  constant DDRAM_RDCNT_DECVAL  : integer := DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH;--2DW counted
+  constant DDRAM_ADDR_INCVAL   : integer := DDRAM_RDCNT_DECVAL*8;--byte counted
+  constant DDRAM_ADDR_DECSHIFT : integer := C_DBUS_WIDTH/DDR_DQ_WIDTH;
 
   constant WPIPE_F2M_ASHIFT_BTOP : integer := integer(log2(real(DDR_DQ_WIDTH)))-1;
   constant WPIPE_F2M_ASHIFT_BBOT : integer := WPIPE_F2M_ASHIFT_BTOP-2;
   constant RPIPE_ASHIFT_BTOP     : integer := integer(log2(real(DDR_DQ_WIDTH)))-1;
   constant RPIPE_ASHIFT_BBOT     : integer := RPIPE_ASHIFT_BTOP-2;
+  constant MEMC_ADDR_BTOP_LIMIT  : integer := integer(log2(real(DDR_DQ_WIDTH)))-3;
 
   -- ----------------------------------------------------------------------------
   --
@@ -169,6 +171,7 @@ architecture Behavioral of DDRs_Control is
   signal ddram_wr_cmd_valid : std_logic;
   signal wpipe_f2m_empty    : std_logic;
   signal wpipe_f2m_empty_r1 : std_logic;
+  signal wpipe_f2m_empty_r2 : std_logic;
   signal wpipe_f2m_qout     : std_logic_vector(127 downto 0);
   signal wpipe_f2m_din      : std_logic_vector(127 downto 0) := (others => '0');
   signal wpipe_f2m_rd_en    : std_logic;
@@ -252,8 +255,10 @@ begin
 
   -- address LSB is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
   -- while ddram_*_addr have byte alignment
-  memc_rd_addr(C_DDR_IAWIDTH-1-3 downto 3) <= ddram_rd_addr(ddram_rd_addr'left downto 6);
-  memc_wr_addr(C_DDR_IAWIDTH-1-3 downto 3) <= ddram_wr_addr(ddram_wr_addr'left downto 6);
+  memc_rd_addr(C_DDR_IAWIDTH-1-MEMC_ADDR_BTOP_LIMIT downto 3) <=
+    ddram_rd_addr(ddram_rd_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
+  memc_wr_addr(C_DDR_IAWIDTH-1-MEMC_ADDR_BTOP_LIMIT downto 3) <=
+    ddram_wr_addr(ddram_wr_addr'left downto RPIPE_ASHIFT_BTOP+1);
 
   memc_cmd_en    <= memc_rd_cmd or memc_wr_cmd_en;
   memc_cmd_instr <= "00" & memc_rd_cmd;
@@ -316,7 +321,8 @@ begin
 
   wpipe_f2m_rd_fin <= '0' when wpipe_f2m_cnt >= (DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH - 1) and wpipe_f2m_valid = '1' else '1';
   --keep requesting arbiter access if there's any data left to write
-  wpipe_f2m_arb_req <= '1' when ((wpipe_f2m_cnt /= 0) or wpipe_f2m_empty_r1 = '0') else '0';
+  wpipe_f2m_arb_req <= '1' when ((wpipe_f2m_cnt /= 0) or wpipe_f2m_empty_r2 = '0' or wpipe_f2m_empty_r1 = '0'
+                       or wpipe_f2m_empty = '0') else '0';
   memc_wr_data_en   <= ddram_wr_valid;
   memc_wr_cmd_en    <= ddram_wr_cmd_valid;
   -- ----------------------------------------------------------------------------
@@ -606,9 +612,11 @@ begin
     if ddr_rdy = '0' then
       wpipe_f2m_valid    <= '0';
       wpipe_f2m_empty_r1 <= '0';
+      wpipe_f2m_empty_r2 <= '0';
     elsif rising_edge(memc_ui_clk) then
       wpipe_f2m_valid    <= wpipe_f2m_rd_en and not wpipe_f2m_empty;
       wpipe_f2m_empty_r1 <= wpipe_f2m_empty;
+      wpipe_f2m_empty_r2 <= wpipe_f2m_empty_r1;
     end if;
   end process;
 
@@ -658,7 +666,9 @@ begin
               if wpipe_f2m_qout(72) = '1' then --wpipe_wr_sof
                 --because first write access can be unaligned with respect to DDR core PAYLOAD_WIDTH
                 --we have to preload respective registers with correct values
-                wpipe_f2m_cnt         <= '0' & unsigned(wpipe_f2m_qout(WPIPE_F2M_ASHIFT_BTOP downto WPIPE_F2M_ASHIFT_BBOT));
+                wpipe_f2m_cnt         <= (others => '0');
+                wpipe_f2m_cnt(WPIPE_F2M_ASHIFT_BBOT-1 downto 0) <=
+                  unsigned(wpipe_f2m_qout(WPIPE_F2M_ASHIFT_BTOP downto 3));
                 ddram_wr_mask         <= (others => '1');
                 ddram_wr_addr         <= unsigned(wpipe_f2m_qout(C_DDR_IAWIDTH-1 downto 0));
                 wpipe_f2m_shift_start <= unsigned(wpipe_f2m_qout(WPIPE_F2M_ASHIFT_BTOP downto WPIPE_F2M_ASHIFT_BBOT));
@@ -778,6 +788,7 @@ begin
         when rdst_LA =>
           rpipec_rEn    <= '0';
           ddram_rd_addr <= unsigned(rpipec_Qout(C_DDR_IAWIDTH - 1 downto 0));
+          rpiped_rd_shift_start(RPIPE_ASHIFT_BBOT-1 downto 0) <= unsigned(rpipec_Qout(RPIPE_ASHIFT_BTOP downto 3));
           rpiped_wr_EOF <= '0';
           rpipe_arb_req <= '1';
           memc_rd_cmd   <= '0';
@@ -792,7 +803,6 @@ begin
         when rdst_CMD =>
           rpipec_rEn            <= '0';
           ddram_rd_addr         <= ddram_rd_addr;
-          rpiped_rd_shift_start <= "000" & ddram_rd_addr(RPIPE_ASHIFT_BTOP downto RPIPE_ASHIFT_BBOT);
           rpiped_wr_EOF         <= '0';
           rpipe_arb_req         <= '1';
           rpiped_rd_cnt         <= rpiped_rd_cnt;
@@ -833,8 +843,9 @@ begin
             -- if read access data_count/address combination spans across more than one DDR_PAYLOAD_WIDTH,
             -- we try to make only the first access unaligned, rpiped_rd_shift_start should be equal 0
             -- after first access
-            ddram_rd_addr <= ddram_rd_addr + DDRAM_ADDR_INCVAL - rpiped_rd_shift_start*DDRAM_RDCNT_DECVAL;
+            ddram_rd_addr <= ddram_rd_addr + DDRAM_ADDR_INCVAL - rpiped_rd_shift_start*DDRAM_ADDR_DECSHIFT;
             rpiped_rd_cnt <= rpiped_rd_cnt - DDRAM_RDCNT_DECVAL + rpiped_rd_shift_start;
+            rpiped_rd_shift_start <= (others => '0');
             DDR_rd_state  <= rdst_CMD;
           else
             ddram_rd_addr <= ddram_rd_addr;
@@ -845,7 +856,7 @@ begin
         when rdst_LAST_QW =>
           if rpiped_wen = '1' then
             rpiped_wen_last <= '1';
-            DDR_rd_state <= rdst_IDLE;
+            DDR_rd_state    <= rdst_IDLE;
           end if;
 
         when others =>

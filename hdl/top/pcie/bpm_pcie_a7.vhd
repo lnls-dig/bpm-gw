@@ -1275,6 +1275,7 @@ architecture Behavioral of bpm_pcie_a7 is
   signal ddr_ui_reset      : std_logic;
   signal ddr_calib_done    : std_logic;
   signal ddr_sys_clk_i     : std_logic;
+  signal ddr_sys_reset_i   : std_logic;
 
   -- additional clocking signal when using project as standalone
   signal pll_clkin    : std_logic;
@@ -1493,7 +1494,7 @@ begin
   generic map(
     PL_FAST_TRAIN => PL_FAST_TRAIN,
     PCIE_EXT_CLK => "FALSE",
-    PIPE_SIM_MODE => "FALSE"
+    PIPE_SIM_MODE => PIPE_SIM_MODE
   )
   port map(
     --------------------------------------------------------------------------------------------------------------------
@@ -2247,11 +2248,12 @@ begin
       -- System Clock Ports
       sys_clk_i => ddr_sys_clk_i,
 
-      sys_rst => sys_reset_n_c
+      sys_rst => ddr_sys_reset_i
     );
 
   DDR_ext_clk: if INSTANTIATED = "TRUE" generate
-    ddr_sys_clk_i <= ddr_sys_clk_p;
+    ddr_sys_clk_i   <= ddr_sys_clk_p;
+    ddr_sys_reset_i <= sys_reset_n_c;
   end generate;
 
   DDR_int_clk: if INSTANTIATED = "FALSE" generate
@@ -2311,6 +2313,8 @@ begin
        I   => pll_clkout0
       );
 
-   end generate;
+    ddr_sys_reset_i <= pll_locked;
+
+  end generate;
 
 end Behavioral;

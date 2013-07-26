@@ -196,9 +196,12 @@ architecture Behavioral of DDR_Transact is
   signal ext_arb_gnt   : std_logic;
   signal ext_arb_req   : std_logic;
 
+  signal ddr_reset_n : std_logic;
+
 begin
 
   memc_ui_clk <= ui_clk;
+  ddr_reset_n <= not(ui_clk_sync_rst);
 
   access_arb :
   process (ui_clk, user_reset)
@@ -353,7 +356,7 @@ begin
       memarb_acc_gnt => pcie_arb_gnt, --: in  std_logic;
 
       memc_ui_clk => ui_clk, --: in std_logic;
-      ddr_rdy     => init_calib_complete, --: in std_logic;
+      ddr_rdy     => ddr_reset_n, --: in std_logic;
       reset       => user_reset   --: in std_logic
     );
 
