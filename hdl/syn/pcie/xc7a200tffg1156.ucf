@@ -25,31 +25,31 @@ CONFIG PART = xc7a200t-ffg1156-2;
 NET "sys_rst_n" IOSTANDARD = LVCMOS25 | PULLUP | NODELAY;
 NET "sys_rst_n" TIG;
 # Bank 16 VCCO - VADJ_FPGA - IO_25_16
-NET "sys_rst_n" LOC = G25;
+NET "sys_rst_n" LOC = AG26;
 #PCIe clock
-NET "sys_clk_n" LOC = G20;
+NET "sys_clk_n" LOC = AH14;
 # Bank 115 - MGTREFCLK1N_115
-NET "sys_clk_p" LOC = H20;
+NET "sys_clk_p" LOC = AG14;
 #PCIe lane 0
-NET "pci_exp_txp[0]" LOC = B19;
-NET "pci_exp_txn[0]" LOC = A19;
-NET "pci_exp_rxp[0]" LOC = D18;
-NET "pci_exp_rxn[0]" LOC = C18;
+NET "pci_exp_txp[0]" LOC = AN17;
+NET "pci_exp_txn[0]" LOC = AP17;
+NET "pci_exp_rxp[0]" LOC = AJ17;
+NET "pci_exp_rxn[0]" LOC = AK17;
 #PCIe lane 1
-NET "pci_exp_txp[1]" LOC = B21;
-NET "pci_exp_txn[1]" LOC = A21;
-NET "pci_exp_rxp[1]" LOC = F19;
-NET "pci_exp_rxn[1]" LOC = E19;
+NET "pci_exp_txp[1]" LOC = AN15;
+NET "pci_exp_txn[1]" LOC = AP15;
+NET "pci_exp_rxp[1]" LOC = AL16;
+NET "pci_exp_rxn[1]" LOC = AM16;
 #PCIe lane 2
-NET "pci_exp_txp[2]" LOC = D22;
-NET "pci_exp_txn[2]" LOC = C22;
-NET "pci_exp_rxp[2]" LOC = D20;
-NET "pci_exp_rxn[2]" LOC = C20;
+NET "pci_exp_txp[2]" LOC = AL14;
+NET "pci_exp_txn[2]" LOC = AM14;
+NET "pci_exp_rxp[2]" LOC = AJ15;
+NET "pci_exp_rxn[2]" LOC = AK15;
 #PCIe lane 3
-NET "pci_exp_txp[3]" LOC = B23;
-NET "pci_exp_txn[3]" LOC = A23;
-NET "pci_exp_rxp[3]" LOC = F21;
-NET "pci_exp_rxn[3]" LOC = E21;
+NET "pci_exp_txp[3]" LOC = AN13;
+NET "pci_exp_txn[3]" LOC = AP13;
+NET "pci_exp_rxp[3]" LOC = AJ13;
+NET "pci_exp_rxn[3]" LOC = AK13;
 
 ###########  DDR controller  ##############
 NET   "ddr3_dq[0]"                             LOC = "AD11"    |   IOSTANDARD = SSTL15               |     SLEW = FAST        |     IN_TERM = UNTUNED_SPLIT_50   ; # Pad function: IO_L22P_T3_33
@@ -146,7 +146,7 @@ NET   "ddr_sys_clk_n"                          LOC = "AL7"    |   IOSTANDARD = D
 # (UG) for guidelines regarding clock resource selection.
 #
 
-INST "pcieclk_ibuf" LOC = IBUFDS_GTE2_X0Y3;
+INST "pcieclk_ibuf" LOC = IBUFDS_GTE2_X1Y0;
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -155,16 +155,16 @@ INST "pcieclk_ibuf" LOC = IBUFDS_GTE2_X0Y3;
 # Virtex-7 GT Transceiver User Guide (UG) for more information.
 #
 # PCIe Lane 0
-INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X0Y7;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y0;
 # PCIe Lane 1
-INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X0Y6;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y1;
 # PCIe Lane 2
-INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X0Y5;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y2;
 # PCIe Lane 3
-INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X0Y4;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y3;
 
 # GTP Common Placement
-INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].pipe_quad.pipe_common.qpll_wrapper_i/gtp_common.gtpe2_common_i" LOC = GTPE2_COMMON_X0Y1;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].pipe_quad.pipe_common.qpll_wrapper_i/gtp_common.gtpe2_common_i" LOC = GTPE2_COMMON_X1Y0;
 
 #
 # PCI Express Block placement. This constraint selects the PCI Express
@@ -242,7 +242,8 @@ NET "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/user
 NET "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/userclk2" TNM_NET = "CLK_USERCLK2" ;
 
 TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 % ;
-TIMESPEC "TS_CLK_250" = PERIOD "CLK_250" TS_SYSCLK*2.5 HIGH 50 % PRIORITY 1;
+#CLK_250 not used, we use Gen1 mode only
+#TIMESPEC "TS_CLK_250" = PERIOD "CLK_250" TS_SYSCLK*2.5 HIGH 50 % PRIORITY 1;
 TIMESPEC "TS_CLK_125" = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 2;
 TIMESPEC "TS_CLK_USERCLK" = PERIOD "CLK_USERCLK" TS_SYSCLK*1.25 HIGH 50 %;
 TIMESPEC "TS_CLK_USERCLK2" = PERIOD "CLK_USERCLK2" TS_SYSCLK*1.25 HIGH 50 %;
@@ -294,8 +295,9 @@ TIMESPEC "TS_MULTICYCLEPATH_DEVICE_TEMP_SYNC" = TO "TNM_MULTICYCLEPATH_DEVICE_TE
 ###############################################################################
 # Constrain the PCIe core elements placement, so that it won't fail
 # timing analysis.
-INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
-AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
+# Comment out because we use nonstandard GTP location
+#INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
+#AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
 #Place the DMA design not far from PCIe core, otherwise it also breaks timing
 INST "theTlpControl" AREA_GROUP = "GRP_tlpControl";
 AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
