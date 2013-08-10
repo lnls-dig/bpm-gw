@@ -118,10 +118,11 @@ entity bpm_pcie_a7 is
     --RST_I : in  std_logic;
     --ACK_I : in  std_logic;
     --DAT_I : in  std_logic_vector(63 downto 0);
-    --ADR_O : out std_logic_vector(29 downto 0);
+    --ADDR_O : out std_logic_vector(29 downto 0);
     --DAT_O : out std_logic_vector(63 downto 0);
     --WE_O  : out std_logic;
     --STB_O : out std_logic;
+    --SEL_O : out std_logic;
     --CYC_O : out std_logic
     --/ Wishbone interface
     );
@@ -749,6 +750,7 @@ architecture Behavioral of bpm_pcie_a7 is
   signal wb_rdd_pempty : std_logic;
   signal wb_rdd_empty  : std_logic;
   signal wbone_rst     : std_logic;
+  signal wb_fifo_rst   : std_logic;
   signal wbone_addr    : std_logic_vector(31 downto 0);
   signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -1874,7 +1876,7 @@ begin
         pio_reading_status => pio_reading_status ,  --  OUT std_logic;
 
         wb_FIFO_Status  => wb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        wb_FIFO_Rst     => wbone_rst ,     --  OUT std_logic;
+        wb_FIFO_Rst     => wb_fifo_rst ,     --  OUT std_logic;
         H2B_FIFO_Status => H2B_FIFO_Status ,
         B2H_FIFO_Status => B2H_FIFO_Status ,
 
@@ -2125,6 +2127,7 @@ begin
   Wishbone_int : if INSTANTIATED = "FALSE" generate
     --temporary clock assignment
     wbone_clk <= ddr_ui_clk;
+    wbone_rst <= wb_fifo_rst;
 
     Wishbone_mem_large: if (SIMULATION = "TRUE") generate
       wb_mem_sim :
