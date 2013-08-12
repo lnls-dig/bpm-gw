@@ -118,13 +118,15 @@ entity bpm_pcie_a7 is
     --RST_I : in  std_logic;
     --ACK_I : in  std_logic;
     --DAT_I : in  std_logic_vector(63 downto 0);
-    --ADDR_O : out std_logic_vector(29 downto 0);
+    --ADDR_O : out std_logic_vector(28 downto 0);
     --DAT_O : out std_logic_vector(63 downto 0);
     --WE_O  : out std_logic;
     --STB_O : out std_logic;
     --SEL_O : out std_logic;
-    --CYC_O : out std_logic
+    --CYC_O : out std_logic;
     --/ Wishbone interface
+    -- Additional exported signals for instantiation
+    --ext_rst_o : out std_logic
     );
 end entity bpm_pcie_a7;
 
@@ -2117,10 +2119,12 @@ begin
     wbone_mdin <= DAT_I;
     wbone_ack  <= ACK_I;
     ADDR_O     <= wbone_addr;
+    DAT_O      <= wbone_mdout;
     WE_O       <= wbone_we;
     SEL_O      <= wbone_sel(0);
     STB_O      <= wbone_stb;
     CYC_O      <= wbone_cyc;
+    ext_rst_o  <= wb_fifo_rst;
 
   end generate;
 
