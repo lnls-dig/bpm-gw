@@ -60,8 +60,6 @@ architecture STRUCTURE of FF_TagRam64x36 is
   signal douta_i    : std_logic_vector (C_TAGRAM_DWIDTH-1 downto 0);
   signal doutb_i    : std_logic_vector (C_TAGRAM_DWIDTH-1 downto 0);
 
-
-
 begin
 
   douta <= douta_i;
@@ -277,10 +275,10 @@ begin
           douta_i <= FF_Reg(61);
         when X"4000000000000000" =>
           douta_i <= FF_Reg(62);
---            when X"8000000000000000" =>
---              douta_i     <= FF_Reg(63);
-        when others =>
+        when X"8000000000000000" =>
           douta_i <= FF_Reg(63);
+        when others =>
+          douta_i <= (others => '-');
 
       end case;
 
