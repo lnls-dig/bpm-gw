@@ -8,28 +8,28 @@
 --  \   \         Application: netgen
 --  /   /         Filename: mbuf_128x72.vhd
 -- /___/   /\     Timestamp: Thu Feb 21 12:33:55 2013
--- \   \  /  \ 
+-- \   \  /  \
 --  \___\/\___\
---             
--- Command	: -w -sim -ofmt vhdl /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.ngc /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.vhd 
+--
+-- Command	: -w -sim -ofmt vhdl /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.ngc /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.vhd
 -- Device	: 7a200tffg1156-2
 -- Input file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.ngc
 -- Output file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7a200tffg1156c/tmp/_cg/mbuf_128x72.vhd
 -- # of Entities	: 2
 -- Design Name	: mbuf_128x72
 -- Xilinx	: /opt/Xilinx/14.4/ISE_DS/ISE/
---             
--- Purpose:    
---     This VHDL netlist is a verification model and uses simulation 
---     primitives which may not represent the true implementation of the 
---     device, however the netlist is functionally correct and should not 
---     be modified. This file cannot be synthesized and should only be used 
+--
+-- Purpose:
+--     This VHDL netlist is a verification model and uses simulation
+--     primitives which may not represent the true implementation of the
+--     device, however the netlist is functionally correct and should not
+--     be modified. This file cannot be synthesized and should only be used
 --     with supported simulation tools.
---             
--- Reference:  
+--
+-- Reference:
 --     Command Line Tools User Guide, Chapter 23
 --     Synthesis and Simulation Design Guide, Chapter 6
---             
+--
 --------------------------------------------------------------------------------
 
 
@@ -40,26 +40,26 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 use UNISIM.VPKG.ALL;
 
-entity reset_builtin is
+entity reset_builtin1 is
   port (
-    CLK : in STD_LOGIC := 'X'; 
-    WR_CLK : in STD_LOGIC := 'X'; 
-    RD_CLK : in STD_LOGIC := 'X'; 
-    INT_CLK : in STD_LOGIC := 'X'; 
-    RST : in STD_LOGIC := 'X'; 
-    WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
-    RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
-    INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ) 
+    CLK : in STD_LOGIC := 'X';
+    WR_CLK : in STD_LOGIC := 'X';
+    RD_CLK : in STD_LOGIC := 'X';
+    INT_CLK : in STD_LOGIC := 'X';
+    RST : in STD_LOGIC := 'X';
+    WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 )
   );
-end reset_builtin;
+end reset_builtin1;
 
-architecture STRUCTURE of reset_builtin is
-  signal wr_rst_reg_2 : STD_LOGIC; 
-  signal wr_rst_reg_GND_25_o_MUX_1_o : STD_LOGIC; 
-  signal wr_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 ); 
-  signal power_on_wr_rst : STD_LOGIC_VECTOR ( 5 downto 0 ); 
-  signal NlwRenamedSignal_RD_RST_I : STD_LOGIC_VECTOR ( 0 downto 0 ); 
-  signal NlwRenamedSig_OI_n0013 : STD_LOGIC_VECTOR ( 5 downto 5 ); 
+architecture STRUCTURE of reset_builtin1 is
+  signal wr_rst_reg_2 : STD_LOGIC;
+  signal wr_rst_reg_GND_25_o_MUX_1_o : STD_LOGIC;
+  signal wr_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 );
+  signal power_on_wr_rst : STD_LOGIC_VECTOR ( 5 downto 0 );
+  signal NlwRenamedSignal_RD_RST_I : STD_LOGIC_VECTOR ( 0 downto 0 );
+  signal NlwRenamedSig_OI_n0013 : STD_LOGIC_VECTOR ( 5 downto 5 );
 begin
   WR_RST_I(1) <= NlwRenamedSignal_RD_RST_I(0);
   WR_RST_I(0) <= NlwRenamedSignal_RD_RST_I(0);
@@ -212,120 +212,120 @@ use UNISIM.VPKG.ALL;
 
 entity mbuf_128x72 is
   port (
-    clk : in STD_LOGIC := 'X'; 
-    rst : in STD_LOGIC := 'X'; 
-    wr_en : in STD_LOGIC := 'X'; 
-    rd_en : in STD_LOGIC := 'X'; 
-    full : out STD_LOGIC; 
-    empty : out STD_LOGIC; 
-    prog_full : out STD_LOGIC; 
-    din : in STD_LOGIC_VECTOR ( 71 downto 0 ); 
-    dout : out STD_LOGIC_VECTOR ( 71 downto 0 ) 
+    clk : in STD_LOGIC := 'X';
+    rst : in STD_LOGIC := 'X';
+    wr_en : in STD_LOGIC := 'X';
+    rd_en : in STD_LOGIC := 'X';
+    full : out STD_LOGIC;
+    empty : out STD_LOGIC;
+    prog_full : out STD_LOGIC;
+    din : in STD_LOGIC_VECTOR ( 71 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 71 downto 0 )
   );
 end mbuf_128x72;
 
 architecture STRUCTURE of mbuf_128x72 is
-  component reset_builtin
+  component reset_builtin1
     port (
-      CLK : in STD_LOGIC := 'X'; 
-      WR_CLK : in STD_LOGIC := 'X'; 
-      RD_CLK : in STD_LOGIC := 'X'; 
-      INT_CLK : in STD_LOGIC := 'X'; 
-      RST : in STD_LOGIC := 'X'; 
-      WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
-      RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
-      INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ) 
+      CLK : in STD_LOGIC := 'X';
+      WR_CLK : in STD_LOGIC := 'X';
+      RD_CLK : in STD_LOGIC := 'X';
+      INT_CLK : in STD_LOGIC := 'X';
+      RST : in STD_LOGIC := 'X';
+      WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 );
+      RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 );
+      INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 )
     );
   end component;
-  signal N1 : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_q_19 : STD_LOGIC; 
-  signal NlwRenamedSig_OI_empty : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_fifo : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp : STD_LOGIC; 
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_WR_RST_I_1_UNCONNECTED : STD_LOGIC; 
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_1_UNCONNECTED : STD_LOGIC; 
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_0_UNCONNECTED : STD_LOGIC; 
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_1_UNCONNECTED : STD_LOGIC; 
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_0_UNCONNECTED : STD_LOGIC; 
+  signal N1 : STD_LOGIC;
+  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_q_19 : STD_LOGIC;
+  signal NlwRenamedSig_OI_empty : STD_LOGIC;
+  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_fifo : STD_LOGIC;
+  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp : STD_LOGIC;
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_WR_RST_I_1_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_1_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_0_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_1_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_0_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ALMOSTEMPTY_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_DBITERR_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDERR_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_SBITERR_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRERR_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_7_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_6_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_5_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_4_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_3_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_2_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_1_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_0_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_12_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_11_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_10_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_9_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_8_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_7_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_6_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_5_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_4_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_3_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_2_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_1_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_0_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_12_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_11_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_10_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_9_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_8_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_7_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_6_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_5_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_4_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_3_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_2_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_1_UNCONNECTED : STD_LOGIC;
- 
+
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_0_UNCONNECTED : STD_LOGIC;
- 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i : STD_LOGIC_VECTOR ( 0 downto 0 ); 
+
+  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i : STD_LOGIC_VECTOR ( 0 downto 0 );
 begin
   empty <= NlwRenamedSig_OI_empty;
   prog_full <= U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_q_19;
@@ -333,7 +333,7 @@ begin
     port map (
       G => N1
     );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt : reset_builtin
+  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt : reset_builtin1
     port map (
       CLK => clk,
       WR_CLK => N1,
@@ -363,11 +363,11 @@ begin
       SRVAL => X"000000000000000000"
     )
     port map (
-      ALMOSTEMPTY => 
+      ALMOSTEMPTY =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ALMOSTEMPTY_UNCONNECTED
 ,
       ALMOSTFULL => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_fifo,
-      DBITERR => 
+      DBITERR =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_DBITERR_UNCONNECTED,
       EMPTY => NlwRenamedSig_OI_empty,
       FULL => full,
@@ -375,16 +375,16 @@ NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_i
       INJECTSBITERR => N1,
       RDCLK => clk,
       RDEN => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp,
-      RDERR => 
+      RDERR =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDERR_UNCONNECTED,
       REGCE => N1,
       RST => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i(0),
       RSTREG => N1,
-      SBITERR => 
+      SBITERR =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_SBITERR_UNCONNECTED,
       WRCLK => clk,
       WREN => wr_en,
-      WRERR => 
+      WRERR =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRERR_UNCONNECTED,
       DI(63) => din(67),
       DI(62) => din(66),
@@ -530,106 +530,106 @@ NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_i
       DOP(2) => dout(34),
       DOP(1) => dout(33),
       DOP(0) => dout(32),
-      ECCPARITY(7) => 
+      ECCPARITY(7) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_7_UNCONNECTED
 ,
-      ECCPARITY(6) => 
+      ECCPARITY(6) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_6_UNCONNECTED
 ,
-      ECCPARITY(5) => 
+      ECCPARITY(5) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_5_UNCONNECTED
 ,
-      ECCPARITY(4) => 
+      ECCPARITY(4) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_4_UNCONNECTED
 ,
-      ECCPARITY(3) => 
+      ECCPARITY(3) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_3_UNCONNECTED
 ,
-      ECCPARITY(2) => 
+      ECCPARITY(2) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_2_UNCONNECTED
 ,
-      ECCPARITY(1) => 
+      ECCPARITY(1) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_1_UNCONNECTED
 ,
-      ECCPARITY(0) => 
+      ECCPARITY(0) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ECCPARITY_0_UNCONNECTED
 ,
-      RDCOUNT(12) => 
+      RDCOUNT(12) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_12_UNCONNECTED
 ,
-      RDCOUNT(11) => 
+      RDCOUNT(11) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_11_UNCONNECTED
 ,
-      RDCOUNT(10) => 
+      RDCOUNT(10) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_10_UNCONNECTED
 ,
-      RDCOUNT(9) => 
+      RDCOUNT(9) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_9_UNCONNECTED
 ,
-      RDCOUNT(8) => 
+      RDCOUNT(8) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_8_UNCONNECTED
 ,
-      RDCOUNT(7) => 
+      RDCOUNT(7) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_7_UNCONNECTED
 ,
-      RDCOUNT(6) => 
+      RDCOUNT(6) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_6_UNCONNECTED
 ,
-      RDCOUNT(5) => 
+      RDCOUNT(5) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_5_UNCONNECTED
 ,
-      RDCOUNT(4) => 
+      RDCOUNT(4) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_4_UNCONNECTED
 ,
-      RDCOUNT(3) => 
+      RDCOUNT(3) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_3_UNCONNECTED
 ,
-      RDCOUNT(2) => 
+      RDCOUNT(2) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_2_UNCONNECTED
 ,
-      RDCOUNT(1) => 
+      RDCOUNT(1) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_1_UNCONNECTED
 ,
-      RDCOUNT(0) => 
+      RDCOUNT(0) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_RDCOUNT_0_UNCONNECTED
 ,
-      WRCOUNT(12) => 
+      WRCOUNT(12) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_12_UNCONNECTED
 ,
-      WRCOUNT(11) => 
+      WRCOUNT(11) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_11_UNCONNECTED
 ,
-      WRCOUNT(10) => 
+      WRCOUNT(10) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_10_UNCONNECTED
 ,
-      WRCOUNT(9) => 
+      WRCOUNT(9) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_9_UNCONNECTED
 ,
-      WRCOUNT(8) => 
+      WRCOUNT(8) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_8_UNCONNECTED
 ,
-      WRCOUNT(7) => 
+      WRCOUNT(7) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_7_UNCONNECTED
 ,
-      WRCOUNT(6) => 
+      WRCOUNT(6) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_6_UNCONNECTED
 ,
-      WRCOUNT(5) => 
+      WRCOUNT(5) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_5_UNCONNECTED
 ,
-      WRCOUNT(4) => 
+      WRCOUNT(4) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_4_UNCONNECTED
 ,
-      WRCOUNT(3) => 
+      WRCOUNT(3) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_3_UNCONNECTED
 ,
-      WRCOUNT(2) => 
+      WRCOUNT(2) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_2_UNCONNECTED
 ,
-      WRCOUNT(1) => 
+      WRCOUNT(1) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_1_UNCONNECTED
 ,
-      WRCOUNT(0) => 
+      WRCOUNT(0) =>
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_0_UNCONNECTED
     );
   U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_prog_full_q : FDC
