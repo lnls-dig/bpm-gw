@@ -5,6 +5,6 @@ modules = { "local" : [
                         "wb_fmc150",
                         "wb_fmc516",
 			"wb_ethmac_adapter",
-			"wb_dbe_periph"
+			"wb_dbe_periph",
 #			"wb_fmc_iface"
                       ] };
