@@ -7,7 +7,7 @@ syn_device = "xc7a200t" #Creotech PCB
 #syn_package = "ffg900" #KC705 evalboard
 syn_package = "ffg1156" #Creotech PCB
 
-syn_grade = "-2"
+syn_grade = "-1"
 syn_top = "bpm_pcie_a7"
 syn_project = "bpm_pcie_a7.xise"
 
