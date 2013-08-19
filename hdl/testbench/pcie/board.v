@@ -511,7 +511,7 @@ reg [10: 0] 	tx_MRd_Length;
 reg [ 7: 0] 	tx_MRd_Tag;
 reg [ 7: 0] 	tx_MRd_Tag_k;
 
-reg [31:00] 	DMA_PA;
+reg [63:00] 	DMA_PA;
 reg [63:00] 	DMA_HA;
 reg [63:00] 	DMA_BDA;
 reg [31:00] 	DMA_Leng;
