@@ -16,98 +16,98 @@ package custom_wishbone_pkg is
 
   component wb_dma_interface
   generic(
-    g_ovf_counter_width                   : natural := 10
+    g_ovf_counter_width                     : natural := 10
   );
   port(
     -- Asynchronous Reset signal
-    arst_n_i                                                 : in std_logic;
+    arst_n_i                                : in std_logic;
 
     -- Write Domain Clock
-    dma_clk_i                                     : in  std_logic;
-    --dma_valid_o                                    : out std_logic;
-    --dma_data_o                                     : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
-    --dma_be_o                                       : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
-    --dma_last_o                                     : out std_logic;
-    --dma_ready_i                                    : in  std_logic;
+    dma_clk_i                               : in  std_logic;
+    --dma_valid_o                             : out std_logic;
+    --dma_data_o                              : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
+    --dma_be_o                                : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
+    --dma_last_o                              : out std_logic;
+    --dma_ready_i                             : in  std_logic;
 
     -- Slave Data Flow port
     --dma_dflow_slave_i                       : in  t_wishbone_dflow_slave_in;
     --dma_dflow_slave_o                       : out t_wishbone_dflow_slave_out;
-    wb_sel_i                                  : in std_logic_vector(c_wishbone_data_width/8-1 downto 0);
-    wb_cyc_i                                  : in std_logic;
-    wb_stb_i                                  : in std_logic;
-    wb_we_i                                   : in std_logic;
-    wb_adr_i                                  : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    wb_dat_i                                  : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-    wb_ack_o                                  : out std_logic;
-    wb_stall_o                                : out std_logic;
+    wb_sel_i                                : in std_logic_vector(c_wishbone_data_width/8-1 downto 0);
+    wb_cyc_i                                : in std_logic;
+    wb_stb_i                                : in std_logic;
+    wb_we_i                                 : in std_logic;
+    wb_adr_i                                : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_dat_i                                : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_dat_o                                : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_ack_o                                : out std_logic;
+    wb_stall_o                              : out std_logic;
 
     -- Slave Data Input Port
     --data_slave_i                            : in  t_wishbone_slave_in;
     --data_slave_o                            : out t_wishbone_slave_out;
-    data_clk_i                                       : in std_logic;
-    data_i                                             : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    data_valid_i                                          : in std_logic;
-    data_ready_o                                          : out std_logic;
+    data_clk_i                              : in std_logic;
+    data_i                                  : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    data_valid_i                            : in std_logic;
+    data_ready_o                            : out std_logic;
 
     -- Slave control port. use wbgen2 tool or not if it is simple.
     --control_slave_i                         : in  t_wishbone_slave_in;
     --control_slave_o                         : out t_wishbone_slave_out;
-    capture_ctl_i                                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    dma_complete_o                                        : out std_logic;
-    dma_ovf_o                                                : out std_logic
+    capture_ctl_i                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    dma_complete_o                          : out std_logic;
+    dma_ovf_o                               : out std_logic
 
     -- Debug Signals
-    --dma_debug_clk_o                                     : out std_logic;
-    --dma_debug_data_o                                    : out std_logic_vector(255 downto 0);
-    --dma_debug_trigger_o                                 : out std_logic_vector(15 downto 0)
+    --dma_debug_clk_o                         : out std_logic;
+    --dma_debug_data_o                        : out std_logic_vector(255 downto 0);
+    --dma_debug_trigger_o                     : out std_logic_vector(15 downto 0)
   );
   end component;
 
   component xwb_dma_interface
   generic(
     -- Three 32-bit data input. LSB bits are valid.
-    --C_NBITS_VALID_INPUT                         : natural := 128;
-    --C_NBITS_DATA_INPUT                                  : natural := 128;
-    --C_OVF_COUNTER_SIZE                                  : natural := 10
-    g_ovf_counter_width                       : natural := 10
+    --C_NBITS_VALID_INPUT                     : natural := 128;
+    --C_NBITS_DATA_INPUT                      : natural := 128;
+    --C_OVF_COUNTER_SIZE                      : natural := 10
+    g_ovf_counter_width                     : natural := 10
   );
   port(
     -- Asynchronous Reset signal
-    arst_n_i                                                 : in std_logic;
+    arst_n_i                                : in std_logic;
 
         -- Write Domain Clock
-    dma_clk_i                                     : in  std_logic;
-    --dma_valid_o                                    : out std_logic;
-    --dma_data_o                                     : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
-    --dma_be_o                                       : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
-    --dma_last_o                                     : out std_logic;
-    --dma_ready_i                                    : in  std_logic;
+    dma_clk_i                               : in  std_logic;
+    --dma_valid_o                             : out std_logic;
+    --dma_data_o                              : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
+    --dma_be_o                                : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
+    --dma_last_o                              : out std_logic;
+    --dma_ready_i                             : in  std_logic;
 
-        -- Slave Data Flow port
-        dma_slave_i                           : in  t_wishbone_slave_in;
-        dma_slave_o                           : out t_wishbone_slave_out;
+    -- Slave Data Flow port
+    dma_slave_i                             : in  t_wishbone_slave_in;
+    dma_slave_o                             : out t_wishbone_slave_out;
 
     -- Slave Data Input Port
-    --data_slave_i                              : in  t_wishbone_slave_in;
-    --data_slave_o                              : out t_wishbone_slave_out;
-    data_clk_i                                         : in std_logic;
-    data_i                                             : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    data_valid_i                                          : in std_logic;
-    data_ready_o                                          : out std_logic;
+    --data_slave_i                            : in  t_wishbone_slave_in;
+    --data_slave_o                            : out t_wishbone_slave_out;
+    data_clk_i                              : in std_logic;
+    data_i                                  : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    data_valid_i                            : in std_logic;
+    data_ready_o                            : out std_logic;
 
     -- Slave control port. use wbgen2 tool or not if it is simple.
     --control_slave_i                         : in  t_wishbone_slave_in;
     --control_slave_o                         : out t_wishbone_slave_out;
-    capture_ctl_i                                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
-    dma_complete_o                                        : out std_logic;
-    dma_ovf_o                                                : out std_logic
+    capture_ctl_i                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+    dma_complete_o                          : out std_logic;
+    dma_ovf_o                               : out std_logic
 
     -- Debug Signals
-    --dma_debug_clk_o                                   : out std_logic;
-    --dma_debug_data_o                                  : out std_logic_vector(255 downto 0);
-    --dma_debug_trigger_o                               : out std_logic_vector(15 downto 0)
+    --dma_debug_clk_o                         : out std_logic;
+    --dma_debug_data_o                        : out std_logic_vector(255 downto 0);
+    --dma_debug_trigger_o                     : out std_logic_vector(15 downto 0)
   );
   end component;
 
@@ -451,10 +451,8 @@ package custom_wishbone_pkg is
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
-    --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-    --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-    --adc_data_ch3_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
     adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
 
     -----------------------------
@@ -605,10 +603,8 @@ package custom_wishbone_pkg is
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
     adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
-    --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-    --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-    --adc_data_ch3_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
     adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
 
     -----------------------------
@@ -894,5 +890,37 @@ package custom_wishbone_pkg is
     version       => x"00000001",
     date          => x"20130225",
     name          => "CERN_TICS_COUNTER  ")));
+
+  constant c_xwb_bpm_swap_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"12897592",
+    version       => x"00000001",
+    date          => x"20130703",
+    name          => "LNLS_BPM_SWAP      ")));
+
+  constant c_xwb_position_calc_core_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"1bafbf1e",
+    version       => x"00000001",
+    date          => x"20130703",
+    name          => "LNLS_POSITION_CALC ")));
 
 end custom_wishbone_pkg;

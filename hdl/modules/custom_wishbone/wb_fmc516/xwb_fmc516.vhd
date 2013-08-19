@@ -146,10 +146,8 @@ port
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
-  --adc_data_ch1_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-  --adc_data_ch2_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
-  --adc_data_ch3_o                            : out std_logic_vector(c_num_adc_bits-1 downto 0);
   adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
 
   -----------------------------
