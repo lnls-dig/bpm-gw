@@ -901,11 +901,11 @@ begin
           end if;
 
         when ST_MWr4_1ST_DATA =>
-          FIFO_Space_Sel <= '0';
-          wb_FIFO_we_i   <= '0';  -- trn_rx_throttle;
-          wb_FIFO_wsof_i <= '0';  -- trn_rx_throttle;
-          wb_FIFO_weof_i <= '0';  -- trn_rx_throttle;
-          wb_FIFO_din_i  <= wb_FIFO_din_i;
+          FIFO_Space_Sel <= FIFO_Space_Sel;
+          wb_FIFO_we_i   <= FIFO_Space_Sel;
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= m_axis_rx_tlast_i;
+          wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_i);
 
         when others =>
           if m_axis_rx_tlast_i = '1' then

@@ -80,7 +80,7 @@ package abb64Package is
   constant C_ARBITRATE_WIDTH : integer := 4;
 
   ---       Number of BAR spaces
-  constant CINT_BAR_SPACES : integer := 4;
+  constant CINT_BAR_SPACES : integer := 6;
 
   ---       Max BAR number, 7
   constant C_BAR_NUMBER        : integer := 7;
@@ -482,9 +482,8 @@ package abb64Package is
 --  Constant  CINT_ADDR_RXFIFO_STA   : integer  := 10;
 
   constant CINT_REGS_SPACE_BAR : integer := 0;
-  constant CINT_FIFO_SPACE_BAR : integer := 2;
-  constant CINT_BRAM_SPACE_BAR : integer := 3;
-  constant CINT_DDR_SPACE_BAR  : integer := 1;
+  constant CINT_FIFO_SPACE_BAR : integer := 4;
+  constant CINT_DDR_SPACE_BAR  : integer := 2;
   ------------------------------------------------------------------------
 
 

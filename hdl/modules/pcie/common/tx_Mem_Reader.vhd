@@ -331,8 +331,8 @@ begin
             is_CplD_k         <= is_CplD;
             may_be_MWr_k      <= not is_CplD;
             TxTLP_eof_n       <= '1';
-            if BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            if BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit     <= '0';
               DDR_FIFO_Hit    <= '1';
@@ -340,8 +340,8 @@ begin
               Regs_RdEn       <= '0';
               Address_var     <= Address_var;
               TxMReader_State <= St_mR_DDR_A;
-            elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            elsif BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit  <= '0';
               DDR_FIFO_Hit <= '0';
@@ -353,8 +353,8 @@ begin
                 Address_var(C_EP_AWIDTH-1 downto 0) <= StartAddr(C_EP_AWIDTH-1 downto 0);
               end if;
               TxMReader_State <= St_mR_CmdLatch;
-            elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            elsif BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit     <= '1';
               DDR_FIFO_Hit    <= '0';

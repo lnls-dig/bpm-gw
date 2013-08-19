@@ -375,8 +375,9 @@ architecture Behavioral of bpm_pcie_a7 is
       -------------------------------------------------------------------------------------------------------------------
       -- 8. System(SYS) Interface                                                                                      --
       -------------------------------------------------------------------------------------------------------------------
-      sys_clk   : in std_logic;
-      sys_rst_n : in std_logic);
+      pipe_mmcm_rst_n : in std_logic;
+      sys_clk         : in std_logic;
+      sys_rst_n       : in std_logic);
   end component;
 
   component ddr_core
@@ -1294,9 +1295,12 @@ architecture Behavioral of bpm_pcie_a7 is
   signal ack_i  : std_logic;
   signal addr_o : std_logic_vector(28 downto 0);
   signal we_o   : std_logic;
+  signal dat_o  : std_logic_vector(63 downto 0);
   signal sel_o  : std_logic;
   signal stb_o  : std_logic;
   signal cyc_o  : std_logic;
+
+  signal ext_rst_o : std_logic;
 --COMMENT OUT WHEN INSTANTIATING AS COMPONENT
 
 begin
@@ -1739,8 +1743,9 @@ begin
     -------------------------------------------------------------------------------------------------------------------
     -- 8. System(SYS) Interface                                                                                      --
     -------------------------------------------------------------------------------------------------------------------
-    sys_clk   => sys_clk_c ,
-    sys_rst_n => sys_reset_n_c
+    pipe_mmcm_rst_n => sys_reset_n_c,
+    sys_clk         => sys_clk_c ,
+    sys_rst_n       => sys_reset_n_c
     );
 
 -- ---------------------------------------------------------------

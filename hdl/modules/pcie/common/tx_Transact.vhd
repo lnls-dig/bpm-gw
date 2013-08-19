@@ -891,7 +891,7 @@ begin
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            BAR_value       <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
+            BAR_value       <= BAR_pioCplD(C_ENCODE_BAR_NUMBER-1 downto 0);
             StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & wbaddr_piocpld);
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
@@ -904,7 +904,7 @@ begin
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';
           elsif BAR_usTlp = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            BAR_value       <= '0' & BAR_usTlp(C_ENCODE_BAR_NUMBER-2 downto 0);
+            BAR_value       <= BAR_usTlp(C_ENCODE_BAR_NUMBER-1 downto 0);
             StartAddr       <= C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & WBAddr_usTlp;
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';

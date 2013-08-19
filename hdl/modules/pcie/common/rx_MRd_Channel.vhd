@@ -436,31 +436,20 @@ begin
 
           if MRd_Has_4DW_Header = '1' then
             pioCplD_din(C_CHBUF_CPLD_LA_BIT_TOP downto C_CHBUF_CPLD_LA_BIT_BOT)
-              <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT downto 0);
+              <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT+32 downto 0+32);
 
             if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "000";
-            elsif m_axis_rx_tbar_hit_r1(CINT_BRAM_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_MA_BIT_TOP-C_CHBUF_MA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
+                <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT+32 downto 0+32);
             elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
+                <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT+32 downto 0+32);
             elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT downto 0);
+                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT+32 downto 0+32);
             else
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= C_ALL_ONES(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT);    --- "111" !!!
             end if;
 
           else
@@ -472,11 +461,6 @@ begin
                 <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT downto 0);
 --                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
 --                               <= CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "000";
-            elsif m_axis_rx_tbar_hit_r1(CINT_BRAM_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_MA_BIT_TOP-C_CHBUF_MA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
             elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
                 <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT downto 0);
@@ -502,9 +486,6 @@ begin
               <= pioCplD_din(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) &"00";
           end if;
 
---              if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR)='1'
---                 or m_axis_rx_tbar_hit_r1(CINT_BRAM_SPACE_BAR)='1'
---                 then
           if m_axis_rx_tbar_hit_r1(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0) then
             pioCplD_we <= not Tlp_straddles_4KB;  --'1';
           else

@@ -543,8 +543,6 @@ begin
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Loaded(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Loaded(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Loaded(C_DDR_IAWIDTH-1 downto 0);
           else
@@ -576,8 +574,6 @@ begin
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Var(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
           else
@@ -610,8 +606,6 @@ begin
           ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
           if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_BRAM_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= DMA_PA_Var(C_PRAM_AWIDTH-1+2 downto 0);
           elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
           else

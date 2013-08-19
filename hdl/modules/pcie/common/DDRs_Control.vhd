@@ -469,11 +469,11 @@ begin
             else
               DDR_wr_state     <= wrST_last_Dw;
               wpipe_wr_eof     <= '0';
-              wpipe_wr_mask    <= (wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32)
-                                  & wpipe_qout_lo32b(32) & wpipe_Qout(71) & wpipe_Qout(71) & wpipe_Qout(71)
-                                  & wpipe_Qout(71));
-              wpipe_wr_data    <= wpipe_qout_lo32b(32-1 downto 0) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
-              wpipe_qout_lo32b <= '0' & wpipe_Qout(32-1 downto 0);
+              wpipe_wr_mask    <= (wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70) & wpipe_Qout(70)
+                                  & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32) & wpipe_qout_lo32b(32)
+                                  & wpipe_qout_lo32b(32));
+              wpipe_wr_data    <= wpipe_Qout(C_DBUS_WIDTH/2-1 downto 0) & wpipe_qout_lo32b(32-1 downto 0);
+              wpipe_qout_hi32b <= wpipe_Qout(71) & wpipe_Qout(C_DBUS_WIDTH-1 downto 32);
             end if;
           else
             wpipe_wr_eof <= '0';

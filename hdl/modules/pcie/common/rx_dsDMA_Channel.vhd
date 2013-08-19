@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    dsDMA_Transact - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    dsDMA_Transact - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.30 - DMA engine divided into 2 modules: calculation and FSM.  26.07.2007
 --
@@ -22,8 +22,8 @@
 -- Revision 1.02 - FIFO added.    20.12.2006
 --
 -- Revision 1.00 - first release. 14.12.2006
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ architecture Behavioral of dsDMA_Transact is
       DMA_PA_Snout   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DMA_BAR_Number : out std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
 
-      -- 
+      --
       DMA_Snout_Length : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
       DMA_Body_Length  : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
       DMA_Tail_Length  : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
@@ -497,9 +497,9 @@ begin
 -- -------------------------------------------------
 --
   DMA_ds_Status <= DMA_Status_i;
--- 
+--
 -- Synchronous output: DMA_Status
--- 
+--
   DS_DMA_Status_Concat :
   process (user_clk, Local_Reset_i)
   begin
@@ -565,7 +565,7 @@ begin
 
 -- ------------------------------------------
 --  Loop:  Tag_Map
--- 
+--
   Sync_Tag_set_reset_Bits :
   process (user_clk, Local_Reset_i)
   begin
@@ -590,7 +590,7 @@ begin
 
 -- ------------------------------------------
 -- Determination: All_CplD_have_come
--- 
+--
   Sync_Reg_All_CplD_have_come :
   process (user_clk, Local_Reset_i)
   begin
@@ -622,7 +622,7 @@ begin
 
 -- ------------------------------------------
 -- Synchronous Output: Tag_DMA_dsp
--- 
+--
   FSM_dsDMA_Tag_DMA_dsp :
   process (user_clk, Local_Reset_i)
   begin
@@ -635,11 +635,11 @@ begin
         or dsState_Is_Body = '1'
         or dsState_Is_Tail = '1'
       then
-        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(1)
+        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
                        & (Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0)
                           + CONV_STD_LOGIC_VECTOR(1, C_TAGRAM_AWIDTH));
       else
-        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(1)
+        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
                        & Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0);
       end if;
 
@@ -669,7 +669,7 @@ begin
 
 -- ---------------------------------------------
 --  Delay of Empty and prog_Full
--- 
+--
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin
@@ -686,7 +686,7 @@ begin
 
 -- ------------------------------------------
 -- Synchronous: FC_push
--- 
+--
   Synch_Calc_FC_push :
   process (user_clk, Local_Reset_i)
   begin
@@ -703,7 +703,7 @@ begin
 
 -- ------------------------------------------
 -- Synchronous: FC_counter
--- 
+--
   Synch_Calc_FC_counter :
   process (user_clk, Local_Reset_i)
   begin
@@ -725,7 +725,7 @@ begin
 
 -- ------------------------------------------
 -- Synchronous: dsFC_stop
--- 
+--
   Synch_Calc_dsFC_stop :
   process (user_clk, Local_Reset_i)
   begin
