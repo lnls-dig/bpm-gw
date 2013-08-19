@@ -25,7 +25,7 @@ library work;
 -- Main Wishbone Definitions
 use work.wishbone_pkg.all;
 -- Custom Wishbone Modules
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 -- Wishbone Stream Interface
 use work.wb_stream_generic_pkg.all;
 -- FMC 516 package

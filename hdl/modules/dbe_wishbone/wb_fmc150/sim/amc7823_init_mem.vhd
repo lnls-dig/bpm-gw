@@ -26,8 +26,8 @@
 --    All rights reserved.                                                    --
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- You must compile the wrapper file cdce72010_init_mem_int.vhd when simulating
--- the core, cdce72010_init_mem_int. When compiling the wrapper file, be sure to
+-- You must compile the wrapper file amc7823_init_mem.vhd when simulating
+-- the core, amc7823_init_mem. When compiling the wrapper file, be sure to
 -- reference the XilinxCoreLib VHDL simulation library. For detailed
 -- instructions, please refer to the "CORE Generator Help".
 
@@ -40,29 +40,29 @@ USE ieee.std_logic_1164.ALL;
 -- synthesis translate_off
 LIBRARY XilinxCoreLib;
 -- synthesis translate_on
-ENTITY cdce72010_init_mem_int IS
+ENTITY amc7823_init_mem IS
   PORT (
     clka : IN STD_LOGIC;
-    addra : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
-END cdce72010_init_mem_int;
+END amc7823_init_mem;
 
-ARCHITECTURE cdce72010_init_mem_int_a OF cdce72010_init_mem_int IS
+ARCHITECTURE amc7823_init_mem_a OF amc7823_init_mem IS
 -- synthesis translate_off
-COMPONENT wrapped_cdce72010_init_mem_int
+COMPONENT wrapped_amc7823_init_mem
   PORT (
     clka : IN STD_LOGIC;
-    addra : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
 END COMPONENT;
 
 -- Configuration specification
-  FOR ALL : wrapped_cdce72010_init_mem_int USE ENTITY XilinxCoreLib.blk_mem_gen_v6_3(behavioral)
+  FOR ALL : wrapped_amc7823_init_mem USE ENTITY XilinxCoreLib.blk_mem_gen_v6_3(behavioral)
     GENERIC MAP (
-      c_addra_width => 4,
-      c_addrb_width => 4,
+      c_addra_width => 5,
+      c_addrb_width => 5,
       c_algorithm => 1,
       c_axi_id_width => 4,
       c_axi_slave_type => 0,
@@ -88,7 +88,7 @@ END COMPONENT;
       c_has_rstb => 0,
       c_has_softecc_input_regs_a => 0,
       c_has_softecc_output_regs_b => 0,
-      c_init_file_name => "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.mif",
+      c_init_file_name => "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/sim/amc7823_init_mem.mif",
       c_inita_val => "0",
       c_initb_val => "0",
       c_interface_type => 0,
@@ -96,8 +96,8 @@ END COMPONENT;
       c_mem_type => 3,
       c_mux_pipeline_stages => 0,
       c_prim_type => 1,
-      c_read_depth_a => 16,
-      c_read_depth_b => 16,
+      c_read_depth_a => 32,
+      c_read_depth_b => 32,
       c_read_width_a => 32,
       c_read_width_b => 32,
       c_rst_priority_a => "CE",
@@ -108,13 +108,13 @@ END COMPONENT;
       c_sim_collision_check => "ALL",
       c_use_byte_wea => 0,
       c_use_byte_web => 0,
-      c_use_default_data => 0,
+      c_use_default_data => 1,
       c_use_ecc => 0,
       c_use_softecc => 0,
       c_wea_width => 1,
       c_web_width => 1,
-      c_write_depth_a => 16,
-      c_write_depth_b => 16,
+      c_write_depth_a => 32,
+      c_write_depth_b => 32,
       c_write_mode_a => "WRITE_FIRST",
       c_write_mode_b => "WRITE_FIRST",
       c_write_width_a => 32,
@@ -124,7 +124,7 @@ END COMPONENT;
 -- synthesis translate_on
 BEGIN
 -- synthesis translate_off
-U0 : wrapped_cdce72010_init_mem_int
+U0 : wrapped_amc7823_init_mem
   PORT MAP (
     clka => clka,
     addra => addra,
@@ -132,4 +132,4 @@ U0 : wrapped_cdce72010_init_mem_int
   );
 -- synthesis translate_on
 
-END cdce72010_init_mem_int_a;
+END amc7823_init_mem_a;

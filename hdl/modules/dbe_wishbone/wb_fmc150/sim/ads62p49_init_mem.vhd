@@ -26,8 +26,8 @@
 --    All rights reserved.                                                    --
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- You must compile the wrapper file dac3283_init_mem.vhd when simulating
--- the core, dac3283_init_mem. When compiling the wrapper file, be sure to
+-- You must compile the wrapper file ads62p49_init_mem.vhd when simulating
+-- the core, ads62p49_init_mem. When compiling the wrapper file, be sure to
 -- reference the XilinxCoreLib VHDL simulation library. For detailed
 -- instructions, please refer to the "CORE Generator Help".
 
@@ -40,17 +40,17 @@ USE ieee.std_logic_1164.ALL;
 -- synthesis translate_off
 LIBRARY XilinxCoreLib;
 -- synthesis translate_on
-ENTITY dac3283_init_mem IS
+ENTITY ads62p49_init_mem IS
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
   );
-END dac3283_init_mem;
+END ads62p49_init_mem;
 
-ARCHITECTURE dac3283_init_mem_a OF dac3283_init_mem IS
+ARCHITECTURE ads62p49_init_mem_a OF ads62p49_init_mem IS
 -- synthesis translate_off
-COMPONENT wrapped_dac3283_init_mem
+COMPONENT wrapped_ads62p49_init_mem
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -59,7 +59,7 @@ COMPONENT wrapped_dac3283_init_mem
 END COMPONENT;
 
 -- Configuration specification
-  FOR ALL : wrapped_dac3283_init_mem USE ENTITY XilinxCoreLib.blk_mem_gen_v6_3(behavioral)
+  FOR ALL : wrapped_ads62p49_init_mem USE ENTITY XilinxCoreLib.blk_mem_gen_v6_3(behavioral)
     GENERIC MAP (
       c_addra_width => 5,
       c_addrb_width => 5,
@@ -88,7 +88,7 @@ END COMPONENT;
       c_has_rstb => 0,
       c_has_softecc_input_regs_a => 0,
       c_has_softecc_output_regs_b => 0,
-      c_init_file_name => "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/sim/dac3283_init_mem.mif",
+      c_init_file_name => "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/sim/ads62p49_init_mem.mif",
       c_inita_val => "0",
       c_initb_val => "0",
       c_interface_type => 0,
@@ -124,7 +124,7 @@ END COMPONENT;
 -- synthesis translate_on
 BEGIN
 -- synthesis translate_off
-U0 : wrapped_dac3283_init_mem
+U0 : wrapped_ads62p49_init_mem
   PORT MAP (
     clka => clka,
     addra => addra,
@@ -132,4 +132,4 @@ U0 : wrapped_dac3283_init_mem
   );
 -- synthesis translate_on
 
-END dac3283_init_mem_a;
+END ads62p49_init_mem_a;

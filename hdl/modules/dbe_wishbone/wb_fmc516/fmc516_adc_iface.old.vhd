@@ -31,7 +31,7 @@ library unisim;
 use unisim.vcomponents.all;
 
 library work;
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 
 -- Should each channel have its own signal struture?
 -- Should each related signal be in a separate struture?

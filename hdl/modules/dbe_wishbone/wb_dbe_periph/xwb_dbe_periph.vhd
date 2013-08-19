@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 use work.wishbone_pkg.all;
 
 entity xwb_dbe_periph is

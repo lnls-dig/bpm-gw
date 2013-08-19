@@ -131,7 +131,7 @@ package fmc516_pkg is
   constant dummy_default_dly : t_default_adc_dly := (others => 0);
 
   -- SDB for internal FMCC516 layout. More general cores have its SDB structure
-  -- defined indes custom_wishbone_pkg file.
+  -- defined indes dbe_wishbone_pkg file.
     -- FMC516 Interface
   constant c_xwb_fmc516_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                 -- undocumented device

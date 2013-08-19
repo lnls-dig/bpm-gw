@@ -46,10 +46,10 @@ work/lm32_multiplier/.lm32_multiplier_v \
 work/jtag_tap/.jtag_tap_v \
 
 VHDL_SRC := wb_dma_interface_tb.vhd \
-../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
+../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd \
 ../../../modules/custom_common/custom_common_pkg.vhd \
-../../../modules/custom_wishbone/wb_dma_interface/wb_dma_interface.vhd \
-../../../modules/custom_wishbone/wb_dma_interface/xwb_dma_interface.vhd \
+../../../modules/dbe_wishbone/wb_dma_interface/wb_dma_interface.vhd \
+../../../modules/dbe_wishbone/wb_dma_interface/xwb_dma_interface.vhd \
 ../../../modules/custom_common/reset_synch/reset_synch.vhd \
 ../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd \
 ../../../ip_cores/general-cores/modules/common/gc_crc_gen.vhd \
@@ -122,7 +122,7 @@ VHDL_SRC := wb_dma_interface_tb.vhd \
 ../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd \
 
 VHDL_OBJ := work/wb_dma_interface_tb/.wb_dma_interface_tb_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd \
 work/wb_dma_interface/.wb_dma_interface_vhd \
 work/xwb_dma_interface/.xwb_dma_interface_vhd \
@@ -305,14 +305,14 @@ work/wb_dma_interface_tb/.wb_dma_interface_tb_vhd: wb_dma_interface_tb.vhd work/
 
 work/wb_dma_interface_tb/.wb_dma_interface_tb: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd
 
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd: ../../../modules/custom_wishbone/custom_wishbone_pkg.vhd work/custom_wishbone_pkg/.custom_wishbone_pkg
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd: ../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd work/dbe_wishbone_pkg/.dbe_wishbone_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/custom_wishbone_pkg/.custom_wishbone_pkg: \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd
 
 work/custom_common_pkg/.custom_common_pkg_vhd: ../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
@@ -322,7 +322,7 @@ work/custom_common_pkg/.custom_common_pkg_vhd: ../../../modules/custom_common/cu
 
 work/custom_common_pkg/.custom_common_pkg:
 
-work/wb_dma_interface/.wb_dma_interface_vhd: ../../../modules/custom_wishbone/wb_dma_interface/wb_dma_interface.vhd work/wb_dma_interface/.wb_dma_interface
+work/wb_dma_interface/.wb_dma_interface_vhd: ../../../modules/dbe_wishbone/wb_dma_interface/wb_dma_interface.vhd work/wb_dma_interface/.wb_dma_interface
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -331,17 +331,17 @@ work/wb_dma_interface/.wb_dma_interface: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
 work/custom_common_pkg/.custom_common_pkg_vhd
 
-work/xwb_dma_interface/.xwb_dma_interface_vhd: ../../../modules/custom_wishbone/wb_dma_interface/xwb_dma_interface.vhd work/xwb_dma_interface/.xwb_dma_interface
+work/xwb_dma_interface/.xwb_dma_interface_vhd: ../../../modules/dbe_wishbone/wb_dma_interface/xwb_dma_interface.vhd work/xwb_dma_interface/.xwb_dma_interface
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_dma_interface/.xwb_dma_interface: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd
 
 work/reset_synch/.reset_synch_vhd: ../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 

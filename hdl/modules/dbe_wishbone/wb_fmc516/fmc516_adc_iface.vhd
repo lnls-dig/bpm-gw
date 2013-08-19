@@ -36,7 +36,7 @@ library unisim;
 use unisim.vcomponents.all;
 
 library work;
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 use work.fmc516_pkg.all;
 
 -- Should each channel have its own signal struture?

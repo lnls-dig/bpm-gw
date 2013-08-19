@@ -6,7 +6,7 @@
       <db_ref path="./isim.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="custom_common_pkg" />
-            <top_module name="custom_wishbone_pkg" />
+            <top_module name="dbe_wishbone_pkg" />
             <top_module name="fmc516_pkg" />
             <top_module name="fmc516_wbgen2_pkg" />
             <top_module name="gencores_pkg" />

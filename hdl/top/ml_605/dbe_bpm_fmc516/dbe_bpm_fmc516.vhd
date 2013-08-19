@@ -26,7 +26,7 @@ use work.wishbone_pkg.all;
 -- Memory core generator
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- Ethernet MAC Modules and SDB structure

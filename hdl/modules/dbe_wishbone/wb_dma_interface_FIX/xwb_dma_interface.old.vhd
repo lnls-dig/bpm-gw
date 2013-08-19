@@ -8,7 +8,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.wishbone_pkg.all;
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 
 ------------------------------------------------------------------------------
 -- Entity section

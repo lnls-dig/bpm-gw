@@ -8,7 +8,7 @@ use work.wb_stream_generic_pkg.all;
 use work.fmc516_pkg.all;
 use work.wr_fabric_pkg.all;
 
-package custom_wishbone_pkg is
+package dbe_wishbone_pkg is
 
   --------------------------------------------------------------------
   -- Components
@@ -923,4 +923,4 @@ package custom_wishbone_pkg is
     date          => x"20130703",
     name          => "LNLS_POSITION_CALC ")));
 
-end custom_wishbone_pkg;
+end dbe_wishbone_pkg;

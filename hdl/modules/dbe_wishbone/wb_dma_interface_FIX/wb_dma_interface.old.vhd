@@ -10,7 +10,7 @@ library work;
 use work.genram_pkg.all;
 use work.gencores_pkg.all;
 use work.wishbone_pkg.all;
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 use work.custom_common_pkg.all;
 
 ------------------------------------------------------------------------------
@@ -18,46 +18,77 @@ use work.custom_common_pkg.all;
 ------------------------------------------------------------------------------
 
 entity wb_dma_interface is
+    generic(
+        g_ovf_counter_width                 : natural := 10
+    );
     port(
-        ---------------------
-        -- Source Interface
-        ---------------------
-        clk_i                                       : in std_logic;
-        rst_n_i                                     : in std_logic;
+        -- Asynchronous Reset signal
+        arst_n_i                               : in std_logic;
         
-        -- Wishbone Fabric Interface I/O
-        src_i                                       : in  t_wbs_source_in;
-        src_o                                       : out t_wbs_source_out;
-
-        -- Decoded & buffered logic
-        addr_i                                      : in  std_logic_vector(c_wbs_address_width-1 downto 0);
-        data_i                                      : in  std_logic_vector(c_wbs_data_width-1 downto 0);
-        dvalid_i                                    : in  std_logic;
-        sof_i                                       : in  std_logic;
-        eof_i                                       : in  std_logic;
-        error_i                                     : in  std_logic;
-        bytesel_i                                   : in  std_logic;
-        dreq_o                                      : out std_logic
+        -- Write Domain Clock        
+        --dma_valid_o                            : out std_logic;
+        --dma_data_o                             : out std_logic_vector(C_NBITS_DATA_INPUT-1 downto 0);
+        --dma_be_o                               : out std_logic_vector(C_NBITS_DATA_INPUT/8 - 1 downto 0);
+        --dma_last_o                             : out std_logic;
+        --dma_ready_i                            : in  std_logic;
         
-        ---------------------
-        -- Sink Interface
-        ---------------------
-        clk_i                                       : in std_logic;
-        rst_n_i                                     : in std_logic;
+        -- Clock Data Sink Input.
+        dma_clk_i                             : in  std_logic;
+     
+        -- Slave Data Sink port. To/From Data Sink Core
+        wb_sink_sel_i                        : in std_logic_vector(c_wishbone_data_width/8-1 downto 0);
+        wb_sink_cyc_i                        : in std_logic;
+        wb_sink_stb_i                        : in std_logic;
+        wb_sink_we_i                         : in std_logic;
+        wb_sink_adr_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_sink_dat_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_sink_dat_o                        : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_sink_ack_o                        : out std_logic;
+        wb_sink_stall_o                      : out std_logic;
+        
+        -- Clock Data Source Input.
+        data_clk_i                               : in std_logic;
+        
+        -- Slave Data Source port. To/From Data Source Core
+        wb_src_sel_i                        : in std_logic_vector(c_wishbone_data_width/8-1 downto 0);
+        wb_src_cyc_i                        : in std_logic;
+        wb_src_stb_i                        : in std_logic;
+        wb_src_we_i                         : in std_logic;
+        wb_src_adr_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_src_dat_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_src_dat_o                        : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_src_ack_o                        : out std_logic;
+        wb_src_stall_o                      : out std_logic;
+        
+        -- Slave Data Source port. To/From Data Source Core
+        wb_ctl_sel_i                        : in std_logic_vector(c_wishbone_data_width/8-1 downto 0);
+        wb_ctl_cyc_i                        : in std_logic;
+        wb_ctl_stb_i                        : in std_logic;
+        wb_ctl_we_i                         : in std_logic;
+        wb_ctl_adr_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_ctl_dat_i                        : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_ctl_dat_o                        : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+        wb_ctl_ack_o                        : out std_logic;
+        wb_ctl_stall_o                      : out std_logic;
+    
+        -- Slave Data Input Port
+        --data_slave_i                         : in  t_wishbone_slave_in;
+        --data_slave_o                         : out t_wishbone_slave_out;
+        --data_i                                   : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        --data_valid_i                        : in std_logic;
+        --data_ready_o                        : out std_logic;
+        
+        -- Slave control port. use wbgen2 tool or not if it is simple.
+        --control_slave_i                         : in  t_wishbone_slave_in;
+        --control_slave_o                         : out t_wishbone_slave_out;
+        --capture_ctl_i                           : in std_logic_vector(c_wishbone_data_width-1 downto 0);
+        --dma_complete_o                        : out std_logic;
+        --dma_ovf_o                            : out std_logic
 
-        -- Wishbone Fabric Interface I/O
-        snk_i                                       : in  t_wbs_sink_in;
-        snk_o                                       : out t_wbs_sink_out;
-
-        -- Decoded & buffered fabric
-        addr_o                                      : out std_logic_vector(c_wbs_address_width-1 downto 0);
-        data_o                                      : out std_logic_vector(c_wbs_data_width-1 downto 0);
-        dvalid_o                                    : out std_logic;
-        sof_o                                       : out std_logic;
-        eof_o                                       : out std_logic;
-        error_o                                     : out std_logic;
-        bytesel_o                                   : out std_logic;
-        dreq_i                                      : in  std_logic
+        -- Debug Signals
+        --dma_debug_clk_o                           : out std_logic;
+        --dma_debug_data_o                          : out std_logic_vector(255 downto 0);
+        --dma_debug_trigger_o                       : out std_logic_vector(15 downto 0)
     );
 end wb_dma_interface;
 
@@ -616,9 +647,9 @@ architecture rtl of wb_dma_interface is
     fifo_rdclk                                <= dma_clk_i;
     -- Observe the FIFO reset cycle! dma_clk_buf is the clock for fifo_rd_en
     fifo_wrclk                                <= data_clk_i;
-    -- c_wishbone_data_width + 1 bits.
-    -- It doesn't matter if the data_i is signed or unsigned since we do not care what the input data is.
-    -- The user has to treat this and extend the sign if necessary.
+    --    -- c_wishbone_data_width + 1 bits.
+    --    -- It doesn't matter if the data_i is signed or unsigned since we do not care what the input data is.
+    --    -- The user has to treat this and extend the sign if necessary.
     fifo_di                                    <= last_data_reg & data_i_d1;
 
 end rtl;
