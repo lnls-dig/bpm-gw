@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gtp_pipe_rate.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  gtp_pipe_rate.v
 //  Description  :  PIPE Rate Module for 7 Series Transceiver
@@ -92,26 +92,26 @@ module pcie_core_gtp_pipe_rate #
     output              RATE_TXSYNC_START,
     output              RATE_DONE,
     output              RATE_IDLE,
-    output      [30:0]  RATE_FSM
+    output      [ 4:0]  RATE_FSM
 
 );
 
     //---------- Input FF or Buffer ------------------------
-    reg         [ 1:0]  rate_in_reg1;
-    reg                 drp_done_reg1;
-    reg                 rxpmaresetdone_reg1;
-    reg                 txratedone_reg1;
-    reg                 rxratedone_reg1;
-    reg                 phystatus_reg1;
-    reg                 txsync_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg1;
     
-    reg         [ 1:0]  rate_in_reg2;
-    reg                 drp_done_reg2;
-    reg                 rxpmaresetdone_reg2;
-    reg                 txratedone_reg2;
-    reg                 rxratedone_reg2;
-    reg                 phystatus_reg2;
-    reg                 txsync_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg2;
     
     //---------- Internal Signals --------------------------
     wire        [ 2:0]  rate;
@@ -124,22 +124,22 @@ module pcie_core_gtp_pipe_rate #
     //---------- Output FF or Buffer -----------------------
     reg                 pclk_sel =  1'd0; 
     reg         [ 2:0]  rate_out =  3'd0; 
-    reg         [12:0]  fsm      = 13'd0;                 
+    reg         [ 3:0]  fsm      =  0;                 
    
     //---------- FSM ---------------------------------------                                         
-    localparam          FSM_IDLE           = 13'b0000000000001; 
-    localparam          FSM_TXDATA_WAIT    = 13'b0000000000010;           
-    localparam          FSM_PCLK_SEL       = 13'b0000000000100; 
-    localparam          FSM_DRP_X16_START  = 13'b0000000001000;
-    localparam          FSM_DRP_X16_DONE   = 13'b0000000010000;   
-    localparam          FSM_RATE_SEL       = 13'b0000000100000;
-    localparam          FSM_RXPMARESETDONE = 13'b0000001000000; 
-    localparam          FSM_DRP_X20_START  = 13'b0000010000000;
-    localparam          FSM_DRP_X20_DONE   = 13'b0000100000000;   
-    localparam          FSM_RATE_DONE      = 13'b0001000000000;
-    localparam          FSM_TXSYNC_START   = 13'b0010000000000;
-    localparam          FSM_TXSYNC_DONE    = 13'b0100000000000;             
-    localparam          FSM_DONE           = 13'b1000000000000; // Must sync value to pipe_user.v
+    localparam          FSM_IDLE           = 0; 
+    localparam          FSM_TXDATA_WAIT    = 1;           
+    localparam          FSM_PCLK_SEL       = 2; 
+    localparam          FSM_DRP_X16_START  = 3;
+    localparam          FSM_DRP_X16_DONE   = 4;   
+    localparam          FSM_RATE_SEL       = 5;
+    localparam          FSM_RXPMARESETDONE = 6; 
+    localparam          FSM_DRP_X20_START  = 7;
+    localparam          FSM_DRP_X20_DONE   = 8;   
+    localparam          FSM_RATE_DONE      = 9;
+    localparam          FSM_TXSYNC_START   = 10;
+    localparam          FSM_TXSYNC_DONE    = 11;             
+    localparam          FSM_DONE           = 12; // Must sync value to pipe_user.v
     
 //---------- Input FF ----------------------------------------------------------
 always @ (posedge RATE_CLK)
@@ -453,7 +453,7 @@ assign RATE_RATE_OUT     = rate_out;
 assign RATE_TXSYNC_START = (fsm == FSM_TXSYNC_START);
 assign RATE_DONE         = (fsm == FSM_DONE);
 assign RATE_IDLE         = (fsm == FSM_IDLE);
-assign RATE_FSM          = {18'd0, fsm};   
+assign RATE_FSM          = {1'd0, fsm};   
 
 
 

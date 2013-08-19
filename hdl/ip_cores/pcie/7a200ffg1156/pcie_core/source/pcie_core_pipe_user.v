@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_user.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_user.v
 //  Description  :  PIPE User Module for 7 Series Transceiver
@@ -125,37 +125,37 @@ module pcie_core_pipe_user #
 );
     
     //---------- Input Registers ---------------------------   
-    reg                 pclk_sel_reg1;
-    reg                 resetovrd_start_reg1;
-    reg                 txresetdone_reg1;
-    reg                 rxresetdone_reg1; 
-    reg                 txelecidle_reg1;
-    reg                 txcompliance_reg1;
-    reg                 rxcdrlock_reg1;
-    reg                 rxvalid_reg1;
-    reg                 rxstatus_reg1;
-    reg                 rate_done_reg1;
-    reg                 rst_idle_reg1;
-    reg                 rate_rxsync_reg1;
-    reg                 rate_idle_reg1;
-    reg                 rate_gen3_reg1;
-    reg                 rxeq_adapt_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 pclk_sel_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 resetovrd_start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxresetdone_reg1; 
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txelecidle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txcompliance_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxcdrlock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxvalid_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxstatus_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rst_idle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_rxsync_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_idle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_gen3_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_adapt_done_reg1;
 
-    reg                 pclk_sel_reg2;
-    reg                 resetovrd_start_reg2;
-    reg                 txresetdone_reg2;
-    reg                 rxresetdone_reg2; 
-    reg                 txelecidle_reg2;
-    reg                 txcompliance_reg2;
-	  reg	                rxcdrlock_reg2;
-    reg                 rxvalid_reg2;
-    reg                 rxstatus_reg2; 
-    reg                 rate_done_reg2;   
-    reg                 rst_idle_reg2; 
-    reg                 rate_rxsync_reg2;
-    reg                 rate_idle_reg2;
-    reg                 rate_gen3_reg2;
-    reg                 rxeq_adapt_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 pclk_sel_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 resetovrd_start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxresetdone_reg2; 
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txelecidle_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txcompliance_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)	  reg	              rxcdrlock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxvalid_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxstatus_reg2; 
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_done_reg2;   
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rst_idle_reg2; 
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_rxsync_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_idle_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_gen3_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_adapt_done_reg2;
     
     //---------- Internal Signal ---------------------------
     reg         [ 1:0]  oobclk_cnt    =  2'd0;

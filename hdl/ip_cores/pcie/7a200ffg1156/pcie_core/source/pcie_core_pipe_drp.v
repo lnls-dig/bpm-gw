@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_drp.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_drp.v
 //  Description  :  PIPE DRP Module for 7 Series Transceiver
@@ -70,7 +70,7 @@ module pcie_core_pipe_drp #
     parameter PCIE_USE_MODE        = "3.0",                                     // PCIe use mode
     parameter PCIE_ASYNC_EN        = "FALSE",                                   // PCIe async mode
     parameter PCIE_PLL_SEL         = "CPLL",                                    // PCIe PLL select for Gen1/Gen2 only
-    parameter PCIE_AUX_CDR_GEN3_EN = "FALSE",                                   // PCIe AUX CDR Gen3 enable
+    parameter PCIE_AUX_CDR_GEN3_EN = "TRUE",                                    // PCIe AUX CDR Gen3 enable
     parameter PCIE_TXBUF_EN        = "FALSE",                                   // PCIe TX buffer enable for Gen1/Gen2 only
     parameter PCIE_RXBUF_EN        = "TRUE",                                    // PCIe RX buffer enable for Gen3      only
     parameter PCIE_TXSYNC_MODE     = 0,                                         // PCIe TX sync mode
@@ -99,26 +99,26 @@ module pcie_core_pipe_drp #
     output      [15:0]  DRP_DI,   
     output              DRP_WE,
     output              DRP_DONE,
-    output      [ 6:0]  DRP_FSM
+    output      [ 2:0]  DRP_FSM
     
 );
 
     //---------- Input Registers ---------------------------
-    reg                 gtxreset_reg1;
-    reg         [ 1:0]  rate_reg1;
-    reg                 x16x20_mode_reg1;
-    reg                 x16_reg1;
-    reg                 start_reg1;
-    reg         [15:0]  do_reg1;
-    reg                 rdy_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gtxreset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16x20_mode_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg1;
     
-    reg                 gtxreset_reg2;
-    reg         [ 1:0]  rate_reg2;
-    reg                 x16x20_mode_reg2;
-    reg                 x16_reg2;
-    reg                 start_reg2;
-    reg         [15:0]  do_reg2;
-    reg                 rdy_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gtxreset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16x20_mode_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg2;
     
     //---------- Internal Signals --------------------------
     reg         [ 1:0]  load_cnt =  2'd0;
@@ -129,7 +129,7 @@ module pcie_core_pipe_drp #
     
     //---------- Output Registers --------------------------
     reg                 done     =  1'd0;
-    reg         [ 6:0]  fsm      =  7'd1;      
+    reg         [ 2:0]  fsm      =  0;      
                         
     //---------- DRP Address -------------------------------
     //  DRP access for *RXCDR_EIDLE includes 
@@ -317,13 +317,13 @@ module pcie_core_pipe_drp #
     wire        [15:0]  data_x16x20_rx_datawidth;    
            
     //---------- FSM ---------------------------------------  
-    localparam          FSM_IDLE  = 7'b0000001;  
-    localparam          FSM_LOAD  = 7'b0000010;                           
-    localparam          FSM_READ  = 7'b0000100;
-    localparam          FSM_RRDY  = 7'b0001000;
-    localparam          FSM_WRITE = 7'b0010000;
-    localparam          FSM_WRDY  = 7'b0100000;    
-    localparam          FSM_DONE  = 7'b1000000;   
+    localparam          FSM_IDLE  = 0;  
+    localparam          FSM_LOAD  = 1;                           
+    localparam          FSM_READ  = 2;
+    localparam          FSM_RRDY  = 3;
+    localparam          FSM_WRITE = 4;
+    localparam          FSM_WRDY  = 5;    
+    localparam          FSM_DONE  = 6;   
 
     
     

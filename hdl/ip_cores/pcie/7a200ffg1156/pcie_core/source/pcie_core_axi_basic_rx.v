@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_axi_basic_rx.v
-// Version    : 1.8
+// Version    : 1.10
 //                                                                            //
 //  Description:                                                              //
 //  TRN to AXI RX module. Instantiates pipeline and null generator RX         //
