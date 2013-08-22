@@ -11,7 +11,7 @@ use work.genram_pkg.all;
 use work.gencores_pkg.all;
 use work.wishbone_pkg.all;
 use work.dbe_wishbone_pkg.all;
-use work.custom_common_pkg.all;
+use work.dbe_common_pkg.all;
 
 ------------------------------------------------------------------------------
 -- Entity section

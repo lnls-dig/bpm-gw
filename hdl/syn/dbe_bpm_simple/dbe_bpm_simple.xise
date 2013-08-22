@@ -360,7 +360,7 @@
     <file xil_pn:name="../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="5"/>
     </file>
-    <file xil_pn:name="../../modules/custom_common/custom_common_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_common/dbe_common_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="6"/>
     </file>
     <file xil_pn:name="../../platform/virtex6/chipscope/icon_1_port/chipscope_icon_1_port.ngc" xil_pn:type="FILE_NGC">
@@ -450,7 +450,7 @@
     <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="35"/>
     </file>
-    <file xil_pn:name="../../modules/custom_common/reset_synch/reset_synch.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_common/reset_synch/reset_synch.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="36"/>
     </file>
     <file xil_pn:name="../../ip_cores/general-cores/modules/common/gencores_pkg.vhd" xil_pn:type="FILE_VHDL">

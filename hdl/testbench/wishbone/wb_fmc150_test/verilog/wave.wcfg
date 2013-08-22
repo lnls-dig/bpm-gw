@@ -7,7 +7,7 @@
          <top_modules>
             <top_module name="adc_pkg" />
             <top_module name="attributes" />
-            <top_module name="custom_common_pkg" />
+            <top_module name="dbe_common_pkg" />
             <top_module name="dbe_wishbone_pkg" />
             <top_module name="fmc150_pkg" />
             <top_module name="fmc150_wbgen2_pkg" />

@@ -265,8 +265,8 @@ Parsing architecture <syn> of entity <sys_pll>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/clk_gen.vhd" into library work
 Parsing entity <clk_gen>.
 Parsing architecture <syn> of entity <clk_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd" into library work
-Parsing package <custom_common_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/dbe_common_pkg.vhd" into library work
+Parsing package <dbe_common_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd" into library work
 Parsing entity <xwb_stream_sink>.
 Parsing architecture <rtl> of entity <xwb_stream_sink>.
@@ -329,7 +329,7 @@ Parsing architecture <rtl> of entity <fmc150_testbench>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
 Parsing entity <pulse2pulse>.
 Parsing architecture <syn> of entity <pulse2pulse>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd" into library work
 Parsing entity <reset_synch>.
 Parsing architecture <rtl> of entity <reset_synch>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd" into library work
@@ -2421,7 +2421,7 @@ WARNING:Xst:647 - Input <wb_sel_i<3:0>> is never used. This port will be preserv
 Unit <wb_fmc150_port> synthesized.
 
 Synthesizing Unit <reset_synch>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd".
     Found 1-bit register for signal <rst_n_o>.
     Found 1-bit register for signal <s_ff>.
     Summary:

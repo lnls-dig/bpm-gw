@@ -29,7 +29,7 @@ use work.wb_stream_pkg.all;
 -- Register Bank
 use work.fmc150_wbgen2_pkg.all;
 -- Reset Synch
-use work.custom_common_pkg.all;
+use work.dbe_common_pkg.all;
 
 entity wb_fmc150 is
 generic

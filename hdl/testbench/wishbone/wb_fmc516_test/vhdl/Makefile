@@ -47,7 +47,7 @@ work/jtag_tap/.jtag_tap_v \
 
 VHDL_SRC := wb_fmc516_tb.vhd \
 ../../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd \
-../../../../modules/custom_common/custom_common_pkg.vhd \
+../../../../modules/dbe_common/dbe_common_pkg.vhd \
 ../../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd \
 ../../../../modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd \
 ../../../../modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd \
@@ -89,7 +89,7 @@ VHDL_SRC := wb_fmc516_tb.vhd \
 ../../../../modules/dbe_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
 ../../../../modules/dbe_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
 ../../../../modules/dbe_wishbone/wb_fmc516/coregen/cdc_fifo.vhd \
-../../../../modules/custom_common/reset_synch/reset_synch.vhd \
+../../../../modules/dbe_common/reset_synch/reset_synch.vhd \
 ../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd \
 ../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd \
 ../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd \
@@ -168,7 +168,7 @@ VHDL_SRC := wb_fmc516_tb.vhd \
 
 VHDL_OBJ := work/wb_fmc516_tb/.wb_fmc516_tb_vhd \
 work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
-work/custom_common_pkg/.custom_common_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/xwb_stream_sink/.xwb_stream_sink_vhd \
 work/xwb_stream_source/.xwb_stream_source_vhd \
@@ -412,12 +412,12 @@ work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/fmc516_pkg/.fmc516_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
-work/custom_common_pkg/.custom_common_pkg_vhd: ../../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
+work/dbe_common_pkg/.dbe_common_pkg_vhd: ../../../../modules/dbe_common/dbe_common_pkg.vhd work/dbe_common_pkg/.dbe_common_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/custom_common_pkg/.custom_common_pkg:
+work/dbe_common_pkg/.dbe_common_pkg:
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd work/wb_stream_pkg/.wb_stream_pkg
@@ -459,7 +459,7 @@ work/wishbone_pkg/.wishbone_pkg_vhd \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
-work/custom_common_pkg/.custom_common_pkg_vhd
+work/dbe_common_pkg/.dbe_common_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/xwb_fmc150/.xwb_fmc150_vhd: ../../../../modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd work/xwb_fmc150/.xwb_fmc150
@@ -497,7 +497,7 @@ work/wb_fmc516/.wb_fmc516_vhd: ../../../../modules/dbe_wishbone/wb_fmc516/wb_fmc
 
 work/wb_fmc516/.wb_fmc516: \
 work/fmc516_pkg/.fmc516_pkg_vhd \
-work/custom_common_pkg/.custom_common_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
@@ -791,7 +791,7 @@ work/cdc_fifo/.cdc_fifo_vhd: ../../../../modules/dbe_wishbone/wb_fmc516/coregen/
 work/cdc_fifo/.cdc_fifo:
 		@mkdir -p $(dir $@) && touch $@
 
-work/reset_synch/.reset_synch_vhd: ../../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
+work/reset_synch/.reset_synch_vhd: ../../../../modules/dbe_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 

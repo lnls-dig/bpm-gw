@@ -250,8 +250,8 @@ Parsing architecture <syn> of entity <sys_pll>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_ebone/clk_gen.vhd" into library work
 Parsing entity <clk_gen>.
 Parsing architecture <syn> of entity <clk_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd" into library work
-Parsing package <custom_common_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/dbe_common_pkg.vhd" into library work
+Parsing package <dbe_common_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/ethmac/wb_ethmac.vhd" into library work
 Parsing entity <wb_ethmac>.
 Parsing architecture <rtl> of entity <wb_ethmac>.
@@ -369,7 +369,7 @@ Parsing architecture <rtl> of entity <fmc150_testbench>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
 Parsing entity <pulse2pulse>.
 Parsing architecture <syn> of entity <pulse2pulse>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd" into library work
 Parsing entity <reset_synch>.
 Parsing architecture <rtl> of entity <reset_synch>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd" into library work
