@@ -1,0 +1,746 @@
+peripheral {
+  name = "Control and status registers for FMC 130M 4CH";
+  description = "Wishbone slave for control and status registers related to FMC 130M 4CH with access from CSR bus";
+  hdl_entity = "wb_fmc_130m_4ch_csr";
+
+  prefix = "wb_fmc_130m_4ch_csr";
+
+  reg {
+    name = "FMC Status";
+    prefix = "fmc_status";
+
+    field {
+      name = "FMC Present";
+      prefix = "prsnt";
+      description = "FMC PRSNT_M2C Pin\n0 - FMC card present\n1 - no FMC card on carrier";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Power Good from mezzanine";
+      prefix = "pg_m2c";
+      description = "FMC Power Good Pin\nNot used";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Clock Direction";
+      prefix = "clk_dir";
+      description = "Clock direction (RES1)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Firware ID";
+      prefix = "firmware_id";
+      description = "Should be 0x01332A11 on read (20130321)";
+      type = SLV;
+      size = 29;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+
+  };
+
+  reg {
+    name = "Trigger control";
+    prefix = "trigger";
+
+    field {
+      name = "DIR";
+      prefix = "dir";
+      description = "Trigger direction\n0 - output\n1 - input";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Termination Control";
+      prefix = "term";
+      description = "Trigger termination 50 ohm\n0 - disable\n1 - enable";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Value";
+      prefix = "trig_val";
+      description = "Trigger value (when used in output mode)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 29;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+
+  };
+
+ reg {
+    name = "ADC LTC2208 control register (4 chips)";
+    prefix = "adc";
+
+    field {
+      name = "RAND";
+      prefix = "rand";
+      description = "RAND pin";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "DITH";
+      prefix = "dith";
+      description = "DITH pin";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "SHDN";
+      prefix = "shdn";
+      description = "SHDN pin";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "PGA";
+      prefix = "pga";
+      description = "PGA pin";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 28;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+ reg {
+    name = "Clock distribution control register";
+    prefix = "clk_distrib";
+
+    field {
+      name = "SI571_OE";
+      prefix = "si571_oe";
+      description = "Si571 output enable pin, check datasheet for proper voltage standard and signal polarity";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "PLL_FUNCTION";
+      prefix = "pll_function";
+      description = "AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "PLL_STATUS";
+      prefix = "pll_status";
+      description = "AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "CLK_SEL";
+      prefix = "clk_sel";
+      description = "TS3USB221 clock select (for FMC REFIN line)\n0 - clock from external source (MMCX J4)\n1 - clock from FPGA (FMC_CLK line)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 28;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Monitor and FMC status control register";
+    prefix = "monitor";
+
+    field {
+      name = "Temperate Alarm";
+      prefix = "temp_alarm";
+      description = "Temperature alarm from LM75 chips";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Led 1";
+      prefix = "led1";
+      description = "FMC LED1 (blue) - configuration in progress indicator\n0 - LED off\1 - LED on";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Led 2";
+      prefix = "led2";
+      description = "FMC LED2 (red) - data acquisition in progress indicator\n0 - LED off\1 - LED on";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Led 3";
+      prefix = "led3";
+      description = "FMC LED3 (green) - trigger status indicator\n0 - LED off\1 - LED on";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 28;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+ reg {
+    name = "FPGA control";
+    prefix = "fpga_ctrl";
+
+    field {
+      name = "FMC_IDELAY_RST";
+      prefix = "fmc_idelay_rst";
+      description = "Reset IDELAY components in FPGA (for data transmission from ISLA ADC chips). Need to calibrate IDELAY lines. 0 - reset off, 1 - reset on ";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "FMC_FIFO_RST";
+      prefix = "fmc_fifo_rst";
+      description = "Reset FIFOs in FPGA (data aquisition from ISLA ADC chips). Useful for calibration. 0 - reset off, 1 - reset on ";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "FMC_IDELAY0_RDY";
+      prefix = "fmc_idelay0_rdy";
+      description = "Calibration status of IDELAY lines for ADC0 chip";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC_IDELAY1_RDY";
+      prefix = "fmc_idelay1_rdy";
+      description = "Calibration status of IDELAY lines for ADC1 chip";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC_IDELAY2_RDY";
+      prefix = "fmc_idelay2_rdy";
+      description = "Calibration status of IDELAY lines for ADC2 chip";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC_IDELAY3_RDY";
+      prefix = "fmc_idelay3_rdy";
+      description = "Calibration status of IDELAY lines for ADC3 chip";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved1";
+      type = SLV;
+      size = 2;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Enable test data";
+      description = "Write the address counter value instead of ADC data to Wishbone Streaming Interface";
+      prefix = "test_data_en";
+      type = BIT;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved2";
+      type = SLV;
+      size = 23;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+};
+
+ reg {
+    name = "IDELAY ADC0 calibration";
+    prefix = "idelay0_cal";
+
+    field {
+      name = "UPDATE";
+      prefix = "update";
+      description = "Send value to IDELAY components";
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "VAL";
+      prefix = "val";
+      description = "Value of tap (0 to 31)";
+      type = SLV;
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+
+    };
+
+    --field {
+    --  name = "VAL_READ";
+    --  prefix = "val_read";
+    --  description = "Temporary loaded value to IDEALY line";
+    --  type = SLV;
+    --  size = 5;
+    --  access_bus = READ_ONLY;
+    --  access_dev = WRITE_ONLY;
+    --
+    --};
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 9;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+ reg {
+    name = "IDELAY ADC1 calibration";
+    prefix = "idelay1_cal";
+
+    field {
+      name = "UPDATE";
+      prefix = "update";
+      description = "Send value to IDELAY components";
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "VAL";
+      prefix = "val";
+      description = "Value of tap (0 to 31)";
+      type = SLV;
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+
+    };
+
+    --field {
+    --  name = "VAL_READ";
+    --  prefix = "val_read";
+    --  description = "Temporary loaded value to IDEALY line";
+    --  type = SLV;
+    --  size = 5;
+    --  access_bus = READ_ONLY;
+    --  access_dev = WRITE_ONLY;
+    --
+    --
+    --};
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 9;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+ reg {
+    name = "IDELAY ADC2 calibration";
+    prefix = "idelay2_cal";
+
+    field {
+      name = "UPDATE";
+      prefix = "update";
+      description = "Send value to IDELAY components";
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "VAL";
+      prefix = "val";
+      description = "Value of tap (0 to 31)";
+      type = SLV;
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+
+    };
+
+    --field {
+    --  name = "VAL_READ";
+    --  prefix = "val_read";
+    --  description = "Temporary loaded value to IDEALY line";
+    --  type = SLV;
+    --  size = 5;
+    --  access_bus = READ_ONLY;
+    --  access_dev = WRITE_ONLY;
+    --
+    --};
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 9;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+ reg {
+    name = "IDELAY ADC3 calibration";
+    prefix = "idelay3_cal";
+
+    field {
+      name = "UPDATE";
+      prefix = "update";
+      description = "Send value to IDELAY components";
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+
+    };
+
+    field {
+      name = "VAL";
+      prefix = "val";
+      description = "Value of tap (0 to 31)";
+      type = SLV;
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+
+    };
+
+    --field {
+    --  name = "VAL_READ";
+    --  prefix = "val_read";
+    --  description = "Temporary loaded value to IDEALY line";
+    --  type = SLV;
+    --  size = 5;
+    --  access_bus = READ_ONLY;
+    --  access_dev = WRITE_ONLY;
+    --
+    --};
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 9;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+  };
+
+
+reg {
+    name = "ADC Data Channel 0";
+    prefix = "data0";
+
+    field {
+      name = "DATA0";
+      prefix = "val";
+      description = "ADC data from channel 0";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+
+    };
+};
+
+reg {
+    name = "ADC Data Channel 1";
+    prefix = "data1";
+
+    field {
+      name = "DATA1";
+      prefix = "val";
+      description = "ADC data from channel 1";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+
+    };
+};
+
+reg {
+    name = "ADC Data Channel 2";
+    prefix = "data2";
+
+    field {
+      name = "DATA2";
+      prefix = "val";
+      description = "ADC data from channel 2";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+
+    };
+};
+
+reg {
+    name = "ADC Data Channel 3";
+    prefix = "data3";
+
+    field {
+      name = "DATA3";
+      prefix = "val";
+      description = "ADC data from channel 3";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+
+    };
+};
+
+reg {
+    name = "ADC DCM control";
+    prefix = "dcm";
+
+   field {
+      name = "ADC_DCM";
+      prefix = "adc_en";
+      description = "Enable one phase shift for ADC DCM";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "ADC_PHASE_INC";
+      prefix = "adc_phase";
+      description = "ADC phase shift: 1 - increment, 0 - decrement";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "ADC_DCM_DONE";
+      prefix = "adc_done";
+      description = "Phase shifting done (ADC DCM): 1 - done, 0 - in progress";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "ADC_DCM_STATUS0";
+      prefix = "adc_status0";
+      description = "Status of phase shifting (ADC DCM, status bit 0): 1 - error, outside the limits, 0 - ok";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "ADC_RESET";
+      prefix = "adc_reset";
+      description = "Reset ADC DCM (should be done on startup)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 27;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+
+  };
+
+
+};

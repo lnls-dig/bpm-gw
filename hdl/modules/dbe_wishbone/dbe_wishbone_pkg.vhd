@@ -5,7 +5,7 @@ library work;
 use work.wishbone_pkg.all;
 use work.wb_stream_pkg.all;
 use work.wb_stream_generic_pkg.all;
-use work.fmc516_pkg.all;
+use work.fmc_adc_pkg.all;
 use work.wr_fabric_pkg.all;
 
 package dbe_wishbone_pkg is
@@ -427,9 +427,9 @@ package dbe_wishbone_pkg is
     lmk_uwire_data_o                          : out std_logic;
     lmk_uwire_clock_o                         : out std_logic;
 
-    -- Programable VCXO via I2C?
+    -- Programable Si571 VCXO via I2C
     vcxo_i2c_sda_b                            : inout std_logic;
-    vcxo_i2c_scl_o                            : out std_logic;
+    vcxo_i2c_scl_b                            : inout std_logic;
     vcxo_pd_l_o                               : out std_logic;
 
     -- One-wire To/From DS2431 (VMETRO Data)
@@ -581,7 +581,7 @@ package dbe_wishbone_pkg is
 
     -- Programable VCXO via I2C
     vcxo_i2c_sda_b                            : inout std_logic;
-    vcxo_i2c_scl_o                            : out std_logic;
+    vcxo_i2c_scl_b                            : inout std_logic;
     vcxo_pd_l_o                               : out std_logic;
 
     -- One-wire To/From DS2431 (VMETRO Data)
@@ -629,6 +629,307 @@ package dbe_wishbone_pkg is
     fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
     fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
     fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+  );
+  end component;
+
+  component wb_fmc130m_4ch
+  generic
+  (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
+    g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
+    g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
+    g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+    g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
+    g_packet_size                             : natural := 32;
+    g_sim                                     : integer := 0
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- ADC LTC2208 interface
+    fmc_adc_pga_o                             : out std_logic;
+    fmc_adc_shdn_o                            : out std_logic;
+    fmc_adc_dith_o                            : out std_logic;
+    fmc_adc_rand_o                            : out std_logic;
+
+    -- ADC0 LTC2208
+    fmc_adc0_clk_i                            : in std_logic := '0';
+    fmc_adc0_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc_adc0_of_i                             : in std_logic := '0'; -- Unused
+
+    -- ADC1 LTC2208
+    fmc_adc1_clk_i                            : in std_logic := '0';
+    fmc_adc1_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc_adc1_of_i                             : in std_logic := '0'; -- Unused
+
+    -- ADC2 LTC2208
+    fmc_adc2_clk_i                            : in std_logic := '0';
+    fmc_adc2_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc_adc2_of_i                             : in std_logic := '0'; -- Unused
+
+    -- ADC3 LTC2208
+    fmc_adc3_clk_i                            : in std_logic;
+    fmc_adc3_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc_adc3_of_i                             : in std_logic := '0'; -- Unused
+
+    -- FMC General Status
+    fmc_prsnt_i                               : in std_logic := '0';
+    fmc_pg_m2c_i                              : in std_logic := '0';
+    --fmc_clk_dir_i                           : in std_logic;, -- not supported on Kintex7 KC705 board
+
+    -- Trigger
+    fmc_trig_dir_o                            : out std_logic;
+    fmc_trig_term_o                           : out std_logic;
+    fmc_trig_val_p_b                          : inout std_logic;
+    fmc_trig_val_n_b                          : inout std_logic;
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic := '0';
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic := '0';
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic := '0';
+    fmc_fpga_clk_n_i                          : in std_logic := '0';
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -- EEPROM
+    eeprom_scl_pad_b                          : inout std_logic;
+    eeprom_sda_pad_b                          : inout std_logic;
+
+    -- Temperature monitor
+    -- LM75AIMM
+    lm75_scl_pad_b                            : inout std_logic;
+    lm75_sda_pad_b                            : inout std_logic;
+
+    fmc_lm75_temp_alarm_i                     : in std_logic := '0';
+
+    -- FMC LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
+    fmc_led3_o                                : out std_logic;
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+    -- Trigger to other FPGA logic
+    trig_hw_o                                 : out std_logic;
+    trig_hw_i                                 : in std_logic := '0';
+
+    -- General board status
+    fmc_mmcm_lock_o                           : out std_logic;
+    fmc_pll_status_o                          : out std_logic;
+
+    -----------------------------
+    -- Wishbone Streaming Interface Source
+    -----------------------------
+    wbs_adr_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_adr4_width-1 downto 0);
+    wbs_dat_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_dat16_width-1 downto 0);
+    wbs_cyc_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_stb_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_we_o                                  : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_sel_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_sel16_width-1 downto 0);
+    wbs_ack_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_stall_i                               : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_err_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_rty_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+
+    adc_dly_debug_o                           : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+  );
+  end component;
+
+  component xwb_fmc130m_4ch
+  generic
+  (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
+    g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
+    g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
+    g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+    g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
+    g_packet_size                             : natural := 32;
+    g_sim                                     : integer := 0
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_slv_i                                  : in t_wishbone_slave_in;
+    wb_slv_o                                  : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- ADC LTC2208 interface
+    fmc_adc_pga_o                             : out std_logic;
+    fmc_adc_shdn_o                            : out std_logic;
+    fmc_adc_dith_o                            : out std_logic;
+    fmc_adc_rand_o                            : out std_logic;
+
+    -- ADC0 LTC2208
+    fmc_adc0_clk_i                            : in std_logic;
+    fmc_adc0_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0);
+    fmc_adc0_of_i                             : in std_logic; -- Unused
+
+    -- ADC1 LTC2208
+    fmc_adc1_clk_i                            : in std_logic;
+    fmc_adc1_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0);
+    fmc_adc1_of_i                             : in std_logic; -- Unused
+
+    -- ADC2 LTC2208
+    fmc_adc2_clk_i                            : in std_logic;
+    fmc_adc2_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0);
+    fmc_adc2_of_i                             : in std_logic; -- Unused
+
+    -- ADC3 LTC2208
+    fmc_adc3_clk_i                            : in std_logic;
+    fmc_adc3_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0);
+    fmc_adc3_of_i                             : in std_logic; -- Unused
+
+    -- FMC General Status
+    fmc_prsnt_i                               : in std_logic;
+    fmc_pg_m2c_i                              : in std_logic;
+    --fmc_clk_dir_i                           : in std_logic;, -- not supported on Kintex7 KC705 board
+
+    -- Trigger
+    fmc_trig_dir_o                            : out std_logic;
+    fmc_trig_term_o                           : out std_logic;
+    fmc_trig_val_p_b                          : inout std_logic;
+    fmc_trig_val_n_b                          : inout std_logic;
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic;
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic;
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic;
+    fmc_fpga_clk_n_i                          : in std_logic;
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -- EEPROM
+    eeprom_scl_pad_b                          : inout std_logic;
+    eeprom_sda_pad_b                          : inout std_logic;
+
+    -- Temperature monitor
+    -- LM75AIMM
+    lm75_scl_pad_b                            : inout std_logic;
+    lm75_sda_pad_b                            : inout std_logic;
+
+    fmc_lm75_temp_alarm_i                     : in std_logic;
+
+    -- FMC LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
+    fmc_led3_o                                : out std_logic;
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+    -- Trigger to other FPGA logic
+    trig_hw_o                                 : out std_logic;
+    trig_hw_i                                 : in std_logic := '0';
+
+    -- General board status
+    fmc_mmcm_lock_o                           : out std_logic;
+    fmc_pll_status_o                          : out std_logic;
+
+    -----------------------------
+    -- Wishbone Streaming Interface Source
+    -----------------------------
+    wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
+    wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
+
+    adc_dly_debug_o                          : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+
+    fifo_debug_valid_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0)
   );
   end component;
 
@@ -734,6 +1035,61 @@ package dbe_wishbone_pkg is
   );
   end component;
 
+  component wb_rs232_syscon
+  generic (
+    g_ma_interface_mode                       : t_wishbone_interface_mode      := PIPELINED;
+    g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE
+  );
+  port(
+    -- WISHBONE common
+    wb_clk_i                                  : in std_logic;
+    wb_rstn_i                                 : in std_logic;
+
+    -- External ports
+    rs232_rxd_i                               : in std_logic;
+    rs232_txd_o                               : out std_logic;
+
+    -- Reset to FPGA logic
+    rstn_o                                    : out std_logic;
+
+    -- WISHBONE master
+    m_wb_adr_o                                : out std_logic_vector(31 downto 0);
+    m_wb_sel_o                                : out std_logic_vector(3 downto 0);
+    m_wb_we_o                                 : out std_logic;
+    m_wb_dat_o                                : out std_logic_vector(31 downto 0);
+    m_wb_dat_i                                : in std_logic_vector(31 downto 0);
+    m_wb_cyc_o                                : out std_logic;
+    m_wb_stb_o                                : out std_logic;
+    m_wb_ack_i                                : in std_logic;
+    m_wb_err_i                                : in std_logic;
+    m_wb_stall_i                              : in std_logic;
+    m_wb_rty_i                                : in std_logic
+  );
+  end component;
+
+  component xwb_rs232_syscon
+  generic (
+    g_ma_interface_mode                       : t_wishbone_interface_mode      := PIPELINED;
+    g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE
+  );
+  port(
+    -- WISHBONE common
+    wb_clk_i                                  : in std_logic;
+    wb_rstn_i                                 : in std_logic;
+
+    -- External ports
+    rs232_rxd_i                               : in std_logic;
+    rs232_txd_o                               : out std_logic;
+
+    -- Reset to FPGA logic
+    rstn_o                                    : out std_logic;
+
+    -- WISHBONE master
+    wb_master_i                               : in t_wishbone_master_in;
+    wb_master_o                               : out t_wishbone_master_out
+  );
+  end component;
+
   --------------------------------------------------------------------
   -- SDB Devices Structures
   --------------------------------------------------------------------
@@ -790,21 +1146,21 @@ package dbe_wishbone_pkg is
     name          => "LNLS_FMC150        ")));
 
   -- FMC516 Interface
-  constant c_xwb_fmc516_sdb : t_sdb_device := (
-    abi_class     => x"0000",                 -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"00",
-    wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
-    sdb_component => (
-    addr_first    => x"0000000000000000",
-    addr_last     => x"0000000000000FFF",   -- Too much addresses? Probably...
-    product => (
-    vendor_id     => x"1000000000001215",     -- LNLS
-    device_id     => x"64f2a9ba",
-    version       => x"00000001",
-    date          => x"20121124",
-    name          => "LNLS_FMC516        ")));
+  --constant c_xwb_fmc516_sdb : t_sdb_device := (
+  --  abi_class     => x"0000",                 -- undocumented device
+  --  abi_ver_major => x"01",
+  --  abi_ver_minor => x"00",
+  --  wbd_endian    => c_sdb_endian_big,
+  --  wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
+  --  sdb_component => (
+  --  addr_first    => x"0000000000000000",
+  --  addr_last     => x"0000000000000FFF",   -- Too much addresses? Probably...
+  --  product => (
+  --  vendor_id     => x"1000000000001215",     -- LNLS
+  --  device_id     => x"64f2a9ba",
+  --  version       => x"00000001",
+  --  date          => x"20121124",
+  --  name          => "LNLS_FMC516        ")));
 
   -- UART Interface
   constant c_xwb_uart_sdb : t_sdb_device := (
