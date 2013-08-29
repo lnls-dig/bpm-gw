@@ -75,12 +75,14 @@ void fmc516_init_regs(unsigned int id)
     fmc516_clk_sel(id, 1);
     fmc516_led0(id, 1);
 
-    // Adjsut the delays of all channels. Don't change these values
+    // Adjust the delays of all channels. Don't change these values
     // unless you really have to!
     fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 24, commit);
+    //fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 15, commit);
     fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 14, commit);
     fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 15, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
+    //fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 28, commit);
 
     // Delay the falling edge of all channels
     fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC0, 0, 0, 0, 0);
@@ -100,19 +102,19 @@ void fmc516_sweep_delays(unsigned int id)
     dbg_print("> ADC%d data delay: %d...\n", 3, FMC516_CH3_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH3_FN_DLY));
 
     //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-        //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 1, j);
-        //    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, -1, j, commit);
-        //    delay(80000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
-        //}
-
-        //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 2, j);
-        //    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, -1, j, commit);
-        //    delay(150000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
-        //}
+    //  //for (j = 0; j < 32; ++j) {
+    //  //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 0, j);
+    //  //    fmc516_adj_delay(id, FMC516_ISLA216_ADC0, -1, j, commit);
+    //  //    delay(80000000);
+    //  //    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
+    //  //}
+    //
+    //  for (j = 0; j < 32; ++j) {
+    //      dbg_print("> sweeping ADC%d clk delay values: %d...\n", 3, j);
+    //      fmc516_adj_delay(id, FMC516_ISLA216_ADC3, -1, j, commit);
+    //      delay(150000000);
+    //      dbg_print("> ADC%d data delay: %d...\n", 3, FMC516_CH3_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH3_FN_DLY));
+    //  }
     //}
 }
 
@@ -147,6 +149,7 @@ void fmc516_adj_delay(unsigned int id, int ch, int clk_dly, int data_dly, int co
             break;
 
         default:
+            dbg_print("> Unsupported FMC516 ADC channel\n");
             fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_FN_DLY;
     }
 
@@ -253,6 +256,7 @@ void fmc516_fe_rg_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2,
             break;
 
         default:
+            dbg_print("> Unsupported FMC516 ADC channel\n");
             fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_CS_DLY;
     }
 
