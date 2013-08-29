@@ -28,8 +28,8 @@ use work.wishbone_pkg.all;
 use work.dbe_wishbone_pkg.all;
 -- Wishbone Stream Interface
 use work.wb_stream_generic_pkg.all;
--- FMC 516 package
-use work.fmc516_pkg.all;
+-- FMC ADC package
+use work.fmc_adc_pkg.all;
 
 entity xwb_fmc516 is
 generic
@@ -124,7 +124,7 @@ port
 
   -- Programable VCXO via I2C
   vcxo_i2c_sda_b                            : inout std_logic;
-  vcxo_i2c_scl_o                            : out std_logic;
+  vcxo_i2c_scl_b                            : inout std_logic;
   vcxo_pd_l_o                               : out std_logic;
 
   -- One-wire To/From DS2431 (VMETRO Data)
@@ -289,7 +289,7 @@ begin
 
     -- Programable VCXO via I2C?
     vcxo_i2c_sda_b                            => vcxo_i2c_sda_b,
-    vcxo_i2c_scl_o                            => vcxo_i2c_scl_o,
+    vcxo_i2c_scl_b                            => vcxo_i2c_scl_b,
     vcxo_pd_l_o                               => vcxo_pd_l_o,
 
     -- One-wire To/From DS2431 (VMETRO Data)

@@ -30,10 +30,10 @@ use work.dbe_wishbone_pkg.all;
 use work.wb_stream_generic_pkg.all;
 -- Wishbone Register Interface
 use work.fmc516_wbgen2_pkg.all;
--- FMC 516 package
-use work.fmc516_pkg.all;
+-- FMC ADC package
+use work.fmc_adc_pkg.all;
 -- Reset Synch
-use work.custom_common_pkg.all;
+use work.dbe_common_pkg.all;
 -- General common cores
 use work.gencores_pkg.all;
 
@@ -146,7 +146,7 @@ port
 
   -- Programable VCXO via I2C
   vcxo_i2c_sda_b                            : inout std_logic;
-  vcxo_i2c_scl_o                            : out std_logic;
+  vcxo_i2c_scl_b                            : inout std_logic;
   vcxo_pd_l_o                               : out std_logic;
 
   -- One-wire To/From DS2431 (VMETRO Data)
@@ -227,6 +227,12 @@ architecture rtl of wb_fmc516 is
   constant c_periph_addr_size               : natural := 5+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
   constant c_ref_clk                        : natural := g_ref_clk;
+  constant c_with_clk_single_ended          : boolean := false;
+  constant c_with_data_single_ended         : boolean := false;
+  constant c_with_data_sdr                  : boolean := false;
+  constant c_with_fn_dly_select             : boolean := false;
+  constant c_with_idelay_var_loadable       : boolean := true;
+  constant c_with_idelay_variable           : boolean := true;
 
   -----------------------------
   -- Wishbone fanout component (xwb_bus_fanout) constants
@@ -264,7 +270,7 @@ architecture rtl of wb_fmc516 is
     1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),   -- SYS I2C
     2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
     3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- LMK SPI
-    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO I2C
+    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO Si571 I2C
     5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),   -- One-wire DS2431
     6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")    -- One-wire DS2432
   );
@@ -296,20 +302,27 @@ architecture rtl of wb_fmc516 is
 
   -- ADC clock + data single ended inputs
   signal adc_in                             : t_adc_in_array(c_num_adc_channels-1 downto 0);
+  signal adc_in_sdr_dummy                   : t_adc_sdr_in_array(c_num_adc_channels-1 downto 0) :=
+                                                (0 => ('0', '0', (others => '0')),
+                                                 1 => ('0', '0', (others => '0')),
+                                                 2 => ('0', '0', (others => '0')),
+                                                 3 => ('0', '0', (others => '0'))
+                                                 );
 
   signal adc_clk0                           : std_logic;
   signal adc_clk1                           : std_logic;
   signal adc_clk2                           : std_logic;
   signal adc_clk3                           : std_logic;
 
-  signal adc_data_ch0                       : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-  signal adc_data_ch1                       : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-  signal adc_data_ch2                       : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-  signal adc_data_ch3                       : std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
+  signal adc_data_ch0                       : std_logic_vector(f_num_adc_pins(c_with_data_sdr)-1 downto 0);
+  signal adc_data_ch1                       : std_logic_vector(f_num_adc_pins(c_with_data_sdr)-1 downto 0);
+  signal adc_data_ch2                       : std_logic_vector(f_num_adc_pins(c_with_data_sdr)-1 downto 0);
+  signal adc_data_ch3                       : std_logic_vector(f_num_adc_pins(c_with_data_sdr)-1 downto 0);
 
   -- ADC fine delay signals.
   signal adc_fn_dly_in                      : t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
-  signal adc_fn_dly_in_int                  : t_adc_fn_dly_int_array(c_num_adc_channels-1 downto 0);
+  --signal adc_fn_dly_in_int                  : t_adc_fn_dly_int_array(c_num_adc_channels-1 downto 0);
+  signal adc_fn_dly_wb_ctl_out              : t_adc_fn_dly_wb_ctl_array(c_num_adc_channels-1 downto 0);
   signal adc_fn_dly_out                     : t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
   -- ADC coarse delay signals.
   signal adc_cs_dly_in                      : t_adc_cs_dly_array(c_num_adc_channels-1 downto 0);
@@ -318,8 +331,8 @@ architecture rtl of wb_fmc516 is
   signal adc_out                            : t_adc_out_array(c_num_adc_channels-1 downto 0);
 
   -- ADC Clock/Data variable delay interface internal structure
-  signal adc_dly_pulse_clk_int              : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal adc_dly_pulse_data_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
+  --signal adc_dly_pulse_clk_int              : std_logic_vector(c_num_adc_channels-1 downto 0);
+  --signal adc_dly_pulse_data_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   -- Signals for adc internal use
   --signal adc_clk_int                        : std_logic_vector(c_num_adc_bits-1 downto 0);
@@ -380,10 +393,10 @@ architecture rtl of wb_fmc516 is
   --signal wb_out                           : t_wishbone_master_in_array(0 to c_num_int_slaves-1);
   --signal wb_in                            : t_wishbone_master_out_array(0 to c_num_int_slaves-1);
   -- Crossbar master/slave arrays
-  signal cbar_slave_in                    : t_wishbone_slave_in_array (c_masters-1 downto 0);
-  signal cbar_slave_out                   : t_wishbone_slave_out_array(c_masters-1 downto 0);
-  signal cbar_master_in                   : t_wishbone_master_in_array(c_slaves-1 downto 0);
-  signal cbar_master_out                  : t_wishbone_master_out_array(c_slaves-1 downto 0);
+  signal cbar_slave_in                      : t_wishbone_slave_in_array (c_masters-1 downto 0);
+  signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
+  signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
+  signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
 
   -----------------------------
   -- System I2C signals
@@ -413,7 +426,7 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- VCXO I2C signals
   -----------------------------
-  --signal vcxo_i2c_scl_in                     : std_logic;
+  signal vcxo_i2c_scl_in                    : std_logic;
   signal vcxo_i2c_scl_out                   : std_logic;
   signal vcxo_i2c_scl_oe_n                  : std_logic;
   signal vcxo_i2c_sda_in                    : std_logic;
@@ -448,124 +461,32 @@ architecture rtl of wb_fmc516 is
   signal led1_extd_p                        : std_logic;
 
   -----------------------------
-  -- Components declaration
+  -- Dummy signals
   -----------------------------
-  component fmc516_adc_buf
-  port
-  (
-    -----------------------------
-    -- External ports
-    -----------------------------
+  signal dummy_bit_low                      : std_logic := '0';
+  signal dummy_adc_vector_low               : std_logic_vector(f_num_adc_pins(c_with_data_sdr)-1 downto 0) :=
+                                                 (others => '0');
 
-    -- ADC clocks. One clock per ADC channel
-    adc_clk0_p_i                            : in std_logic;
-    adc_clk0_n_i                            : in std_logic;
-    adc_clk1_p_i                            : in std_logic;
-    adc_clk1_n_i                            : in std_logic;
-    adc_clk2_p_i                            : in std_logic;
-    adc_clk2_n_i                            : in std_logic;
-    adc_clk3_p_i                            : in std_logic;
-    adc_clk3_n_i                            : in std_logic;
+  -----------------------------
+  -- Components
+  -----------------------------
 
-    -- DDR ADC data channels.
-    adc_data_ch0_p_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch0_n_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch1_p_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch1_n_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch2_p_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch2_n_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch3_p_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch3_n_i                        : in std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-
-    adc_clk0_o                              : out std_logic;
-    adc_clk1_o                              : out std_logic;
-    adc_clk2_o                              : out std_logic;
-    adc_clk3_o                              : out std_logic;
-
-    adc_data_ch0_o                          : out std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch1_o                          : out std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch2_o                          : out std_logic_vector(c_num_adc_bits/2 - 1 downto 0);
-    adc_data_ch3_o                          : out std_logic_vector(c_num_adc_bits/2 - 1 downto 0)
-  );
-  end component;
-
-  component fmc516_adc_iface
-  generic
-  (
-    -- The only supported values are VIRTEX6 and 7SERIES
-    g_fpga_device                           : string := "VIRTEX6";
-    g_delay_type                            : string := "VARIABLE";
-    g_adc_clk_period_values                 : t_clk_values_array;
-    g_use_clk_chains                        : t_clk_use_chain := default_clk_use_chain;
-    g_clk_default_dly                       : t_default_adc_dly := default_clk_dly;
-    g_use_data_chains                       : t_data_use_chain := default_data_use_chain;
-    g_map_clk_data_chains                   : t_map_clk_data_chain := default_map_clk_data_chain;
-    g_data_default_dly                      : t_default_adc_dly := default_data_dly;
-    g_ref_clk                               : t_ref_adc_clk := default_ref_adc_clk;
-    g_sim                                   : integer := 0
-  );
-  port
-  (
-    sys_clk_i                               : in std_logic;
-    -- System Reset
-    sys_rst_n_i                             : in std_logic;
-    -- ADC clock generation reset. Just a regular asynchronous reset.
-    sys_clk_200Mhz_i                        : in std_logic;
-
-    -----------------------------
-    -- External ports
-    -----------------------------
-    -- Do I need really to worry about the deassertion of async resets?
-    -- Generate them outside this module, as this reset is needed by
-    -- external logic
-
-    -- ADC clock + data differential inputs (from the top module)
-    adc_in_i                                : in t_adc_in_array(c_num_adc_channels-1 downto 0);
-
-    -----------------------------
-    -- ADC Delay signals.
-    -----------------------------
-    -- ADC clock + data delays
-    adc_fn_dly_i                            : in t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
-    adc_fn_dly_o                            : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
-
-    -- ADC falling edge delay control
-    adc_cs_dly_i                            : in t_adc_cs_dly_array(c_num_adc_channels-1 downto 0);
-
-    -----------------------------
-    -- ADC output signals.
-    -----------------------------
-    adc_out_o                               : out t_adc_out_array(c_num_adc_channels-1 downto 0);
-
-    -----------------------------
-    -- MMCM general signals
-    -----------------------------
-    mmcm_adc_locked_o                       : out std_logic;
-
-    fifo_debug_valid_o                      : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_full_o                       : out std_logic_vector(c_num_adc_channels-1 downto 0);
-    fifo_debug_empty_o                      : out std_logic_vector(c_num_adc_channels-1 downto 0)
-  );
-  end component;
-
-  -- FMC516 Register Wishbone Interface
   component wb_fmc516_regs
   port (
-    rst_n_i                                 : in     std_logic;
-    clk_sys_i                               : in     std_logic;
-    wb_adr_i                                : in     std_logic_vector(4 downto 0);
-    wb_dat_i                                : in     std_logic_vector(31 downto 0);
-    wb_dat_o                                : out    std_logic_vector(31 downto 0);
-    wb_cyc_i                                : in     std_logic;
-    wb_sel_i                                : in     std_logic_vector(3 downto 0);
-    wb_stb_i                                : in     std_logic;
-    wb_we_i                                 : in     std_logic;
-    wb_ack_o                                : out    std_logic;
-    wb_stall_o                              : out    std_logic;
-    fs_clk_i                                : in     std_logic;
-    --wb_clk_i                                : in     std_logic;
-    regs_i                                  : in     t_fmc516_in_registers;
-    regs_o                                  : out    t_fmc516_out_registers
+    rst_n_i                                  : in     std_logic;
+    clk_sys_i                                : in     std_logic;
+    wb_adr_i                                 : in     std_logic_vector(4 downto 0);
+    wb_dat_i                                 : in     std_logic_vector(31 downto 0);
+    wb_dat_o                                 : out    std_logic_vector(31 downto 0);
+    wb_cyc_i                                 : in     std_logic;
+    wb_sel_i                                 : in     std_logic_vector(3 downto 0);
+    wb_stb_i                                 : in     std_logic;
+    wb_we_i                                  : in     std_logic;
+    wb_ack_o                                 : out    std_logic;
+    wb_stall_o                               : out    std_logic;
+    fs_clk_i                                 : in     std_logic;
+    regs_i                                   : in     t_fmc516_in_registers;
+    regs_o                                   : out    t_fmc516_out_registers
   );
   end component;
 
@@ -750,84 +671,133 @@ begin
   regs_in.adc_ctl_reserved_i                <= (others => '0');
   regs_in.ch0_sta_val_i                     <= adc_out(0).adc_data;
   regs_in.ch0_sta_reserved_i                <= (others => '0');
-  regs_in.ch0_fn_dly_reserved_clk_chain_dly_i  <= (others => '0');
-  regs_in.ch0_fn_dly_reserved_data_chain_dly_i <= (others => '0');
+  regs_in.ch0_fn_dly_reserved_clk_chain_dly_i
+                                            <= (others => '0');
+  regs_in.ch0_fn_dly_reserved_data_chain_dly_i
+                                            <= (others => '0');
   regs_in.ch1_sta_val_i                     <= adc_out(1).adc_data;
   regs_in.ch1_sta_reserved_i                <= (others => '0');
-  regs_in.ch1_fn_dly_reserved_clk_chain_dly_i  <= (others => '0');
-  regs_in.ch1_fn_dly_reserved_data_chain_dly_i <= (others => '0');
+  regs_in.ch1_fn_dly_reserved_clk_chain_dly_i
+                                            <= (others => '0');
+  regs_in.ch1_fn_dly_reserved_data_chain_dly_i
+                                            <= (others => '0');
   regs_in.ch2_sta_val_i                     <= adc_out(2).adc_data;
   regs_in.ch2_sta_reserved_i                <= (others => '0');
-  regs_in.ch2_fn_dly_reserved_clk_chain_dly_i  <= (others => '0');
-  regs_in.ch2_fn_dly_reserved_data_chain_dly_i <= (others => '0');
+  regs_in.ch2_fn_dly_reserved_clk_chain_dly_i
+                                            <= (others => '0');
+  regs_in.ch2_fn_dly_reserved_data_chain_dly_i
+                                            <= (others => '0');
   regs_in.ch3_sta_val_i                     <= adc_out(3).adc_data;
   regs_in.ch3_sta_reserved_i                <= (others => '0');
-  regs_in.ch3_fn_dly_reserved_clk_chain_dly_i  <= (others => '0');
-  regs_in.ch3_fn_dly_reserved_data_chain_dly_i <= (others => '0');
+  regs_in.ch3_fn_dly_reserved_clk_chain_dly_i
+                                            <= (others => '0');
+  regs_in.ch3_fn_dly_reserved_data_chain_dly_i
+                                            <= (others => '0');
 
   -- ADC delay registers out
-  regs_in.ch0_fn_dly_clk_chain_dly_i <= adc_fn_dly_out(0).adc_clk_dly_val;
-  regs_in.ch0_fn_dly_data_chain_dly_i <= adc_fn_dly_out(0).adc_data_dly_val;
-  regs_in.ch1_fn_dly_clk_chain_dly_i <= adc_fn_dly_out(1).adc_clk_dly_val;
-  regs_in.ch1_fn_dly_data_chain_dly_i <= adc_fn_dly_out(1).adc_data_dly_val;
-  regs_in.ch2_fn_dly_clk_chain_dly_i <= adc_fn_dly_out(2).adc_clk_dly_val;
-  regs_in.ch2_fn_dly_data_chain_dly_i <= adc_fn_dly_out(2).adc_data_dly_val;
-  regs_in.ch3_fn_dly_clk_chain_dly_i <= adc_fn_dly_out(3).adc_clk_dly_val;
-  regs_in.ch3_fn_dly_data_chain_dly_i <= adc_fn_dly_out(3).adc_data_dly_val;
+  regs_in.ch0_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(0).clk_chain.idelay.val;
+  regs_in.ch0_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(0).data_chain.idelay.val;
+  regs_in.ch1_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(1).clk_chain.idelay.val;
+  regs_in.ch1_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(1).data_chain.idelay.val;
+  regs_in.ch2_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(2).clk_chain.idelay.val;
+  regs_in.ch2_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(2).data_chain.idelay.val;
+  regs_in.ch3_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(3).clk_chain.idelay.val;
+  regs_in.ch3_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(3).data_chain.idelay.val;
 
   -- ADC delay registers in
-  adc_fn_dly_in_int(0).adc_clk_load <= regs_out.ch0_fn_dly_clk_chain_dly_load_o;
-  adc_fn_dly_in_int(0).adc_data_load <= regs_out.ch0_fn_dly_data_chain_dly_load_o;
-  adc_fn_dly_in_int(0).adc_clk_dly <= regs_out.ch0_fn_dly_clk_chain_dly_o;
-  adc_fn_dly_in_int(0).adc_data_dly <= regs_out.ch0_fn_dly_data_chain_dly_o;
-  adc_fn_dly_in_int(0).adc_clk_dly_inc <= regs_out.ch0_fn_dly_inc_clk_chain_dly_o;
-  adc_fn_dly_in_int(0).adc_data_dly_inc <= regs_out.ch0_fn_dly_inc_data_chain_dly_o;
-  adc_fn_dly_in_int(0).adc_clk_dly_dec <= regs_out.ch0_fn_dly_dec_clk_chain_dly_o;
-  adc_fn_dly_in_int(0).adc_data_dly_dec <= regs_out.ch0_fn_dly_dec_data_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_clk_load <= regs_out.ch1_fn_dly_clk_chain_dly_load_o;
-  adc_fn_dly_in_int(1).adc_data_load <= regs_out.ch1_fn_dly_data_chain_dly_load_o;
-  adc_fn_dly_in_int(1).adc_clk_dly <= regs_out.ch1_fn_dly_clk_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_data_dly <= regs_out.ch1_fn_dly_data_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_clk_dly_inc <= regs_out.ch1_fn_dly_inc_clk_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_data_dly_inc <= regs_out.ch1_fn_dly_inc_data_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_clk_dly_dec <= regs_out.ch1_fn_dly_dec_clk_chain_dly_o;
-  adc_fn_dly_in_int(1).adc_data_dly_dec <= regs_out.ch1_fn_dly_dec_data_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_clk_load <= regs_out.ch2_fn_dly_clk_chain_dly_load_o;
-  adc_fn_dly_in_int(2).adc_data_load <= regs_out.ch2_fn_dly_data_chain_dly_load_o;
-  adc_fn_dly_in_int(2).adc_clk_dly <= regs_out.ch2_fn_dly_clk_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_data_dly <= regs_out.ch2_fn_dly_data_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_clk_dly_inc <= regs_out.ch2_fn_dly_inc_clk_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_data_dly_inc <= regs_out.ch2_fn_dly_inc_data_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_clk_dly_dec <= regs_out.ch2_fn_dly_dec_clk_chain_dly_o;
-  adc_fn_dly_in_int(2).adc_data_dly_dec <= regs_out.ch2_fn_dly_dec_data_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_clk_load <= regs_out.ch3_fn_dly_clk_chain_dly_load_o;
-  adc_fn_dly_in_int(3).adc_data_load <= regs_out.ch3_fn_dly_data_chain_dly_load_o;
-  adc_fn_dly_in_int(3).adc_clk_dly <= regs_out.ch3_fn_dly_clk_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_data_dly <= regs_out.ch3_fn_dly_data_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_clk_dly_inc <= regs_out.ch3_fn_dly_inc_clk_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_data_dly_inc <= regs_out.ch3_fn_dly_inc_data_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_clk_dly_dec <= regs_out.ch3_fn_dly_dec_clk_chain_dly_o;
-  adc_fn_dly_in_int(3).adc_data_dly_dec <= regs_out.ch3_fn_dly_dec_data_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_clk_load         <= regs_out.ch0_fn_dly_clk_chain_dly_load_o;
+  --adc_fn_dly_in_int(0).adc_data_load        <= regs_out.ch0_fn_dly_data_chain_dly_load_o;
+  --adc_fn_dly_in_int(0).adc_clk_dly          <= regs_out.ch0_fn_dly_clk_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_data_dly         <= regs_out.ch0_fn_dly_data_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_clk_dly_inc      <= regs_out.ch0_fn_dly_inc_clk_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_data_dly_inc     <= regs_out.ch0_fn_dly_inc_data_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_clk_dly_dec      <= regs_out.ch0_fn_dly_dec_clk_chain_dly_o;
+  --adc_fn_dly_in_int(0).adc_data_dly_dec     <= regs_out.ch0_fn_dly_dec_data_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_clk_load         <= regs_out.ch1_fn_dly_clk_chain_dly_load_o;
+  --adc_fn_dly_in_int(1).adc_data_load        <= regs_out.ch1_fn_dly_data_chain_dly_load_o;
+  --adc_fn_dly_in_int(1).adc_clk_dly          <= regs_out.ch1_fn_dly_clk_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_data_dly         <= regs_out.ch1_fn_dly_data_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_clk_dly_inc      <= regs_out.ch1_fn_dly_inc_clk_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_data_dly_inc     <= regs_out.ch1_fn_dly_inc_data_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_clk_dly_dec      <= regs_out.ch1_fn_dly_dec_clk_chain_dly_o;
+  --adc_fn_dly_in_int(1).adc_data_dly_dec     <= regs_out.ch1_fn_dly_dec_data_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_clk_load         <= regs_out.ch2_fn_dly_clk_chain_dly_load_o;
+  --adc_fn_dly_in_int(2).adc_data_load        <= regs_out.ch2_fn_dly_data_chain_dly_load_o;
+  --adc_fn_dly_in_int(2).adc_clk_dly          <= regs_out.ch2_fn_dly_clk_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_data_dly         <= regs_out.ch2_fn_dly_data_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_clk_dly_inc      <= regs_out.ch2_fn_dly_inc_clk_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_data_dly_inc     <= regs_out.ch2_fn_dly_inc_data_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_clk_dly_dec      <= regs_out.ch2_fn_dly_dec_clk_chain_dly_o;
+  --adc_fn_dly_in_int(2).adc_data_dly_dec     <= regs_out.ch2_fn_dly_dec_data_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_clk_load         <= regs_out.ch3_fn_dly_clk_chain_dly_load_o;
+  --adc_fn_dly_in_int(3).adc_data_load        <= regs_out.ch3_fn_dly_data_chain_dly_load_o;
+  --adc_fn_dly_in_int(3).adc_clk_dly          <= regs_out.ch3_fn_dly_clk_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_data_dly         <= regs_out.ch3_fn_dly_data_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_clk_dly_inc      <= regs_out.ch3_fn_dly_inc_clk_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_data_dly_inc     <= regs_out.ch3_fn_dly_inc_data_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_clk_dly_dec      <= regs_out.ch3_fn_dly_dec_clk_chain_dly_o;
+  --adc_fn_dly_in_int(3).adc_data_dly_dec     <= regs_out.ch3_fn_dly_dec_data_chain_dly_o;
+
+  adc_fn_dly_wb_ctl_out(0).clk_chain.loadable.load     <= regs_out.ch0_fn_dly_clk_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(0).data_chain.loadable.load    <= regs_out.ch0_fn_dly_data_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(0).clk_chain.loadable.val      <= regs_out.ch0_fn_dly_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).data_chain.loadable.val     <= regs_out.ch0_fn_dly_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).clk_chain.loadable.pulse    <= regs_out.adc_ctl_update_clk_dly_o;
+  adc_fn_dly_wb_ctl_out(0).data_chain.loadable.pulse   <= regs_out.adc_ctl_update_data_dly_o;
+  adc_fn_dly_wb_ctl_out(0).clk_chain.var.inc           <= regs_out.ch0_fn_dly_inc_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).data_chain.var.inc          <= regs_out.ch0_fn_dly_inc_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).clk_chain.var.dec           <= regs_out.ch0_fn_dly_dec_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).data_chain.var.dec          <= regs_out.ch0_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.loadable.load     <= regs_out.ch1_fn_dly_clk_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(1).data_chain.loadable.load    <= regs_out.ch1_fn_dly_data_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.loadable.val      <= regs_out.ch1_fn_dly_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).data_chain.loadable.val     <= regs_out.ch1_fn_dly_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.loadable.pulse    <= regs_out.adc_ctl_update_clk_dly_o;
+  adc_fn_dly_wb_ctl_out(1).data_chain.loadable.pulse   <= regs_out.adc_ctl_update_data_dly_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.var.inc           <= regs_out.ch1_fn_dly_inc_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).data_chain.var.inc          <= regs_out.ch1_fn_dly_inc_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.var.dec           <= regs_out.ch1_fn_dly_dec_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).data_chain.var.dec          <= regs_out.ch1_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.loadable.load     <= regs_out.ch2_fn_dly_clk_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(2).data_chain.loadable.load    <= regs_out.ch2_fn_dly_data_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.loadable.val      <= regs_out.ch2_fn_dly_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).data_chain.loadable.val     <= regs_out.ch2_fn_dly_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.loadable.pulse    <= regs_out.adc_ctl_update_clk_dly_o;
+  adc_fn_dly_wb_ctl_out(2).data_chain.loadable.pulse   <= regs_out.adc_ctl_update_data_dly_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.var.inc           <= regs_out.ch2_fn_dly_inc_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).data_chain.var.inc          <= regs_out.ch2_fn_dly_inc_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.var.dec           <= regs_out.ch2_fn_dly_dec_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).data_chain.var.dec          <= regs_out.ch2_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.loadable.load     <= regs_out.ch3_fn_dly_clk_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(3).data_chain.loadable.load    <= regs_out.ch3_fn_dly_data_chain_dly_load_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.loadable.val      <= regs_out.ch3_fn_dly_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).data_chain.loadable.val     <= regs_out.ch3_fn_dly_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.loadable.pulse    <= regs_out.adc_ctl_update_clk_dly_o;
+  adc_fn_dly_wb_ctl_out(3).data_chain.loadable.pulse   <= regs_out.adc_ctl_update_data_dly_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.var.inc           <= regs_out.ch3_fn_dly_inc_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).data_chain.var.inc          <= regs_out.ch3_fn_dly_inc_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.var.dec           <= regs_out.ch3_fn_dly_dec_clk_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).data_chain.var.dec          <= regs_out.ch3_fn_dly_dec_data_chain_dly_o;
 
   -- ADC delay falling edge control
-  adc_cs_dly_in_int(0).adc_data_fe_d1_en <= regs_out.ch0_cs_dly_fe_dly_o(0);
-  adc_cs_dly_in_int(0).adc_data_fe_d2_en <= regs_out.ch0_cs_dly_fe_dly_o(1);
-  adc_cs_dly_in_int(1).adc_data_fe_d1_en <= regs_out.ch1_cs_dly_fe_dly_o(0);
-  adc_cs_dly_in_int(1).adc_data_fe_d2_en <= regs_out.ch1_cs_dly_fe_dly_o(1);
-  adc_cs_dly_in_int(2).adc_data_fe_d1_en <= regs_out.ch2_cs_dly_fe_dly_o(0);
-  adc_cs_dly_in_int(2).adc_data_fe_d2_en <= regs_out.ch2_cs_dly_fe_dly_o(1);
-  adc_cs_dly_in_int(3).adc_data_fe_d1_en <= regs_out.ch3_cs_dly_fe_dly_o(0);
-  adc_cs_dly_in_int(3).adc_data_fe_d2_en <= regs_out.ch3_cs_dly_fe_dly_o(1);
+  adc_cs_dly_in_int(0).adc_data_fe_d1_en    <= regs_out.ch0_cs_dly_fe_dly_o(0);
+  adc_cs_dly_in_int(0).adc_data_fe_d2_en    <= regs_out.ch0_cs_dly_fe_dly_o(1);
+  adc_cs_dly_in_int(1).adc_data_fe_d1_en    <= regs_out.ch1_cs_dly_fe_dly_o(0);
+  adc_cs_dly_in_int(1).adc_data_fe_d2_en    <= regs_out.ch1_cs_dly_fe_dly_o(1);
+  adc_cs_dly_in_int(2).adc_data_fe_d1_en    <= regs_out.ch2_cs_dly_fe_dly_o(0);
+  adc_cs_dly_in_int(2).adc_data_fe_d2_en    <= regs_out.ch2_cs_dly_fe_dly_o(1);
+  adc_cs_dly_in_int(3).adc_data_fe_d1_en    <= regs_out.ch3_cs_dly_fe_dly_o(0);
+  adc_cs_dly_in_int(3).adc_data_fe_d2_en    <= regs_out.ch3_cs_dly_fe_dly_o(1);
 
   -- ADC regular delay control
-  adc_cs_dly_in_int(0).adc_data_rg_d1_en <= regs_out.ch0_cs_dly_rg_dly_o(0);
-  adc_cs_dly_in_int(0).adc_data_rg_d2_en <= regs_out.ch0_cs_dly_rg_dly_o(1);
-  adc_cs_dly_in_int(1).adc_data_rg_d1_en <= regs_out.ch1_cs_dly_rg_dly_o(0);
-  adc_cs_dly_in_int(1).adc_data_rg_d2_en <= regs_out.ch1_cs_dly_rg_dly_o(1);
-  adc_cs_dly_in_int(2).adc_data_rg_d1_en <= regs_out.ch2_cs_dly_rg_dly_o(0);
-  adc_cs_dly_in_int(2).adc_data_rg_d2_en <= regs_out.ch2_cs_dly_rg_dly_o(1);
-  adc_cs_dly_in_int(3).adc_data_rg_d1_en <= regs_out.ch3_cs_dly_rg_dly_o(0);
-  adc_cs_dly_in_int(3).adc_data_rg_d2_en <= regs_out.ch3_cs_dly_rg_dly_o(1);
+  adc_cs_dly_in_int(0).adc_data_rg_d1_en    <= regs_out.ch0_cs_dly_rg_dly_o(0);
+  adc_cs_dly_in_int(0).adc_data_rg_d2_en    <= regs_out.ch0_cs_dly_rg_dly_o(1);
+  adc_cs_dly_in_int(1).adc_data_rg_d1_en    <= regs_out.ch1_cs_dly_rg_dly_o(0);
+  adc_cs_dly_in_int(1).adc_data_rg_d2_en    <= regs_out.ch1_cs_dly_rg_dly_o(1);
+  adc_cs_dly_in_int(2).adc_data_rg_d1_en    <= regs_out.ch2_cs_dly_rg_dly_o(0);
+  adc_cs_dly_in_int(2).adc_data_rg_d2_en    <= regs_out.ch2_cs_dly_rg_dly_o(1);
+  adc_cs_dly_in_int(3).adc_data_rg_d1_en    <= regs_out.ch3_cs_dly_rg_dly_o(0);
+  adc_cs_dly_in_int(3).adc_data_rg_d2_en    <= regs_out.ch3_cs_dly_rg_dly_o(1);
 
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
@@ -858,10 +828,12 @@ begin
   end generate;
 
   -- ADC fine delay signal mangling
-  gen_adc_dly_in : for i in 0 to c_num_adc_channels-1 generate
-    adc_fn_dly_in(i).adc_clk_dly_pulse <= regs_out.adc_ctl_update_clk_dly_o or adc_dly_pulse_clk_int(i);
-    adc_fn_dly_in(i).adc_data_dly_pulse <= regs_out.adc_ctl_update_data_dly_o or adc_dly_pulse_data_int(i);
-  end generate;
+  --gen_adc_dly_in : for i in 0 to c_num_adc_channels-1 generate
+  --  adc_fn_dly_in(i).clk_chain.idelay.pulse <=
+  --               regs_out.adc_ctl_update_clk_dly_o or adc_dly_pulse_clk_int(i);
+  --  adc_fn_dly_in(i).data_chain.idelay.pulse <=
+  --               regs_out.adc_ctl_update_data_dly_o or adc_dly_pulse_data_int(i);
+  --end generate;
 
   -- ADC coarse delay signal mangling
   gen_adc_dly_ctl : for i in 0 to c_num_adc_channels-1 generate
@@ -879,88 +851,109 @@ begin
   -- Capture delay signals (clock + data chains) coming from the Wishbone
   -- Register Interface.
   -- Idelay "var_loadable" interface
-  gen_adc_dly_var_loadable : for i in 0 to c_num_adc_channels-1 generate
-    p_adc_dly : process (sys_clk_i)
-    begin
-      if rising_edge(sys_clk_i) then
-        if sys_rst_sync_n = '0' then
-          adc_fn_dly_in(i).adc_clk_dly_val <= (others => '0');
-          adc_fn_dly_in(i).adc_data_dly_val <= (others => '0');
-        else
-          -- write to clock register delay
-          if adc_fn_dly_in_int(i).adc_clk_load = '1' then
-            adc_fn_dly_in(i).adc_clk_dly_val <= adc_fn_dly_in_int(i).adc_clk_dly;
-          end if;
+  --gen_adc_dly_var_loadable : for i in 0 to c_num_adc_channels-1 generate
+  gen_adc_idlay_iface : for i in 0 to c_num_adc_channels-1 generate
 
-          -- write to data register delay
-          if adc_fn_dly_in_int(i).adc_data_load = '1' then
-            adc_fn_dly_in(i).adc_data_dly_val <= adc_fn_dly_in_int(i).adc_data_dly;
-          end if;
+    cmp_fmc_adc_dly_iface : fmc_adc_dly_iface
+    generic map(
+      g_with_var_loadable                     => c_with_idelay_var_loadable,
+      g_with_variable                         => c_with_idelay_variable,
+      g_with_fn_dly_select                    => c_with_fn_dly_select
+    )
+    port map(
+      rst_n_i                                 => sys_rst_sync_n,
+      clk_sys_i                               => sys_clk_i,
 
-        end if;
-      end if;
-    end process;
+      adc_fn_dly_wb_ctl_i                     => adc_fn_dly_wb_ctl_out(i),
+      adc_fn_dly_o                            => adc_fn_dly_in(i)
+    );
+
+    --p_adc_dly : process (sys_clk_i)
+    --begin
+    --  if rising_edge(sys_clk_i) then
+    --    if sys_rst_sync_n = '0' then
+    --      adc_fn_dly_in(i).clk_chain.idelay.val <= (others => '0');
+    --      adc_fn_dly_in(i).data_chain.idelay.val <= (others => '0');
+    --    else
+    --      -- write to clock register delay
+    --      if adc_fn_dly_in_int(i).adc_clk_load = '1' then
+    --        adc_fn_dly_in(i).clk_chain.idelay.val <= adc_fn_dly_in_int(i).adc_clk_dly;
+    --      end if;
+    --
+    --      -- write to data register delay
+    --      if adc_fn_dly_in_int(i).adc_data_load = '1' then
+    --        adc_fn_dly_in(i).data_chain.idelay.val <= adc_fn_dly_in_int(i).adc_data_dly;
+    --      end if;
+    --
+    --    end if;
+    --  end if;
+    --end process;
 
     -- Debug interface
     adc_dly_debug_o(i) <= adc_fn_dly_in(i);
   end generate;
 
   -- Idelay "variable" interface
-  gen_adc_dly_variable : for i in 0 to c_num_adc_channels-1 generate
-    p_adc_dly : process (sys_clk_i)
-    begin
-      if rising_edge(sys_clk_i) then
-        if sys_rst_sync_n = '0' then
-          adc_dly_pulse_clk_int(i) <= '0';
-          adc_dly_pulse_data_int(i) <= '0';
-          adc_fn_dly_in(i).adc_clk_dly_incdec <= '0';
-          adc_fn_dly_in(i).adc_data_dly_incdec <= '0';
-        else
-          -- Increment/Decrement clk delays
-          adc_dly_pulse_clk_int(i) <= '1';
+  --gen_adc_dly_variable : for i in 0 to c_num_adc_channels-1 generate
+  --  p_adc_dly : process (sys_clk_i)
+  --  begin
+  --    if rising_edge(sys_clk_i) then
+  --      if sys_rst_sync_n = '0' then
+  --        adc_dly_pulse_clk_int(i) <= '0';
+  --        adc_dly_pulse_data_int(i) <= '0';
+  --        adc_fn_dly_in(i).clk_chain.idelay.incdec <= '0';
+  --        adc_fn_dly_in(i).data_chain.idelay.incdec <= '0';
+  --      else
+  --
+  --        --adc_dly_pulse_clk_int(i) <= '1';
+  --
+  --        -- Increment/Decrement clk delays
+  --        if adc_fn_dly_in_int(i).adc_clk_dly_inc = '1' then
+  --          adc_fn_dly_in(i).clk_chain.idelay.incdec <= '1';
+  --        elsif adc_fn_dly_in_int(i).adc_clk_dly_dec = '1' then
+  --          adc_fn_dly_in(i).clk_chain.idelay.incdec <= '0';
+  --        end if;
+  --
+  --        --adc_dly_pulse_data_int(i) <= '1';
+  --
+  --        -- Increment/Decrement data delays
+  --        if adc_fn_dly_in_int(i).adc_data_dly_inc = '1' then
+  --          adc_fn_dly_in(i).data_chain.idelay.incdec <= '1';
+  --        elsif adc_fn_dly_in_int(i).adc_data_dly_dec = '1' then
+  --          adc_fn_dly_in(i).data_chain.idelay.incdec <= '0';
+  --        end if;
+  --
+  --        -- Enable pulse when increment or decrement data delay
+  --        if adc_fn_dly_in_int(i).adc_clk_dly_inc = '1' or
+  --                            adc_fn_dly_in_int(i).adc_clk_dly_dec = '1' then
+  --          adc_dly_pulse_data_int(i) <= '1';
+  --        else
+  --          adc_dly_pulse_data_int(i) <= '0';
+  --        end if;
+  --
+  --        -- Enable pulse when increment or decrement clock delay
+  --        if adc_fn_dly_in_int(i).adc_data_dly_inc = '1' or
+  --                            adc_fn_dly_in_int(i).adc_data_dly_dec = '1' then
+  --          adc_dly_pulse_data_int(i) <= '1';
+  --        else
+  --          adc_dly_pulse_data_int(i) <= '0';
+  --        end if;
+  --
+  --      end if;
+  --    end if;
+  --  end process;
+  --
+  --end generate;
 
-          if adc_fn_dly_in_int(i).adc_clk_dly_inc = '1' then
-            adc_fn_dly_in(i).adc_clk_dly_incdec <= '1';
-          elsif adc_fn_dly_in_int(i).adc_clk_dly_dec = '1' then
-            adc_fn_dly_in(i).adc_clk_dly_incdec <= '0';
-          else
-            adc_dly_pulse_clk_int(i) <= '0';
-          end if;
-
-          -- Increment/Decrement data delays
-          adc_dly_pulse_data_int(i) <= '1';
-
-          if adc_fn_dly_in_int(i).adc_data_dly_inc = '1' then
-            adc_fn_dly_in(i).adc_data_dly_incdec <= '1';
-          elsif adc_fn_dly_in_int(i).adc_data_dly_dec = '1' then
-            adc_fn_dly_in(i).adc_data_dly_incdec <= '0';
-          else
-            adc_dly_pulse_data_int(i) <= '0';
-          end if;
-
-          -- Enable delay inc or dec for clk delay
-          --if adc_dly_reg(i).clk_dly_inc = '1' or adc_dly_reg(i).clk_dly_dec = '1'  then
-          --  adc_dly_reg_pulse_clk_int(i) <= '1';
-          --else
-          --  adc_dly_reg_pulse_clk_int(i) <= '0';
-          --end if;
-
-          -- Enable delay inc or dec for data delay
-          --if adc_dly_reg(i).data_dly_inc = '1' or adc_dly_reg(i).data_dly_dec = '1' then
-          --  adc_dly_reg_pulse_data_int(i) <= '1';
-          --else
-          --  adc_dly_reg_pulse_data_int(i) <= '0';
-          --end if;
-
-        end if;
-      end if;
-    end process;
-  end generate;
-
-  -----------------------------
-  -- ADC Interface
-  -----------------------------
-  cmp_fmc516_adc_buf : fmc516_adc_buf
+  -------------------------------
+  ---- ADC Interface
+  -------------------------------
+  cmp_fmc516_adc_buf : fmc_adc_buf
+  generic map (
+    g_with_clk_single_ended                 => c_with_clk_single_ended,
+    g_with_data_single_ended                => c_with_data_single_ended,
+    g_with_data_sdr                         => c_with_data_sdr
+  )
   port map (
     -----------------------------
     -- External ports
@@ -975,6 +968,11 @@ begin
     adc_clk3_p_i                            => adc_clk3_p_i,
     adc_clk3_n_i                            => adc_clk3_n_i,
 
+    adc_clk0_i                              => dummy_bit_low,
+    adc_clk1_i                              => dummy_bit_low,
+    adc_clk2_i                              => dummy_bit_low,
+    adc_clk3_i                              => dummy_bit_low,
+
     -- DDR ADC data channels.
     adc_data_ch0_p_i                        => adc_data_ch0_p_i,
     adc_data_ch0_n_i                        => adc_data_ch0_n_i,
@@ -984,6 +982,11 @@ begin
     adc_data_ch2_n_i                        => adc_data_ch2_n_i,
     adc_data_ch3_p_i                        => adc_data_ch3_p_i,
     adc_data_ch3_n_i                        => adc_data_ch3_n_i,
+
+    adc_data_ch0_i                          => dummy_adc_vector_low,
+    adc_data_ch1_i                          => dummy_adc_vector_low,
+    adc_data_ch2_i                          => dummy_adc_vector_low,
+    adc_data_ch3_i                          => dummy_adc_vector_low,
 
     adc_clk0_o                              => adc_clk0,
     adc_clk1_o                              => adc_clk1,
@@ -996,7 +999,7 @@ begin
     adc_data_ch3_o                          => adc_data_ch3
   );
 
-  cmp_fmc516_adc_iface : fmc516_adc_iface
+  cmp_fmc516_adc_iface : fmc_adc_iface
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
@@ -1007,6 +1010,8 @@ begin
     g_use_data_chains                       => g_use_data_chains,
     g_map_clk_data_chains                   => g_map_clk_data_chains,
     g_ref_clk                               => g_ref_clk,
+    g_with_data_sdr                         => c_with_data_sdr,
+    g_with_fn_dly_select                    => c_with_fn_dly_select,
     g_sim                                   => g_sim
   )
   port map(
@@ -1020,6 +1025,7 @@ begin
     -- External ports
     -----------------------------
     adc_in_i                                => adc_in,
+    adc_in_sdr_i                            => adc_in_sdr_dummy,
 
     -----------------------------
     -- ADC Delay signals
@@ -1039,6 +1045,8 @@ begin
     -- MMCM general signals
     -----------------------------
     mmcm_adc_locked_o                       => mmcm_adc_locked,
+    -- Idelay ready signal
+    idelay_rdy_o                            => open,
 
     fifo_debug_valid_o                      => fifo_debug_valid_o,
     fifo_debug_full_o                       => fifo_debug_full_o,
@@ -1257,18 +1265,17 @@ begin
     slave_o                                 => cbar_master_in(4),
     desc_o                                  => open,
 
-    scl_pad_i                               => '0',
-    scl_pad_o                               => sys_i2c_scl_out,
+    scl_pad_i                               => vcxo_i2c_scl_in,
+    scl_pad_o                               => vcxo_i2c_scl_out,
     scl_padoen_o                            => vcxo_i2c_scl_oe_n,
     sda_pad_i                               => vcxo_i2c_sda_in,
     sda_pad_o                               => vcxo_i2c_sda_out,
     sda_padoen_o                            => vcxo_i2c_sda_oe_n
   );
 
-  -- No bidirectional line to SCL from slaves
-  --vcxo_i2c_scl_b  <= vcxo_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
-  --vcxo_i2c_scl_in <= vcxo_i2c_scl_b;
-  vcxo_i2c_scl_o <= sys_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
+  vcxo_i2c_scl_b  <= vcxo_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
+  vcxo_i2c_scl_in <= vcxo_i2c_scl_b;
+  --vcxo_i2c_scl_o <= sys_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
 
   vcxo_i2c_sda_b  <= vcxo_i2c_sda_out when vcxo_i2c_sda_oe_n = '0' else 'Z';
   vcxo_i2c_sda_in <= vcxo_i2c_sda_b;
@@ -1451,7 +1458,7 @@ begin
   --wbs_eof <= '1' when wbs_packet_counter = g_packet_size-1 else '0';
 
   -----------------------------
-  -- Trigger Interface. Does not do anything yet!
+  -- Trigger Interface.
   -----------------------------
   -- Trigger buffers and Synchronization
   cmp_ext_trig_ibufds : ibufds
