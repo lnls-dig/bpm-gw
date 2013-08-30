@@ -202,10 +202,12 @@ begin
   -- the BUFIO/BUFR as needed.
   gen_bufmr : if (g_fpga_device = "7SERIES") generate
 
-    -- 1-bit output: Clock output (connect to BUFIOs/BUFRs)
-    -- 1-bit input: Clock input (Connect to IBUFG)
-    gen_bufrm_7_series : if (g_with_bufr) generate
+     -- We either have BUFIO + BUFR or just BUFR. We only
+     -- have to check for BUFR, then.
+    gen_bufmr_7_series : if (g_with_bufr) generate
 
+      -- 1-bit output: Clock output (connect to BUFIOs/BUFRs)
+      -- 1-bit input: Clock input (Connect to IBUFG)
       cmp_bufmr : bufmr
       port map (
         O                                     => adc_clk_bufmr,
@@ -217,8 +219,12 @@ begin
 
     end generate;
 
-    adc_clk_bufio_in                        <= adc_clk_ibufgds_dly;
-    adc_clk_bufr_in                         <= adc_clk_ibufgds_dly;
+    gen_not_bufmr_7_series : if (not g_with_bufr) generate
+
+      adc_clk_bufio_in                        <= adc_clk_ibufgds_dly;
+      adc_clk_bufr_in                         <= adc_clk_ibufgds_dly;
+
+    end generate;
 
   end generate;
 
