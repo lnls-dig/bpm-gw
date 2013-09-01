@@ -98,7 +98,7 @@ NET "lmk_uwire_data_o"              LOC = U30 | IOSTANDARD = LVCMOS25;
 NET "lmk_uwire_clock_o"             LOC = U28 | IOSTANDARD = LVCMOS25;
 
 NET "vcxo_i2c_sda_b"                LOC = V32 | IOSTANDARD = LVCMOS25;
-NET "vcxo_i2c_scl_o"                LOC = U33 | IOSTANDARD = LVCMOS25;
+NET "vcxo_i2c_scl_b"                LOC = U33 | IOSTANDARD = LVCMOS25;
 NET "vcxo_pd_l_o"                   LOC = V33 | IOSTANDARD = LVCMOS25;
 
 NET "fmc_id_dq_b"                   LOC = V30 | IOSTANDARD = LVCMOS25;

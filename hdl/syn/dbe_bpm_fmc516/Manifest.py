@@ -10,5 +10,5 @@ syn_project = "dbe_bpm_fmc516.xise"
 #syn_project = "wb_fmc516.xise"
 
 modules = { "local" : [ "../../top/ml_605/dbe_bpm_fmc516" ] };
-#modules = { "local" : [ "../../modules/custom_wishbone/wb_fmc516",
+#modules = { "local" : [ "../../modules/dbe_wishbone/wb_fmc516",
 #						"../../"] };

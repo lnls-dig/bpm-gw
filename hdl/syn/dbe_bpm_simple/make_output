@@ -251,11 +251,11 @@ Parsing package body <wishbone_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd" into library work
 Parsing package <gencores_pkg>.
 Parsing package body <gencores_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd" into library work
 Parsing package <wb_stream_pkg>.
 Parsing package body <wb_stream_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd" into library work
-Parsing package <custom_wishbone_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/dbe_wishbone_pkg.vhd" into library work
+Parsing package <dbe_wishbone_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/dbe_bpm_simple_top.vhd" into library work
 Parsing entity <dbe_bpm_simple_top>.
 Parsing architecture <rtl> of entity <dbe_bpm_simple_top>.
@@ -265,71 +265,71 @@ Parsing architecture <syn> of entity <sys_pll>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/clk_gen.vhd" into library work
 Parsing entity <clk_gen>.
 Parsing architecture <syn> of entity <clk_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd" into library work
-Parsing package <custom_common_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/dbe_common_pkg.vhd" into library work
+Parsing package <dbe_common_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd" into library work
 Parsing entity <xwb_stream_sink>.
 Parsing architecture <rtl> of entity <xwb_stream_sink>.
 Parsing entity <wb_stream_sink>.
 Parsing architecture <wrapper> of entity <wb_stream_sink>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd" into library work
 Parsing entity <xwb_stream_source>.
 Parsing architecture <rtl> of entity <xwb_stream_source>.
 Parsing entity <wb_stream_source>.
 Parsing architecture <wrapper> of entity <wb_stream_source>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" into library work
 Parsing package <fmc150_wbgen2_pkg>.
 Parsing package body <fmc150_wbgen2_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" into library work
 Parsing entity <wb_fmc150>.
 Parsing architecture <rtl> of entity <wb_fmc150>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd" into library work
 Parsing entity <xwb_fmc150>.
 Parsing architecture <rtl> of entity <xwb_fmc150>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" into library work
 Parsing entity <wb_fmc150_port>.
 Parsing architecture <syn> of entity <wb_fmc150_port>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" into library work
 Parsing entity <adc_channel_lvds_ddr>.
 Parsing architecture <rtl> of entity <adc_channel_lvds_ddr>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd" into library work
 Parsing package <adc_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd" into library work
 Parsing entity <strobe_lvds>.
 Parsing architecture <rtl> of entity <strobe_lvds>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" into library work
 Parsing entity <ads62p49_ctrl>.
 Parsing architecture <ads62p49_ctrl_syn> of entity <ads62p49_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" into library work
 Parsing entity <amc7823_ctrl>.
 Parsing architecture <amc7823_ctrl_syn> of entity <amc7823_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" into library work
 Parsing entity <cdce72010_ctrl>.
 Parsing architecture <cdce72010_ctrl_syn> of entity <cdce72010_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" into library work
 Parsing entity <dac3283_ctrl>.
 Parsing architecture <dac3283_ctrl_syn> of entity <dac3283_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" into library work
 Parsing entity <fmc150_adc_if>.
 Parsing architecture <rtl> of entity <fmc150_adc_if>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" into library work
 Parsing entity <fmc150_dac_if>.
 Parsing architecture <rtl> of entity <fmc150_dac_if>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" into library work
 Parsing package <fmc150_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" into library work
 Parsing entity <fmc150_spi_ctrl>.
 Parsing architecture <fmc150_spi_ctrl_syn> of entity <fmc150_spi_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" into library work
 Parsing entity <fmc150_stellar_cmd>.
 Parsing architecture <arch_fmc150_stellar_cmd> of entity <fmc150_stellar_cmd>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" into library work
 Parsing entity <fmc150_testbench>.
 Parsing architecture <rtl> of entity <fmc150_testbench>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
 Parsing entity <pulse2pulse>.
 Parsing architecture <syn> of entity <pulse2pulse>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd" into library work
 Parsing entity <reset_synch>.
 Parsing architecture <rtl> of entity <reset_synch>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd" into library work
@@ -934,42 +934,42 @@ Elaborating entity <cdce72010_ctrl> (architecture <cdce72010_ctrl_syn>) with gen
 Elaborating entity <fmc150_stellar_cmd> (architecture <arch_fmc150_stellar_cmd>) with generics from library <work>.
 
 Elaborating entity <pulse2pulse> (architecture <syn>) from library <work>.
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 451. Case statement is complete. others clause is never selected
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 114: <cdce72010_init_mem_int> remains a black-box since it has no binding entity.
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 122: <cdce72010_init_mem_ext> remains a black-box since it has no binding entity.
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 451. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 114: <cdce72010_init_mem_int> remains a black-box since it has no binding entity.
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" Line 122: <cdce72010_init_mem_ext> remains a black-box since it has no binding entity.
 
 Elaborating entity <ads62p49_ctrl> (architecture <ads62p49_ctrl_syn>) with generics from library <work>.
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" Line 393. Case statement is complete. others clause is never selected
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" Line 108: <ads62p49_init_mem> remains a black-box since it has no binding entity.
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" Line 393. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" Line 108: <ads62p49_init_mem> remains a black-box since it has no binding entity.
 
 Elaborating entity <dac3283_ctrl> (architecture <dac3283_ctrl_syn>) with generics from library <work>.
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" Line 383. Case statement is complete. others clause is never selected
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" Line 106: <dac3283_init_mem> remains a black-box since it has no binding entity.
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" Line 383. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" Line 106: <dac3283_init_mem> remains a black-box since it has no binding entity.
 
 Elaborating entity <amc7823_ctrl> (architecture <amc7823_ctrl_syn>) with generics from library <work>.
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" Line 398. Case statement is complete. others clause is never selected
-WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" Line 109: <amc7823_init_mem> remains a black-box since it has no binding entity.
-WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" Line 121: Net <dac_din_c[15]> does not have a driver.
-WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" Line 122: Net <dac_din_d[15]> does not have a driver.
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" Line 398. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:89 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" Line 109: <amc7823_init_mem> remains a black-box since it has no binding entity.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" Line 121: Net <dac_din_c[15]> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" Line 122: Net <dac_din_d[15]> does not have a driver.
 
 Elaborating entity <wb_slave_adapter> (architecture <rtl>) with generics from library <work>.
 WARNING:HDLCompiler:92 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd" Line 177: fsm_state should be on the sensitivity list of the process
 
 Elaborating entity <wb_fmc150_port> (architecture <syn>) from library <work>.
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 67: Assignment to bwsel_reg ignored, since the identifier is never used
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 68: Assignment to rd_int ignored, since the identifier is never used
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 69: Assignment to wr_int ignored, since the identifier is never used
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 70: Assignment to allones ignored, since the identifier is never used
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 71: Assignment to allzeros ignored, since the identifier is never used
-INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 324. Case statement is complete. others clause is never selected
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 67: Assignment to bwsel_reg ignored, since the identifier is never used
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 68: Assignment to rd_int ignored, since the identifier is never used
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 69: Assignment to wr_int ignored, since the identifier is never used
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 70: Assignment to allones ignored, since the identifier is never used
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 71: Assignment to allzeros ignored, since the identifier is never used
+INFO:HDLCompiler:679 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" Line 324. Case statement is complete. others clause is never selected
 
 Elaborating entity <reset_synch> (architecture <rtl>) from library <work>.
 
 Elaborating entity <xwb_stream_source> (architecture <rtl>) from library <work>.
 
 Elaborating entity <generic_shiftreg_fifo> (architecture <rtl>) with generics from library <work>.
-WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd" Line 77: Net <err_status_is_hp> does not have a driver.
-WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" Line 190: Net <wb_out_err> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd" Line 77: Net <err_status_is_hp> does not have a driver.
+WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" Line 190: Net <wb_out_err> does not have a driver.
 
 Elaborating entity <xwb_simple_uart> (architecture <rtl>) with generics from library <work>.
 
@@ -1945,7 +1945,7 @@ WARNING:Xst:3035 - Index value(s) does not match array range for signal <ram>, s
 Unit <generic_dpram_sameclock> synthesized.
 
 Synthesizing Unit <xwb_fmc150>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd".
         g_interface_mode = classic
         g_address_granularity = byte
         g_packet_size = 32
@@ -1955,30 +1955,30 @@ Synthesizing Unit <xwb_fmc150>.
 Unit <xwb_fmc150> synthesized.
 
 Synthesizing Unit <wb_fmc150>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd".
         g_interface_mode = classic
         g_address_granularity = byte
         g_packet_size = 32
         g_sim = 0
 WARNING:Xst:647 - Input <sim_adc_data_valid> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 296: Output port <adc_str_cntvalueout_o> of the instance <cmp_fmc150_testbench> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_dat> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_adr_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_dat_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_sel_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_err_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_rty_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_int_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_ack> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_err> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_rty> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_stall> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_int> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_cyc_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_stb_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_we_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 448: Output port <src_o_stb> of the instance <cmp_wb_source_if> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" line 448: Output port <dreq_o> of the instance <cmp_wb_source_if> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 296: Output port <adc_str_cntvalueout_o> of the instance <cmp_fmc150_testbench> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_dat> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_adr_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_dat_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_sel_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_err_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_rty_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <sl_int_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_ack> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_err> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_rty> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_stall> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <slave_o_int> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_cyc_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_stb_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 390: Output port <ma_we_o> of the instance <cmp_adapter> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 448: Output port <src_o_stb> of the instance <cmp_wb_source_if> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" line 448: Output port <dreq_o> of the instance <cmp_wb_source_if> is unconnected or connected to loadless signal.
 WARNING:Xst:653 - Signal <wb_out_err> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <wb_out_rty> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <wb_out_int> is used but never assigned. This sourceless signal will be automatically connected to value GND.
@@ -1990,7 +1990,7 @@ WARNING:Xst:653 - Signal <wb_out_int> is used but never assigned. This sourceles
 Unit <wb_fmc150> synthesized.
 
 Synthesizing Unit <fmc150_testbench>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd".
         g_sim = 0
 WARNING:Xst:647 - Input <sim_adc_cha_data_i<13:0>> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <sim_adc_chb_data_i<13:0>> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
@@ -2005,7 +2005,7 @@ WARNING:Xst:653 - Signal <dac_din_d> is used but never assigned. This sourceless
 Unit <fmc150_testbench> synthesized.
 
 Synthesizing Unit <fmc150_adc_if>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd".
         g_sim = 0
 WARNING:Xst:647 - Input <rst_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <clk_adc_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
@@ -2014,14 +2014,14 @@ WARNING:Xst:647 - Input <clk_adc_i> is never used. This port will be preserved a
 Unit <fmc150_adc_if> synthesized.
 
 Synthesizing Unit <strobe_lvds>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd".
         C_DEFAULT_DELAY = 0
     Summary:
 	no macro.
 Unit <strobe_lvds> synthesized.
 
 Synthesizing Unit <adc_channel_lvds_ddr>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd".
         C_NBITS = 14
         C_DEFAULT_DELAY = 15
     Summary:
@@ -2029,7 +2029,7 @@ Synthesizing Unit <adc_channel_lvds_ddr>.
 Unit <adc_channel_lvds_ddr> synthesized.
 
 Synthesizing Unit <fmc150_dac_if>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd".
     Found 10-bit register for signal <cnt>.
     Found 1-bit register for signal <io_rst>.
     Found 1-bit register for signal <frame>.
@@ -2044,10 +2044,10 @@ Synthesizing Unit <fmc150_dac_if>.
 Unit <fmc150_dac_if> synthesized.
 
 Synthesizing Unit <fmc150_spi_ctrl>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd".
         g_sim = 0
 WARNING:Xst:647 - Input <prsnt_m2c_l> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" line 416: Output port <init_done> of the instance <amc7823_ctrl_inst> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" line 416: Output port <init_done> of the instance <amc7823_ctrl_inst> is unconnected or connected to loadless signal.
     Found 1-bit register for signal <ads62p49_valid_prev>.
     Found 1-bit register for signal <dac3283_valid_prev>.
     Found 1-bit register for signal <amc7823_valid_prev>.
@@ -2066,12 +2066,12 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
 Unit <fmc150_spi_ctrl> synthesized.
 
 Synthesizing Unit <cdce72010_ctrl>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd".
         START_ADDR = "0000000000000000000000000000"
         STOP_ADDR = "1111111111111111111111111111"
         g_sim = 0
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" line 360: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" line 513: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" line 360: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" line 513: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
     Found 1-bit register for signal <ncs_int>.
     Found 32-bit register for signal <in_reg>.
     Found 32-bit register for signal <sh_counter>.
@@ -2132,13 +2132,13 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
 Unit <cdce72010_ctrl> synthesized.
 
 Synthesizing Unit <fmc150_stellar_cmd>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd".
         START_ADDR = "0000000000000000000000000000"
         STOP_ADDR = "1111111111111111111111111111"
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 109: Output port <inbusy> of the instance <p2p0> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 119: Output port <inbusy> of the instance <p2p1> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 129: Output port <inbusy> of the instance <p2p2> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 139: Output port <inbusy> of the instance <p2p3> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 109: Output port <inbusy> of the instance <p2p0> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 119: Output port <inbusy> of the instance <p2p1> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 129: Output port <inbusy> of the instance <p2p2> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" line 139: Output port <inbusy> of the instance <p2p3> is unconnected or connected to loadless signal.
     Found 64-bit register for signal <out_cmd>.
     Found 28-bit register for signal <out_reg_addr>.
     Found 28-bit register for signal <in_reg_addr_sig>.
@@ -2153,7 +2153,7 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
 Unit <fmc150_stellar_cmd> synthesized.
 
 Synthesizing Unit <pulse2pulse>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd".
     Found 1-bit register for signal <in_reset_prev>.
     Found 1-bit register for signal <in_reset_prev2>.
     Found 1-bit register for signal <in_set>.
@@ -2168,12 +2168,12 @@ Synthesizing Unit <pulse2pulse>.
 Unit <pulse2pulse> synthesized.
 
 Synthesizing Unit <ads62p49_ctrl>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd".
         START_ADDR = "0000000000000000000000000000"
         STOP_ADDR = "1111111111111111111111111111"
         g_sim = 0
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" line 311: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" line 455: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" line 311: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" line 455: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
     Found 1-bit register for signal <ncs_int>.
     Found 1-bit register for signal <reset>.
     Found 32-bit register for signal <in_reg>.
@@ -2232,12 +2232,12 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
 Unit <ads62p49_ctrl> synthesized.
 
 Synthesizing Unit <dac3283_ctrl>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd".
         START_ADDR = "0000000000000000000000000000"
         STOP_ADDR = "1111111111111111111111111111"
         g_sim = 0
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" line 300: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" line 446: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" line 300: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" line 446: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
     Found 1-bit register for signal <ncs_int>.
     Found 32-bit register for signal <in_reg>.
     Found 32-bit register for signal <sh_counter>.
@@ -2295,12 +2295,12 @@ INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150
 Unit <dac3283_ctrl> synthesized.
 
 Synthesizing Unit <amc7823_ctrl>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd".
         START_ADDR = "0000000000000000000000000000"
         STOP_ADDR = "1111111111111111111111111111"
         g_sim = 0
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" line 316: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" line 462: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" line 316: Output port <inbusy> of the instance <pulse2pulse_inst0> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" line 462: Output port <inbusy> of the instance <pulse2pulse_inst1> is unconnected or connected to loadless signal.
     Found 1-bit register for signal <ncs_int>.
     Found 1-bit register for signal <mon_reset>.
     Found 32-bit register for signal <in_reg>.
@@ -2391,7 +2391,7 @@ WARNING:Xst:653 - Signal <ma_we_o> is used but never assigned. This sourceless s
 Unit <wb_slave_adapter_2> synthesized.
 
 Synthesizing Unit <wb_fmc150_port>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd".
 WARNING:Xst:647 - Input <wb_sel_i<3:0>> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
     Found 6-bit register for signal <ack_sreg>.
     Found 32-bit register for signal <rddata_reg>.
@@ -2421,7 +2421,7 @@ WARNING:Xst:647 - Input <wb_sel_i<3:0>> is never used. This port will be preserv
 Unit <wb_fmc150_port> synthesized.
 
 Synthesizing Unit <reset_synch>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd".
     Found 1-bit register for signal <rst_n_o>.
     Found 1-bit register for signal <s_ff>.
     Summary:
@@ -2429,11 +2429,11 @@ Synthesizing Unit <reset_synch>.
 Unit <reset_synch> synthesized.
 
 Synthesizing Unit <xwb_stream_source>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd".
 WARNING:Xst:647 - Input <src_i_ack> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <src_i_err> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <src_i_rty> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd" line 96: Output port <full_o> of the instance <cmp_fifo> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd" line 96: Output port <full_o> of the instance <cmp_fifo> is unconnected or connected to loadless signal.
 WARNING:Xst:653 - Signal <err_status_match_class> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <err_status_is_hp> is used but never assigned. This sourceless signal will be automatically connected to value GND.
 WARNING:Xst:653 - Signal <err_status_has_smac> is used but never assigned. This sourceless signal will be automatically connected to value GND.
@@ -2864,11 +2864,11 @@ Macro Statistics
 
 Reading core <../../platform/virtex6/chipscope/chipscope_ila.ngc>.
 Reading core <../../platform/virtex6/chipscope/icon_2_port/chipscope_icon_2_port.ngc>.
-Reading core <../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc>.
-Reading core <../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc>.
-Reading core <../../modules/custom_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc>.
-Reading core <../../modules/custom_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc>.
-Reading core <../../modules/custom_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc>.
+Reading core <../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc>.
+Reading core <../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc>.
+Reading core <../../modules/dbe_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc>.
+Reading core <../../modules/dbe_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc>.
+Reading core <../../modules/dbe_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc>.
 Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_0>.
 Loading core <chipscope_ila> for timing and area information for instance <cmp_chipscope_ila_1>.
 Loading core <chipscope_icon_2_port> for timing and area information for instance <cmp_chipscope_icon_0>.
@@ -5135,13 +5135,13 @@ Process "Synthesize - XST" completed successfully
 
 Started : "Translate".
 Running ngdbuild...
-Command Line: ngdbuild -intstyle ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd ../../platform/virtex6/chipscope/icon_2_port -sd ../../platform/virtex6/chipscope -sd ../../modules/custom_wishbone/wb_fmc150/netlist -nt timestamp -uc /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/dbe_bpm_simple_top.ucf -p xc6vlx240t-ff1156-1 dbe_bpm_simple_top.ngc dbe_bpm_simple_top.ngd
+Command Line: ngdbuild -intstyle ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd ../../platform/virtex6/chipscope/icon_2_port -sd ../../platform/virtex6/chipscope -sd ../../modules/dbe_wishbone/wb_fmc150/netlist -nt timestamp -uc /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/dbe_bpm_simple_top.ucf -p xc6vlx240t-ff1156-1 dbe_bpm_simple_top.ngc dbe_bpm_simple_top.ngd
 
 Command Line: /opt/Xilinx/13.4/ISE_DS/ISE/bin/lin64/unwrapped/ngdbuild -intstyle
 ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd
 ../../platform/virtex6/chipscope/icon_2_port -sd
 ../../platform/virtex6/chipscope -sd
-../../modules/custom_wishbone/wb_fmc150/netlist -nt timestamp -uc
+../../modules/dbe_wishbone/wb_fmc150/netlist -nt timestamp -uc
 /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_simple/dbe_bpm_simple_top.ucf
 -p xc6vlx240t-ff1156-1 dbe_bpm_simple_top.ngc dbe_bpm_simple_top.ngd
 
@@ -5151,15 +5151,15 @@ Loading design module "../../platform/virtex6/chipscope/chipscope_ila.ngc"...
 Loading design module
 "../../platform/virtex6/chipscope/icon_2_port/chipscope_icon_2_port.ngc"...
 Loading design module
-"../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc"...
+"../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc"...
 Loading design module
-"../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc"...
+"../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc"...
 Loading design module
-"../../modules/custom_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc"...
+"../../modules/dbe_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc"...
 Loading design module
-"../../modules/custom_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc"...
+"../../modules/dbe_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc"...
 Loading design module
-"../../modules/custom_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc"...
+"../../modules/dbe_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc"...
 	/dbe_bpm_simple_top/dbe_bpm_simple_top
 	/dbe_bpm_simple_top/cmp_chipscope_ila_1
 	/dbe_bpm_simple_top/cmp_chipscope_ila_0

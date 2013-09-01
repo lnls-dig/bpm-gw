@@ -357,10 +357,10 @@
     <file xil_pn:name="../../top/ml_605/dbe_bpm_simple/clk_gen.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="4"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/custom_wishbone_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="5"/>
     </file>
-    <file xil_pn:name="../../modules/custom_common/custom_common_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_common/dbe_common_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="6"/>
     </file>
     <file xil_pn:name="../../platform/virtex6/chipscope/icon_1_port/chipscope_icon_1_port.ngc" xil_pn:type="FILE_NGC">
@@ -372,85 +372,85 @@
     <file xil_pn:name="../../platform/virtex6/chipscope/chipscope_ila.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="9"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="10"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="11"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="12"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="13"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="14"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="15"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="17"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="19"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="20"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="21"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="22"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="23"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="24"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="25"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="26"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="27"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="28"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="29"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="30"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc" xil_pn:type="FILE_NGC">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/ads62p49_init_mem.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="31"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc" xil_pn:type="FILE_NGC">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/amc7823_init_mem.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="32"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc" xil_pn:type="FILE_NGC">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_ext.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="33"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc" xil_pn:type="FILE_NGC">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/cdce72010_init_mem_int.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="34"/>
     </file>
-    <file xil_pn:name="../../modules/custom_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc" xil_pn:type="FILE_NGC">
+    <file xil_pn:name="../../modules/dbe_wishbone/wb_fmc150/netlist/dac3283_init_mem.ngc" xil_pn:type="FILE_NGC">
       <association xil_pn:name="Implementation" xil_pn:seqID="35"/>
     </file>
-    <file xil_pn:name="../../modules/custom_common/reset_synch/reset_synch.vhd" xil_pn:type="FILE_VHDL">
+    <file xil_pn:name="../../modules/dbe_common/reset_synch/reset_synch.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="36"/>
     </file>
     <file xil_pn:name="../../ip_cores/general-cores/modules/common/gencores_pkg.vhd" xil_pn:type="FILE_VHDL">

@@ -223,20 +223,20 @@ Parsing package body <wishbone_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd" into library work
 Parsing package <gencores_pkg>.
 Parsing package body <gencores_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd" into library work
 Parsing package <wb_stream_pkg>.
 Parsing package body <wb_stream_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd" into library work
 Parsing package <wb_stream_generic_pkg>.
 Parsing package body <wb_stream_generic_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/fmc516_pkg.vhd" into library work
 Parsing package <fmc516_pkg>.
 Parsing package body <fmc516_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/fabric/wr_fabric_pkg.vhd" into library work
 Parsing package <wr_fabric_pkg>.
 Parsing package body <wr_fabric_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/custom_wishbone_pkg.vhd" into library work
-Parsing package <custom_wishbone_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/dbe_wishbone_pkg.vhd" into library work
+Parsing package <dbe_wishbone_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/ethmac/ethmac_pkg.vhd" into library work
 Parsing package <ethmac_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/etherbone_pkg.vhd" into library work
@@ -250,8 +250,8 @@ Parsing architecture <syn> of entity <sys_pll>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_ebone/clk_gen.vhd" into library work
 Parsing entity <clk_gen>.
 Parsing architecture <syn> of entity <clk_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/custom_common_pkg.vhd" into library work
-Parsing package <custom_common_pkg>.
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/dbe_common_pkg.vhd" into library work
+Parsing package <dbe_common_pkg>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/ethmac/wb_ethmac.vhd" into library work
 Parsing entity <wb_ethmac>.
 Parsing architecture <rtl> of entity <wb_ethmac>.
@@ -268,108 +268,108 @@ Parsing entity <xwb_fabric_source>.
 Parsing architecture <rtl> of entity <xwb_fabric_source>.
 Parsing entity <wb_fabric_source>.
 Parsing architecture <wrapper> of entity <wb_fabric_source>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd" into library work
 Parsing entity <xwb_stream_sink>.
 Parsing architecture <rtl> of entity <xwb_stream_sink>.
 Parsing entity <wb_stream_sink>.
 Parsing architecture <wrapper> of entity <wb_stream_sink>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/xwb_stream_source.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd" into library work
 Parsing entity <xwb_stream_source>.
 Parsing architecture <rtl> of entity <xwb_stream_source>.
 Parsing entity <wb_stream_source>.
 Parsing architecture <wrapper> of entity <wb_stream_source>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd" into library work
 Parsing package <fmc150_wbgen2_pkg>.
 Parsing package body <fmc150_wbgen2_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd" into library work
 Parsing entity <wb_fmc150>.
 Parsing architecture <rtl> of entity <wb_fmc150>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd" into library work
 Parsing entity <xwb_fmc150>.
 Parsing architecture <rtl> of entity <xwb_fmc150>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd" into library work
 Parsing entity <wb_fmc150_port>.
 Parsing architecture <syn> of entity <wb_fmc150_port>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd" into library work
 Parsing package <fmc516_wbgen2_pkg>.
 Parsing package body <fmc516_wbgen2_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wb_fmc516.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/wb_fmc516.vhd" into library work
 Parsing entity <wb_fmc516>.
 Parsing architecture <rtl> of entity <wb_fmc516>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/xwb_fmc516.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/xwb_fmc516.vhd" into library work
 Parsing entity <xwb_fmc516>.
 Parsing architecture <rtl> of entity <xwb_fmc516>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_adc_clk.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/fmc516_adc_clk.vhd" into library work
 Parsing entity <fmc516_adc_clk>.
 Parsing architecture <rtl> of entity <fmc516_adc_clk>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_adc_data.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/fmc516_adc_data.vhd" into library work
 Parsing entity <fmc516_adc_data>.
 Parsing architecture <rtl> of entity <fmc516_adc_data>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_adc_buf.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/fmc516_adc_buf.vhd" into library work
 Parsing entity <fmc516_adc_buf>.
 Parsing architecture <rtl> of entity <fmc516_adc_buf>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/fmc516_adc_iface.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/fmc516_adc_iface.vhd" into library work
 Parsing entity <fmc516_adc_iface>.
 Parsing architecture <rtl> of entity <fmc516_adc_iface>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd" into library work
 Parsing entity <wb_fmc516_regs>.
 Parsing architecture <syn> of entity <wb_fmc516_regs>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" into library work
 Parsing entity <xwb_ethmac_adapter>.
 Parsing architecture <behavioral> of entity <xwb_ethmac_adapter>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd" into library work
 Parsing entity <wb_stream_sink_gen>.
 Parsing architecture <rtl> of entity <wb_stream_sink_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/generic/wb_stream_source_gen.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_source_gen.vhd" into library work
 Parsing entity <wb_stream_source_gen>.
 Parsing architecture <rtl> of entity <wb_stream_source_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/generic/xwb_stream_sink_gen.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/generic/xwb_stream_sink_gen.vhd" into library work
 Parsing entity <xwb_stream_sink_gen>.
 Parsing architecture <rtl> of entity <xwb_stream_sink_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd" into library work
 Parsing entity <xwb_stream_source_gen>.
 Parsing architecture <rtl> of entity <xwb_stream_source_gen>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd" into library work
 Parsing entity <adc_channel_lvds_ddr>.
 Parsing architecture <rtl> of entity <adc_channel_lvds_ddr>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd" into library work
 Parsing package <adc_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd" into library work
 Parsing entity <strobe_lvds>.
 Parsing architecture <rtl> of entity <strobe_lvds>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd" into library work
 Parsing entity <ads62p49_ctrl>.
 Parsing architecture <ads62p49_ctrl_syn> of entity <ads62p49_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd" into library work
 Parsing entity <amc7823_ctrl>.
 Parsing architecture <amc7823_ctrl_syn> of entity <amc7823_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd" into library work
 Parsing entity <cdce72010_ctrl>.
 Parsing architecture <cdce72010_ctrl_syn> of entity <cdce72010_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd" into library work
 Parsing entity <dac3283_ctrl>.
 Parsing architecture <dac3283_ctrl_syn> of entity <dac3283_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd" into library work
 Parsing entity <fmc150_adc_if>.
 Parsing architecture <rtl> of entity <fmc150_adc_if>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd" into library work
 Parsing entity <fmc150_dac_if>.
 Parsing architecture <rtl> of entity <fmc150_dac_if>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd" into library work
 Parsing package <fmc150_pkg>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd" into library work
 Parsing entity <fmc150_spi_ctrl>.
 Parsing architecture <fmc150_spi_ctrl_syn> of entity <fmc150_spi_ctrl>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd" into library work
 Parsing entity <fmc150_stellar_cmd>.
 Parsing architecture <arch_fmc150_stellar_cmd> of entity <fmc150_stellar_cmd>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd" into library work
 Parsing entity <fmc150_testbench>.
 Parsing architecture <rtl> of entity <fmc150_testbench>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd" into library work
 Parsing entity <pulse2pulse>.
 Parsing architecture <syn> of entity <pulse2pulse>.
-Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_common/reset_synch/reset_synch.vhd" into library work
+Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd" into library work
 Parsing entity <reset_synch>.
 Parsing architecture <rtl> of entity <reset_synch>.
 Parsing VHDL file "/home/lerwys/Repos/bpm-sw/hdl/modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd" into library work
@@ -1131,7 +1131,7 @@ Elaborating entity <WB_bus_adapter_streaming_sg> (architecture <behavioral>) wit
 
 Elaborating entity <sipo_flag> (architecture <behavioral>) with generics from library <work>.
 WARNING:HDLCompiler:634 - "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/WB_bus_adapter_streaming_sg.vhd" Line 104: Net <sipo_clr> does not have a driver.
-WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" Line 274: Assignment to rx_ram_dat_reg ignored, since the identifier is never used
+WARNING:HDLCompiler:1127 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" Line 274: Assignment to rx_ram_dat_reg ignored, since the identifier is never used
 
 Elaborating entity <WB_bus_adapter_streaming_sg> (architecture <behavioral>) with generics from library <work>.
 
@@ -3264,7 +3264,7 @@ WARNING:Xst:647 - Input <TxUsedData> is never used. This port will be preserved 
 Unit <eth_macstatus> synthesized.
 
 Synthesizing Unit <xwb_ethmac_adapter>.
-    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd".
+    Related source file is "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd".
 WARNING:Xst:647 - Input <wb_slave_i_sel<3:0>> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <tx_ram_i_dat<31:0>> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <tx_ram_i_err> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
@@ -3273,14 +3273,14 @@ WARNING:Xst:647 - Input <tx_ram_i_int> is never used. This port will be preserve
 WARNING:Xst:647 - Input <rx_ram_i_err> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <rx_ram_i_rty> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <rx_ram_i_int> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <A_DAT_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_ADR_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_SEL_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_WE_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_DAT_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_ACK_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_ERR_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
-INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/custom_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_RTY_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <A_DAT_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_ADR_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_SEL_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 237: Output port <B_WE_o> of the instance <cmp_tx_adapter_16_to_32> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_DAT_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_ACK_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_ERR_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
+INFO:Xst:3210 - "/home/lerwys/Repos/bpm-sw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd" line 335: Output port <A_RTY_o> of the instance <cmp_rx_adapter_32_to_16> is unconnected or connected to loadless signal.
     Found 32-bit register for signal <base_adr_tx>.
     Found 32-bit register for signal <base_adr_rx>.
     Found 32-bit register for signal <length_rx>.
@@ -7053,15 +7053,15 @@ Process "Synthesize - XST" completed successfully
 
 Started : "Translate".
 Running ngdbuild...
-Command Line: ngdbuild -intstyle ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd ../../platform/virtex6/chipscope/icon_2_port -sd ../../platform/virtex6/chipscope/icon_4_port -sd ../../platform/virtex6/chipscope -sd ../../modules/custom_wishbone/wb_fmc150/netlist -sd ../../modules/custom_wishbone/wb_fmc516/coregen -nt timestamp -uc /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_ebone/dbe_bpm_ebone.ucf -p xc6vlx240t-ff1156-1 dbe_bpm_ebone.ngc dbe_bpm_ebone.ngd
+Command Line: ngdbuild -intstyle ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd ../../platform/virtex6/chipscope/icon_2_port -sd ../../platform/virtex6/chipscope/icon_4_port -sd ../../platform/virtex6/chipscope -sd ../../modules/dbe_wishbone/wb_fmc150/netlist -sd ../../modules/dbe_wishbone/wb_fmc516/coregen -nt timestamp -uc /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_ebone/dbe_bpm_ebone.ucf -p xc6vlx240t-ff1156-1 dbe_bpm_ebone.ngc dbe_bpm_ebone.ngd
 
 Command Line: /opt/Xilinx/13.4/ISE_DS/ISE/bin/lin64/unwrapped/ngdbuild -intstyle
 ise -dd _ngo -sd ../../platform/virtex6/chipscope/icon_1_port -sd
 ../../platform/virtex6/chipscope/icon_2_port -sd
 ../../platform/virtex6/chipscope/icon_4_port -sd
 ../../platform/virtex6/chipscope -sd
-../../modules/custom_wishbone/wb_fmc150/netlist -sd
-../../modules/custom_wishbone/wb_fmc516/coregen -nt timestamp -uc
+../../modules/dbe_wishbone/wb_fmc150/netlist -sd
+../../modules/dbe_wishbone/wb_fmc516/coregen -nt timestamp -uc
 /home/lerwys/Repos/bpm-sw/hdl/top/ml_605/dbe_bpm_ebone/dbe_bpm_ebone.ucf -p
 xc6vlx240t-ff1156-1 dbe_bpm_ebone.ngc dbe_bpm_ebone.ngd
 

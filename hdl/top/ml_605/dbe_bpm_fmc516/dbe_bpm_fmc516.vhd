@@ -26,7 +26,7 @@ use work.wishbone_pkg.all;
 -- Memory core generator
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- Ethernet MAC Modules and SDB structure
@@ -36,7 +36,7 @@ use work.wr_fabric_pkg.all;
 -- Etherbone slave core
 use work.etherbone_pkg.all;
 -- FMC516 definitions
-use work.fmc516_pkg.all;
+use work.fmc_adc_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
@@ -150,7 +150,7 @@ port(
 
   -- Programable VCXO via I2C
   vcxo_i2c_sda_b                            : inout std_logic;
-  vcxo_i2c_scl_o                            : out std_logic;
+  vcxo_i2c_scl_b                            : inout std_logic;
   vcxo_pd_l_o                               : out std_logic;
 
   -- One-wire To/From DS2431 (VMETRO Data)
@@ -865,7 +865,7 @@ begin
 
     -- Programable VCXO via I2C
     vcxo_i2c_sda_b                          => vcxo_i2c_sda_b,
-    vcxo_i2c_scl_o                          => vcxo_i2c_scl_o,
+    vcxo_i2c_scl_b                          => vcxo_i2c_scl_b,
     vcxo_pd_l_o                             => vcxo_pd_l_o,
 
     -- One-wire To/From DS2431 (VMETRO Data)
@@ -1106,10 +1106,10 @@ begin
   --                                               wbs_fmc516_out_array(0).dat;
   --TRIG_ILA0_1                               <= fmc516_adc_data(15 downto 0) &
   --                                               fmc516_adc_data(47 downto 32);
-  TRIG_ILA0_1(11 downto 0)                   <= adc_dly_debug_int(1).adc_clk_dly_pulse &
-                                                adc_dly_debug_int(1).adc_data_dly_pulse &
-                                                adc_dly_debug_int(1).adc_clk_dly_val &
-                                                adc_dly_debug_int(1).adc_data_dly_val;
+  TRIG_ILA0_1(11 downto 0)                   <= adc_dly_debug_int(1).clk_chain.idelay.pulse &
+                                                adc_dly_debug_int(1).data_chain.idelay.pulse &
+                                                adc_dly_debug_int(1).clk_chain.idelay.val &
+                                                adc_dly_debug_int(1).data_chain.idelay.val;
   TRIG_ILA0_1(31 downto 12)                  <= (others => '0');
 
   -- FMC516 WBS master output control signals
