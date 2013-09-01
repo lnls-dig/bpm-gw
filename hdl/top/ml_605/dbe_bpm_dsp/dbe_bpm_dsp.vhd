@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------------
--- Title      : Top FMC516 design
+-- Title      : Top DSP design
 ------------------------------------------------------------------------------
 -- Author     : Lucas Maziero Russo
 -- Company    : CNPEM LNLS-DIG
 -- Created    : 2013-02-25
 -- Platform   : FPGA-generic
 -------------------------------------------------------------------------------
--- Description: Top design for testing the integration/control of the FMC516
+-- Description: Top design for testing the integration/control of the DSP
 -------------------------------------------------------------------------------
 -- Copyright (c) 2012 CNPEM
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
@@ -27,6 +27,8 @@ use work.wishbone_pkg.all;
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
 use work.custom_wishbone_pkg.all;
+-- Custom common cores
+use work.custom_common_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- Ethernet MAC Modules and SDB structure
@@ -189,7 +191,7 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 9;
+  constant c_slaves                         : natural := 10;
   -- General Dual-port memory, Buffer Single-port memory, DMA control port, MAC,
   --Etherbone, FMC516, Peripherals
   -- Number of masters
@@ -272,8 +274,10 @@ architecture rtl of dbe_bpm_dsp is
       4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30005000"),   -- Ethernet MAC control port
       5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30006000"),   -- Ethernet Adapter control port
       6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30007000"),   -- Etherbone control port
-      7 => f_sdb_embed_bridge(c_fmc516_bridge_sdb,        x"30010000"),   -- FMC516 control port
-      8 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"30020000")    -- General peripherals control port
+      7 => f_sdb_embed_device(c_xwb_position_calc_core_sdb,
+                                                          x"30008000"),   -- Position Calc Core control port
+      8 => f_sdb_embed_bridge(c_fmc516_bridge_sdb,        x"30010000"),   -- FMC516 control port
+      9 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"30020000")    -- General peripherals control port
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
@@ -361,9 +365,10 @@ architecture rtl of dbe_bpm_dsp is
   signal fmc516_adc_data                    : std_logic_vector(c_num_adc_channels*16-1 downto 0);
   signal fmc516_adc_valid                   : std_logic_vector(c_num_adc_channels-1 downto 0);
 
-  signal fmc_debug                          : std_logic;
-  signal reset_adc_counter                  : unsigned(6 downto 0) := (others => '0');
-  signal fmc516_fs_rst_n                    : std_logic;
+  --signal fmc_debug                          : std_logic;
+  --signal reset_adc_counter                  : unsigned(6 downto 0) := (others => '0');
+  signal fs_rst_sync_n                      : std_logic;
+  signal fs_rst_n                           : std_logic;
 
   -- FMC516 Debug
   signal fmc516_debug_valid_int             : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -395,6 +400,8 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_sysce                          : std_logic;
   signal dsp_sysce_clr                      : std_logic;
   signal dsp_sysclk                         : std_logic;
+  signal dsp_sysclk2x                       : std_logic;
+  signal dsp_rst_n                          : std_logic;
 
   signal dsp_kx                             : std_logic_vector(24 downto 0);
   signal dsp_ky                             : std_logic_vector(24 downto 0);
@@ -469,11 +476,14 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_clk_ce_1390000                 : std_logic;
   signal dsp_clk_ce_1112                    : std_logic;
   signal dsp_clk_ce_2224                    : std_logic;
+  signal dsp_clk_ce_11120000                : std_logic;
   signal dsp_clk_ce_22240000                : std_logic;
   signal dsp_clk_ce_5000                    : std_logic;
   signal dsp_clk_ce_556                     : std_logic;
   signal dsp_clk_ce_2780000                 : std_logic;
   signal dsp_clk_ce_5560000                 : std_logic;
+
+  signal clk_rffe_swap                      : std_logic;
 
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
@@ -938,7 +948,7 @@ begin
   cbar_slave_i(7)                           <= wb_ebone_out;
   wb_ebone_in                               <= cbar_slave_o(7);
 
-  -- The FMC516 is slave 7
+  -- The FMC516 is slave 8
   cmp_xwb_fmc516 : xwb_fmc516
   generic map(
     g_fpga_device                           => "VIRTEX6",
@@ -967,8 +977,8 @@ begin
     -----------------------------
     -- Wishbone Control Interface signals
     -----------------------------
-    wb_slv_i                                => cbar_master_o(7),
-    wb_slv_o                                => cbar_master_i(7),
+    wb_slv_i                                => cbar_master_o(8),
+    wb_slv_o                                => cbar_master_i(8),
 
     -----------------------------
     -- External ports
@@ -1057,6 +1067,7 @@ begin
     -----------------------------
     adc_clk_o                               => fmc516_fs_clk,
     adc_clk2x_o                             => fmc516_fs_clk2x,
+    adc_rst_n_o                             => open,
     adc_data_o                              => fmc516_adc_data,
     adc_data_valid_o                        => fmc516_adc_valid,
 
@@ -1065,7 +1076,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    trig_hw_i                               => '0',
+    trig_hw_i                               => clk_rffe_swap, -- from Position Calculation Core
     -- General board status
     fmc_mmcm_lock_o                         => fmc516_mmcm_lock_int,
     fmc_lmk_lock_o                          => fmc516_lmk_lock_int,
@@ -1102,36 +1113,34 @@ begin
   lmk_uwire_data_o                          <= lmk_uwire_data_int;
   lmk_uwire_clock_o                         <= lmk_uwire_clock_int;
 
-  -- Reset FMC516 ADCs
-  --fmc_reset_adcs_n_o                        <= fmc_reset_adcs_n_out;
-  fmc516_fs_rst_n                           <= clk_sys_rstn;
-
- --p_fmc516_reset_adcs : process(fmc516_fs_clk(c_adc_ref_clk))
- --begin
- --  if rising_edge(fmc516_fs_clk(c_adc_ref_clk)) then
- --    if (fmc516_fs_rst_n = '0' or fmc_reset_adcs_n_int = '0') then
- --      fmc_reset_adcs_n_out <= '0';
- --      reset_adc_counter <= (others => '0');
- --    elsif reset_adc_counter = "1111111" then
- --      fmc_reset_adcs_n_out <= '1';
- --    else
- --      reset_adc_counter <= reset_adc_counter + 1;
- --      fmc_reset_adcs_n_out <= '0';
- --    end if;
- --  end if;
- --end process;
-
-  cmp_position_calc: position_calc
+  -- Position calc core is slave 7
+  cmp_xwb_position_calc_core : xwb_position_calc_core
+  generic map (
+    g_interface_mode                        => PIPELINED,
+    g_address_granularity                   => WORD
+  )
   port map (
+    rst_n_i                                 => clk_sys_rstn,
+    clk_i                                   => clk_sys,      -- wishbone clock
+    fs_clk_i                                => dsp_sysclk2x, -- clock period = 4.44116091946435 ns (225.16635135135124 Mhz)
+
+    -----------------------------
+    -- Wishbone signals
+    -----------------------------
+    wb_slv_i                                => cbar_master_o(7),
+    wb_slv_o                                => cbar_master_i(7),
+
+    -----------------------------
+    -- Raw ADC signals
+    -----------------------------
     adc_ch0_i                               => fmc516_adc_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb),
     adc_ch1_i                               => fmc516_adc_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb),
     adc_ch2_i                               => fmc516_adc_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb),
     adc_ch3_i                               => fmc516_adc_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb),
 
-    --ce                                      => dsp_sysce,
-    --ce_clr                                  => dsp_sysce_clr,
-    clk                                     => dsp_sysclk,-- clock period = 4.4411 ns (225.166904968 Mhz)
-
+    -----------------------------
+    -- DSP config parameter signals
+    -----------------------------
     kx                                      => dsp_kx,
     ky                                      => dsp_ky,
     ksum                                    => dsp_ksum,
@@ -1140,6 +1149,9 @@ begin
     del_sig_div_tbt_thres_i                 => dsp_del_sig_div_thres,
     del_sig_div_monit_thres_i               => dsp_del_sig_div_thres,
 
+    -----------------------------
+    -- Position calculation at various rates
+    -----------------------------
     adc_ch0_dbg_data_o                      => dsp_adc_ch0_data,
     adc_ch1_dbg_data_o                      => dsp_adc_ch1_data,
     adc_ch2_dbg_data_o                      => dsp_adc_ch2_data,
@@ -1219,8 +1231,19 @@ begin
     monit_cfir_incorrect_o                  => dsp_monit_cfir_incorrect,
     monit_pfir_incorrect_o                  => dsp_monit_pfir_incorrect,
 
+    -----------------------------
+    -- Output to RFFE board
+    -----------------------------
+    clk_swap_o                              => clk_rffe_swap,
+    ctrl1_o                                 => open,
+    ctrl2_o                                 => open,
+
+  -----------------------------
+  -- Clock drivers for various rates
+  -----------------------------
     clk_ce_1_o                              => dsp_clk_ce_1,
     clk_ce_1112_o                           => dsp_clk_ce_1112,
+    clk_ce_11120000_o                       => dsp_clk_ce_11120000,
     clk_ce_1390000_o                        => dsp_clk_ce_1390000,
     clk_ce_2_o                              => dsp_clk_ce_2,
     clk_ce_2224_o                           => dsp_clk_ce_2224,
@@ -1245,7 +1268,9 @@ begin
   dsp_sysce                                 <= '1';
   dsp_sysce_clr                             <= '0';
   --dsp_sysclk                                <= fmc516_fs_clk(c_adc_ref_clk);
-  dsp_sysclk                                <= fmc516_fs_clk2x(c_adc_ref_clk);  -- oversampled DSP chain
+  dsp_sysclk2x                              <= fmc516_fs_clk2x(c_adc_ref_clk);  -- oversampled DSP chain
+  dsp_sysclk                                <= fmc516_fs_clk(c_adc_ref_clk);  -- oversampled DSP chain
+  --dsp_rst_n                                 <= fmc516_fs_rst_n(c_adc_ref_clk);
   dsp_del_sig_div_thres                     <= "00000000000000001000000000"; -- aprox 1.22e-4 FIX26_22
 
   --dsp_kx                                    <= "100110001001011010000000"; -- 10000000 UFIX24_0
@@ -1259,7 +1284,7 @@ begin
   --dsp_ksum                                  <= "100000000000000000000000"; -- 1.0 FIX24_23
   --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
 
-  -- The board peripherals components is slave 8
+  -- The board peripherals components is slave 9
   cmp_xwb_dbe_periph : xwb_dbe_periph
   generic map(
     -- NOT used!
@@ -1289,8 +1314,8 @@ begin
     button_oen_o                              => open,
 
     -- Wishbone
-    slave_i                                   => cbar_master_o(8),
-    slave_o                                   => cbar_master_i(8)
+    slave_i                                   => cbar_master_o(9),
+    slave_o                                   => cbar_master_i(9)
   );
 
   leds_o <= gpio_leds_int;
@@ -1378,12 +1403,12 @@ begin
     TRIG4                                   => TRIG_ILA1_4
   );
 
-  TRIG_ILA1_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA1_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA1_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA1_0(3)                            <= dsp_clk_ce_5560000;
+  TRIG_ILA1_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA1_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA1_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA1_0(3)                            <= dsp_clk_ce_1390000; -- not used
   TRIG_ILA1_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA1_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA1_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA1_0(7 downto 6)                   <= (others => '0');
 
   --TRIG_ILA1_1(dsp_bpf_ch0'range)            <= dsp_bpf_ch0;
@@ -1414,12 +1439,12 @@ begin
     TRIG4                                   => TRIG_ILA2_4
   );
 
-  TRIG_ILA2_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA2_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA2_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA2_0(3)                            <= dsp_clk_ce_5560000;
-  TRIG_ILA2_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA2_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA2_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA2_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA2_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA2_0(3)                            <= dsp_clk_ce_1390000;
+  TRIG_ILA2_0(4)                            <= dsp_clk_ce_2780000; -- not used
+  TRIG_ILA2_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA2_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA2_1(dsp_tbt_amp_ch0'range)        <= dsp_tbt_amp_ch0;
@@ -1442,12 +1467,12 @@ begin
     TRIG4                                   => TRIG_ILA3_4
   );
 
-  TRIG_ILA3_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA3_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA3_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA3_0(3)                            <= dsp_clk_ce_5560000;
-  TRIG_ILA3_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA3_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA3_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA3_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA3_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA3_0(3)                            <= dsp_clk_ce_1390000;
+  TRIG_ILA3_0(4)                            <= dsp_clk_ce_2780000; -- not used
+  TRIG_ILA3_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA3_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA3_1(dsp_x_tbt'range)              <= dsp_x_tbt;
@@ -1467,12 +1492,12 @@ begin
     TRIG4                                   => TRIG_ILA4_4
   );
 
-  TRIG_ILA4_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA4_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA4_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA4_0(3)                            <= dsp_clk_ce_5560000;
-  TRIG_ILA4_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA4_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA4_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA4_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA4_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA4_0(3)                            <= dsp_clk_ce_1390000;
+  TRIG_ILA4_0(4)                            <= dsp_clk_ce_2780000; -- not used
+  TRIG_ILA4_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA4_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA4_1(dsp_fofb_amp_ch0'range)       <= dsp_fofb_amp_ch0;
@@ -1494,12 +1519,12 @@ begin
     TRIG4                                   => TRIG_ILA5_4
   );
 
-  TRIG_ILA5_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA5_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA5_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA5_0(3)                            <= dsp_clk_ce_5560000;
-  TRIG_ILA5_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA5_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA5_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA5_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA5_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA5_0(3)                            <= dsp_clk_ce_1390000;
+  TRIG_ILA5_0(4)                            <= dsp_clk_ce_2780000; -- not used
+  TRIG_ILA5_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA5_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA5_1(dsp_x_fofb'range)             <= dsp_x_fofb;
@@ -1519,12 +1544,12 @@ begin
     TRIG4                                   => TRIG_ILA6_4
   );
 
-  TRIG_ILA6_0(0)                            <= dsp_clk_ce_2;
-  TRIG_ILA6_0(1)                            <= dsp_clk_ce_70;
-  TRIG_ILA6_0(2)                            <= dsp_clk_ce_2224;
-  TRIG_ILA6_0(3)                            <= dsp_clk_ce_5560000;
-  TRIG_ILA6_0(4)                            <= dsp_clk_ce_2780000;
-  TRIG_ILA6_0(5)                            <= dsp_clk_ce_22240000;
+  TRIG_ILA6_0(0)                            <= dsp_clk_ce_1;
+  TRIG_ILA6_0(1)                            <= dsp_clk_ce_35;
+  TRIG_ILA6_0(2)                            <= dsp_clk_ce_1112;
+  TRIG_ILA6_0(3)                            <= dsp_clk_ce_1390000;
+  TRIG_ILA6_0(4)                            <= dsp_clk_ce_2780000; -- not used
+  TRIG_ILA6_0(5)                            <= dsp_clk_ce_11120000;
   TRIG_ILA6_0(7 downto 6)                   <= (others => '0');
 
   TRIG_ILA6_1(dsp_x_monit'range)            <= dsp_x_monit;
