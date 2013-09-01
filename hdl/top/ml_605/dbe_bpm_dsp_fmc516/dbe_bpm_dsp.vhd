@@ -26,9 +26,9 @@ use work.wishbone_pkg.all;
 -- Memory core generator
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
-use work.custom_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 -- Custom common cores
-use work.custom_common_pkg.all;
+use work.dbe_common_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- Ethernet MAC Modules and SDB structure
@@ -38,7 +38,7 @@ use work.wr_fabric_pkg.all;
 -- Etherbone slave core
 use work.etherbone_pkg.all;
 -- FMC516 definitions
-use work.fmc516_pkg.all;
+use work.fmc_adc_pkg.all;
 -- DSP definitions
 use work.dsp_cores_pkg.all;
 
