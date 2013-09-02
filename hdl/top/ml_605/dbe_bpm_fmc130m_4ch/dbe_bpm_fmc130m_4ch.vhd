@@ -492,25 +492,6 @@ architecture rtl of dbe_bpm_fmc130m_4ch is
   );
   end component;
 
-  component rs232_syscon_top_1_0
-  port (
-    clk_i                                   : in   std_logic;
-    reset_i                                 : in   std_logic;
-    ack_i                                   : in   std_logic;
-    err_i                                   : in   std_logic;
-    rs232_rxd_i                             : in   std_logic;
-    data_in                                 : in   std_logic_vector(31 downto 0);
-    data_out                                : out  std_logic_vector(31 downto 0);
-    rst_o                                   : out  std_logic;
-    stb_o                                   : out  std_logic;
-    cyc_o                                   : out  std_logic;
-    adr_o                                   : out  std_logic_vector(31 downto 0);
-    we_o                                    : out  std_logic;
-    rs232_txd_o                             : out  std_logic;
-    sel_o                                   : out  std_logic_vector(3 downto 0)
-  );
-  end component;
-
   -- Functions
   -- Generate dummy (0) values
   function f_zeros(size : integer)
@@ -651,25 +632,6 @@ begin
     wb_master_i                               => cbar_slave_o(0),
     wb_master_o                               => cbar_slave_i(0)
   );
-
-  --cmp_rs232_syscon_top_1_0 : rs232_syscon_top_1_0
-  --port map
-  --(
-  --  rs232_rxd_i                    => rs232_rxd_i,
-  --  rs232_txd_o                    => rs232_txd_o,
-  --  clk_i                          => clk_sys,
-  --  reset_i                        => '0',
-  --  rst_o                          => rs232_rst,
-  --  cyc_o                          => cbar_slave_i(0).cyc,
-  --  adr_o                          => cbar_slave_i(0).adr,
-  --  data_in                        => cbar_slave_o(0).dat,
-  --  we_o                           => cbar_slave_i(0).we,
-  --  stb_o                          => cbar_slave_i(0).stb,
-  --  data_out                       => cbar_slave_i(0).dat,
-  --  ack_i                          => cbar_slave_o(0).ack,
-  --  err_i                          => cbar_slave_o(0).err,
-  --  sel_o                          => cbar_slave_i(0).sel
-  --);
 
   -- A DMA controller is master 2+3, slave 3, and interrupt 1
   cmp_dma : xwb_dma
