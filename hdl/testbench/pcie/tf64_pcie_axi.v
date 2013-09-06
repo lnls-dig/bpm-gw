@@ -205,7 +205,6 @@ begin
        TLP_Feed_Rx(`C_BAR4_HIT);
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
-
      
        board.Hdr_Array[0]     = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, board.PIO_1st_BE};
@@ -264,6 +263,18 @@ begin
        TLP_Feed_Rx(`C_BAR2_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
     board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+    board.Rx_TLP_Length = 'H01;
+      $display("%d ns:   Switch DDR page", $time);
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_SDRAM_PG;
+      dword_pack_data_store('H0000_0001, 0);
+    
+      TLP_Feed_Rx(`C_BAR0_HIT);
+      board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
 
     board.Rx_TLP_Length = 'H02;
      $display("\n%d ns:   Short write QWORD burst to DDR space", $time);
@@ -381,7 +392,7 @@ begin
        board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
        board.Hdr_Array[2] = 'h0;
-       board.Hdr_Array[3] = 32'H00000000;
+       board.Hdr_Array[3] = 32'H00000008;
        dword_pack_data_store(32'HFFFFFFFF, 0);
        dword_pack_data_store(32'HFFFFFFFE, 1);
        dword_pack_data_store(32'HFFFFFFFD, 2);
@@ -389,6 +400,19 @@ begin
      
        TLP_Feed_Rx(`C_BAR4_HIT);
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+
+    board.Rx_TLP_Length = 'H02;
+     $display("\n%d ns:   Read DWORD from Wishbone space", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000008;
+     
+       TLP_Feed_Rx(`C_BAR4_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
     //  ///////////////////////////////////////////////////////////////////
     //  DMA write & read BAR[2]
     //  Single-descriptor case

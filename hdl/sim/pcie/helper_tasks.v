@@ -59,7 +59,9 @@
 `define  C_ADDR_VERSION                 32'H0000
 `define  C_ADDR_IRQ_STAT                32'H0008
 `define  C_ADDR_IRQ_EN                  32'H0010
+`define  C_ADDR_SDRAM_PG                32'H001C
 `define  C_ADDR_GSR                     32'H0020
+`define  C_ADDR_WB_PG                   32'H0024
 `define  C_ADDR_GCR                     32'H0028
 
   /* Control registers for special ports */
