@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.6
-# Date: Thu Aug 15 07:52:38 2013
+# Date: Tue Aug 27 13:08:08 2013
 #
 ##############################################################
 #
@@ -69,7 +69,7 @@ CSET atomicop64_completer_supported=false
 CSET atomicop_routing_supported=false
 CSET bar0_64bit=true
 CSET bar0_enabled=true
-CSET bar0_prefetchable=false
+CSET bar0_prefetchable=true
 CSET bar0_scale=Kilobytes
 CSET bar0_size=1
 CSET bar0_size_vector=1M
@@ -85,7 +85,7 @@ CSET bar2_64bit=true
 CSET bar2_enabled=true
 CSET bar2_prefetchable=true
 CSET bar2_scale=Megabytes
-CSET bar2_size=512
+CSET bar2_size=1
 CSET bar2_size_vector=1M
 CSET bar2_type=Memory
 CSET bar3_64bit=false
@@ -97,9 +97,9 @@ CSET bar3_size_vector=1M
 CSET bar3_type=N/A
 CSET bar4_64bit=true
 CSET bar4_enabled=true
-CSET bar4_prefetchable=false
-CSET bar4_scale=Gigabytes
-CSET bar4_size=2
+CSET bar4_prefetchable=true
+CSET bar4_scale=Kilobytes
+CSET bar4_size=512
 CSET bar4_size_vector=1M
 CSET bar4_type=Memory
 CSET bar5_enabled=false
@@ -265,4 +265,4 @@ CSET xlnx_ref_board=None
 MISC pkg_timestamp=2013-05-22T21:33:09Z
 # END Extra information
 GENERATE
-# CRC: 654b7571
+# CRC:  c743bec
