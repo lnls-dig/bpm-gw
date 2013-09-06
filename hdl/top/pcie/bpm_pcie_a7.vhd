@@ -2157,7 +2157,7 @@ begin
 
     end generate;
 
-    Wishbone_mem_sample: if (SIMULATION = "TRUE") generate
+    Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
       wb_mem_syn :
         wb_mem
           generic map(
