@@ -50,12 +50,9 @@ entity rx_MRd_Transact is
     rx_np_ok           : out std_logic;
     rx_np_req          : out std_logic;
     m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
---      trn_rfc_ph_av      : IN  std_logic_vector(7 downto 0);
---      trn_rfc_pd_av      : IN  std_logic_vector(11 downto 0);
---      trn_rfc_nph_av     : IN  std_logic_vector(7 downto 0);
---      trn_rfc_npd_av     : IN  std_logic_vector(11 downto 0);
---      trn_rfc_cplh_av    : IN  std_logic_vector(7 downto 0);
---      trn_rfc_cpld_av    : IN  std_logic_vector(11 downto 0);
+
+    sdram_pg : in std_logic_vector(31 downto 0);
+    wb_pg    : in std_logic_vector(31 downto 0);
 
     IORd_Type         : in std_logic;
     MRd_Type          : in std_logic_vector(3 downto 0);
@@ -443,10 +440,12 @@ begin
                 <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT+32 downto 0+32);
             elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT+32 downto 0+32);
+                <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
+                   m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1+32 downto 0+32);
             elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT+32 downto 0+32);
+                <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
+                   m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1+32 downto 0+32);
             else
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
@@ -459,21 +458,17 @@ begin
             if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "000";
             elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT downto 0);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER);   --- "001";
+                <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
+                   m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1 downto 0);
             elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
               pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT downto 0);
+                <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
+                   m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1 downto 0);
             else
               pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
                 <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
---                   pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                               <= C_ALL_ONES(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT);    --- "111" !!!
             end if;
           end if;
 

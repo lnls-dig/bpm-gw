@@ -28,7 +28,9 @@ package abb64Package is
   --  0x0008         : Interrupt status
   --  0x0010         : Interrupt enable
   --  0x0018         : General error
+  --  0x001C         : DDR SDRAM address page
   --  0x0020         : General status
+  --  0x0024         : Wishbone address page
   --  0x0028         : General control
 
   --  0x002C ~ 0x004C: DMA upstream registers
@@ -125,6 +127,12 @@ package abb64Package is
 
   -- Wishbone endpoint address width
   constant C_WB_AWIDTH : integer range 24 to 31 := 31;
+
+  -- DDR SDRAM page address width
+  constant C_DDR_PG_WIDTH : integer range 0 to 30 := 20;
+
+  -- Wishbone endpoint page address width
+  constant C_WB_PG_WIDTH : integer range 0 to 30 := 19;
 
   ---       Width for Interrupt generation counter
   constant C_CNT_GINT_WIDTH : integer := 30;
@@ -529,9 +537,9 @@ package abb64Package is
   constant CINT_ADDR_IRQ_EN : integer := 4;
 
   constant CINT_ADDR_ERROR : integer := 6;  -- unused
-
+  constant CINT_ADDR_SDRAM_PG : integer := 7;
   constant CINT_ADDR_STATUS : integer := 8;
-
+  constant CINT_ADDR_WB_PG : integer := 9;
   constant CINT_ADDR_CONTROL : integer := 10;
 
   -- Upstream DMA channel Constants

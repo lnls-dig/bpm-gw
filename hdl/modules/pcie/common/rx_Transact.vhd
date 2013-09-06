@@ -87,6 +87,10 @@ entity rx_Transact is
     Irpt_RE   : in  std_logic;
     Irpt_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
+    -- SDRAM and Wishbone pages
+    sdram_pg : in std_logic_vector(31 downto 0);
+    wb_pg    : in std_logic_vector(31 downto 0);
+
     -- Interrupt Interface
     cfg_interrupt           : out std_logic;
     cfg_interrupt_rdy       : in  std_logic;
@@ -344,6 +348,9 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_tvalid   : in  std_logic;
       m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
+      sdram_pg : in std_logic_vector(31 downto 0);
+      wb_pg    : in std_logic_vector(31 downto 0);
+
       IORd_Type         : in std_logic;
       MRd_Type          : in std_logic_vector(3 downto 0);
       Tlp_straddles_4KB : in std_logic;
@@ -378,6 +385,9 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_terrfwd  : in std_logic;
       m_axis_rx_tvalid   : in std_logic;
       m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
+
+      sdram_pg : in std_logic_vector(31 downto 0);
+      wb_pg    : in std_logic_vector(31 downto 0);
 
       IOWr_Type         : in std_logic;
       MWr_Type          : in std_logic_vector(1 downto 0);
@@ -782,6 +792,9 @@ begin
         rx_np_ok           => rx_np_ok,             -- OUT std_logic;
         rx_np_req          => rx_np_req,            -- out std_logic;
 
+        sdram_pg => sdram_pg,
+        wb_pg    => wb_pg,
+
         IORd_Type         => IORd_Type ,          -- IN  std_logic;
         MRd_Type          => MRd_Type ,  -- IN  std_logic_vector(3 downto 0);
         Tlp_straddles_4KB => Tlp_straddles_4KB ,  -- IN  std_logic;
@@ -817,6 +830,9 @@ begin
         m_axis_rx_tvalid   => m_axis_rx_tvalid_dly,    -- IN  std_logic;
         m_axis_rx_tready   => m_axis_rx_tready_dly,    -- IN  std_logic;
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
+
+        sdram_pg => sdram_pg,
+        wb_pg    => wb_pg,
 
         IOWr_Type         => IOWr_Type ,          -- OUT std_logic;
         MWr_Type          => MWr_Type ,  -- IN  std_logic_vector(1 downto 0);

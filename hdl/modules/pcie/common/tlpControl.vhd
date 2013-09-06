@@ -331,6 +331,10 @@ architecture Behavioral of tlpControl is
       Irpt_RE   : in  std_logic;
       Irpt_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
+      -- SDRAM and Wishbone pages
+      sdram_pg : in std_logic_vector(31 downto 0);
+      wb_pg    : in std_logic_vector(31 downto 0);
+
       -- Interrupt Interface
       cfg_interrupt           : out std_logic;
       cfg_interrupt_rdy       : in  std_logic;
@@ -706,6 +710,10 @@ architecture Behavioral of tlpControl is
       IG_Num_Deassert : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       IG_Asserting    : in  std_logic;
 
+      -- SDRAM and Wishbone paging registers
+      sdram_pg : out std_logic_vector(31 downto 0);
+      wb_pg    : out std_logic_vector(31 downto 0);
+
       -- Data generator control
       DG_is_Running : in  std_logic;
       DG_Reset      : out std_logic;
@@ -866,6 +874,9 @@ architecture Behavioral of tlpControl is
   signal Irpt_RE   : std_logic;
   signal Irpt_Qout : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
+  -- SDRAM and Wishbone paging registers
+  signal sdram_pg_i : std_logic_vector(31 downto 0);
+  signal wb_pg_i    : std_logic_vector(31 downto 0);
 
   -- Registers Write Port
   signal Regs_WrEnA   : std_logic;
@@ -1145,7 +1156,6 @@ begin
 --    trn_rfc_cplh_av      => trn_rfc_cplh_av,     -- IN  std_logic_vector(7 downto 0),
 --    trn_rfc_cpld_av      => trn_rfc_cpld_av,     -- IN  std_logic_vector(11 downto 0),
 
-
         -- MRd Channel
         pioCplD_Req  => pioCplD_Req,    -- OUT std_logic;
         pioCplD_RE   => pioCplD_RE,     -- IN  std_logic;
@@ -1170,6 +1180,9 @@ begin
         Irpt_RE   => Irpt_RE,           -- IN  std_logic;
         Irpt_Qout => Irpt_Qout,         -- OUT std_logic_vector(96 downto 0);
 
+        -- SDRAM and Wishbone pages
+        sdram_pg => sdram_pg_i,
+        wb_pg    => wb_pg_i,
 
         -- Interrupt Interface
         cfg_interrupt           => cfg_interrupt ,     -- OUT std_logic;
@@ -1257,7 +1270,6 @@ begin
         usDMA_Channel_Rst => usDMA_Channel_Rst ,  -- IN  std_logic;
         usDMA_Cmd_Ack     => usDMA_Cmd_Ack ,      -- OUT std_logic;
 
-
         -- Reset signals
         MRd_Channel_Rst => MRd_Channel_Rst ,  -- IN  std_logic;
 
@@ -1270,7 +1282,6 @@ begin
         IG_Num_Assert   => IG_Num_Assert ,
         IG_Num_Deassert => IG_Num_Deassert ,
         IG_Asserting    => IG_Asserting ,
-
 
         -- DDR write port
         DDR_wr_sof_A   => DDR_wr_sof_A ,  -- OUT   std_logic;
@@ -1291,9 +1302,7 @@ begin
 
         DDR_wr_full => DDR_wr_full ,    -- IN    std_logic;
 
-
         Link_Buf_full => Link_Buf_full ,  -- IN    std_logic;
-
 
         -- Data generator table write
         tab_we => tab_we ,              -- OUT std_logic_vector(2-1 downto 0);
@@ -1384,11 +1393,6 @@ begin
         DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic;
         DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- IN  std_logic;
         DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
---      DDR_rdD_sof         =>  DDR_rdD_sof       ,  -- IN    std_logic;
---      DDR_rdD_eof         =>  DDR_rdD_eof       ,  -- IN    std_logic;
---      DDR_rdDout_V        =>  DDR_rdDout_V      ,  -- IN    std_logic;
---      DDR_rdDout          =>  DDR_rdDout        ,  -- IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
 
         -- Additional
         Tx_TimeOut    => Tx_TimeOut,     -- OUT std_logic;
@@ -1448,7 +1452,6 @@ begin
         Regs_WrAddrB => Regs_WrAddrB ,  -- IN  std_logic_vector(16-1   downto 0);
         Regs_WrDinB  => Regs_WrDinB ,  -- IN  std_logic_vector(32-1   downto 0);
 
-
         Regs_RdAddr => Regs_RdAddr ,    -- IN  std_logic_vector(15 downto 0);
         Regs_RdQout => Regs_RdQout ,    -- OUT std_logic_vector(31 downto 0);
 
@@ -1501,7 +1504,6 @@ begin
         usLeng_Hi19b_True => usLeng_Hi19b_True ,  -- OUT std_logic;
         usLeng_Lo7b_True  => usLeng_Lo7b_True ,   -- OUT std_logic;
 
-
         usDMA_Start       => usDMA_Start ,        -- OUT std_logic;
         usDMA_Stop        => usDMA_Stop ,         -- OUT std_logic;
         usDMA_Start2      => usDMA_Start2 ,       -- OUT std_logic;
@@ -1534,6 +1536,10 @@ begin
         IG_Num_Assert   => IG_Num_Assert ,
         IG_Num_Deassert => IG_Num_Deassert ,
         IG_Asserting    => IG_Asserting ,
+
+        -- SDRAM and Wishbone paging signals
+        sdram_pg => sdram_pg_i,
+        wb_pg    => wb_pg_i,
 
         -- Data generator control
         DG_is_Running => DG_is_Running ,

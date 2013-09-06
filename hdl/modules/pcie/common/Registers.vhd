@@ -175,6 +175,10 @@ entity Regs_Group is
     IG_Num_Deassert : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     IG_Asserting    : in  std_logic;
 
+    -- SDRAM and Wishbone paging registers
+    sdram_pg : out std_logic_vector(31 downto 0);
+    wb_pg    : out std_logic_vector(31 downto 0);
+
     -- Data generator control
     DG_is_Running : in  std_logic;
     DG_Reset      : out std_logic;
@@ -401,6 +405,13 @@ architecture Behavioral of Regs_Group is
   signal General_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal General_Status_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal General_Status_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+
+  signal sdram_pg_i    : std_logic_vector(32-1 downto 0);
+  signal sdram_pg_o_hi : std_logic_vector(32-1 downto 0);
+  signal sdram_pg_o_lo : std_logic_vector(32-1 downto 0);
+  signal wb_pg_i    : std_logic_vector(32-1 downto 0);
+  signal wb_pg_o_hi : std_logic_vector(32-1 downto 0);
+  signal wb_pg_o_lo : std_logic_vector(32-1 downto 0);
 
   -- Hardward version
   signal HW_Version_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -697,6 +708,8 @@ begin
   -- Downstream DMA engine reset
   dsDMA_Channel_Rst <= dsDMA_Channel_Rst_i;
 
+  sdram_pg <= sdram_pg_i;
+  wb_pg    <= wb_pg_i;
 
   -- Upstream DMA registers
   DMA_us_PA         <= DMA_us_PA_i;
@@ -1164,6 +1177,59 @@ begin
     end if;
   end process;
 
+--  -----------------------------------------------
+--  DDR SDRAM address page
+--  -----------------------------------------------
+-- -------------------------------------------------------
+-- Synchronous Registered: wb_pg
+  SDRAM_Addr_page :
+  process (user_clk, user_lnk_up)
+  begin
+    if user_lnk_up = '0' then
+      sdram_pg_i <= (others => '0');
+    elsif user_clk'event and user_clk = '1' then
+
+      if Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
+      then
+        sdram_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+      elsif Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
+      then
+        sdram_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+      else
+        sdram_pg_i <= sdram_pg_i;
+      end if;
+
+    end if;
+  end process;
+
+--  -----------------------------------------------
+--  Wishbone endpoint address page
+--  -----------------------------------------------
+-- -------------------------------------------------------
+-- Synchronous Registered: wb_pg_i
+  Wishbone_addr_page :
+  process (user_clk, user_lnk_up)
+  begin
+    if user_lnk_up = '0' then
+      wb_pg_i <= (others => '0');
+    elsif user_clk'event and user_clk = '1' then
+
+      if Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Hi(CINT_ADDR_WB_PG) = '1'
+      then
+        wb_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+      elsif Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Lo(CINT_ADDR_WB_PG) = '1'
+      then
+        wb_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+      else
+        wb_pg_i <= wb_pg_i;
+      end if;
+
+    end if;
+  end process;
 --  -----------------------------------------------
 --    System General Control Register
 --  -----------------------------------------------
@@ -3557,6 +3623,14 @@ begin
  <= General_Control_i(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_CONTROL) = '1'
     else (others => '0');
 
+  sdram_pg_o_hi
+ <= sdram_pg_i when Reg_RdMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
+    else (others => '0');
+
+  wb_pg_o_hi
+ <= wb_pg_i when Reg_RdMuxer_Hi(CINT_ADDR_WB_PG) = '1'
+    else (others => '0');
+
   Sys_Error_o_Lo(32-1 downto 0)
  <= Sys_Error_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_ERROR) = '1'
     else (others => '0');
@@ -3569,6 +3643,13 @@ begin
  <= General_Control_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_CONTROL) = '1'
     else (others => '0');
 
+  sdram_pg_o_lo
+ <= sdram_pg_i when Reg_RdMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
+    else (others => '0');
+
+  wb_pg_o_lo
+ <= wb_pg_i when Reg_RdMuxer_Lo(CINT_ADDR_WB_PG) = '1'
+    else (others => '0');
   --------------------------------------------------------------------------
   -- ICAP
   --------------------------------------------------------------------------
@@ -3670,6 +3751,8 @@ begin
         or Sys_Error_o_Hi (32-1 downto 0)
         or General_Status_o_Hi (32-1 downto 0)
         or General_Control_o_Hi(32-1 downto 0)
+        or sdram_pg_o_hi(32-1 downto 0)
+        or wb_pg_o_hi(32-1 downto 0)
 
         or Sys_Int_Status_o_Hi (32-1 downto 0)
         or Sys_Int_Enable_o_Hi (32-1 downto 0)
@@ -3732,6 +3815,8 @@ begin
         or Sys_Error_o_Lo (32-1 downto 0)
         or General_Status_o_Lo (32-1 downto 0)
         or General_Control_o_Lo(32-1 downto 0)
+        or sdram_pg_o_lo(32-1 downto 0)
+        or wb_pg_o_lo(32-1 downto 0)
 
         or Sys_Int_Status_o_Lo (32-1 downto 0)
         or Sys_Int_Enable_o_Lo (32-1 downto 0)
