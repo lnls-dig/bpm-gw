@@ -91,11 +91,13 @@ entity bpm_pcie_a7 is
     ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
     sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
     sys_clk_n     : in std_logic; --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic --Reset to PCIe and DDR cores
+    sys_rst_n     : in std_logic --Reset to PCIe core
 
     -- DDR memory controller interface --
     -- uncomment when instantiating in another project
+    --ddr_core_rst   : in  std_logic;
     --memc_ui_clk    : out std_logic;
+    --memc_ui_rst    : out std_logic;
     --memc_cmd_rdy   : out std_logic;
     --memc_cmd_en    : in  std_logic;
     --memc_cmd_instr : in  std_logic_vector(2 downto 0);
@@ -1289,6 +1291,9 @@ architecture Behavioral of bpm_pcie_a7 is
   signal pll_locked   : std_logic;
 
 --to prevent <signal_name> is not declared errors
+  signal ddr_core_rst : std_logic;
+  signal memc_ui_rst  : std_logic;
+  
   signal clk_i  : std_logic;
   signal rst_i  : std_logic;
   signal dat_i  : std_logic_vector(63 downto 0);
@@ -2265,7 +2270,8 @@ begin
 
   DDR_ext_clk: if INSTANTIATED = "TRUE" generate
     ddr_sys_clk_i   <= ddr_sys_clk_p;
-    ddr_sys_reset_i <= sys_reset_n_c;
+    ddr_sys_reset_i <= ddr_core_rst;
+    memc_ui_rst     <= ddr_ui_reset;
   end generate;
 
   DDR_int_clk: if INSTANTIATED = "FALSE" generate
