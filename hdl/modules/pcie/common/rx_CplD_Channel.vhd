@@ -1480,22 +1480,8 @@ begin
         when ST_CplD_AFetch_Special =>
           if DSP_Tag_on_RAM_r1 = '1' then
             DDR_Space_Hit <= '1';
---                  DDR_wr_sof_i   <= '0';
---                  DDR_wr_eof_i   <= '0';
---                  DDR_wr_v_i     <= '0'; -- not trn_rx_throttle_r1;
---                  DDR_wr_FA_i    <= '0';
---                  DDR_wr_Shift_i <= '0';
---                  DDR_wr_Mask_i  <= (OTHERS=>'0');
---                  DDR_wr_din_i   <= (OTHERS=>'0');
           else
             DDR_Space_Hit <= '0';
---                  DDR_wr_sof_i   <= '0';
---                  DDR_wr_eof_i   <= '0';
---                  DDR_wr_v_i     <= '0';
---                  DDR_wr_FA_i    <= '0';
---                  DDR_wr_Shift_i <= '0';
---                  DDR_wr_Mask_i  <= (OTHERS=>'0');
---                  DDR_wr_din_i   <= (OTHERS=>'0');
           end if;
           DDR_wr_sof_i   <= '0';
           DDR_wr_eof_i   <= m_axis_rx_tlast_r4 and DDR_Space_Hit;
@@ -1579,7 +1565,7 @@ begin
           DDR_wr_v_i     <= (DDR_wr_sof_i or not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
           DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
-          DDR_wr_din_i   <= m_axis_rx_tdata_r4;
+          DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
           if DDR_wr_sof_i = '1' then
             DDR_wr_Mask_i <= "01";
           else
