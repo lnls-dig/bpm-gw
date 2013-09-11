@@ -96,7 +96,7 @@ entity ddr_v6 is
                                      -- MMCM programming algorithm
      CLKFBOUT_MULT_F       : integer := 6;
                                      -- write PLL VCO multiplier.
-     DIVCLK_DIVIDE         : integer := 2;
+     DIVCLK_DIVIDE         : integer := 1;
                                      -- write PLL VCO divisor.
      CLKOUT_DIVIDE         : integer := 3;
                                      -- VCO output divisor for fast (memory) clocks.

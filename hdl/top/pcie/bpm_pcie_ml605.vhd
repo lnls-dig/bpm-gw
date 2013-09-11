@@ -1153,7 +1153,7 @@ architecture Behavioral of bpm_pcie_ml605 is
 --to prevent <signal_name> is not declared errors
   signal ddr_core_rst : std_logic;
   signal memc_ui_rst  : std_logic;
-  
+
   signal clk_i  : std_logic;
   signal rst_i  : std_logic;
   signal dat_i  : std_logic_vector(63 downto 0);
@@ -2018,70 +2018,9 @@ begin
       IB => ddr_sys_clk_n
     );
 
-    pll_clkin <= ddr_ref_clk_i;
+    ddr_sys_clk_i <= ddr_ref_clk_i;
 
-    mmcm_adv_inst : MMCM_ADV
-    generic map( 
-      BANDWIDTH            => "HIGH",
-      CLKOUT4_CASCADE      => FALSE,
-      CLOCK_HOLD           => FALSE,
-      COMPENSATION         => "ZHOLD",
-      STARTUP_WAIT         => FALSE,
-      DIVCLK_DIVIDE        => 1,
-      CLKFBOUT_MULT_F      => 6.000,
-      CLKFBOUT_PHASE       => 0.000,
-      CLKFBOUT_USE_FINE_PS => FALSE,
-      CLKOUT0_DIVIDE_F     => 3.000,
-      CLKOUT0_PHASE        => 0.000,
-      CLKOUT0_DUTY_CYCLE   => 0.500,
-      CLKOUT0_USE_FINE_PS  => FALSE,
-      CLKIN1_PERIOD        => 5.0,
-      REF_JITTER1          => 0.010
-    )
-    port map(
-      -- Output clocks
-      CLKFBOUT            => pll_clkfbout,
-      CLKFBOUTB           => open,
-      CLKOUT0             => pll_clkout0,
-      CLKOUT1             => open,
-      CLKOUT2             => open,
-      CLKOUT3             => open,
-      CLKOUT4             => open,
-      CLKOUT5             => open,
-      -- Input clock control
-      CLKFBIN             => pll_clkfbout,
-      CLKIN1              => pll_clkin,
-      CLKIN2              => '0',
-      -- Tied to always select the primary input clock
-      CLKINSEL            => '1',
-      -- Ports for dynamic reconfiguration
-      DADDR               => (others => '0'),
-      DCLK                => '0',
-      DEN                 => '0',
-      DI                  => (others => '0'),
-      DO                  => open,
-      DRDY                => open,
-      DWE                 => '0',
-      -- Ports for dynamic phase shift
-      PSCLK               => '0',
-      PSEN                => '0',
-      PSINCDEC            => '0',
-      PSDONE              => open,
-      -- Other control and status signals
-      CLKINSTOPPED        => open,
-      CLKFBSTOPPED        => open,
-      LOCKED              => pll_locked,
-      PWRDWN              => '0',
-      RST                 => sys_reset_c
-    );
-    
-    ddr_sys_clk : BUFG
-      port map(
-        I => pll_clkout0,
-        O => ddr_sys_clk_i
-      );
-
-    ddr_sys_reset_i <= pll_locked;
+    ddr_sys_reset_i <= sys_reset_n_c;
 
   end generate;
 
