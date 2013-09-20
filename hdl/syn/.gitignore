@@ -4,6 +4,8 @@ Makefile
 *~
 #html reports
 *.html
+#Chipscope defition files
+*.cdc
 #generated bitstream & report
 *.bit
 *.bgn
@@ -51,4 +53,11 @@ xst/
 *.xst
 run.tcl
 *.txt
-
+*.clk_rgn
+*.xdl
+*.blc
+*.cpj
+*.psr
+*.debug
+pa.*.tcl
+planAhead_run_*/
