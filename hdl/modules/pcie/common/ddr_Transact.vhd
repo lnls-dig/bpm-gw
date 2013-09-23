@@ -109,6 +109,7 @@ architecture Behavioral of DDR_Transact is
     generic (
       C_ASYNFIFO_WIDTH  : integer := 72;
       DATA_WIDTH        : integer := 64;
+      ADDR_WIDTH        : integer;
       DDR_DQ_WIDTH      : integer;
       DDR_PAYLOAD_WIDTH : integer;
       P_SIMULATION      : string  := "FALSE"
@@ -138,7 +139,7 @@ architecture Behavioral of DDR_Transact is
       memc_cmd_rdy   : in   std_logic;
       memc_cmd_en    : out  std_logic;
       memc_cmd_instr : out  std_logic_vector(2 downto 0);
-      memc_cmd_addr  : out  std_logic_vector(31 downto 0);
+      memc_cmd_addr  : out  std_logic_vector(ADDR_WIDTH-1 downto 0);
       memc_wr_en     : out  std_logic;
       memc_wr_end    : out  std_logic;
       memc_wr_mask   : out  std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
@@ -169,7 +170,7 @@ architecture Behavioral of DDR_Transact is
   signal pcie_cmd_rdy   : std_logic;
   signal pcie_cmd_en    : std_logic;
   signal pcie_cmd_instr : std_logic_vector(2 downto 0);
-  signal pcie_cmd_addr  : std_logic_vector(31 downto 0);
+  signal pcie_cmd_addr  : std_logic_vector(ADDR_WIDTH-1 downto 0);
   signal pcie_wr_en     : std_logic;
   signal pcie_wr_end    : std_logic;
   signal pcie_wr_mask   : std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
@@ -258,7 +259,7 @@ begin
   begin
     case ddr_switch is
       when PCIE =>
-        app_addr      <= pcie_cmd_addr(ADDR_WIDTH-1 downto 0);
+        app_addr      <= pcie_cmd_addr;
         app_cmd       <= pcie_cmd_instr;
         app_en        <= pcie_cmd_en;
         app_wdf_data  <= pcie_wr_data;
@@ -297,7 +298,7 @@ begin
   memc_cmd_rdy   <= ext_cmd_rdy;
   ext_cmd_en     <= memc_cmd_en;
   ext_cmd_instr  <= memc_cmd_instr;
-  ext_cmd_addr   <= memc_cmd_addr(ADDR_WIDTH - 1 downto 0);
+  ext_cmd_addr   <= memc_cmd_addr(ADDR_WIDTH-1 downto 0);
   ext_wr_en      <= memc_wr_en;
   ext_wr_end     <= memc_wr_end;
   ext_wr_mask    <= memc_wr_mask;
@@ -313,6 +314,7 @@ begin
   u_ddr_control : DDRs_Control
     generic map (
       P_SIMULATION => SIMULATION,
+      ADDR_WIDTH => ADDR_WIDTH,
       DDR_DQ_WIDTH => DDR_DQ_WIDTH,
       DDR_PAYLOAD_WIDTH => DDR_UI_DATAWIDTH
       )
