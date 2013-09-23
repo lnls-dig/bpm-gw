@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_qpll_drp.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  qpll_drp.v
 //  Description  :  QPLL DRP Module for 7 Series Transceiver
@@ -100,19 +100,19 @@ module pcie_core_qpll_drp #
 );
 
     //---------- Input Registers ---------------------------
-    reg                 ovrd_reg1;
-    reg                 gen3_reg1;
-    reg                 qplllock_reg1;
-    reg                 start_reg1;
-    reg         [15:0]  do_reg1;
-    reg                 rdy_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 ovrd_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 qplllock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg1;
     
-    reg                 ovrd_reg2;
-    reg                 gen3_reg2;
-    reg                 qplllock_reg2;
-    reg                 start_reg2;
-    reg         [15:0]  do_reg2;
-    reg                 rdy_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 ovrd_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 qplllock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg2;
     
     //---------- Internal Signals --------------------------
     reg         [ 1:0]  load_cnt =  2'd0;

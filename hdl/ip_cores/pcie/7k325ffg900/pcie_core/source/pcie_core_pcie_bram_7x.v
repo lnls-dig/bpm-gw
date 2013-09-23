@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_bram_7x.v
-// Version    : 1.8
+// Version    : 1.10
 //  Description : single bram wrapper for the mb pcie block
 //                The bram A port is the write port
 //                the      B port is the read port

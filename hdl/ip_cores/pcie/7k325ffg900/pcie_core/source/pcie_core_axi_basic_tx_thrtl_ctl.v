@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_axi_basic_tx_thrtl_ctl.v
-// Version    : 1.8
+// Version    : 1.10
 //                                                                            //
 //  Description:                                                              //
 //  TX throttle controller. Anticipates back-pressure from PCIe block and     //

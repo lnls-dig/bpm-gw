@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_eq.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_eq.v
 //  Description  :  PIPE Equalization Module for 7 Series Transceiver
-//  Version      :  15.3.3
+//  Version      :  20.1
 //------------------------------------------------------------------------------
 
 
@@ -66,6 +66,7 @@
 module pcie_core_pipe_eq #
 (
     parameter PCIE_SIM_MODE       = "FALSE",
+    parameter PCIE_GT_DEVICE      = "GTX",
     parameter PCIE_RXEQ_MODE_GEN3 = 1
 )
 
@@ -108,32 +109,32 @@ module pcie_core_pipe_eq #
 );          
 
     //---------- Input Registers ---------------------------
-    reg                 gen3_reg1;
-    reg                 gen3_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg2;
     
-    reg         [ 1:0]  txeq_control_reg1;
-    reg         [ 3:0]  txeq_preset_reg1;
-    reg         [ 5:0]  txeq_deemph_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  txeq_control_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 3:0]  txeq_preset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  txeq_deemph_reg1;
     
-    reg         [ 1:0]  txeq_control_reg2;
-    reg			    [ 3:0]  txeq_preset_reg2;
-    reg         [ 5:0]  txeq_deemph_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  txeq_control_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg	      [ 3:0]  txeq_preset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  txeq_deemph_reg2;
     
-    reg         [ 1:0]  rxeq_control_reg1;
-    reg			    [ 2:0]  rxeq_preset_reg1;
-    reg         [ 5:0]  rxeq_lffs_reg1;
-    reg         [ 3:0]  rxeq_txpreset_reg1;
-    reg                 rxeq_user_en_reg1;
-    reg         [17:0]  rxeq_user_txcoeff_reg1;
-    reg                 rxeq_user_mode_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rxeq_control_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg	      [ 2:0]  rxeq_preset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  rxeq_lffs_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 3:0]  rxeq_txpreset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_user_en_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [17:0]  rxeq_user_txcoeff_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_user_mode_reg1;
     
-    reg         [ 1:0]  rxeq_control_reg2;
-    reg			    [ 2:0]  rxeq_preset_reg2;
-    reg         [ 5:0]  rxeq_lffs_reg2;
-    reg         [ 3:0]  rxeq_txpreset_reg2;
-    reg                 rxeq_user_en_reg2;
-    reg         [17:0]  rxeq_user_txcoeff_reg2;
-    reg                 rxeq_user_mode_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rxeq_control_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg	      [ 2:0]  rxeq_preset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  rxeq_lffs_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 3:0]  rxeq_txpreset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_user_en_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [17:0]  rxeq_user_txcoeff_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxeq_user_mode_reg2;
     
     //---------- Internal Signals --------------------------
     reg         [18:0]  txeq_preset          = 19'd0;          
@@ -204,7 +205,7 @@ module pcie_core_pipe_eq #
     localparam          TXPOSTCURSOR_00 = 6'd20;            // -6.0 +/- 1 dB
     
     localparam          TXPRECURSOR_01  = 6'd0;             //  0.0 dB
-    localparam          TXMAINCURSOR_01 = 7'd67;                                
+    localparam          TXMAINCURSOR_01 = 7'd68;            // added 1 to compensate decimal                                
     localparam          TXPOSTCURSOR_01 = 6'd13;            // -3.5 +/- 1 dB
     
     localparam          TXPRECURSOR_02  = 6'd0;             //  0.0 dB
@@ -236,11 +237,11 @@ module pcie_core_pipe_eq #
     localparam          TXPOSTCURSOR_08 = 6'd10;            // -3.5 +/- 1 dB
     
     localparam          TXPRECURSOR_09  = 6'd13;            // -3.5 +/- 1 dB
-    localparam          TXMAINCURSOR_09 = 7'd67;                                
+    localparam          TXMAINCURSOR_09 = 7'd68;            //  added 1 to compensate decimal                  
     localparam          TXPOSTCURSOR_09 = 6'd0;             //  0.0 dB
     
     localparam          TXPRECURSOR_10  = 6'd0;             //  0.0 dB
-    localparam          TXMAINCURSOR_10 = 7'd55;            //                      
+    localparam          TXMAINCURSOR_10 = 7'd56;            //  added 1 to compensate decimal                     
     localparam          TXPOSTCURSOR_10 = 6'd25;            //  9.5 +/- 1 dB, updated for coefficient rules
     
     
@@ -778,6 +779,7 @@ end
 pcie_core_rxeq_scan #
 (
     .PCIE_SIM_MODE                      (PCIE_SIM_MODE),
+    .PCIE_GT_DEVICE                     (PCIE_GT_DEVICE),
     .PCIE_RXEQ_MODE_GEN3                (PCIE_RXEQ_MODE_GEN3)
 )
 

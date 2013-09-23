@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 14.4
-# Date: Mon Apr 15 16:55:07 2013
+# Xilinx Core Generator version 14.6
+# Date: Tue Sep 17 13:01:56 2013
 #
 ##############################################################
 #
@@ -12,7 +12,7 @@
 #
 ##############################################################
 #
-#  Generated from component: xilinx.com:ip:pcie_7x:1.8
+#  Generated from component: xilinx.com:ip:pcie_7x:1.10
 #
 ##############################################################
 #
@@ -36,7 +36,7 @@ SET verilogsim = true
 SET vhdlsim = false
 # END Project Options
 # BEGIN Select
-SELECT 7_Series_Integrated_Block_for_PCI_Express xilinx.com:ip:pcie_7x:1.8
+SELECT 7_Series_Integrated_Block_for_PCI_Express xilinx.com:ip:pcie_7x:1.10
 # END Select
 # BEGIN Parameters
 CSET acceptable_l0s_latency=Maximum_of_64_ns
@@ -50,6 +50,7 @@ CSET aer_completion_timeout=false
 CSET aer_correctable_internal_error=false
 CSET aer_ecrc_check_capable=false
 CSET aer_ecrc_error=false
+CSET aer_ecrc_gen_capable=false
 CSET aer_enabled=false
 CSET aer_flow_control_protocol_error=false
 CSET aer_header_log_overflow=false
@@ -66,24 +67,24 @@ CSET aspm_optionality=false
 CSET atomicop32_completer_supported=false
 CSET atomicop64_completer_supported=false
 CSET atomicop_routing_supported=false
-CSET bar0_64bit=false
+CSET bar0_64bit=true
 CSET bar0_enabled=true
-CSET bar0_prefetchable=false
+CSET bar0_prefetchable=true
 CSET bar0_scale=Kilobytes
 CSET bar0_size=1
 CSET bar0_size_vector=1M
 CSET bar0_type=Memory
 CSET bar1_64bit=false
-CSET bar1_enabled=true
+CSET bar1_enabled=false
 CSET bar1_prefetchable=false
-CSET bar1_scale=Gigabytes
-CSET bar1_size=1
+CSET bar1_scale=Kilobytes
+CSET bar1_size=2
 CSET bar1_size_vector=1M
-CSET bar1_type=Memory
-CSET bar2_64bit=false
+CSET bar1_type=N/A
+CSET bar2_64bit=true
 CSET bar2_enabled=true
-CSET bar2_prefetchable=false
-CSET bar2_scale=Kilobytes
+CSET bar2_prefetchable=true
+CSET bar2_scale=Megabytes
 CSET bar2_size=1
 CSET bar2_size_vector=1M
 CSET bar2_type=Memory
@@ -94,13 +95,13 @@ CSET bar3_scale=Kilobytes
 CSET bar3_size=2
 CSET bar3_size_vector=1M
 CSET bar3_type=N/A
-CSET bar4_64bit=false
-CSET bar4_enabled=false
-CSET bar4_prefetchable=false
+CSET bar4_64bit=true
+CSET bar4_enabled=true
+CSET bar4_prefetchable=true
 CSET bar4_scale=Kilobytes
-CSET bar4_size=2
+CSET bar4_size=512
 CSET bar4_size_vector=1M
-CSET bar4_type=N/A
+CSET bar4_type=Memory
 CSET bar5_enabled=false
 CSET bar5_prefetchable=false
 CSET bar5_scale=Kilobytes
@@ -149,7 +150,7 @@ CSET d3_power_dissipated_factor=0
 CSET d3cold_pme_support=false
 CSET d3hot_pme_support=true
 CSET de_emph=0
-CSET device_id=7021
+CSET device_id=7014
 CSET device_port_type=PCI_Express_Endpoint_device
 CSET device_specific_initialization=false
 CSET disable_rx_poisoned_resp=false
@@ -157,6 +158,7 @@ CSET disable_tx_aspm_l0s=false
 CSET dll_link_active_cap=false
 CSET downstream_link_num=00
 CSET dsn_enabled=true
+CSET en_ext_clk=false
 CSET en_route_err_cor=false
 CSET en_route_err_ftl=false
 CSET en_route_err_nfl=false
@@ -185,17 +187,17 @@ CSET interface_width=64_bit
 CSET intx_generation=true
 CSET io_base_limit_registers=Disabled
 CSET legacy_interrupt=INTA
-CSET link_speed=5.0_GT/s
+CSET link_speed=2.5_GT/s
 CSET max_payload_size=512_bytes
-CSET maximum_link_width=X1
+CSET maximum_link_width=X4
 CSET mode_selection=Basic
 CSET msi_64b=true
 CSET msi_enabled=true
 CSET msi_vec_mask=false
 CSET msix_enabled=false
-CSET msix_pba_bir=BAR_0
+CSET msix_pba_bir=BAR_1:0
 CSET msix_pba_offset=0
-CSET msix_table_bir=BAR_0
+CSET msix_table_bir=BAR_1:0
 CSET msix_table_offset=0
 CSET msix_table_size=1
 CSET multiple_message_capable=1_vector
@@ -245,22 +247,22 @@ CSET sub_class_interface_menu=Other_data_acquisition/signal_processing_controlle
 CSET subsystem_id=0007
 CSET subsystem_vendor_id=10EE
 CSET tph_completer_supported=00
-CSET trans_buf_pipeline=None
-CSET trgt_link_speed=4'h2
+CSET trans_buf_pipeline=Buffer_Write_and_Read
+CSET trgt_link_speed=4'h1
 CSET upconfigure_capable=true
 CSET ur_atomic=true
 CSET ur_inv_req=true
 CSET ur_prs_response=true
 CSET use_class_code_lookup_assistant=false
-CSET user_clk_freq=62.5
+CSET user_clk_freq=125
 CSET vc_cap_enabled=false
 CSET vc_cap_reject_snoop=false
 CSET vendor_id=10EE
 CSET vsec_enabled=false
-CSET xlnx_ref_board=None
+CSET xlnx_ref_board=KC705_REVC
 # END Parameters
 # BEGIN Extra information
-MISC pkg_timestamp=2012-11-30T13:01:13Z
+MISC pkg_timestamp=2013-05-22T21:33:09Z
 # END Extra information
 GENERATE
-# CRC: 3a3b9d83
+# CRC: b2490a41

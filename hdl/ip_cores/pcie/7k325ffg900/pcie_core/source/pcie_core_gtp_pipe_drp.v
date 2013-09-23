@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gtp_pipe_drp.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  gtp_pipe_drp.v
 //  Description  :  GTP PIPE DRP Module for 7 Series Transceiver
@@ -87,20 +87,20 @@ module pcie_core_gtp_pipe_drp #
     output      [15:0]  DRP_DI,   
     output              DRP_WE,
     output              DRP_DONE,
-    output      [ 6:0]  DRP_FSM
+    output      [ 2:0]  DRP_FSM
     
 );
 
     //---------- Input Registers ---------------------------
-    reg                 x16_reg1;
-    reg                 start_reg1;
-    reg         [15:0]  do_reg1;
-    reg                 rdy_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg1;
     
-    reg                 x16_reg2;
-    reg                 start_reg2;
-    reg         [15:0]  do_reg2;
-    reg                 rdy_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg2;
     
     //---------- Internal Signals --------------------------
     reg         [ 1:0]  load_cnt =  2'd0;
@@ -110,7 +110,7 @@ module pcie_core_gtp_pipe_drp #
     
     //---------- Output Registers --------------------------
     reg                 done     =  1'd0;
-    reg         [ 6:0]  fsm      =  7'd1;      
+    reg         [ 2:0]  fsm      =  0;      
                         
     //---------- DRP Address -------------------------------          
     localparam          ADDR_RX_DATAWIDTH  = 9'h011;              
@@ -128,13 +128,13 @@ module pcie_core_gtp_pipe_drp #
     wire        [15:0]  data_rx_datawidth;                 
            
     //---------- FSM ---------------------------------------  
-    localparam          FSM_IDLE  = 7'b0000001;  
-    localparam          FSM_LOAD  = 7'b0000010;                           
-    localparam          FSM_READ  = 7'b0000100;
-    localparam          FSM_RRDY  = 7'b0001000;
-    localparam          FSM_WRITE = 7'b0010000;
-    localparam          FSM_WRDY  = 7'b0100000;    
-    localparam          FSM_DONE  = 7'b1000000;   
+    localparam          FSM_IDLE  = 0;  
+    localparam          FSM_LOAD  = 1;                           
+    localparam          FSM_READ  = 2;
+    localparam          FSM_RRDY  = 3;
+    localparam          FSM_WRITE = 4;
+    localparam          FSM_WRDY  = 5;    
+    localparam          FSM_DONE  = 6;   
 
     
     

@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core.v
-// Version    : 1.8
+// Version    : 1.10
 //
 // Description: 7-series solution wrapper : Endpoint for PCI Express
 //
@@ -59,10 +59,10 @@
 
 `timescale 1ps/1ps
 
-(* CORE_GENERATION_INFO = "pcie_core,pcie_7x_v1_8,{LINK_CAP_MAX_LINK_SPEED=2,LINK_CAP_MAX_LINK_WIDTH=01,PCIE_CAP_DEVICE_PORT_TYPE=0000,DEV_CAP_MAX_PAYLOAD_SUPPORTED=2,USER_CLK_FREQ=1,REF_CLK_FREQ=0,MSI_CAP_ON=TRUE,MSI_CAP_MULTIMSGCAP=0,MSI_CAP_MULTIMSG_EXTENSION=0,MSIX_CAP_ON=FALSE,TL_TX_RAM_RADDR_LATENCY=0,TL_TX_RAM_RDATA_LATENCY=2,TL_RX_RAM_RADDR_LATENCY=0,TL_RX_RAM_RDATA_LATENCY=2,TL_RX_RAM_WRITE_LATENCY=0,VC0_TX_LASTPACKET=29,VC0_RX_RAM_LIMIT=7FF,VC0_TOTAL_CREDITS_PH=32,VC0_TOTAL_CREDITS_PD=437,VC0_TOTAL_CREDITS_NPH=12,VC0_TOTAL_CREDITS_NPD=24,VC0_TOTAL_CREDITS_CH=36,VC0_TOTAL_CREDITS_CD=461,VC0_CPL_INFINITE=TRUE,DEV_CAP_PHANTOM_FUNCTIONS_SUPPORT=0,DEV_CAP_EXT_TAG_SUPPORTED=FALSE,LINK_STATUS_SLOT_CLOCK_CONFIG=TRUE,ENABLE_RX_TD_ECRC_TRIM=TRUE,DISABLE_LANE_REVERSAL=TRUE,DISABLE_SCRAMBLING=FALSE,DSN_CAP_ON=TRUE,REVISION_ID=00,VC_CAP_ON=FALSE}" *)
+(* CORE_GENERATION_INFO = "pcie_core,pcie_7x_v1_10,{LINK_CAP_MAX_LINK_SPEED=1,LINK_CAP_MAX_LINK_WIDTH=04,PCIE_CAP_DEVICE_PORT_TYPE=0000,DEV_CAP_MAX_PAYLOAD_SUPPORTED=2,USER_CLK_FREQ=2,REF_CLK_FREQ=0,MSI_CAP_ON=TRUE,MSI_CAP_MULTIMSGCAP=0,MSI_CAP_MULTIMSG_EXTENSION=0,MSIX_CAP_ON=FALSE,TL_TX_RAM_RADDR_LATENCY=1,TL_TX_RAM_RDATA_LATENCY=3,TL_RX_RAM_RADDR_LATENCY=1,TL_RX_RAM_RDATA_LATENCY=3,TL_RX_RAM_WRITE_LATENCY=1,VC0_TX_LASTPACKET=29,VC0_RX_RAM_LIMIT=7FF,VC0_TOTAL_CREDITS_PH=32,VC0_TOTAL_CREDITS_PD=437,VC0_TOTAL_CREDITS_NPH=12,VC0_TOTAL_CREDITS_NPD=24,VC0_TOTAL_CREDITS_CH=36,VC0_TOTAL_CREDITS_CD=461,VC0_CPL_INFINITE=TRUE,DEV_CAP_PHANTOM_FUNCTIONS_SUPPORT=0,DEV_CAP_EXT_TAG_SUPPORTED=FALSE,LINK_STATUS_SLOT_CLOCK_CONFIG=TRUE,ENABLE_RX_TD_ECRC_TRIM=TRUE,DISABLE_LANE_REVERSAL=TRUE,DISABLE_SCRAMBLING=FALSE,DSN_CAP_ON=TRUE,REVISION_ID=00,VC_CAP_ON=FALSE}" *)
 module pcie_core # (
   parameter         CFG_VEND_ID        = 16'h10EE,
-  parameter         CFG_DEV_ID         = 16'h7021,
+  parameter         CFG_DEV_ID         = 16'h7014,
   parameter         CFG_REV_ID         =  8'h00,
   parameter         CFG_SUBSYS_VEND_ID = 16'h10EE,
   parameter         CFG_SUBSYS_ID      = 16'h0007,
@@ -70,21 +70,22 @@ module pcie_core # (
    parameter         PIPE_SIM_MODE = "FALSE",
 
   parameter         ALLOW_X8_GEN2 = "FALSE",
-  parameter         PIPE_PIPELINE_STAGES = 1,
+  parameter         PIPE_PIPELINE_STAGES = 0,
   parameter [11:0]  AER_BASE_PTR = 12'h000,
   parameter         AER_CAP_ECRC_CHECK_CAPABLE = "FALSE",
+  parameter         AER_CAP_ECRC_GEN_CAPABLE = "FALSE",
   parameter         AER_CAP_MULTIHEADER = "FALSE",
   parameter [11:0]  AER_CAP_NEXTPTR = 12'h000,
   parameter [23:0]  AER_CAP_OPTIONAL_ERR_SUPPORT = 24'h000000,
   parameter         AER_CAP_ON = "FALSE",
   parameter         AER_CAP_PERMIT_ROOTERR_UPDATE = "FALSE",
 
-  parameter [31:0]  BAR0 = 32'hFFFFFC00,
-  parameter [31:0]  BAR1 = 32'hC0000000,
-  parameter [31:0]  BAR2 = 32'hFFFFFC00,
-  parameter [31:0]  BAR3 = 32'h00000000,
-  parameter [31:0]  BAR4 = 32'h00000000,
-  parameter [31:0]  BAR5 = 32'h00000000,
+  parameter [31:0]  BAR0 = 32'hFFFFFC0C,
+  parameter [31:0]  BAR1 = 32'hFFFFFFFF,
+  parameter [31:0]  BAR2 = 32'hFFF0000C,
+  parameter [31:0]  BAR3 = 32'hFFFFFFFF,
+  parameter [31:0]  BAR4 = 32'hFFF8000C,
+  parameter [31:0]  BAR5 = 32'hFFFFFFFF,
 
   parameter         C_DATA_WIDTH = 64,
   parameter [31:0]  CARDBUS_CIS_POINTER = 32'h00000000,
@@ -126,12 +127,12 @@ module pcie_core # (
   parameter         LINK_CAP_ASPM_OPTIONALITY = "FALSE",
   parameter         LINK_CAP_DLL_LINK_ACTIVE_REPORTING_CAP = "FALSE",
   parameter         LINK_CAP_LINK_BANDWIDTH_NOTIFICATION_CAP = "FALSE",
-  parameter [3:0]   LINK_CAP_MAX_LINK_SPEED = 4'h2,
-  parameter [5:0]   LINK_CAP_MAX_LINK_WIDTH = 6'h01,
+  parameter [3:0]   LINK_CAP_MAX_LINK_SPEED = 4'h1,
+  parameter [5:0]   LINK_CAP_MAX_LINK_WIDTH = 6'h04,
 
   parameter         LINK_CTRL2_DEEMPHASIS = "FALSE",
   parameter         LINK_CTRL2_HW_AUTONOMOUS_SPEED_DISABLE = "FALSE",
-  parameter [3:0]   LINK_CTRL2_TARGET_LINK_SPEED = 4'h2,
+  parameter [3:0]   LINK_CTRL2_TARGET_LINK_SPEED = 4'h0,
   parameter         LINK_STATUS_SLOT_CLOCK_CONFIG = "TRUE",
 
   parameter [14:0]  LL_ACK_TIMEOUT = 15'h0000,
@@ -141,7 +142,7 @@ module pcie_core # (
   parameter         LL_REPLAY_TIMEOUT_EN = "FALSE",
   parameter integer LL_REPLAY_TIMEOUT_FUNC = 1,
 
-  parameter [5:0]   LTSSM_MAX_LINK_WIDTH = 6'h01,
+  parameter [5:0]   LTSSM_MAX_LINK_WIDTH = 6'h04,
   parameter         MSI_CAP_MULTIMSGCAP = 0,
   parameter         MSI_CAP_MULTIMSG_EXTENSION = 0,
   parameter         MSI_CAP_ON = "TRUE",
@@ -211,12 +212,12 @@ module pcie_core # (
   parameter         REM_WIDTH  = (C_DATA_WIDTH == 128) ? 2 : 1,
   parameter         KEEP_WIDTH = C_DATA_WIDTH / 8,
 
-  parameter         TL_RX_RAM_RADDR_LATENCY = 0,
-  parameter         TL_RX_RAM_RDATA_LATENCY = 2,
-  parameter         TL_RX_RAM_WRITE_LATENCY = 0,
-  parameter         TL_TX_RAM_RADDR_LATENCY = 0,
-  parameter         TL_TX_RAM_RDATA_LATENCY = 2,
-  parameter         TL_TX_RAM_WRITE_LATENCY = 0,
+  parameter         TL_RX_RAM_RADDR_LATENCY = 1,
+  parameter         TL_RX_RAM_RDATA_LATENCY = 3,
+  parameter         TL_RX_RAM_WRITE_LATENCY = 1,
+  parameter         TL_TX_RAM_RADDR_LATENCY = 1,
+  parameter         TL_TX_RAM_RDATA_LATENCY = 3,
+  parameter         TL_TX_RAM_WRITE_LATENCY = 1,
   parameter         TRN_NP_FC = "TRUE",
   parameter         TRN_DW = "FALSE",
 
@@ -225,7 +226,7 @@ module pcie_core # (
   parameter         UR_ATOMIC = "TRUE",
   parameter         UR_INV_REQ = "TRUE",
   parameter         UR_PRS_RESPONSE = "TRUE",
-  parameter         USER_CLK_FREQ = 1,
+  parameter         USER_CLK_FREQ = 2,
   parameter         USER_CLK2_DIV2 = "FALSE",
 
   parameter [11:0]  VC_BASE_PTR = 12'h000,
@@ -294,7 +295,8 @@ module pcie_core # (
 
   parameter         PL_AUTO_CONFIG = 0,
   parameter         PL_FAST_TRAIN = "FALSE",
-  parameter         PCIE_EXT_CLK = "TRUE",
+
+  parameter         PCIE_EXT_CLK = "FALSE",
 
   parameter [7:0]   PM_BASE_PTR = 8'h40,
   parameter         PM_CAP_AUXCURRENT = 0,
@@ -395,7 +397,6 @@ module pcie_core # (
 
   parameter         LINK_CAP_SURPRISE_DOWN_ERROR_CAPABLE = "FALSE",
 
-  parameter         AER_CAP_ECRC_GEN_CAPABLE = "FALSE",
   parameter [15:0]  AER_CAP_ID = 16'h0001,
   parameter [3:0]   AER_CAP_VERSION = 4'h1,
 
@@ -671,6 +672,7 @@ module pcie_core # (
   //----------------------------------------------------------------------------------------------------------------//
 
   
+  input wire           PIPE_MMCM_RST_N,
   input wire           sys_clk,
   input wire           sys_rst_n
 
@@ -1469,9 +1471,9 @@ assign pl_received_hot_rst = pl_received_hot_rst_q;
     .pl_dbg_vec                                 ( ),
     .trn_rdllp_data                             ( ),
     .trn_rdllp_src_rdy                          ( ),
-    .dbg_mode                                   ( ),
-    .dbg_sub_mode                               ( ),
-    .pl_dbg_mode                                ( ),
+    .dbg_mode                                   ( 2'b0 ),
+    .dbg_sub_mode                               ( 1'b0 ),
+    .pl_dbg_mode                                ( 3'b0 ),
 
     .drp_clk                                    ( 1'b0 ),
     .drp_do                                     (  ),
@@ -1771,6 +1773,7 @@ assign pl_received_hot_rst = pl_received_hot_rst_q;
     // Non PIPE Signals
     .sys_clk                       ( sys_clk             ),
     .sys_rst_n                     ( sys_rst_n_int       ),
+    .PIPE_MMCM_RST_N               ( PIPE_MMCM_RST_N     ),        // Async      | Async
     .pipe_clk                      ( pipe_clk            ),
 
     .user_clk                      ( user_clk            ),
@@ -1956,6 +1959,7 @@ assign pl_received_hot_rst = pl_received_hot_rst_q;
     // Non PIPE Signals
     .sys_clk                       ( sys_clk             ),
     .sys_rst_n                     ( sys_rst_n_int       ),
+    .PIPE_MMCM_RST_N               ( PIPE_MMCM_RST_N     ),        // Async      | Async
     .pipe_clk                      ( pipe_clk            ),
 
     .user_clk                      ( user_clk            ),
