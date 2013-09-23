@@ -556,8 +556,8 @@ begin
 
 -- ---------------------------------------------
   MSB_DSP_Tag     <= CplD_Tag(C_TAG_WIDTH-1);
-  DSP_Tag_on_RAM  <= not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2);
-  DSP_Tag_on_FIFO <= not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2);
+  DSP_Tag_on_RAM  <= CplD_on_pool and (not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2));
+  DSP_Tag_on_FIFO <= CplD_on_EB and (not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2));
 
 --
 -- Delay Synchronous: MSB_DSP_Tag_r1

@@ -34,6 +34,7 @@ entity DDRs_Control is
   generic (
     C_ASYNFIFO_WIDTH : integer := 72;
     DATA_WIDTH       : integer := 64;
+    ADDR_WIDTH       : integer;
     P_SIMULATION     : string  := "FALSE";
     DDR_DQ_WIDTH     : integer;
     DDR_PAYLOAD_WIDTH : integer
@@ -63,7 +64,7 @@ entity DDRs_Control is
     memc_cmd_rdy   : in   std_logic;
     memc_cmd_en    : out  std_logic;
     memc_cmd_instr : out  std_logic_vector(2 downto 0);
-    memc_cmd_addr  : out  std_logic_vector(31 downto 0);
+    memc_cmd_addr  : out  std_logic_vector(ADDR_WIDTH-1 downto 0);
     memc_wr_en     : out  std_logic;
     memc_wr_end    : out  std_logic;
     memc_wr_mask   : out  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
@@ -239,14 +240,14 @@ architecture Behavioral of DDRs_Control is
   signal rpiped_Qout     : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
 
   -- DDR UI & width conversion signals
-  signal memc_rd_addr      : unsigned(31 downto 0) := (others => '0');
+  signal memc_rd_addr      : unsigned(ADDR_WIDTH-1 downto 0) := (others => '0');
   signal memc_rd_cmd       : std_logic;
   signal memc_rd_data_r1   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal memc_rd_data_r2   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal memc_rd_data_r3   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal memc_rd_data_conv : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
   signal memc_rd_shift_r   : std_logic_vector(31 downto 0);
-  signal memc_wr_addr      : unsigned(31 downto 0) := (others => '0');
+  signal memc_wr_addr      : unsigned(ADDR_WIDTH-1 downto 0) := (others => '0');
   signal memc_wr_data_en   : std_logic;
   signal memc_wr_cmd_en    : std_logic;
 
@@ -256,9 +257,9 @@ begin
 
   -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
   -- while ddram_*_addr have byte alignment
-  memc_rd_addr(C_DDR_IAWIDTH-1-MEMC_ADDR_BTOP_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+  memc_rd_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <= '0' &
     ddram_rd_addr(ddram_rd_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
-  memc_wr_addr(C_DDR_IAWIDTH-1-MEMC_ADDR_BTOP_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+  memc_wr_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <= '0' &
     ddram_wr_addr(ddram_wr_addr'left downto RPIPE_ASHIFT_BTOP+1);
 
   memc_cmd_en    <= memc_rd_cmd or memc_wr_cmd_en;
@@ -293,7 +294,7 @@ begin
   wpipe_wEn <= wr_v;
   wpipe_Din <= wr_mask & wr_shift & '0' & '0' & wr_eof & '0' & '0' & wr_din;
   wr_full   <= wpipe_aFull;
-  wpipe_rd_en <= wpipe_rEn and not(wpipe_ren_stopnow);
+  wpipe_rd_en <= wpipe_rEn and not(wpipe_ren_stopnow) and not(wpipe_f2m_full);
   -- ----------------------------------------------------------------------------
   --
   -- ----------------------------------------------------------------------------
@@ -306,9 +307,9 @@ begin
         wr_en      => wpipe_wr_en,
         rd_en      => wpipe_f2m_rd_en,
         dout       => wpipe_f2m_qout,
-        full       => wpipe_f2m_full,
+        full       => open,
         empty      => wpipe_f2m_empty,
-        prog_full  => open,
+        prog_full  => wpipe_f2m_full,
         prog_empty => open
         );
 
@@ -802,11 +803,11 @@ begin
           DDR_rd_state  <= rdst_CMD;
 
         when rdst_CMD =>
-          rpipec_rEn            <= '0';
-          ddram_rd_addr         <= ddram_rd_addr;
-          rpiped_wr_EOF         <= '0';
-          rpipe_arb_req         <= '1';
-          rpiped_rd_cnt         <= rpiped_rd_cnt;
+          rpipec_rEn    <= '0';
+          ddram_rd_addr <= ddram_rd_addr;
+          rpiped_wr_EOF <= '0';
+          rpipe_arb_req <= '1';
+          rpiped_rd_cnt <= rpiped_rd_cnt;
           if memc_cmd_rdy = '1' and memc_rd_cmd = '1' then
             memc_rd_cmd  <= '0';
             DDR_rd_state <= rdst_DATA;
