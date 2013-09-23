@@ -1,28 +1,31 @@
 ----------------------------------------------------------------------------------
--- Company:
--- Engineer:
+-- Company: Creotech
+-- Engineer: Adrian Byszuk (adrian.byszuk@gmail.com)
 --
--- Create Date:    09:12:51 01 Feb 2010
 -- Design Name:
--- Module Name:    pcieDMA - Behavioral
+-- Module Name:    bpm_pcie_k7 - Behavioral
 -- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
+-- Target Devices: XC7K350T on KC705 devkit
+-- Tool versions: ISE 14.4, ISE 14.6
+-- Description: This is TOP module for the versatile firmware for PCIe communication.
+-- It provides DMA engine with scatter-gather (linked list) functionality.
+-- DDR memory is supported through BAR2. Wishbone endpoint is accessible through BAR3.
 --
--- Dependencies:
+-- Dependencies: Xilinx PCIe core for 7 series. Xilinx DDR core for 7 series.
 --
--- Revision:
+-- Revision: 2.00 - Original file completely rewritten by abyszuk.
 --
 -- Revision 1.00 - File Released
 --
--- Additional Comments:
+-- Additional Comments: This file can be used both as TOP module for independent operation, or
+-- instantiated in another projects. To use it in your project, change INSTANTIATED generic to
+-- "TRUE" and uncomment relevant interface sections in entity declaration. ATTENTION: you also
+-- have to comment out dummy signal with names exactly the same as port names (it was necessary so
+-- that XST won't complain about missing signal names).
 --
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
-use IEEE.STD_LOGIC_ARITH.all;
-use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
@@ -34,15 +37,17 @@ use UNISIM.VComponents.all;
 
 entity bpm_pcie_k7 is
   generic (
-    SIMULATION         : string := "FALSE";
+    SIMULATION   : string := "FALSE";
+    INSTANTIATED : string := "FALSE";
     -- ****
     -- PCIe core parameters
     -- ****
-    constant pcieLanes : integer := C_NUM_PCIE_LANES;
+    constant pcieLanes : integer := 4;
     PL_FAST_TRAIN      : string  := "FALSE";
-    PIPE_SIM_MODE      : string := "FALSE";
+    PIPE_SIM_MODE      : string  := "FALSE";
     --***************************************************************************
     -- Necessary parameters for DDR core support
+    -- (dependent on memory chip connected to FPGA, not to be modified at will)
     --***************************************************************************
     constant DDR_DQ_WIDTH      : integer := 64;
     constant DDR_PAYLOAD_WIDTH : integer := 512;
@@ -87,7 +92,44 @@ entity bpm_pcie_k7 is
     ddr_sys_clk_n : in std_logic;
     sys_clk_p     : in std_logic;         --100 MHz PCIe Clock
     sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic          --Reset
+    sys_rst_n     : in std_logic --Reset to PCIe core
+
+    -- DDR memory controller interface --
+    -- uncomment when instantiating in another project
+    --ddr_core_rst   : in  std_logic;
+    --memc_ui_clk    : out std_logic;
+    --memc_ui_rst    : out std_logic;
+    --memc_cmd_rdy   : out std_logic;
+    --memc_cmd_en    : in  std_logic;
+    --memc_cmd_instr : in  std_logic_vector(2 downto 0);
+    --memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+    --memc_wr_en     : in  std_logic;
+    --memc_wr_end    : in  std_logic;
+    --memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    --memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    --memc_wr_rdy    : out std_logic;
+    --memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    --memc_rd_valid  : out std_logic;
+    ---- memory arbiter interface
+    --memarb_acc_req : in  std_logic;
+    --memarb_acc_gnt : out std_logic;
+    --/ DDR memory controller interface
+
+    -- Wishbone interface --
+    -- uncomment when instantiating in another project
+    --CLK_I : in  std_logic;
+    --RST_I : in  std_logic;
+    --ACK_I : in  std_logic;
+    --DAT_I : in  std_logic_vector(63 downto 0);
+    --ADDR_O : out std_logic_vector(28 downto 0);
+    --DAT_O : out std_logic_vector(63 downto 0);
+    --WE_O  : out std_logic;
+    --STB_O : out std_logic;
+    --SEL_O : out std_logic;
+    --CYC_O : out std_logic;
+    --/ Wishbone interface
+    -- Additional exported signals for instantiation
+    --ext_rst_o : out std_logic
     );
 end entity bpm_pcie_k7;
 
@@ -106,17 +148,17 @@ architecture Behavioral of bpm_pcie_k7 is
       -------------------------------------------------------------------------------------------------------------------
       -- 1. PCI Express (pci_exp) Interface                                                                            --
       -------------------------------------------------------------------------------------------------------------------
-      pci_exp_txp : out std_logic_vector(0 downto 0);
-      pci_exp_txn : out std_logic_vector(0 downto 0);
-      pci_exp_rxp : in  std_logic_vector(0 downto 0);
-      pci_exp_rxn : in  std_logic_vector(0 downto 0);
+      pci_exp_txp : out std_logic_vector(3 downto 0);
+      pci_exp_txn : out std_logic_vector(3 downto 0);
+      pci_exp_rxp : in  std_logic_vector(3 downto 0);
+      pci_exp_rxn : in  std_logic_vector(3 downto 0);
 
       -------------------------------------------------------------------------------------------------------------------
       -- 2. Clocking Interface                                                                                         --
       -------------------------------------------------------------------------------------------------------------------
       PIPE_PCLK_IN      : in std_logic;
       PIPE_RXUSRCLK_IN  : in std_logic;
-      PIPE_RXOUTCLK_IN  : in std_logic_vector(0 downto 0);
+      PIPE_RXOUTCLK_IN  : in std_logic_vector(3 downto 0);
       PIPE_DCLK_IN      : in std_logic;
       PIPE_USERCLK1_IN  : in std_logic;
       PIPE_USERCLK2_IN  : in std_logic;
@@ -124,8 +166,8 @@ architecture Behavioral of bpm_pcie_k7 is
       PIPE_MMCM_LOCK_IN : in std_logic;
 
       PIPE_TXOUTCLK_OUT : out std_logic;
-      PIPE_RXOUTCLK_OUT : out std_logic_vector(0 downto 0);
-      PIPE_PCLK_SEL_OUT : out std_logic_vector(0 downto 0);
+      PIPE_RXOUTCLK_OUT : out std_logic_vector(3 downto 0);
+      PIPE_PCLK_SEL_OUT : out std_logic_vector(3 downto 0);
       PIPE_GEN3_OUT     : out std_logic;
 
       -------------------------------------------------------------------------------------------------------------------
@@ -336,8 +378,9 @@ architecture Behavioral of bpm_pcie_k7 is
       -------------------------------------------------------------------------------------------------------------------
       -- 8. System(SYS) Interface                                                                                      --
       -------------------------------------------------------------------------------------------------------------------
-      sys_clk   : in std_logic;
-      sys_rst_n : in std_logic);
+      pipe_mmcm_rst_n : in std_logic;
+      sys_clk         : in std_logic;
+      sys_rst_n       : in std_logic);
   end component;
 
   component ddr_core
@@ -715,6 +758,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal wb_rdd_pempty : std_logic;
   signal wb_rdd_empty  : std_logic;
   signal wbone_rst     : std_logic;
+  signal wb_fifo_rst   : std_logic;
   signal wbone_addr    : std_logic_vector(31 downto 0);
   signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -993,7 +1037,7 @@ architecture Behavioral of bpm_pcie_k7 is
   -- Wires used for external clocking connectivity
   signal PIPE_PCLK_IN      : std_logic                    := '0';
   signal PIPE_RXUSRCLK_IN  : std_logic                    := '0';
-  signal PIPE_RXOUTCLK_IN  : std_logic_vector(0 downto 0) := (others => '0');
+  signal PIPE_RXOUTCLK_IN  : std_logic_vector(3 downto 0) := (others => '0');
   signal PIPE_DCLK_IN      : std_logic                    := '0';
   signal PIPE_USERCLK1_IN  : std_logic                    := '0';
   signal PIPE_USERCLK2_IN  : std_logic                    := '0';
@@ -1001,8 +1045,8 @@ architecture Behavioral of bpm_pcie_k7 is
   signal PIPE_MMCM_LOCK_IN : std_logic                    := '0';
 
   signal PIPE_TXOUTCLK_OUT : std_logic;
-  signal PIPE_RXOUTCLK_OUT : std_logic_vector(0 downto 0);
-  signal PIPE_PCLK_SEL_OUT : std_logic_vector(0 downto 0);
+  signal PIPE_RXOUTCLK_OUT : std_logic_vector(3 downto 0);
+  signal PIPE_PCLK_SEL_OUT : std_logic_vector(3 downto 0);
   signal PIPE_GEN3_OUT     : std_logic;
   ----------------------------------------------------
 
@@ -1241,6 +1285,30 @@ architecture Behavioral of bpm_pcie_k7 is
   signal ddr_ui_reset      : std_logic;
   signal ddr_calib_done    : std_logic;
 
+-- additional clocking signal when using project as standalone
+  signal pll_clkin    : std_logic;
+  signal pll_clkout0  : std_logic;
+  signal pll_clkfbout : std_logic;
+  signal pll_locked   : std_logic;
+
+--to prevent <signal_name> is not declared errors
+  signal ddr_core_rst : std_logic;
+  signal memc_ui_rst  : std_logic;
+
+  signal clk_i  : std_logic;
+  signal rst_i  : std_logic;
+  signal dat_i  : std_logic_vector(63 downto 0);
+  signal ack_i  : std_logic;
+  signal addr_o : std_logic_vector(28 downto 0);
+  signal we_o   : std_logic;
+  signal dat_o  : std_logic_vector(63 downto 0);
+  signal sel_o  : std_logic;
+  signal stb_o  : std_logic;
+  signal cyc_o  : std_logic;
+
+  signal ext_rst_o : std_logic;
+--COMMENT OUT WHEN INSTANTIATING AS COMPONENT
+
 begin
 
   LoopBack_Off_UserLogic : if not USE_LOOPBACK_TEST generate
@@ -1341,8 +1409,6 @@ begin
 
   DMA_Host2Board_Busy <= '0';           --DMA_ds_Busy;
   DMA_Host2Board_Done <= DMA_ds_Done;
---   LEDs_IO_pin(5) <= DMA_ds_Done;
---      LEDs_IO_pin(7) <= DMA_us_Done;
 
   sys_reset_c <= not sys_reset_n_c;
   sys_reset_n_ibuf : IBUF
@@ -1681,8 +1747,9 @@ begin
     -------------------------------------------------------------------------------------------------------------------
     -- 8. System(SYS) Interface                                                                                      --
     -------------------------------------------------------------------------------------------------------------------
-    sys_clk   => sys_clk_c ,
-    sys_rst_n => sys_reset_n_c
+    pipe_mmcm_rst_n => sys_reset_n_c,
+    sys_clk         => sys_clk_c ,
+    sys_rst_n       => sys_reset_n_c
     );
 
 -- ---------------------------------------------------------------
@@ -1821,7 +1888,7 @@ begin
         pio_reading_status => pio_reading_status ,  --  OUT std_logic;
 
         wb_FIFO_Status  => wb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        wb_FIFO_Rst     => wbone_rst ,     --  OUT std_logic;
+        wb_FIFO_Rst     => wb_fifo_rst,     --  OUT std_logic;
         H2B_FIFO_Status => H2B_FIFO_Status ,
         B2H_FIFO_Status => B2H_FIFO_Status ,
 
@@ -2055,48 +2122,66 @@ begin
         rst => user_reset --in std_logic
         );
 
-  Wishbone_mem_large: if SIMULATION = "TRUE" generate
+  Wishbone_ext: if INSTANTIATED = "TRUE" generate
 
-    wb_mem_sim :
-      wb_mem
-        generic map(
-          AWIDTH => 16,
-          DWIDTH => 64
-        )
-        port map(
-          CLK_I => wbone_clk, --in  std_logic;
-          ACK_O => wbone_ack, --out std_logic;
-          ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-          DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-          DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-          STB_I => wbone_stb, --in  std_logic;
-          WE_I  => wbone_we --in  std_logic
-        );
+    wbone_clk  <= CLK_I;
+    wbone_rst  <= RST_I;
+    wbone_mdin <= DAT_I;
+    wbone_ack  <= ACK_I;
+    ADDR_O     <= wbone_addr;
+    DAT_O      <= wbone_mdout;
+    WE_O       <= wbone_we;
+    SEL_O      <= wbone_sel(0);
+    STB_O      <= wbone_stb;
+    CYC_O      <= wbone_cyc;
+    ext_rst_o  <= wb_fifo_rst;
 
   end generate;
 
-  Wishbone_mem_sample: if SIMULATION = "FALSE" generate
-
-    wb_mem_syn :
-      wb_mem
-        generic map(
-          AWIDTH => 7,
-          DWIDTH => 64
-        )
-        port map(
-          CLK_I => wbone_clk, --in  std_logic;
-          ACK_O => wbone_ack, --out std_logic;
-          ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-          DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-          DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-          STB_I => wbone_stb, --in  std_logic;
-          WE_I  => wbone_we --in  std_logic
-        );
-
-  end generate;
-
+  Wishbone_int : if INSTANTIATED = "FALSE" generate
     --temporary clock assignment
     wbone_clk <= ddr_ui_clk;
+    wbone_rst <= wb_fifo_rst;
+
+    Wishbone_mem_large: if (SIMULATION = "TRUE") generate
+      wb_mem_sim :
+        wb_mem
+          generic map(
+            AWIDTH => 16,
+            DWIDTH => 64
+          )
+          port map(
+            CLK_I => wbone_clk, --in  std_logic;
+            ACK_O => wbone_ack, --out std_logic;
+            ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+            STB_I => wbone_stb, --in  std_logic;
+            WE_I  => wbone_we --in  std_logic
+          );
+
+    end generate;
+
+    Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
+      wb_mem_syn :
+        wb_mem
+          generic map(
+            AWIDTH => 7,
+            DWIDTH => 64
+          )
+          port map(
+            CLK_I => wbone_clk, --in  std_logic;
+            ACK_O => wbone_ack, --out std_logic;
+            ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
+            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
+            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
+            STB_I => wbone_stb, --in  std_logic;
+            WE_I  => wbone_we --in  std_logic
+          );
+
+    end generate;
+
+  end generate;
 
     --- Hybrid FIFO Signal used by PCIe interface and Linux Driver
     fifo_reset_done <= not wbone_rst;
