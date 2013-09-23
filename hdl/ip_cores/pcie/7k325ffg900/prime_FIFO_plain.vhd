@@ -1,23 +1,23 @@
 --------------------------------------------------------------------------------
--- Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
+-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
 --------------------------------------------------------------------------------
 --   ____  ____
 --  /   /\/   /
 -- /___/  \  /    Vendor: Xilinx
--- \   \   \/     Version: P.40xd
+-- \   \   \/     Version: P.68d
 --  \   \         Application: netgen
 --  /   /         Filename: prime_FIFO_plain.vhd
--- /___/   /\     Timestamp: Wed Oct 24 18:23:17 2012
+-- /___/   /\     Timestamp: Thu Sep 19 21:45:01 2013
 -- \   \  /  \ 
 --  \___\/\___\
 --             
--- Command	: -w -sim -ofmt vhdl /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/prime_FIFO_plain.ngc /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/prime_FIFO_plain.vhd 
+-- Command	: -w -sim -ofmt vhdl /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/prime_FIFO_plain.ngc /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/prime_FIFO_plain.vhd 
 -- Device	: 7k325tffg900-2
--- Input file	: /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/prime_FIFO_plain.ngc
--- Output file	: /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/prime_FIFO_plain.vhd
--- # of Entities	: 1
+-- Input file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/prime_FIFO_plain.ngc
+-- Output file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/prime_FIFO_plain.vhd
+-- # of Entities	: 2
 -- Design Name	: prime_FIFO_plain
--- Xilinx	: /opt/Xilinx/14.3/ISE_DS/ISE/
+-- Xilinx	: /opt/Xilinx/14.6/ISE_DS/ISE/
 --             
 -- Purpose:    
 --     This VHDL netlist is a verification model and uses simulation 
@@ -32,6 +32,296 @@
 --             
 --------------------------------------------------------------------------------
 
+
+-- synthesis translate_off
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+library UNISIM;
+use UNISIM.VCOMPONENTS.ALL;
+use UNISIM.VPKG.ALL;
+
+entity reset_builtin is
+  port (
+    CLK : in STD_LOGIC := 'X'; 
+    WR_CLK : in STD_LOGIC := 'X'; 
+    RD_CLK : in STD_LOGIC := 'X'; 
+    INT_CLK : in STD_LOGIC := 'X'; 
+    RST : in STD_LOGIC := 'X'; 
+    WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
+    RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
+    INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ) 
+  );
+end reset_builtin;
+
+architecture STRUCTURE of reset_builtin is
+  signal wr_rst_reg_3 : STD_LOGIC; 
+  signal rd_rst_reg_15 : STD_LOGIC; 
+  signal wr_rst_reg_GND_25_o_MUX_1_o : STD_LOGIC; 
+  signal rd_rst_reg_GND_25_o_MUX_2_o : STD_LOGIC; 
+  signal wr_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 ); 
+  signal power_on_wr_rst : STD_LOGIC_VECTOR ( 5 downto 0 ); 
+  signal rd_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 ); 
+  signal power_on_rd_rst : STD_LOGIC_VECTOR ( 5 downto 0 ); 
+  signal NlwRenamedSignal_WR_RST_I : STD_LOGIC_VECTOR ( 0 downto 0 ); 
+  signal NlwRenamedSig_OI_n0019 : STD_LOGIC_VECTOR ( 5 downto 5 ); 
+begin
+  WR_RST_I(1) <= NlwRenamedSignal_WR_RST_I(0);
+  WR_RST_I(0) <= NlwRenamedSignal_WR_RST_I(0);
+  INT_RST_I(1) <= NlwRenamedSig_OI_n0019(5);
+  INT_RST_I(0) <= NlwRenamedSig_OI_n0019(5);
+  XST_GND : GND
+    port map (
+      G => NlwRenamedSig_OI_n0019(5)
+    );
+  wr_rst_fb_0 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_fb(1),
+      Q => wr_rst_fb(0)
+    );
+  wr_rst_fb_1 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_fb(2),
+      Q => wr_rst_fb(1)
+    );
+  wr_rst_fb_2 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_fb(3),
+      Q => wr_rst_fb(2)
+    );
+  wr_rst_fb_3 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_fb(4),
+      Q => wr_rst_fb(3)
+    );
+  wr_rst_fb_4 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_reg_3,
+      Q => wr_rst_fb(4)
+    );
+  power_on_wr_rst_0 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => power_on_wr_rst(1),
+      Q => power_on_wr_rst(0)
+    );
+  power_on_wr_rst_1 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => power_on_wr_rst(2),
+      Q => power_on_wr_rst(1)
+    );
+  power_on_wr_rst_2 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => power_on_wr_rst(3),
+      Q => power_on_wr_rst(2)
+    );
+  power_on_wr_rst_3 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => power_on_wr_rst(4),
+      Q => power_on_wr_rst(3)
+    );
+  power_on_wr_rst_4 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => power_on_wr_rst(5),
+      Q => power_on_wr_rst(4)
+    );
+  power_on_wr_rst_5 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => WR_CLK,
+      D => NlwRenamedSig_OI_n0019(5),
+      Q => power_on_wr_rst(5)
+    );
+  rd_rst_fb_0 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_fb(1),
+      Q => rd_rst_fb(0)
+    );
+  rd_rst_fb_1 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_fb(2),
+      Q => rd_rst_fb(1)
+    );
+  rd_rst_fb_2 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_fb(3),
+      Q => rd_rst_fb(2)
+    );
+  rd_rst_fb_3 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_fb(4),
+      Q => rd_rst_fb(3)
+    );
+  rd_rst_fb_4 : FD
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_reg_15,
+      Q => rd_rst_fb(4)
+    );
+  power_on_rd_rst_0 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => power_on_rd_rst(1),
+      Q => power_on_rd_rst(0)
+    );
+  power_on_rd_rst_1 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => power_on_rd_rst(2),
+      Q => power_on_rd_rst(1)
+    );
+  power_on_rd_rst_2 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => power_on_rd_rst(3),
+      Q => power_on_rd_rst(2)
+    );
+  power_on_rd_rst_3 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => power_on_rd_rst(4),
+      Q => power_on_rd_rst(3)
+    );
+  power_on_rd_rst_4 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => power_on_rd_rst(5),
+      Q => power_on_rd_rst(4)
+    );
+  power_on_rd_rst_5 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => RD_CLK,
+      D => NlwRenamedSig_OI_n0019(5),
+      Q => power_on_rd_rst(5)
+    );
+  wr_rst_reg : FDP
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => WR_CLK,
+      D => wr_rst_reg_GND_25_o_MUX_1_o,
+      PRE => RST,
+      Q => wr_rst_reg_3
+    );
+  rd_rst_reg : FDP
+    generic map(
+      INIT => '0'
+    )
+    port map (
+      C => RD_CLK,
+      D => rd_rst_reg_GND_25_o_MUX_2_o,
+      PRE => RST,
+      Q => rd_rst_reg_15
+    );
+  WR_RST_I_1_1 : LUT2
+    generic map(
+      INIT => X"E"
+    )
+    port map (
+      I0 => wr_rst_reg_3,
+      I1 => power_on_wr_rst(0),
+      O => NlwRenamedSignal_WR_RST_I(0)
+    );
+  Mmux_wr_rst_reg_GND_25_o_MUX_1_o11 : LUT2
+    generic map(
+      INIT => X"4"
+    )
+    port map (
+      I0 => wr_rst_fb(0),
+      I1 => wr_rst_reg_3,
+      O => wr_rst_reg_GND_25_o_MUX_1_o
+    );
+  Mmux_rd_rst_reg_GND_25_o_MUX_2_o11 : LUT2
+    generic map(
+      INIT => X"4"
+    )
+    port map (
+      I0 => rd_rst_fb(0),
+      I1 => rd_rst_reg_15,
+      O => rd_rst_reg_GND_25_o_MUX_2_o
+    );
+
+end STRUCTURE;
+
+-- synthesis translate_on
 
 -- synthesis translate_off
 library IEEE;
@@ -56,15 +346,26 @@ entity prime_FIFO_plain is
 end prime_FIFO_plain;
 
 architecture STRUCTURE of prime_FIFO_plain is
+  component reset_builtin
+    port (
+      CLK : in STD_LOGIC := 'X'; 
+      WR_CLK : in STD_LOGIC := 'X'; 
+      RD_CLK : in STD_LOGIC := 'X'; 
+      INT_CLK : in STD_LOGIC := 'X'; 
+      RST : in STD_LOGIC := 'X'; 
+      WR_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
+      RD_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ); 
+      INT_RST_I : out STD_LOGIC_VECTOR ( 1 downto 0 ) 
+    );
+  end component;
   signal N1 : STD_LOGIC; 
   signal NlwRenamedSig_OI_empty : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_GND_25_o_MUX_2_o : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_GND_25_o_MUX_1_o : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_161 : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_168 : STD_LOGIC; 
   signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp : STD_LOGIC; 
-  signal N2 : STD_LOGIC; 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0_171 : STD_LOGIC; 
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_WR_RST_I_1_UNCONNECTED : STD_LOGIC; 
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_1_UNCONNECTED : STD_LOGIC; 
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_0_UNCONNECTED : STD_LOGIC; 
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_1_UNCONNECTED : STD_LOGIC; 
+  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_0_UNCONNECTED : STD_LOGIC; 
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_ALMOSTEMPTY_UNCONNECTED : STD_LOGIC;
  
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_DBITERR_UNCONNECTED : STD_LOGIC;
@@ -143,131 +444,31 @@ architecture STRUCTURE of prime_FIFO_plain is
  
   signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_0_UNCONNECTED : STD_LOGIC;
  
-  signal NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0_Q15_UNCONNECTED : STD_LOGIC; 
   signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i : STD_LOGIC_VECTOR ( 0 downto 0 ); 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 ); 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_power_on_wr_rst : STD_LOGIC_VECTOR ( 0 downto 0 ); 
-  signal U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb : STD_LOGIC_VECTOR ( 4 downto 0 ); 
 begin
   empty <= NlwRenamedSig_OI_empty;
   XST_GND : GND
     port map (
       G => N1
     );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg : FDP
-    generic map(
-      INIT => '0'
-    )
+  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt : reset_builtin
     port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_GND_25_o_MUX_2_o,
-      PRE => rst,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_161
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg : FDP
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_GND_25_o_MUX_1_o,
-      PRE => rst,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_168
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb_4 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_161,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(4)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb_3 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(4),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(3)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb_2 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(3),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(2)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb_1 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(2),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(1)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb_0 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => rd_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(1),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(0)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb_4 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_168,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(4)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb_3 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(4),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(3)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb_2 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(3),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(2)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb_1 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(2),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(1)
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb_0 : FD
-    generic map(
-      INIT => '0'
-    )
-    port map (
-      C => wr_clk,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(1),
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(0)
+      CLK => N1,
+      WR_CLK => wr_clk,
+      RD_CLK => rd_clk,
+      INT_CLK => N1,
+      RST => rst,
+      WR_RST_I(1) => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_WR_RST_I_1_UNCONNECTED,
+      WR_RST_I(0) => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i(0),
+      RD_RST_I(1) => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_1_UNCONNECTED,
+      RD_RST_I(0) => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_RD_RST_I_0_UNCONNECTED,
+      INT_RST_I(1) => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_1_UNCONNECTED,
+      INT_RST_I(0) => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_INT_RST_I_0_UNCONNECTED
     );
   U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1 : FIFO36E1
     generic map(
       ALMOST_EMPTY_OFFSET => X"0005",
-      ALMOST_FULL_OFFSET => X"0010",
+      ALMOST_FULL_OFFSET => X"000C",
       DATA_WIDTH => 72,
       DO_REG => 1,
       EN_ECC_READ => FALSE,
@@ -549,33 +750,6 @@ NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_i
       WRCOUNT(0) => 
 NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_gf36e1_inst_sngfifo36e1_WRCOUNT_0_UNCONNECTED
     );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mmux_rd_rst_reg_GND_25_o_MUX_2_o11 : LUT2
-    generic map(
-      INIT => X"4"
-    )
-    port map (
-      I0 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_fb(0),
-      I1 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_161,
-      O => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_rd_rst_reg_GND_25_o_MUX_2_o
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mmux_wr_rst_reg_GND_25_o_MUX_1_o11 : LUT2
-    generic map(
-      INIT => X"4"
-    )
-    port map (
-      I0 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_fb(0),
-      I1 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_168,
-      O => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_GND_25_o_MUX_1_o
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_WR_RST_I_1_1 : LUT2
-    generic map(
-      INIT => X"E"
-    )
-    port map (
-      I0 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_wr_rst_reg_168,
-      I1 => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_power_on_wr_rst(0),
-      O => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_wr_rst_i(0)
-    );
   U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp1 : LUT2
     generic map(
       INIT => X"4"
@@ -584,35 +758,6 @@ NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_i
       I0 => NlwRenamedSig_OI_empty,
       I1 => rd_en,
       O => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_v6_fifo_fblk_gextw_1_gnll_fifo_inst_extd_gonep_inst_prim_rden_tmp
-    );
-  XST_VCC : VCC
-    port map (
-      P => N2
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0 : SRLC16E
-    generic map(
-      INIT => X"001F"
-    )
-    port map (
-      A0 => N1,
-      A1 => N1,
-      A2 => N2,
-      A3 => N1,
-      CE => N2,
-      CLK => wr_clk,
-      D => N1,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0_171,
-      Q15 => NLW_U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0_Q15_UNCONNECTED
-    );
-  U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_power_on_wr_rst_0 : FDE
-    generic map(
-      INIT => '1'
-    )
-    port map (
-      C => wr_clk,
-      CE => N2,
-      D => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_Mshreg_power_on_wr_rst_0_171,
-      Q => U0_xst_fifo_generator_gconvfifo_rf_gbiv5_bi_rstbt_power_on_wr_rst(0)
     );
 
 end STRUCTURE;
