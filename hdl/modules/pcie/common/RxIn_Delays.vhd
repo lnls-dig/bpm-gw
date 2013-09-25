@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    RxIn_Delay - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    RxIn_Delay - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.10 - MAX_SIZE_EXCEEDED recalculated for better timing. 31.03.2008
--- 
+--
 -- Revision 1.00 - first release. 20.02.2007
--- 
+--
 -- Additional Comments: Virtual channels resolution.
 --
 ----------------------------------------------------------------------------------
@@ -239,7 +239,7 @@ architecture Behavioral of RxIn_Delay is
   --old interface helper signals
   signal in_packet_reg : std_logic;
   signal trn_rsof_n    : std_logic;
-  
+
 begin
 
   m_axis_rx_tready       <= m_axis_rx_tready_i;   -- Delay
@@ -277,7 +277,7 @@ begin
   Tlp_straddles_4KB <= '0';             --Tlp_straddles_4KB_i  ;
 
 
-  --  !! !! 
+  --  !! !!
   MaxReadReqSize_Exceeded <= '0';
   MaxPayloadSize_Exceeded <= '0';
 
@@ -555,7 +555,7 @@ begin
   --    ---------------------------------------------------------
   ----  Pipelining all trn_rx input signals for one clock
   ----    to get better timing
-  ---- 
+  ----
   Trn_Rx_Inputs_Delayed :
   process (user_clk)
   begin
@@ -810,17 +810,17 @@ begin
 
         when TK_Idle =>
           m_axis_rx_tready_i <= '1';
-          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
           then
             FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "11"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
           then
             FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "01"
           then
@@ -831,7 +831,8 @@ begin
 
         when TK_MWr_3Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
@@ -841,7 +842,8 @@ begin
 
         when TK_MWr_4Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
@@ -851,7 +853,8 @@ begin
 
         when TK_Cpld_Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_Cpld_Hdr_C;
@@ -860,9 +863,11 @@ begin
           end if;
 
         when TK_Body =>
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt        <= TK_Idle;
-            m_axis_rx_tready_i <= '1';
+            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
+                                      or ((MWr_on_EB or CplD_on_EB_i) and Link_Buf_full));
           else
             FSM_TLP_Cnt <= TK_Body;
             m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
@@ -912,17 +917,8 @@ begin
           CplD_on_EB_i   <= '0';
 
         when TK_CplD_Hdr_C =>
---            if trn_rsof_n='0' and m_axis_rx_tvalid='1' 
---               and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) ="10" 
---               and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) ="01" 
---               then
           CplD_on_Pool_i <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
           CplD_on_EB_i   <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
---            else
---              CplD_on_Pool_i  <= CplD_on_Pool_i;
---              CplD_on_EB_i    <= CplD_on_EB_i;
---            end if;
-
 
         when others =>
           CplD_on_Pool_i <= CplD_on_Pool_i;
@@ -936,14 +932,8 @@ begin
         when TK_RST =>
           CplD_Tag_i <= (others => '1');
 
---          when TK_Idle =>
---              CplD_Tag_i    <= CplD_Tag_i;
-
         when TK_CplD_Hdr_C =>
---            if m_axis_rx_tlast='1' then
---              CplD_Tag_i    <= (OTHERS => '1');
---            els
-          if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1' 
+          if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1'
           then
             CplD_Tag_i <= m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT);
           else
@@ -982,7 +972,7 @@ begin
       else
         CplD_is_the_Last_i <= CplD_is_the_Last_i;
       end if;
-      
+
     end if;
   end process;
 
@@ -1034,7 +1024,7 @@ begin
 --
 --          when TK_MWr_3Hdr_C =>
 --            if Tlp_has_4KB_i='1'
---               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) 
+--               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
 --                   /=C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
 --               then
 --               Tlp_straddles_4KB_i <= '1';
@@ -1044,7 +1034,7 @@ begin
 --
 --          when TK_MWr_4Hdr_D =>
 --            if Tlp_has_4KB_i='1'
---               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) 
+--               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
 --                   /=C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
 --               then
 --               Tlp_straddles_4KB_i <= '1';
@@ -1064,7 +1054,7 @@ begin
 
   --  ---------------------------------------------------------
   --  To Cpl/D channel as indicator when ReqID matched
-  --  
+  --
   TLP_ReqID_Matched :
   process (user_clk, user_reset)
   begin
@@ -1081,7 +1071,7 @@ begin
 
   --  ------------------------------------------------------------
   --  To Cpl/D channel as indicator when us Tag_Descriptor matched
-  --  
+  --
   TLP_usDexTag_Matched :
   process (user_clk, user_reset)
   begin
@@ -1098,7 +1088,7 @@ begin
 
   --  ------------------------------------------------------------
   --  To Cpl/D channel as indicator when ds Tag_Descriptor matched
-  --  
+  --
   TLP_dsDexTag_Matched :
   process (user_clk, user_reset)
   begin
@@ -1128,5 +1118,5 @@ begin
     end if;
   end process;
   trn_rsof_n <= not(m_axis_rx_tvalid and not(in_packet_reg));
-  
+
 end architecture Behavioral;
