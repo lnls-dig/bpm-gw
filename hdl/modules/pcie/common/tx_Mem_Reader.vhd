@@ -875,8 +875,7 @@ begin
     if mReader_Rst_n = '0' then
       Tx_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
-      if TimeOut_Counter(21 downto 6) = X"FFFF" then
---         if TimeOut_Counter(4 downto 1)=X"F" then
+      if TimeOut_Counter(21 downto 6) = X"FFFF" and DDR_FIFO_Hit = '1' then
         Tx_TimeOut_i <= '1';
       else
         Tx_TimeOut_i <= Tx_TimeOut_i;
@@ -893,14 +892,7 @@ begin
     if mReader_Rst_n = '0' then
       Tx_wb_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
---         if TimeOut_Counter(3 downto 0)=X"F" then
-      if TimeOut_Counter(6 downto 3) = X"F"
-        and is_CplD_k = '1'
-      then
-        Tx_wb_TimeOut_i <= '1';
-      elsif TimeOut_Counter(8 downto 5) = X"F"
-        and may_be_MWr_k = '1'
-      then
+      if TimeOut_Counter(8 downto 5) = X"F" and wb_FIFO_Hit = '1' then
         Tx_wb_TimeOut_i <= '1';
       else
         Tx_wb_TimeOut_i <= Tx_wb_TimeOut_i;
