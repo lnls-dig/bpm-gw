@@ -892,7 +892,7 @@ begin
     if mReader_Rst_n = '0' then
       Tx_wb_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
-      if TimeOut_Counter(8 downto 5) = X"F" and wb_FIFO_Hit = '1' then
+      if TimeOut_Counter(21 downto 6) = X"FFFF" and wb_FIFO_Hit = '1' then
         Tx_wb_TimeOut_i <= '1';
       else
         Tx_wb_TimeOut_i <= Tx_wb_TimeOut_i;
