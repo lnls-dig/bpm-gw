@@ -250,6 +250,7 @@ architecture Behavioral of DDRs_Control is
   signal memc_wr_addr      : unsigned(ADDR_WIDTH-1 downto 0) := (others => '0');
   signal memc_wr_data_en   : std_logic;
   signal memc_wr_cmd_en    : std_logic;
+  signal memarb_acc_req_i  : std_logic;
 
 begin
 
@@ -262,14 +263,15 @@ begin
   memc_wr_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <= '0' &
     ddram_wr_addr(ddram_wr_addr'left downto RPIPE_ASHIFT_BTOP+1);
 
-  memc_cmd_en    <= memc_rd_cmd or memc_wr_cmd_en;
-  memc_cmd_instr <= "00" & memc_rd_cmd;
-  memc_cmd_addr  <= std_logic_vector(memc_wr_addr) when memc_wr_cmd_en = '1' else std_logic_vector(memc_rd_addr);
-  memc_wr_en     <= memc_wr_data_en;
-  memc_wr_end    <= memc_wr_data_en;
-  memc_wr_data   <= ddram_wr_data;
-  memc_wr_mask   <= ddram_wr_mask;
-  memarb_acc_req <= wpipe_arb_req or wpipe_f2m_arb_req or rpipe_arb_req;
+  memc_cmd_en      <= memc_rd_cmd or memc_wr_cmd_en;
+  memc_cmd_instr   <= "00" & memc_rd_cmd;
+  memc_cmd_addr    <= std_logic_vector(memc_wr_addr) when memc_wr_cmd_en = '1' else std_logic_vector(memc_rd_addr);
+  memc_wr_en       <= memc_wr_data_en;
+  memc_wr_end      <= memc_wr_data_en;
+  memc_wr_data     <= ddram_wr_data;
+  memc_wr_mask     <= ddram_wr_mask;
+  memarb_acc_req_i <= wpipe_arb_req or wpipe_f2m_arb_req or rpipe_arb_req;
+  memarb_acc_req   <= memarb_acc_req_i;
 
   -- ----------------------------------------------------------------------------
   --
@@ -754,9 +756,8 @@ begin
           rpipec_rEn      <= '0';
           memc_rd_cmd     <= '0';
           rpiped_wen_last <= '0';
-          --don't start if our module has access granted (write operation running) or if there is simultaneous
-          --read/write access
-          if rpipec_Empty = '0' and memarb_acc_gnt = '0' and wpipe_arb_req = '0' then
+          --don't start if our module has write operation running
+          if rpipec_Empty = '0' and memarb_acc_req_i = '0' then
             rpipe_arb_req <= '1';
             DDR_rd_state  <= rdst_ACC_REQ;
           else
