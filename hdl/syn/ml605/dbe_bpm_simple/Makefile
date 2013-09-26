@@ -17,7 +17,7 @@ local:
 clean:
 		rm -f $(ISE_CRAP)
 		rm -rf xst xlnx_auto_*_xdb iseconfig _xmsgs _ngo
-    
+
 #target for cleaning final files
 mrproper:
 		rm -f *.bit *.bin *.mcs
