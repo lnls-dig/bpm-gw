@@ -1,0 +1,8 @@
+delta_sigma_tbt = 33 DSP48 (11 for each one of the 3 divider blocks)
+delta_sigma_fofb = 33 DSP48 (11 for each one of the 3 divider blocks)
+delta_sigma_monit = 33 DSP48 (11 for each one of the 3 divider blocks)
+BPF = 44 DSP48
+TBT_amp = 56 DSP48 (28 for each one of the 2 channels)
+FOFB_amp = 48 DSP48 (28 for each one of the 2 channels, and 12 for each one of the 2 CIC)
+MIXER = 16 DSP48
+DDS = 20 (5 for each one of the 4 DDS cores)

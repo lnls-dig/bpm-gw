@@ -1,0 +1,2 @@
+You should enable -register-duplication MAP option to true in order
+to achieve timing with dsp-cores design!
