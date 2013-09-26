@@ -36,6 +36,7 @@ generic
   g_adc_clock_period                        : real;
   g_default_adc_clk_delay                   : natural := 0;
   g_with_ref_clk                            : boolean := false;
+  g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
   g_with_fn_dly_select                      : boolean := false;
   g_with_bufio                              : boolean := true;
   g_with_bufr                               : boolean := true;
@@ -76,6 +77,8 @@ port
 end fmc_adc_clk;
 
 architecture rtl of fmc_adc_clk is
+
+  alias c_mmcm_param is g_mmcm_param;
 
   -- Clock and reset signals
   signal adc_clk_ibufgds                    : std_logic;
@@ -293,29 +296,29 @@ begin
       --COMPENSATION                          => "ZHOLD",
       STARTUP_WAIT                          => FALSE,
       --DIVCLK_DIVIDE                         => 4,
-      DIVCLK_DIVIDE                         => 1,
+      DIVCLK_DIVIDE                         => c_mmcm_param.divclk,
       --CLKFBOUT_MULT_F                       => 12.000,
-      CLKFBOUT_MULT_F                       => 8.000,
+      CLKFBOUT_MULT_F                       => c_mmcm_param.clkbout_mult_f,
       CLKFBOUT_PHASE                        => 0.000,
       CLKFBOUT_USE_FINE_PS                  => FALSE,
       -- adc clock
       --CLKOUT0_DIVIDE_F                      => 3.000,
-      CLKOUT0_DIVIDE_F                      => 8.000,
+      CLKOUT0_DIVIDE_F                      => c_mmcm_param.clk0_out_div_f,
       CLKOUT0_PHASE                         => 0.000,
       CLKOUT0_DUTY_CYCLE                    => 0.500,
       CLKOUT0_USE_FINE_PS                   => FALSE,
       -- 2x adc clock.
       --CLKOUT1_DIVIDE                        => 3,
-      CLKOUT1_DIVIDE                        => 4,
+      CLKOUT1_DIVIDE                        => c_mmcm_param.clk1_out_div,
       CLKOUT1_PHASE                         => 0.000,
       CLKOUT1_DUTY_CYCLE                    => 0.500,
       CLKOUT1_USE_FINE_PS                   => FALSE,
       -- 130 MHZ input clock
-      CLKIN1_PERIOD                         => g_adc_clock_period,
+      CLKIN1_PERIOD                         => c_mmcm_param.clk0_in_period,
       REF_JITTER1                           => 0.10,
       -- Not used. Just to bypass Xilinx errors
       -- Just input 130 MHz input clock
-      CLKIN2_PERIOD                         => g_adc_clock_period,
+      CLKIN2_PERIOD                         => c_mmcm_param.clk0_in_period,
       REF_JITTER2                           => 0.10
     )
     port map(

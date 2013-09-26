@@ -186,6 +186,16 @@ package fmc_adc_pkg is
 
   type t_adc_clk_chain_glob_array is array (natural range <>) of t_adc_clk_chain_glob;
 
+  -- Xilinx MMCM parameters
+  type t_mmcm_param is record
+    divclk : natural;
+    clkbout_mult_f : real;  -- Can be integer on some FPGA families (such as Virtex6, but not 7-series)
+    clk0_in_period : real;
+
+    clk0_out_div_f : real;
+    clk1_out_div : natural;
+  end record;
+
   -- types for fmc_adc_iface generic definitions
   subtype t_default_adc_dly is t_natural_array(c_num_adc_channels-1 downto 0);
   subtype t_clk_values_array is t_real_array(c_num_adc_channels-1 downto 0);
@@ -197,10 +207,11 @@ package fmc_adc_pkg is
   subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels-1;
 
   -- Constant default values.
+  constant default_adc_clk_period : real := 4.0; -- 250 MHz
   constant default_data_dly : t_default_adc_dly := (others => 9);
   constant default_clk_dly : t_default_adc_dly := (others => 5);
   constant default_adc_clk_period_values : t_clk_values_array :=
-    (4.0, 4.0, 4.0, 4.0);
+    (default_adc_clk_period, default_adc_clk_period, default_adc_clk_period, default_adc_clk_period);
   constant default_clk_use_chain : t_clk_use_chain :=
     ("0011");
   constant default_data_use_chain : t_data_use_chain :=
@@ -216,6 +227,7 @@ package fmc_adc_pkg is
   --  (1, 0, 0, 1);
   -- Reference ADC clock is clock 1
   constant default_ref_adc_clk : t_ref_adc_clk := 1;
+  constant default_mmcm_param : t_mmcm_param := (2, 8.000, default_adc_clk_period, 8.000, 4); -- 250 MHz defaults
 
   -- dummy values for fmc_adc_iface generic definitions
   -- Warning: all clocks are null here! Should be modified
@@ -323,6 +335,7 @@ package fmc_adc_pkg is
     g_adc_clock_period                        : real;
     g_default_adc_clk_delay                   : natural := 0;
     g_with_ref_clk                            : boolean := false;
+    g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
     g_with_fn_dly_select                      : boolean := false;
     g_with_bufio                              : boolean := true;
     g_with_bufr                               : boolean := true;
@@ -436,6 +449,7 @@ package fmc_adc_pkg is
     g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_data_default_dly                        : t_default_adc_dly := default_data_dly;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
+    g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
     g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
     g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
     g_with_data_sdr                           : boolean := false;
@@ -722,5 +736,19 @@ package body fmc_adc_pkg is
       return false;
     end if;
   end f_std_logic_to_bool;
+
+  ---- revise function and make it generic? Does it worth it?
+  --function f_mmcm_params(clk_in : real)
+  --  return t_mmcm_param
+  --is
+  --  constant fvco_min : real := 600.00;
+  --  constant fvco_max : real := 1200.00;
+  --  constant fvco_middle : real := (fvco_max - fvco_min)/2;
+  --begin
+  --  -- Calculate FVCO and find mult_f and divclk values
+  --  -- such that FCVO fall within 600 - 1200 MHz for virtex-6
+  --  --
+  --  -- FVCO = clk_in * clkbout_mult_f / divclk
+  --end f_mmcm_params;
 
 end fmc_adc_pkg;
