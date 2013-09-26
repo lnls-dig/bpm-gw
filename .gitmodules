@@ -4,3 +4,6 @@
 [submodule "hdl/ip_cores/etherbone-core"]
 	path = hdl/ip_cores/etherbone-core
 	url = git://ohwr.org/hdl-core-lib/etherbone-core.git
+[submodule "hdl/ip_cores/dsp-cores"]
+	path = hdl/ip_cores/dsp-cores
+	url = https://github.com/lerwys/dsp-cores.git

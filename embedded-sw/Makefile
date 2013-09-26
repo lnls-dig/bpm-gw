@@ -89,7 +89,7 @@ $(OUTPUT).elf: $(OBJS)
 	./tools/genraminit $*.bin 0 > $@
 
 %.vhd: tools %.bin
-	./tools/genramvhd -s 131072 $*.bin > $@
+	./tools/genramvhd -s 90112 $*.bin > $@
 
 $(OBJS): include/board.h
 

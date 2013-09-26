@@ -10,9 +10,14 @@ EXPECTED_ARGS=1
 BITSTREAM=$1
 
 #Search for bistream
-BITSTREAM_LOC=$(find ${DEFAULT_SYN_PATH} -regextype posix-extended -iregex ".*${BITSTREAM}.*bit" -print)
+BITSTREAM_LOC=$(find ${DEFAULT_SYN_PATH} -regextype posix-extended -iregex ".*${BITSTREAM}.*\.bit" -print)
 
-BITSTREAM_NUM=$(echo -e "${BITSTREAM_LOC}" | wc -l)
+BITSTREAM_NUM=$(echo -e "${BITSTREAM_LOC}" | wc -w)
+
+if [ "${BITSTREAM_NUM}" -eq 0 ]; then
+	echo -e "There are no bitstreams that matches the description"
+	exit 1
+fi
 
 if [ "${BITSTREAM_NUM}" -gt 1 ]; then
 	echo -e "There are "${BITSTREAM_NUM}" bitstreams that matches the description:"

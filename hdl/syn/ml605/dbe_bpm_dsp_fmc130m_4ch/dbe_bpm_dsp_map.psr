@@ -1,0 +1,611 @@
+Release 13.4 Physical Synthesis Report O.87xd (lin64)
+Copyright (c) 1995-2011 Xilinx, Inc. All rights reserved.
+
+TABLE OF CONTENTS
+  1) Physical Synthesis Options Summary
+  2) Optimizations statistics and details
+
+
+=========================================================================
+*                 Physical Synthesis Options Summary                    *
+=========================================================================
+---- Options
+Global Optimization                 : OFF
+    Retiming                        : OFF
+    Equivalent Register Removal     : OFF
+Timing-Driven Packing and Placement : ON
+    Logic Optimization              : OFF
+    Register Duplication            : ON
+
+---- Intelligent clock gating       : OFF
+
+---- Target Parameters
+Target Device                       : 6vlx240tff1156-1
+
+=========================================================================
+
+
+=========================================================================
+*                        Optimizations                                  *
+=========================================================================
+---- Statistics
+   Number of LUTs added by Reduce Maximum Fanout             | 7               
+   Number of registers added by Reduce Maximum Fanout        | 555             
+   Number of LUTs added by Replication                       | 4               
+
+   Overall change in number of design objects                | +566             
+
+
+---- Details
+
+New or modified components                             | Optimization             | Objective           
+-------------------------------------------------------|--------------------------|----------------------
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_39| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_40| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_41| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_42| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_43| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_44| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_45| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_46| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_47| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_48| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_49| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_50| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_51| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_52| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_53| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_54| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_55| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_56| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_57| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_58| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_59| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_60| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_61| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_62| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_63| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_64| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_65| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_66| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_67| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_68| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_69| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_70| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_71| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_72| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_73| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_74| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_75| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_76| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_77| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_78| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_79| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_80| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_81| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_82| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_83| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1112_sg_x32_REPLICA_84| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_328| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_329| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_330| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_331| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_332| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_333| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_334| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_335| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_336| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_337| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_338| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_339| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_1390000_sg_x3_REPLICA_340| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_358| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_359| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_360| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_361| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_362| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_363| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_364| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_222400000_sg_x7_REPLICA_365| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_206| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_207| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_208| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_209| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_210| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_211| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_212| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_213| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_214| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_215| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_216| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_217| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_218| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_219| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_220| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_221| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_222| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_223| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_224| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_225| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_226| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_227| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_228| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_229| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_230| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_231| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_232| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_233| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_22240000_sg_x25_REPLICA_234| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_164| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_165| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_166| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_167| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_168| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_169| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_170| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_171| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_172| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_173| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_174| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_175| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_176| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_177| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_178| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_179| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_180| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_181| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_182| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_183| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_184| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_185| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_186| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_187| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_188| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_189| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_190| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_191| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_192| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_193| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_194| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_195| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_196| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_197| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_198| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_199| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_200| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_201| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_202| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_203| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_204| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2224_sg_x32_REPLICA_205| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2500_sg_x3_REPLICA_390| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2500_sg_x3_REPLICA_391| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2500_sg_x3_REPLICA_392| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2500_sg_x3_REPLICA_393| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2500_sg_x3_REPLICA_394| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2780000_sg_x4_REPLICA_395| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_0| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_1| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_10| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_11| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_12| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_13| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_14| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_15| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_16| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_17| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_18| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_19| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_2| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_20| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_21| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_22| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_23| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_24| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_25| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_26| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_27| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_28| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_29| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_3| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_30| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_31| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_32| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_33| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_34| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_35| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_36| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_37| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_38| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_4| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_5| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_6| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_7| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_8| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_2_sg_x39_REPLICA_9| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_100| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_101| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_102| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_103| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_104| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_105| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_106| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_107| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_108| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_109| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_110| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_111| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_85| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_86| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_87| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_88| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_89| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_90| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_91| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_92| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_93| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_94| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_95| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_96| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_97| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_98| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_35_sg_x22_REPLICA_99| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_350| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_351| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_352| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_353| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_354| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_355| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_356| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5000_sg_x10_REPLICA_357| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_55600000_sg_x4_REPLICA_386| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_55600000_sg_x4_REPLICA_387| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_55600000_sg_x4_REPLICA_388| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_55600000_sg_x4_REPLICA_389| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_366| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_367| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_368| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_369| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_370| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_371| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_372| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_373| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_374| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_375| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_376| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_5560000_sg_x12_REPLICA_377| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_378| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_379| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_380| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_381| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_382| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_383| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_384| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_556_sg_x3_REPLICA_385| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_116| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_117| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_118| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_119| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_120| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_121| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_122| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_123| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_124| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_125| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_126| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_127| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_128| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_129| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_130| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_131| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_132| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_133| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_134| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_135| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_136| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_137| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_138| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_139| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_140| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_141| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_142| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_143| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_144| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_145| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_146| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_147| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_148| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_149| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_150| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_151| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_152| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_153| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_154| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_155| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_156| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_157| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_158| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_159| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_160| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_161| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_162| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/ce_70_sg_x31_REPLICA_163| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_515| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_516| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_517| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_518| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_519| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_520| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_521| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_522| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_523| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_524| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_525| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_526| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_527| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_528| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_529| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1112/ce_vec<1>_REPLICA_530| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec<1>_REPLICA_511| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec<1>_REPLICA_512| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec<1>_REPLICA_513| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec_logic<0>_REPLICA_404| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec_logic<1>_REPLICA_514| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_1390000/ce_vec_logic<5>_REPLICA_403| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_496| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_497| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_498| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_499| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_500| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_501| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_502| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_503| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_504| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_505| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_506| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_507| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_508| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec<1>_REPLICA_509| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec_logic<0>_REPLICA_405| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec_logic<1>_REPLICA_510| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2/ce_vec_logic<5>_REPLICA_398| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_480| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_481| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_482| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_483| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_484| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_485| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_486| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_487| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_488| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_489| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_490| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_491| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_492| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_493| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_494| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec<1>_REPLICA_495| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2224/ce_vec_logic<5>_REPLICA_402| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_467| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_468| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_469| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_470| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_471| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_472| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_473| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_474| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_475| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_476| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_477| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_478| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec<1>_REPLICA_479| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_22240000/ce_vec_logic<5>_REPLICA_406| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_222400000/ce_vec<1>_REPLICA_464| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_222400000/ce_vec<1>_REPLICA_465| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_222400000/ce_vec<1>_REPLICA_466| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2500/ce_vec<1>_REPLICA_461| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2500/ce_vec<1>_REPLICA_462| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2500/ce_vec<1>_REPLICA_463| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_2780000/ce_vec<1>_REPLICA_460| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_446| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_447| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_448| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_449| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_450| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_451| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_452| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_453| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_454| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_455| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_456| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_457| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_458| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_35/ce_vec<1>_REPLICA_459| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5000/ce_vec<1>_REPLICA_443| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5000/ce_vec<1>_REPLICA_444| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5000/ce_vec<1>_REPLICA_445| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec<1>_REPLICA_436| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec<1>_REPLICA_437| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec<1>_REPLICA_438| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec<1>_REPLICA_439| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec<1>_REPLICA_440| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec_logic<0>_REPLICA_396| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec_logic<0>_REPLICA_397| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec_logic<1>_REPLICA_441| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec_logic<1>_REPLICA_442| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_556/ce_vec_logic<5>_REPLICA_407| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec<1>_REPLICA_430| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec<1>_REPLICA_431| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec<1>_REPLICA_432| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec<1>_REPLICA_433| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec<1>_REPLICA_434| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec_logic<0>_REPLICA_399| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec_logic<0>_REPLICA_400| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec_logic<1>_REPLICA_435| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_5560000/ce_vec_logic<5>_REPLICA_408| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_55600000/ce_vec<1>_REPLICA_427| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_55600000/ce_vec<1>_REPLICA_428| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_55600000/ce_vec<1>_REPLICA_429| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_409| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_410| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_411| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_412| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_413| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_414| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_415| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_416| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_417| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_418| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_419| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_420| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_421| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_422| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_423| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_424| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_425| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec<1>_REPLICA_426| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_ddc_bpm_476_066_cw/default_clock_driver_x0/xlclockdriver_70/ce_vec_logic<5>_REPLICA_401| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_315| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_316| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_317| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_318| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_319| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_320| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_321| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_322| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_323| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_324| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_325| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_326| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<0>_REPLICA_327| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<1>_REPLICA_562| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<1>_REPLICA_563| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<1>_REPLICA_564| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2/ce_vec<1>_REPLICA_565| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_267| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_268| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_269| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_270| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_271| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_272| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_273| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_274| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_275| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_276| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_277| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_278| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_279| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_280| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_281| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_282| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_283| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_284| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_285| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_286| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_287| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_288| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_289| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_290| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_291| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_292| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_293| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_294| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_295| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<0>_REPLICA_296| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_552| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_553| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_554| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_555| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_556| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_557| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_558| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_559| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_560| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_2224/ce_vec<1>_REPLICA_561| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_297| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_298| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_299| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_300| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_301| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_302| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_303| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_304| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_305| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_306| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_307| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_308| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_309| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_310| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_311| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_312| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_313| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<0>_REPLICA_314| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_546| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_547| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_548| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_549| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_550| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_22240000/ce_vec<1>_REPLICA_551| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_341| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_342| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_343| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_344| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_345| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_346| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_347| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_348| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<0>_REPLICA_349| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<1>_REPLICA_543| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<1>_REPLICA_544| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_222400000/ce_vec<1>_REPLICA_545| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_531| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_532| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_533| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_534| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_535| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_536| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_537| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_538| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_539| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_540| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_541| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc/cmp_default_clock_driver/xlclockdriver_70/ce_vec<1>_REPLICA_542| Reduce Maximum Fanout    | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/fs_rst_n_i_inv_REPLICA_112| Replication              | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/fs_rst_n_i_inv_REPLICA_113| Replication              | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/fs_rst_n_i_inv_REPLICA_114| Replication              | Fanout Optimization
+cmp_xwb_position_calc_core/cmp_wb_position_calc_core/fs_rst_n_i_inv_REPLICA_115| Replication              | Fanout Optimization
+flag2_o_OBUF_REPLICA_235                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_236                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_237                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_238                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_239                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_240                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_241                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_242                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_243                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_244                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_245                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_246                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_247                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_248                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_249                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_250                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_251                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_252                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_253                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_254                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_255                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_256                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_257                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_258                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_259                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_260                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_261                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_262                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_263                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_264                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_265                               | Reduce Maximum Fanout    | Fanout Optimization
+flag2_o_OBUF_REPLICA_266                               | Reduce Maximum Fanout    | Fanout Optimization
+
+   Flops added for Enable Generation                       
+-------------------------

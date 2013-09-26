@@ -46,30 +46,30 @@ work/lm32_multiplier/.lm32_multiplier_v \
 work/jtag_tap/.jtag_tap_v \
 
 VHDL_SRC := wb_fmc150_tb.vhd \
-../../../modules/custom_wishbone/custom_wishbone_pkg.vhd \
-../../../modules/custom_common/custom_common_pkg.vhd \
-../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd \
-../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd \
-../../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd \
-../../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd \
-../../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd \
-../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd \
-../../../modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd \
-../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd \
-../../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd \
-../../../modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd \
-../../../modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd \
-../../../modules/custom_common/reset_synch/reset_synch.vhd \
+../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd \
+../../../modules/dbe_common/dbe_common_pkg.vhd \
+../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd \
+../../../modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd \
+../../../modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd \
+../../../modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd \
+../../../modules/dbe_common/reset_synch/reset_synch.vhd \
 ../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd \
 ../../../ip_cores/general-cores/modules/common/gc_crc_gen.vhd \
 ../../../ip_cores/general-cores/modules/common/gc_moving_average.vhd \
@@ -141,8 +141,8 @@ VHDL_SRC := wb_fmc150_tb.vhd \
 ../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd \
 
 VHDL_OBJ := work/wb_fmc150_tb/.wb_fmc150_tb_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
-work/custom_common_pkg/.custom_common_pkg_vhd \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/xwb_stream_sink/.xwb_stream_sink_vhd \
 work/xwb_stream_source/.xwb_stream_source_vhd \
@@ -345,32 +345,32 @@ work/wb_fmc150_tb/.wb_fmc150_tb: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd
 
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd: ../../../modules/custom_wishbone/custom_wishbone_pkg.vhd work/custom_wishbone_pkg/.custom_wishbone_pkg
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd: ../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd work/dbe_wishbone_pkg/.dbe_wishbone_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/custom_wishbone_pkg/.custom_wishbone_pkg: \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
 
-work/custom_common_pkg/.custom_common_pkg_vhd: ../../../modules/custom_common/custom_common_pkg.vhd work/custom_common_pkg/.custom_common_pkg
+work/dbe_common_pkg/.dbe_common_pkg_vhd: ../../../modules/dbe_common/dbe_common_pkg.vhd work/dbe_common_pkg/.dbe_common_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/custom_common_pkg/.custom_common_pkg:
+work/dbe_common_pkg/.dbe_common_pkg:
 
-work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../modules/custom_wishbone/wb_stream/wb_stream_pkg.vhd work/wb_stream_pkg/.wb_stream_pkg
+work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd work/wb_stream_pkg/.wb_stream_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_stream_pkg/.wb_stream_pkg:
 
-work/xwb_stream_sink/.xwb_stream_sink_vhd: ../../../modules/custom_wishbone/wb_stream/xwb_stream_sink.vhd work/xwb_stream_sink/.xwb_stream_sink
+work/xwb_stream_sink/.xwb_stream_sink_vhd: ../../../modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd work/xwb_stream_sink/.xwb_stream_sink
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -379,7 +379,7 @@ work/xwb_stream_sink/.xwb_stream_sink: \
 work/genram_pkg/.genram_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
 
-work/xwb_stream_source/.xwb_stream_source_vhd: ../../../modules/custom_wishbone/wb_stream/xwb_stream_source.vhd work/xwb_stream_source/.xwb_stream_source
+work/xwb_stream_source/.xwb_stream_source_vhd: ../../../modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd work/xwb_stream_source/.xwb_stream_source
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -388,7 +388,7 @@ work/xwb_stream_source/.xwb_stream_source: \
 work/genram_pkg/.genram_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd
 
-work/wb_fmc150/.wb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/wb_fmc150.vhd work/wb_fmc150/.wb_fmc150
+work/wb_fmc150/.wb_fmc150_vhd: ../../../modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd work/wb_fmc150/.wb_fmc150
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -397,10 +397,10 @@ work/wb_fmc150/.wb_fmc150: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd \
-work/custom_common_pkg/.custom_common_pkg_vhd
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd
 
-work/xwb_fmc150/.xwb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/xwb_fmc150.vhd work/xwb_fmc150/.xwb_fmc150
+work/xwb_fmc150/.xwb_fmc150_vhd: ../../../modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd work/xwb_fmc150/.xwb_fmc150
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -408,16 +408,16 @@ work/xwb_fmc150/.xwb_fmc150_vhd: ../../../modules/custom_wishbone/wb_fmc150/xwb_
 work/xwb_fmc150/.xwb_fmc150: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
-work/custom_wishbone_pkg/.custom_wishbone_pkg_vhd
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd
 
-work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd: ../../../modules/custom_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd work/xfmc150_regs_pkg/.xfmc150_regs_pkg
+work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd: ../../../modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd work/xfmc150_regs_pkg/.xfmc150_regs_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg:
 
-work/wb_fmc150_port/.wb_fmc150_port_vhd: ../../../modules/custom_wishbone/wb_fmc150/wb_fmc150_port.vhd work/wb_fmc150_port/.wb_fmc150_port
+work/wb_fmc150_port/.wb_fmc150_port_vhd: ../../../modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd work/wb_fmc150_port/.wb_fmc150_port
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -425,56 +425,56 @@ work/wb_fmc150_port/.wb_fmc150_port_vhd: ../../../modules/custom_wishbone/wb_fmc
 work/wb_fmc150_port/.wb_fmc150_port: \
 work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd
 
-work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../modules/custom_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr
+work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr:
 
-work/adc_pkg/.adc_pkg_vhd: ../../../modules/custom_wishbone/wb_fmc150/adc/adc_pkg.vhd work/adc_pkg/.adc_pkg
+work/adc_pkg/.adc_pkg_vhd: ../../../modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd work/adc_pkg/.adc_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/adc_pkg/.adc_pkg:
 
-work/strobe_lvds/.strobe_lvds_vhd: ../../../modules/custom_wishbone/wb_fmc150/adc/strobe_lvds.vhd work/strobe_lvds/.strobe_lvds
+work/strobe_lvds/.strobe_lvds_vhd: ../../../modules/dbe_wishbone/wb_fmc150/adc/strobe_lvds.vhd work/strobe_lvds/.strobe_lvds
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/strobe_lvds/.strobe_lvds:
 
-work/ads62p49_ctrl/.ads62p49_ctrl_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd work/ads62p49_ctrl/.ads62p49_ctrl
+work/ads62p49_ctrl/.ads62p49_ctrl_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd work/ads62p49_ctrl/.ads62p49_ctrl
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/ads62p49_ctrl/.ads62p49_ctrl:
 
-work/amc7823_ctrl/.amc7823_ctrl_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd work/amc7823_ctrl/.amc7823_ctrl
+work/amc7823_ctrl/.amc7823_ctrl_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/amc7823_ctrl.vhd work/amc7823_ctrl/.amc7823_ctrl
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/amc7823_ctrl/.amc7823_ctrl:
 
-work/cdce72010_ctrl/.cdce72010_ctrl_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd work/cdce72010_ctrl/.cdce72010_ctrl
+work/cdce72010_ctrl/.cdce72010_ctrl_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/cdce72010_ctrl.vhd work/cdce72010_ctrl/.cdce72010_ctrl
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/cdce72010_ctrl/.cdce72010_ctrl:
 
-work/dac3283_ctrl/.dac3283_ctrl_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd work/dac3283_ctrl/.dac3283_ctrl
+work/dac3283_ctrl/.dac3283_ctrl_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd work/dac3283_ctrl/.dac3283_ctrl
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/dac3283_ctrl/.dac3283_ctrl:
 
-work/fmc150_adc_if/.fmc150_adc_if_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd work/fmc150_adc_if/.fmc150_adc_if
+work/fmc150_adc_if/.fmc150_adc_if_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd work/fmc150_adc_if/.fmc150_adc_if
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -482,35 +482,35 @@ work/fmc150_adc_if/.fmc150_adc_if_vhd: ../../../modules/custom_wishbone/wb_fmc15
 work/fmc150_adc_if/.fmc150_adc_if: \
 work/adc_pkg/.adc_pkg_vhd
 
-work/fmc150_dac_if/.fmc150_dac_if_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd work/fmc150_dac_if/.fmc150_dac_if
+work/fmc150_dac_if/.fmc150_dac_if_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd work/fmc150_dac_if/.fmc150_dac_if
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc150_dac_if/.fmc150_dac_if:
 
-work/fmc150_pkg/.fmc150_pkg_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd work/fmc150_pkg/.fmc150_pkg
+work/fmc150_pkg/.fmc150_pkg_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_pkg.vhd work/fmc150_pkg/.fmc150_pkg
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc150_pkg/.fmc150_pkg:
 
-work/fmc150_spi_ctrl/.fmc150_spi_ctrl_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd work/fmc150_spi_ctrl/.fmc150_spi_ctrl
+work/fmc150_spi_ctrl/.fmc150_spi_ctrl_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_spi_ctrl.vhd work/fmc150_spi_ctrl/.fmc150_spi_ctrl
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc150_spi_ctrl/.fmc150_spi_ctrl:
 
-work/fmc150_stellar_cmd/.fmc150_stellar_cmd_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd work/fmc150_stellar_cmd/.fmc150_stellar_cmd
+work/fmc150_stellar_cmd/.fmc150_stellar_cmd_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_stellar_cmd.vhd work/fmc150_stellar_cmd/.fmc150_stellar_cmd
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc150_stellar_cmd/.fmc150_stellar_cmd:
 
-work/fmc150_testbench/.fmc150_testbench_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd work/fmc150_testbench/.fmc150_testbench
+work/fmc150_testbench/.fmc150_testbench_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_testbench.vhd work/fmc150_testbench/.fmc150_testbench
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
@@ -518,14 +518,14 @@ work/fmc150_testbench/.fmc150_testbench_vhd: ../../../modules/custom_wishbone/wb
 work/fmc150_testbench/.fmc150_testbench: \
 work/fmc150_pkg/.fmc150_pkg_vhd
 
-work/pulse2pulse/.pulse2pulse_vhd: ../../../modules/custom_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd work/pulse2pulse/.pulse2pulse
+work/pulse2pulse/.pulse2pulse_vhd: ../../../modules/dbe_wishbone/wb_fmc150/fmc150/pulse2pulse.vhd work/pulse2pulse/.pulse2pulse
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
 
 work/pulse2pulse/.pulse2pulse:
 
-work/reset_synch/.reset_synch_vhd: ../../../modules/custom_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
+work/reset_synch/.reset_synch_vhd: ../../../modules/dbe_common/reset_synch/reset_synch.vhd work/reset_synch/.reset_synch
 		vhpcomp $(VHPCOMP_FLAGS)  -work work=./work $< 
 		@mkdir -p $(dir $@) && touch $@
 
