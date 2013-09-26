@@ -14,10 +14,6 @@
 
 /* Ethernet MAC definitions */
 // dynamic defined through SDB
-//#define ETH0_BASE 0x30015000U   //ethmac_devl
-//#define ETH0_BUF  0x20000000U   //ethmac_buf_devl
-#define ETH0_BASE 0x30005000U   //ethmac_devl
-#define ETH0_BUF  0x20000000U   //ethmac_buf_devl
 #define ETH0_IRQ 0
 //#define ETH0_PHY 0
 // Taken from ML605 user manual
@@ -29,12 +25,6 @@
 #define ETH_MACADDR2 0x35
 #define ETH_MACADDR1 0x0a
 #define ETH_MACADDR0 0x00
-
-// temporary place for these constants. Testing only!
-#define ETH_DEST 0
-#define ETH_SOURCE (ETH_DEST+6)
-#define ETH_TYPE (ETH_SOURCE+6)
-#define ETH_END (ETH_TYPE+2)
 
 /*
  * Buffer number (must be 2^n)
@@ -70,7 +60,7 @@
  * IDs of FMC516 components
  */
 #define FMC516_SYS_I2C_ID 0
-#define FMC516_VCXO_I2C_ID 1
+#define FMC516_SI57X_I2C_ID 1
 #define FMC516_ISLA216P25_SPI_ID 0
 #define FMC516_LMK02000_SPI_ID 1
 #define FMC516_DS2431_OWR_ID 0

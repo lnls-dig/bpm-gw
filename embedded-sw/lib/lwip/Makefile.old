@@ -1,0 +1,100 @@
+# Based on the reference lwIP makefile available at
+# http://lwip.wikia.com/wiki/Porting_For_Bare_Metal
+
+CROSS_COMPILE ?= lm32-elf-
+
+CC =		$(CROSS_COMPILE)gcc
+LD =		$(CROSS_COMPILE)ld
+OBJDUMP =	$(CROSS_COMPILE)objdump
+OBJCOPY =	$(CROSS_COMPILE)objcopy
+SIZE =		$(CROSS_COMPILE)size
+AR =		$(CROSS_COMPILE)ar
+ARFLAGS=rs
+
+TOPDIR=../..
+TARGETDIR=$(TOPDIR)/lib
+CONTRIBDIR=$(TOPDIR)/lib/lwip/contrib
+CONFIGDIR=$(TOPDIR)/lib/lwip/config
+LWIPDIR=$(TOPDIR)/lib/lwip/src
+INCDIR=$(TOPDIR)/include
+PP_PRINTFINCDIR=$(TOPDIR)/pp_printf
+
+LWIPARCH=$(CONTRIBDIR)/ports/lm32
+LWIPDRVDIR=$(CONTRIBDIR)/ports/ethmac10100-drv
+
+CFLAGS_LWIP += $(CPPFLAGS) -I$(LWIPDIR)/include -I. \
+	-I$(LWIPARCH)/include -I$(LWIPARCH)/include/arch \
+    	-I$(LWIPDIR)/include/ipv4 -I$(CONFIGDIR)  \
+    	-I$(LWIPDRVDIR) -I$(LWIPDRVDIR)/netif  \
+    	-I$(INCDIR) -I$(PP_PRINTFINCDIR)
+
+# COREOBJS, CORE4OBJS: The minimum set of files needed for lwIP.
+COREOBJS=$(LWIPDIR)/core/mem.o  \
+	$(LWIPDIR)/core/memp.o  \
+	$(LWIPDIR)/core/netif.o  \
+	$(LWIPDIR)/core/pbuf.o  \
+	$(LWIPDIR)/core/raw.o  \
+	$(LWIPDIR)/core/stats.o  \
+	$(LWIPDIR)/core/sys.o  \
+	$(LWIPDIR)/core/tcp.o  \
+	$(LWIPDIR)/core/tcp_in.o  \
+	$(LWIPDIR)/core/tcp_out.o  \
+	$(LWIPDIR)/core/udp.o  \
+	$(LWIPDIR)/core/dhcp.o  \
+	$(LWIPDIR)/core/init.o
+
+CORE4OBJS=$(LWIPDIR)/core/ipv4/icmp.o \
+	$(LWIPDIR)/core/ipv4/ip.o  \
+	$(LWIPDIR)/core/ipv4/inet.o  \
+	$(LWIPDIR)/core/ipv4/ip_addr.o  \
+	$(LWIPDIR)/core/ipv4/ip_frag.o  \
+	$(LWIPDIR)/core/ipv4/inet_chksum.o
+
+# NETIFOBJS: Files implementing various generic network interface functions.'
+NETIFOBJS=$(LWIPDIR)/netif/etharp.o  \
+	$(LWIPDRVDIR)/netif/ethernetif.o
+
+# LWIPOBJS: All the above.
+LWIPOBJS=$(COREOBJS) $(CORE4OBJS) $(NETIFOBJS)
+
+LWIPLIB=liblwip4.a
+
+all compile: $(LWIPLIB)
+	mkdir -p $(TARGETDIR)
+	install $(LWIPLIB) $(TARGETDIR)
+
+.PHONY: all depend compile clean
+
+# Pull in dependency info for *existing* .o files and don't complain if the
+# corresponding .d file is not found
+-include $(LWIPOBJS:.o=.d)
+
+# Compile and generate dependency info;
+%.o: %.c
+	${CC} $(CFLAGS_LWIP) -c $*.c -o $@
+# create the dependency files "target: pre-requisites"
+	${CC} -MM $(CFLAGS_LWIP) $*.c > $*.d
+
+# Workaround to make objects in different folders have
+# the correct target path. e.g., "dir/bar.o: dir/bar.c dir/foo.h"
+# instead of "bar.o: dir/bar.c dir/foo.h"
+	@mv -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+
+# All prereqs listed will also become command-less,
+# prereq-less targets. In this way, the prereq file will be
+# treated as changed and the target will be rebuilt
+#   sed:    strip the target (everything before colon)
+#   sed:    remove any continuation backslashes
+#   fmt -1: list words one per line
+#   sed:    strip leading spaces
+#   sed:    add trailing colons
+	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
+                sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	@rm -f $*.d.tmp
+
+clean:
+	rm -f *.o $(LWIPLIB)
+
+$(LWIPLIB): $(LWIPOBJS)
+	$(AR) $(ARFLAGS) $(LWIPLIB) $?
