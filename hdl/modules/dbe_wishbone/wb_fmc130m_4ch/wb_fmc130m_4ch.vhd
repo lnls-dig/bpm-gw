@@ -232,6 +232,10 @@ architecture rtl of wb_fmc130m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := false;
 
+  -- 130 MHz parameters
+  constant c_mmcm_param                     : t_mmcm_param :=
+                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+
   -----------------------------
   -- Crossbar component constants
   -----------------------------
@@ -932,6 +936,7 @@ begin
     g_use_data_chains                       => g_use_data_chains,
     g_map_clk_data_chains                   => g_map_clk_data_chains,
     g_ref_clk                               => g_ref_clk,
+    g_mmcm_param                            => c_mmcm_param,
     g_with_bufio_clk_chains                 => g_with_bufio_clk_chains,
     g_with_bufr_clk_chains                  => g_with_bufr_clk_chains,
     g_with_data_sdr                         => c_with_data_sdr,
