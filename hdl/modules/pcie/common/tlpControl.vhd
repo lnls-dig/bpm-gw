@@ -1136,7 +1136,7 @@ begin
       port map(
         -- Common ports
         user_clk    => user_clk,        -- IN  std_logic,
-        user_reset  => trn_lnk_up_n_i ,  -- user_reset,         -- IN  std_logic,
+        user_reset  => user_reset,      -- IN  std_logic,
         user_lnk_up => user_lnk_up,     -- IN  std_logic,
 
         -- Transaction receive interface
@@ -1320,7 +1320,7 @@ begin
       port map(
         -- Common ports
         user_clk    => user_clk,        -- IN  std_logic,
-        user_reset  => trn_lnk_up_n_i ,  -- user_reset,         -- IN  std_logic,
+        user_reset  => user_reset,      -- IN  std_logic,
         user_lnk_up => user_lnk_up,     -- IN  std_logic,
 
         -- Transaction
