@@ -92,44 +92,44 @@ entity bpm_pcie_ml605 is
     ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
     sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
     sys_clk_n     : in std_logic; --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic --Reset to PCIe core
+    sys_rst_n     : in std_logic; --Reset to PCIe core
 
     -- DDR memory controller interface --
     -- uncomment when instantiating in another project
-    --ddr_core_rst   : in  std_logic;
-    --memc_ui_clk    : out std_logic;
-    --memc_ui_rst    : out std_logic;
-    --memc_cmd_rdy   : out std_logic;
-    --memc_cmd_en    : in  std_logic;
-    --memc_cmd_instr : in  std_logic_vector(2 downto 0);
-    --memc_cmd_addr  : in  std_logic_vector(31 downto 0);
-    --memc_wr_en     : in  std_logic;
-    --memc_wr_end    : in  std_logic;
-    --memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-    --memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_wr_rdy    : out std_logic;
-    --memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_rd_valid  : out std_logic;
-    ---- memory arbiter interface
-    --memarb_acc_req : in  std_logic;
-    --memarb_acc_gnt : out std_logic;
+    ddr_core_rst   : in  std_logic;
+    memc_ui_clk    : out std_logic;
+    memc_ui_rst    : out std_logic;
+    memc_cmd_rdy   : out std_logic;
+    memc_cmd_en    : in  std_logic;
+    memc_cmd_instr : in  std_logic_vector(2 downto 0);
+    memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+    memc_wr_en     : in  std_logic;
+    memc_wr_end    : in  std_logic;
+    memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_wr_rdy    : out std_logic;
+    memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_rd_valid  : out std_logic;
+    -- memory arbiter interface
+    memarb_acc_req : in  std_logic;
+    memarb_acc_gnt : out std_logic;
     --/ DDR memory controller interface
 
     -- Wishbone interface --
     -- uncomment when instantiating in another project
-    --CLK_I : in  std_logic;
-    --RST_I : in  std_logic;
-    --ACK_I : in  std_logic;
-    --DAT_I : in  std_logic_vector(63 downto 0);
-    --ADDR_O : out std_logic_vector(28 downto 0);
-    --DAT_O : out std_logic_vector(63 downto 0);
-    --WE_O  : out std_logic;
-    --STB_O : out std_logic;
-    --SEL_O : out std_logic;
-    --CYC_O : out std_logic;
+    CLK_I : in  std_logic;
+    RST_I : in  std_logic;
+    ACK_I : in  std_logic;
+    DAT_I : in  std_logic_vector(63 downto 0);
+    ADDR_O : out std_logic_vector(28 downto 0);
+    DAT_O : out std_logic_vector(63 downto 0);
+    WE_O  : out std_logic;
+    STB_O : out std_logic;
+    SEL_O : out std_logic;
+    CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    --ext_rst_o : out std_logic
+    ext_rst_o : out std_logic
     );
 end entity bpm_pcie_ml605;
 
@@ -1151,21 +1151,21 @@ architecture Behavioral of bpm_pcie_ml605 is
   signal pll_locked   : std_logic;
 
 --to prevent <signal_name> is not declared errors
-  signal ddr_core_rst : std_logic;
-  signal memc_ui_rst  : std_logic;
-
-  signal clk_i  : std_logic;
-  signal rst_i  : std_logic;
-  signal dat_i  : std_logic_vector(63 downto 0);
-  signal ack_i  : std_logic;
-  signal addr_o : std_logic_vector(28 downto 0);
-  signal we_o   : std_logic;
-  signal dat_o  : std_logic_vector(63 downto 0);
-  signal sel_o  : std_logic;
-  signal stb_o  : std_logic;
-  signal cyc_o  : std_logic;
-
-  signal ext_rst_o : std_logic;
+  --signal ddr_core_rst : std_logic;
+  --signal memc_ui_rst  : std_logic;
+  --
+  --signal clk_i  : std_logic;
+  --signal rst_i  : std_logic;
+  --signal dat_i  : std_logic_vector(63 downto 0);
+  --signal ack_i  : std_logic;
+  --signal addr_o : std_logic_vector(28 downto 0);
+  --signal we_o   : std_logic;
+  --signal dat_o  : std_logic_vector(63 downto 0);
+  --signal sel_o  : std_logic;
+  --signal stb_o  : std_logic;
+  --signal cyc_o  : std_logic;
+  --
+  --signal ext_rst_o : std_logic;
 --COMMENT OUT WHEN INSTANTIATING AS COMPONENT
 
 begin
@@ -1863,7 +1863,7 @@ begin
     wbone_rst  <= RST_I;
     wbone_mdin <= DAT_I;
     wbone_ack  <= ACK_I;
-    ADDR_O     <= wbone_addr;
+    ADDR_O     <= wbone_addr(28 downto 0);
     DAT_O      <= wbone_mdout;
     WE_O       <= wbone_we;
     SEL_O      <= wbone_sel(0);
