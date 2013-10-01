@@ -258,9 +258,9 @@ begin
 
   -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
   -- while ddram_*_addr have byte alignment
-  memc_rd_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <= '0' &
+  memc_rd_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <=
     ddram_rd_addr(ddram_rd_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
-  memc_wr_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <= '0' &
+  memc_wr_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <=
     ddram_wr_addr(ddram_wr_addr'left downto RPIPE_ASHIFT_BTOP+1);
 
   memc_cmd_en      <= memc_rd_cmd or memc_wr_cmd_en;
