@@ -11,6 +11,7 @@ CONFIG_PPRINTF ?= y
 	#CONFIG_PRINT_BUFSIZE = 200
 #endif
 
+CONFIG_RAMSIZE ?= 90112 # Must match arch/*/ram.ld
 CONFIG_ETHERBONE ?= y
 CONFIG_LWIP ?= n
 CONFIG_FMC150 ?= n
@@ -79,14 +80,16 @@ OBJS = $(OBJS_PLATFORM) $(OBJS_DBE) \
 
 ifeq ($(CONFIG_LWIP),y)
 	OUTPUT = dbe_lwip
+	TESTDATA = rampdata
 else
 	OUTPUT = dbe_nolwip
+	TESTDATA = rampdata
 endif
 #OUTPUT = dbe_test
 
 REVISION=$(shell git describe --dirty --always)
 
-all: tools $(OUTPUT).ram $(OUTPUT).vhd
+all: tools $(OUTPUT).ram $(TESTDATA).ram $(OUTPUT).vhd
 
 .PHONY: all tools clean
 
@@ -101,11 +104,14 @@ $(OUTPUT).elf: $(OBJS)
 %.bin: %.elf
 	${OBJCOPY} -O binary $^ $@
 
+$(TESTDATA).ram: tools
+	./tools/genrampdata $(CONFIG_RAMSIZE) $(CONFIG_RAMSIZE) > $@
+
 %.ram: tools %.bin
 	./tools/genraminit $*.bin 0 > $@
 
 %.vhd: tools %.bin
-	./tools/genramvhd -s 90112 $*.bin > $@
+	./tools/genramvhd -s $(CONFIG_RAMSIZE) $*.bin > $@
 
 $(OBJS): include/board.h
 

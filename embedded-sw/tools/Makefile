@@ -10,7 +10,7 @@ STRIP		= strip
 OBJCOPY		= objcopy
 OBJDUMP		= objdump
 
-all: genraminit genramvhd
+all: genraminit genramvhd genrampdata
 
 genraminit: genraminit.o
 				${CC} -o genraminit genraminit.o
@@ -18,8 +18,11 @@ genraminit: genraminit.o
 genramvhd: genramvhd.o
 				${CC} -o genramvhd genramvhd.o
 
+genrampdata: genrampdata.o
+				${CC} -o genrampdata genrampdata.o
+
 %.o: 		%.c
 				${CC} -c $^ $(CFLAGS) -O0
 
 clean:
-	rm -f genraminit genramvhd *.o
+	rm -f genraminit genramvhd genrampdata *.o
