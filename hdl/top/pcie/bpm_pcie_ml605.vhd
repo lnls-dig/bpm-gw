@@ -1954,7 +1954,7 @@ begin
   u_ddr_core : ddr_v6
     generic map (
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
-      RST_ACT_LOW => 1
+      RST_ACT_LOW => 0
     )
     port map (
       -- Memory interface ports
@@ -2020,7 +2020,7 @@ begin
 
     ddr_sys_clk_i <= ddr_ref_clk_i;
 
-    ddr_sys_reset_i <= sys_reset_n_c;
+    ddr_sys_reset_i <= sys_reset_c;
 
   end generate;
 
