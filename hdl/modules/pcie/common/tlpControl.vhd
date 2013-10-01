@@ -701,6 +701,7 @@ architecture Behavioral of tlpControl is
       Msg_Routing     : out std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
       pcie_link_width : in  std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
       cfg_dcommand    : in  std_logic_vector(16-1 downto 0);
+      ddr_sdram_ready : in  std_logic;
 
       -- Interrupt Generation Signals
       IG_Reset        : out std_logic;
@@ -1528,6 +1529,7 @@ begin
         Msg_Routing     => Msg_Routing ,
         pcie_link_width => pcie_link_width ,
         cfg_dcommand    => cfg_dcommand ,
+        ddr_sdram_ready => DDR_Ready,
 
         -- Interrupt Generation Signals
         IG_Reset        => IG_Reset ,

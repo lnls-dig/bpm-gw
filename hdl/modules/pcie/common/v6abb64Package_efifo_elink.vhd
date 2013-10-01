@@ -777,6 +777,8 @@ package abb64Package is
   -- Bit definition of DCB link_active in global status register (GSR)
   constant CINT_BIT_LINK_ACT_IN_GSR : integer := 6;
 
+  -- Bit definition of DDR SDRAM ready for use in global status register (GSR)
+  constant CINT_BIT_DDR_RDY_GSR : integer := 7;
 
   -- Bit range of link width in GSR
   constant CINT_BIT_LWIDTH_IN_GSR_BOT : integer := 10;  -- 16;
