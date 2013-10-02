@@ -795,7 +795,6 @@ package abb64Package is
   constant C_ALL_ZEROS : std_logic_vector(255 downto 0) := (others => '0');
   constant C_ALL_ONES : std_logic_vector(255 downto 0) := (others => '1');
 
-
   ----------------------------------------------------------------------------------
   -- Implement date generator (DG)
   constant IMP_DATA_GENERATOR : boolean := false;
@@ -810,8 +809,8 @@ package abb64Package is
   -- Implement interrupt generator (IG)
   constant IMP_INT_GENERATOR : boolean := false;
 
-  -- interrupt type: cfg(aka legacy) or MSI
-  constant USE_CFG_INTERRUPT : boolean := false;
+  -- interrupt type: cfg(INTA or MSI) or MSI-X
+  constant USE_CFG_INTERRUPT : boolean := true;
 
   -- Busmacro insertion for partial reconfigurability
   constant INSERT_BUSMACRO : boolean := false;

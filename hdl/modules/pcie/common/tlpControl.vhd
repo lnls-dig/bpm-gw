@@ -259,13 +259,15 @@ entity tlpControl is
     Format_Shower : out std_logic;
 
     -- Interrupt Interface
-    cfg_interrupt           : out std_logic;
-    cfg_interrupt_rdy       : in  std_logic;
-    cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-    cfg_interrupt_msienable : in  std_logic;
-    cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-    cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-    cfg_interrupt_assert    : out std_logic;
+    cfg_interrupt            : out std_logic;
+    cfg_interrupt_rdy        : in  std_logic;
+    cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+    cfg_interrupt_msienable  : in  std_logic;
+    cfg_interrupt_msixenable : in std_logic;
+    cfg_interrupt_msixfm     : in std_logic;
+    cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+    cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+    cfg_interrupt_assert     : out std_logic;
 
     -- Local signals
     pcie_link_width : in std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
@@ -336,13 +338,15 @@ architecture Behavioral of tlpControl is
       wb_pg    : in std_logic_vector(31 downto 0);
 
       -- Interrupt Interface
-      cfg_interrupt           : out std_logic;
-      cfg_interrupt_rdy       : in  std_logic;
-      cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-      cfg_interrupt_msienable : in  std_logic;
-      cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-      cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-      cfg_interrupt_assert    : out std_logic;
+      cfg_interrupt            : out std_logic;
+      cfg_interrupt_rdy        : in  std_logic;
+      cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+      cfg_interrupt_msienable  : in  std_logic;
+      cfg_interrupt_msixenable : in std_logic;
+      cfg_interrupt_msixfm     : in std_logic;
+      cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+      cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+      cfg_interrupt_assert     : out std_logic;
 
       -- Wishbone write port
       wb_FIFO_we   : out std_logic;
@@ -1186,13 +1190,15 @@ begin
         wb_pg    => wb_pg_i,
 
         -- Interrupt Interface
-        cfg_interrupt           => cfg_interrupt ,     -- OUT std_logic;
-        cfg_interrupt_rdy       => cfg_interrupt_rdy ,       -- IN std_logic;
-        cfg_interrupt_mmenable  => cfg_interrupt_mmenable ,  -- IN std_logic_VECTOR(2 downto 0);
-        cfg_interrupt_msienable => cfg_interrupt_msienable ,  -- IN std_logic;
-        cfg_interrupt_di        => cfg_interrupt_di ,  -- OUT std_logic_VECTOR(7 downto 0);
-        cfg_interrupt_do        => cfg_interrupt_do ,  -- IN std_logic_VECTOR(7 downto 0);
-        cfg_interrupt_assert    => cfg_interrupt_assert ,    -- OUT std_logic;
+        cfg_interrupt            => cfg_interrupt ,     -- OUT std_logic;
+        cfg_interrupt_rdy        => cfg_interrupt_rdy ,       -- IN std_logic;
+        cfg_interrupt_mmenable   => cfg_interrupt_mmenable ,  -- IN std_logic_VECTOR(2 downto 0);
+        cfg_interrupt_msienable  => cfg_interrupt_msienable ,  -- IN std_logic;
+        cfg_interrupt_msixenable => cfg_interrupt_msixenable ,
+        cfg_interrupt_msixfm     => cfg_interrupt_msixfm ,
+        cfg_interrupt_di         => cfg_interrupt_di ,  -- OUT std_logic_VECTOR(7 downto 0);
+        cfg_interrupt_do         => cfg_interrupt_do ,  -- IN std_logic_VECTOR(7 downto 0);
+        cfg_interrupt_assert     => cfg_interrupt_assert ,    -- OUT std_logic;
 
         -- Wishbone write port
         wb_FIFO_we   => wb_FIFO_we ,    -- OUT std_logic;
