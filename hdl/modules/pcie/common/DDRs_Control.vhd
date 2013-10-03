@@ -133,6 +133,7 @@ architecture Behavioral of DDRs_Control is
 
   --  -- ---------------------------------------------------------------------
   signal Rst_i : std_logic;
+  signal rst_n : std_logic;
   --  -- ---------------------------------------------------------------------
   --  -- ---------------------------------------------------------------------
 
@@ -254,7 +255,8 @@ architecture Behavioral of DDRs_Control is
 
 begin
 
-  Rst_i <= reset;
+  Rst_i <= reset or not(ddr_rdy);
+  rst_n <= not(rst_i);
 
   -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
   -- while ddram_*_addr have byte alignment
@@ -380,9 +382,9 @@ begin
 -- write States synchronous
 --
   DDR_wr_States :
-  process (memc_ui_clk, reset)
+  process (memc_ui_clk, rst_i)
   begin
-    if reset = '1' then
+    if rst_i = '1' then
       DDR_wr_state  <= wrST_bram_RESET;
       wpipe_rEn     <= '0';
       wpipe_wr_en   <= '0';
@@ -598,9 +600,9 @@ begin
 
   --
   Syn_wPipe_read :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
-    if ddr_rdy = '0' then
+    if rst_n = '0' then
       wpipe_read_valid <= '0';
     elsif memc_ui_clk'event and memc_ui_clk = '1' then
       wpipe_read_valid <= wpipe_rd_en and not wpipe_Empty;
@@ -611,9 +613,9 @@ begin
   wpipe_ren_stopnow <= wpipe_read_valid and wpipe_Qout(66);
 
   Syn_wPipe_f2m :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
-    if ddr_rdy = '0' then
+    if rst_n = '0' then
       wpipe_f2m_valid    <= '0';
       wpipe_f2m_empty_r1 <= '0';
       wpipe_f2m_empty_r2 <= '0';
@@ -625,10 +627,10 @@ begin
   end process;
 
   Syn_wPipe_memc_wr :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
     if rising_edge(memc_ui_clk) then
-      if ddr_rdy = '0' then
+      if rst_n = '0' then
         wpipe_f2m_rd    <= '0';
         ddram_wr_valid  <= '0';
         ddram_wr_cmd_valid <= '0';
@@ -706,9 +708,9 @@ begin
 
   --
   Syn_rPipeC_read :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
-    if ddr_rdy = '0' then
+    if rst_n = '0' then
       rpipec_read_valid <= '0';
       rpiped_wr_skew    <= '0';
     elsif memc_ui_clk'event and memc_ui_clk = '1' then
@@ -725,9 +727,9 @@ begin
 -- Read States synchronous
 --
   DDR_rd_States :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
-    if ddr_rdy = '0' then
+    if rst_n = '0' then
       DDR_rd_state  <= rdst_RESET;
       rpipec_rEn    <= '0';
       ddram_rd_addr <= (others => '0');
@@ -877,9 +879,9 @@ begin
   end process;
 
   DDR_rdd_write :
-  process (memc_ui_clk, ddr_rdy)
+  process (memc_ui_clk, rst_n)
   begin
-    if ddr_rdy = '0' then
+    if rst_n = '0' then
       rpiped_wen        <= '0';
       rpiped_written_r  <= '1';
       rpiped_rdconv_cnt <= (others => '1');

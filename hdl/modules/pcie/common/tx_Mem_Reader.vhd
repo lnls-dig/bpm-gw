@@ -304,7 +304,7 @@ begin
       Address_var <= (others => '1');
       TxTLP_eof_n <= '1';
 
-      TO_Cnt_Rst <= '0';
+      TO_Cnt_Rst <= '1';
 
       RdCmd_Ack_i     <= '0';
       TxMReader_State <= St_mR_Idle;

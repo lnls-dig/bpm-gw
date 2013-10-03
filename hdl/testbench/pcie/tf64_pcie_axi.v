@@ -421,7 +421,7 @@ begin
        board.DMA_PA[63:32] = BAR_INIT_P_BAR[`C_BAR2_HIT];
        board.DMA_HA   = 'H5000;
        board.DMA_BDA  = 'Hffff;
-       board.DMA_Leng = 'H0100;
+       board.DMA_Leng = 'H0400;
        board.DMA_bar  = 'H2;
        board.DMA_ds_is_Last = 'B1;
      
@@ -514,11 +514,12 @@ begin
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
 
        board.Tx_MRd_Leng  = board.DMA_Leng>>2;
+       board.Tx_MRd_Leng  = board.Tx_MRd_Leng>>1; //we'll have 2 MRds
        board.Tx_MRd_Addr  = board.DMA_HA[31:0];
        board.tx_MRd_Tag = 'H0;
        board.tx_MRd_Tag_k = board.tx_MRd_Tag;
        board.CplD_Index   = 'H0;
-       board.Rx_TLP_Length = 'H10;
+       board.Rx_TLP_Length = 'H40;
      
        
   fork
@@ -561,7 +562,10 @@ begin
        Copy_rnd_data;
        TLP_Feed_Rx(`C_NO_BAR_HIT);
        board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
+       board.tx_MRd_Tag_k = board.tx_MRd_Tag_k + 1;
+       board.Tx_MRd_Leng  = 'H80;
 
+       //2nd CplD
        board.Hdr_Array[0] = `HEADER0_CPLD | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_CPLD_ID, 4'H0, board.Tx_MRd_Leng[9:0], 2'b00};
        board.Hdr_Array[2] = {board.localID, board.tx_MRd_Tag_k, 1'b0, board.Tx_MRd_Addr[6:0]};

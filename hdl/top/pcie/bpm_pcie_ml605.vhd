@@ -870,13 +870,15 @@ architecture Behavioral of bpm_pcie_ml605 is
       pcie_link_width : in std_logic_vector(5 downto 0);
       localId         : in std_logic_vector(15 downto 0);
 
-      cfg_interrupt           : out std_logic;
-      cfg_interrupt_rdy       : in  std_logic;
-      cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-      cfg_interrupt_msienable : in  std_logic;
-      cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-      cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-      cfg_interrupt_assert    : out std_logic;
+      cfg_interrupt            : out std_logic;
+      cfg_interrupt_rdy        : in  std_logic;
+      cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+      cfg_interrupt_msienable  : in  std_logic;
+      cfg_interrupt_msixenable : in std_logic;
+      cfg_interrupt_msixfm     : in std_logic;
+      cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+      cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+      cfg_interrupt_assert     : out std_logic;
 
       Format_Shower : out std_logic;
 
@@ -902,8 +904,6 @@ architecture Behavioral of bpm_pcie_ml605 is
   signal fc_ph       : std_logic_vector (8-1 downto 0);
   signal fc_sel      : std_logic_vector (3-1 downto 0);
 
-  signal cfg_interrupt_msixenable : std_logic;
-  signal cfg_interrupt_msixfm     : std_logic;
   signal cfg_dcommand2            : std_logic_vector (16-1 downto 0);
   signal tx_cfg_req               : std_logic;
 
@@ -985,6 +985,8 @@ architecture Behavioral of bpm_pcie_ml605 is
   signal cfg_interrupt_rdy          : std_logic;
   signal cfg_interrupt_mmenable     : std_logic_vector(2 downto 0);
   signal cfg_interrupt_msienable    : std_logic;
+  signal cfg_interrupt_msixenable   : std_logic;
+  signal cfg_interrupt_msixfm       : std_logic;
   signal cfg_interrupt_di           : std_logic_vector(7 downto 0);
   signal cfg_interrupt_do           : std_logic_vector(7 downto 0);
   signal cfg_interrupt_assert       : std_logic;
@@ -1681,13 +1683,15 @@ begin
         m_axis_rx_tkeep   => m_axis_rx_tkeep ,
         m_axis_rx_tdata   => m_axis_rx_tdata ,
 
-        cfg_interrupt           => cfg_interrupt ,
-        cfg_interrupt_rdy       => cfg_interrupt_rdy ,
-        cfg_interrupt_mmenable  => cfg_interrupt_mmenable ,
-        cfg_interrupt_msienable => cfg_interrupt_msienable ,
-        cfg_interrupt_di        => cfg_interrupt_di ,
-        cfg_interrupt_do        => cfg_interrupt_do ,
-        cfg_interrupt_assert    => cfg_interrupt_assert ,
+        cfg_interrupt            => cfg_interrupt ,
+        cfg_interrupt_rdy        => cfg_interrupt_rdy ,
+        cfg_interrupt_mmenable   => cfg_interrupt_mmenable ,
+        cfg_interrupt_msienable  => cfg_interrupt_msienable ,
+        cfg_interrupt_msixenable => cfg_interrupt_msixenable ,
+        cfg_interrupt_msixfm     => cfg_interrupt_msixfm ,
+        cfg_interrupt_di         => cfg_interrupt_di ,
+        cfg_interrupt_do         => cfg_interrupt_do ,
+        cfg_interrupt_assert     => cfg_interrupt_assert ,
 
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit ,
         s_axis_tx_tvalid   => s_axis_tx_tvalid ,
@@ -1954,7 +1958,7 @@ begin
   u_ddr_core : ddr_v6
     generic map (
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
-      RST_ACT_LOW => 1
+      RST_ACT_LOW => 0
     )
     port map (
       -- Memory interface ports
@@ -2020,7 +2024,7 @@ begin
 
     ddr_sys_clk_i <= ddr_ref_clk_i;
 
-    ddr_sys_reset_i <= sys_reset_n_c;
+    ddr_sys_reset_i <= sys_reset_c;
 
   end generate;
 
