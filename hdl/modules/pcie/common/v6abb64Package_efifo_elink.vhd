@@ -12,10 +12,8 @@ use IEEE.STD_LOGIC_ARITH.all;
 
 package abb64Package is
 
-
   -- Implemet a design with only one FIFO and only one BRAM Module: For Loopback Test!!
   constant USE_LOOPBACK_TEST : boolean := false;
-
 
 -- Declare constants
 
@@ -59,18 +57,12 @@ package abb64Package is
   --  Global Constants
   --
 
-  ---       Number of Lanes for PCIe, 1, 4 or 8
-  constant C_NUM_PCIE_LANES : integer := 1;
-
   ---       Data bus width
   constant C_DBUS_WIDTH : integer := 64;
   constant C_DATA_WIDTH : integer := C_DBUS_WIDTH;
 
   ---       Event Buffer: FIFO Data Count width
   constant C_FIFO_DC_WIDTH     : integer := 26;
-  ---       Small BRAM FIFO for emulation
-  constant C_EMU_FIFO_DC_WIDTH : integer := 15;  --S 14 x fifo originale ; 15 x fifo grande!!
-
   ---       Address width for endpoint device/peripheral
   --
   constant C_EP_AWIDTH : integer range 10 to 30 := 10;
@@ -119,9 +111,6 @@ package abb64Package is
   -- 32768 Mb= 4096MB : 32
   constant C_DDR_IAWIDTH : integer range 24 to 32 := 30;
 
-  --- DDR SDRAM controller data width, dependent on controller, memory type & clock speed used
-  constant C_DDR_DATAWIDTH : integer range 32 to 512 := 512;
-
   ---       Block RAM address bus width.  Variation requires BRAM core regeneration.
   constant C_PRAM_AWIDTH : integer range 8 to 29 := 29;
 
@@ -136,9 +125,6 @@ package abb64Package is
 
   ---       Width for Interrupt generation counter
   constant C_CNT_GINT_WIDTH : integer := 30;
-
---  ---       Emulation FIFOs' address width
---  Constant  C_FIFO_AWIDTH         : integer      :=   5;
 
   ---       Tag RAM data bus width, 1 bit for AInc information and 3 bits for BAR number
   constant C_TAGRAM_DWIDTH : integer := 36;
@@ -158,14 +144,6 @@ package abb64Package is
   -- Bit range of BAR field in TAG ram
   constant C_TAGBAR_BIT_TOP : integer := CBIT_AINC_IN_TAGRAM-1;
   constant C_TAGBAR_BIT_BOT : integer := C_TAGBAR_BIT_TOP-C_ENCODE_BAR_NUMBER+1;
-
-
-  ---       Number of bits for Last DW BE and 1st DW BE in the header of a TLP
-  constant C_BE_WIDTH : integer := 4;
-
-
-  ---       ICAP width: 8 or 32.
-  constant C_ICAP_WIDTH : integer := 32;
 
   ---       Feature Bits width
   constant C_FEAT_BITS_WIDTH : integer := 8;
@@ -362,7 +340,6 @@ package abb64Package is
   constant C_CHBUF_CPLD_BAR_BIT_BOT : integer := C_CHBUF_CPLD_REQID_BIT_TOP+1;  --65;
   constant C_CHBUF_CPLD_BAR_BIT_TOP : integer := C_CHBUF_CPLD_BAR_BIT_BOT+C_ENCODE_BAR_NUMBER-1;  --67;
 
-
   -- Bit range of host address in Channel Buffer word
   constant C_CHBUF_HA_BIT_BOT : integer := C_CHBUF_DMA_BAR_BIT_TOP+1;  --30;
 --  Constant  C_CHBUF_HA_BIT_TOP         : integer      :=   C_CHBUF_HA_BIT_BOT+2*C_DBUS_WIDTH-1;  --93;
@@ -436,7 +413,6 @@ package abb64Package is
   constant C_DECODE_BIT_TOP : integer := C_EP_AWIDTH-1;       -- 9;
   constant C_DECODE_BIT_BOT : integer := C_DECODE_BIT_TOP-1;  -- 8;
 
-
   ------------------------------------------------------------------------
   -- Current buffer descriptor length is 8 DW.
   constant C_NEXT_BD_LENGTH : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
@@ -450,18 +426,6 @@ package abb64Package is
   constant C_MAXSIZE_FLD_BIT_TOP : integer := C_TLP_FLD_WIDTH_OF_LENG +2;
   constant C_MAXSIZE_FLD_BIT_BOT : integer := 7;
 
-
-  -- DDR commands: RASn-CASn-WEn
-  constant CMD_NOP   : std_logic_vector(2 downto 0) := "111";
-  constant CMD_LMR   : std_logic_vector(2 downto 0) := "000";
-  constant CMD_ACT   : std_logic_vector(2 downto 0) := "011";
-  constant CMD_READ  : std_logic_vector(2 downto 0) := "101";
-  constant CMD_WRITE : std_logic_vector(2 downto 0) := "100";
-  constant CMD_PRECH : std_logic_vector(2 downto 0) := "010";
-  constant CMD_BTERM : std_logic_vector(2 downto 0) := "110";
-  constant CMD_AREF  : std_logic_vector(2 downto 0) := "001";
-
-
   ------------------------------------------------------------------------
   --  Time-out counter width
   constant C_TOUT_WIDTH : integer := 32;
@@ -472,41 +436,20 @@ package abb64Package is
   --  Time-out value
   constant C_TIME_OUT_VALUE : std_logic_vector(C_TOUT_WIDTH-1 downto CBIT_TOUT_BOT) := (24 => '1', others => '0');
 --                                         := (OTHERS=>'1' );  -- Maximum value (-1)
-
   ----------------------------------------------------------------------------------
   constant C_REGS_BASE_ADDR : std_logic_vector(C_EP_AWIDTH-1 downto 0) := (C_DECODE_BIT_TOP => '0', C_DECODE_BIT_BOT => '0', others => '0');
 
-  constant C_BRAM_BASE_ADDR : std_logic_vector(C_EP_AWIDTH-1 downto 0) := (C_DECODE_BIT_TOP => '1', C_DECODE_BIT_BOT => '0', others => '0');
-
-  constant C_FIFO_BASE_ADDR : std_logic_vector(C_EP_AWIDTH-1 downto 0) := (C_DECODE_BIT_TOP => '0', C_DECODE_BIT_BOT => '0', others => '0');
-
   ----------------------------------------------------------------------------------
---  Constant  CINT_ADDR_TXFIFO_DATA  : integer  := 4;
---  Constant  CINT_ADDR_TXFIFO_CTRL  : integer  := 6;
---  Constant  CINT_ADDR_TXFIFO_STA   : integer  := 6;
---
---  Constant  CINT_ADDR_RXFIFO_DATA  : integer  := 8;
---  Constant  CINT_ADDR_RXFIFO_CTRL  : integer  := 10;
---  Constant  CINT_ADDR_RXFIFO_STA   : integer  := 10;
-
   constant CINT_REGS_SPACE_BAR : integer := 0;
   constant CINT_FIFO_SPACE_BAR : integer := 4;
   constant CINT_DDR_SPACE_BAR  : integer := 2;
   ------------------------------------------------------------------------
 
-
---  -- Default channel buffer word for CplD
---  Constant  C_DEF_CPLD_WORD        : std_logic_vector(C_DBUS_WIDTH-1 downto 0)
---                                   :=X"CA000000";
-
   ----------------------------------------------------------------------------------
   --  1st word of MRd, for requesting the next descriptor
 --  Constant  C_MRD_HEAD0_WORD       : std_logic_vector(C_DBUS_WIDTH-1 downto 0)
 --                                   := X"80000000";
-  constant C_TLP_HAS_DATA : std_logic := '1';
   constant C_TLP_HAS_NO_DATA : std_logic := '0';
-  constant C_TLP_3DW_HEADER : std_logic := '0';
-  constant C_TLP_4DW_HEADER : std_logic := '1';
 
   ------------------------------------------------------------------------
   constant C_TLP_TYPE_IS_MRD_H3 : std_logic_vector(3 downto 0) := "1000";
@@ -581,17 +524,11 @@ package abb64Package is
 
   constant CINT_ADDR_DMA_DS_STA : integer := 28;
 
-
   --------  Address for MRd channel control
   constant CINT_ADDR_MRD_CTRL : integer := 29;
 
   --------  Address for Tx module control
   constant CINT_ADDR_TX_CTRL : integer := 30;
-
-  --------  Address for ICAP access
-  constant CINT_ADDR_ICAP : integer := 31;
-
-
 
   --------  Address of Interrupt Generator Control (W)
   constant CINT_ADDR_IG_CONTROL : integer := 32;
@@ -613,75 +550,11 @@ package abb64Package is
   --------  Downstream DMA transferred byte count (R)
   constant CINT_ADDR_DS_TRANSF_BC : integer := 38;
 
-  --------  DCB protocol link status (R) + control (W)
-  constant CINT_ADDR_PROTOCOL_STACON : integer := 39;
-
-  --------  CTL class register rx(R) + tx (W)
-  constant CINT_ADDR_CTL_CLASS : integer := 40;
-
-  --------  DLM class register rx(R) + tx (W)
-  constant CINT_ADDR_DLM_CLASS : integer := 41;
-
-  --------  Data generator control register (W)
-  constant CINT_ADDR_DG_CTRL : integer := 42;
-
-  --------  Traffice classes status (R)
-  constant CINT_ADDR_TC_STATUS : integer := 43;
-
-  --------  SIMONE USER REGISTER 01 rx(R) + tx (W)
-  constant CINT_ADDR_REG01 : integer := 44;
-
-  --------  SIMONE USER REGISTER 02 rx(R) + tx (W)
-  constant CINT_ADDR_REG02 : integer := 45;
-
-  --------  SIMONE USER REGISTER 03 rx(R) + tx (W)
-  constant CINT_ADDR_REG03 : integer := 46;
-
-  --------  SIMONE USER REGISTER 04 rx(R) + tx (W)
-  constant CINT_ADDR_REG04 : integer := 47;
-
-  --------  SIMONE USER REGISTER 05 rx(R) + tx (W)
-  constant CINT_ADDR_REG05 : integer := 48;
-
-  --------  SIMONE USER REGISTER 06 rx(R) + tx (W)
-  constant CINT_ADDR_REG06 : integer := 49;
-
-  --------  SIMONE USER REGISTER 07 rx(R) + tx (W)
-  constant CINT_ADDR_REG07 : integer := 50;
-
-  --------  SIMONE USER REGISTER 08 rx(R) + tx (W)
-  constant CINT_ADDR_REG08 : integer := 51;
-
-  --------  SIMONE USER REGISTER 09 rx(R) + tx (W)
-  constant CINT_ADDR_REG09 : integer := 52;
-
-  --------  SIMONE USER REGISTER 10 rx(R) + tx (W)
-  constant CINT_ADDR_REG10 : integer := 53;
-
-  --------  Host2Board FIFO status (R)
-  constant CINT_ADDR_H2B_STACON : integer := 54;
-
-  --------  Board2Host FIFO status (R)
-  constant CINT_ADDR_B2H_STACON : integer := 55;
-
-  --------  SIMONE USER REGISTER 11 rx(R) + tx (W)
-  constant CINT_ADDR_REG11 : integer := 56;
-
-  --------  SIMONE USER REGISTER 12 rx(R) + tx (W)
-  constant CINT_ADDR_REG12 : integer := 57;
-
-  --------  SIMONE USER REGISTER 13 rx(R) + tx (W)
-  constant CINT_ADDR_REG13 : integer := 58;
-
-  --------  SIMONE USER REGISTER 14 rx(R) + tx (W)
-  constant CINT_ADDR_REG14 : integer := 59;
-
   ------------------------------------------------------------------------
   --        Number of registers
-  constant C_NUM_OF_ADDRESSES : integer := 60;
+  constant C_NUM_OF_ADDRESSES : integer := 39;
   --
   ------------------------------------------------------------------------
-
 
   -- ----------------------------------------------------------------------
   -- Bit definitions of the Control register for DMA channels
@@ -695,7 +568,6 @@ package abb64Package is
   -- Bit range of BAR field in DMA Control register
   constant CINT_BIT_DMA_CTRL_BAR_TOP : integer := 18;
   constant CINT_BIT_DMA_CTRL_BAR_BOT : integer := 16;
-
 
   --  Default DMA Control register value
 --  Constant  C_DEF_DMA_CTRL_WORD    : std_logic_vector(C_DBUS_WIDTH-1 downto 0)
@@ -743,39 +615,20 @@ package abb64Package is
   constant CINT_BIT_USTOUT_IN_ISR : integer := 4;
   constant CINT_BIT_DSTOUT_IN_ISR : integer := 5;
 
-  constant CINT_BIT_DAQ_IN_ISR : integer := 6;
-  constant CINT_BIT_CTL_IN_ISR : integer := 7;
-  constant CINT_BIT_DLM_IN_ISR : integer := 8;
+  constant CINT_BIT_TX_DDR_TOUT_ISR : integer := 6;
+  constant CINT_BIT_TX_WB_TOUT_ISR  : integer := 7;
 
   -- The Time-out bits in System Error Register (SER)
   constant CINT_BIT_TX_TOUT_IN_SER : integer := 18;
   constant CINT_BIT_EB_TOUT_IN_SER : integer := 19;
   constant CINT_BIT_EB_OVERWRITTEN : integer := 20;
 
-  -- The separate RST bit in DG_CTRL register
-  constant CINT_BIT_DG_RST : integer := 12;
-
-  -- The MASK bit in DG_CTRL register
-  constant CINT_BIT_DG_MASK : integer := 8;
-
-  -- The BUSY bit in DG_CTRL register
-  constant CINT_BIT_DG_BUSY : integer := 1;
-
-  -- The AVAIL bit in DG_CTRL register
-  constant CINT_BIT_DG_AVAIL : integer := 0;
-
   -- Bit definition of msg routing method in General Control Register (GCR)
   constant C_GCR_MSG_ROUT_BIT_BOT : integer := 0;
   constant C_GCR_MSG_ROUT_BIT_TOP : integer := 2;
 
-  -- Bit definition of ICAP Busy in global status register (GSR)
-  constant CINT_BIT_ICAP_BUSY_IN_GSR : integer := 4;
-
   -- Bit definition of Data Generator available in global status register (GSR)
   constant CINT_BIT_DG_AVAIL_IN_GSR : integer := 5;
-
-  -- Bit definition of DCB link_active in global status register (GSR)
-  constant CINT_BIT_LINK_ACT_IN_GSR : integer := 6;
 
   -- Bit definition of DDR SDRAM ready for use in global status register (GSR)
   constant CINT_BIT_DDR_RDY_GSR : integer := 7;
@@ -783,7 +636,6 @@ package abb64Package is
   -- Bit range of link width in GSR
   constant CINT_BIT_LWIDTH_IN_GSR_BOT : integer := 10;  -- 16;
   constant CINT_BIT_LWIDTH_IN_GSR_TOP : integer := 15;  -- 21;
-
 
   ----------------------------------------------------------------------------------
   -- Carry bit, only for better timing, used to divide 32-bit add into 2 stages
@@ -799,21 +651,11 @@ package abb64Package is
   -- Implement date generator (DG)
   constant IMP_DATA_GENERATOR : boolean := false;
 
-  -- DDR2 SODIMM module as the event buffer kernel
-  -- !! remember to replace the UCF accordingly
-  constant USE_DDR2_MODULE : boolean := false;
-
-  -- For simplified verification, emulated loop-backed links be used if FALSE
-  constant USE_OPTO_LINKS : boolean := false;
-
   -- Implement interrupt generator (IG)
   constant IMP_INT_GENERATOR : boolean := false;
 
   -- interrupt type: cfg(INTA or MSI) or MSI-X
   constant USE_CFG_INTERRUPT : boolean := true;
-
-  -- Busmacro insertion for partial reconfigurability
-  constant INSERT_BUSMACRO : boolean := false;
 
 ------------------------------------------------------------------------------------
 ----  ------------ Author ID
