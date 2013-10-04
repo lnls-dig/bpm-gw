@@ -648,9 +648,6 @@ package abb64Package is
   constant C_ALL_ONES : std_logic_vector(255 downto 0) := (others => '1');
 
   ----------------------------------------------------------------------------------
-  -- Implement date generator (DG)
-  constant IMP_DATA_GENERATOR : boolean := false;
-
   -- Implement interrupt generator (IG)
   constant IMP_INT_GENERATOR : boolean := false;
 
