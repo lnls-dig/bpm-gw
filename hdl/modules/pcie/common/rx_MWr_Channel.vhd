@@ -52,9 +52,7 @@ entity rx_MWr_Transact is
     wb_pg    : in std_logic_vector(31 downto 0);
 
     -- from pre-process module
-    IOWr_Type         : in std_logic;
     MWr_Type          : in std_logic_vector(1 downto 0);
-    Tlp_straddles_4KB : in std_logic;
 --      Last_DW_of_TLP     : IN  std_logic;
     Tlp_has_4KB       : in std_logic;
 
@@ -79,11 +77,6 @@ entity rx_MWr_Transact is
     DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     DDR_wr_full  : in  std_logic;
-
-    -- Data generator table write
-    tab_we : out std_logic_vector(2-1 downto 0);
-    tab_wa : out std_logic_vector(12-1 downto 0);
-    tab_wd : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Common ports
     user_clk    : in std_logic;
@@ -130,7 +123,6 @@ architecture Behavioral of rx_MWr_Transact is
   signal m_axis_rx_tbar_hit_r1 : std_logic_vector (C_BAR_NUMBER-1 downto 0);
 
   signal m_axis_rx_tvalid_i  : std_logic;
-  signal m_axis_rx_terrfwd_i : std_logic;
   signal trn_rsof_n_i        : std_logic;
   signal in_packet_reg       : std_logic;
   signal m_axis_rx_tlast_i   : std_logic;
@@ -146,19 +138,10 @@ architecture Behavioral of rx_MWr_Transact is
   signal DDR_wr_sof_i       : std_logic;
   signal DDR_wr_eof_i       : std_logic;
   signal DDR_wr_v_i         : std_logic;
-  signal DDR_wr_FA_i        : std_logic;
   signal DDR_wr_Shift_i     : std_logic;
   signal DDR_wr_Mask_i      : std_logic_vector(2-1 downto 0);
   signal ddr_wr_1st_mask_hi : std_logic;
   signal DDR_wr_din_i       : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DDR_wr_full_i      : std_logic;
-
-  -- Data generator sequence table write
-  signal dg_table_Sel : std_logic;
-  signal tab_wa_odd   : std_logic;
-  signal tab_we_i     : std_logic_vector(2-1 downto 0);
-  signal tab_wa_i     : std_logic_vector(12-1 downto 0);
-  signal tab_wd_i     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   -- Event Buffer write port
   signal wb_FIFO_we_i   : std_logic;
@@ -194,24 +177,15 @@ begin
   DDR_wr_sof    <= DDR_wr_sof_i;
   DDR_wr_eof    <= DDR_wr_eof_i;
   DDR_wr_v      <= DDR_wr_v_i;
-  DDR_wr_FA     <= DDR_wr_FA_i;
   DDR_wr_Shift  <= DDR_wr_Shift_i;
   DDR_wr_Mask   <= DDR_wr_Mask_i;
   DDR_wr_din    <= DDR_wr_din_i;
-  DDR_wr_full_i <= DDR_wr_full;
-
-  -- Data generator table
-  tab_we <= tab_we_i;
-  tab_wa <= tab_wa_i;
-  tab_wd <= tab_wd_i;
 
   -- Registers writing
   Regs_WrEn   <= Regs_WrEn_i;
   Regs_WrMask <= Regs_WrMask_i;
   Regs_WrAddr <= Regs_WrAddr_i;
   Regs_WrDin  <= Regs_WrDin_i;          -- Mem_WrData;
-
-
 
   -- TLP info stubs
   m_axis_rx_tdata_i <= m_axis_rx_tdata;
@@ -222,17 +196,14 @@ begin
                             (m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r2(63 downto 32));
 
   -- Output to the core as handshaking
-  m_axis_rx_terrfwd_i  <= m_axis_rx_terrfwd;
   m_axis_rx_tbar_hit_i <= m_axis_rx_tbar_hit;
 
   -- Output to the core as handshaking
   m_axis_rx_tvalid_i <= m_axis_rx_tvalid;
   m_axis_rx_tready_i <= m_axis_rx_tready;
 
-
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
   trn_rx_throttle <= not(m_axis_rx_tvalid_i) or not(m_axis_rx_tready_i);
-
 
 -- -----------------------------------------------------
 --   Delays: m_axis_rx_tdata_i, m_axis_rx_tbar_hit_i, m_axis_rx_tlast_i
@@ -249,7 +220,6 @@ begin
       m_axis_rx_tbar_hit_r1 <= m_axis_rx_tbar_hit_i;
     end if;
   end process;
-
 
 -- -----------------------------------------------------------------------
 -- States synchronous
@@ -270,11 +240,8 @@ begin
   process (
     RxMWrTrn_State
     , MWr_Type
---           , IOWr_Type
-    , Tlp_straddles_4KB
     , trn_rx_throttle
     , m_axis_rx_tlast_i
---           , Last_DW_of_TLP
     )
   begin
     case RxMWrTrn_State is
@@ -608,7 +575,6 @@ begin
       DDR_wr_sof_i       <= '0';
       DDR_wr_eof_i       <= '0';
       DDR_wr_v_i         <= '0';
-      DDR_wr_FA_i        <= '0';
       DDR_wr_Shift_i     <= '0';
       DDR_wr_Mask_i      <= (others => '0');
       DDR_wr_din_i       <= (others => '0');
@@ -626,7 +592,6 @@ begin
             DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= not trn_rx_throttle;
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= not m_axis_rx_tdata_i(2);
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '1';
@@ -637,7 +602,6 @@ begin
             DDR_wr_sof_i       <= '0';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= '0';
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= '0';
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
@@ -652,7 +616,6 @@ begin
             DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= not trn_rx_throttle;
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= m_axis_rx_tdata_i(2+32);
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
@@ -663,7 +626,6 @@ begin
             DDR_wr_sof_i       <= '0';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= '0';
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= '0';
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
@@ -675,7 +637,6 @@ begin
           DDR_wr_sof_i       <= '0';
           DDR_wr_eof_i       <= '0';
           DDR_wr_v_i         <= '0';
-          DDR_wr_FA_i        <= '0';
           DDR_wr_Shift_i     <= '0';
           DDR_wr_Mask_i      <= (others => '0');
           ddr_wr_1st_mask_hi <= '0';
@@ -695,7 +656,6 @@ begin
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= m_axis_rx_tlast_r1;
             DDR_wr_v_i     <= not(trn_rx_throttle_r1) or m_axis_rx_tlast_r1;
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(4)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
             DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
@@ -703,7 +663,6 @@ begin
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= '0';
             DDR_wr_v_i     <= '0';
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= (others => '0');
             DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
@@ -713,88 +672,6 @@ begin
           else
             ddr_wr_1st_mask_hi <= ddr_wr_1st_mask_hi;
           end if;
-
-      end case;
-
-    end if;
-
-  end process;
-
--- ----------------------------------------------
---  Synchronous outputs:  DGen Table write     --
--- ----------------------------------------------
-  RxFSM_Output_DGen_Table_write :
-  process (user_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      --  Assume every PIO MWr contains only 1 DW(32 bits) payload
-      dg_table_Sel <= '0';
-      tab_we_i     <= (others => '0');
-      tab_wa_i     <= (others => '0');
-      tab_wd_i     <= (others => '0');
-      tab_wa_odd   <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case RxMWrTrn_State is
-
-        when ST_MWr3_HEAD2 =>
-          if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
-            and Tlp_is_Zero_Length = '0'
-          then
-            dg_table_Sel <= m_axis_rx_tdata_i(19+32) and m_axis_rx_tdata_i(18+32) and not m_axis_rx_tdata_i(17+32) and not m_axis_rx_tdata_i(16+32);  -- any expression
-            tab_we_i     <= (m_axis_rx_tdata_i(19) and m_axis_rx_tdata_i(18) and not m_axis_rx_tdata_i(17) and not m_axis_rx_tdata_i(16) and not m_axis_rx_tdata_i(2))
-                              & (m_axis_rx_tdata_i(19) and m_axis_rx_tdata_i(18) and not m_axis_rx_tdata_i(17) and not m_axis_rx_tdata_i(16) and m_axis_rx_tdata_i(2));
-            tab_wa_i   <= m_axis_rx_tdata_i(3+11 downto 3);
-            tab_wa_odd <= m_axis_rx_tdata_i(2);
-            tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
-          else
-            dg_table_Sel <= '0';
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(3+11 downto 3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
-          end if;
-
-        when ST_MWr4_HEAD2 =>
-          if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
-            and Tlp_is_Zero_Length = '0'
-          then
-            dg_table_Sel <= m_axis_rx_tdata_i(32+19) and m_axis_rx_tdata_i(32+18) and not m_axis_rx_tdata_i(32+17) and not m_axis_rx_tdata_i(32+16);
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(32+3+11 downto 32+3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(32+2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-          else
-            dg_table_Sel <= '0';
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(32+3+11 downto 32+3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(32+2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-          end if;
-
-        when ST_MWr4_1ST_DATA =>
-          dg_table_Sel <= dg_table_Sel;
-          tab_we_i     <= (dg_table_Sel and not trn_rx_throttle and not tab_wa_odd)
-                            & (dg_table_Sel and not trn_rx_throttle and tab_wa_odd);
-          tab_wa_i   <= tab_wa_i;
-          tab_wa_odd <= tab_wa_odd;
-          tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-
-        when ST_MWr_1ST_DATA_THROTTLE =>
-          dg_table_Sel <= dg_table_Sel;
-          tab_we_i     <= (dg_table_Sel and not trn_rx_throttle and not tab_wa_odd)
-                            & (dg_table_Sel and not trn_rx_throttle and tab_wa_odd);
-          tab_wa_i   <= tab_wa_i;
-          tab_wa_odd <= tab_wa_odd;
-          tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-
-        when others =>
-          dg_table_Sel <= '0';
-          tab_we_i     <= (others => '0');
-          tab_wa_i     <= tab_wa_i;
-          tab_wa_odd   <= tab_wa_odd;
-          tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
 
       end case;
 

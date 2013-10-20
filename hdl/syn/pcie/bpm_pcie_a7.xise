@@ -386,9 +386,6 @@
     <file xil_pn:name="../../modules/pcie/common/Interrupts.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="13"/>
     </file>
-    <file xil_pn:name="../../modules/pcie/common/PCIe_UserLogic_00.vhd" xil_pn:type="FILE_VHDL">
-      <association xil_pn:name="Implementation" xil_pn:seqID="14"/>
-    </file>
     <file xil_pn:name="../../modules/pcie/common/Registers.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="Implementation" xil_pn:seqID="15"/>
     </file>
