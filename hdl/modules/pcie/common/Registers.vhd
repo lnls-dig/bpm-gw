@@ -166,6 +166,7 @@ entity Regs_Group is
     Msg_Routing     : out std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
     pcie_link_width : in  std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
     cfg_dcommand    : in  std_logic_vector(16-1 downto 0);
+    ddr_sdram_ready : in  std_logic;
 
     -- Interrupt Generation Signals
     IG_Reset        : out std_logic;
@@ -3606,6 +3607,7 @@ begin
       General_Status_i(CINT_BIT_ICAP_BUSY_IN_GSR)                                    <= icap_Busy;
       General_Status_i(CINT_BIT_DG_AVAIL_IN_GSR)                                     <= DG_is_Available;
       General_Status_i(CINT_BIT_LINK_ACT_IN_GSR+1 downto CINT_BIT_LINK_ACT_IN_GSR)   <= protocol_link_act;
+      General_Status_i(CINT_BIT_DDR_RDY_GSR)                                         <= ddr_sdram_ready;
 
 --       General_Status_i(8) <= CTL_read_counter(6-1);   ---- DEBUG !!!
     end if;

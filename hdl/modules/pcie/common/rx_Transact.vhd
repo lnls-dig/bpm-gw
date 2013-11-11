@@ -92,13 +92,15 @@ entity rx_Transact is
     wb_pg    : in std_logic_vector(31 downto 0);
 
     -- Interrupt Interface
-    cfg_interrupt           : out std_logic;
-    cfg_interrupt_rdy       : in  std_logic;
-    cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-    cfg_interrupt_msienable : in  std_logic;
-    cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-    cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-    cfg_interrupt_assert    : out std_logic;
+    cfg_interrupt            : out std_logic;
+    cfg_interrupt_rdy        : in  std_logic;
+    cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+    cfg_interrupt_msienable  : in  std_logic;
+    cfg_interrupt_msixenable : in std_logic;
+    cfg_interrupt_msixfm     : in std_logic;
+    cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+    cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+    cfg_interrupt_assert     : out std_logic;
 
     -- Downstream DMA transferred bytes count up
     ds_DMA_Bytes_Add : out std_logic;
@@ -539,13 +541,15 @@ architecture Behavioral of rx_Transact is
       IG_Asserting    : out std_logic;
 
       -- cfg interface
-      cfg_interrupt           : out std_logic;
-      cfg_interrupt_rdy       : in  std_logic;
-      cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-      cfg_interrupt_msienable : in  std_logic;
-      cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-      cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-      cfg_interrupt_assert    : out std_logic;
+      cfg_interrupt            : out std_logic;
+      cfg_interrupt_rdy        : in  std_logic;
+      cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+      cfg_interrupt_msienable  : in  std_logic;
+      cfg_interrupt_msixenable : in std_logic;
+      cfg_interrupt_msixfm     : in std_logic;
+      cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+      cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+      cfg_interrupt_assert     : out std_logic;
 
       -- Irpt Channel
       Irpt_Req  : out std_logic;
@@ -1089,13 +1093,15 @@ begin
         IG_Asserting    => IG_Asserting ,   -- OUT std_logic;
 
         -- cfg interface
-        cfg_interrupt           => cfg_interrupt ,     -- OUT std_logic;
-        cfg_interrupt_rdy       => cfg_interrupt_rdy ,       -- IN  std_logic;
-        cfg_interrupt_mmenable  => cfg_interrupt_mmenable ,  -- IN  std_logic_vector(2 downto 0);
-        cfg_interrupt_msienable => cfg_interrupt_msienable ,  -- IN  std_logic;
-        cfg_interrupt_di        => cfg_interrupt_di ,  -- OUT std_logic_vector(7 downto 0);
-        cfg_interrupt_do        => cfg_interrupt_do ,  -- IN  std_logic_vector(7 downto 0);
-        cfg_interrupt_assert    => cfg_interrupt_assert ,    -- OUT std_logic;
+        cfg_interrupt            => cfg_interrupt ,     -- OUT std_logic;
+        cfg_interrupt_rdy        => cfg_interrupt_rdy ,       -- IN  std_logic;
+        cfg_interrupt_mmenable   => cfg_interrupt_mmenable ,  -- IN  std_logic_vector(2 downto 0);
+        cfg_interrupt_msienable  => cfg_interrupt_msienable ,  -- IN  std_logic;
+        cfg_interrupt_msixenable => cfg_interrupt_msixenable ,
+        cfg_interrupt_msixfm     => cfg_interrupt_msixfm ,
+        cfg_interrupt_di         => cfg_interrupt_di ,  -- OUT std_logic_vector(7 downto 0);
+        cfg_interrupt_do         => cfg_interrupt_do ,  -- IN  std_logic_vector(7 downto 0);
+        cfg_interrupt_assert     => cfg_interrupt_assert ,    -- OUT std_logic;
 
         -- Irpt Channel
         Irpt_Req  => Irpt_Req ,         -- OUT std_logic;
