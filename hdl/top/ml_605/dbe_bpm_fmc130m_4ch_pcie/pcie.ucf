@@ -317,7 +317,7 @@ INST "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
 
 
 ####### DDR ###########
-# Temporary place for this constraint as uit should belong to the
+# Temporary place for this constraint as it should belong to the
 # top ucf file, not here.
 
 #NET "cmp_bpm_pcie_ml605/ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;

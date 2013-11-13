@@ -38,6 +38,8 @@ use work.wr_fabric_pkg.all;
 use work.etherbone_pkg.all;
 -- FMC516 definitions
 use work.fmc_adc_pkg.all;
+-- Data Acquisition core
+use work.acq_core_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
@@ -273,6 +275,11 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   -- FPGA logic
   constant c_adc_ref_clk                    : natural := 1;
 
+  -- Number of top level clocks
+  constant c_num_tlvl_clks                  : natural := 2; -- CLK_SYS and CLK_200 MHz
+  constant c_clk_sys_id                     : natural := 0; -- CLK_SYS and CLK_200 MHz
+  constant c_clk_200mhz_id                  : natural := 1; -- CLK_SYS and CLK_200 MHz
+
   constant c_xwb_etherbone_sdb : t_sdb_device := (
     abi_class     => x"0000", -- undocumented device
     abi_ver_major => x"01",
@@ -326,6 +333,7 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
       6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30007000"),   -- Etherbone control port
       7 => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"30010000"),   -- FMC130m_4ch control port
       8 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"30020000")    -- General peripherals control port
+      9 => f_sdb_embed_bridge(c_xwb_acq_core_sdb,         x"30030000")    -- Data Acquisition control port
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
@@ -352,10 +360,30 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   signal wb_ma_pcie_sel_out                 : std_logic;
   signal wb_ma_pcie_cyc_out                 : std_logic;
 
+  signal memc_ui_clk                        : std_logic;
+  signal memc_ui_rst                        : std_logic;
+  signal memc_ui_rstn                       : std_logic;
+  signal memc_cmd_rdy                       : std_logic;
+  signal memc_cmd_en                        : std_logic;
+  signal memc_cmd_instr                     : std_logic_vector(2 downto 0);
+  signal memc_cmd_addr                      : std_logic_vector(31 downto 0);
+  signal memc_wr_en                         : std_logic;
+  signal memc_wr_end                        : std_logic;
+  signal memc_wr_mask                       : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+  signal memc_wr_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_wr_rdy                        : std_logic;
+  signal memc_rd_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_valid                      : std_logic;
+  -- memory arbiter interface
+  signal memarb_acc_req                     : std_logic;
+  signal memarb_acc_gnt                     : std_logic;
+
   -- Clocks and resets signals
   signal locked                             : std_logic;
   signal clk_sys_rstn                       : std_logic;
   signal clk_sys_rst                        : std_logic;
+  signal clk_200mhz_rst                     : std_logic;
+  signal clk_200mhz_rstn                    : std_logic;
 
   signal rst_button_sys_pp                  : std_logic;
   signal rst_button_sys                     : std_logic;
@@ -364,8 +392,8 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   signal rs232_rstn                         : std_logic;
 
   -- Only one clock domain
-  signal reset_clks                         : std_logic_vector(0 downto 0);
-  signal reset_rstn                         : std_logic_vector(0 downto 0);
+  signal reset_clks                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
+  signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
 
   -- 200 Mhz clocck for iodelay_ctrl
   signal clk_200mhz                         : std_logic;
@@ -468,6 +496,8 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   signal CONTROL1                           : std_logic_vector(35 downto 0);
   signal CONTROL2                           : std_logic_vector(35 downto 0);
   signal CONTROL3                           : std_logic_vector(35 downto 0);
+  signal CONTROL4                           : std_logic_vector(35 downto 0);
+  signal CONTROL5                           : std_logic_vector(35 downto 0);
 
   -- Chipscope ILA 0 signals
   signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
@@ -492,6 +522,18 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
+
+  -- Chipscope ILA 4 signals
+  signal TRIG_ILA4_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
+
+  -- Chipscope ILA 5 signals
+  signal TRIG_ILA5_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA5_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA5_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA5_3                        : std_logic_vector(31 downto 0);
 
   ---------------------------
   --      Components       --
@@ -532,12 +574,23 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   --);
   --end component;
 
-  component chipscope_icon_4_port
+  --component chipscope_icon_4_port
+  --port (
+  --  CONTROL0                                : inout std_logic_vector(35 downto 0);
+  --  CONTROL1                                : inout std_logic_vector(35 downto 0);
+  --  CONTROL2                                : inout std_logic_vector(35 downto 0);
+  --  CONTROL3                                : inout std_logic_vector(35 downto 0)
+  --);
+  --end component;
+
+  component chipscope_icon_6_port
   port (
     CONTROL0                                : inout std_logic_vector(35 downto 0);
     CONTROL1                                : inout std_logic_vector(35 downto 0);
     CONTROL2                                : inout std_logic_vector(35 downto 0);
-    CONTROL3                                : inout std_logic_vector(35 downto 0)
+    CONTROL3                                : inout std_logic_vector(35 downto 0);
+    CONTROL4                                : inout std_logic_vector(35 downto 0);
+    CONTROL5                                : inout std_logic_vector(35 downto 0)
   );
   end component;
 
@@ -683,7 +736,7 @@ begin
   -- Reset synchronization. Hold reset line until few locked cycles have passed.
   cmp_reset : gc_reset
   generic map(
-    g_clocks                                => 1    -- CLK_SYS
+    g_clocks                                => c_num_tlvl_clks    -- CLK_SYS & CLK_200
   )
   port map(
     free_clk_i                              => sys_clk_gen,
@@ -692,11 +745,14 @@ begin
     rstn_o                                  => reset_rstn
   );
 
-  reset_clks(0)                             <= clk_sys;
+  reset_clks(c_clk_sys_id)                  <= clk_sys;
+  reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
   --clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
-  clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n and rs232_rstn;
+  clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and rs232_rstn;
   clk_sys_rst                               <= not clk_sys_rstn;
   mrstn_o                                   <= clk_sys_rstn;
+  clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
+  clk_200mhz_rst                            <=  not(reset_rstn(c_clk_200mhz_id));
 
   -- Generate button reset synchronous to each clock domain
   -- Detect button positive edge of clk_sys
@@ -777,7 +833,8 @@ begin
   ----------------------------------
   cmp_bpm_pcie_ml605 : bpm_pcie_ml605
   generic map (
-    INSTANTIATED                            => "TRUE"
+    INSTANTIATED                            => "TRUE",
+    SIM_BYPASS_INIT_CAL                     => "OFF" -- Full calibration sequence
   )
   port map (
     --DDR3 memory pins
@@ -809,24 +866,23 @@ begin
     sys_rst_n                               => pcie_rst_n_i, -- PCIe core reset
 
     -- DDR memory controller interface --
-    -- uncomment when instantiating in another project
-    ddr_core_rst                           => '0',
-    memc_ui_clk                            => open,
-    memc_ui_rst                            => open,
-    memc_cmd_rdy                           => open,
-    memc_cmd_en                            => '0',
-    memc_cmd_instr                         => (others => '0'),
-    memc_cmd_addr                          => (others => '0'),
-    memc_wr_en                             => '0',
-    memc_wr_end                            => '0',
-    memc_wr_mask                           => (others => '0'),
-    memc_wr_data                           => (others => '0'),
-    memc_wr_rdy                            => open,
-    memc_rd_data                           => open,
-    memc_rd_valid                          => open,
+    ddr_core_rst                            => clk_200mhz_rst,
+    memc_ui_clk                             => memc_ui_clk,
+    memc_ui_rst                             => memc_ui_rst,
+    memc_cmd_rdy                            => memc_cmd_rdy,
+    memc_cmd_en                             => memc_cmd_en,
+    memc_cmd_instr                          => memc_cmd_instr,
+    memc_cmd_addr                           => memc_cmd_addr,
+    memc_wr_en                              => memc_wr_en,
+    memc_wr_end                             => memc_wr_end,
+    memc_wr_mask                            => memc_wr_mask,
+    memc_wr_data                            => memc_wr_data,
+    memc_wr_rdy                             => memc_wr_rdy,
+    memc_rd_data                            => memc_rd_data,
+    memc_rd_valid                           => memc_rd_valid,
     -- memory arbiter interface
-    memarb_acc_req                         => '0',
-    memarb_acc_gnt                         => open,
+    memarb_acc_req                          => memarb_acc_req,
+    memarb_acc_gnt                          => memarb_acc_gnt,
     --/ DDR memory controller interface
 
     -- Wishbone interface --
@@ -1260,6 +1316,97 @@ begin
 
   leds_o <= gpio_leds_int;
 
+  -- The board peripherals components is slave 9
+  cmp_xwb_bpm_acq_core : xwb_bpm_acq_core
+  generic map
+  (
+    g_interface_mode                          => PIPELINED,
+    g_address_granularity                     => WORD
+    --g_data_width                              => 64,
+    --g_addr_width                              => 32,
+    --g_ddr_payload_width                       => 256,
+    --g_ddr_addr_width                          => 32,
+    --g_multishot_ram_size                      => 2048,
+    g_fifo_fc_size                            => 1024, -- avoid fifo overflow
+    --g_sim_readback                            => false
+  )
+  port
+  (
+   -- assign to a better and shorter name
+    fs_clk_i                                  => fmc_130m_4ch_clk(c_adc_ref_clk),
+    fs_ce_i                                   => '1',
+    -- assign to a better and shorter name
+    fs_rst_n_i                                => fmc_130m_4ch_rst_n(c_adc_ref_clk),
+
+    sys_clk_i                                 => clk_sys,
+    sys_rst_n_i                               => clk_sys_rstn,
+
+    -- From DDR3 Controller
+    ext_clk_i                                 => memc_ui_clk,
+    ext_rst_n_i                               => memc_ui_rstn,
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+    wb_slv_i                                  => cbar_master_o(9),
+    wb_slv_o                                  => cbar_master_i(9),
+
+    -----------------------------
+    -- External Interface
+    -----------------------------
+    data_i                                    => fmc_130m_4ch_data, -- ch4 ch3 ch2 ch1
+    dvalid_i                                  => fmc_130m_4ch_data_valid,
+    ext_trig_i                                => '0',
+
+    -----------------------------
+    -- DRRAM Interface
+    -----------------------------
+    dpram_dout_o                              => bpm_acq_dpram_dout , -- to chipscope
+    dpram_valid_o                             => bpm_acq_dpram_valid, -- to chipscope
+
+    -----------------------------
+    -- External Interface (w/ FLow Control)
+    -----------------------------
+    ext_dout_o                                => bpm_acq_ext_dout, -- to chipscope
+    ext_valid_o                               => bpm_acq_ext_valid, -- to chipscope
+    ext_addr_o                                => bpm_acq_ext_addr, -- to chipscope
+    ext_sof_o                                 => bpm_acq_ext_sof, -- to chipscope
+    ext_eof_o                                 => bpm_acq_ext_eof, -- to chipscope
+    ext_dreq_o                                => bpm_acq_ext_dreq, -- to chipscope
+    ext_stall_o                               => bpm_acq_ext_stall, -- to chipscope
+
+    -----------------------------
+    -- DDR3 SDRAM Interface
+    -----------------------------
+    ui_app_addr_o                             => memc_cmd_addr,
+    ui_app_cmd_o                              => memc_cmd_instr,
+    ui_app_en_o                               => memc_cmd_en,
+    ui_app_rdy_i                              => memc_cmd_rdy,
+
+    ui_app_wdf_data_o                         => memc_wr_data,
+    ui_app_wdf_end_o                          => memc_wr_end,
+    ui_app_wdf_mask_o                         => memc_wr_mask,
+    ui_app_wdf_wren_o                         => memc_wr_en,
+    ui_app_wdf_rdy_i                          => memc_wr_rdy,
+
+    ui_app_rd_data_i                          => memc_rd_data,  -- not used!
+    ui_app_rd_data_end_i                      => '0',  -- not used! Add this signal to DDR3 PCIe?
+    ui_app_rd_data_valid_i                    => memc_rd_valid,  -- not used!
+
+    -- DDR3 arbitrer for multiple accesses
+    ui_app_req_o                              => memarb_acc_req,
+    ui_app_gnt_i                              => memarb_acc_gnt,
+
+    -----------------------------
+    -- Debug Interface
+    -----------------------------
+    dbg_ddr_rb_data_o                         => open,
+    dbg_ddr_rb_addr_o                         => open,
+    dbg_ddr_rb_valid_o                        => open
+  );
+
+  memc_ui_rstn <= not(memc_ui_rst);
+
   ---- Xilinx Chipscope
   cmp_chipscope_icon_0 : chipscope_icon_4_port
   port map (
@@ -1489,5 +1636,56 @@ begin
                                                 wb_ma_pcie_stb_out &
                                                 wb_ma_pcie_sel_out &
                                                 wb_ma_pcie_cyc_out;
+
+  cmp_chipscope_ila_4_bpm_acq : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL4,
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
+    TRIG0                                   => TRIG_ILA4_0,
+    TRIG1                                   => TRIG_ILA4_1,
+    TRIG2                                   => TRIG_ILA4_2,
+    TRIG3                                   => TRIG_ILA4_3
+  );
+
+  TRIG_ILA4_0                               <= cbar_master_i(9).dat;
+  TRIG_ILA4_1                               <= cbar_master_o(9).dat;
+  TRIG_ILA4_2                               <= cbar_master_o(9).adr;
+  TRIG_ILA4_3(31 downto 5)                  <= (others => '0');
+  TRIG_ILA4_3(4 downto 0)                   <=  cbar_master_i(9).ack &
+                                                cbar_master_o(9).we &
+                                                cbar_master_o(9).stb &
+                                                cbar_master_o(9).sel &
+                                                cbar_master_o(9).cyc;
+
+  cmp_chipscope_ila_5_bpm_acq : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL5,
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
+    TRIG0                                   => TRIG_ILA5_0,
+    TRIG1                                   => TRIG_ILA5_1,
+    TRIG2                                   => TRIG_ILA5_2,
+    TRIG3                                   => TRIG_ILA5_3
+  );
+
+  TRIG_ILA5_0                               <= memc_wr_data(15 downto 0) &
+                                                 bpm_acq_ext_dout(15 downto 0);
+  TRIG_ILA5_1                               <= bpm_acq_ext_addr(15 downto 0) &
+                                                 memc_cmd_addr(15 downto 0);
+  TRIG_ILA5_2(31 downto 5)                  <= (others => '0');
+  TRIG_ILA5_2(4 downto 0)                   <= bpm_acq_ext_valid &
+                                                 bpm_acq_ext_sof &
+                                                 bpm_acq_ext_eof &
+                                                 bpm_acq_ext_dreq &
+                                                 bpm_acq_ext_stall;
+  TRIG_ILA5_3(31 downto 18)                 <= (others => '0');
+  TRIG_ILA5_3(17 downto 0)                  <= memc_cmd_instr & -- std_logic_vector(2 downto 0);
+                                                 memc_cmd_en &
+                                                 memc_cmd_rdy &
+                                                 memc_wr_end &
+                                                 memc_wr_mask & -- std_logic_vector(7 downto 0);
+                                                 memc_wr_en &
+                                                 memc_wr_rdy &
+                                                 memarb_acc_req &
+                                                 memarb_acc_gnt;
 
 end rtl;
