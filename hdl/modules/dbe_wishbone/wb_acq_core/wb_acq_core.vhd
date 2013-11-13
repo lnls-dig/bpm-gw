@@ -47,6 +47,8 @@ use work.genram_pkg.all;
 use work.acq_core_pkg.all;
 -- BPM FSM Acq Regs
 use work.acq_core_wbgen2_pkg.all;
+-- DBE wishbone cores
+use work.dbe_wishbone_pkg.all;
 
 entity wb_acq_core is
 generic
