@@ -1723,20 +1723,34 @@ begin
         )
       port map(
         -- connect your own signals here
-        memc_ui_clk    => open, --: out std_logic;
-        memc_cmd_rdy   => open, --: out std_logic;
-        memc_cmd_en    => '0', --: in  std_logic;
-        memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
-        memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
-        memc_wr_en     => '0', --: in  std_logic;
-        memc_wr_end    => '0', --: in  std_logic;
-        memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
-        memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
-        memc_wr_rdy    => open, --: out std_logic;
-        memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
-        memc_rd_valid  => open, --: out std_logic;
-        memarb_acc_req => '0', --: in  std_logic;
-        memarb_acc_gnt => open, --: out std_logic;
+        --memc_ui_clk    => open, --: out std_logic;
+        --memc_cmd_rdy   => open, --: out std_logic;
+        --memc_cmd_en    => '0', --: in  std_logic;
+        --memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
+        --memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
+        --memc_wr_en     => '0', --: in  std_logic;
+        --memc_wr_end    => '0', --: in  std_logic;
+        --memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
+        --memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
+        --memc_wr_rdy    => open, --: out std_logic;
+        --memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
+        --memc_rd_valid  => open, --: out std_logic;
+        --memarb_acc_req => '0', --: in  std_logic;
+        --memarb_acc_gnt => open, --: out std_logic;
+        memc_ui_clk    => memc_ui_clk,
+        memc_cmd_rdy   => memc_cmd_rdy,
+        memc_cmd_en    => memc_cmd_en,
+        memc_cmd_instr => memc_cmd_instr,
+        memc_cmd_addr  => memc_cmd_addr,
+        memc_wr_en     => memc_wr_en,
+        memc_wr_end    => memc_wr_end,
+        memc_wr_mask   => memc_wr_mask,
+        memc_wr_data   => memc_wr_data,
+        memc_wr_rdy    => memc_wr_rdy,
+        memc_rd_data   => memc_rd_data,
+        memc_rd_valid  => memc_rd_valid,
+        memarb_acc_req => memarb_acc_req,
+        memarb_acc_gnt => memarb_acc_gnt,
         -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
         DDR_wr_v     => DDR_wr_v ,   --  IN    std_logic;
