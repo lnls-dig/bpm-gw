@@ -1,367 +1,367 @@
-##-----------------------------------------------------------------------------
-##-----------------------------------------------------------------------------
-## Project    : Series-7 Integrated Block for PCI Express
-## Version    : 1.6
+###-----------------------------------------------------------------------------
+###-----------------------------------------------------------------------------
+### Project    : Series-7 Integrated Block for PCI Express
+### Version    : 1.6
+##
+################################################################################
+## Define Device, Package And Speed Grade
+################################################################################
 #
-###############################################################################
-# Define Device, Package And Speed Grade
-###############################################################################
-
-CONFIG PART = xc6vlx240t-ff1156-1;
-
-#########################################################################################################################
-# User Constraints
-#########################################################################################################################
-
-###############################################################################
-# User Time Names / User Time Groups / Time Specs
-###############################################################################
-
-###############################################################################
-# User Physical Constraints
-###############################################################################
-###########  PCIE  #########################
-#PCIe reset
-NET "pcie_rst_n_i" IOSTANDARD = LVCMOS25 | PULLUP | NODELAY;
-NET "pcie_rst_n_i" TIG;
-# Bank 16 VCCO - VADJ_FPGA - IO_25_16
-NET "pcie_rst_n_i" LOC = AE13;
-#PCIe reset
-#PCIe clock
-NET "pcie_clk_n_i" LOC = P5;
-# Bank 115 - MGTREFCLK1N_115
-NET "pcie_clk_p_i" LOC = P6;
-
-###########  DDR controller  ##############
-NET   "ddr3_dq_b[0]"    LOC = "J11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[1]"    LOC = "E13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[2]"    LOC = "F13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[3]"    LOC = "K11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[4]"    LOC = "L11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[5]"    LOC = "K13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[6]"    LOC = "K12"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[7]"    LOC = "D11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[8]"    LOC = "M13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[9]"    LOC = "J14"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[10]"   LOC = "B13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[11]"   LOC = "B12"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[12]"   LOC = "G10"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[13]"   LOC = "M11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[14]"   LOC = "C12"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[15]"   LOC = "A11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[16]"   LOC = "G11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[17]"   LOC = "F11"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[18]"   LOC = "D14"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[19]"   LOC = "C14"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[20]"   LOC = "G12"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[21]"   LOC = "G13"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[22]"   LOC = "F14"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[23]"   LOC = "H14"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[24]"   LOC = "C19"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[25]"   LOC = "G20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[26]"   LOC = "E19"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[27]"   LOC = "F20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[28]"   LOC = "A20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[29]"   LOC = "A21"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[30]"   LOC = "E22"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[31]"   LOC = "E23"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[32]"   LOC = "G21"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[33]"   LOC = "B21"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[34]"   LOC = "A23"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[35]"   LOC = "A24"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[36]"   LOC = "C20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[37]"   LOC = "D20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[38]"   LOC = "J20"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[39]"   LOC = "G22"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[40]"   LOC = "D26"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[41]"   LOC = "F26"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[42]"   LOC = "B26"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[43]"   LOC = "E26"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[44]"   LOC = "C24"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[45]"   LOC = "D25"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[46]"   LOC = "D27"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[47]"   LOC = "C25"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[48]"   LOC = "C27"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[49]"   LOC = "B28"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[50]"   LOC = "D29"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[51]"   LOC = "B27"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[52]"   LOC = "G27"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[53]"   LOC = "A28"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[54]"   LOC = "E24"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[55]"   LOC = "G25"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[56]"   LOC = "F28"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[57]"   LOC = "B31"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[58]"   LOC = "H29"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[59]"   LOC = "H28"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[60]"   LOC = "B30"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[61]"   LOC = "A30"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[62]"   LOC = "E29"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_dq_b[63]"   LOC = "F29"  | IOSTANDARD = SSTL15_T_DCI ;
-NET   "ddr3_addr_o[13]" LOC = "J15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[12]" LOC = "H15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[11]" LOC = "M15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[10]" LOC = "M16"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[9]"  LOC = "F15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[8]"  LOC = "G15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[7]"  LOC = "B15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[6]"  LOC = "A15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[5]"  LOC = "J17"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[4]"  LOC = "D16"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[3]"  LOC = "E16"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[2]"  LOC = "B16"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[1]"  LOC = "A16"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_addr_o[0]"  LOC = "L14"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_ba_o[2]"    LOC = "L15"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_ba_o[1]"    LOC = "J19"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_ba_o[0]"    LOC = "K19"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_ras_n_o"    LOC = "L19"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_cas_n_o"    LOC = "C17"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_we_n_o"     LOC = "B17"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_reset_n_o"  LOC = "E18"  | IOSTANDARD = LVCMOS15 ;
-NET   "ddr3_cke_o[0]"   LOC = "M18"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_odt_o[0]"   LOC = "F18"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_cs_n_o[0]"  LOC = "K18"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[0]"    LOC = "E11"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[1]"    LOC = "B11"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[2]"    LOC = "E14"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[3]"    LOC = "D19"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[4]"    LOC = "B22"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[5]"    LOC = "A26"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[6]"    LOC = "A29"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dm_o[7]"    LOC = "A31"  | IOSTANDARD = SSTL15 ;
-NET   "ddr3_dqs_p_b[0]" LOC = "D12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[0]" LOC = "E12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[1]" LOC = "H12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[1]" LOC = "J12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[2]" LOC = "A13"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[2]" LOC = "A14"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[3]" LOC = "H19"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[3]" LOC = "H20"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[4]" LOC = "B23"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[4]" LOC = "C23"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[5]" LOC = "B25"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[5]" LOC = "A25"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[6]" LOC = "H27"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[6]" LOC = "G28"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_p_b[7]" LOC = "C30"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_dqs_n_b[7]" LOC = "D30"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
-NET   "ddr3_ck_p_o[0]"  LOC = "G18"  | IOSTANDARD = DIFF_SSTL15 ;
-NET   "ddr3_ck_n_o[0]"  LOC = "H18"  | IOSTANDARD = DIFF_SSTL15 ;
-#NET   "ddr_sys_clk_p_i" LOC = "J9"  | IOSTANDARD = LVDS_25;
-#NET   "ddr_sys_clk_n_i" LOC = "H9"  | IOSTANDARD = LVDS_25;
-
-#########################################################################################################################
-# End User Constraints
-#########################################################################################################################
-
-###############################################################################
-# Pinout and Related I/O Constraints
-###############################################################################
-
-
+#CONFIG PART = xc6vlx240t-ff1156-1;
 #
-# SYS clock 100 MHz (input) signal. The sys_clk_p and sys_clk_n
-# signals are the PCI Express reference clock. Virtex-6 GT
-# Transceiver architecture requires the use of a dedicated clock
-# resources (FPGA input pins) associated with each GT Transceiver.
-# To use these pins an IBUFDS primitive (refclk_ibuf) is
-# instantiated in user's design.
-# Please refer to the Virtex-6 GT Transceiver User Guide
-# (UG) for guidelines regarding clock resource selection.
+##########################################################################################################################
+## User Constraints
+##########################################################################################################################
 #
-
-INST "cmp_bpm_pcie_ml605/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
-
+################################################################################
+## User Time Names / User Time Groups / Time Specs
+################################################################################
 #
-# Transceiver instance placement.  This constraint selects the
-# transceivers to be used, which also dictates the pinout for the
-# transmit and receive differential pairs.  Please refer to the
-# Virtex-6 GT Transceiver User Guide (UG) for more information.
+################################################################################
+## User Physical Constraints
+################################################################################
+############  PCIE  #########################
+##PCIe reset
+#NET "pcie_rst_n_i" IOSTANDARD = LVCMOS25 | PULLUP | NODELAY;
+#NET "pcie_rst_n_i" TIG;
+## Bank 16 VCCO - VADJ_FPGA - IO_25_16
+#NET "pcie_rst_n_i" LOC = AE13;
+##PCIe reset
+##PCIe clock
+#NET "pcie_clk_n_i" LOC = P5;
+## Bank 115 - MGTREFCLK1N_115
+#NET "pcie_clk_p_i" LOC = P6;
 #
-# PCIe Lane 0
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[0].GTX" LOC = GTXE1_X0Y15;
-# PCIe Lane 1
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[1].GTX" LOC = GTXE1_X0Y14;
-# PCIe Lane 2
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[2].GTX" LOC = GTXE1_X0Y13;
-# PCIe Lane 3
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[3].GTX" LOC = GTXE1_X0Y12;
-
+############  DDR controller  ##############
+#NET   "ddr3_dq_b[0]"    LOC = "J11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[1]"    LOC = "E13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[2]"    LOC = "F13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[3]"    LOC = "K11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[4]"    LOC = "L11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[5]"    LOC = "K13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[6]"    LOC = "K12"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[7]"    LOC = "D11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[8]"    LOC = "M13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[9]"    LOC = "J14"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[10]"   LOC = "B13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[11]"   LOC = "B12"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[12]"   LOC = "G10"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[13]"   LOC = "M11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[14]"   LOC = "C12"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[15]"   LOC = "A11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[16]"   LOC = "G11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[17]"   LOC = "F11"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[18]"   LOC = "D14"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[19]"   LOC = "C14"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[20]"   LOC = "G12"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[21]"   LOC = "G13"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[22]"   LOC = "F14"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[23]"   LOC = "H14"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[24]"   LOC = "C19"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[25]"   LOC = "G20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[26]"   LOC = "E19"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[27]"   LOC = "F20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[28]"   LOC = "A20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[29]"   LOC = "A21"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[30]"   LOC = "E22"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[31]"   LOC = "E23"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[32]"   LOC = "G21"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[33]"   LOC = "B21"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[34]"   LOC = "A23"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[35]"   LOC = "A24"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[36]"   LOC = "C20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[37]"   LOC = "D20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[38]"   LOC = "J20"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[39]"   LOC = "G22"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[40]"   LOC = "D26"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[41]"   LOC = "F26"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[42]"   LOC = "B26"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[43]"   LOC = "E26"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[44]"   LOC = "C24"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[45]"   LOC = "D25"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[46]"   LOC = "D27"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[47]"   LOC = "C25"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[48]"   LOC = "C27"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[49]"   LOC = "B28"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[50]"   LOC = "D29"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[51]"   LOC = "B27"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[52]"   LOC = "G27"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[53]"   LOC = "A28"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[54]"   LOC = "E24"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[55]"   LOC = "G25"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[56]"   LOC = "F28"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[57]"   LOC = "B31"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[58]"   LOC = "H29"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[59]"   LOC = "H28"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[60]"   LOC = "B30"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[61]"   LOC = "A30"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[62]"   LOC = "E29"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_dq_b[63]"   LOC = "F29"  | IOSTANDARD = SSTL15_T_DCI ;
+#NET   "ddr3_addr_o[13]" LOC = "J15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[12]" LOC = "H15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[11]" LOC = "M15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[10]" LOC = "M16"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[9]"  LOC = "F15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[8]"  LOC = "G15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[7]"  LOC = "B15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[6]"  LOC = "A15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[5]"  LOC = "J17"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[4]"  LOC = "D16"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[3]"  LOC = "E16"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[2]"  LOC = "B16"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[1]"  LOC = "A16"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_addr_o[0]"  LOC = "L14"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_ba_o[2]"    LOC = "L15"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_ba_o[1]"    LOC = "J19"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_ba_o[0]"    LOC = "K19"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_ras_n_o"    LOC = "L19"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_cas_n_o"    LOC = "C17"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_we_n_o"     LOC = "B17"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_reset_n_o"  LOC = "E18"  | IOSTANDARD = LVCMOS15 ;
+#NET   "ddr3_cke_o[0]"   LOC = "M18"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_odt_o[0]"   LOC = "F18"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_cs_n_o[0]"  LOC = "K18"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[0]"    LOC = "E11"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[1]"    LOC = "B11"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[2]"    LOC = "E14"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[3]"    LOC = "D19"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[4]"    LOC = "B22"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[5]"    LOC = "A26"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[6]"    LOC = "A29"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dm_o[7]"    LOC = "A31"  | IOSTANDARD = SSTL15 ;
+#NET   "ddr3_dqs_p_b[0]" LOC = "D12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[0]" LOC = "E12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[1]" LOC = "H12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[1]" LOC = "J12"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[2]" LOC = "A13"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[2]" LOC = "A14"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[3]" LOC = "H19"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[3]" LOC = "H20"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[4]" LOC = "B23"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[4]" LOC = "C23"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[5]" LOC = "B25"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[5]" LOC = "A25"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[6]" LOC = "H27"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[6]" LOC = "G28"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_p_b[7]" LOC = "C30"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_dqs_n_b[7]" LOC = "D30"  | IOSTANDARD = DIFF_SSTL15_T_DCI ;
+#NET   "ddr3_ck_p_o[0]"  LOC = "G18"  | IOSTANDARD = DIFF_SSTL15 ;
+#NET   "ddr3_ck_n_o[0]"  LOC = "H18"  | IOSTANDARD = DIFF_SSTL15 ;
+##NET   "ddr_sys_clk_p_i" LOC = "J9"  | IOSTANDARD = LVDS_25;
+##NET   "ddr_sys_clk_n_i" LOC = "H9"  | IOSTANDARD = LVDS_25;
 #
-# PCI Express Block placement. This constraint selects the PCI Express
-# Block to be used.
+##########################################################################################################################
+## End User Constraints
+##########################################################################################################################
 #
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_block_i" LOC = PCIE_X0Y1;
-
-
+################################################################################
+## Pinout and Related I/O Constraints
+################################################################################
 #
-# DDR controller component placement
-# Check it after changing memory controller paramenters
-###############################################################################
-#DCI_CASCADING
-#Syntax : CONFIG DCI_CASCADE = "<master> <slave1> <slave2> ..";
-###############################################################################
-CONFIG DCI_CASCADE = "26 25";#
-CONFIG DCI_CASCADE = "36 35";#
-
-##################################################################################################
-##The logic of this pin is used internally to drive a BUFR in the column. This chosen pin must  ##
-##be a clock pin capable of spanning to all of the banks containing data bytes in the particular##
-##column. That is, all byte groups must be within +/- 1 bank of this pin. This pin cannot be    ##
-##used for other functions and should not be connected externally. If a different pin is chosen,##
-##he corresponding LOC constraint must also be changed.                                         ##
-##################################################################################################
-CONFIG PROHIBIT = C29,M12;
-
-##################################################################################################
-##The logic of this pin is used internally to drive a BUFIO for the byte group. Any clock       ##
-##capable pin in the same bank as the data byte group (DQS, DQ, DM if used) can be used for     ##
-##this pin. This pin cannot be used for other functions and should not be connected externally. ##
-##If a different pin is chosen, the corresponding LOC constraint must also be changed.          ##
-##################################################################################################
-CONFIG PROHIBIT = B20,C13,C28,D24,F21,F25,K14,L13;
-
-######################################################################################
-##Place RSYNC OSERDES and IODELAY:                                                  ##
-######################################################################################
-
-##Site: C29 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync"
-  LOC = "OLOGIC_X1Y139";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync"
-  LOC = "IODELAY_X1Y139";
-
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync"
-  LOC = "BUFR_X1Y6";
-
-##Site: M12 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync"
-  LOC = "OLOGIC_X2Y139";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync"
-  LOC = "IODELAY_X2Y139";
-
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync"
-  LOC = "BUFR_X2Y6";
-######################################################################################
-##Place CPT OSERDES and IODELAY:                                                    ##
-######################################################################################
-
-##Site: C13 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_oserdes_cpt"
-  LOC = "OLOGIC_X2Y137";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_odelay_cpt"
-  LOC = "IODELAY_X2Y137";
-
-##Site: L13 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_oserdes_cpt"
-  LOC = "OLOGIC_X2Y141";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_odelay_cpt"
-  LOC = "IODELAY_X2Y141";
-
-##Site: K14 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_oserdes_cpt"
-  LOC = "OLOGIC_X2Y143";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_odelay_cpt"
-  LOC = "IODELAY_X2Y143";
-
-##Site: F21 -- Bank 26
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_oserdes_cpt"
-  LOC = "OLOGIC_X1Y179";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_odelay_cpt"
-  LOC = "IODELAY_X1Y179";
-
-##Site: B20 -- Bank 26
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_oserdes_cpt"
-  LOC = "OLOGIC_X1Y181";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_odelay_cpt"
-  LOC = "IODELAY_X1Y181";
-
-##Site: F25 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_oserdes_cpt"
-  LOC = "OLOGIC_X1Y137";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_odelay_cpt"
-  LOC = "IODELAY_X1Y137";
-
-##Site: C28 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_oserdes_cpt"
-  LOC = "OLOGIC_X1Y141";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_odelay_cpt"
-  LOC = "IODELAY_X1Y141";
-
-##Site: D24 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_oserdes_cpt"
-  LOC = "OLOGIC_X1Y143";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_odelay_cpt"
-  LOC = "IODELAY_X1Y143";
-
-INST "cmp_bpm_pcie_ml605/*/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36
-
-###############################################################################
-# Timing Constraints
-###############################################################################
-
-NET "cmp_bpm_pcie_ml605/sys_clk_c" TNM_NET = "SYSCLK" ;
-NET "cmp_bpm_pcie_ml605/*/pcie_clocking_i/clk_125" TNM_NET = "CLK_125" ;
-NET "cmp_bpm_pcie_ml605/*/TxOutClk_bufg" TNM_NET = "TXOUTCLKBUFG";
-
-TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 % PRIORITY 100 ;
-TIMESPEC "TS_CLK_125"  = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 1 ;
-TIMESPEC "TS_TXOUTCLKBUFG"  = PERIOD "TXOUTCLKBUFG" 100 MHz HIGH 50 % PRIORITY 100 ;
-
-
-PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_int_i.CLR" TIG ;
-PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_i.CLR" TIG ;
-PIN "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i.RST" TIG ;
-
-INST "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
-
-
-####### DDR ###########
-# Temporary place for this constraint as it should belong to the
-# top ucf file, not here.
-
-#NET "cmp_bpm_pcie_ml605/ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
+#
+##
+## SYS clock 100 MHz (input) signal. The sys_clk_p and sys_clk_n
+## signals are the PCI Express reference clock. Virtex-6 GT
+## Transceiver architecture requires the use of a dedicated clock
+## resources (FPGA input pins) associated with each GT Transceiver.
+## To use these pins an IBUFDS primitive (refclk_ibuf) is
+## instantiated in user's design.
+## Please refer to the Virtex-6 GT Transceiver User Guide
+## (UG) for guidelines regarding clock resource selection.
+##
+#
+#INST "cmp_bpm_pcie_ml605/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
+#
+##
+## Transceiver instance placement.  This constraint selects the
+## transceivers to be used, which also dictates the pinout for the
+## transmit and receive differential pairs.  Please refer to the
+## Virtex-6 GT Transceiver User Guide (UG) for more information.
+##
+## PCIe Lane 0
+#INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[0].GTX" LOC = GTXE1_X0Y15;
+## PCIe Lane 1
+#INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[1].GTX" LOC = GTXE1_X0Y14;
+## PCIe Lane 2
+#INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[2].GTX" LOC = GTXE1_X0Y13;
+## PCIe Lane 3
+#INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[3].GTX" LOC = GTXE1_X0Y12;
+#
+##
+## PCI Express Block placement. This constraint selects the PCI Express
+## Block to be used.
+##
+#INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_block_i" LOC = PCIE_X0Y1;
+#
+#
+##
+## DDR controller component placement
+## Check it after changing memory controller paramenters
+################################################################################
+##DCI_CASCADING
+##Syntax : CONFIG DCI_CASCADE = "<master> <slave1> <slave2> ..";
+################################################################################
+#CONFIG DCI_CASCADE = "26 25";#
+#CONFIG DCI_CASCADE = "36 35";#
+#
+###################################################################################################
+###The logic of this pin is used internally to drive a BUFR in the column. This chosen pin must  ##
+###be a clock pin capable of spanning to all of the banks containing data bytes in the particular##
+###column. That is, all byte groups must be within +/- 1 bank of this pin. This pin cannot be    ##
+###used for other functions and should not be connected externally. If a different pin is chosen,##
+###he corresponding LOC constraint must also be changed.                                         ##
+###################################################################################################
+#CONFIG PROHIBIT = C29,M12;
+#
+###################################################################################################
+###The logic of this pin is used internally to drive a BUFIO for the byte group. Any clock       ##
+###capable pin in the same bank as the data byte group (DQS, DQ, DM if used) can be used for     ##
+###this pin. This pin cannot be used for other functions and should not be connected externally. ##
+###If a different pin is chosen, the corresponding LOC constraint must also be changed.          ##
+###################################################################################################
+#CONFIG PROHIBIT = B20,C13,C28,D24,F21,F25,K14,L13;
+#
+#######################################################################################
+###Place RSYNC OSERDES and IODELAY:                                                  ##
+#######################################################################################
+#
+###Site: C29 -- Bank 25
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync"
+#  LOC = "OLOGIC_X1Y139";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync"
+#  LOC = "IODELAY_X1Y139";
+#
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync"
+#  LOC = "BUFR_X1Y6";
+#
+###Site: M12 -- Bank 35
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync"
+#  LOC = "OLOGIC_X2Y139";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync"
+#  LOC = "IODELAY_X2Y139";
+#
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync"
+#  LOC = "BUFR_X2Y6";
+#######################################################################################
+###Place CPT OSERDES and IODELAY:                                                    ##
+#######################################################################################
+#
+###Site: C13 -- Bank 35
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_oserdes_cpt"
+#  LOC = "OLOGIC_X2Y137";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_odelay_cpt"
+#  LOC = "IODELAY_X2Y137";
+#
+###Site: L13 -- Bank 35
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_oserdes_cpt"
+#  LOC = "OLOGIC_X2Y141";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_odelay_cpt"
+#  LOC = "IODELAY_X2Y141";
+#
+###Site: K14 -- Bank 35
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_oserdes_cpt"
+#  LOC = "OLOGIC_X2Y143";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_odelay_cpt"
+#  LOC = "IODELAY_X2Y143";
+#
+###Site: F21 -- Bank 26
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_oserdes_cpt"
+#  LOC = "OLOGIC_X1Y179";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_odelay_cpt"
+#  LOC = "IODELAY_X1Y179";
+#
+###Site: B20 -- Bank 26
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_oserdes_cpt"
+#  LOC = "OLOGIC_X1Y181";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_odelay_cpt"
+#  LOC = "IODELAY_X1Y181";
+#
+###Site: F25 -- Bank 25
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_oserdes_cpt"
+#  LOC = "OLOGIC_X1Y137";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_odelay_cpt"
+#  LOC = "IODELAY_X1Y137";
+#
+###Site: C28 -- Bank 25
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_oserdes_cpt"
+#  LOC = "OLOGIC_X1Y141";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_odelay_cpt"
+#  LOC = "IODELAY_X1Y141";
+#
+###Site: D24 -- Bank 25
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_oserdes_cpt"
+#  LOC = "OLOGIC_X1Y143";
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_odelay_cpt"
+#  LOC = "IODELAY_X1Y143";
+#
+#INST "cmp_bpm_pcie_ml605/*/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36
+#
+################################################################################
+## Timing Constraints
+################################################################################
+#
+#NET "cmp_bpm_pcie_ml605/sys_clk_c" TNM_NET = "SYSCLK" ;
+#NET "cmp_bpm_pcie_ml605/*/pcie_clocking_i/clk_125" TNM_NET = "CLK_125" ;
+#NET "cmp_bpm_pcie_ml605/*/TxOutClk_bufg" TNM_NET = "TXOUTCLKBUFG";
+#
+#TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 % PRIORITY 100 ;
+#TIMESPEC "TS_CLK_125"  = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 1 ;
+#TIMESPEC "TS_TXOUTCLKBUFG"  = PERIOD "TXOUTCLKBUFG" 100 MHz HIGH 50 % PRIORITY 100 ;
+#
+#
+#PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_int_i.CLR" TIG ;
+#PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_i.CLR" TIG ;
+#PIN "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i.RST" TIG ;
+#
+#INST "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
+#
+#
+######## DDR ###########
+## Temporary place for this constraint as it should belong to the
+## top ucf file, not here.
+#
+##NET "cmp_bpm_pcie_ml605/ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
+##TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
+#
+#NET "clk_200mhz" TNM_NET = TNM_ddr_sys_clk;
 #TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
-
-NET "clk_200mhz" TNM_NET = TNM_ddr_sys_clk;
-TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
-
-# Constrain BUFR clocks used to synchronize data from IOB to fabric logic
-# Note that ISE cannot infer this from other PERIOD constraints because
-# of the use of OSERDES blocks in the BUFR clock generation path
-NET "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/clk_rsync[?]" TNM_NET = TNM_clk_rsync;
-TIMESPEC "TS_clk_rsync" = PERIOD "TNM_clk_rsync" 5 ns;
-
-# Paths between DQ/DQS ISERDES.Q outputs and CLB flops clocked by falling
-# edge of BUFR will by design only be used if DYNCLKDIVSEL is asserted for
-# that particular flop. Mark this path as being a full-cycle, rather than
-# a half cycle path for timing purposes. NOTE: This constraint forces full-
-# cycle timing to be applied globally for all rising->falling edge paths
-# in all resynchronizaton clock domains. If the user had modified the logic
-# in the resync clock domain such that other rising->falling edge paths
-# exist, then constraint below should be modified to utilize pattern
-# matching to specific affect only the DQ/DQS ISERDES.Q outputs
-TIMEGRP "TG_clk_rsync_rise" = RISING  "TNM_clk_rsync";
-TIMEGRP "TG_clk_rsync_fall" = FALLING "TNM_clk_rsync";
-TIMESPEC "TS_clk_rsync_rise_to_fall" =
-  FROM "TG_clk_rsync_rise" TO "TG_clk_rsync_fall" "TS_ddr_sys_clk" * 4;
-
-# Signal to select between controller and physical layer signals. Four divided by two clock
-# cycles (4 memory clock cycles) are provided by design for the signal to settle down.
-# Used only by the phy modules.
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_init/u_ff_phy_init_data_sel" TNM = "TNM_PHY_INIT_SEL";
-TIMESPEC "TS_MC_PHY_INIT_SEL" = FROM "TNM_PHY_INIT_SEL" TO FFS = "TS_ddr_sys_clk"*8;
-
-###############################################################################
-# Physical Constraints
-###############################################################################
-# Constrain the PCIe core elements placement, so that it won't fail
-# timing analysis.
-# Comment out because we use nonstandard GTP location
-#INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
-#AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
-#Place the DMA design not far from PCIe core, otherwise it also breaks timing
-#INST "theTlpControl" AREA_GROUP = "GRP_tlpControl";
-#AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
-
-# PlanAhead Generated physical constraints
+#
+## Constrain BUFR clocks used to synchronize data from IOB to fabric logic
+## Note that ISE cannot infer this from other PERIOD constraints because
+## of the use of OSERDES blocks in the BUFR clock generation path
+#NET "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/clk_rsync[?]" TNM_NET = TNM_clk_rsync;
+#TIMESPEC "TS_clk_rsync" = PERIOD "TNM_clk_rsync" 5 ns;
+#
+## Paths between DQ/DQS ISERDES.Q outputs and CLB flops clocked by falling
+## edge of BUFR will by design only be used if DYNCLKDIVSEL is asserted for
+## that particular flop. Mark this path as being a full-cycle, rather than
+## a half cycle path for timing purposes. NOTE: This constraint forces full-
+## cycle timing to be applied globally for all rising->falling edge paths
+## in all resynchronizaton clock domains. If the user had modified the logic
+## in the resync clock domain such that other rising->falling edge paths
+## exist, then constraint below should be modified to utilize pattern
+## matching to specific affect only the DQ/DQS ISERDES.Q outputs
+#TIMEGRP "TG_clk_rsync_rise" = RISING  "TNM_clk_rsync";
+#TIMEGRP "TG_clk_rsync_fall" = FALLING "TNM_clk_rsync";
+#TIMESPEC "TS_clk_rsync_rise_to_fall" =
+#  FROM "TG_clk_rsync_rise" TO "TG_clk_rsync_fall" "TS_ddr_sys_clk" * 4;
+#
+## Signal to select between controller and physical layer signals. Four divided by two clock
+## cycles (4 memory clock cycles) are provided by design for the signal to settle down.
+## Used only by the phy modules.
+#INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_init/u_ff_phy_init_data_sel" TNM = "TNM_PHY_INIT_SEL";
+#TIMESPEC "TS_MC_PHY_INIT_SEL" = FROM "TNM_PHY_INIT_SEL" TO FFS = "TS_ddr_sys_clk"*8;
+#
+################################################################################
+## Physical Constraints
+################################################################################
+## Constrain the PCIe core elements placement, so that it won't fail
+## timing analysis.
+## Comment out because we use nonstandard GTP location
+##INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
+##AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
+##Place the DMA design not far from PCIe core, otherwise it also breaks timing
+##INST "theTlpControl" AREA_GROUP = "GRP_tlpControl";
+##AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
+#
+## PlanAhead Generated physical constraints
