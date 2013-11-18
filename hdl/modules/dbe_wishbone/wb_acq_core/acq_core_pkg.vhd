@@ -406,7 +406,7 @@ package acq_core_pkg is
     addr_last     => x"0000000000000FFF",
     product => (
     vendor_id     => x"1000000000001215",     -- LNLS
-    device_id     => x"1bafbf1e",
+    device_id     => x"4519a0ad",
     version       => x"00000001",
     date          => x"20131011",
     name          => "LNLS_BPM_ACQ_CORE  ")));
