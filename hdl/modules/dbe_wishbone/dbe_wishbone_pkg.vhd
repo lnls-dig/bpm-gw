@@ -1149,7 +1149,7 @@ package dbe_wishbone_pkg is
     -----------------------------
     ext_dout_o                                : out std_logic_vector(g_data_width-1 downto 0);
     ext_valid_o                               : out std_logic;
-    ext_addr_o                                : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    ext_addr_o                                : out std_logic_vector(g_addr_width-1 downto 0);
     ext_sof_o                                 : out std_logic;
     ext_eof_o                                 : out std_logic;
     ext_dreq_o                                : out std_logic; -- for debbuging purposes
@@ -1173,15 +1173,13 @@ package dbe_wishbone_pkg is
     ui_app_rd_data_end_i                      : in std_logic;
     ui_app_rd_data_valid_i                    : in std_logic;
 
-    -- DDR3 arbitrer for multiple accesses
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic;
-
     -----------------------------
     -- Debug Interface
     -----------------------------
-    dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-    dbg_ddr_rb_addr_o                         : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    dbg_ddr_rb_data_o                         : out std_logic_vector(g_data_width-1 downto 0);
+    dbg_ddr_rb_addr_o                         : out std_logic_vector(g_addr_width-1 downto 0);
     dbg_ddr_rb_valid_o                        : out std_logic
   );
   end component;
@@ -1262,6 +1260,7 @@ package dbe_wishbone_pkg is
 
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic;
+
     -----------------------------
     -- Debug Interface
     -----------------------------

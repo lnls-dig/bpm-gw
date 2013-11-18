@@ -192,17 +192,6 @@ architecture rtl of acq_ddr3_iface is
   signal acq_cnt_rst_n                  : std_logic;
 
   -- Functions
-  function f_gen_std_logic_vector(size : natural; value : std_logic)
-    return std_logic_vector
-  is
-    variable ret : std_logic_vector(size-1 downto 0);
-  begin
-    for i in 0 to size-1 loop
-      ret(i) := value;
-    end loop;
-
-    return ret;
-  end;
 
   -- Generates a big std_logic_vector concatenating a determined "word" of size
   -- "atom_size", in offset "ofs" in the generated word, filling the remaining
