@@ -129,15 +129,18 @@ architecture rtl of acq_fc_fifo is
   signal fifo_fc_oob_out                    : t_fc_data_oob;
   signal fifo_fc_valid_out                  : std_logic;
   signal fifo_fc_rd                         : std_logic;
+  signal fifo_fc_rd_en                      : std_logic;
   signal fifo_fc_valid                      : std_logic;
+  signal fifo_fc_valid_fwft                 : std_logic;
 
   signal fifo_fc_last_data                  : std_logic;
   signal fifo_fc_first_data                 : std_logic;
-  signal fifo_dreq                          : std_logic;
-  signal fifo_stall                         : std_logic;
+  signal pl_dreq                          : std_logic;
+  signal pl_stall                         : std_logic;
+  signal pl_pkt_sent                        : std_logic;
   signal ext_stall_s                        : std_logic;
   signal fifo_pkt_sent                      : std_logic;
-  signal fifo_out_data_pending              : std_logic;
+  signal fifo_fc_data_out_pnd               : std_logic; -- Pending data
 
   signal fifo_data_out                      : t_fc_data_array(g_fc_pipe_size-1 downto 0);
   -- SOF and EOF for now
@@ -164,7 +167,7 @@ architecture rtl of acq_fc_fifo is
   signal req_rst_trans_sync                 : std_logic;
   signal rst_trans_fs_sync                  : std_logic;
   signal rst_trans_ext_sync                 : std_logic;
-  signal rst_fc_source_trans            : std_logic;
+  signal pl_rst_trans            : std_logic;
   signal acq_cnt_rst_n                  : std_logic;
 
   -- Samples counts
@@ -310,14 +313,34 @@ begin
   fifo_fc_full_o <= fifo_fc_wr_full;
 
   -- Valid flag
-  p_fifo_fc_valid : process (ext_clk_i) is
+  --p_fifo_fc_valid : process (ext_clk_i) is
+  --begin
+  --  if rising_edge(ext_clk_i) then
+  --    fifo_fc_valid <= fifo_fc_rd;
+  --    --fifo_fc_valid_d0 <= fifo_fc_valid;
+  --
+  --    if (fifo_fc_rd_empty = '1') then
+  --      fifo_fc_valid <= '0';
+  --    end if;
+  --  end if;
+  --end process;
+
+  -- First Word Fall Through (FWFT) implementation
+  fifo_fc_rd <= not(fifo_fc_rd_empty) and (not(fifo_fc_valid_fwft) or fifo_fc_rd_en);
+  -- This is the actually valid flag from this FIFO
+  fifo_fc_valid <= fifo_fc_valid_fwft;
+
+  p_fifo_fc_valid_fwft : process (ext_clk_i) is
   begin
     if rising_edge(ext_clk_i) then
-      fifo_fc_valid <= fifo_fc_rd;
-      --fifo_fc_valid_d0 <= fifo_fc_valid;
-
-      if (fifo_fc_rd_empty = '1') then
-        fifo_fc_valid <= '0';
+      if ext_rst_n_i = '0' then
+         fifo_fc_valid_fwft <= '0';
+      else
+        if fifo_fc_rd = '1' then
+           fifo_fc_valid_fwft <= '1';
+        elsif fifo_fc_rd_en = '1' then
+           fifo_fc_valid_fwft <= '0';
+        end if;
       end if;
     end if;
   end process;
@@ -327,14 +350,15 @@ begin
   -- We could read from FIFO as long as the output pipeline is not full.
   -- TODO: implement better fifo reading mechanism!
   --fifo_fc_rd <= fifo_fc_dreq_i and not(fifo_fc_rd_empty) and not(fifo_fc_stall_i);
-  --fifo_fc_rd <= fifo_dreq and not(fifo_fc_rd_empty) and not(fifo_stall);
+  --fifo_fc_rd <= pl_dreq and not(fifo_fc_rd_empty) and not(pl_stall);
 
   -- FIXME!
   -- Start reading only after a determined threshold! In this way we avoid excessive
-  -- throttling of the "fifo_fc_valid" signal for the FIFo being empty!
+  -- throttling of the "fifo_fc_valid" signal for the FIFO being empty!
   -- This happens bexause the reading clock (200 MHz) is generally faster
   -- than fs_clk (~113 MHz)
-  fifo_fc_rd <= fifo_dreq and not(fifo_stall);
+  --fifo_fc_rd <= pl_dreq and not(pl_stall); -- ??? AND?
+  fifo_fc_rd_en <= pl_dreq or not(pl_stall);
 
   -----------------------------------------------------------------------------
   -- Reset transaction logic
@@ -388,14 +412,15 @@ begin
 
   fifo_fc_addr <= resize(fifo_pkt_sent_cnt, fifo_fc_addr'length);
 
-  --fifo_pkt_sent <= '1' when fifo_fc_valid = '1' and fifo_stall = '0' else '0';
+  --fifo_pkt_sent <= '1' when fifo_fc_valid = '1' and pl_stall = '0' else '0';
   -- The fc_source module accpets one more data after the stall is asserted.
-  -- So, even if the fifo_stall is asserted the current fifo data is still
+  -- So, even if the pl_stall is asserted the current fifo data is still
   -- accpeted by the fc_source module.
   --
   -- We also deasserted fifo_rd_en to avoid a second data valid from the asunc_fifo,
   -- which, in this case, would cause a data loss.
-  fifo_pkt_sent <= fifo_fc_valid;
+  --fifo_pkt_sent <= pl_pkt_sent;
+  fifo_pkt_sent <= not(pl_stall) and fifo_fc_valid;
 
   -----------------------------------------------------------------------------
   -- Number of packets and shots transfered
@@ -461,11 +486,12 @@ begin
     pl_addr_i                               => std_logic_vector(fifo_fc_addr),
     pl_valid_i                              => fifo_fc_valid,
 
-    pl_dreq_o                               => fifo_dreq,
-    pl_stall_o                              => fifo_stall,
+    pl_dreq_o                               => pl_dreq,
+    pl_stall_o                              => pl_stall,
+    --pl_pkt_sent_o                           => pl_pkt_sent,
     pl_pkt_sent_o                           => open,
 
-    pl_rst_trans_i                          => rst_fc_source_trans,
+    pl_rst_trans_i                          => pl_rst_trans,
 
     lmt_pkt_size_i                          => lmt_pkt_size,
     lmt_valid_i                             => lmt_valid,
@@ -480,8 +506,8 @@ begin
     fc_dreq_i                               => fc_dreq
   );
 
-  --rst_fc_source_trans <= rst_trans_ext_sync or fifo_pkt_sent_ct_all;
-  rst_fc_source_trans <= '0';
+  --pl_rst_trans <= rst_trans_ext_sync or fifo_pkt_sent_ct_all;
+  pl_rst_trans <= '0';
 
   -- Output assignments
   fifo_fc_dout_o <= fc_dout;
