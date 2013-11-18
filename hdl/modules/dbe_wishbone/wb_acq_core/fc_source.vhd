@@ -106,7 +106,10 @@ architecture rtl of fc_source is
 
   signal pre_output_counter_wr              : unsigned(f_log2_size(g_pipe_size)-1 downto 0);
   signal output_counter_rd                  : unsigned(f_log2_size(g_pipe_size)-1 downto 0);
-  signal pl_stall_t                         : std_logic;
+  signal pl_stall_s                       : std_logic;
+  signal pl_stall_r                       : std_logic;
+  signal pl_dreq_s                        : std_logic;
+  signal pl_dreq_r                        : std_logic;
 
   -- signals that a packet was actually transfered
   signal pkt_sent                           : std_logic;
@@ -220,7 +223,7 @@ begin
 
   fc_stall_s <= '0' when fc_stall_i = '0' else fc_valid_out_int;
   --fc_stall_s <= '0' when fc_stall_i = '0' else fc_valid_out_int_r;
-  fc_valid_s <= '1' when pl_valid_i = '1' and output_pipe_full = '0' else '0';
+  fc_valid_s <= '1' when pl_valid_i = '1' and pl_stall_r = '0' else '0';
 
   fc_first_data <= '1' when fc_valid_s = '1' and
                                  fc_in_pend_cnt = to_unsigned(0, fc_in_pend_cnt'length)
@@ -292,11 +295,37 @@ begin
   -- only works with the current pipe_size settings! FIXME!
   output_pipe_almost_empty <= '1' when fifo_diff_pnt_cnt = c_pipe_almost_empty else '0';
 
-  pl_stall_t <= output_pipe_almost_full or output_pipe_full;
-  pl_stall_o <= pl_stall_t;
+  --pl_stall_s <= output_pipe_almost_full or output_pipe_full;
+  --pl_stall_s <= output_pipe_full;
   --pl_dreq_o <= output_pipe_empty or fc_dreq_i;
-  pl_dreq_o <= output_pipe_empty or output_pipe_almost_empty;
+  --pl_dreq_s <= output_pipe_empty or output_pipe_almost_empty;
+  --pl_dreq_s <= output_pipe_empty or output_pipe_almost_empty; -- avoid starvation
   --pl_dreq_o <= not(pl_stall_t);
+
+  p_reg_stall_dreq_out : process(clk_i)
+  begin
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then
+        pl_stall_r <= '0';
+        pl_dreq_r <= '0';
+      else
+
+        if output_pipe_almost_full = '1' and fc_valid_s = '1' then
+          --pl_stall_r <= pl_stall_s;
+          pl_stall_r <= '1';
+        elsif output_pipe_full = '0' then
+          pl_stall_r <= '0';
+        end if;
+
+        --pl_dreq_r <= pl_dreq_s;
+        -- FIXME!
+        pl_dreq_r <=  output_pipe_empty or output_pipe_almost_empty;
+      end if;
+    end if;
+  end process;
+
+  pl_stall_o <= pl_stall_r;
+  pl_dreq_o <= pl_dreq_r;
 
   p_ext_mux_output : process(clk_i)
   begin
@@ -305,7 +334,7 @@ begin
         fc_data_out_int <= (others => '0');
         fc_oob_out_int <= (others => '0');
         fc_addr_out_int <= (others => '0');
-        --fc_valid_out_int <= '0';
+        fc_valid_out_int <= '0';
         output_counter_rd <= to_unsigned(0, output_counter_rd'length);
       else
         if fc_stall_s = '0' then
@@ -327,14 +356,14 @@ begin
           --end if;
 
           -- Keep the old data if the current one is not valid
-          if fc_dvalid_out(to_integer(output_counter_rd)) = '1' then
+          --if fc_dvalid_out(to_integer(output_counter_rd)) = '1' then
             -- verify wr counter and output corresponding output
             fc_data_out_int <= fc_data_out(to_integer(output_counter_rd));
             fc_addr_out_int <= fc_addr_out(to_integer(output_counter_rd));
             fc_oob_out_int <= fc_data_oob_out(to_integer(output_counter_rd));
-            --fc_valid_out_int <= fc_dvalid_out(to_integer(output_counter_rd));
+            fc_valid_out_int <= fc_dvalid_out(to_integer(output_counter_rd));
             --fifo_fc_addr_r <= std_logic_vector(fifo_fc_addr);
-          end if;
+          --end if;
 
           -- Only increment output_counter_rd if it is different from
           -- pre_output_counter_wr to prevent overflow!
@@ -352,18 +381,18 @@ begin
   fc_read_next_pkt <= '1' when output_counter_rd /= pre_output_counter_wr and fc_dreq_i = '1'
                             else '0';
 
-  p_ext_valid_output : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if rst_n_i = '0' then
-        fc_valid_out_int <= '0';
-      else
-        if fc_stall_s = '0' then
-          fc_valid_out_int <= fc_dvalid_out(to_integer(output_counter_rd));
-        end if;
-      end if;
-    end if;
-  end process;
+  --p_ext_valid_output : process(clk_i)
+  --begin
+  --  if rising_edge(clk_i) then
+  --    if rst_n_i = '0' then
+  --      fc_valid_out_int <= '0';
+  --    else
+  --      if fc_stall_s = '0' then
+  --        fc_valid_out_int <= fc_dvalid_out(to_integer(output_counter_rd));
+  --      end if;
+  --    end if;
+  --  end if;
+  --end process;
 
   fc_dout_o                            <= fc_data_out_int;
   fc_valid_o                           <= fc_valid_out_int;
