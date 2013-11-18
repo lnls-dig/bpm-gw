@@ -189,9 +189,7 @@ architecture rtl of acq_ddr3_iface is
   -- DDR3 Arbitrer Signals
   signal ddr_req                            : std_logic;
 
-  signal acq_cnt_rst_n                  : std_logic;
-
-  -- Functions
+  signal acq_cnt_rst_n                      : std_logic;
 
   -- Generates a big std_logic_vector concatenating a determined "word" of size
   -- "atom_size", in offset "ofs" in the generated word, filling the remaining
@@ -270,7 +268,6 @@ begin
   lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
   lmt_valid <= '1';
 
-  --valid_trans <= '1' when fifo_fc_valid_i = '1' and pl_stall = '0' else '0';
   valid_trans_app <= '1' when fifo_fc_valid_i = '1' and pl_stall = '0' else '0';
   valid_trans_app_wdf <= '1' when fifo_fc_valid_i = '1' and pl_stall = '0' else '0';
 
@@ -285,9 +282,14 @@ begin
         ddr_data_valid_in <= '0';
       else
         --ddr_valid_in <= valid_trans;
-        ddr_data_valid_in <= valid_trans_app_wdf;
+        -- Hold valid bit until we can accept it
+        if pl_stall = '0' then
+        --ddr_data_valid_in <= valid_trans_app_wdf;
+          ddr_data_valid_in <= fifo_fc_valid_i;
+        end if;
 
-        if fifo_fc_valid_i = '1' then
+        --if fifo_fc_valid_i = '1' then
+        if valid_trans_app_wdf = '1' then
           ddr_data_in <= f_gen_padded_word(g_ddr_payload_width,
                                        g_data_width,
                                        to_integer(ddr_addr_cnt_min),
@@ -348,7 +350,11 @@ begin
         ddr_addr_valid_in <= '0';
         --ddr_addr_inc <= to_unsigned(0, ddr_addr_inc'length);
       else
-        ddr_addr_valid_in <= valid_trans_app;
+        --ddr_addr_valid_in <= valid_trans_app;
+
+        if pl_stall = '0' then
+          ddr_addr_valid_in <= fifo_fc_valid_i;
+        end if;
 
         if wr_start_i = '1' then
         --ddr_addr_in <= fifo_fc_addr_i;
@@ -414,8 +420,10 @@ begin
       if ext_rst_n_i = '0' then
         ddr_mask_in <= (others => '0');
       else
-        ddr_mask_in <= f_gen_mask(g_ddr_payload_width/8, 8,
+        if valid_trans_app_wdf = '1' then
+          ddr_mask_in <= f_gen_mask(g_ddr_payload_width/8, 8,
                                      to_integer(ddr_addr_cnt_min), '1');
+        end if;
       end if;
     end if;
   end process;
