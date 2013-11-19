@@ -2021,6 +2021,7 @@ begin
     ddr_sys_clk_i   <= ddr_sys_clk_p;
     ddr_sys_reset_i <= ddr_core_rst;
     memc_ui_rst     <= ddr_ui_reset;
+    ddr_ref_clk_i   <= ddr_sys_clk_p;
   end generate;
 
   DDR_int_clk: if INSTANTIATED = "FALSE" generate
