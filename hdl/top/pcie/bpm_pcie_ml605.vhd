@@ -37,6 +37,7 @@ use UNISIM.VComponents.all;
 
 entity bpm_pcie_ml605 is
   generic (
+    RST_ACT_LOW  : integer := 1;
     SIMULATION   : string := "FALSE";
     INSTANTIATED : string := "FALSE";
     -- ****
@@ -1972,7 +1973,7 @@ begin
   u_ddr_core : ddr_v6
     generic map (
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
-      RST_ACT_LOW => 0
+      RST_ACT_LOW => RST_ACT_LOW
     )
     port map (
       -- Memory interface ports
