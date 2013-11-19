@@ -320,6 +320,7 @@ architecture rtl of wb_acq_core is
     wb_ack_o                                 : out    std_logic;
     wb_stall_o                               : out    std_logic;
     fs_clk_i                                 : in     std_logic;
+    --ext_clk_i                                : in     std_logic;
     regs_i                                   : in     t_acq_core_in_registers;
     regs_o                                   : out    t_acq_core_out_registers
   );
@@ -381,6 +382,7 @@ begin
     wb_ack_o                                => wb_slv_adp_in.ack,
     wb_stall_o                              => wb_slv_adp_in.stall,
     fs_clk_i                                => fs_clk_i,
+    --ext_clk_i                               => ext_clk_i,
     regs_i                                  => regs_in,
     regs_o                                  => regs_out
   );
@@ -401,9 +403,11 @@ begin
   shots_nb_c                                <= unsigned(regs_out.shots_nb_o);
 
   --acq_ddr3_start_addr                       <= (others => '0');
+  -- Synchronous to ext_clk_i
   acq_ddr3_start_addr_full                  <= regs_out.ddr3_start_addr_o;
 
   -- Truncate address to the actually width of external memory
+  -- Synchronous to ext_clk_i
   --acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto c_ddr_align_shift);
   acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto 0);
 

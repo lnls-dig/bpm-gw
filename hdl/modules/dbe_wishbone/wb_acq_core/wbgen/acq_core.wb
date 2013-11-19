@@ -369,7 +369,11 @@ peripheral {
       description = "Start address in DDR3 memory for the next acquisition.\nMust be word aligned (2 LSB zeroed)";
       type = SLV;
       size = 32;
-      -- clock = "fs_clk_i"; We don't need this
+      -- This clock is 2x the sys_clock and a simple 2-stage synchronizer won't help here.
+      -- So, we just ignore that tis register is in a differente domain and hope for the best.
+      -- Just kidding. Actually, this is as not as bad as it seems, as this is just a
+      -- configuration register that is ONLY read upon a fully synchronous strobe "acq_start"
+      -- clock = "ext_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
