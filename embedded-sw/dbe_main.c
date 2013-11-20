@@ -17,6 +17,7 @@
 #include "arp.h"
 #include "util.h"         // util functions like memcmp and memcpy
 #include "debug_print.h"
+#include "debug_subsys.h"
 
 /*   Each loop iteration takes 4 cycles.
  *  It runs at 100MHz.
@@ -46,36 +47,27 @@ static void set_eb_done(void* arg) {
 void user_recv(unsigned char* data, int length) {
     int iplen, i;
 
-    dbg_print("user_recv:\n");
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "user_recv:\n");
 
-    dbg_print("> mac: ");
-    dbg_print2("%2X ", (unsigned char*)(data), 6);
-    //pp_printf("> mac: ");
-    //pp_printf("%2X %2X %2X %2X %2X %2X\n", data[0], data[1], data[2], data[3],
-    //        data[4], data[5]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> mac: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE, "%2X ", (unsigned char*)(data), 6);
+
     /* If not for us or broadcast, ignore it */
     if (memcmp(data, allMAC, 6) && memcmp(data, myMAC, 6)) {
-        dbg_print("> MAC does not match ours, ignoring packet\n");
+        DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> MAC does not match ours, ignoring packet\n");
         return;
     }
 
-    dbg_print("> destination MAC is correct\n");
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> destination MAC is correct\n");
 
-    dbg_print("> ethtype: ");
-    dbg_print2("%2X ", (unsigned char*)(data+ETH_TYPE), 2);
-    //pp_printf("> ethtype: ");
-    //pp_printf("%2X %2X\n", data[ETH_TYPE], data[ETH_TYPE+1]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> ethtype: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE, "%2X ", (unsigned char*)(data+ETH_TYPE), 2);
 
-    dbg_print("> arp_oper: ");
-    dbg_print2("%2X ", (unsigned char*)(data+ARP_OPER), 2);
-    //pp_printf("> arp_oper: ");
-    //pp_printf("%2X %2X\n", data[ARP_OPER], data[ARP_OPER+1]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> arp_oper: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE, "%2X ", (unsigned char*)(data+ARP_OPER), 2);
 
-    dbg_print("> ip: ");
-    dbg_print2("%2X ", (unsigned char*)(data+ARP_TPA), 4);
-    //pp_printf("> ip: ");
-    //pp_printf("%2X %2X %2X %2X\n", data[ARP_TPA], data[ARP_TPA+1],
-    //        data[ARP_TPA+2], data[ARP_TPA+3]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> arp_tpa: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE, "%2X ", (unsigned char*)(data+ARP_TPA), 4);
 
     /* Is it ARP request targetting our IP? */
     if (data[ETH_TYPE+0] == 0x08 &&
@@ -87,20 +79,15 @@ void user_recv(unsigned char* data, int length) {
         memcpy(hisMAC, data+ARP_SHA, 6);
         memcpy(hisIP,  data+ARP_SPA, 4);
 
-        dbg_print("> ARP request\n");
+        DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> ARP request\n");
     } else
-        dbg_print("> no ARP request\n");
+        DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> no ARP request\n");
 
-    dbg_print("> ip version: ");
-    dbg_print2("%2X ", (unsigned char*)(data+IP_VERSION), 1);
-    //pp_printf("> ip version: ");
-    //pp_printf("%2X\n", data[IP_VERSION]);
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> ip version: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE,"%2X ", (unsigned char*)(data+IP_VERSION), 1);
 
-    dbg_print("> ip dest: ");
-    dbg_print2("%2X ", (unsigned char*)(data+IP_DEST), 1);
-    //pp_printf("> ip dest: ");
-    //pp_printf("%2X\n", data[IP_DEST]);
-
+    DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> ip dest: ");
+    DBE_DEBUG_ARRAY(DBG_ETH | DBE_DBG_TRACE, "%d ", (unsigned char*)(data+IP_DEST), 4);
     /* Is it IP targetting us? */
     if (data[ETH_TYPE+0] == 0x08 &&
             data[ETH_TYPE+1] == 0x00 &&
@@ -117,10 +104,10 @@ void user_recv(unsigned char* data, int length) {
                 memcpy(hisIP,     data+IP_SOURCE,   4);
                 memcpy(hisBody,   data+ICMP_QUENCH, hisBodyLen);
 
-                dbg_print("> PING request\n");
+                DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> PING request\n");
             }
         } else
-            dbg_print("> no PING request\n");
+            DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> no PING request\n");
 
         /* UDP etherbone? */
         if (data[IP_PROTOCOL] == 0x11) {
@@ -134,14 +121,14 @@ void user_recv(unsigned char* data, int length) {
             ethmac_adapt_go(0);
             while (!eb_done);
 
-            dbg_print("> EBONE request\n");
+            DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> EBONE request\n");
 
             /* shift out the padding */
             for (i = 12; i >= 2; --i)
                 hisBody[i] = hisBody[i-2];
             tx_packet(hisBody+2, iplen+14);
         } else
-            dbg_print("> no EBONE request\n");
+            DBE_DEBUG(DBG_ETH | DBE_DBG_TRACE, "> no EBONE request\n");
     }
 }
 
@@ -179,32 +166,16 @@ int dbe_init(void)
         return -1;
     }
 
-    if(spi_init() == -1){
-        pp_printf("> error initializing SPI! Exiting...\n");
+    // Ethernet MAC Initialization
+    if(ethmac_init() == -1){
+        pp_printf("> error initializing Ethernet MAC! Exiting...\n");
         return -1;
     }
 
-    if(i2c_init() == -1){
-        pp_printf("> error initializing I2C! Exiting...\n");
-        return -1;
-    }
+    // Setup ethmac
+    //ethmac_setup(ETH0_PHY); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
 
-    if(owr_init() == -1){
-        pp_printf("> error initializing Onewire! Exiting...\n");
-        return -1;
-    }
-
-    //if(fmc150_init() == -1){
-    //  pp_printf("> Error initializing FMC150! Exiting...\n");
-    //  return -1;
-    //}
-
-    if(fmc516_init() == -1){
-      pp_printf("> Error initializing FMC516! Exiting...\n");
-      return -1;
-    }
-
-    // Ethernet initilization
+    // Ethernet adapter initilization
     if(ethmac_adapt_init() == -1){
         pp_printf("> error initializing Ethernet MAC adapter! Exiting...\n");
         return -1;
@@ -448,16 +419,16 @@ void fmc516_test()
       i, fmc516_isla216_get_chipver(i));
   }
 
-  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-    pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
-    fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
-        ISLA216_TESTIO_REG, i);
-  }
-
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
-  //  fmc516_isla216_test_ramp(i);
-  //  pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  //  pp_printf("> FMC516_ISLA216_ADC%d test mode off\n", i);
+  //  fmc516_isla216_write_byte(ISLA216_OUT_TESTMODE(ISLA216_OUT_TESTIO_OFF),
+  //      ISLA216_TESTIO_REG, i);
   //}
+
+  for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
+    fmc516_isla216_test_ramp(i);
+    pp_printf("> FMC516_ISLA216_ADC%d: ramp test enabled!\n", i);
+  }
 
   //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
   //  fmc516_isla216_test_midscale(i);
@@ -489,20 +460,6 @@ int main(void)
         return -1;
     }
 
-    dbg_print("main:\n");
-
-    /* Install ethernet interrupt handler, it is enabled here too */
-    int_add(ETH0_IRQ, oeth_interrupt, 0);
-    int_add(2, &button, 0);
-
-    ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
-
-    /* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
-
-    /* Configure EB DMA */
-    ethmac_adapt_set_base(0, (unsigned int)hisBody, (unsigned int)hisBody);
-    int_add(4, &set_eb_done, 0);
-
     print_header();
 
     /* Test memory pool */
@@ -514,23 +471,35 @@ int main(void)
     /* Test button */
     button_test();
 
-    /* FMC150 test */
-    //fmc150_test();
-
-    /* FMC516 test */
-    fmc516_test();
-
     print_end_header();
 
+    /* Install ethernet interrupt handler, it is enabled here too */
+    int_add(ETH0_IRQ, oeth_interrupt, 0);
+    int_add(2, &button, 0);
+
+    //ethmac_setup(ETH0_PHY, ETH0_BUF); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
+    ethmac_setup(ETH0_PHY); /* Configure MAC, TX/RX BDs and enable RX and TX in MODER */
+
+    /* clear tx_done, the tx interrupt handler will set it when it's been transmitted */
+
+    /* Install ethernet interrupt handler, it is enabled here too */
+    int_add(ETH0_IRQ, oeth_interrupt, 0);
+
+    /* Configure EB DMA */
+    ethmac_adapt_set_base(0, (unsigned int)hisBody, (unsigned int)hisBody);
+    int_add(4, &set_eb_done, 0);
+
     // Waiting for ARP or ICMP request
-    dbg_print("> waiting for ARP or ICMP request\n");
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> waiting for ARP or ICMP request\n");
+    pp_printf("> waiting for ARP or ICMP request\n");
     while (1) {
         if (sawARP){
-            dbg_print("> saw ARP request\n");
+             DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> saw ARP request\n");
+
             sendARP();
         }
         if (sawPING){
-            dbg_print("> saw PING request\n");
+             DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> saw PING request\n");
             sendECHO();
         }
     }

@@ -1,5 +1,7 @@
 *disasm.S
 *.[oa]
 *.ram
+*.vhd
 *.elf
 *.bin
+*.d

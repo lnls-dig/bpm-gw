@@ -31,27 +31,27 @@ int fmc516_init(void)
         fmc516[i] = (fmc516_t *) dev_p->base;
 
         // Initialize fmc516 components
-        dbg_print("> initilizing fmc516 regs\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 regs\n");
         fmc516_init_regs(i);
-        dbg_print("> initilizing fmc516 lmk02000\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 lmk02000\n");
         fmc516_lmk02000_init();
-        dbg_print("> fmc516 addr[%d]: %08X\n", i, dev_p->base);
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> fmc516 addr[%d]: %08X\n", i, dev_p->base);
 
         delay(1000);
-        dbg_print("> resetting ADCs\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> resetting ADCs\n");
         fmc516_reset_adcs(i);
         delay(1000);
         fmc516_resetdiv_adcs(i);
         delay(1000);
-        dbg_print("> ADCs reset values(rst|divrst)): %08X|%08X\n",
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> ADCs reset values(rst|divrst)): %08X|%08X\n",
             fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_ADCS,
             fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_DIV_ADCS);
 
-        dbg_print("> initilizing fmc516 isla216\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 isla216\n");
         fmc516_isla216_all_init();
     }
 
-    dbg_print("> fmc516 size: %d\n", fmc516_devl->size);
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> fmc516 size: %d\n", fmc516_devl->size);
     //fmc516 = (fmc516_t *)fmc516_devl->devices->base;//BASE_FMC516;
     return 0;
 }
@@ -69,24 +69,26 @@ void fmc516_init_regs(unsigned int id)
 {
     int commit= 1;
 
-    dbg_print("> Leds and clock select\n");
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> Leds and clock select\n");
 
-    // No test data. External reference on. Led0 on. Led1 on. VCXO off
+    // No test data. External reference on. Led0 on. VCXO off
     fmc516_clk_sel(id, 1);
-    fmc516_led1(id, 1);
+    fmc516_led0(id, 1);
 
-    // Adjsut the delays of all channels. Don't change these values
+    // Adjust the delays of all channels. Don't change these values
     // unless you really have to!
     fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 24, commit);
+    //fmc516_adj_delay(id, FMC516_ISLA216_ADC0, 5, 15, commit);
     fmc516_adj_delay(id, FMC516_ISLA216_ADC1, 5, 14, commit);
     fmc516_adj_delay(id, FMC516_ISLA216_ADC2, 5, 15, commit);
-    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
+    //fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 25, commit);
+    fmc516_adj_delay(id, FMC516_ISLA216_ADC3, 5, 28, commit);
 
     // Delay the falling edge of all channels
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC0, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC1, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC2, 0, 0);
-    fmc516_fe_dly(id, FMC516_ISLA216_ADC3, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC0, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC1, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC2, 0, 0, 0, 0);
+    fmc516_fe_rg_dly(id, FMC516_ISLA216_ADC3, 0, 0, 0, 0);
 }
 
 void fmc516_sweep_delays(unsigned int id)
@@ -94,24 +96,48 @@ void fmc516_sweep_delays(unsigned int id)
     int commit = 1;
     int i, j;
 
-    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH0_CTL));
-    dbg_print("> ADC%d data delay: %d...\n", 1, FMC516_CH1_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH1_CTL));
-    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH2_CTL));
-    dbg_print("> ADC%d data delay: %d...\n", 3, FMC516_CH3_CTL_DATA_CHAIN_DLY_R(fmc516[id]->CH3_CTL));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 0,
+                FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 1,
+                FMC516_CH1_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH1_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 2,
+                FMC516_CH2_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 3,
+                FMC516_CH3_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH3_FN_DLY));
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 0,
+                FMC516_CH0_CS_DLY_FE_DLY_R(fmc516[id]->CH0_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 1,
+                FMC516_CH1_CS_DLY_FE_DLY_R(fmc516[id]->CH1_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 2,
+                FMC516_CH2_CS_DLY_FE_DLY_R(fmc516[id]->CH2_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 3,
+                FMC516_CH3_CS_DLY_FE_DLY_R(fmc516[id]->CH3_CS_DLY));
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 0,
+                FMC516_CH0_CS_DLY_RG_DLY_R(fmc516[id]->CH0_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 1,
+                FMC516_CH1_CS_DLY_RG_DLY_R(fmc516[id]->CH1_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 2,
+                FMC516_CH2_CS_DLY_RG_DLY_R(fmc516[id]->CH2_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 3,
+                FMC516_CH3_CS_DLY_RG_DLY_R(fmc516[id]->CH3_CS_DLY));
 
     //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
         //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 1, j);
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> sweeping ADC%d clk delay values: %d...\n", 1, j);
         //    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, -1, j, commit);
         //    delay(80000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_CTL));
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d data delay: %d...\n", 0,
+        //                FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
         //}
 
         //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 2, j);
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> sweeping ADC%d clk delay values: %d...\n", 2, j);
         //    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, -1, j, commit);
         //    delay(150000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_CTL));
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d data delay: %d...\n", 2,
+        //                FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
         //}
     //}
 }
@@ -134,20 +160,21 @@ void fmc516_adj_delay(unsigned int id, int ch, int clk_dly, int data_dly, int co
     // Find the correct ADC instance to operate on
     switch(ch) {
         case FMC516_ISLA216_ADC0:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_FN_DLY;
             break;
         case FMC516_ISLA216_ADC1:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH1_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH1_FN_DLY;
             break;
         case FMC516_ISLA216_ADC2:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH2_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH2_FN_DLY;
             break;
         case FMC516_ISLA216_ADC3:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH3_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH3_FN_DLY;
             break;
 
         default:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_CTL;
+            dbg_print("> Unsupported FMC516 ADC channel\n");
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_FN_DLY;
     }
 
     // Read the register value once
@@ -157,15 +184,15 @@ void fmc516_adj_delay(unsigned int id, int ch, int clk_dly, int data_dly, int co
     /* All Read/Write macros are the same for all channels. Use the first one */
     if (clk_dly != -1) {
         /* Clear clk delay bits and write the desired value*/
-        adc_ctl_reg = (adc_ctl_reg & ~FMC516_CH0_CTL_CLK_CHAIN_DLY_MASK) |
-                            FMC516_CH0_CTL_CLK_CHAIN_DLY_W(clk_dly);
+        adc_ctl_reg = (adc_ctl_reg & ~FMC516_CH0_FN_DLY_CLK_CHAIN_DLY_MASK) |
+                            FMC516_CH0_FN_DLY_CLK_CHAIN_DLY_W(clk_dly);
 
     }
 
     if (data_dly != -1) {
         /* Clear clk delay bits and write the desired value*/
-        adc_ctl_reg = (adc_ctl_reg & ~FMC516_CH0_CTL_DATA_CHAIN_DLY_MASK) |
-                          FMC516_CH0_CTL_DATA_CHAIN_DLY_W(data_dly);
+        adc_ctl_reg = (adc_ctl_reg & ~FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_MASK) |
+                          FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_W(data_dly);
 
     }
 
@@ -232,39 +259,56 @@ uint32_t fmc516_read_adc3(unsigned int id)
 }
 
 // ADC delay falling edge control
-void fmc516_fe_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2)
+void fmc516_fe_rg_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2,
+                    int rg_dly_d1, int rg_dly_d2)
 {
     uint32_t *fmc_ch_handler;
-    uint32_t fe_dly_reg;
+    uint32_t dly_ctl_reg;
 
     switch(ch) {
         case FMC516_ISLA216_ADC0:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_DLY_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_CS_DLY;
             break;
         case FMC516_ISLA216_ADC1:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH1_DLY_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH1_CS_DLY;
             break;
         case FMC516_ISLA216_ADC2:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH2_DLY_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH2_CS_DLY;
             break;
         case FMC516_ISLA216_ADC3:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH3_DLY_CTL;
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH3_CS_DLY;
             break;
 
         default:
-            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_DLY_CTL;
+            dbg_print("> Unsupported FMC516 ADC channel\n");
+            fmc_ch_handler = (uint32_t *) &fmc516[id]->CH0_CS_DLY;
     }
 
     // Read register value once
-    fe_dly_reg = *fmc_ch_handler;
+    dly_ctl_reg = *fmc_ch_handler;
 
     if (fe_dly_d2)
-        fe_dly_reg |= (fe_dly_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
-                        FMC516_CH0_DLY_CTL_FE_DLY_W(0x3);
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_FE_DLY_MASK) |
+                        FMC516_CH0_CS_DLY_FE_DLY_W(0x3);
     else if (fe_dly_d1)
-        fe_dly_reg |= (fe_dly_reg & ~FMC516_CH0_DLY_CTL_FE_DLY_MASK) |
-                        FMC516_CH0_DLY_CTL_FE_DLY_W(0x1);
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_FE_DLY_MASK) |
+                        FMC516_CH0_CS_DLY_FE_DLY_W(0x1);
+    else
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_FE_DLY_MASK) |
+                    FMC516_CH0_CS_DLY_FE_DLY_W(0x0);
+
+    if (rg_dly_d2)
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_RG_DLY_MASK) |
+                        FMC516_CH0_CS_DLY_RG_DLY_W(0x3);
+    else if (rg_dly_d1)
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_RG_DLY_MASK) |
+                        FMC516_CH0_CS_DLY_RG_DLY_W(0x1);
+    else
+        dly_ctl_reg = (dly_ctl_reg & ~FMC516_CH0_CS_DLY_RG_DLY_MASK) |
+                    FMC516_CH0_CS_DLY_RG_DLY_W(0x0);
 
     // Write register value once
-    *fmc_ch_handler = fe_dly_reg;
+    *fmc_ch_handler = dly_ctl_reg;
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "dly_ctl_reg, *fmc_ch_handler = %08X, %08X\n", dly_ctl_reg, *fmc_ch_handler);
 }

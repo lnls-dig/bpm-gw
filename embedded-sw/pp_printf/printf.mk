@@ -1,7 +1,7 @@
 # This is included from ../Makefile, for the wrc build system.
 # The Makefile in this directory is preserved from the upstream version
 
-ifdef CONFIG_PPRINTF
+ifeq ($(CONFIG_PPRINTF),y)
 	OBJS_LIB += pp_printf/printf.o
 	#obj-$(CONFIG_PP_PRINTF) += pp_printf/printf.o
 

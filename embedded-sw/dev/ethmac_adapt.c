@@ -19,14 +19,14 @@ int ethmac_adapt_init(void)
     // get all base addresses
     ethmac_adapt = (ethmac_adapt_t **) memmgr_alloc(sizeof(ethmac_adapt_t *)*ethmac_adapt_devl->size);
 
-    //dbg_print("> ethmac_adapt size: %d\n", ethmac_adapt_devl->size);
-
     for (i = 0, dev_p = ethmac_adapt_devl->devices; i < ethmac_adapt_devl->size;
             ++i, dev_p = dev_p->next) {
         ethmac_adapt[i] = (ethmac_adapt_t *) dev_p->base;
-        //dbg_print("> dma addr[%d]: %08X\n", i, gpio[i]);
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> ethmac_adapt addr[%d]: %08X\n", i, ethmac_adapt[i]);
     }
-    //ethmac_adapt = (ethmac_adapt_t *)ethmac_adapt_devl->devices->base;//BASE_GPIO;
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> ethmac_adapt size: %d\n", ethmac_adapt_devl->size);
+
     return 0;
 }
 

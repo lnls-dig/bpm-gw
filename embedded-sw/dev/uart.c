@@ -27,10 +27,10 @@ int uart_init(void)
             ++i, dev_p = dev_p->next) {
         uart[i] = (uart_t *) dev_p->base;
         uart[i]->BCR = CALC_BAUD(UART_BAUDRATE);
-        dbg_print("> uart addr[%d]: %08X\n", i, dev_p->base);
+        DBE_DEBUG(DBG_UART | DBE_DBG_INFO, "> uart addr[%d]: %08X\n", i, dev_p->base);
     }
 
-    dbg_print("> uart size: %d\n", uart_devl->size);
+    DBE_DEBUG(DBG_UART | DBE_DBG_INFO, "> uart size: %d\n", uart_devl->size);
     //uart = (uart_t *)uart_devl->devices->base;//BASE_GPIO;
     return 0;
 }
@@ -57,8 +57,16 @@ void uart_write_string(unsigned int id, char *s)
         uart_write_byte(id, *(s++));
 }
 
+void uart_write(unsigned int id, const char *s, int nbytes)
+{
+  int i;
+
+  for(i = 0; i < nbytes; ++i)
+    uart_write_byte(DEFAULT_UART, *(s++));
+}
+
 // Only for use with puts
-void uart_default_write_string(char *s)
+static void uart_default_write_string(char *s)
 {
     while (*s)
         uart_write_byte(DEFAULT_UART, *(s++));
