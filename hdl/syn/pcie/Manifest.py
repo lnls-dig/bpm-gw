@@ -10,7 +10,9 @@ syn_device = "xc6vlx240t" #ML605
 syn_package = "ff1156" #ML605
 
 syn_grade = "-1"
-syn_top = "bpm_pcie_ml605"
+syn_top = "top"
+#syn_project = "bpm_pcie_k7.xise"
+#syn_project = "bpm_pcie_a7.xise"
 syn_project = "bpm_pcie_ml605.xise"
 
 if (syn_device == "xc7k325t"):

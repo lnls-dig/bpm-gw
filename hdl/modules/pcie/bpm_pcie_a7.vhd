@@ -38,7 +38,6 @@ use UNISIM.VComponents.all;
 entity bpm_pcie_a7 is
   generic (
     SIMULATION   : string := "FALSE";
-    INSTANTIATED : string := "FALSE";
     -- ****
     -- PCIe core parameters
     -- ****
@@ -91,44 +90,42 @@ entity bpm_pcie_a7 is
     ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
     sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
     sys_clk_n     : in std_logic; --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic --Reset to PCIe core
+    sys_rst_n     : in std_logic; --Reset to PCIe core
 
     -- DDR memory controller interface --
-    -- uncomment when instantiating in another project
-    --ddr_core_rst   : in  std_logic;
-    --memc_ui_clk    : out std_logic;
-    --memc_ui_rst    : out std_logic;
-    --memc_cmd_rdy   : out std_logic;
-    --memc_cmd_en    : in  std_logic;
-    --memc_cmd_instr : in  std_logic_vector(2 downto 0);
-    --memc_cmd_addr  : in  std_logic_vector(31 downto 0);
-    --memc_wr_en     : in  std_logic;
-    --memc_wr_end    : in  std_logic;
-    --memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-    --memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_wr_rdy    : out std_logic;
-    --memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_rd_valid  : out std_logic;
+    ddr_core_rst   : in  std_logic;
+    memc_ui_clk    : out std_logic;
+    memc_ui_rst    : out std_logic;
+    memc_cmd_rdy   : out std_logic;
+    memc_cmd_en    : in  std_logic;
+    memc_cmd_instr : in  std_logic_vector(2 downto 0);
+    memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+    memc_wr_en     : in  std_logic;
+    memc_wr_end    : in  std_logic;
+    memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_wr_rdy    : out std_logic;
+    memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_rd_valid  : out std_logic;
     ---- memory arbiter interface
-    --memarb_acc_req : in  std_logic;
-    --memarb_acc_gnt : out std_logic;
+    memarb_acc_req : in  std_logic;
+    memarb_acc_gnt : out std_logic;
     --/ DDR memory controller interface
 
     -- Wishbone interface --
-    -- uncomment when instantiating in another project
-    --CLK_I : in  std_logic;
-    --RST_I : in  std_logic;
-    --ACK_I : in  std_logic;
-    --DAT_I : in  std_logic_vector(63 downto 0);
-    --ADDR_O : out std_logic_vector(28 downto 0);
-    --DAT_O : out std_logic_vector(63 downto 0);
-    --WE_O  : out std_logic;
-    --STB_O : out std_logic;
-    --SEL_O : out std_logic;
-    --CYC_O : out std_logic;
+    CLK_I : in  std_logic;
+    RST_I : in  std_logic;
+    ACK_I : in  std_logic;
+    DAT_I : in  std_logic_vector(63 downto 0);
+    ADDR_O : out std_logic_vector(28 downto 0);
+    DAT_O : out std_logic_vector(63 downto 0);
+    WE_O  : out std_logic;
+    STB_O : out std_logic;
+    SEL_O : out std_logic;
+    CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    --ext_rst_o : out std_logic
+    ext_rst_o : out std_logic
     );
 end entity bpm_pcie_a7;
 
@@ -434,8 +431,6 @@ architecture Behavioral of bpm_pcie_a7 is
       );
   end component ddr_core;
 
-  signal fifo_reset_done    : std_logic;
-
 -- -----------------------------------------------------------------------
 --  DDR SDRAM control module
 -- -----------------------------------------------------------------------
@@ -569,14 +564,6 @@ architecture Behavioral of bpm_pcie_a7 is
   signal DDR_FIFO_RdQout : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   signal DDR_Ready   : std_logic;
-  signal DDR_Blinker : std_logic;
-
-  signal user_wr_weA   : std_logic_vector(7 downto 0)               := (others => '0');
-  signal user_wr_addrA : std_logic_vector(11 downto 0) := (others => '0');
-  signal user_wr_dinA  : std_logic_vector(C_DBUS_WIDTH-1 downto 0)  := (others => '0');
-  signal user_rd_addrB : std_logic_vector(11 downto 0) := (others => '0');
-  signal user_rd_doutB : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
 
   -- -----------------------------------------------------------------------
   -- Wishbone interface module
@@ -621,24 +608,6 @@ architecture Behavioral of bpm_pcie_a7 is
       );
   end component;
 
-  -- WISHBONE SLAVE interface:
-  -- Single-Port RAM with Asynchronous Read
-  --
-  component WB_MEM is
-    generic(
-      AWIDTH : natural range 2 to 29 := 7;
-      DWIDTH : natural range 8 to 128 := 64
-    );
-    port(
-      CLK_I : in  std_logic;
-      ACK_O : out std_logic;
-      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
-      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
-      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
-      STB_I : in  std_logic;
-      WE_I  : in  std_logic
-    );
-  end component;
 
   signal wbone_clk     : std_logic;
   signal wb_wr_we      : std_logic;
@@ -657,7 +626,7 @@ architecture Behavioral of bpm_pcie_a7 is
   signal wb_rdd_empty  : std_logic;
   signal wbone_rst     : std_logic;
   signal wb_fifo_rst   : std_logic;
-  signal wbone_addr    : std_logic_vector(31 downto 0);
+  signal wbone_addr    : std_logic_vector(28 downto 0);
   signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_we      : std_logic;
@@ -903,19 +872,6 @@ architecture Behavioral of bpm_pcie_a7 is
   signal localId         : std_logic_vector(15 downto 0);
   signal pcie_link_width : std_logic_vector(5 downto 0);
 
-  --
-  signal trn_Blinker : std_logic;
-
-  signal ddr_ref_clk_i : std_logic;
-
-  signal DMA_Host2Board_Busy : std_logic;
-  signal DMA_Host2Board_Done : std_logic;
-
-  signal DMA_us_Busy : std_logic;
-  signal DMA_us_Done : std_logic;
-  signal DMA_ds_Done : std_logic;
-  signal DMA_ds_Busy : std_logic;
-
   ----- DDR core User Interface signals -----------------------
   signal app_addr          : std_logic_vector(DDR_ADDR_WIDTH-1 downto 0);
   signal app_cmd           : std_logic_vector(2 downto 0);
@@ -938,30 +894,6 @@ architecture Behavioral of bpm_pcie_a7 is
   signal ddr_sys_clk_i     : std_logic;
   signal ddr_sys_reset_i   : std_logic;
 
-  -- additional clocking signal when using project as standalone
-  signal pll_clkin    : std_logic;
-  signal pll_clkout0  : std_logic;
-  signal pll_clkfbout : std_logic;
-  signal pll_locked   : std_logic;
-
---to prevent <signal_name> is not declared errors
-  signal ddr_core_rst : std_logic;
-  signal memc_ui_rst  : std_logic;
-
-  signal clk_i  : std_logic;
-  signal rst_i  : std_logic;
-  signal dat_i  : std_logic_vector(63 downto 0);
-  signal ack_i  : std_logic;
-  signal addr_o : std_logic_vector(28 downto 0);
-  signal we_o   : std_logic;
-  signal dat_o  : std_logic_vector(63 downto 0);
-  signal sel_o  : std_logic;
-  signal stb_o  : std_logic;
-  signal cyc_o  : std_logic;
-
-  signal ext_rst_o : std_logic;
---COMMENT OUT WHEN INSTANTIATING AS COMPONENT
-
 begin
 
   sys_reset_c <= not sys_reset_n_c;
@@ -980,17 +912,6 @@ begin
       CEB   => '0'
       );
 
-  --ddr_refclk_ibuf : IBUFGDS
-    --generic map (
-      --DIFF_TERM    => TRUE,
-      --IBUF_LOW_PWR => FALSE
-    --)
-    --port map (
-      --I  => ddr_sys_clk_p,
-      --IB => ddr_sys_clk_n,
-      --O  => ddr_ref_clk_i
-    --);
-  ddr_ref_clk_i <= '0'; --USE_SYSTEM_CLOCK
 
   cfg_err_cor            <= '0';
   cfg_err_ur             <= '0';
@@ -1297,7 +1218,6 @@ begin
     -------------------------------------------------------------------------------------------------------------------
     cfg_vc_tcvc_map => open ,
 
-
     -------------------------------------------------------------------------------------------------------------------
     -- 8. System(SYS) Interface                                                                                      --
     -------------------------------------------------------------------------------------------------------------------
@@ -1413,20 +1333,20 @@ begin
         )
       port map(
         -- connect your own signals here
-        memc_ui_clk    => open, --: out std_logic;
-        memc_cmd_rdy   => open, --: out std_logic;
-        memc_cmd_en    => '0', --: in  std_logic;
-        memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
-        memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
-        memc_wr_en     => '0', --: in  std_logic;
-        memc_wr_end    => '0', --: in  std_logic;
-        memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
-        memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
-        memc_wr_rdy    => open, --: out std_logic;
-        memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
-        memc_rd_valid  => open, --: out std_logic;
-        memarb_acc_req => '0', --: in  std_logic;
-        memarb_acc_gnt => open, --: out std_logic;
+        memc_ui_clk    => memc_ui_clk, --: out std_logic;
+        memc_cmd_rdy   => memc_cmd_rdy, --: out std_logic;
+        memc_cmd_en    => memc_cmd_en, --: in  std_logic;
+        memc_cmd_instr => memc_cmd_instr, --: in  std_logic_vector(2 downto 0);
+        memc_cmd_addr  => memc_cmd_addr, --: in  std_logic_vector(31 downto 0);
+        memc_wr_en     => memc_wr_en, --: in  std_logic;
+        memc_wr_end    => memc_wr_end, --: in  std_logic;
+        memc_wr_mask   => memc_wr_mask, --: in  std_logic_vector(64/8-1 downto 0);
+        memc_wr_data   => memc_wr_data, --: in  std_logic_vector(64-1 downto 0);
+        memc_wr_rdy    => memc_wr_rdy, --: out std_logic;
+        memc_rd_data   => memc_rd_data, --: out std_logic_vector(64-1 downto 0);
+        memc_rd_valid  => memc_rd_valid, --: out std_logic;
+        memarb_acc_req => memarb_acc_req, --: in  std_logic;
+        memarb_acc_gnt => memarb_acc_gnt, --: out std_logic;
         -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
         DDR_wr_v     => DDR_wr_v ,   --  IN    std_logic;
@@ -1504,10 +1424,10 @@ begin
 
           -- Common interface
           DDR_Ready   => DDR_Ready ,    --  OUT   std_logic;
-          DDR_Blinker => DDR_Blinker ,  --  OUT   std_logic;
+          DDR_Blinker => open,  --  OUT   std_logic;
           mem_clk     => user_clk ,     --  IN
           user_clk    => user_clk ,     --  IN    std_logic;
-          Sim_Zeichen => open ,  --  OUT   std_logic;
+          Sim_Zeichen => open,  --  OUT   std_logic;
           user_reset  => user_reset     --  IN    std_logic
           );
 
@@ -1549,8 +1469,6 @@ begin
         rst => user_reset --in std_logic
         );
 
-  Wishbone_ext: if INSTANTIATED = "TRUE" generate
-
     wbone_clk  <= CLK_I;
     wbone_rst  <= RST_I;
     wbone_mdin <= DAT_I;
@@ -1563,52 +1481,6 @@ begin
     CYC_O      <= wbone_cyc;
     ext_rst_o  <= wb_fifo_rst;
 
-  end generate;
-
-  Wishbone_int : if INSTANTIATED = "FALSE" generate
-    --temporary clock assignment
-    wbone_clk <= ddr_ui_clk;
-    wbone_rst <= wb_fifo_rst;
-
-    Wishbone_mem_large: if (SIMULATION = "TRUE") generate
-      wb_mem_sim :
-        wb_mem
-          generic map(
-            AWIDTH => 16,
-            DWIDTH => 64
-          )
-          port map(
-            CLK_I => wbone_clk, --in  std_logic;
-            ACK_O => wbone_ack, --out std_logic;
-            ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-            STB_I => wbone_stb, --in  std_logic;
-            WE_I  => wbone_we --in  std_logic
-          );
-
-    end generate;
-
-    Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
-      wb_mem_syn :
-        wb_mem
-          generic map(
-            AWIDTH => 7,
-            DWIDTH => 64
-          )
-          port map(
-            CLK_I => wbone_clk, --in  std_logic;
-            ACK_O => wbone_ack, --out std_logic;
-            ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-            STB_I => wbone_stb, --in  std_logic;
-            WE_I  => wbone_we --in  std_logic
-          );
-
-    end generate;
-
-  end generate;
 
   u_ddr_core : ddr_core
     generic map (
@@ -1662,71 +1534,8 @@ begin
       sys_rst => ddr_sys_reset_i
     );
 
-  DDR_ext_clk: if INSTANTIATED = "TRUE" generate
-    ddr_sys_clk_i   <= ddr_sys_clk_p;
-    ddr_sys_reset_i <= ddr_core_rst;
-    memc_ui_rst     <= ddr_ui_reset;
-  end generate;
-
-  DDR_int_clk: if INSTANTIATED = "FALSE" generate
-
-    ddr_inclk_buf : IBUFGDS
-      port map
-       (O  => pll_clkin,
-        I  => ddr_sys_clk_p,
-        IB => ddr_sys_clk_n
-      );
-
-    plle2_adv_inst : PLLE2_ADV
-    generic map
-     (BANDWIDTH            => "HIGH",
-      COMPENSATION         => "ZHOLD",
-      DIVCLK_DIVIDE        => 5,
-      CLKFBOUT_MULT        => 64,
-      CLKFBOUT_PHASE       => 0.000,
-      CLKOUT0_DIVIDE       => 8,
-      CLKOUT0_PHASE        => 0.000,
-      CLKOUT0_DUTY_CYCLE   => 0.500,
-      CLKIN1_PERIOD        => 8.000,
-      REF_JITTER1          => 0.010)
-    port map
-      -- Output clocks
-     (CLKFBOUT            => pll_clkfbout,
-      CLKOUT0             => pll_clkout0,
-      CLKOUT1             => open,
-      CLKOUT2             => open,
-      CLKOUT3             => open,
-      CLKOUT4             => open,
-      CLKOUT5             => open,
-      -- Input clock control
-      CLKFBIN             => pll_clkfbout,
-      CLKIN1              => pll_clkin,
-      CLKIN2              => '0',
-      -- Tied to always select the primary input clock
-      CLKINSEL            => '1',
-      -- Ports for dynamic reconfiguration
-      DADDR               => (others => '0'),
-      DCLK                => '0',
-      DEN                 => '0',
-      DI                  => (others => '0'),
-      DO                  => open,
-      DRDY                => open,
-      DWE                 => '0',
-      -- Other control and status signals
-      LOCKED              => pll_locked,
-      PWRDWN              => '0',
-      RST                 => sys_reset_c);
-
-    -- Output buffering
-    -------------------------------------
-    clkout1_buf : BUFG
-      port map
-      (O   => ddr_sys_clk_i,
-       I   => pll_clkout0
-      );
-
-    ddr_sys_reset_i <= pll_locked;
-
-  end generate;
+  ddr_sys_clk_i   <= ddr_sys_clk_p;
+  ddr_sys_reset_i <= ddr_core_rst;
+  memc_ui_rst     <= ddr_ui_reset;
 
 end Behavioral;
