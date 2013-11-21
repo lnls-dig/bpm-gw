@@ -82,7 +82,6 @@ architecture Behavioral of Interrupts is
   signal edge_Intrpt_State  : IrptStates;
 
   signal cfg_interrupt_i        : std_logic;
-  signal cfg_interrupt_rdy_i    : std_logic;
   signal cfg_interrupt_di_i     : std_logic_vector(7 downto 0);
   signal cfg_interrupt_assert_i : std_logic;
 
@@ -125,7 +124,6 @@ begin
   -- Interrupt interface
   -- cfg_interrupt should be explicitly clarified!
   cfg_interrupt_assert <= cfg_interrupt_assert_i;
-  cfg_interrupt_rdy_i  <= cfg_interrupt_rdy;
   cfg_interrupt_di     <= cfg_interrupt_di_i;
   cfg_interrupt_di_i   <= (others => '0');
 

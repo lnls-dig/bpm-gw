@@ -169,7 +169,7 @@ NET   "ddr_sys_clk_n" LOC = "H9"  | IOSTANDARD = LVDS_25;
 # (UG) for guidelines regarding clock resource selection.
 #
 
-INST "pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
+INST "*/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -299,7 +299,7 @@ INST "*/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36
 # Timing Constraints
 ###############################################################################
 
-NET "sys_clk_c" TNM_NET = "SYSCLK" ;
+NET "*/sys_clk_c" TNM_NET = "SYSCLK" ;
 NET "*/pcie_clocking_i/clk_125" TNM_NET = "CLK_125" ;
 NET "*/TxOutClk_bufg" TNM_NET = "TXOUTCLKBUFG";
 
@@ -316,7 +316,7 @@ INST "*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
 
 
 ####### DDR ###########
-NET "ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
+NET "*/ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
 TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
           
 # Constrain BUFR clocks used to synchronize data from IOB to fabric logic

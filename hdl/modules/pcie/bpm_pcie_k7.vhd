@@ -92,44 +92,44 @@ entity bpm_pcie_k7 is
     ddr_sys_clk_n : in std_logic;
     sys_clk_p     : in std_logic;         --100 MHz PCIe Clock
     sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic --Reset to PCIe core
+    sys_rst_n     : in std_logic; --Reset to PCIe core
 
     -- DDR memory controller interface --
     -- uncomment when instantiating in another project
-    --ddr_core_rst   : in  std_logic;
-    --memc_ui_clk    : out std_logic;
-    --memc_ui_rst    : out std_logic;
-    --memc_cmd_rdy   : out std_logic;
-    --memc_cmd_en    : in  std_logic;
-    --memc_cmd_instr : in  std_logic_vector(2 downto 0);
-    --memc_cmd_addr  : in  std_logic_vector(31 downto 0);
-    --memc_wr_en     : in  std_logic;
-    --memc_wr_end    : in  std_logic;
-    --memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-    --memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_wr_rdy    : out std_logic;
-    --memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    --memc_rd_valid  : out std_logic;
-    ---- memory arbiter interface
-    --memarb_acc_req : in  std_logic;
-    --memarb_acc_gnt : out std_logic;
+    ddr_core_rst   : in  std_logic;
+    memc_ui_clk    : out std_logic;
+    memc_ui_rst    : out std_logic;
+    memc_cmd_rdy   : out std_logic;
+    memc_cmd_en    : in  std_logic;
+    memc_cmd_instr : in  std_logic_vector(2 downto 0);
+    memc_cmd_addr  : in  std_logic_vector(31 downto 0);
+    memc_wr_en     : in  std_logic;
+    memc_wr_end    : in  std_logic;
+    memc_wr_mask   : in  std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    memc_wr_data   : in  std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_wr_rdy    : out std_logic;
+    memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    memc_rd_valid  : out std_logic;
+    -- memory arbiter interface
+    memarb_acc_req : in  std_logic;
+    memarb_acc_gnt : out std_logic;
     --/ DDR memory controller interface
 
     -- Wishbone interface --
     -- uncomment when instantiating in another project
-    --CLK_I : in  std_logic;
-    --RST_I : in  std_logic;
-    --ACK_I : in  std_logic;
-    --DAT_I : in  std_logic_vector(63 downto 0);
-    --ADDR_O : out std_logic_vector(28 downto 0);
-    --DAT_O : out std_logic_vector(63 downto 0);
-    --WE_O  : out std_logic;
-    --STB_O : out std_logic;
-    --SEL_O : out std_logic;
-    --CYC_O : out std_logic;
+    CLK_I : in  std_logic;
+    RST_I : in  std_logic;
+    ACK_I : in  std_logic;
+    DAT_I : in  std_logic_vector(63 downto 0);
+    ADDR_O : out std_logic_vector(28 downto 0);
+    DAT_O : out std_logic_vector(63 downto 0);
+    WE_O  : out std_logic;
+    STB_O : out std_logic;
+    SEL_O : out std_logic;
+    CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    --ext_rst_o : out std_logic
+    ext_rst_o : out std_logic
     );
 end entity bpm_pcie_k7;
 
@@ -437,101 +437,6 @@ architecture Behavioral of bpm_pcie_k7 is
       );
   end component ddr_core;
 
-  component PCIe_UserLogic_00
-    port (
-      bram_rd_dout        : in  std_logic_vector(63 downto 0);
-      debug_in_1i         : in  std_logic_vector(31 downto 0);
-      debug_in_2i         : in  std_logic_vector(31 downto 0);
-      debug_in_3i         : in  std_logic_vector(31 downto 0);
-      debug_in_4i         : in  std_logic_vector(31 downto 0);
-      dma_host2board_busy : in  std_logic;
-      dma_host2board_done : in  std_logic;
-      fifo_rd_count       : in  std_logic_vector(14 downto 0);
-      fifo_wr_count       : in  std_logic_vector(14 downto 0);
-      fifo_rd_dout        : in  std_logic_vector(71 downto 0);
-      fifo_rd_empty       : in  std_logic;
-      fifo_rd_pempty      : in  std_logic;
-      fifo_wr_full        : in  std_logic;
-      fifo_wr_pfull       : in  std_logic;
-      fifo_rd_valid       : in  std_logic;
-      inout_logic_cw_ce   : in  std_logic := '1';
-      inout_logic_cw_clk  : in  std_logic;
-      reg01_td            : in  std_logic_vector(31 downto 0);
-      reg01_tv            : in  std_logic;
-      reg02_td            : in  std_logic_vector(31 downto 0);
-      reg02_tv            : in  std_logic;
-      reg03_td            : in  std_logic_vector(31 downto 0);
-      reg03_tv            : in  std_logic;
-      reg04_td            : in  std_logic_vector(31 downto 0);
-      reg04_tv            : in  std_logic;
-      reg05_td            : in  std_logic_vector(31 downto 0);
-      reg05_tv            : in  std_logic;
-      reg06_td            : in  std_logic_vector(31 downto 0);
-      reg06_tv            : in  std_logic;
-      reg07_td            : in  std_logic_vector(31 downto 0);
-      reg07_tv            : in  std_logic;
-      reg08_td            : in  std_logic_vector(31 downto 0);
-      reg08_tv            : in  std_logic;
-      reg09_td            : in  std_logic_vector(31 downto 0);
-      reg09_tv            : in  std_logic;
-      reg10_td            : in  std_logic_vector(31 downto 0);
-      reg10_tv            : in  std_logic;
-      reg11_td            : in  std_logic_vector(31 downto 0);
-      reg11_tv            : in  std_logic;
-      reg12_td            : in  std_logic_vector(31 downto 0);
-      reg12_tv            : in  std_logic;
-      reg13_td            : in  std_logic_vector(31 downto 0);
-      reg13_tv            : in  std_logic;
-      reg14_td            : in  std_logic_vector(31 downto 0);
-      reg14_tv            : in  std_logic;
-      rst_i               : in  std_logic;
-      user_logic_cw_ce    : in  std_logic := '1';
-      user_logic_cw_clk   : in  std_logic;
-      bram_rd_addr        : out std_logic_vector(11 downto 0);
-      bram_wr_addr        : out std_logic_vector(11 downto 0);
-      bram_wr_din         : out std_logic_vector(63 downto 0);
-      bram_wr_en          : out std_logic_vector(7 downto 0);
-      fifo_rd_en          : out std_logic;
-      fifo_wr_din         : out std_logic_vector(71 downto 0);
-      fifo_wr_en          : out std_logic;
-      reg01_rd            : out std_logic_vector(31 downto 0);
-      reg01_rv            : out std_logic;
-      reg02_rd            : out std_logic_vector(31 downto 0);
-      reg02_rv            : out std_logic;
-      reg03_rd            : out std_logic_vector(31 downto 0);
-      reg03_rv            : out std_logic;
-      reg04_rd            : out std_logic_vector(31 downto 0);
-      reg04_rv            : out std_logic;
-      reg05_rd            : out std_logic_vector(31 downto 0);
-      reg05_rv            : out std_logic;
-      reg06_rd            : out std_logic_vector(31 downto 0);
-      reg06_rv            : out std_logic;
-      reg07_rd            : out std_logic_vector(31 downto 0);
-      reg07_rv            : out std_logic;
-      reg08_rd            : out std_logic_vector(31 downto 0);
-      reg08_rv            : out std_logic;
-      reg09_rd            : out std_logic_vector(31 downto 0);
-      reg09_rv            : out std_logic;
-      reg10_rd            : out std_logic_vector(31 downto 0);
-      reg10_rv            : out std_logic;
-      reg11_rd            : out std_logic_vector(31 downto 0);
-      reg11_rv            : out std_logic;
-      reg12_rd            : out std_logic_vector(31 downto 0);
-      reg12_rv            : out std_logic;
-      reg13_rd            : out std_logic_vector(31 downto 0);
-      reg13_rv            : out std_logic;
-      reg14_rd            : out std_logic_vector(31 downto 0);
-      reg14_rv            : out std_logic;
-      rst_o               : out std_logic;
-      user_int_1o         : out std_logic;
-      user_int_2o         : out std_logic;
-      user_int_3o         : out std_logic
-      );
-  end component;
-
-  signal fifo_reset_done    : std_logic;
-  signal pio_reading_status : std_logic;
-
 
 -- -----------------------------------------------------------------------
 --  DDR SDRAM control module
@@ -652,7 +557,6 @@ architecture Behavioral of bpm_pcie_k7 is
   signal DDR_wr_sof   : std_logic;
   signal DDR_wr_eof   : std_logic;
   signal DDR_wr_v     : std_logic;
-  signal DDR_wr_FA    : std_logic;
   signal DDR_wr_Shift : std_logic;
   signal DDR_wr_Mask  : std_logic_vector(2-1 downto 0);
   signal DDR_wr_din   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -661,7 +565,6 @@ architecture Behavioral of bpm_pcie_k7 is
   signal DDR_rdc_sof   : std_logic;
   signal DDR_rdc_eof   : std_logic;
   signal DDR_rdc_v     : std_logic;
-  signal DDR_rdc_FA    : std_logic;
   signal DDR_rdc_Shift : std_logic;
   signal DDR_rdc_din   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal DDR_rdc_full  : std_logic;
@@ -670,15 +573,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal DDR_FIFO_Empty  : std_logic;
   signal DDR_FIFO_RdQout : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-  signal DDR_Ready   : std_logic;
-  signal DDR_Blinker : std_logic;
-
-  signal user_wr_weA   : std_logic_vector(7 downto 0)               := (others => '0');
-  signal user_wr_addrA : std_logic_vector(C_PRAM_AWIDTH-1 downto 0) := (others => '0');
-  signal user_wr_dinA  : std_logic_vector(C_DBUS_WIDTH-1 downto 0)  := (others => '0');
-  signal user_rd_addrB : std_logic_vector(C_PRAM_AWIDTH-1 downto 0) := (others => '0');
-  signal user_rd_doutB : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
+  signal DDR_Ready : std_logic;
 
   -- -----------------------------------------------------------------------
   -- Wishbone interface module
@@ -723,25 +618,6 @@ architecture Behavioral of bpm_pcie_k7 is
       );
   end component;
 
-  -- WISHBONE SLAVE interface:
-  -- Single-Port RAM with Asynchronous Read
-  --
-  component WB_MEM is
-    generic(
-      AWIDTH : natural range 2 to 29 := 7;
-      DWIDTH : natural range 8 to 128 := 64
-    );
-    port(
-      CLK_I : in  std_logic;
-      ACK_O : out std_logic;
-      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
-      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
-      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
-      STB_I : in  std_logic;
-      WE_I  : in  std_logic
-    );
-  end component;
-
   signal wbone_clk     : std_logic;
   signal wb_wr_we      : std_logic;
   signal wb_wr_wsof    : std_logic;
@@ -759,7 +635,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal wb_rdd_empty  : std_logic;
   signal wbone_rst     : std_logic;
   signal wb_fifo_rst   : std_logic;
-  signal wbone_addr    : std_logic_vector(31 downto 0);
+  signal wbone_addr    : std_logic_vector(28 downto 0);
   signal wbone_mdin    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_mdout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wbone_we      : std_logic;
@@ -768,151 +644,18 @@ architecture Behavioral of bpm_pcie_k7 is
   signal wbone_ack     : std_logic;
   signal wbone_cyc     : std_logic;
 
-  signal wb_data_count     : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
-  signal H2B_wr_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
-  signal B2H_rd_data_count : std_logic_vector(C_FIFO_DC_WIDTH downto 0) := (others => '0');
-
-  signal wb_FIFO_ow : std_logic;
-
-  signal wb_FIFO_Status  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal H2B_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal B2H_FIFO_Status : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-  signal user_rd_en         : std_logic := '0';
-  signal user_rd_dout       : std_logic_vector(72-1 downto 0);
-  signal user_rd_pempty     : std_logic;
-  signal user_rd_empty      : std_logic;
-  signal user_rd_data_count : std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-  signal user_wr_data_count : std_logic_vector(C_EMU_FIFO_DC_WIDTH-1 downto 0);
-  signal user_wr_en         : std_logic := '0';
-  signal user_wr_din        : std_logic_vector(72-1 downto 0) := (others => '0');
-  signal user_wr_pfull      : std_logic;
-  signal user_wr_full       : std_logic;
-  signal user_rd_valid      : std_logic;
-
 ------------- COMPONENT Declaration: tlpControl   ------
 --
   component tlpControl
     port (
-      --  Test pin, emulating DDR data flow discontinuity
-      mbuf_UserFull : in  std_logic;
-      trn_Blinker   : out std_logic;
-
---S     SIMONE: Wanxau UserLogic Signals, not Used
-      -- DCB protocol interface
-      protocol_link_act : in  std_logic_vector(2-1 downto 0);
-      protocol_rst      : out std_logic;
-      -- Fabric side: CTL Rx
-      ctl_rv            : out std_logic;
-      ctl_rd            : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      -- Fabric side: CTL Tx
-      ctl_ttake         : out std_logic;
-      ctl_tv            : in  std_logic;
-      ctl_td            : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      ctl_tstop         : out std_logic;
-      ctl_reset         : out std_logic;
-      ctl_status        : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      -- Fabric side: DLM Rx
-      dlm_rv            : in std_logic;
-      dlm_rd            : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      -- Fabric side: DLM Tx
-      dlm_tv            : out std_logic;
-      dlm_td            : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      Link_Buf_full     : in  std_logic;
-      -- Data generator table write
-      tab_we            : out std_logic_vector(2-1 downto 0);
-      tab_wa            : out std_logic_vector(12-1 downto 0);
-      tab_wd            : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      -- Data generator control
-      DG_is_Running     : in  std_logic;
-      DG_Reset          : out std_logic;
-      DG_Mask           : out std_logic;
---S     SIMONE: Wanxau UserLogic Signals, not Used
-
-      -- Interrupter triggers
-      DAQ_irq : in std_logic;
-      CTL_irq : in std_logic;
-      DLM_irq : in std_logic;
-
-      -- SIMONE Register: PC-->FPGA
-      reg01_tv : out std_logic;
-      reg01_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg02_tv : out std_logic;
-      reg02_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg03_tv : out std_logic;
-      reg03_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg04_tv : out std_logic;
-      reg04_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg05_tv : out std_logic;
-      reg05_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg06_tv : out std_logic;
-      reg06_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg07_tv : out std_logic;
-      reg07_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg08_tv : out std_logic;
-      reg08_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg09_tv : out std_logic;
-      reg09_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg10_tv : out std_logic;
-      reg10_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg11_tv : out std_logic;
-      reg11_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg12_tv : out std_logic;
-      reg12_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg13_tv : out std_logic;
-      reg13_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg14_tv : out std_logic;
-      reg14_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-      -- SIMONE Register: FPGA-->PC
-      reg01_rv : in std_logic;
-      reg01_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg02_rv : in std_logic;
-      reg02_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg03_rv : in std_logic;
-      reg03_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg04_rv : in std_logic;
-      reg04_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg05_rv : in std_logic;
-      reg05_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg06_rv : in std_logic;
-      reg06_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg07_rv : in std_logic;
-      reg07_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg08_rv : in std_logic;
-      reg08_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg09_rv : in std_logic;
-      reg09_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg10_rv : in std_logic;
-      reg10_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg11_rv : in std_logic;
-      reg11_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg12_rv : in std_logic;
-      reg12_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg13_rv : in std_logic;
-      reg13_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-      reg14_rv : in std_logic;
-      reg14_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-      --SIMONE debug signals
-      debug_in_1i : out std_logic_vector(31 downto 0);
-      debug_in_2i : out std_logic_vector(31 downto 0);
-      debug_in_3i : out std_logic_vector(31 downto 0);
-      debug_in_4i : out std_logic_vector(31 downto 0);
-
       -- Wishbone interface
       wb_FIFO_we   : out std_logic;
       wb_FIFO_wsof : out std_logic;
       wb_FIFO_weof : out std_logic;
       wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+      wb_fifo_full : in std_logic;
 
-      wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-
-      wb_FIFO_ow : in std_logic;
-
-      pio_reading_status : out std_logic;
-      wb_FIFO_Status     : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      wb_FIFO_Rst        : out std_logic;
+      wb_FIFO_Rst : out std_logic;
 
       -- Wishbone Read interface
       wb_rdc_sof  : out std_logic;
@@ -925,24 +668,12 @@ architecture Behavioral of bpm_pcie_k7 is
       wb_FIFO_empty : in  std_logic;
       wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-      H2B_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      B2H_FIFO_Status : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Debugging signals
-      DMA_us_Done     : out std_logic;
-      DMA_us_Busy     : out std_logic;
-      DMA_us_Busy_LED : out std_logic;
-      DMA_ds_Done     : out std_logic;
-      DMA_ds_Busy     : out std_logic;
-      DMA_ds_Busy_LED : out std_logic;
-
       -- DDR control interface
       DDR_Ready : in std_logic;
 
       DDR_wr_sof   : out std_logic;
       DDR_wr_eof   : out std_logic;
       DDR_wr_v     : out std_logic;
-      DDR_wr_FA    : out std_logic;
       DDR_wr_Shift : out std_logic;
       DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
       DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -951,7 +682,6 @@ architecture Behavioral of bpm_pcie_k7 is
       DDR_rdc_sof   : out std_logic;
       DDR_rdc_eof   : out std_logic;
       DDR_rdc_v     : out std_logic;
-      DDR_rdc_FA    : out std_logic;
       DDR_rdc_Shift : out std_logic;
       DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_rdc_full  : in  std_logic;
@@ -992,8 +722,6 @@ architecture Behavioral of bpm_pcie_k7 is
       cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
       cfg_interrupt_assert     : out std_logic;
 
-      Format_Shower : out std_logic;
-
       m_axis_rx_tbar_hit : in  std_logic_vector(6 downto 0);
       s_axis_tx_tvalid   : out std_logic;
       m_axis_rx_tready   : out std_logic;
@@ -1002,8 +730,6 @@ architecture Behavioral of bpm_pcie_k7 is
       s_axis_tx_tdata    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0)
       );
   end component;
-
-  signal Format_Shower : std_logic;
 
   -- TRN Layer signals
   signal tx_err_drop : std_logic;
@@ -1156,117 +882,6 @@ architecture Behavioral of bpm_pcie_k7 is
   signal localId         : std_logic_vector(15 downto 0);
   signal pcie_link_width : std_logic_vector(5 downto 0);
 
-  signal synclk2out : std_logic;
-
-  signal Sim_Zeichen : std_logic;
-  --
-  signal trn_Blinker : std_logic;
-
-  signal DAQ_irq : std_logic := '0';
-  signal CTL_irq : std_logic := '0';
-  signal DLM_irq : std_logic := '0';
-
---S     SIMONE: Wanxau UserLogic Signals, not Used
-  signal protocol_link_act : std_logic_vector(2-1 downto 0)              := (others => '0');
-  signal protocol_rst      : std_logic;
-  signal daq_rstop         : std_logic := '0';
-  signal ctl_rv            : std_logic;
-  signal ctl_rd            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal ctl_ttake         : std_logic;
-  signal ctl_tv            : std_logic                                   := '0';
-  signal ctl_td            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal ctl_tstop         : std_logic;
-  signal ctl_reset         : std_logic;
-  signal ctl_status        : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal dlm_tv            : std_logic;
-  signal dlm_td            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal dlm_rv            : std_logic                                   := '0';
-  signal dlm_rd            : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal tab_we            : std_logic_vector(2-1 downto 0);
-  signal tab_wa            : std_logic_vector(12-1 downto 0);
-  signal tab_wd            : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal dg_running        : std_logic                                   := '0';
-  signal dg_rst            : std_logic;
-  signal DG_Mask           : std_logic;
---S     SIMONE: Wanxau UserLogic Signals, not Used
-
-  -- SIMONE Register: PC-->FPGA
-  signal reg01_tv : std_logic;
-  signal reg01_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg02_tv : std_logic;
-  signal reg02_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg03_tv : std_logic;
-  signal reg03_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg04_tv : std_logic;
-  signal reg04_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg05_tv : std_logic;
-  signal reg05_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg06_tv : std_logic;
-  signal reg06_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg07_tv : std_logic;
-  signal reg07_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg08_tv : std_logic;
-  signal reg08_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg09_tv : std_logic;
-  signal reg09_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg10_tv : std_logic;
-  signal reg10_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg11_tv : std_logic;
-  signal reg11_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg12_tv : std_logic;
-  signal reg12_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg13_tv : std_logic;
-  signal reg13_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg14_tv : std_logic;
-  signal reg14_td : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-  -- SIMONE Register: FPGA-->PC
-  signal reg01_rv : std_logic                                   := '0';
-  signal reg01_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg02_rv : std_logic                                   := '0';
-  signal reg02_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg03_rv : std_logic                                   := '0';
-  signal reg03_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg04_rv : std_logic                                   := '0';
-  signal reg04_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg05_rv : std_logic                                   := '0';
-  signal reg05_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg06_rv : std_logic                                   := '0';
-  signal reg06_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg07_rv : std_logic                                   := '0';
-  signal reg07_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg08_rv : std_logic                                   := '0';
-  signal reg08_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg09_rv : std_logic                                   := '0';
-  signal reg09_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg10_rv : std_logic                                   := '0';
-  signal reg10_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg11_rv : std_logic                                   := '0';
-  signal reg11_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg12_rv : std_logic                                   := '0';
-  signal reg12_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg13_rv : std_logic                                   := '0';
-  signal reg13_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-  signal reg14_rv : std_logic                                   := '0';
-  signal reg14_rd : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0) := (others => '0');
-
-  signal debug_in_1i : std_logic_vector(31 downto 0);
-  signal debug_in_2i : std_logic_vector(31 downto 0);
-  signal debug_in_3i : std_logic_vector(31 downto 0);
-  signal debug_in_4i : std_logic_vector(31 downto 0);
-
-  signal user_rst_o : std_logic;
-
-  signal ddr_ref_clk_i : std_logic;
-
-  signal DMA_Host2Board_Busy : std_logic;
-  signal DMA_Host2Board_Done : std_logic;
-
-  signal DMA_us_Busy : std_logic;
-  signal DMA_us_Done : std_logic;
-  signal DMA_ds_Done : std_logic;
-  signal DMA_ds_Busy : std_logic;
-
   ----- DDR core User Interface signals -----------------------
   signal app_addr          : std_logic_vector(DDR_ADDR_WIDTH-1 downto 0);
   signal app_cmd           : std_logic_vector(2 downto 0);
@@ -1287,130 +902,7 @@ architecture Behavioral of bpm_pcie_k7 is
   signal ddr_ui_reset      : std_logic;
   signal ddr_calib_done    : std_logic;
 
--- additional clocking signal when using project as standalone
-  signal pll_clkin    : std_logic;
-  signal pll_clkout0  : std_logic;
-  signal pll_clkfbout : std_logic;
-  signal pll_locked   : std_logic;
-
---to prevent <signal_name> is not declared errors
-  signal ddr_core_rst : std_logic;
-  signal memc_ui_rst  : std_logic;
-
-  signal clk_i  : std_logic;
-  signal rst_i  : std_logic;
-  signal dat_i  : std_logic_vector(63 downto 0);
-  signal ack_i  : std_logic;
-  signal addr_o : std_logic_vector(28 downto 0);
-  signal we_o   : std_logic;
-  signal dat_o  : std_logic_vector(63 downto 0);
-  signal sel_o  : std_logic;
-  signal stb_o  : std_logic;
-  signal cyc_o  : std_logic;
-
-  signal ext_rst_o : std_logic;
---COMMENT OUT WHEN INSTANTIATING AS COMPONENT
-
 begin
-
-  LoopBack_Off_UserLogic : if not USE_LOOPBACK_TEST generate
-
---S SIMONE: My Custom User Logic!!
-    pcie_userlogic_00_x0 : PCIe_UserLogic_00
-      port map (
-        inout_logic_cw_ce   => '1',
-        inout_logic_cw_clk  => user_clk,
-        user_logic_cw_ce    => '1',
-        user_logic_cw_clk   => ddr_ref_clk_i,
-        fifo_rd_count       => user_rd_data_count,
-        fifo_rd_dout        => user_rd_dout ,
-        fifo_rd_empty       => user_rd_empty ,
-        fifo_rd_pempty      => user_rd_pempty ,
-        fifo_wr_full        => user_wr_full ,
-        fifo_wr_pfull       => user_wr_pfull ,
-        fifo_rd_en          => user_rd_en ,
-        fifo_wr_din         => user_wr_din ,
-        fifo_wr_en          => user_wr_en ,
-        fifo_rd_valid       => user_rd_valid ,
-        fifo_wr_count       => user_wr_data_count,
-        bram_rd_addr        => user_rd_addrB(11 downto 0) ,
-        bram_wr_addr        => user_wr_addrA(11 downto 0) ,
-        bram_wr_din         => user_wr_dinA ,
-        bram_wr_en          => user_wr_weA ,
-        bram_rd_dout        => user_rd_doutB ,
-        DMA_Host2Board_Busy => DMA_Host2Board_Busy,
-        DMA_Host2Board_Done => DMA_Host2Board_Done,
-        reg01_td            => reg01_td,
-        reg01_tv            => reg01_tv,
-        reg02_td            => reg02_td,
-        reg02_tv            => reg02_tv,
-        reg03_td            => reg03_td,
-        reg03_tv            => reg03_tv,
-        reg04_td            => reg04_td,
-        reg04_tv            => reg04_tv,
-        reg05_td            => reg05_td,
-        reg05_tv            => reg05_tv,
-        reg06_td            => reg06_td,
-        reg06_tv            => reg06_tv,
-        reg07_td            => reg07_td,
-        reg07_tv            => reg07_tv,
-        reg08_td            => reg08_td,
-        reg08_tv            => reg08_tv,
-        reg09_td            => reg09_td,
-        reg09_tv            => reg09_tv,
-        reg10_td            => reg10_td,
-        reg10_tv            => reg10_tv,
-        reg11_td            => reg11_td,
-        reg11_tv            => reg11_tv,
-        reg12_td            => reg12_td,
-        reg12_tv            => reg12_tv,
-        reg13_td            => reg13_td,
-        reg13_tv            => reg13_tv,
-        reg14_td            => reg14_td,
-        reg14_tv            => reg14_tv,
-        reg01_rd            => reg01_rd,
-        reg01_rv            => reg01_rv,
-        reg02_rd            => reg02_rd,
-        reg02_rv            => reg02_rv,
-        reg03_rd            => reg03_rd,
-        reg03_rv            => reg03_rv,
-        reg04_rd            => reg04_rd,
-        reg04_rv            => reg04_rv,
-        reg05_rd            => reg05_rd,
-        reg05_rv            => reg05_rv,
-        reg06_rd            => reg06_rd,
-        reg06_rv            => reg06_rv,
-        reg07_rd            => reg07_rd,
-        reg07_rv            => reg07_rv,
-        reg08_rd            => reg08_rd,
-        reg08_rv            => reg08_rv,
-        reg09_rd            => reg09_rd,
-        reg09_rv            => reg09_rv,
-        reg10_rd            => reg10_rd,
-        reg10_rv            => reg10_rv,
-        reg11_rd            => reg11_rd,
-        reg11_rv            => reg11_rv,
-        reg12_rd            => reg12_rd,
-        reg12_rv            => reg12_rv,
-        reg13_rd            => reg13_rd,
-        reg13_rv            => reg13_rv,
-        reg14_rd            => reg14_rd,
-        reg14_rv            => reg14_rv,
-        user_int_1o         => CTL_irq,
-        user_int_2o         => DAQ_irq,
-        user_int_3o         => DLM_irq,
-        debug_in_1i         => debug_in_1i,
-        debug_in_2i         => debug_in_2i,
-        debug_in_3i         => debug_in_3i,
-        debug_in_4i         => debug_in_4i,
-        rst_i               => user_reset,
-        rst_o               => user_rst_o
-        );
-
-  end generate;
-
-  DMA_Host2Board_Busy <= '0';           --DMA_ds_Busy;
-  DMA_Host2Board_Done <= DMA_ds_Done;
 
   sys_reset_c <= not sys_reset_n_c;
   sys_reset_n_ibuf : IBUF
@@ -1427,18 +919,6 @@ begin
       IB    => sys_clk_n,
       CEB   => '0'
       );
-
-  --ddr_refclk_ibuf : IBUFGDS
-    --generic map (
-      --DIFF_TERM    => TRUE,
-      --IBUF_LOW_PWR => FALSE
-    --)
-    --port map (
-      --I  => ddr_sys_clk_p,
-      --IB => ddr_sys_clk_n,
-      --O  => ddr_ref_clk_i
-    --);
-  ddr_ref_clk_i <= '0'; --USE_SYSTEM_CLOCK
 
   cfg_err_cor            <= '0';
   cfg_err_ur             <= '0';
@@ -1764,145 +1244,23 @@ begin
   theTlpControl :
     tlpControl
       port map (
-
-        mbuf_UserFull => '0' ,
-        trn_Blinker   => trn_Blinker ,
-
-        -- Interrupter triggers
-        DAQ_irq => DAQ_irq ,            -- IN  std_logic;
-        CTL_irq => CTL_irq ,            -- IN  std_logic;
-        DLM_irq => DLM_irq ,            -- IN  std_logic;
-
-
---S     SIMONE: Wanxau UserLogic Signals, not Used
-        -- DCB protocol interface
-        protocol_link_act => protocol_link_act ,  -- IN  std_logic_vector(2-1 downto 0);
-        protocol_rst      => protocol_rst ,       -- OUT std_logic;
-        Link_Buf_Full     => daq_rstop ,   -- IN  std_logic;
-        -- Fabric side: CTL Rx
-        ctl_rv            => ctl_rv ,   -- OUT std_logic;
-        ctl_rd            => ctl_rd ,  -- OUT std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-        -- Fabric side: CTL Tx
-        ctl_ttake         => ctl_ttake ,   -- OUT std_logic;
-        ctl_tv            => ctl_tv ,   -- IN  std_logic;
-        ctl_td            => ctl_td ,  -- IN  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-        ctl_tstop         => ctl_tstop ,   -- OUT std_logic;
-        ctl_reset         => ctl_reset ,   -- OUT std_logic;
-        ctl_status        => ctl_status ,  -- IN  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-        -- Fabric side: DLM Rx
-        dlm_rv            => dlm_rv ,   -- OUT std_logic;
-        dlm_rd            => dlm_rd ,  -- OUT std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-        -- Fabric side: DLM Tx
-        dlm_tv            => dlm_tv ,   -- IN  std_logic;
-        dlm_td            => dlm_td ,  -- IN  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-        tab_we            => tab_we ,   -- OUT std_logic_vector(2-1 downto 0);
-        tab_wa            => tab_wa ,   -- OUT std_logic_vector(12-1 downto 0);
-        tab_wd            => tab_wd ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        DG_is_Running     => dg_running ,  -- IN  std_logic;
-        DG_Reset          => dg_rst ,   -- OUT   STD_LOGIC;
-        DG_Mask           => dg_mask ,  -- OUT   STD_LOGIC
---S     SIMONE: Wanxau UserLogic Signals, not Used
-
-
-        -- SIMONE Register: PC-->FPGA
-        reg01_tv => reg01_tv,
-        reg01_td => reg01_td,
-        reg02_tv => reg02_tv,
-        reg02_td => reg02_td,
-        reg03_tv => reg03_tv,
-        reg03_td => reg03_td,
-        reg04_tv => reg04_tv,
-        reg04_td => reg04_td,
-        reg05_tv => reg05_tv,
-        reg05_td => reg05_td,
-        reg06_tv => reg06_tv,
-        reg06_td => reg06_td,
-        reg07_tv => reg07_tv,
-        reg07_td => reg07_td,
-        reg08_tv => reg08_tv,
-        reg08_td => reg08_td,
-        reg09_tv => reg09_tv,
-        reg09_td => reg09_td,
-        reg10_tv => reg10_tv,
-        reg10_td => reg10_td,
-        reg11_tv => reg11_tv,
-        reg11_td => reg11_td,
-        reg12_tv => reg12_tv,
-        reg12_td => reg12_td,
-        reg13_tv => reg13_tv,
-        reg13_td => reg13_td,
-        reg14_tv => reg14_tv,
-        reg14_td => reg14_td,
-
-        -- SIMONE Register: FPGA-->PC
-        reg01_rv => reg01_rv,
-        reg01_rd => reg01_rd,
-        reg02_rv => reg02_rv,
-        reg02_rd => reg02_rd,
-        reg03_rv => reg03_rv,
-        reg03_rd => reg03_rd,
-        reg04_rv => reg04_rv,
-        reg04_rd => reg04_rd,
-        reg05_rv => reg05_rv,
-        reg05_rd => reg05_rd,
-        reg06_rv => reg06_rv,
-        reg06_rd => reg06_rd,
-        reg07_rv => reg07_rv,
-        reg07_rd => reg07_rd,
-        reg08_rv => reg08_rv,
-        reg08_rd => reg08_rd,
-        reg09_rv => reg09_rv,
-        reg09_rd => reg09_rd,
-        reg10_rv => reg10_rv,
-        reg10_rd => reg10_rd,
-        reg11_rv => reg11_rv,
-        reg11_rd => reg11_rd,
-        reg12_rv => reg12_rv,
-        reg12_rd => reg12_rd,
-        reg13_rv => reg13_rv,
-        reg13_rd => reg13_rd,
-        reg14_rv => reg14_rv,
-        reg14_rd => reg14_rd,
-
-        -- SIMONE debug signals
-        debug_in_1i => debug_in_1i,
-        debug_in_2i => debug_in_2i,
-        debug_in_3i => debug_in_3i,
-        debug_in_4i => debug_in_4i,
-
         -- Wishbone FIFO interface
         wb_FIFO_we   => wb_wr_we ,         --  OUT std_logic;
         wb_FIFO_wsof => wb_wr_wsof ,       --  OUT std_logic;
         wb_FIFO_weof => wb_wr_weof ,       --  OUT std_logic;
         wb_FIFO_din  => wb_wr_din(C_DBUS_WIDTH-1 downto 0) ,  --  OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_fifo_full => wb_wr_full,
 
-        wb_FIFO_re         => wb_rdd_ren ,   --  OUT std_logic;
-        wb_FIFO_empty      => wb_rdd_empty ,       --  IN  std_logic;
-        wb_FIFO_qout       => wb_rdd_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        wb_FIFO_data_count => wb_data_count ,  --  IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
+        wb_FIFO_re    => wb_rdd_ren ,   --  OUT std_logic;
+        wb_FIFO_empty => wb_rdd_empty ,       --  IN  std_logic;
+        wb_FIFO_qout  => wb_rdd_dout(C_DBUS_WIDTH-1 downto 0) ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
         wb_rdc_sof  => wb_rdc_sof, --out std_logic;
         wb_rdc_v    => wb_rdc_v, --out std_logic;
         wb_rdc_din  => wb_rdc_din, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         wb_rdc_full => wb_rdc_full, --in std_logic;
-        wb_FIFO_ow  => wb_FIFO_ow ,      --  IN  std_logic;
 
-        pio_reading_status => pio_reading_status ,  --  OUT std_logic;
-
-        wb_FIFO_Status  => wb_FIFO_Status ,  --  IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        wb_FIFO_Rst     => wb_fifo_rst,     --  OUT std_logic;
-        H2B_FIFO_Status => H2B_FIFO_Status ,
-        B2H_FIFO_Status => B2H_FIFO_Status ,
-
-        -- Debugging signals
-        DMA_us_Done     => DMA_us_Done ,  -- OUT std_logic;
-        DMA_us_Busy     => DMA_us_Busy ,  -- OUT std_logic;
-        --DMA_us_Busy_LED             => LEDs_IO_pin(6)      , -- OUT std_logic;
-        DMA_us_Busy_LED => open ,         -- OUT std_logic;
-        DMA_ds_Done     => DMA_ds_Done ,  -- OUT std_logic;
-        DMA_ds_Busy     => DMA_ds_Busy ,  -- OUT std_logic;
-        --DMA_ds_Busy_LED             => LEDs_IO_pin(4)      , -- OUT std_logic;
-        DMA_ds_Busy_LED => open ,         -- OUT std_logic;
+        wb_FIFO_Rst => wb_fifo_rst,     --  OUT std_logic;
 
         -------------------
         -- DDR Interface
@@ -1911,7 +1269,6 @@ begin
         DDR_wr_sof   => DDR_wr_sof ,    --  OUT   std_logic;
         DDR_wr_eof   => DDR_wr_eof ,    --  OUT   std_logic;
         DDR_wr_v     => DDR_wr_v ,      --  OUT   std_logic;
-        DDR_wr_FA    => DDR_wr_FA ,     --  OUT   std_logic;
         DDR_wr_Shift => DDR_wr_Shift ,  --  OUT   std_logic;
         DDR_wr_Mask  => DDR_wr_Mask ,  --  OUT   std_logic_vector(2-1 downto 0);
         DDR_wr_din   => DDR_wr_din ,  --  OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -1920,7 +1277,6 @@ begin
         DDR_rdc_sof   => DDR_rdc_sof ,  --  OUT   std_logic;
         DDR_rdc_eof   => DDR_rdc_eof ,  --  OUT   std_logic;
         DDR_rdc_v     => DDR_rdc_v ,    --  OUT   std_logic;
-        DDR_rdc_FA    => DDR_rdc_FA ,   --  OUT   std_logic;
         DDR_rdc_Shift => DDR_rdc_Shift ,  --  OUT   std_logic;
         DDR_rdc_din   => DDR_rdc_din ,  --  OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         DDR_rdc_full  => DDR_rdc_full ,   --  IN    std_logic;
@@ -1965,8 +1321,6 @@ begin
         s_axis_tx_tkeep    => s_axis_tx_tkeep ,
         s_axis_tx_tdata    => s_axis_tx_tdata ,
 
-        Format_Shower => Format_Shower ,
-
         cfg_dcommand    => cfg_dcommand ,
         pcie_link_width => pcie_link_width ,
         localId         => localId
@@ -1987,21 +1341,20 @@ begin
         DDR_DQ_WIDTH => DDR_DQ_WIDTH
         )
       port map(
-        -- connect your own signals here
-        memc_ui_clk    => open, --: out std_logic;
-        memc_cmd_rdy   => open, --: out std_logic;
-        memc_cmd_en    => '0', --: in  std_logic;
-        memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
-        memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
-        memc_wr_en     => '0', --: in  std_logic;
-        memc_wr_end    => '0', --: in  std_logic;
-        memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
-        memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
-        memc_wr_rdy    => open, --: out std_logic;
-        memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
-        memc_rd_valid  => open, --: out std_logic;
-        memarb_acc_req => '0', --: in  std_logic;
-        memarb_acc_gnt => open, --: out std_logic;
+        memc_ui_clk    => memc_ui_clk, --: out std_logic;
+        memc_cmd_rdy   => memc_cmd_rdy, --: out std_logic;
+        memc_cmd_en    => memc_cmd_en, --: in  std_logic;
+        memc_cmd_instr => memc_cmd_instr, --: in  std_logic_vector(2 downto 0);
+        memc_cmd_addr  => memc_cmd_addr, --: in  std_logic_vector(31 downto 0);
+        memc_wr_en     => memc_wr_en, --: in  std_logic;
+        memc_wr_end    => memc_wr_end, --: in  std_logic;
+        memc_wr_mask   => memc_wr_mask, --: in  std_logic_vector(64/8-1 downto 0);
+        memc_wr_data   => memc_wr_data, --: in  std_logic_vector(64-1 downto 0);
+        memc_wr_rdy    => memc_wr_rdy, --: out std_logic;
+        memc_rd_data   => memc_rd_data, --: out std_logic_vector(64-1 downto 0);
+        memc_rd_valid  => memc_rd_valid, --: out std_logic;
+        memarb_acc_req => memarb_acc_req, --: in  std_logic;
+        memarb_acc_gnt => memarb_acc_gnt, --: out std_logic;
         -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
         DDR_wr_v     => DDR_wr_v ,   --  IN    std_logic;
@@ -2014,15 +1367,12 @@ begin
         DDR_rdc_Shift => DDR_rdc_Shift ,  --  IN    std_logic;
         DDR_rdc_din   => DDR_rdc_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         DDR_rdc_full  => DDR_rdc_full ,   --  OUT   std_logic;
-
         -- DDR payload FIFO Read Port
         DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- IN    std_logic;
         DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- OUT   std_logic;
         DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
         -- Common interface
         DDR_Ready => DDR_Ready, --  OUT   std_logic;
-
         -- DDR core User Interface signals
         app_addr            => app_addr,
         app_cmd             => app_cmd,
@@ -2041,8 +1391,8 @@ begin
         init_calib_complete => ddr_calib_done,
 
         --clocking & reset
-        user_clk      => user_clk , --  IN    std_logic;
-        user_reset    => user_reset --  IN    std_logic
+        user_clk   => user_clk , --  IN    std_logic;
+        user_reset => user_reset --  IN    std_logic
         );
 
   end generate;
@@ -2060,7 +1410,7 @@ begin
           DDR_wr_sof   => DDR_wr_sof ,  --  IN    std_logic;
           DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
           DDR_wr_v     => DDR_wr_v ,    --  IN    std_logic;
-          DDR_wr_FA    => DDR_wr_FA ,   --  IN    std_logic;
+          DDR_wr_FA    => '0',   --  IN    std_logic;
           DDR_wr_Shift => DDR_wr_Shift ,  --  IN    std_logic;
           DDR_wr_Mask  => DDR_wr_Mask ,  --  IN    std_logic_vector(2-1 downto 0);
           DDR_wr_din   => DDR_wr_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -2069,7 +1419,7 @@ begin
           DDR_rdc_sof   => DDR_rdc_sof ,  --  IN    std_logic;
           DDR_rdc_eof   => DDR_rdc_eof ,  --  IN    std_logic;
           DDR_rdc_v     => DDR_rdc_v ,  --  IN    std_logic;
-          DDR_rdc_FA    => DDR_rdc_FA ,   --  IN    std_logic;
+          DDR_rdc_FA    => '0',   --  IN    std_logic;
           DDR_rdc_Shift => DDR_rdc_Shift ,  --  IN    std_logic;
           DDR_rdc_din   => DDR_rdc_din ,  --  IN    std_logic_vector(C_DBUS_WIDTH-1 downto 0);
           DDR_rdc_full  => DDR_rdc_full ,   --  OUT   std_logic;
@@ -2081,10 +1431,10 @@ begin
 
           -- Common interface
           DDR_Ready   => DDR_Ready ,    --  OUT   std_logic;
-          DDR_Blinker => DDR_Blinker ,  --  OUT   std_logic;
+          DDR_Blinker => open,  --  OUT   std_logic;
           mem_clk     => user_clk ,     --  IN
           user_clk    => user_clk ,     --  IN    std_logic;
-          Sim_Zeichen => Sim_Zeichen ,  --  OUT   std_logic;
+          Sim_Zeichen => open ,  --  OUT   std_logic;
           user_reset  => user_reset     --  IN    std_logic
           );
 
@@ -2126,8 +1476,6 @@ begin
         rst => user_reset --in std_logic
         );
 
-  Wishbone_ext: if INSTANTIATED = "TRUE" generate
-
     wbone_clk  <= CLK_I;
     wbone_rst  <= RST_I;
     wbone_mdin <= DAT_I;
@@ -2139,86 +1487,6 @@ begin
     STB_O      <= wbone_stb;
     CYC_O      <= wbone_cyc;
     ext_rst_o  <= wb_fifo_rst;
-
-  end generate;
-
-  Wishbone_int : if INSTANTIATED = "FALSE" generate
-    --temporary clock assignment
-    wbone_clk <= ddr_ui_clk;
-    wbone_rst <= wb_fifo_rst;
-
-    Wishbone_mem_large: if (SIMULATION = "TRUE") generate
-      wb_mem_sim :
-        wb_mem
-          generic map(
-            AWIDTH => 16,
-            DWIDTH => 64
-          )
-          port map(
-            CLK_I => wbone_clk, --in  std_logic;
-            ACK_O => wbone_ack, --out std_logic;
-            ADR_I => wbone_addr(16-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-            STB_I => wbone_stb, --in  std_logic;
-            WE_I  => wbone_we --in  std_logic
-          );
-
-    end generate;
-
-    Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
-      wb_mem_syn :
-        wb_mem
-          generic map(
-            AWIDTH => 7,
-            DWIDTH => 64
-          )
-          port map(
-            CLK_I => wbone_clk, --in  std_logic;
-            ACK_O => wbone_ack, --out std_logic;
-            ADR_I => wbone_addr(7-1 downto 0), --in  std_logic_vector(AWIDTH-1 downto 0);
-            DAT_I => wbone_mdout, --in  std_logic_vector(DWIDTH-1 downto 0);
-            DAT_O => wbone_mdin, --out std_logic_vector(DWIDTH-1 downto 0);
-            STB_I => wbone_stb, --in  std_logic;
-            WE_I  => wbone_we --in  std_logic
-          );
-
-    end generate;
-
-  end generate;
-
-    --- Hybrid FIFO Signal used by PCIe interface and Linux Driver
-    fifo_reset_done <= not wbone_rst;
-    wb_data_count   <= B2H_rd_data_count;
-
-    --- Hybrid FIFO Status used by PCIe interface and Linux Driver ---
-    --- read: status ; write: reset H2B and B2H FIFO
-    wb_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
- <= (others => '0');
-    wb_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
- <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    wb_FIFO_Status(2) <= '0';
-    wb_FIFO_Status(1) <= wb_rdc_full;
-    wb_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
-
-    --- Host2Board FIFO status used by user ---
-    --- read: H2B status ; write: nothing
-    H2B_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3)
- <= (others => '0');
-    H2B_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
- <= H2B_wr_data_count(C_FIFO_DC_WIDTH downto 1);
-    H2B_FIFO_Status(2) <= '0';
-    H2B_FIFO_Status(1) <= wb_wr_full;
-    H2B_FIFO_Status(0) <= wb_wr_full and fifo_reset_done;
-
-    --- Board2Host FIFO status used by user ---
-    --- read: B2H status ; write: nothing
-    B2H_FIFO_Status(C_DBUS_WIDTH-1 downto C_FIFO_DC_WIDTH+3) <= (others => '0');
-    B2H_FIFO_Status(C_FIFO_DC_WIDTH+2 downto 3)
- <= B2H_rd_data_count(C_FIFO_DC_WIDTH downto 1);
-    B2H_FIFO_Status(2) <= wb_rdc_v;
-    B2H_FIFO_Status(1) <= wb_rdd_empty;
-    B2H_FIFO_Status(0) <= wb_rdd_empty and fifo_reset_done;
 
 
   u_ddr_core : ddr_core
@@ -2276,4 +1544,7 @@ begin
 
       sys_rst => sys_reset_n_c
     );
+
+    memc_ui_rst <= ddr_ui_reset;
+
 end Behavioral;

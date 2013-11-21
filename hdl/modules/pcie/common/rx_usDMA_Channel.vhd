@@ -47,7 +47,6 @@ entity usDMA_Transact is
     us_FC_stop      : in  std_logic;
     us_Last_sof     : in  std_logic;
     us_Last_eof     : in  std_logic;
-    FIFO_Data_Count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
     FIFO_Reading    : in  std_logic;
 
     -- Upstream reset from MWr channel
@@ -184,8 +183,6 @@ architecture Behavioral of usDMA_Transact is
   signal usDMA_BDA_fsm    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal usBDA_is_64b_fsm : std_logic;
 
-  signal usDMA_PA_snout : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
   signal usDMA_BAR_Number : std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
 
   signal usDMA_Snout_Length : std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
@@ -315,7 +312,6 @@ architecture Behavioral of usDMA_Transact is
   signal usTlp_RE_i_r1   : std_logic;
   signal usTlp_we        : std_logic;
   signal usTlp_empty_i   : std_logic;
-  signal usTlp_full      : std_logic;
   signal usTlp_prog_Full : std_logic;
 
   signal usTlp_pempty       : std_logic;
@@ -389,7 +385,7 @@ begin
         BDA_is_64b_fsm => usBDA_is_64b_fsm ,
 
         -- Only for downstream channel
-        DMA_PA_Snout   => usDMA_PA_snout ,
+        DMA_PA_Snout   => open ,
         DMA_BAR_Number => usDMA_BAR_Number ,
 
         -- Lengths
@@ -549,11 +545,9 @@ begin
         clk        => user_clk,
         rst        => Local_Reset_i,
         prog_full  => usTlp_prog_Full ,
---         wr_clk        => user_clk,
         wr_en      => usTlp_we,
         din        => usTlp_din,
-        full       => usTlp_full,
---         rd_clk        => user_clk,
+        full       => open,
         rd_en      => usTlp_RE_i,
         dout       => usTlp_Qout_wire,
         prog_empty => usTlp_pempty,
@@ -646,12 +640,6 @@ begin
             usTlp_RE_i  <= '1';
             usTlp_Req_i <= '0';
             FSM_REQ_us  <= REQST_Quantity;
-          elsif FIFO_Data_Count(C_FIFO_DC_WIDTH downto C_TLP_FLD_WIDTH_OF_LENG) = C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_TLP_FLD_WIDTH_OF_LENG)
-            and FIFO_Data_Count(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0) < usTlp_MWr_Leng(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0)
-          then
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_Quantity;
           else
             usTlp_RE_i  <= '0';
             usTlp_Req_i <= not usDMA_Stop
@@ -661,13 +649,7 @@ begin
           end if;
 
         when REQST_FIFO_Req =>
-          if FIFO_Data_Count(C_FIFO_DC_WIDTH downto C_TLP_FLD_WIDTH_OF_LENG) = C_ALL_ZEROS(C_FIFO_DC_WIDTH downto C_TLP_FLD_WIDTH_OF_LENG)
-            and FIFO_Data_Count(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0) < usTlp_MWr_Leng(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0)
-          then
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_Quantity;
-          elsif usTlp_RE = '1' then
+          if usTlp_RE = '1' then
             usTlp_RE_i  <= '0';
             usTlp_Req_i <= '0';
             FSM_REQ_us  <= REQST_IDLE;
@@ -723,11 +705,6 @@ begin
       usTlp_empty_r3     <= usTlp_empty_r2;
       usTlp_empty_r4     <= usTlp_empty_r3;
       usTlp_prog_Full_r1 <= usTlp_prog_Full;
---         usTlp_Req_i        <= not usTlp_empty_i
---                           and not usDMA_Stop
---                           and not usDMA_Stop2
---                           and not us_FC_stop
---                           ;
     end if;
   end process;
 

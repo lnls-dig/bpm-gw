@@ -1,23 +1,5 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/protocol_rst
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_rv
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_rd
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_ttake
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_tv
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_td
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_tstop
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_reset
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_status
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/dlm_tv
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/dlm_td
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/dlm_rv
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/dlm_rd
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Status
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_ow
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/H2B_FIFO_Status
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/B2H_FIFO_Status
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrMaskA
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrAddrA
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrDinA
@@ -72,9 +54,6 @@ add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Me
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/MRd_Channel_Rst
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Tx_Reset
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_IRQ
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DAQ_irq
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/CTL_irq
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DLM_irq
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Tx_TimeOut
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Tx_wb_TimeOut
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Msg_Routing
@@ -86,14 +65,10 @@ add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Me
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/IG_Num_Assert
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/IG_Num_Deassert
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/IG_Asserting
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_is_Running
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Reset
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Mask
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/us_DMA_Bytes_Add
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/user_clk
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/user_lnk_up
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/user_reset
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/FSM_icap
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrDin_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrAddr_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_WrMask_i
@@ -127,25 +102,12 @@ add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Me
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Regs_RdQout_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Reg_RdMuxer_Hi
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Reg_RdMuxer_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Opto_Link_Status_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Opto_Link_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Opto_Link_Status_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Status_r1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Status_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/H2B_FIFO_Status_r1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/H2B_FIFO_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/H2B_FIFO_Status_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/B2H_FIFO_Status_r1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/B2H_FIFO_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/B2H_FIFO_Status_o_Lo
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_b1
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_b2
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_b3
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_b4
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/wb_FIFO_Rst_b5
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/eb_FIFO_OverWritten
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DMA_ds_PA_o_Hi
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DMA_ds_HA_o_Hi
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DMA_ds_BDA_o_Hi
@@ -181,13 +143,6 @@ add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Me
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Int_Enable_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Int_Enable_o_Hi
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Int_Enable_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Reset_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Mask_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_is_Available
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Rst_Counter
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Status_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/DG_Status_o_Lo
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Error_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Error_o_Hi
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Sys_Error_o_Lo
@@ -255,31 +210,6 @@ add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Me
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Command_is_Reset_Lo
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/MRd_Channel_Rst_i
 add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/Tx_Reset_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_CLK
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_I
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_CE
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_Write
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_O
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_O_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_O_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/icap_BUSY
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/protocol_rst_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/protocol_rst_b1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/protocol_rst_b2
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_rv_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_rd_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/class_CTL_Status_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/class_CTL_Status_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/class_CTL_Status_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_td_o_Hi
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_td_o_Lo
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_td_r
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_reset_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_ttake_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_tstop_i
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_t_read_Hi_r1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/ctl_t_read_Lo_r1
-add wave -noupdate -expand -group EP -group Registers /board/EP/theTlpControl/Memory_Space/CTL_read_counter
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine -group usDMA_FSM /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/TLP_Has_Payload
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine -group usDMA_FSM /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/TLP_Hdr_is_4DW
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine -group usDMA_FSM /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_DMA_StateMachine/DMA_Addr_Inc
@@ -453,7 +383,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_FC_stop
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_Last_sof
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/us_Last_eof
-add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/FIFO_Data_Count
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/FIFO_Reading
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_Channel_Rst
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/DMA_us_PA
@@ -488,7 +417,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_HA_Var
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_BDA_fsm
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usBDA_is_64b_fsm
-add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_PA_snout
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_BAR_Number
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_Snout_Length
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usDMA_Body_Length
@@ -516,7 +444,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_RE_i_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_we
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_empty_i
-add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_full
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_prog_Full
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_pempty
 add wave -noupdate -expand -group EP -group rx_Itf -group usDMA_engine /board/EP/theTlpControl/rx_Itf/Upstream_DMA_Engine/usTlp_Npempty_r1
@@ -726,7 +653,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_sof
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_eof
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_v
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_FA
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_Shift
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_Mask
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_din
@@ -738,7 +664,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/RxCplDTrn_NextState
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/RxCplDTrn_State
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/RxCplDTrn_State_r1
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/RxCplDTrn_State_r2
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/CplD_State_is_AFetch
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/CplD_State_is_after_AFetch
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/CplD_State_is_AFetch_r1
@@ -753,7 +678,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_tdata_Little_r2
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_tdata_Little_r3
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_tdata_Little_r4
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_terrfwd_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/trn_rsof_n_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/in_packet_reg
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_tlast_i
@@ -772,11 +696,9 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_sof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_eof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_v_i
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_FA_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_Shift_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_Mask_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_din_i
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DDR_wr_full_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/wb_FIFO_we_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/wb_FIFO_wsof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/wb_FIFO_weof_i
@@ -786,7 +708,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Regs_WrMask_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Regs_WrAddr_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Regs_WrDin_i
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Dex_CplD_Illegal
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Reg_WrAddr_if_last_us
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Reg_WrAddr_if_last_ds
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/m_axis_rx_tready_i
@@ -815,7 +736,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Req_ID_Match_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/Dex_Tag_Matched_i
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/MSB_DSP_Tag
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/MSB_DSP_Tag_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DSP_Tag_on_RAM
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DSP_Tag_on_RAM_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/DSP_Tag_on_RAM_r2
@@ -851,11 +771,6 @@ add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/hazard_tag
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/hazard_content
 add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/tag_matches_hazard
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Addr
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Content
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_cnt
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Valid
-add wave -noupdate -expand -group EP -group rx_Itf -group CplD_engine /board/EP/theTlpControl/rx_Itf/CplD_Channel/TLB_Hit
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tdata
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tkeep
@@ -863,9 +778,7 @@ add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tready
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/IOWr_Type
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/MWr_Type
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Tlp_straddles_4KB
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/Tlp_has_4KB
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_we
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_wsof
@@ -878,14 +791,10 @@ add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_sof
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_eof
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_v
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_FA
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Shift
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Mask
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_din
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_full
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_we
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wd
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_clk
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_reset
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/user_lnk_up
@@ -898,11 +807,9 @@ add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tbar_hit_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_terrfwd_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/trn_rsof_n_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/in_packet_reg
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tvalid_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/m_axis_rx_tlast_r1
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/FIFO_Space_Sel
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_Space_Sel
@@ -910,17 +817,10 @@ add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_sof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_eof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_v_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_FA_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Shift_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_Mask_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/ddr_wr_1st_mask_hi
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_din_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/DDR_wr_full_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/dg_table_Sel
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa_odd
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_we_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wa_i
-add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/tab_wd_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_we_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_wsof_i
 add wave -noupdate -expand -group EP -group rx_Itf -group mwr_channel /board/EP/theTlpControl/rx_Itf/MWr_Channel/wb_FIFO_weof_i
@@ -950,7 +850,6 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/pioCplD_Req
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/pioCplD_RE
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/pioCplD_Qout
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/pio_FC_stop
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/dsMRd_Req
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/dsMRd_RE
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/dsMRd_Qout
@@ -1015,8 +914,6 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/usDMA_Cmd_Ack
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/MRd_Channel_Rst
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Sys_IRQ
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/pio_reading_status
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Link_Buf_full
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Regs_WrEn0
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Regs_WrMask0
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Regs_WrAddr0
@@ -1028,21 +925,16 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_sof_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_eof_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_v_A
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_FA_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_Shift_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_Mask_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_din_A
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_sof_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_eof_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_v_B
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_FA_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_Shift_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_Mask_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_din_B
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/DDR_wr_full
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tab_we
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tab_wa
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/tab_wd
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/IG_Reset
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/IG_Host_Clear
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/IG_Latency
@@ -1058,12 +950,9 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/m_axis_rx_tvalid_dly
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/m_axis_rx_tready_dly
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/m_axis_rx_tbar_hit_dly
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/IORd_Type
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/IOWr_Type
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/MRd_Type
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/MWr_Type
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/CplD_Type
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Tlp_straddles_4KB
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Tlp_has_4KB
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/Tlp_has_1DW
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/CplD_is_the_Last
@@ -1084,7 +973,6 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_wsof
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_weof
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_din
-add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_data_count
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_Empty
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_Reading
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_we_i
@@ -1101,7 +989,6 @@ add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_It
 add wave -noupdate -expand -group EP -group rx_Itf /board/EP/theTlpControl/rx_Itf/wb_FIFO_din_CplD
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_eof
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v
-add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_FA
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full
@@ -1115,7 +1002,6 @@ add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdNumber_eq_Two
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/StartAddr
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Shift_1st_QWord
-add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/FixedAddr
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/is_CplD
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/BAR_value
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req
@@ -1124,7 +1010,6 @@ add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull
-add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Tx_TimeOut
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mReader_Rst_n
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/user_clk
@@ -1134,7 +1019,6 @@ add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_v_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_Shift_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_din_i
-add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/DDR_rdc_full_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdAddr_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_RdEn
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/Regs_Hit
@@ -1154,7 +1038,6 @@ add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_WE_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_Full_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_i
-add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_UserFull_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/mbuf_aFull_r1
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Req_i
 add wave -noupdate -expand -group EP -group tx_Itf -group tx_memReader /board/EP/theTlpControl/tx_Itf/ABB_Tx_MReader/RdCmd_Ack_i
@@ -1209,7 +1092,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tready
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/tx_buf_av
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes_Add
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_DMA_Bytes
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Regs_RdAddr
@@ -1220,7 +1102,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Req
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_Qout
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Req
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_Qout
@@ -1234,7 +1115,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_sof
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_eof
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_v
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_FA
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_Shift
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_din
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_rdc_full
@@ -1242,8 +1122,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_Empty
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/DDR_FIFO_RdQout
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_TimeOut
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/mbuf_UserFull
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Reset
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/localID
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/TxTrn_State
@@ -1251,7 +1129,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Req_Bundle
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Read_a_Buffer
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Ack_Indice
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Indicator
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/b1_Tx_Indicator
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/vec_ChQout_Valid
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Tx_Busy
@@ -1285,14 +1162,12 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pioCplD_RE_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/dsMRd_RE_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/usTlp_RE_i
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/pio_FC_stop_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/us_FC_stop_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tx_Reset_n
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdata_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/trn_tsof_n_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tkeep_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tlast_i
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Format_Shower_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tvalid_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_tdsc_i
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/s_axis_tx_terrfwd_i
@@ -1305,7 +1180,6 @@ add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_It
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdNumber_eq_Two
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/StartAddr
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/Shift_1st_QWord
-add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/FixedAddr
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/is_CplD
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/BAR_value
 add wave -noupdate -expand -group EP -group tx_Itf /board/EP/theTlpControl/tx_Itf/RdCmd_Req

@@ -221,7 +221,6 @@ VHDL_SRC := ../../ip_cores/pcie/7a200ffg1156/bram_x64.vhd \
 ../../modules/pcie/common/DMA_FSM.vhd \
 ../../modules/pcie/common/FF_tagram64x36.vhd \
 ../../modules/pcie/common/Interrupts.vhd \
-../../modules/pcie/common/PCIe_UserLogic_00.vhd \
 ../../modules/pcie/common/Registers.vhd \
 ../../modules/pcie/common/RxIn_Delays.vhd \
 ../../modules/pcie/common/Tx_Output_Arbitor.vhd \
@@ -254,7 +253,6 @@ work/DMA_Calculate/.DMA_Calculate_vhd \
 work/DMA_FSM/.DMA_FSM_vhd \
 work/FF_tagram64x36/.FF_tagram64x36_vhd \
 work/Interrupts/.Interrupts_vhd \
-work/PCIe_UserLogic_00/.PCIe_UserLogic_00_vhd \
 work/Registers/.Registers_vhd \
 work/RxIn_Delays/.RxIn_Delays_vhd \
 work/Tx_Output_Arbitor/.Tx_Output_Arbitor_vhd \
@@ -806,15 +804,15 @@ work/sfifo_15x128/.sfifo_15x128_vhd: ../../ip_cores/pcie/7a200ffg1156/sfifo_15x1
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
 
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd: ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
 
 work/bpm_pcie_a7/.bpm_pcie_a7_vhd: ../../top/pcie/bpm_pcie_a7.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
 
-
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd: ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
 
 work/bpm_pcie_a7/.bpm_pcie_a7: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
@@ -859,11 +857,6 @@ work/Interrupts/.Interrupts_vhd: ../../modules/pcie/common/Interrupts.vhd
 
 work/Interrupts/.Interrupts: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
-
-work/PCIe_UserLogic_00/.PCIe_UserLogic_00_vhd: ../../modules/pcie/common/PCIe_UserLogic_00.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
-
 
 work/Registers/.Registers_vhd: ../../modules/pcie/common/Registers.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 

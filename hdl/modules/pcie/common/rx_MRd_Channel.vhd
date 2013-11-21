@@ -54,7 +54,6 @@ entity rx_MRd_Transact is
     sdram_pg : in std_logic_vector(31 downto 0);
     wb_pg    : in std_logic_vector(31 downto 0);
 
-    IORd_Type         : in std_logic;
     MRd_Type          : in std_logic_vector(3 downto 0);
     Tlp_straddles_4KB : in std_logic;
 
@@ -62,11 +61,6 @@ entity rx_MRd_Transact is
     pioCplD_Req        : out std_logic;
     pioCplD_RE         : in  std_logic;
     pioCplD_Qout       : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
---      FIFO_Data_Count    : IN  std_logic_vector(C_FIFO_DC_WIDTH-1 downto 0);
-    FIFO_Empty         : in  std_logic;
-    FIFO_Reading       : in  std_logic;
-    pio_FC_stop        : in  std_logic;
-    pio_reading_status : out std_logic;
 
     -- Channel reset (from MWr channel)
     Channel_Rst : in std_logic;
@@ -95,11 +89,8 @@ architecture Behavioral of rx_MRd_Transact is
   -- trn_rx stubs
   signal trn_rsof_n_i         : std_logic;
   signal in_packet_reg        : std_logic;
-  signal m_axis_rx_tlast_i    : std_logic;
   signal m_axis_rx_tdata_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal m_axis_rx_tkeep_i    : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
   signal m_axis_rx_tbar_hit_i : std_logic_vector(C_BAR_NUMBER-1 downto 0);
-  signal m_axis_rx_terrfwd_i  : std_logic;
 
   -- delays
   signal m_axis_rx_tdata_r1    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -119,8 +110,6 @@ architecture Behavioral of rx_MRd_Transact is
   -- Throttle
   signal trn_rx_throttle : std_logic;
 
-  signal pio_reading_status_i : std_logic;
-  signal pio_read_fading_cnt  : std_logic_vector(8-1 downto 0);
   signal MRd_Has_3DW_Header   : std_logic;
   signal MRd_Has_4DW_Header   : std_logic;
   signal Tlp_is_Zero_Length   : std_logic;
@@ -152,7 +141,6 @@ architecture Behavioral of rx_MRd_Transact is
   signal pioCplD_empty_i      : std_logic;
   signal pioCplD_full         : std_logic;
   signal pioCplD_prog_Full    : std_logic;
-  signal pioCplD_empty_r1     : std_logic;
   signal pioCplD_prog_full_r1 : std_logic;
 
   signal pioCplD_Qout_i   : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
@@ -160,7 +148,6 @@ architecture Behavioral of rx_MRd_Transact is
 
   -- Request for output arbitration
   signal pioCplD_Req_i : std_logic;
-  signal pioCplD_Leng  : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
 
   -- Busy/Done state bits generation
   type FSM_Request is (
@@ -186,14 +173,8 @@ begin
   pioCplD_Qout <= pioCplD_Qout_i;
   pioCplD_Req  <= pioCplD_Req_i;        -- and not FIFO_Reading;
 
-  pio_reading_status <= pio_reading_status_i;
-
-
   -- Output to the core as handshaking
-  m_axis_rx_tlast_i    <= m_axis_rx_tlast;
   m_axis_rx_tdata_i    <= m_axis_rx_tdata;
-  m_axis_rx_tkeep_i    <= m_axis_rx_tkeep;
-  m_axis_rx_terrfwd_i  <= m_axis_rx_terrfwd;
   m_axis_rx_tbar_hit_i <= m_axis_rx_tbar_hit;
 
   -- Output to the core as handshaking
@@ -238,10 +219,8 @@ begin
   process (
     RxMRdTrn_State
     , MRd_Type
---           , IORd_Type
     , trn_rx_throttle
     , rx_np_ok_i
-    , m_axis_rx_terrfwd_i
     )
   begin
     case RxMRdTrn_State is
@@ -264,11 +243,7 @@ begin
             when C_TLP_TYPE_IS_MRDLK_H4 =>
               RxMRdTrn_NextState <= ST_MRd_HEAD2;
             when others =>
---               if IORd_Type='1' then   -- Temp taking IORd as MRd3
---                 RxMRdTrn_NextState <= ST_MRd3_HEAD1;
---               else
               RxMRdTrn_NextState <= ST_MRd_IDLE;
---               end if;
 
           end case;  -- MRd_Type
 
@@ -276,14 +251,12 @@ begin
           RxMRdTrn_NextState <= ST_MRd_IDLE;
         end if;
 
-
       when ST_MRd_HEAD2 =>
         if trn_rx_throttle = '1' then
           RxMRdTrn_NextState <= ST_MRd_HEAD2;
         else
           RxMRdTrn_NextState <= ST_MRd_Tail;
         end if;
-
 
       when ST_MRd_Tail =>               -- support back-to-back transactions
 
@@ -300,11 +273,7 @@ begin
             when C_TLP_TYPE_IS_MRDLK_H4 =>
               RxMRdTrn_NextState <= ST_MRd_HEAD2;
             when others =>
---               if IORd_Type='1' then   -- Temp taking IORd as MRd3
---                 RxMRdTrn_NextState <= ST_MRd3_HEAD1;
---               else
               RxMRdTrn_NextState <= ST_MRd_IDLE;
---               end if;
 
           end case;  -- MRd_Type
 
@@ -535,48 +504,6 @@ begin
     end if;
   end process;
 
-
--- -----------------------------------------------------------------------
--- syn
---        : pio_reading_status
---
-  Syn_PIO_Reading_EB_Status :
-  process (user_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      pio_reading_status_i <= '0';
-      pio_read_fading_cnt  <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if m_axis_rx_tlast_i = '1' then
-        if MRd_Has_4DW_Header = '1'
-          and m_axis_rx_tbar_hit(CINT_REGS_SPACE_BAR) = '1'
-          and m_axis_rx_tdata_i(8-1+32 downto 32) = X"90" then
-          pio_reading_status_i <= '1';
-          pio_read_fading_cnt  <= X"E0";
-        elsif MRd_Has_3DW_Header = '1'
-          and m_axis_rx_tbar_hit(CINT_REGS_SPACE_BAR) = '1'
-          and m_axis_rx_tdata_i(8-1 downto 0) = X"90" then
-          pio_reading_status_i <= '1';
-          pio_read_fading_cnt  <= X"E0";
-        elsif pio_read_fading_cnt(7) = '1' then
-          pio_reading_status_i <= '1';
-          pio_read_fading_cnt  <= pio_read_fading_cnt + '1';
-        else
-          pio_reading_status_i <= '0';
-          pio_read_fading_cnt  <= (others => '0');
-        end if;
-      elsif pio_read_fading_cnt = X"00" then
-        pio_reading_status_i <= '0';
-        pio_read_fading_cnt  <= (others => '0');
-      else
-        pio_reading_status_i <= pio_reading_status_i;
-        pio_read_fading_cnt  <= pio_read_fading_cnt + '1';
-      end if;
-
-    end if;
-  end process;
-
-
   -- -------------------------------------------------
   -- MRd TLP Buffer
   -- -------------------------------------------------
@@ -596,7 +523,6 @@ begin
         empty     => pioCplD_empty_i
         );
 
-
 -- ---------------------------------------------
 --  Request for arbitration
 --
@@ -607,7 +533,6 @@ begin
       pioCplD_RE_i     <= '0';
       pioCplD_Qout_i   <= (others => '0');
       pioCplD_Qout_reg <= (others => '0');
-      pioCplD_Leng     <= (0      => '1', others => '0');
       pioCplD_Req_i    <= '0';
       FSM_REQ_pio      <= REQST_IDLE;
 
@@ -636,20 +561,10 @@ begin
 
         when REQST_Decision =>
           pioCplD_Qout_reg <= pioCplD_Qout_wire;
-          pioCplD_Leng     <= pioCplD_Qout_wire(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT);
           pioCplD_Qout_i   <= pioCplD_Qout_i;
---             if pioCplD_Qout_wire(C_CHBUF_FMT_BIT_TOP) = '1'  -- Has Payload
---               and pioCplD_Qout_wire(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT)
---                   =CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER)
---               then
---               pioCplD_RE_i  <= '0';
---               pioCplD_Req_i <= '0';
---               FSM_REQ_pio   <= REQST_Quantity;
---             else
           pioCplD_RE_i     <= '0';
           pioCplD_Req_i    <= '1';
           FSM_REQ_pio      <= REQST_nFIFO_Req;
---             end if;
 
         when REQST_nFIFO_Req =>
           if pioCplD_RE = '1' then
@@ -664,42 +579,10 @@ begin
             FSM_REQ_pio    <= REQST_nFIFO_Req;
           end if;
 
---           when REQST_Quantity  =>
---             if FIFO_Empty='1' then
---               pioCplD_RE_i   <= '0';
---               pioCplD_Req_i  <= '0';
---               pioCplD_Qout_i <= pioCplD_Qout_i;
---               FSM_REQ_pio    <= REQST_Quantity;
---             else
---               pioCplD_RE_i   <= '0';
---               pioCplD_Qout_i <= pioCplD_Qout_i;
---               pioCplD_Req_i  <= '1';
---               FSM_REQ_pio    <= REQST_FIFO_Req;
---             end if;
---
---           when REQST_FIFO_Req  =>
---             if FIFO_Empty='1' then
---               pioCplD_RE_i   <= '0';
---               pioCplD_Req_i  <= '0';
---               pioCplD_Qout_i <= pioCplD_Qout_i;
---               FSM_REQ_pio    <= REQST_Quantity;
---             elsif pioCplD_RE = '1' then
---               pioCplD_RE_i   <= '0';
---               pioCplD_Qout_i <= pioCplD_Qout_reg;
---               pioCplD_Req_i  <= '0';
---               FSM_REQ_pio    <= REQST_IDLE;
---             else
---               pioCplD_RE_i   <= '0';
---               pioCplD_Qout_i <= pioCplD_Qout_i;
---               pioCplD_Req_i  <= '1';
---               FSM_REQ_pio    <= REQST_FIFO_Req;
---             end if;
-
         when others =>
           pioCplD_RE_i     <= '0';
           pioCplD_Qout_i   <= (others => '0');
           pioCplD_Qout_reg <= (others => '0');
-          pioCplD_Leng     <= (others => '1');
           pioCplD_Req_i    <= '0';
           FSM_REQ_pio      <= REQST_IDLE;
 
@@ -708,8 +591,6 @@ begin
     end if;
   end process;
 
-
-
 -- ---------------------------------------------
 --  Delay of Empty and prog_Full
 --
@@ -717,7 +598,6 @@ begin
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      pioCplD_empty_r1     <= pioCplD_empty_i;
       pioCplD_prog_full_r1 <= pioCplD_prog_Full;
     end if;
   end process;

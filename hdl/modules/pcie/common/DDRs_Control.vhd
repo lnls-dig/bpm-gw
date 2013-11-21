@@ -96,7 +96,6 @@ architecture Behavioral of DDRs_Control is
   constant RPIPE_ASHIFT_BTOP     : integer := integer(log2(real(DDR_DQ_WIDTH)))-1;
   constant RPIPE_ASHIFT_BBOT     : integer := RPIPE_ASHIFT_BTOP-2;
   constant MEMC_ADDR_BBOT_LIMIT  : integer := integer(log2(real(DDR_PAYLOAD_WIDTH/DDR_DQ_WIDTH)));
-  constant MEMC_ADDR_BTOP_LIMIT  : integer := 5 - MEMC_ADDR_BBOT_LIMIT; --change C_DDR_IAWIDTH and it will break
 
   -- ----------------------------------------------------------------------------
   --
@@ -259,11 +258,11 @@ begin
   rst_n <= not(rst_i);
 
   -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
-  -- while ddram_*_addr have byte alignment
-  memc_rd_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <=
-    ddram_rd_addr(ddram_rd_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
-  memc_wr_addr(ADDR_WIDTH-1 downto MEMC_ADDR_BBOT_LIMIT) <=
-    ddram_wr_addr(ddram_wr_addr'left downto RPIPE_ASHIFT_BTOP+1);
+  -- while ddram_*_addr has byte alignment
+  memc_rd_addr(ddram_rd_addr'left-(RPIPE_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+    ddram_rd_addr(ddram_rd_addr'left downto RPIPE_ASHIFT_BTOP+1);
+  memc_wr_addr(ddram_wr_addr'left-(WPIPE_F2M_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+    ddram_wr_addr(ddram_wr_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
 
   memc_cmd_en      <= memc_rd_cmd or memc_wr_cmd_en;
   memc_cmd_instr   <= "00" & memc_rd_cmd;
