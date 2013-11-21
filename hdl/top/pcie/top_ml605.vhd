@@ -10,6 +10,7 @@ use UNISIM.VComponents.all;
 
 entity top is
   generic (
+    RST_ACT_LOW : integer := 0;
     SIMULATION : string := "FALSE";
     -- ****
     -- PCIe core parameters
@@ -179,6 +180,7 @@ architecture arch of top is
 begin
     bpm_pcie : bpm_pcie_ml605
     generic map(
+      RST_ACT_LOW => RST_ACT_LOW,
       SIMULATION => SIMULATION,
       -- ****
       -- PCIe core parameters
