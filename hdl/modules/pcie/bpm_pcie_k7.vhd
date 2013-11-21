@@ -38,7 +38,6 @@ use UNISIM.VComponents.all;
 entity bpm_pcie_k7 is
   generic (
     SIMULATION   : string := "FALSE";
-    INSTANTIATED : string := "FALSE";
     -- ****
     -- PCIe core parameters
     -- ****
