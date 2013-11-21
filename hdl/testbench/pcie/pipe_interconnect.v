@@ -51,7 +51,7 @@
 // File       : pipe_interconnect.v
 // Version    : 1.7
 
-`define EP board.EP.pcie_core_i.pcie_top_i
+`define EP board.EP.bpm_pcie.pcie_core_i.pcie_top_i
 `define RP board.RP.rport.pcie_top_i
 
 //----------------------------------------------------------  PIO RTL & RP simulation  -------------------------------------------------------------------//  

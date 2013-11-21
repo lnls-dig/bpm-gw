@@ -838,7 +838,6 @@ architecture Behavioral of bpm_pcie_a7 is
   signal cfg_dcommand               : std_logic_vector(15 downto 0);
   signal cfg_lstatus                : std_logic_vector(15 downto 0);
   signal cfg_lcommand               : std_logic_vector(15 downto 0);
-  signal fast_train_simulation_only : std_logic;
   signal two_plm_auto_config        : std_logic_vector(1 downto 0);
 
   signal cfg_mgmt_di                   : std_logic_vector(31 downto 0);

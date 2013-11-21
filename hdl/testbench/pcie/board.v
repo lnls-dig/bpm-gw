@@ -545,7 +545,7 @@ parameter PIPE_SIM_MODE = "TRUE";
 defparam board.RP.rport.PIPE_SIM_MODE = "TRUE";
 `endif
 
-bpm_pcie_a7 # (
+top # (
   .PL_FAST_TRAIN("TRUE"),
   .PIPE_SIM_MODE(PIPE_SIM_MODE),
   .pcieLanes(4),
@@ -794,7 +794,7 @@ endgenerate
 //
 
 // Randoms generated for process flow
-always @(posedge board.EP.user_clk) begin
+always @(posedge board.EP.bpm_pcie.user_clk) begin
   Op_Random[ 31:00] = $random();
   Op_Random[ 63:32] = $random();
   Op_Random[ 95:64] = $random();

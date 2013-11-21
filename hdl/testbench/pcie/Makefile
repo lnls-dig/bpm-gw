@@ -209,13 +209,16 @@ work/mig_7series_v1_9_ui_top/.mig_7series_v1_9_ui_top_v \
 work/mig_7series_v1_9_ui_cmd/.mig_7series_v1_9_ui_cmd_v \
 work/mig_7series_v1_9_ui_rd_data/.mig_7series_v1_9_ui_rd_data_v \
 
-VHDL_SRC := ../../ip_cores/pcie/7a200ffg1156/bram_x64.vhd \
+VHDL_SRC := ../../modules/pcie/bpm_pcie_a7.vhd \
+../../modules/pcie/bpm_pcie_k7.vhd \
+../../modules/pcie/bpm_pcie_ml605.vhd \
+../../ip_cores/pcie/7a200ffg1156/bram_x64.vhd \
 ../../ip_cores/pcie/7a200ffg1156/eb_fifo_counted_resized.vhd \
 ../../ip_cores/pcie/7a200ffg1156/mbuf_128x72.vhd \
 ../../ip_cores/pcie/7a200ffg1156/prime_FIFO_plain.vhd \
 ../../ip_cores/pcie/7a200ffg1156/sfifo_15x128.vhd \
+../../top/pcie/top_a7.vhd \
 ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd \
-../../top/pcie/bpm_pcie_a7.vhd \
 ../../modules/pcie/common/DDR_Blinker.vhd \
 ../../modules/pcie/common/DMA_Calculate.vhd \
 ../../modules/pcie/common/DMA_FSM.vhd \
@@ -241,13 +244,16 @@ VHDL_SRC := ../../ip_cores/pcie/7a200ffg1156/bram_x64.vhd \
 ../../ip_cores/pcie/7a200ffg1156/ddr_core/user_design/rtl/ddr_core.vhd \
 ../../ip_cores/pcie/7a200ffg1156/ddr_core/user_design/rtl/phy/mig_7series_v1_9_ddr_phy_top.vhd \
 
-VHDL_OBJ := work/bram_x64/.bram_x64_vhd \
+VHDL_OBJ := work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd \
+work/bpm_pcie_a7/.bpm_pcie_a7_vhd \
+work/bpm_pcie_k7/.bpm_pcie_k7_vhd \
+work/bpm_pcie_ml605/.bpm_pcie_ml605_vhd \
+work/bram_x64/.bram_x64_vhd \
 work/eb_fifo_counted_resized/.eb_fifo_counted_resized_vhd \
 work/mbuf_128x72/.mbuf_128x72_vhd \
 work/prime_FIFO_plain/.prime_FIFO_plain_vhd \
 work/sfifo_15x128/.sfifo_15x128_vhd \
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd \
-work/bpm_pcie_a7/.bpm_pcie_a7_vhd \
+work/top_a7/.top_a7_vhd \
 work/DDR_Blinker/.DDR_Blinker_vhd \
 work/DMA_Calculate/.DMA_Calculate_vhd \
 work/DMA_FSM/.DMA_FSM_vhd \
@@ -780,6 +786,30 @@ work/mig_7series_v1_9_ui_rd_data/.mig_7series_v1_9_ui_rd_data_v: ../../ip_cores/
 
 
 
+work/bpm_pcie_a7/.bpm_pcie_a7_vhd: ../../modules/pcie/bpm_pcie_a7.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/bpm_pcie_a7/.bpm_pcie_a7: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
+work/bpm_pcie_k7/.bpm_pcie_k7_vhd: ../../modules/pcie/bpm_pcie_k7.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/bpm_pcie_k7/.bpm_pcie_k7: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
+work/bpm_pcie_ml605/.bpm_pcie_ml605_vhd: ../../modules/pcie/bpm_pcie_ml605.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/bpm_pcie_ml605/.bpm_pcie_ml605: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
 work/bram_x64/.bram_x64_vhd: ../../ip_cores/pcie/7a200ffg1156/bram_x64.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
@@ -804,18 +834,18 @@ work/sfifo_15x128/.sfifo_15x128_vhd: ../../ip_cores/pcie/7a200ffg1156/sfifo_15x1
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
 
+
+work/top_a7/.top_a7_vhd: ../../top/pcie/top_a7.vhd
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/top_a7/.top_a7: \
+work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
+
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd: ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd
 		vcom $(VCOM_FLAGS)  -work work $< 
 		@mkdir -p $(dir $@) && touch $@
-
-
-work/bpm_pcie_a7/.bpm_pcie_a7_vhd: ../../top/pcie/bpm_pcie_a7.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/bpm_pcie_a7/.bpm_pcie_a7: \
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
 
 
 work/DDR_Blinker/.DDR_Blinker_vhd: ../../modules/pcie/common/DDR_Blinker.vhd

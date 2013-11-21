@@ -339,7 +339,7 @@ begin
     -- Other control and status signals
     LOCKED => pll_locked,
     PWRDWN => '0',
-    RST    => wbone_rst);
+    RST    => '0');
 
   -- Output buffering
   -------------------------------------
