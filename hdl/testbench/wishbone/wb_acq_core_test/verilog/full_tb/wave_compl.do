@@ -440,11 +440,8 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_fc_rd
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_fc_valid
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_fc_last_data
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_fc_first_data
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_dreq
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_stall
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/ext_stall_s
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_pkt_sent
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_out_data_pending
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_data_out
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_data_oob_out
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_dvalid_out
@@ -463,7 +460,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fc_stall
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/req_rst_trans_sync
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/rst_trans_fs_sync
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/rst_trans_ext_sync
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/rst_fc_source_trans
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_in_valid_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_in_valid_full
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/fifo_out_pend_cnt
@@ -513,7 +509,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/fc_dvalid_o
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/fc_read_next_pkt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/pre_output_counter_wr
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/output_counter_rd
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/pl_stall_t
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/pkt_sent
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/lmt_pkt_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_fc_fifo/cmp_fc_source/fc_data_out_int
@@ -564,6 +559,8 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ui_app_rd_data_valid_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ui_app_req_o
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ui_app_gnt_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/lmt_pkt_size
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/lmt_pkt_size_shd
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/lmt_shots_nb
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/lmt_valid
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/fc_dout
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/fc_valid_app
@@ -574,10 +571,13 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/fc_dreq_app
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/fc_stall_app_wdf
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/fc_dreq_app_wdf
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/valid_trans_app
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/valid_trans_app_d0
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/valid_trans_app_wdf
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/cnt_all_trans_done_p
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/wr_init_addr_alig
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_dreq
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_stall
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_stall_d0
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_dreq_app
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_stall_app
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/pl_pkt_sent_app
@@ -593,8 +593,7 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_addr_cnt_inc
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_addr_inc
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_addr_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_addr_in
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_data_valid_in
-add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_addr_valid_in
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_valid_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_mask_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_data_mask_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/ddr_rdy_app
@@ -611,6 +610,7 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_addr_ddr_inc
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_pkt_size_width
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_pipe_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_addr_cnt_width
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_pkt_size_shift
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_max_addr_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ui_cmd_write
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ui_cmd_read
@@ -621,6 +621,7 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_data_high
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ddr_addr_ovf_lsb
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ddr_addr_ovf_msb
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ddr_addr_ovf_bit
+add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/c_ddr_align_shift
 add wave -noupdate -divider ddr3_write_cpm_acq_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/cmp_acq_cnt/clk_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_acq_ddr3_iface/cmp_acq_cnt/rst_n_i
@@ -1107,4 +1108,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 fs} {407504749454 fs}
+WaveRestoreZoom {0 fs} {52843875 ps}
