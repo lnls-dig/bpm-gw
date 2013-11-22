@@ -151,8 +151,8 @@ entity wb_stream_source is
 
     -- Wishbone Fabric Interface I/O
 
-    src_dat_o   : out std_logic_vector(c_wbs_address_width-1 downto 0);
-    src_adr_o   : out std_logic_vector(c_wbs_data_width-1 downto 0);
+    src_dat_o   : out std_logic_vector(c_wbs_data_width-1 downto 0);
+    src_adr_o   : out std_logic_vector(c_wbs_address_width-1 downto 0);
     src_sel_o   : out std_logic_vector((c_wbs_data_width/8)-1 downto 0);
     src_cyc_o   : out std_logic;
     src_stb_o   : out std_logic;
