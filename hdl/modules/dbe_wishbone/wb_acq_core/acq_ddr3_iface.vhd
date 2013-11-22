@@ -121,6 +121,7 @@ architecture rtl of acq_ddr3_iface is
   constant c_pkt_size_width                 : natural := 32;
   constant c_pipe_size                      : natural := 4;
   constant c_addr_cnt_width                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
+  constant c_pkt_size_shift                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
   constant c_max_addr_cnt                   : natural := c_ddr_fc_payload_ratio-1;
   --constant c_addr_width                     : natural := 32;
 
@@ -141,7 +142,9 @@ architecture rtl of acq_ddr3_iface is
   constant c_ddr_align_shift                : natural := f_log2_size(c_ddr_fc_payload_ratio);
 
   -- Flow control signals
-  signal lmt_pkt_size                       : unsigned(31 downto 0);
+  signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pkt_size_shd                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   signal lmt_valid                          : std_logic;
   signal fc_dout                            : std_logic_vector(g_ddr_payload_width+c_ddr_mask_width-1 downto 0);
   signal fc_valid_app                       : std_logic;
@@ -153,6 +156,7 @@ architecture rtl of acq_ddr3_iface is
   signal fc_dreq_app_wdf                    : std_logic;
 
   signal valid_trans_app                    : std_logic;
+  signal valid_trans_app_d0                 : std_logic;
   signal valid_trans_app_wdf                : std_logic;
   signal cnt_all_trans_done_p               : std_logic;
   signal wr_init_addr_alig                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
@@ -160,6 +164,10 @@ architecture rtl of acq_ddr3_iface is
   -- Plain interface control
   signal pl_dreq                            : std_logic;
   signal pl_stall                           : std_logic;
+  -- FIXME: Ue single signal!
+  --signal pl_stall_addr_d0                   : std_logic;
+  --signal pl_stall_data_d0                   : std_logic;
+  signal pl_stall_d0                        : std_logic;
   signal pl_dreq_app                        : std_logic;
   signal pl_stall_app                       : std_logic;
   signal pl_pkt_sent_app                    : std_logic;
@@ -177,9 +185,10 @@ architecture rtl of acq_ddr3_iface is
   signal ddr_addr_inc                       : unsigned(c_addr_cnt_width-1 downto 0);
   signal ddr_addr_cnt                       : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_in                        : std_logic_vector(g_ddr_addr_width-1 downto 0);
-  signal ddr_data_valid_in                  : std_logic;
-  signal ddr_addr_valid_in                  : std_logic;
-
+  --signal ddr_data_valid_in                  : std_logic;
+  --signal ddr_addr_valid_in                  : std_logic;
+  signal ddr_valid_in                       : std_logic;
+  
   signal ddr_mask_in                        : std_logic_vector(c_ddr_mask_width-1 downto 0);
   signal ddr_data_mask_in                   : std_logic_vector(g_ddr_payload_width+c_ddr_mask_width-1 downto 0);
 
@@ -259,14 +268,54 @@ begin
   assert (g_addr_width = g_ddr_addr_width)
   report "[DDR3 Interface] Different address widths are not supported!"
   severity error;
+  
+  ----------------------------------------------------------------------------
+  -- Register transaction limits
+  -----------------------------------------------------------------------------
+  p_in_reg : process (ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        --Avoid detection of *_done pulses by setting them to 1
+        lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+        lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
+        lmt_valid <= '0';
+      else
+        lmt_valid <= lmt_valid_i;
+
+        if lmt_valid_i = '1' then
+          --lmt_pkt_size <= lmt_pkt_size_i;
+          -- The packet size here is constrained by the relation f_log2(g_ddr_payload_width/g_data_width),
+          -- as we aggregate data by that amount to send it to the DDR3 controller
+          lmt_pkt_size <= shift_right(lmt_pkt_size_i, c_pkt_size_shift);
+          lmt_shots_nb <= lmt_shots_nb_i;
+        end if;
+      end if;
+    end if;
+  end process;
 
   -- To previous flow control module (Acquisition FIFO)
   fifo_fc_stall_o <= pl_stall;
   fifo_fc_dreq_o <= pl_dreq;
 
   -- Dummy signals as we don't use SOF or EOF signals
-  lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
-  lmt_valid <= '1';
+  --lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+  --lmt_valid <= '1';
+
+  -- Delayed signals
+  p_valid_trans_d0 : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        valid_trans_app_d0 <= '0';
+        pl_stall_d0 <= '0';
+      else
+        valid_trans_app_d0 <= valid_trans_app;
+
+        pl_stall_d0 <= pl_stall;
+      end if;
+    end if;
+  end process;
 
   valid_trans_app <= '1' when fifo_fc_valid_i = '1' and pl_stall = '0' else '0';
   valid_trans_app_wdf <= '1' when fifo_fc_valid_i = '1' and pl_stall = '0' else '0';
@@ -274,28 +323,54 @@ begin
   pl_stall <= pl_stall_app or pl_stall_app_wdf;
   pl_dreq <= pl_dreq_app and pl_dreq_app_wdf;
 
+  -- DDR valid in signal
+  p_ddr_valid_in : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        ddr_valid_in <= '0';
+      else
+        -- We deassert ddr_valid_in in case it was already acknowledge by the
+        -- fc-source module
+        if ddr_valid_in = '1' and (pl_stall_d0 = '0' or pl_stall = '0') then
+          ddr_valid_in <= '0';
+        -- And we assert ddr_valid_in only when there was an overflow in the counter
+        -- caused by a previous detection of a valid_trans (valid_trans_app_d0)
+        --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
+        elsif ddr_addr_cnt_min_ovf = c_max_addr_cnt and valid_trans_app = '1' then
+          ddr_valid_in <= '1';
+        end if;
+      end if;
+    end if;
+  end process;
+
   p_ddr_data_reg : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
         ddr_data_in <= (others => '0');
-        ddr_data_valid_in <= '0';
+        --ddr_data_valid_in <= '0';
       else
-        --ddr_valid_in <= valid_trans;
-        -- Hold valid bit until we can accept it
-        if pl_stall = '0' then
-        --ddr_data_valid_in <= valid_trans_app_wdf;
-          ddr_data_valid_in <= fifo_fc_valid_i;
-        end if;
-
-        --if fifo_fc_valid_i = '1' then
+        ---- We deassert ddr_addr_valid_in in case it was already acknowledge by the
+        ---- fc-source module
+        --if ddr_data_valid_in = '1' and (pl_stall_addr_d0 = '0' or pl_stall = '0') then
+        --  ddr_addr_valid_in <= '0';
+        ---- And we assert ddr_data_valid_in only when there was an overflow in the counter
+        ---- caused by a previous detection of a valid_trans (valid_trans_app_d0)
+        --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
+        --  ddr_data_valid_in <= '1';
+        --  pl_stall_addr_d0 <= pl_stall;
+        --end if;
+        
         if valid_trans_app_wdf = '1' then
-          ddr_data_in <= f_gen_padded_word(g_ddr_payload_width,
-                                       g_data_width,
-                                       to_integer(ddr_addr_cnt_min),
-                                       fifo_fc_din_i,
-                                       f_gen_std_logic_vector(g_data_width, '0'));
-
+          --ddr_data_in <= f_gen_padded_word(g_ddr_payload_width,
+          --                             g_data_width,
+          --                             to_integer(ddr_addr_cnt_min),
+          --                             fifo_fc_din_i,
+          --                             f_gen_std_logic_vector(g_data_width, '0'));
+          ddr_data_in((to_integer(ddr_addr_cnt_min)+1)*g_data_width-1 downto
+                                to_integer(ddr_addr_cnt_min)*g_data_width) <= fifo_fc_din_i;
+            
         end if;
       end if;
     end if;
@@ -347,17 +422,20 @@ begin
       if ext_rst_n_i = '0' then
         ddr_addr_cnt_min_ovf <= to_unsigned(0, ddr_addr_cnt_min_ovf'length);
         ddr_addr_cnt <= to_unsigned(0, ddr_addr_cnt'length);
-        ddr_addr_valid_in <= '0';
-        --ddr_addr_inc <= to_unsigned(0, ddr_addr_inc'length);
+        --ddr_addr_valid_in <= '0';
       else
-        --ddr_addr_valid_in <= valid_trans_app;
-
-        if pl_stall = '0' then
-          ddr_addr_valid_in <= fifo_fc_valid_i;
-        end if;
+        ---- We deassert ddr_addr_valid_in in case it was already acknowledge by the
+        ---- fc-source module
+        --if ddr_addr_valid_in = '1' and (pl_stall_addr_d0 = '0' or pl_stall = '0') then
+        --  ddr_addr_valid_in <= '0';
+        ---- And we assert ddr_addr_valid_in only when there was an overflow in the counter
+        ---- caused by a previous detection of a valid_trans (valid_trans_app_d0)
+        --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
+        --  ddr_addr_valid_in <= '1';
+        --  pl_stall_addr_d0 <= pl_stall;
+        --end if;
 
         if wr_start_i = '1' then
-        --ddr_addr_in <= fifo_fc_addr_i;
           -- This address must be word-aligned
           ddr_addr_cnt <= unsigned(wr_init_addr_alig);
           ddr_addr_cnt_min_ovf <= to_unsigned(0, ddr_addr_cnt_min_ovf'length);
@@ -403,11 +481,12 @@ begin
     --cnt_rst_i                                 => lmt_rst_i,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_pkt_size_i,
+    --lmt_pkt_size_i                            => lmt_pkt_size_i,
+    lmt_pkt_size_i                            => lmt_pkt_size,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb_i,
+    lmt_shots_nb_i                            => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid_i
+    lmt_valid_i                               => lmt_valid
   );
 
   lmt_all_trans_done_p_o <= cnt_all_trans_done_p;
@@ -421,8 +500,9 @@ begin
         ddr_mask_in <= (others => '0');
       else
         if valid_trans_app_wdf = '1' then
-          ddr_mask_in <= f_gen_mask(g_ddr_payload_width/8, 8,
-                                     to_integer(ddr_addr_cnt_min), '1');
+          --ddr_mask_in <= f_gen_mask(g_ddr_payload_width/8, 8,
+          --                           to_integer(ddr_addr_cnt_min), '1');
+          ddr_mask_in <= (others => '0');
         end if;
       end if;
     end if;
@@ -451,7 +531,8 @@ begin
 
     pl_data_i                               => (others => '0'),
     pl_addr_i                               => ddr_addr_in,
-    pl_valid_i                              => ddr_addr_valid_in, -- CHECK THIS!
+    --pl_valid_i                              => ddr_addr_valid_in, -- CHECK THIS!
+    pl_valid_i                              => ddr_valid_in, -- CHECK THIS!
 
     pl_dreq_o                               => pl_dreq_app,
     pl_stall_o                              => pl_stall_app,
@@ -493,7 +574,8 @@ begin
     pl_data_i                               => ddr_data_mask_in,
     --pl_addr_i                               => ddr_addr_in,
     pl_addr_i                               => (others => '0'),
-    pl_valid_i                              => ddr_data_valid_in, -- CHECK THIS!
+    --pl_valid_i                              => ddr_data_valid_in, -- CHECK THIS!
+    pl_valid_i                              => ddr_valid_in, -- CHECK THIS!
 
     pl_dreq_o                               => pl_dreq_app_wdf,
     pl_stall_o                              => pl_stall_app_wdf,
