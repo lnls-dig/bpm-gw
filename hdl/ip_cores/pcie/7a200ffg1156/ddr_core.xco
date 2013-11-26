@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 14.6
-# Date: Sun Jul 21 13:48:36 2013
+# Xilinx Core Generator version 14.7
+# Date: Fri Nov 22 11:22:21 2013
 #
 ##############################################################
 #
@@ -31,7 +31,7 @@ SET implementationfiletype = Ngc
 SET package = ffg1156
 SET removerpms = false
 SET simulationfiles = Structural
-SET speedgrade = -2
+SET speedgrade = -1
 SET verilogsim = false
 SET vhdlsim = true
 # END Project Options
@@ -43,7 +43,7 @@ CSET component_name=ddr_core
 CSET xml_input_file=./ddr_core/mig.prj
 # END Parameters
 # BEGIN Extra information
-MISC pkg_timestamp=2013-06-08T23:00:50Z
+MISC pkg_timestamp=2013-10-13T18:46:09Z
 # END Extra information
 GENERATE
-# CRC: c12266bc
+# CRC: ca08b313

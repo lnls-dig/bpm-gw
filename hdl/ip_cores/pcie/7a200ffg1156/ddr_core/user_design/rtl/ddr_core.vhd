@@ -114,7 +114,7 @@ entity ddr_core is
    ECC_WIDTH             : integer := 8;
    MC_ERR_ADDR_WIDTH     : integer := 31;
    MEM_ADDR_ORDER
-     : string  := "BANK_ROW_COLUMN";
+     : string  := "ROW_BANK_COLUMN";
 
       
    nBANK_MACHS           : integer := 4;
@@ -129,7 +129,7 @@ entity ddr_core is
                                      --     + ROW_WIDTH + COL_WIDTH;
                                      -- Chip Select is always tied to low for
                                      -- single rank devices
-   USE_CS_PORT          : integer := 0;
+   USE_CS_PORT          : integer := 1;
                                      -- # = 1, When Chip Select (CS#) output is enabled
                                      --   = 0, When Chip Select (CS#) output is disabled
                                      -- If CS_N disabled, user must connect
@@ -322,7 +322,7 @@ entity ddr_core is
                                      -- position indicates a data byte lane and
                                      -- a '0' indicates a control byte lane
    PHY_0_BITLANES        : std_logic_vector(47 downto 0) := X"3FE3FD2FF2FF";
-   PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FF6FF3CC0000";
+   PHY_1_BITLANES        : std_logic_vector(47 downto 0) := X"FFEFF3CC0000";
    PHY_2_BITLANES        : std_logic_vector(47 downto 0) := X"000000000000";
 
    -- control/address/data pin mapping parameters
@@ -335,7 +335,7 @@ entity ddr_core is
    CKE_ODT_BYTE_MAP : std_logic_vector(7 downto 0) := X"00";
    CKE_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000127";
    ODT_MAP    : std_logic_vector(95 downto 0) := X"000000000000000000000138";
-   CS_MAP     : std_logic_vector(119 downto 0) := X"000000000000000000000000000000";
+   CS_MAP     : std_logic_vector(119 downto 0) := X"000000000000000000000000000133";
    PARITY_MAP : std_logic_vector(11 downto 0) := X"000";
    RAS_MAP    : std_logic_vector(11 downto 0) := X"139";
    WE_MAP     : std_logic_vector(11 downto 0) := X"134";
@@ -474,7 +474,7 @@ entity ddr_core is
    ddr3_ck_p                      : out   std_logic_vector(CK_WIDTH-1 downto 0);
    ddr3_ck_n                      : out   std_logic_vector(CK_WIDTH-1 downto 0);
    ddr3_cke                       : out   std_logic_vector(CKE_WIDTH-1 downto 0);
-   
+   ddr3_cs_n                      : out   std_logic_vector(CS_WIDTH*nCS_PER_RANK-1 downto 0);
    ddr3_dm                        : out   std_logic_vector(DM_WIDTH-1 downto 0);
    ddr3_odt                       : out   std_logic_vector(ODT_WIDTH-1 downto 0);
 
@@ -1289,7 +1289,7 @@ begin
         ddr_ck_n                         => ddr3_ck_n,
         ddr_ck                           => ddr3_ck_p,
         ddr_cke                          => ddr3_cke,
-        ddr_cs_n                         => open,
+        ddr_cs_n                         => ddr3_cs_n,
         ddr_dm                           => ddr3_dm,
         ddr_odt                          => ddr3_odt,
         ddr_ras_n                        => ddr3_ras_n,

@@ -45,6 +45,7 @@ entity top is
     ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
@@ -87,6 +88,7 @@ architecture arch of top is
       ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+      ddr3_cs_n    : out   std_logic_vector(0 downto 0);
       ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
       ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
       -- PCIe transceivers
@@ -201,6 +203,7 @@ begin
       ddr3_ck_p    => ddr3_ck_p,
       ddr3_ck_n    => ddr3_ck_n,
       ddr3_cke     => ddr3_cke,
+      ddr3_cs_n    => ddr3_cs_n,
       ddr3_dm      => ddr3_dm,
       ddr3_odt     => ddr3_odt,
       -- PCIe transceivers

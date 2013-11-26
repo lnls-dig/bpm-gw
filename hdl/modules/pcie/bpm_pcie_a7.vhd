@@ -78,6 +78,7 @@ entity bpm_pcie_a7 is
     ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
@@ -399,6 +400,7 @@ architecture Behavioral of bpm_pcie_a7 is
       ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+      ddr3_cs_n    : out   std_logic_vector(0 downto 0);
       ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
       ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
 
@@ -1496,6 +1498,7 @@ begin
       ddr3_ck_n           => ddr3_ck_n,
       ddr3_ck_p           => ddr3_ck_p,
       ddr3_cke            => ddr3_cke,
+      ddr3_cs_n           => ddr3_cs_n,
       ddr3_ras_n          => ddr3_ras_n,
       ddr3_reset_n        => ddr3_reset_n,
       ddr3_we_n           => ddr3_we_n,
