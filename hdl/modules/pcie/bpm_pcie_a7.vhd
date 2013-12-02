@@ -478,7 +478,10 @@ architecture Behavioral of bpm_pcie_a7 is
       DATA_WIDTH       : integer;
       ADDR_WIDTH       : integer;
       DDR_UI_DATAWIDTH : integer;
-      DDR_DQ_WIDTH     : integer
+      DDR_DQ_WIDTH     : integer;
+      DEVICE_TYPE      : string  -- "VIRTEX6"
+                                 -- "KINTEX7"
+                                 -- "ARTIX7"
       );
     port (
       --ext logic interface to memory core
@@ -1330,7 +1333,8 @@ begin
         DATA_WIDTH => C_DBUS_WIDTH,
         ADDR_WIDTH => DDR_ADDR_WIDTH,
         DDR_UI_DATAWIDTH => DDR_PAYLOAD_WIDTH,
-        DDR_DQ_WIDTH => DDR_DQ_WIDTH
+        DDR_DQ_WIDTH => DDR_DQ_WIDTH,
+        DEVICE_TYPE => "ARTIX7"
         )
       port map(
         -- connect your own signals here

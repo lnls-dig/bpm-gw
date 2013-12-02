@@ -35,7 +35,10 @@ entity DDR_Transact is
     DATA_WIDTH       : integer;
     ADDR_WIDTH       : integer;
     DDR_UI_DATAWIDTH : integer;
-    DDR_DQ_WIDTH     : integer
+    DDR_DQ_WIDTH     : integer;
+    DEVICE_TYPE      : string  -- "VIRTEX6"
+                                -- "KINTEX7"
+                                -- "ARTIX7"
     );
   port (
     --ext logic interface to memory core
@@ -112,7 +115,10 @@ architecture Behavioral of DDR_Transact is
       ADDR_WIDTH        : integer;
       DDR_DQ_WIDTH      : integer;
       DDR_PAYLOAD_WIDTH : integer;
-      P_SIMULATION      : string  := "FALSE"
+      P_SIMULATION      : string  := "FALSE";
+      DEVICE_TYPE       : string  -- "VIRTEX6"
+                                  -- "KINTEX7"
+                                  -- "ARTIX7"
       );
     port (
       -- FPGA interface --
@@ -316,7 +322,8 @@ begin
       P_SIMULATION => SIMULATION,
       ADDR_WIDTH => ADDR_WIDTH,
       DDR_DQ_WIDTH => DDR_DQ_WIDTH,
-      DDR_PAYLOAD_WIDTH => DDR_UI_DATAWIDTH
+      DDR_PAYLOAD_WIDTH => DDR_UI_DATAWIDTH,
+      DEVICE_TYPE => DEVICE_TYPE
       )
     port map (
       -- FPGA interface --

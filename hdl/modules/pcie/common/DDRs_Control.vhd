@@ -1,16 +1,16 @@
 ----------------------------------------------------------------------------------
--- Company:  ZITI
--- Engineer:  wgao
+-- Company:  WUT
+-- Engineer:  abyszuk
 --
 -- Create Date:    12:29:46 04/15/2008
 -- Design Name:
--- Module Name:    bram_DDRs_Control - Behavioral
+-- Module Name:    DDRs_Control - Behavioral
 -- Project Name:
 -- Target Devices:
 -- Tool versions:
 -- Description:
 --
--- Dependencies:
+-- Dependencies: DDR core for Virtex6 or 7series devices
 --
 -- Revision:
 -- Revision 0.01 - File Created
@@ -25,11 +25,6 @@ use IEEE.MATH_REAL.all;
 library work;
 use work.abb64Package.all;
 
----- Uncomment the following library declaration if instantiating
----- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity DDRs_Control is
   generic (
     C_ASYNFIFO_WIDTH : integer := 72;
@@ -37,7 +32,10 @@ entity DDRs_Control is
     ADDR_WIDTH       : integer;
     P_SIMULATION     : string  := "FALSE";
     DDR_DQ_WIDTH     : integer;
-    DDR_PAYLOAD_WIDTH : integer
+    DDR_PAYLOAD_WIDTH : integer;
+    DEVICE_TYPE       : string  -- "VIRTEX6"
+                                -- "KINTEX7"
+                                -- "ARTIX7"
     );
   port (
     -- FPGA interface --
@@ -257,12 +255,22 @@ begin
   Rst_i <= reset or not(ddr_rdy);
   rst_n <= not(rst_i);
 
-  -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
-  -- while ddram_*_addr has byte alignment
-  memc_rd_addr(ddram_rd_addr'left-(RPIPE_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
-    ddram_rd_addr(ddram_rd_addr'left downto RPIPE_ASHIFT_BTOP+1);
-  memc_wr_addr(ddram_wr_addr'left-(WPIPE_F2M_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
-    ddram_wr_addr(ddram_wr_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
+  coreaddr_7s: if DEVICE_TYPE = "KINTEX7" or DEVICE_TYPE = "ARTIX7" generate
+    -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
+    -- while ddram_*_addr has byte alignment
+    memc_rd_addr(ddram_rd_addr'left-(RPIPE_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+      ddram_rd_addr(ddram_rd_addr'left downto RPIPE_ASHIFT_BTOP+1);
+    memc_wr_addr(ddram_wr_addr'left-(WPIPE_F2M_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT downto MEMC_ADDR_BBOT_LIMIT) <=
+      ddram_wr_addr(ddram_wr_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
+  end generate;
+  coreaddr_v6: if DEVICE_TYPE = "VIRTEX6" generate
+    -- memc_*_addr address LSb is DQ_WIDTH aligned, but addresses passed to DDR core need to be PAYLOAD_WIDTH aligned
+    -- while ddram_*_addr has byte alignment
+    memc_rd_addr(ddram_rd_addr'left-(RPIPE_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT-1 downto MEMC_ADDR_BBOT_LIMIT-1) <=
+      ddram_rd_addr(ddram_rd_addr'left downto RPIPE_ASHIFT_BTOP+1);
+    memc_wr_addr(ddram_wr_addr'left-(WPIPE_F2M_ASHIFT_BTOP+1)+MEMC_ADDR_BBOT_LIMIT-1 downto MEMC_ADDR_BBOT_LIMIT-1) <=
+      ddram_wr_addr(ddram_wr_addr'left downto WPIPE_F2M_ASHIFT_BTOP+1);
+  end generate;
 
   memc_cmd_en      <= memc_rd_cmd or memc_wr_cmd_en;
   memc_cmd_instr   <= "00" & memc_rd_cmd;
