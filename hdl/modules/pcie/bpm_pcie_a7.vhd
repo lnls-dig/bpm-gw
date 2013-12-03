@@ -1492,7 +1492,7 @@ begin
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
       SIMULATION          => SIMULATION,
 
-      RST_ACT_LOW => 1
+      RST_ACT_LOW => 0
     )
     port map (
       -- Memory interface ports

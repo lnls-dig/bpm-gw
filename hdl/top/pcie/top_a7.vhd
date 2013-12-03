@@ -352,6 +352,6 @@ begin
     I  => pll_clkout0
     );
 
-  ddr_sys_rst_i <= pll_locked;
+  ddr_sys_rst_i <= not(pll_locked);
 
 end architecture;
