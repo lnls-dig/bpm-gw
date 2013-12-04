@@ -11,7 +11,6 @@ package bpm_pcie_pkg is
   --------------------------------------------------------------------
   component bpm_pcie_ml605
   generic (
-    RST_ACT_LOW  : integer := 1;
     SIMULATION   : string := "FALSE";
     -- ****
     -- PCIe core parameters

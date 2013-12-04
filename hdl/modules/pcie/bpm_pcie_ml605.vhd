@@ -37,7 +37,6 @@ use UNISIM.VComponents.all;
 
 entity bpm_pcie_ml605 is
   generic (
-    RST_ACT_LOW  : integer := 1;
     SIMULATION   : string := "FALSE";
     -- ****
     -- PCIe core parameters
