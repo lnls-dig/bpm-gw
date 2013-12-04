@@ -31,25 +31,20 @@
 else if (testname == "tf64_pcie_axi")
 begin
 
-    TSK_SIMULATION_TIMEOUT(10000);
-
     // Simulation Initialization
     board.DMA_bar = 'H1;
     board.Rx_MWr_Tag = 'H80;
     board.Rx_MRd_Tag = 'H10;
     board.localID = 'H01a0;
 
-    board.RP.tx_usrapp.TSK_SIMULATION_TIMEOUT(11000);
-    board.RP.tx_usrapp.TSK_SYSTEM_INITIALIZATION;
-    board.RP.tx_usrapp.TSK_BAR_INIT;
+    TSK_SIMULATION_TIMEOUT(11000);
+    TSK_SYSTEM_INITIALIZATION;
+    TSK_BAR_INIT;
 
   //set MEM+IO access, enable Bus Master mode
     board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
     board.RP.cfg_usrapp.TSK_WRITE_CFG_DW(32'h00000001, 32'h00000007, 4'b1110);
     board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
-
-    $display("\n  Wait for DDR memory core to finish calibration...");
-    wait (board.EP.ddr_calib_done == 1);
 
     $display("\n%d ns: ####  Starting test...  ####\n", $time);
     // Initialization: TLP
@@ -127,6 +122,9 @@ begin
     
       TLP_Feed_Rx(`C_BAR0_HIT);
       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+    $display("\n  Wait for DDR memory core to finish calibration...");
+    wait (board.EP.bpm_pcie.ddr_calib_done == 1);
 
     /////////////////////////////////////////////////////////////////////
     //                       PIO simulation                            //

@@ -485,7 +485,10 @@ architecture Behavioral of bpm_pcie_k7 is
       DATA_WIDTH       : integer;
       ADDR_WIDTH       : integer;
       DDR_UI_DATAWIDTH : integer;
-      DDR_DQ_WIDTH     : integer
+      DDR_DQ_WIDTH     : integer;
+      DEVICE_TYPE      : string  -- "VIRTEX6"
+                                 -- "KINTEX7"
+                                 -- "ARTIX7"
       );
     port (
       --ext logic interface to memory core
@@ -1337,7 +1340,8 @@ begin
         DATA_WIDTH => C_DBUS_WIDTH,
         ADDR_WIDTH => DDR_ADDR_WIDTH,
         DDR_UI_DATAWIDTH => DDR_PAYLOAD_WIDTH,
-        DDR_DQ_WIDTH => DDR_DQ_WIDTH
+        DDR_DQ_WIDTH => DDR_DQ_WIDTH,
+        DEVICE_TYPE => "KINTEX7"
         )
       port map(
         memc_ui_clk    => memc_ui_clk, --: out std_logic;

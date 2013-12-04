@@ -370,7 +370,10 @@ architecture Behavioral of bpm_pcie_ml605 is
       DATA_WIDTH       : integer;
       ADDR_WIDTH       : integer;
       DDR_UI_DATAWIDTH : integer;
-      DDR_DQ_WIDTH     : integer
+      DDR_DQ_WIDTH     : integer;
+      DEVICE_TYPE      : string  -- "VIRTEX6"
+                                 -- "KINTEX7"
+                                 -- "ARTIX7"
       );
     port (
       --ext logic interface to memory core
@@ -1076,38 +1079,24 @@ begin
         DATA_WIDTH => C_DBUS_WIDTH,
         ADDR_WIDTH => DDR_ADDR_WIDTH,
         DDR_UI_DATAWIDTH => DDR_PAYLOAD_WIDTH,
-        DDR_DQ_WIDTH => DDR_DQ_WIDTH/2 --!!! Fix for differences between Virtex6 and 7 family devices
+        DDR_DQ_WIDTH => DDR_DQ_WIDTH/2, --!!! Fix for differences between Virtex6 and 7 family devices
+        DEVICE_TYPE => "VIRTEX6"
         )
       port map(
-        -- connect your own signals here
-        --memc_ui_clk    => open, --: out std_logic;
-        --memc_cmd_rdy   => open, --: out std_logic;
-        --memc_cmd_en    => '0', --: in  std_logic;
-        --memc_cmd_instr => (others => '0'), --: in  std_logic_vector(2 downto 0);
-        --memc_cmd_addr  => (others => '0'), --: in  std_logic_vector(31 downto 0);
-        --memc_wr_en     => '0', --: in  std_logic;
-        --memc_wr_end    => '0', --: in  std_logic;
-        --memc_wr_mask   => (others => '0'), --: in  std_logic_vector(64/8-1 downto 0);
-        --memc_wr_data   => (others => '0'), --: in  std_logic_vector(64-1 downto 0);
-        --memc_wr_rdy    => open, --: out std_logic;
-        --memc_rd_data   => open, --: out std_logic_vector(64-1 downto 0);
-        --memc_rd_valid  => open, --: out std_logic;
-        --memarb_acc_req => '0', --: in  std_logic;
-        --memarb_acc_gnt => open, --: out std_logic;
-        memc_ui_clk    => memc_ui_clk,
-        memc_cmd_rdy   => memc_cmd_rdy,
-        memc_cmd_en    => memc_cmd_en,
-        memc_cmd_instr => memc_cmd_instr,
-        memc_cmd_addr  => memc_cmd_addr,
-        memc_wr_en     => memc_wr_en,
-        memc_wr_end    => memc_wr_end,
-        memc_wr_mask   => memc_wr_mask,
-        memc_wr_data   => memc_wr_data,
-        memc_wr_rdy    => memc_wr_rdy,
-        memc_rd_data   => memc_rd_data,
-        memc_rd_valid  => memc_rd_valid,
-        memarb_acc_req => memarb_acc_req,
-        memarb_acc_gnt => memarb_acc_gnt,
+        memc_ui_clk    => memc_ui_clk, --: out std_logic;
+        memc_cmd_rdy   => memc_cmd_rdy, --: out std_logic;
+        memc_cmd_en    => memc_cmd_en, --: in  std_logic;
+        memc_cmd_instr => memc_cmd_instr, --: in  std_logic_vector(2 downto 0);
+        memc_cmd_addr  => memc_cmd_addr, --: in  std_logic_vector(31 downto 0);
+        memc_wr_en     => memc_wr_en, --: in  std_logic;
+        memc_wr_end    => memc_wr_end, --: in  std_logic;
+        memc_wr_mask   => memc_wr_mask, --: in  std_logic_vector(64/8-1 downto 0);
+        memc_wr_data   => memc_wr_data, --: in  std_logic_vector(64-1 downto 0);
+        memc_wr_rdy    => memc_wr_rdy, --: out std_logic;
+        memc_rd_data   => memc_rd_data, --: out std_logic_vector(64-1 downto 0);
+        memc_rd_valid  => memc_rd_valid, --: out std_logic;
+        memarb_acc_req => memarb_acc_req, --: in  std_logic;
+        memarb_acc_gnt => memarb_acc_gnt, --: out std_logic;
         -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         DDR_wr_eof   => DDR_wr_eof ,  --  IN    std_logic;
         DDR_wr_v     => DDR_wr_v ,   --  IN    std_logic;
@@ -1235,7 +1224,7 @@ begin
     wbone_rst  <= RST_I;
     wbone_mdin <= DAT_I;
     wbone_ack  <= ACK_I;
-    ADDR_O     <= wbone_addr(28 downto 0);
+    ADDR_O     <= wbone_addr;
     DAT_O      <= wbone_mdout;
     WE_O       <= wbone_we;
     SEL_O      <= wbone_sel(0);
@@ -1247,7 +1236,7 @@ begin
   u_ddr_core : ddr_v6
     generic map (
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
-      RST_ACT_LOW => RST_ACT_LOW
+      RST_ACT_LOW => 0
     )
     port map (
       -- Memory interface ports

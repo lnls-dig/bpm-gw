@@ -109,6 +109,7 @@ NET   "ddr3_we_n"                              LOC = "AM1"     |   IOSTANDARD = 
 NET   "ddr3_reset_n"                           LOC = "AJ9"     |   IOSTANDARD = LVCMOS15             |     SLEW = FAST        ; # Pad function: IO_0_32
 NET   "ddr3_cke[0]"                            LOC = "AJ5"     |   IOSTANDARD = SSTL15               |     SLEW = FAST        ; # Pad function: IO_L8P_T1_32
 NET   "ddr3_odt[0]"                            LOC = "AP1"     |   IOSTANDARD = SSTL15               |     SLEW = FAST        ; # Pad function: IO_L1N_T0_32
+NET   "ddr3_cs_n[0]"                           LOC = "AN3"     |   IOSTANDARD = SSTL15 ;
 NET   "ddr3_dm[0]"                             LOC = "AD10"    |   IOSTANDARD = SSTL15               |     SLEW = FAST        ; # Pad function: IO_L24P_T3_33
 NET   "ddr3_dm[1]"                             LOC = "AH6"     |   IOSTANDARD = SSTL15               |     SLEW = FAST        ; # Pad function: IO_L17N_T2_33
 NET   "ddr3_dm[2]"                             LOC = "AG4"     |   IOSTANDARD = SSTL15               |     SLEW = FAST        ; # Pad function: IO_L7N_T1_33

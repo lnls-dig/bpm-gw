@@ -39,6 +39,7 @@ entity top is
     ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
     ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
     ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_ras_n   : out   std_logic;
     ddr3_cas_n   : out   std_logic;
     ddr3_we_n    : out   std_logic;
@@ -81,6 +82,7 @@ architecture arch of top is
       ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
       ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
       ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
+      ddr3_cs_n    : out   std_logic_vector(0 downto 0);
       ddr3_ras_n   : out   std_logic;
       ddr3_cas_n   : out   std_logic;
       ddr3_we_n    : out   std_logic;
@@ -196,6 +198,7 @@ begin
       ddr3_dqs_n   => ddr3_dqs_n,
       ddr3_addr    => ddr3_addr,
       ddr3_ba      => ddr3_ba,
+      ddr3_cs_n    => ddr3_cs_n,
       ddr3_ras_n   => ddr3_ras_n,
       ddr3_cas_n   => ddr3_cas_n,
       ddr3_we_n    => ddr3_we_n,

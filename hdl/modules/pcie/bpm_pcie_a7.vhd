@@ -78,6 +78,7 @@ entity bpm_pcie_a7 is
     ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
@@ -399,6 +400,7 @@ architecture Behavioral of bpm_pcie_a7 is
       ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
       ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+      ddr3_cs_n    : out   std_logic_vector(0 downto 0);
       ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
       ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
 
@@ -476,7 +478,10 @@ architecture Behavioral of bpm_pcie_a7 is
       DATA_WIDTH       : integer;
       ADDR_WIDTH       : integer;
       DDR_UI_DATAWIDTH : integer;
-      DDR_DQ_WIDTH     : integer
+      DDR_DQ_WIDTH     : integer;
+      DEVICE_TYPE      : string  -- "VIRTEX6"
+                                 -- "KINTEX7"
+                                 -- "ARTIX7"
       );
     port (
       --ext logic interface to memory core
@@ -838,7 +843,6 @@ architecture Behavioral of bpm_pcie_a7 is
   signal cfg_dcommand               : std_logic_vector(15 downto 0);
   signal cfg_lstatus                : std_logic_vector(15 downto 0);
   signal cfg_lcommand               : std_logic_vector(15 downto 0);
-  signal fast_train_simulation_only : std_logic;
   signal two_plm_auto_config        : std_logic_vector(1 downto 0);
 
   signal cfg_mgmt_di                   : std_logic_vector(31 downto 0);
@@ -1329,7 +1333,8 @@ begin
         DATA_WIDTH => C_DBUS_WIDTH,
         ADDR_WIDTH => DDR_ADDR_WIDTH,
         DDR_UI_DATAWIDTH => DDR_PAYLOAD_WIDTH,
-        DDR_DQ_WIDTH => DDR_DQ_WIDTH
+        DDR_DQ_WIDTH => DDR_DQ_WIDTH,
+        DEVICE_TYPE => "ARTIX7"
         )
       port map(
         -- connect your own signals here
@@ -1487,7 +1492,7 @@ begin
       SIM_BYPASS_INIT_CAL => SIM_BYPASS_INIT_CAL,
       SIMULATION          => SIMULATION,
 
-      RST_ACT_LOW => 1
+      RST_ACT_LOW => 0
     )
     port map (
       -- Memory interface ports
@@ -1497,6 +1502,7 @@ begin
       ddr3_ck_n           => ddr3_ck_n,
       ddr3_ck_p           => ddr3_ck_p,
       ddr3_cke            => ddr3_cke,
+      ddr3_cs_n           => ddr3_cs_n,
       ddr3_ras_n          => ddr3_ras_n,
       ddr3_reset_n        => ddr3_reset_n,
       ddr3_we_n           => ddr3_we_n,
