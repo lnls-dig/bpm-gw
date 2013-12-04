@@ -236,6 +236,7 @@ NET "mtxerr_pad_o"                            LOC = AH10;   ## 13  on U80
 #--------------------------------
 #       DIFF TERM
 #--------------------------------
+
 NET "sys_clk_p_i" DIFF_TERM = TRUE;
 NET "sys_clk_n_i" DIFF_TERM = TRUE;
 
@@ -251,31 +252,45 @@ NET "fmc_trig_val_n_b" DIFF_TERM = TRUE;
 #--------------------------------
 #             Clocks
 #--------------------------------
-NET "sys_clk_p_i" TNM_NET = sys_clk_p_i;
-TIMESPEC TS_sys_clk_p_i = PERIOD "sys_clk_p_i" 200 MHz HIGH 50% INPUT_JITTER 50 ps;
 
-NET "clk_sys" TNM_NET = "sys_clk_group";
-#NET "clk_200mhz" TNM_NET = "sys_clk200_group";
+# 200 MHz onboard input clock
+NET "sys_clk_p_i" TNM_NET = "sys_clk_group";
+TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 5 ns HIGH 50%;
 
-TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 10 ns; # 100 MHz
-#TIMESPEC "TS_sys_clk200_group" = PERIOD "sys_clk200_group" 5 ns; # 200 MHz
+# 100 MHz wihsbone clock
+NET "clk_sys" TNM_NET = "clk_sys_group";
+TIMESPEC "TS_clk_sys_group" = PERIOD "clk_sys_group" 10 ns HIGH 50%;
+
+# 200 MHz DDR3 and IDELAY CONTROL clock
+NET "clk_200mhz" TNM_NET = TNM_200mhz_sys_clk;
+TIMESPEC "TS_200mhz_sys_clk" = PERIOD "TNM_200mhz_sys_clk" 5 ns HIGH 50%;
+
+# 200 MHz DDR3 UI Clock
+NET "*/u_infrastructure/clk_pll" TNM_NET = "TNM_ddr_sys_clk";
+TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns HIGH 50%;
+NET "clk_sys" TNM_NET = "TNM_clk_sys_group_ffs";
+TIMESPEC TS_clk_sys_to_ddr3_ui_clk = FROM "TNM_clk_sys_group_ffs" TO "TNM_ddr_sys_clk" 10 ns DATAPATHONLY;
 
 // real jitter is about 22ps peak-to-peak
 NET "fmc_adc0_clk_i" TNM_NET = fmc_adc0_clk_i;
 // TIMESPEC TS_fmc_adc0_clk_i = PERIOD "fmc_adc0_clk_i" 130 MHz HIGH 50% INPUT_JITTER 50 ps;
-TIMESPEC TS_fmc_adc0_clk_i = PERIOD "fmc_adc0_clk_i" 112.583 MHz HIGH 50% INPUT_JITTER 50 ps;
+//TIMESPEC TS_fmc_adc0_clk_i = PERIOD "fmc_adc0_clk_i" 112.5831 MHz HIGH 50% INPUT_JITTER 50 ps;
+TIMESPEC TS_fmc_adc0_clk_i = PERIOD "fmc_adc0_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
 
 NET "fmc_adc1_clk_i" TNM_NET = fmc_adc1_clk_i;
 // TIMESPEC TS_fmc_adc1_clk_i = PERIOD "fmc_adc1_clk_i" 130 MHz HIGH 50% INPUT_JITTER 50 ps;
-TIMESPEC TS_fmc_adc1_clk_i = PERIOD "fmc_adc1_clk_i" 112.583 MHz HIGH 50% INPUT_JITTER 50 ps;
+// TIMESPEC TS_fmc_adc1_clk_i = PERIOD "fmc_adc1_clk_i" 112.5831 MHz HIGH 50% INPUT_JITTER 50 ps;
+TIMESPEC TS_fmc_adc1_clk_i = PERIOD "fmc_adc1_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
 
 NET "fmc_adc2_clk_i" TNM_NET = fmc_adc2_clk_i;
 // TIMESPEC TS_fmc_adc2_clk_i = PERIOD "fmc_adc2_clk_i" 130 MHz HIGH 50% INPUT_JITTER 50 ps;
-TIMESPEC TS_fmc_adc2_clk_i = PERIOD "fmc_adc2_clk_i" 112.583 MHz HIGH 50% INPUT_JITTER 50 ps;
+// TIMESPEC TS_fmc_adc2_clk_i = PERIOD "fmc_adc2_clk_i" 112.5831 MHz HIGH 50% INPUT_JITTER 50 ps;
+TIMESPEC TS_fmc_adc2_clk_i = PERIOD "fmc_adc2_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
 
 NET "fmc_adc3_clk_i" TNM_NET = fmc_adc3_clk_i;
 // TIMESPEC TS_fmc_adc3_clk_i = PERIOD "fmc_adc3_clk_i" 130 MHz HIGH 50% INPUT_JITTER 50 ps;
-TIMESPEC TS_fmc_adc3_clk_i = PERIOD "fmc_adc3_clk_i" 112.583 MHz HIGH 50% INPUT_JITTER 50 ps;
+// TIMESPEC TS_fmc_adc3_clk_i = PERIOD "fmc_adc3_clk_i" 112.5831 MHz HIGH 50% INPUT_JITTER 50 ps;
+TIMESPEC TS_fmc_adc3_clk_i = PERIOD "fmc_adc3_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
 
 //NET "fmc_fpga_clk_p" TNM_NET = fmc_fpga_clk_p;
 //TIMESPEC TS_fmc_fpga_clk_p = PERIOD "fmc_fpga_clk_p" 130 MHz HIGH 50% INPUT_JITTER 40 ps;
@@ -283,6 +298,7 @@ TIMESPEC TS_fmc_adc3_clk_i = PERIOD "fmc_adc3_clk_i" 112.583 MHz HIGH 50% INPUT_
 #--------------------------------
 #             Data
 #--------------------------------
+
 #INST "fmc_adc_130m_4ch_i/ltcInterface_adc0_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y1;
 #INST "fmc_adc_130m_4ch_i/ltcInterface_adc1_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y2;
 #INST "fmc_adc_130m_4ch_i/ltcInterface_adc2_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y0;
@@ -305,29 +321,21 @@ TIMEGRP "fmc_adc3_data_i" OFFSET = IN -0.7 ns VALID 7.6 ns BEFORE "fmc_adc3_clk_
 #--------------------------------
 #         PCIe constraints
 #--------------------------------
-## Project    : Series-7 Integrated Block for PCI Express
-## Version    : 1.6
 #
-###############################################################################
-# Define Device, Package And Speed Grade
-###############################################################################
-
 CONFIG PART = xc6vlx240t-ff1156-1;
 
-#########################################################################################################################
+#--------------------------------
 # User Constraints
-#########################################################################################################################
-
-###############################################################################
+#--------------------------------
+#--------------------------------
 # User Time Names / User Time Groups / Time Specs
-###############################################################################
-
-###############################################################################
+#--------------------------------
+#--------------------------------
 # User Physical Constraints
-###############################################################################
-###########  PCIE  #########################
+#--------------------------------
+
 #PCIe reset
-NET "pcie_rst_n_i" IOSTANDARD = LVCMOS25 | PULLUP | NODELAY;
+NET "pcie_rst_n_i" IOSTANDARD = "LVCMOS25" | PULLUP | NODELAY;
 NET "pcie_rst_n_i" TIG;
 # Bank 16 VCCO - VADJ_FPGA - IO_25_16
 NET "pcie_rst_n_i" LOC = AE13;
@@ -337,7 +345,9 @@ NET "pcie_clk_n_i" LOC = P5;
 # Bank 115 - MGTREFCLK1N_115
 NET "pcie_clk_p_i" LOC = P6;
 
-###########  DDR controller  ##############
+#--------------------------------
+#        DDR controller
+#--------------------------------
 NET   "ddr3_dq_b[0]"    LOC = "J11"  | IOSTANDARD = SSTL15_T_DCI ;
 NET   "ddr3_dq_b[1]"    LOC = "E13"  | IOSTANDARD = SSTL15_T_DCI ;
 NET   "ddr3_dq_b[2]"    LOC = "F13"  | IOSTANDARD = SSTL15_T_DCI ;
@@ -455,14 +465,9 @@ NET   "ddr3_ck_n_o[0]"  LOC = "H18"  | IOSTANDARD = DIFF_SSTL15 ;
 #NET   "ddr_sys_clk_p_i" LOC = "J9"  | IOSTANDARD = LVDS_25;
 #NET   "ddr_sys_clk_n_i" LOC = "H9"  | IOSTANDARD = LVDS_25;
 
-#########################################################################################################################
-# End User Constraints
-#########################################################################################################################
-
-###############################################################################
+#--------------------------------
 # Pinout and Related I/O Constraints
-###############################################################################
-
+#--------------------------------
 
 #
 # SYS clock 100 MHz (input) signal. The sys_clk_p and sys_clk_n
@@ -475,7 +480,7 @@ NET   "ddr3_ck_n_o[0]"  LOC = "H18"  | IOSTANDARD = DIFF_SSTL15 ;
 # (UG) for guidelines regarding clock resource selection.
 #
 
-INST "cmp_bpm_pcie_ml605/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
+INST "*/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -484,157 +489,153 @@ INST "cmp_bpm_pcie_ml605/pcieclk_ibuf" LOC = IBUFDS_GTXE1_X0Y6;
 # Virtex-6 GT Transceiver User Guide (UG) for more information.
 #
 # PCIe Lane 0
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[0].GTX" LOC = GTXE1_X0Y15;
+INST "*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[0].GTX" LOC = GTXE1_X0Y15;
 # PCIe Lane 1
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[1].GTX" LOC = GTXE1_X0Y14;
+INST "*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[1].GTX" LOC = GTXE1_X0Y14;
 # PCIe Lane 2
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[2].GTX" LOC = GTXE1_X0Y13;
+INST "*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[2].GTX" LOC = GTXE1_X0Y13;
 # PCIe Lane 3
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[3].GTX" LOC = GTXE1_X0Y12;
+INST "*/pcie_2_0_i/pcie_gt_i/gtx_v6_i/no_of_lanes.GTXD[3].GTX" LOC = GTXE1_X0Y12;
 
 #
 # PCI Express Block placement. This constraint selects the PCI Express
 # Block to be used.
 #
-INST "cmp_bpm_pcie_ml605/*/pcie_2_0_i/pcie_block_i" LOC = PCIE_X0Y1;
+INST "*/pcie_2_0_i/pcie_block_i" LOC = PCIE_X0Y1;
 
 
 #
 # DDR controller component placement
 # Check it after changing memory controller paramenters
-###############################################################################
+
+#--------------------------------
 #DCI_CASCADING
 #Syntax : CONFIG DCI_CASCADE = "<master> <slave1> <slave2> ..";
-###############################################################################
+#--------------------------------
+
 CONFIG DCI_CASCADE = "26 25";#
 CONFIG DCI_CASCADE = "36 35";#
 
-##################################################################################################
-##The logic of this pin is used internally to drive a BUFR in the column. This chosen pin must  ##
-##be a clock pin capable of spanning to all of the banks containing data bytes in the particular##
-##column. That is, all byte groups must be within +/- 1 bank of this pin. This pin cannot be    ##
-##used for other functions and should not be connected externally. If a different pin is chosen,##
-##he corresponding LOC constraint must also be changed.                                         ##
-##################################################################################################
+#--------------------------------
+## The logic of this pin is used internally to drive a BUFR in the column. This chosen pin must  
+## be a clock pin capable of spanning to all of the banks containing data bytes in the particular
+## column. That is, all byte groups must be within +/- 1 bank of this pin. This pin cannot be    
+## used for other functions and should not be connected externally. If a different pin is chosen,
+## he corresponding LOC constraint must also be changed.                                         
+#--------------------------------
 CONFIG PROHIBIT = C29,M12;
 
-##################################################################################################
-##The logic of this pin is used internally to drive a BUFIO for the byte group. Any clock       ##
-##capable pin in the same bank as the data byte group (DQS, DQ, DM if used) can be used for     ##
-##this pin. This pin cannot be used for other functions and should not be connected externally. ##
-##If a different pin is chosen, the corresponding LOC constraint must also be changed.          ##
-##################################################################################################
+#--------------------------------
+## The logic of this pin is used internally to drive a BUFIO for the byte group. Any clock      
+## capable pin in the same bank as the data byte group (DQS, DQ, DM if used) can be used for    
+## this pin. This pin cannot be used for other functions and should not be connected externally.
+## If a different pin is chosen, the corresponding LOC constraint must also be changed.         
+#--------------------------------
 CONFIG PROHIBIT = B20,C13,C28,D24,F21,F25,K14,L13;
 
-######################################################################################
-##Place RSYNC OSERDES and IODELAY:                                                  ##
-######################################################################################
+#--------------------------------
+#Place RSYNC OSERDES and IODELAYy
+#--------------------------------
 
 ##Site: C29 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync"
   LOC = "OLOGIC_X1Y139";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync"
   LOC = "IODELAY_X1Y139";
 
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync"
   LOC = "BUFR_X1Y6";
 
 ##Site: M12 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync"
   LOC = "OLOGIC_X2Y139";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync"
   LOC = "IODELAY_X2Y139";
 
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync"
   LOC = "BUFR_X2Y6";
-######################################################################################
-##Place CPT OSERDES and IODELAY:                                                    ##
-######################################################################################
+  
+#--------------------------------
+# Place CPT OSERDES and IODELAY:
+#--------------------------------
 
 ##Site: C13 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_oserdes_cpt"
   LOC = "OLOGIC_X2Y137";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[0].u_odelay_cpt"
   LOC = "IODELAY_X2Y137";
 
 ##Site: L13 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_oserdes_cpt"
   LOC = "OLOGIC_X2Y141";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[1].u_odelay_cpt"
   LOC = "IODELAY_X2Y141";
 
 ##Site: K14 -- Bank 35
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_oserdes_cpt"
   LOC = "OLOGIC_X2Y143";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[2].u_odelay_cpt"
   LOC = "IODELAY_X2Y143";
 
 ##Site: F21 -- Bank 26
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_oserdes_cpt"
   LOC = "OLOGIC_X1Y179";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[3].u_odelay_cpt"
   LOC = "IODELAY_X1Y179";
 
 ##Site: B20 -- Bank 26
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_oserdes_cpt"
   LOC = "OLOGIC_X1Y181";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[4].u_odelay_cpt"
   LOC = "IODELAY_X1Y181";
 
 ##Site: F25 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_oserdes_cpt"
   LOC = "OLOGIC_X1Y137";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[5].u_odelay_cpt"
   LOC = "IODELAY_X1Y137";
 
 ##Site: C28 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_oserdes_cpt"
   LOC = "OLOGIC_X1Y141";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[6].u_odelay_cpt"
   LOC = "IODELAY_X1Y141";
 
 ##Site: D24 -- Bank 25
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_oserdes_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_oserdes_cpt"
   LOC = "OLOGIC_X1Y143";
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_odelay_cpt"
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_read/u_phy_rdclk_gen/gen_ck_cpt[7].u_odelay_cpt"
   LOC = "IODELAY_X1Y143";
 
-INST "cmp_bpm_pcie_ml605/*/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36
+INST "*/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36
 
-###############################################################################
+#--------------------------------
 # Timing Constraints
-###############################################################################
+#--------------------------------
 
-NET "cmp_bpm_pcie_ml605/sys_clk_c" TNM_NET = "SYSCLK" ;
-NET "cmp_bpm_pcie_ml605/*/pcie_clocking_i/clk_125" TNM_NET = "CLK_125" ;
-NET "cmp_bpm_pcie_ml605/*/TxOutClk_bufg" TNM_NET = "TXOUTCLKBUFG";
+NET "*/sys_clk_c" TNM_NET = "SYSCLK" ;
+NET "*/pcie_clocking_i/clk_125" TNM_NET = "CLK_125" ;
+NET "*/TxOutClk_bufg" TNM_NET = "TXOUTCLKBUFG";
 
 TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 % PRIORITY 100 ;
 TIMESPEC "TS_CLK_125"  = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 1 ;
 TIMESPEC "TS_TXOUTCLKBUFG"  = PERIOD "TXOUTCLKBUFG" 100 MHz HIGH 50 % PRIORITY 100 ;
 
 
-PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_int_i.CLR" TIG ;
-PIN "cmp_bpm_pcie_ml605/*/trn_reset_n_i.CLR" TIG ;
-PIN "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i.RST" TIG ;
+PIN "*/trn_reset_n_int_i.CLR" TIG ;
+PIN "*/trn_reset_n_i.CLR" TIG ;
+PIN "*/pcie_clocking_i/mmcm_adv_i.RST" TIG ;
 
-INST "cmp_bpm_pcie_ml605/*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
+INST "*/pcie_clocking_i/mmcm_adv_i" LOC = MMCM_ADV_X0Y7;
 
-
-####### DDR ###########
-# Temporary place for this constraint as it should belong to the
-# top ucf file, not here.
-
-#NET "cmp_bpm_pcie_ml605/ddr_sys_clk_p" TNM_NET = TNM_ddr_sys_clk;
-#TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
-
-NET "clk_200mhz" TNM_NET = TNM_ddr_sys_clk;
-TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns;
-
+#--------------------------------
+#              DDR
+#--------------------------------
+          
 # Constrain BUFR clocks used to synchronize data from IOB to fabric logic
 # Note that ISE cannot infer this from other PERIOD constraints because
 # of the use of OSERDES blocks in the BUFR clock generation path
-NET "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/clk_rsync[?]" TNM_NET = TNM_clk_rsync;
+NET "*/u_memc_ui_top/u_mem_intfc/phy_top0/clk_rsync[?]" TNM_NET = TNM_clk_rsync;
 TIMESPEC "TS_clk_rsync" = PERIOD "TNM_clk_rsync" 5 ns;
 
 # Paths between DQ/DQS ISERDES.Q outputs and CLB flops clocked by falling
@@ -654,19 +655,19 @@ TIMESPEC "TS_clk_rsync_rise_to_fall" =
 # Signal to select between controller and physical layer signals. Four divided by two clock
 # cycles (4 memory clock cycles) are provided by design for the signal to settle down.
 # Used only by the phy modules.
-INST "cmp_bpm_pcie_ml605/*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_init/u_ff_phy_init_data_sel" TNM = "TNM_PHY_INIT_SEL";
+INST "*/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_init/u_ff_phy_init_data_sel" TNM = "TNM_PHY_INIT_SEL";
 TIMESPEC "TS_MC_PHY_INIT_SEL" = FROM "TNM_PHY_INIT_SEL" TO FFS = "TS_ddr_sys_clk"*8;
 
-###############################################################################
+#--------------------------------
 # Physical Constraints
-###############################################################################
-# Constrain the PCIe core elements placement, so that it won't fail
-# timing analysis.
-# Comment out because we use nonstandard GTP location
+#--------------------------------
+
+## Constrain the PCIe core elements placement, so that it won't fail
+## timing analysis.
+## Comment out because we use nonstandard GTP location
 #INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
 #AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
-#Place the DMA design not far from PCIe core, otherwise it also breaks timing
-#INST "theTlpControl" AREA_GROUP = "GRP_tlpControl";
-#AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
-
-# PlanAhead Generated physical constraints
+#
+## Place the DMA design not far from PCIe core, otherwise it also breaks timing
+INST "*/theTlpControl" AREA_GROUP = "GRP_tlpControl";
+AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
