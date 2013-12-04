@@ -8,7 +8,8 @@ entity clk_gen is
 port(
   sys_clk_p_i                               : in std_logic;
   sys_clk_n_i                               : in std_logic;
-  sys_clk_o                                 : out std_logic
+  sys_clk_o                                 : out std_logic;
+  sys_clk_bufg_o                            : out std_logic
 );
 end clk_gen;
 
@@ -24,8 +25,8 @@ begin
 
   cpm_ibufgds_clk_gen : IBUFGDS
   generic map (
-    DIFF_TERM => FALSE, -- Differential Termination 
-    IBUF_LOW_PWR => TRUE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+    DIFF_TERM => TRUE, -- Differential Termination 
+    IBUF_LOW_PWR => FALSE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
     IOSTANDARD => "DEFAULT"
   )
   port map (
@@ -33,6 +34,8 @@ begin
       I                                     => sys_clk_p_i,  -- Diff_p clock buffer input (connect directly to top-level port)
       IB                                    => sys_clk_n_i -- Diff_n clock buffer input (connect directly to top-level port)
   );
+  
+  sys_clk_o <= s_sys_clk;
     
   -- BUFG: Global Clock Buffer
   --       Virtex-6
@@ -40,7 +43,7 @@ begin
   
   cmp_bufg_clk_gen : BUFG
   port map (
-    O                                       => sys_clk_o, -- 1-bit output: Clock buffer output
+    O                                       => sys_clk_bufg_o, -- 1-bit output: Clock buffer output
     I                                       => s_sys_clk  -- 1-bit input: Clock buffer input
   );
 
