@@ -7,6 +7,7 @@ use work.wb_stream_pkg.all;
 use work.wb_stream_generic_pkg.all;
 use work.fmc_adc_pkg.all;
 use work.wr_fabric_pkg.all;
+use work.acq_core_pkg.all;
 
 package dbe_wishbone_pkg is
 
