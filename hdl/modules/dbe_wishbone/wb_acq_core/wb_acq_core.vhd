@@ -320,7 +320,7 @@ architecture rtl of wb_acq_core is
     wb_ack_o                                 : out    std_logic;
     wb_stall_o                               : out    std_logic;
     fs_clk_i                                 : in     std_logic;
-    --ext_clk_i                                : in     std_logic;
+    ext_clk_i                                : in     std_logic;
     regs_i                                   : in     t_acq_core_in_registers;
     regs_o                                   : out    t_acq_core_out_registers
   );
@@ -382,7 +382,7 @@ begin
     wb_ack_o                                => wb_slv_adp_in.ack,
     wb_stall_o                              => wb_slv_adp_in.stall,
     fs_clk_i                                => fs_clk_i,
-    --ext_clk_i                               => ext_clk_i,
+    ext_clk_i                               => ext_clk_i,
     regs_i                                  => regs_in,
     regs_o                                  => regs_out
   );
