@@ -260,7 +260,7 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
   constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
 
-  constant c_acq_fifo_size                  : natural := 2048; -- avoid FIFO overflow
+  constant c_acq_fifo_size                  : natural := 256;
 
   -- TEMPORARY! DON'T TOUCH!
   constant c_acq_data_width                 : natural := 64;
@@ -429,11 +429,11 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   signal dbg_ddr_rb_data                    : std_logic_vector(c_acq_data_width-1 downto 0);
   signal dbg_ddr_rb_addr                    : std_logic_vector(c_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
-
+  
   -- memory arbiter interface
   signal memarb_acc_req                     : std_logic;
   signal memarb_acc_gnt                     : std_logic;
-
+  
   -- Clocks and resets signals
   signal locked                             : std_logic;
   signal clk_sys_rstn                       : std_logic;
@@ -456,6 +456,7 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
 
   -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
+  signal sys_clk_gen_bufg                   : std_logic;
 
   -- Ethernet MAC signals
   signal ethmac_int                         : std_logic;
@@ -596,11 +597,12 @@ architecture rtl of dbe_bpm_fmc130m_4ch_pcie is
   ---------------------------
 
   -- Clock generation
-  component clk_gen is
+  component clk_gen
   port(
-    sys_clk_p_i                             : in std_logic;
-    sys_clk_n_i                             : in std_logic;
-    sys_clk_o                               : out std_logic
+    sys_clk_p_i                               : in std_logic;
+    sys_clk_n_i                               : in std_logic;
+    sys_clk_o                                 : out std_logic;
+    sys_clk_bufg_o                            : out std_logic
   );
   end component;
 
@@ -677,14 +679,16 @@ begin
   port map (
     sys_clk_p_i                             => sys_clk_p_i,
     sys_clk_n_i                             => sys_clk_n_i,
-    sys_clk_o                               => sys_clk_gen
+    sys_clk_o                               => sys_clk_gen,
+    sys_clk_bufg_o                          => sys_clk_gen_bufg
   );
 
   -- Obtain core locking and generate necessary clocks
   cmp_sys_pll_inst : sys_pll
   port map (
     rst_i                                   => '0',
-    clk_i                                   => sys_clk_gen,
+    --clk_i                                   => sys_clk_gen,
+    clk_i                                   => sys_clk_gen_bufg,
     clk0_o                                  => clk_sys,     -- 100MHz locked clock
     clk1_o                                  => clk_200mhz,  -- 200MHz locked clock
     locked_o                                => locked        -- '1' when the PLL has locked
@@ -696,7 +700,8 @@ begin
     g_clocks                                => c_num_tlvl_clks    -- CLK_SYS & CLK_200
   )
   port map(
-    free_clk_i                              => sys_clk_gen,
+    --free_clk_i                              => sys_clk_gen,
+    free_clk_i                              => sys_clk_gen_bufg,
     locked_i                                => locked,
     clks_i                                  => reset_clks,
     rstn_o                                  => reset_rstn
@@ -791,9 +796,7 @@ begin
   ----------------------------------
   cmp_bpm_pcie_ml605 : bpm_pcie_ml605
   generic map (
-    RST_ACT_LOW                             => 1,
     SIM_BYPASS_INIT_CAL                     => "OFF" -- Full calibration sequence
-    --SIM_BYPASS_INIT_CAL                     => "FAST" -- Fast calibration sequence
   )
   port map (
     --DDR3 memory pins
@@ -819,13 +822,13 @@ begin
     pci_exp_txn                             => pci_exp_txn_o,
     -- Necessity signals
     ddr_sys_clk_p                           => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
+    --ddr_sys_clk_p                           => sys_clk_gen_bufg, --200 MHz DDR core clock (connect through BUFG or PLL)
     sys_clk_p                               => pcie_clk_p_i,  --100 MHz PCIe Clock (connect directly to input pin)
     sys_clk_n                               => pcie_clk_n_i,  --100 MHz PCIe Clock
     sys_rst_n                               => pcie_rst_n_i, -- PCIe core reset
 
     -- DDR memory controller interface --
-    --ddr_core_rst                            => clk_200mhz_rst,
-    ddr_core_rst                            => clk_200mhz_rstn, -- RST_ACT_LOW = 1
+    ddr_core_rst                            => wb_ma_pcie_rst,
     memc_ui_clk                             => memc_ui_clk,
     memc_ui_rst                             => memc_ui_rst,
     memc_cmd_rdy                            => memc_cmd_rdy,
@@ -859,7 +862,7 @@ begin
     cyc_o                                   => wb_ma_pcie_cyc_out,
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    ext_rst_o                               => wb_ma_pcie_rst
+    ext_rst_o                               => wb_ma_pcie_rst        
   );
 
   wb_ma_pcie_rstn                           <= not(wb_ma_pcie_rst);
@@ -1327,7 +1330,7 @@ begin
 
   leds_o <= gpio_leds_int;
 
-  -- The board peripherals components is slave 9
+  -- The xwb_acq_core is slave 9
   cmp_xwb_acq_core : xwb_acq_core
   generic map
   (
@@ -1401,7 +1404,7 @@ begin
     ui_app_wdf_rdy_i                          => memc_wr_rdy,
 
     ui_app_rd_data_i                          => memc_rd_data,  -- not used!
-    ui_app_rd_data_end_i                      => '0',  -- not used! Add this signal to DDR3 PCIe?
+    ui_app_rd_data_end_i                      => '0',  -- not used!
     ui_app_rd_data_valid_i                    => memc_rd_valid,  -- not used!
 
     -- DDR3 arbitrer for multiple accesses
@@ -1656,22 +1659,37 @@ begin
   cmp_chipscope_ila_4_bpm_acq : chipscope_ila
   port map (
     CONTROL                                 => CONTROL4,
-    CLK                                     => clk_sys, -- Wishbone clock
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
     TRIG0                                   => TRIG_ILA4_0,
     TRIG1                                   => TRIG_ILA4_1,
     TRIG2                                   => TRIG_ILA4_2,
     TRIG3                                   => TRIG_ILA4_3
   );
 
-  TRIG_ILA4_0                               <= cbar_master_i(9).dat;
-  TRIG_ILA4_1                               <= cbar_master_o(9).dat;
-  TRIG_ILA4_2                               <= cbar_master_o(9).adr;
-  TRIG_ILA4_3(31 downto 8)                  <= (others => '0');
-  TRIG_ILA4_3(7 downto 0)                   <=  cbar_master_i(9).ack &
-                                                cbar_master_o(9).we &
-                                                cbar_master_o(9).stb &
-                                                cbar_master_o(9).sel &
-                                                cbar_master_o(9).cyc;
+  --TRIG_ILA4_0                               <= cbar_master_i(9).dat;
+  --TRIG_ILA4_1                               <= cbar_master_o(9).dat;
+  --TRIG_ILA4_2                               <= cbar_master_o(9).adr;
+  --TRIG_ILA4_3(31 downto 8)                  <= (others => '0');
+  --TRIG_ILA4_3(7 downto 0)                   <=  cbar_master_i(9).ack &
+  --                                              cbar_master_o(9).we &
+  --                                              cbar_master_o(9).stb &
+  --                                              cbar_master_o(9).sel &
+  --                                              cbar_master_o(9).cyc;
+  --TRIG_ILA4_0                               <= dbg_app_rd_data(207 downto 192) &
+  --                                               dbg_app_rd_data(143 downto 128);
+  --TRIG_ILA4_1                               <= dbg_app_rd_data(79 downto 64) &
+  --                                               dbg_app_rd_data(15 downto 0);
+  --                                               
+  --TRIG_ILA4_2                               <= dbg_app_addr;
+  --
+  --TRIG_ILA4_3(31 downto 11)                  <= (others => '0');
+  --TRIG_ILA4_3(10 downto 0)                   <=  dbg_app_rd_data_end & 
+  --                                               dbg_app_rd_data_valid &
+  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
+  --                                               dbg_app_en &
+  --                                               dbg_app_rdy &
+  --                                               dbg_arb_req &
+  --                                               dbg_arb_gnt;
 
   cmp_chipscope_ila_5_bpm_acq : chipscope_ila
   port map (
@@ -1683,27 +1701,31 @@ begin
     TRIG3                                   => TRIG_ILA5_3
   );
 
-  TRIG_ILA5_0                               <= memc_wr_data(15 downto 0) &
-                                                 bpm_acq_ext_dout(15 downto 0);
-  TRIG_ILA5_1                               <= bpm_acq_ext_addr(15 downto 0) &
-                                                 memc_cmd_addr(15 downto 0);
-  TRIG_ILA5_2(31 downto 5)                  <= (others => '0');
-  TRIG_ILA5_2(4 downto 0)                   <= bpm_acq_ext_valid &
-                                                 bpm_acq_ext_sof &
-                                                 bpm_acq_ext_eof &
-                                                 bpm_acq_ext_dreq &
-                                                 bpm_acq_ext_stall;
-  TRIG_ILA5_3(31 downto 28)                 <= (others => '0');
-  TRIG_ILA5_3(27 downto 0)                  <= memc_ui_rst &
-                                                 clk_200mhz_rstn &
-                                                 memc_cmd_instr & -- std_logic_vector(2 downto 0);
-                                                 memc_cmd_en &
-                                                 memc_cmd_rdy &
-                                                 memc_wr_end &
-                                                 memc_wr_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
-                                                 memc_wr_en &
-                                                 memc_wr_rdy &
-                                                 memarb_acc_req &
-                                                 memarb_acc_gnt;
-
+  --TRIG_ILA5_0                               <= memc_wr_data(15 downto 0) &
+  --                                               bpm_acq_ext_dout(15 downto 0);
+  --TRIG_ILA5_1                               <= bpm_acq_ext_addr(15 downto 0) &
+  --                                               memc_cmd_addr(15 downto 0);
+  --TRIG_ILA5_0                               <= memc_wr_data(207 downto 192) &
+  --                                               memc_wr_data(143 downto 128);
+  --TRIG_ILA5_1                               <= memc_wr_data(79 downto 64) &
+  --                                               memc_wr_data(15 downto 0);
+  --TRIG_ILA5_2(31 downto 22)                 <= (others => '0');
+  --TRIG_ILA5_2(20 downto 5)                  <= memc_cmd_addr(15 downto 0);
+  --TRIG_ILA5_2(4 downto 0)                   <= bpm_acq_ext_valid &
+  --                                               bpm_acq_ext_sof &
+  --                                               bpm_acq_ext_eof &
+  --                                               bpm_acq_ext_dreq &
+  --                                               bpm_acq_ext_stall;
+  --TRIG_ILA5_3(31 downto 28)                 <= (others => '0');
+  --TRIG_ILA5_3(27 downto 0)                  <= memc_ui_rst &
+  --                                               clk_200mhz_rstn &
+  --                                               memc_cmd_instr & -- std_logic_vector(2 downto 0);
+  --                                               memc_cmd_en &
+  --                                               memc_cmd_rdy &
+  --                                               memc_wr_end &
+  --                                               memc_wr_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
+  --                                               memc_wr_en &
+  --                                               memc_wr_rdy &
+  --                                               memarb_acc_req &
+  --                                               memarb_acc_gnt;
 end rtl;
