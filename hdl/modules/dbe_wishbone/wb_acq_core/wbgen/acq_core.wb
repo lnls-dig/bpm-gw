@@ -378,4 +378,20 @@ peripheral {
       access_dev = READ_ONLY;
     };
   };
+    
+  reg {
+    name = "Acquisition channel control";
+    prefix = "acq_chan_ctl";
+
+    field {
+      name = "Acquisition channel selection";
+      description = "Selection of path to acquire on next acquisition.";
+      prefix = "which";
+      type = SLV;
+      size = 16;
+      clock = "ext_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
 };
