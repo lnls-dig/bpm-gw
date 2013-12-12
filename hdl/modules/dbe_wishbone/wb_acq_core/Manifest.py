@@ -1,5 +1,6 @@
 files = ["wb_acq_core.vhd",
         "xwb_acq_core.vhd",
+        "wb_acq_core_plain.vhd",
         "acq_fsm.vhd",
         "acq_core_pkg.vhd",
         "acq_multishot_dpram.vhd",
