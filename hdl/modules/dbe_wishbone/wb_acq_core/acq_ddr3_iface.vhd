@@ -9,11 +9,6 @@
 -- Description: Module for the performing interface conversion between custom
 --               interface (much alike the Wishbone B4 Pipelined) and DDR3 UI
 --               (BC4) Xilinx interface.
---             For now, this modules performs very simple (and dumb) DDR3 write
---              through the UI interface. It can perform much better than this!
---             Also, this module is killing all the performance, as it does not
---               aggregate data before sending it. It just sends the input word
---               masked to the correct position to the DDR3 controller.
 --
 --             As we only got one cycle latency pipeline until the fc_source
 --               module, we don't need to worry about flow control
@@ -45,11 +40,13 @@ use work.acq_core_pkg.all;
 entity acq_ddr3_iface is
 generic
 (
-  g_data_width                              : natural := 64;
-  g_addr_width                              : natural := 32;
+  g_acq_addr_width                          : natural := 32;
+  g_acq_num_channels                        : natural := 1;
+  g_acq_channels                            : t_acq_chan_param_array;
   -- Do not modify these! As they are dependent of the memory controller generated!
-  g_ddr_payload_width                       : natural := 256;
-  g_ddr_addr_width                          : natural := 32
+  g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+  g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+  g_ddr_addr_width                          : natural := 32       -- be careful changing these!
 );
 port
 (
@@ -59,9 +56,9 @@ port
 
   -- Flow protocol to interface with external SDRAM. Evaluate the use of
   -- Wishbone Streaming protocol.
-  fifo_fc_din_i                             : in std_logic_vector(g_data_width-1 downto 0);
+  fifo_fc_din_i                             : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   fifo_fc_valid_i                           : in std_logic;
-  fifo_fc_addr_i                            : in std_logic_vector(g_addr_width-1 downto 0);
+  fifo_fc_addr_i                            : in std_logic_vector(g_acq_addr_width-1 downto 0);
   fifo_fc_sof_i                             : in std_logic;
   fifo_fc_eof_i                             : in std_logic;
   fifo_fc_dreq_o                            : out std_logic;
@@ -73,6 +70,8 @@ port
   lmt_all_trans_done_p_o                    : out std_logic;
   lmt_rst_i                                 : in std_logic;
 
+  -- Current channel selection ID
+  lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
   -- Size of the transaction in g_fifo_size bytes
   lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
   -- Number of shots in this acquisition
@@ -103,27 +102,41 @@ end acq_ddr3_iface;
 
 architecture rtl of acq_ddr3_iface is
 
+  alias c_acq_channels : t_acq_chan_param_array(g_acq_num_channels-1 downto 0) is g_acq_channels;
+
   -- Constants
+  constant c_acq_chan_slice                 : t_acq_chan_slice_array(g_acq_num_channels-1 downto 0) :=
+                                                 f_acq_chan_det_slice(c_acq_channels);
   -- g_ddr_payload_width must be bigger than g_data_width by at least 2 times.
   -- Also, only power of 2 ratio sizes are supported
-  constant c_ddr_fc_payload_ratio           : natural := g_ddr_payload_width/g_data_width;
+  constant c_ddr_fc_payload_ratio           : t_ddr_payld_ratio_array(g_acq_num_channels-1 downto 0) :=
+                                      f_ddr_fc_payload_ratio (g_ddr_payload_width,
+                                                               c_acq_chan_slice);
+  constant c_ddr_fc_payload_ratio_log2      : t_ddr_payld_ratio_array(g_acq_num_channels-1 downto 0) :=
+                                      f_log2_size_array(c_ddr_fc_payload_ratio);
+  constant c_ddr_payload_ratio_2            : natural := 2;
+  constant c_ddr_payload_ratio_4            : natural := 4;
+  constant c_ddr_payload_ratio_8            : natural := 8;
+  constant c_max_ddr_payload_ratio_log2     : natural := f_log2_size(c_max_ddr_payload_ratio);
   constant c_ddr_mask_width                 : natural := g_ddr_payload_width/8;
+  
   alias c_ddr_payload_width                 is g_ddr_payload_width;
   --constant c_ddr_mask_shift                 : natural := g_data_width/8;
 
   -- Data increment constants
-  constant c_addr_col_inc                   : natural := 1;
-  constant c_addr_bc4_inc                   : natural := 4;
-  constant c_addr_bl8_inc                   : natural := 8;
-  constant c_addr_ddr_inc                   : natural := c_addr_bc4_inc;
+  --constant c_addr_col_inc                   : natural := 1;
+  --constant c_addr_bc4_inc                   : natural := 4;
+  --constant c_addr_bl8_inc                   : natural := 8;
+  constant c_addr_ddr_inc                   : natural := g_ddr_payload_width/g_ddr_dq_width;
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
   constant c_pipe_size                      : natural := 4;
-  constant c_addr_cnt_width                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
-  constant c_pkt_size_shift                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
-  constant c_max_addr_cnt                   : natural := c_ddr_fc_payload_ratio-1;
-  --constant c_addr_width                     : natural := 32;
+  --constant c_addr_cnt_width                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
+  --constant c_pkt_size_shift                 : natural := f_log2_size(c_ddr_fc_payload_ratio);
+  constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
+  --constant c_pkt_size_shift                 : natural := c_max_ddr_payload_ratio_log2;
+  --constant c_max_addr_cnt                   : natural := c_ddr_fc_payload_ratio-1;
 
   -- UI Commands
   constant c_ui_cmd_write                   : std_logic_vector(2 downto 0) := "000";
@@ -136,20 +149,28 @@ architecture rtl of acq_ddr3_iface is
   constant c_data_high                      : natural := c_ddr_payload_width + c_data_low -1;
 
   -- Constants for ddr3 address bits
-  constant c_ddr_addr_ovf_lsb               : natural := 0;
-  constant c_ddr_addr_ovf_msb               : natural := c_addr_cnt_width-1;
-  constant c_ddr_addr_ovf_bit               : natural := c_addr_cnt_width;
-  constant c_ddr_align_shift                : natural := f_log2_size(c_ddr_fc_payload_ratio);
+  --constant c_ddr_addr_ovf_lsb               : natural := 0;
+  --constant c_ddr_addr_ovf_msb               : natural := c_addr_cnt_width-1;
+  --constant c_ddr_addr_ovf_bit               : natural := c_addr_cnt_width;
+  constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
+
+  subtype t_addr_cnt is unsigned(c_addr_cnt_width-1 downto 0);
+  type t_addr_cnt_array is array (natural range <>) of t_addr_cnt;
+  
+  subtype t_addr_cnt_s is std_logic_vector(c_addr_cnt_width-1 downto 0);
+  type t_addr_cnt_s_array is array (natural range <>) of t_addr_cnt_s;
 
   -- Flow control signals
   signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_shd                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pkt_size_s                     : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pkt_size_alig_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
+  signal lmt_curr_chan_id                   : unsigned(4 downto 0);
   signal lmt_valid                          : std_logic;
   signal fc_dout                            : std_logic_vector(g_ddr_payload_width+c_ddr_mask_width-1 downto 0);
   signal fc_valid_app                       : std_logic;
   signal fc_valid_app_wdf                   : std_logic;
-  signal fc_addr                            : std_logic_vector(g_addr_width-1 downto 0);
+  signal fc_addr                            : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal fc_stall_app                       : std_logic;
   signal fc_dreq_app                        : std_logic;
   signal fc_stall_app_wdf                   : std_logic;
@@ -160,6 +181,7 @@ architecture rtl of acq_ddr3_iface is
   signal valid_trans_app_wdf                : std_logic;
   signal cnt_all_trans_done_p               : std_logic;
   signal wr_init_addr_alig                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
+
 
   -- Plain interface control
   signal pl_dreq                            : std_logic;
@@ -178,16 +200,24 @@ architecture rtl of acq_ddr3_iface is
 
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_payload_width-1 downto 0);
-  signal ddr_addr_cnt_min                   : unsigned(c_addr_cnt_width-1 downto 0);
+  --signal ddr_addr_cnt_min                   : unsigned(c_addr_cnt_width-1 downto 0);
+  --signal ddr_addr_cnt_min_1                 : unsigned(f_log2_size(c_ddr_payload_ratio_2)-1 downto 0);
+  --signal ddr_addr_cnt_min_2                 : unsigned(f_log2_size(c_ddr_payload_ratio_4)-1 downto 0);
+  --signal ddr_addr_cnt_min_3                 : unsigned(f_log2_size(c_ddr_payload_ratio_8)-1 downto 0);
+  signal ddr_addr_cnt_min                   : t_addr_cnt_array(c_num_ddr_payload_ratios-1 downto 0);
+  signal ddr_addr_cnt_min_s                 : t_addr_cnt_s_array(c_num_ddr_payload_ratios-1 downto 0);
+  --signal ddr_addr_cnt_min_idx               : unsigned(c_num_ddr_payload_ratios-1 downto 0);
   signal ddr_addr_cnt_min_ovf               : unsigned(c_addr_cnt_width downto 0); -- with overflow bit
   signal ddr_addr_cnt_min_ovf_s             : std_logic_vector(c_addr_cnt_width downto 0); -- with overflow bit
   signal ddr_addr_cnt_inc                   : std_logic;
   signal ddr_addr_inc                       : unsigned(c_addr_cnt_width-1 downto 0);
   signal ddr_addr_cnt                       : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_in                        : std_logic_vector(g_ddr_addr_width-1 downto 0);
-  --signal ddr_data_valid_in                  : std_logic;
-  --signal ddr_addr_valid_in                  : std_logic;
+
   signal ddr_valid_in                       : std_logic;
+  --signal ddr_fc_payload_ratio               : unsigned(f_log2_size(c_max_ddr_payload_ratio) downto 0); -- max of 8
+  --signal ddr_fc_payload_ratio_log2          : unsigned(f_log2_size(c_max_ddr_payload_ratio) downto 0); -- max of 8
+  --signal lmt_chan_curr_width                : unsigned(c_acq_chan_max_w_log2-1 downto 0);
   
   signal ddr_mask_in                        : std_logic_vector(c_ddr_mask_width-1 downto 0);
   signal ddr_data_mask_in                   : std_logic_vector(g_ddr_payload_width+c_ddr_mask_width-1 downto 0);
@@ -264,10 +294,14 @@ architecture rtl of acq_ddr3_iface is
 
 begin
 
-  -- g_addr_width != g_ddr_addr_width is not supported!
-  assert (g_addr_width = g_ddr_addr_width)
-  report "[DDR3 Interface] Different address widths are not supported!"
-  severity error;
+  -- g_acq_addr_width != g_ddr_addr_width is not supported!
+  assert (g_acq_addr_width = g_ddr_addr_width)
+  report "[acq_ddr3_iface] Different address widths are not supported!"
+  severity failure;
+  
+  assert (g_ddr_payload_width = 256 or g_ddr_payload_width = 512)
+  report "[acq_ddr3_iface] Only DDR Payload of 256 or 512 are supported!"
+  severity failure;
   
   ----------------------------------------------------------------------------
   -- Register transaction limits
@@ -277,22 +311,46 @@ begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
         --Avoid detection of *_done pulses by setting them to 1
-        lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+        --lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+        lmt_pkt_size_alig_s <= (others => '0');
         lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
+        lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
         lmt_valid <= '0';
       else
         lmt_valid <= lmt_valid_i;
-
+  
         if lmt_valid_i = '1' then
           --lmt_pkt_size <= lmt_pkt_size_i;
           -- The packet size here is constrained by the relation f_log2(g_ddr_payload_width/g_data_width),
           -- as we aggregate data by that amount to send it to the DDR3 controller
-          lmt_pkt_size <= shift_right(lmt_pkt_size_i, c_pkt_size_shift);
+
+          --lmt_pkt_size <= shift_right(lmt_pkt_size_i,
+          --         c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i)));
+          case c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i)) is
+            when 1 =>
+              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
+            when 2 =>
+              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 2);
+            when 3 =>
+              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 3);
+            when others =>
+              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
+
+          end case;
+          
           lmt_shots_nb <= lmt_shots_nb_i;
+          lmt_curr_chan_id <= lmt_curr_chan_id_i;
         end if;
       end if;
     end if;
   end process;
+
+  lmt_pkt_size_s <= std_logic_vector(lmt_pkt_size_i);
+  lmt_pkt_size <= unsigned(lmt_pkt_size_alig_s);
 
   -- To previous flow control module (Acquisition FIFO)
   fifo_fc_stall_o <= pl_stall;
@@ -337,7 +395,8 @@ begin
         -- And we assert ddr_valid_in only when there was an overflow in the counter
         -- caused by a previous detection of a valid_trans (valid_trans_app_d0)
         --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
-        elsif ddr_addr_cnt_min_ovf = c_max_addr_cnt and valid_trans_app = '1' then
+        --elsif ddr_addr_cnt_min_ovf = c_max_addr_cnt and valid_trans_app = '1' then
+        elsif ddr_addr_cnt_min_ovf = c_ddr_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1 and valid_trans_app = '1' then
           ddr_valid_in <= '1';
         end if;
       end if;
@@ -345,32 +404,43 @@ begin
   end process;
 
   p_ddr_data_reg : process(ext_clk_i)
+    variable v_ddr_addr_cnt_min_idx         : t_ddr_payld_ratio;
+    variable v_ddr_data_in_idx              : t_ddr_payld_ratio;
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
         ddr_data_in <= (others => '0');
         --ddr_data_valid_in <= '0';
       else
-        ---- We deassert ddr_addr_valid_in in case it was already acknowledge by the
-        ---- fc-source module
-        --if ddr_data_valid_in = '1' and (pl_stall_addr_d0 = '0' or pl_stall = '0') then
-        --  ddr_addr_valid_in <= '0';
-        ---- And we assert ddr_data_valid_in only when there was an overflow in the counter
-        ---- caused by a previous detection of a valid_trans (valid_trans_app_d0)
-        --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
-        --  ddr_data_valid_in <= '1';
-        --  pl_stall_addr_d0 <= pl_stall;
-        --end if;
         
         if valid_trans_app_wdf = '1' then
-          --ddr_data_in <= f_gen_padded_word(g_ddr_payload_width,
-          --                             g_data_width,
-          --                             to_integer(ddr_addr_cnt_min),
-          --                             fifo_fc_din_i,
-          --                             f_gen_std_logic_vector(g_data_width, '0'));
-          ddr_data_in((to_integer(ddr_addr_cnt_min)+1)*g_data_width-1 downto
-                                to_integer(ddr_addr_cnt_min)*g_data_width) <= fifo_fc_din_i;
-            
+
+          v_ddr_addr_cnt_min_idx := c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id))-1;
+          v_ddr_data_in_idx := to_integer(ddr_addr_cnt_min(v_ddr_addr_cnt_min_idx));
+
+          if (c_acq_chan_slice(to_integer(lmt_curr_chan_id)).use_high_part) then
+            --ddr_data_in((to_integer(ddr_addr_cnt_min(to_integer(v_ddr_addr_cnt_min_idx)))+1)*
+            --             c_acq_chan_max_w-1 downto
+            --             to_integer(ddr_addr_cnt_min(to_integer(v_ddr_addr_cnt_min_idx)))*
+            --             c_acq_chan_max_w) <=
+            --                      fifo_fc_din_i(c_acq_chan_max_w-1 downto 0);
+            ddr_data_in((v_ddr_data_in_idx+1)*
+                         c_acq_chan_max_w-1 downto
+                         v_ddr_data_in_idx*
+                         c_acq_chan_max_w) <=
+                                  fifo_fc_din_i(c_acq_chan_max_w-1 downto 0);
+          else
+            --ddr_data_in((to_integer(ddr_addr_cnt_min(to_integer(v_ddr_addr_cnt_min_idx)))+1)*
+            --             c_acq_chan_width-1 downto
+            --             to_integer(ddr_addr_cnt_min(to_integer(v_ddr_addr_cnt_min_idx)))*
+            --             c_acq_chan_width) <=
+            --                      fifo_fc_din_i(c_acq_chan_width-1 downto 0);
+            ddr_data_in((v_ddr_data_in_idx+1)*
+                         c_acq_chan_width-1 downto
+                         v_ddr_data_in_idx*
+                         c_acq_chan_width) <=
+                                  fifo_fc_din_i(c_acq_chan_width-1 downto 0);
+          end if;
         end if;
       end if;
     end if;
@@ -403,16 +473,19 @@ begin
 
   ui_app_req_o <= ddr_req;
 
-  -- To allow bit-by-bit operations
-  ddr_addr_cnt_min_ovf_s <= std_logic_vector(ddr_addr_cnt_min_ovf);
+  ----------------------------------------------------------------------------
+  -- Generate address to external controller
+  -----------------------------------------------------------------------------
 
-  -- Generate address to external controller. Here we hold the external address
+  -- Here we hold the external address
   -- for as long as we still have data to write and just shift the mask.
   --
   -- As we have the restriction of g_ddr_payload_width and g_data_width to be
   -- both power of 2, we can safelly assume that the counter will wrap around
   -- at the correct count and the mask will select the appropriate data
 
+  --wr_init_addr_alig <= wr_init_addr_i(wr_init_addr_i'left downto c_ddr_align_shift) &
+  --                           f_gen_std_logic_vector(c_ddr_align_shift, '0');
   wr_init_addr_alig <= wr_init_addr_i(wr_init_addr_i'left downto c_ddr_align_shift) &
                              f_gen_std_logic_vector(c_ddr_align_shift, '0');
 
@@ -424,16 +497,6 @@ begin
         ddr_addr_cnt <= to_unsigned(0, ddr_addr_cnt'length);
         --ddr_addr_valid_in <= '0';
       else
-        ---- We deassert ddr_addr_valid_in in case it was already acknowledge by the
-        ---- fc-source module
-        --if ddr_addr_valid_in = '1' and (pl_stall_addr_d0 = '0' or pl_stall = '0') then
-        --  ddr_addr_valid_in <= '0';
-        ---- And we assert ddr_addr_valid_in only when there was an overflow in the counter
-        ---- caused by a previous detection of a valid_trans (valid_trans_app_d0)
-        --elsif ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' and valid_trans_app_d0 = '1' then
-        --  ddr_addr_valid_in <= '1';
-        --  pl_stall_addr_d0 <= pl_stall;
-        --end if;
 
         if wr_start_i = '1' then
           -- This address must be word-aligned
@@ -442,14 +505,16 @@ begin
           --ddr_addr_inc <= to_unsigned(0, ddr_addr_inc'length);
         elsif valid_trans_app = '1' then -- This represents a successful transfer
 
-          if ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' then -- reset to 1
+          --if ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' then -- reset to 1
+          if ddr_addr_cnt_min_ovf_s(c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id))) = '1' then -- reset to 1
             ddr_addr_cnt_min_ovf <= to_unsigned(1, ddr_addr_cnt_min_ovf'length);
           else
             ddr_addr_cnt_min_ovf <= ddr_addr_cnt_min_ovf + 1;
           end if;
 
           -- overflow bit asserted
-          if ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' then
+          --if ddr_addr_cnt_min_ovf_s(c_ddr_addr_ovf_bit) = '1' then
+          if ddr_addr_cnt_min_ovf_s(c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id))) = '1' then
             ddr_addr_cnt <= ddr_addr_cnt + c_addr_ddr_inc;
           end if;
 
@@ -458,8 +523,18 @@ begin
     end if;
   end process;
 
-  ddr_addr_cnt_min <= ddr_addr_cnt_min_ovf(ddr_addr_cnt_min'left downto 0);
+  -- To allow bit-by-bit operations
+  ddr_addr_cnt_min_ovf_s <= std_logic_vector(ddr_addr_cnt_min_ovf);
 
+  -- ddr_addr_cnt_min slices for various payload ratios
+  gen_ddr_addr_cnt_min_slices : for i in 0 to c_num_ddr_payload_ratios-1 generate
+
+    ddr_addr_cnt_min_s(i) <= f_gen_std_logic_vector(c_addr_cnt_width-1-i, '0') &
+                             ddr_addr_cnt_min_ovf_s(i downto 0);
+    ddr_addr_cnt_min(i) <= unsigned(ddr_addr_cnt_min_s(i));
+    
+  end generate;
+  
   -- To Flow Control module
   ddr_addr_in <= std_logic_vector(ddr_addr_cnt);
 

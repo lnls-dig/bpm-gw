@@ -34,11 +34,15 @@ use work.acq_core_pkg.all;
 entity acq_ddr3_read is
 generic
 (
-  g_data_width                              : natural := 64;
-  g_addr_width                              : natural := 32;
+  g_acq_addr_width                          : natural := 32;
+  g_acq_num_channels                        : natural := 1;
+  g_acq_channels                            : t_acq_chan_param_array;
+  --g_data_width                              : natural := 64;
+  --g_addr_width                              : natural := 32;
   -- Do not modify these! As they are dependent of the memory controller generated!
-  g_ddr_payload_width                       : natural := 256;
-  g_ddr_addr_width                          : natural := 32
+  g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+  g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+  g_ddr_addr_width                          : natural := 32       -- be careful changing these!
 );
 port
 (
@@ -48,9 +52,9 @@ port
 
   -- Flow protocol to interface with external SDRAM. Evaluate the use of
   -- Wishbone Streaming protocol.
-  fifo_fc_din_o                             : out std_logic_vector(g_data_width-1 downto 0);
+  fifo_fc_din_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   fifo_fc_valid_o                           : out std_logic;
-  fifo_fc_addr_o                            : out std_logic_vector(g_addr_width-1 downto 0);
+  fifo_fc_addr_o                            : out std_logic_vector(g_acq_addr_width-1 downto 0);
   fifo_fc_sof_o                             : out std_logic; -- ignored
   fifo_fc_eof_o                             : out std_logic; -- ignored
   fifo_fc_dreq_i                            : in std_logic;  -- ignored
@@ -62,6 +66,8 @@ port
   lmt_all_trans_done_p_o                    : out std_logic;
   lmt_rst_i                                 : in std_logic;
 
+  -- Current channel selection ID
+  lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
   -- Size of the transaction in g_fifo_size bytes
   lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
   -- Number of shots in this acquisition
@@ -86,19 +92,27 @@ end acq_ddr3_read;
 
 architecture rtl of acq_ddr3_read is
 
+  alias c_acq_channels : t_acq_chan_param_array(g_acq_num_channels-1 downto 0) is g_acq_channels;
+
   -- Constants
   -- g_ddr_payload_width must be bigger than g_data_width by at least 2 times.
   -- Also, only power of 2 ratio sizes are supported
-  constant c_ddr_fc_payload_ratio           : natural := g_ddr_payload_width/g_data_width;
+  --constant c_ddr_fc_payload_ratio           : natural := g_ddr_payload_width/g_data_width;
   alias c_ddr_payload_width                 is g_ddr_payload_width;
 
-  constant c_addr_col_inc                   : natural := 1;
-  constant c_addr_bc4_inc                   : natural := 4;
-  constant c_addr_bl8_inc                   : natural := 8;
-  constant c_addr_ddr_inc                   : natural := c_addr_col_inc;
+  --constant c_addr_col_inc                   : natural := 1;
+  --constant c_addr_bc4_inc                   : natural := 4;
+  --constant c_addr_bl8_inc                   : natural := 8;
+  --constant c_addr_ddr_inc                   : natural := g_ddr_payload_width/g_ddr_dq_width;
+  --constant c_addr_ddr_inc                   : natural := lmt_chan_curr_width/g_ddr_dq_width;
+  constant c_ddr_payload_ratio_2            : natural := 2;
+  constant c_ddr_payload_ratio_4            : natural := 4;
+  constant c_ddr_payload_ratio_8            : natural := 8;
+  constant c_max_ddr_payload_ratio          : natural := 8;
+  constant c_max_ddr_payload_ratio_log2     : natural := f_log2_size(c_max_ddr_payload_ratio);
 
-  constant c_data_fifo_lsb                  : natural := 0;
-  constant c_data_fifo_msb                  : natural := c_data_fifo_lsb + g_data_width - 1;
+  --constant c_data_fifo_lsb                  : natural := 0;
+  --constant c_data_fifo_msb                  : natural := c_data_fifo_lsb + g_data_width - 1;
 
   -- UI Commands
   constant c_ui_cmd_write                   : std_logic_vector(2 downto 0) := "000";
@@ -121,12 +135,15 @@ architecture rtl of acq_ddr3_read is
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   --signal lmt_valid_sync                     : std_logic;
   signal lmt_valid                          : std_logic;
+  signal lmt_chan_curr_width                : unsigned(c_acq_chan_max_w_log2-1 downto 0);
 
   -- DDR3 Signals
-  signal ddr_data_in                        : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal ddr_addr_cnt_out                   : unsigned(g_addr_width-1 downto 0);
-  signal ddr_addr_cnt_in                    : unsigned(g_addr_width-1 downto 0);
-  signal ddr_addr_cnt_in_d0                 : unsigned(g_addr_width-1 downto 0);
+  --signal ddr_data_in                        : std_logic_vector(c_ddr_payload_width-1 downto 0);
+  signal ddr_data_in                        : std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  signal ddr_addr_inc                       : unsigned(f_log2_size(c_max_ddr_payload_ratio) downto 0); -- max of 8
+  signal ddr_addr_cnt_out                   : unsigned(g_acq_addr_width-1 downto 0);
+  signal ddr_addr_cnt_in                    : unsigned(g_acq_addr_width-1 downto 0);
+  signal ddr_addr_cnt_in_d0                 : unsigned(g_acq_addr_width-1 downto 0);
   signal ddr_addr_out                       : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_valid_out                      : std_logic;
 
@@ -135,8 +152,8 @@ architecture rtl of acq_ddr3_read is
 
 begin
 
-  -- g_addr_width != g_ddr_addr_width is not supported!
-  assert (g_addr_width = g_ddr_addr_width)
+  -- g_acq_addr_width != g_ddr_addr_width is not supported!
+  assert (g_acq_addr_width = g_ddr_addr_width)
   report "[DDR3 Interface] Different address widths are not supported!"
   severity error;
 
@@ -165,7 +182,7 @@ begin
         lmt_valid <= '0';
       else
         lmt_valid <= lmt_valid_i;
-
+  
         if lmt_valid_i = '1' then
           lmt_pkt_size <= lmt_pkt_size_i;
           lmt_shots_nb <= lmt_shots_nb_i;
@@ -173,6 +190,148 @@ begin
       end if;
     end if;
   end process;
+
+  ----------------------------------------------------------------------------
+  -- Determine the DDR payload / Data Input ratio
+  -----------------------------------------------------------------------------
+  -- This is only valid upon assertion of "rb_start_i"
+  lmt_chan_curr_width <= c_acq_channels(to_integer(lmt_curr_chan_id_i)).width;
+  
+  ---- if this is true, ddr_fc_payload_ratio can only be 2
+  ---- (lmt_chan_curr_width > c_acq_chan_width) or 4
+  ---- (lmt_chan_curr_width <= c_acq_chan_width)
+  ----
+  --gen_ddr3_payload_256 : if (g_ddr_payload_width = 256) generate
+  --  p_ddr3_data_ratio : process(ext_clk_i)
+  --  begin
+  --    if rising_edge(ext_clk_i) then
+  --      if ext_rst_n_i = '0' then
+  --        ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_2, ddr_fc_payload_ratio'length);
+  --        ddr_fc_payload_ratio_log2 <= to_unsigned(1, ddr_fc_payload_ratio_log2'length);
+  --
+  --        --Avoid detection of *_done pulses by setting them to 1
+  --        lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+  --        lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
+  --        lmt_valid <= '0';
+  --      else
+  --        if rb_start_i = '1' then
+  --          if lmt_chan_curr_width > c_acq_chan_width then
+  --            ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_2, ddr_fc_payload_ratio'length);
+  --            ddr_fc_payload_ratio_log2 <= to_unsigned(1, ddr_fc_payload_ratio_log2'length);
+  --          else -- lmt_chan_curr_width <= c_acq_chan_width
+  --            ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_4, ddr_fc_payload_ratio'length);
+  --            ddr_fc_payload_ratio_log2 <= to_unsigned(2, ddr_fc_payload_ratio_log2'length);
+  --          end if;
+  --        end if;
+  --
+  --        lmt_valid <= lmt_valid_i;
+  --
+  --        if lmt_valid_i = '1' then
+  --          -- The packet size here is constrained by "ddr_fc_payload_ratio",
+  --          -- as we aggregate data by that amount to send it to the DDR3 controller
+  --          --if lmt_chan_curr_width > c_acq_chan_width then
+  --          --  lmt_pkt_size <= shift_right(lmt_pkt_size_i, 1); -- c_ddr_payload_ratio_2
+  --          --else
+  --          --  lmt_pkt_size <= shift_right(lmt_pkt_size_i, 2); -- c_ddr_payload_ratio_4
+  --          --end if;
+  --
+  --          lmt_pkt_size <= lmt_pkt_size_i;
+  --
+  --          lmt_shots_nb <= lmt_shots_nb_i;
+  --        end if;
+  --
+  --      end if;
+  --    end if;
+  --  end process;
+  --end generate;
+  --
+  ----if this is true, ddr_fc_payload_ratio can only be 4
+  ----(lmt_chan_curr_width > c_acq_chan_width) or 8
+  ----(lmt_chan_curr_width <= c_acq_chan_width)
+  --
+  --gen_ddr3_payload_512 : if (g_ddr_payload_width = 512) generate
+  --  p_ddr3_data_ratio : process(ext_clk_i)
+  --  begin
+  --    if rising_edge(ext_clk_i) then
+  --      if ext_rst_n_i = '0' then
+  --        ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_4, ddr_fc_payload_ratio'length);
+  --        ddr_fc_payload_ratio_log2 <= to_unsigned(2, ddr_fc_payload_ratio_log2'length);
+  --
+  --        --Avoid detection of *_done pulses by setting them to 1
+  --        lmt_pkt_size <= to_unsigned(1, lmt_pkt_size'length);
+  --        lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
+  --        lmt_valid <= '0';
+  --      else
+  --        if rb_start_i = '1' then
+  --          if lmt_chan_curr_width > c_acq_chan_width then
+  --            ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_4, ddr_fc_payload_ratio'length);
+  --            ddr_fc_payload_ratio_log2 <= to_unsigned(2, ddr_fc_payload_ratio_log2'length);
+  --          else -- lmt_chan_curr_width <= c_acq_chan_width
+  --            ddr_fc_payload_ratio <= to_unsigned(c_ddr_payload_ratio_8, ddr_fc_payload_ratio'length);
+  --            ddr_fc_payload_ratio_log2 <= to_unsigned(3, ddr_fc_payload_ratio_log2'length);
+  --          end if;
+  --        end if;
+  --
+  --        lmt_valid <= lmt_valid_i;
+  --
+  --        if lmt_valid_i = '1' then
+  --          -- The packet size here is constrained by "ddr_fc_payload_ratio",
+  --          -- as we aggregate data by that amount to send it to the DDR3 controller
+  --          --if lmt_chan_curr_width > c_acq_chan_width then
+  --          --  lmt_pkt_size <= shift_right(lmt_pkt_size_i, 2); -- c_ddr_payload_ratio_4
+  --          --else
+  --          --  lmt_pkt_size <= shift_right(lmt_pkt_size_i, 3); -- c_ddr_payload_ratio_8
+  --          --end if;
+  --
+  --          lmt_pkt_size <= lmt_pkt_size_i;
+  --
+  --          lmt_shots_nb <= lmt_shots_nb_i;
+  --        end if;
+  --      end if;
+  --    end if;
+  --  end process;
+  --end generate;
+
+  ----------------------------------------------------------------------------
+  -- Determine the DDR read address
+  -----------------------------------------------------------------------------
+  gen_ddr3_rd_addr_dq_32 : if (g_ddr_dq_width = 32) generate
+    p_ddr3_data_ratio : process(ext_clk_i)
+    begin
+      if rising_edge(ext_clk_i) then
+        if ext_rst_n_i = '0' then
+          ddr_addr_inc <= to_unsigned(1, ddr_addr_inc'length);
+        else
+          if rb_start_i = '1' then
+            if lmt_chan_curr_width > c_acq_chan_width then
+              ddr_addr_inc <= to_unsigned(4, ddr_addr_inc'length); -- works for 128
+            else
+              ddr_addr_inc <= to_unsigned(2, ddr_addr_inc'length); -- works for 64
+            end if;
+          end if;
+        end if;
+      end if;
+    end process;
+  end generate;
+  
+  gen_ddr3_rd_addr_dq_64 : if (g_ddr_dq_width = 64) generate
+    p_ddr3_data_ratio : process(ext_clk_i)
+    begin
+      if rising_edge(ext_clk_i) then
+        if ext_rst_n_i = '0' then
+          ddr_addr_inc <= to_unsigned(1, ddr_addr_inc'length);
+        else
+          if rb_start_i = '1' then
+            if lmt_chan_curr_width > c_acq_chan_width then
+              ddr_addr_inc <= to_unsigned(2, ddr_addr_inc'length); -- works for 128
+            else
+              ddr_addr_inc <= to_unsigned(1, ddr_addr_inc'length); -- works for 64
+            end if;
+          end if;
+        end if;
+      end if;
+    end process;
+  end generate;
 
   -- Issues read to the DDR controler when we receive a start_rb signal.
   -- We only stop issuing transactions when we have requested all of them
@@ -198,7 +357,7 @@ begin
     end if;
   end process;
 
-  ------ Drive DDR request signal upon receiving SOF
+  -- Drive DDR request signal upon receiving SOF
   p_ddr_drive_req : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
@@ -230,19 +389,24 @@ begin
         ddr_valid_out <= valid_trans_in;
 
         if valid_trans_in = '1' then
-          ddr_data_in <= ui_app_rd_data_i;
+          ddr_data_in(to_integer(lmt_chan_curr_width)-1 downto 0) <=
+                   ui_app_rd_data_i(to_integer(lmt_chan_curr_width)-1 downto 0);
+          ddr_data_in(ddr_data_in'left downto to_integer(lmt_chan_curr_width)) <=
+                   (others => '0');
         end if;
       end if;
     end if;
   end process;
 
-  fifo_fc_din_o <= ddr_data_in(c_data_fifo_msb downto c_data_fifo_lsb);
+  fifo_fc_din_o <= ddr_data_in;
   fifo_fc_valid_o <= ddr_valid_out;
   fifo_fc_addr_o <= ddr_addr_out;
 
   ddr_addr_out <= std_logic_vector(ddr_addr_cnt_in_d0);
 
   -- Generate address to FIFO interface.
+  -- FIXME: Word for the application point of view might not be the same
+  -- as the word for the DDR3 point of view (ddr_dq_width parameter)
   p_ddr_addr_cnt_in : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
@@ -254,13 +418,16 @@ begin
             ddr_addr_cnt_in <= unsigned(rb_init_addr_i);
         elsif valid_trans_in = '1' then -- successfull acquisition
           ddr_addr_cnt_in_d0 <= ddr_addr_cnt_in;
-          ddr_addr_cnt_in <= ddr_addr_cnt_in + c_addr_ddr_inc;
+          --ddr_addr_cnt_in <= ddr_addr_cnt_in + c_addr_ddr_inc; -- word by word
+          ddr_addr_cnt_in <= ddr_addr_cnt_in + ddr_addr_inc; -- word by word
         end if;
       end if;
     end if;
   end process;
 
   -- Generate address to external controller.
+  -- FIXME: Word for the application point of view might not be the same
+  -- as the word for the DDR3 point of view (ddr_dq_width parameter)
   p_ddr_addr_cnt_out : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
@@ -271,8 +438,8 @@ begin
             ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
         --elsif ddr_read_en = '1' then -- successfull request
         elsif valid_trans_out = '1' then -- successfull request
-          --ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_bc4_inc;
-          ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_ddr_inc;
+          --ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_ddr_inc; -- word by word
+          ddr_addr_cnt_out <= ddr_addr_cnt_out + ddr_addr_inc;
         end if;
       end if;
     end if;
