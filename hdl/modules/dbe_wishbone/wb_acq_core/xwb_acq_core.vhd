@@ -41,10 +41,12 @@ generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
-  g_data_width                              : natural := 64;
-  g_addr_width                              : natural := 32;
-  g_ddr_payload_width                       : natural := 256;
-  g_ddr_addr_width                          : natural := 32;
+  g_acq_addr_width                          : natural := 32;
+  g_acq_num_channels                        : natural := c_default_acq_num_channels;
+  g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array;
+  g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+  g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+  g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
   g_sim_readback                            : boolean := false
@@ -64,29 +66,26 @@ port
   -----------------------------
   -- Wishbone Control Interface signals
   -----------------------------
-
   wb_slv_i                                  : in t_wishbone_slave_in;
   wb_slv_o                                  : out t_wishbone_slave_out;
 
   -----------------------------
   -- External Interface
   -----------------------------
-  data_i                                    : in  std_logic_vector(g_data_width-1 downto 0);
-  dvalid_i                                  : in  std_logic := '0';
-  ext_trig_i                                : in  std_logic := '0';
+  acq_chan_array_i                          : in t_acq_chan_array(g_acq_num_channels-1 downto 0);
 
   -----------------------------
   -- DRRAM Interface
   -----------------------------
-  dpram_dout_o                              : out std_logic_vector(g_data_width-1 downto 0);
+  dpram_dout_o                              : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   dpram_valid_o                             : out std_logic;
 
   -----------------------------
   -- External Interface (w/ FLow Control)
   -----------------------------
-  ext_dout_o                                : out std_logic_vector(g_data_width-1 downto 0);
+  ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   ext_valid_o                               : out std_logic;
-  ext_addr_o                                : out std_logic_vector(g_addr_width-1 downto 0);
+  ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
   ext_sof_o                                 : out std_logic;
   ext_eof_o                                 : out std_logic;
   ext_dreq_o                                : out std_logic; -- for debbuging purposes
@@ -112,16 +111,22 @@ port
 
   ui_app_req_o                              : out std_logic;
   ui_app_gnt_i                              : in std_logic;
+  
   -----------------------------
   -- Debug Interface
   -----------------------------
-  dbg_ddr_rb_data_o                         : out std_logic_vector(g_data_width-1 downto 0);
-  dbg_ddr_rb_addr_o                         : out std_logic_vector(g_addr_width-1 downto 0);
+  dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
 );
 end xwb_acq_core;
 
 architecture rtl of xwb_acq_core is
+
+  signal acq_val_low_array                  : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+  signal acq_val_high_array                 : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+  signal acq_dvalid_array                   : std_logic_vector(g_acq_num_channels-1 downto 0);
+  signal acq_trig_array                     : std_logic_vector(g_acq_num_channels-1 downto 0);
 
 begin
 
@@ -130,10 +135,12 @@ begin
   (
     g_interface_mode                          => g_interface_mode,
     g_address_granularity                     => g_address_granularity,
-    g_data_width                              => g_data_width,
-    g_addr_width                              => g_addr_width,
+    g_acq_addr_width                          => g_acq_addr_width,
+    g_acq_num_channels                        => g_acq_num_channels,
+    g_acq_channels                            => g_acq_channels,    
     g_ddr_payload_width                       => g_ddr_payload_width,
     g_ddr_addr_width                          => g_ddr_addr_width,
+    g_ddr_dq_width                            => g_ddr_dq_width,
     g_multishot_ram_size                      => g_multishot_ram_size,
     g_fifo_fc_size                            => g_fifo_fc_size,
     g_sim_readback                            => g_sim_readback
@@ -169,9 +176,10 @@ begin
     -----------------------------
     -- External Interface
     -----------------------------
-    data_i                                    => data_i,
-    dvalid_i                                  => dvalid_i,
-    ext_trig_i                                => ext_trig_i,
+    acq_val_low_i                             => acq_val_low_array,
+    acq_val_high_i                            => acq_val_high_array,
+    acq_dvalid_i                              => acq_dvalid_array,  
+    acq_trig_i                                => acq_trig_array,    
 
     -----------------------------
     -- DRRAM Interface
@@ -217,5 +225,14 @@ begin
     dbg_ddr_rb_addr_o                         => dbg_ddr_rb_addr_o,
     dbg_ddr_rb_valid_o                        => dbg_ddr_rb_valid_o
   );
+
+  gen_wb_acq_core_plain_inputs : for i in 0 to g_acq_num_channels - 1 generate
+
+    acq_val_low_array(i)      <= acq_chan_array_i(i).val_low;
+    acq_val_high_array(i)     <= acq_chan_array_i(i).val_high;
+    acq_dvalid_array(i)       <= acq_chan_array_i(i).dvalid;
+    acq_trig_array(i)         <= acq_chan_array_i(i).trig;
+
+  end generate;
 
 end rtl;

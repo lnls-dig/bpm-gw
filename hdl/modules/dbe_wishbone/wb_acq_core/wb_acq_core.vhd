@@ -55,10 +55,12 @@ generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
-  g_data_width                              : natural := 64;
-  g_addr_width                              : natural := 32;
-  g_ddr_payload_width                       : natural := 256;
-  g_ddr_addr_width                          : natural := 32;
+  g_acq_addr_width                          : natural := 32;
+  g_acq_num_channels                        : natural := c_default_acq_num_channels;
+  g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array;
+  g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+  g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+  g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
   g_sim_readback                            : boolean := false
@@ -94,22 +96,23 @@ port
   -----------------------------
   -- External Interface
   -----------------------------
-  data_i                                    : in  std_logic_vector(g_data_width-1 downto 0);
-  dvalid_i                                  : in  std_logic := '0';
-  ext_trig_i                                : in  std_logic := '0';
+  acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+  acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+  acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+  acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
 
   -----------------------------
   -- DRRAM Interface
   -----------------------------
-  dpram_dout_o                              : out std_logic_vector(g_data_width-1 downto 0);
+  dpram_dout_o                              : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   dpram_valid_o                             : out std_logic;
 
   -----------------------------
   -- External Interface (w/ FLow Control)
   -----------------------------
-  ext_dout_o                                : out std_logic_vector(g_data_width-1 downto 0);
+  ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   ext_valid_o                               : out std_logic;
-  ext_addr_o                                : out std_logic_vector(g_addr_width-1 downto 0);
+  ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
   ext_sof_o                                 : out std_logic;
   ext_eof_o                                 : out std_logic;
   ext_dreq_o                                : out std_logic; -- for debbuging purposes
@@ -135,16 +138,19 @@ port
 
   ui_app_req_o                              : out std_logic;
   ui_app_gnt_i                              : in std_logic;
+  
   -----------------------------
   -- Debug Interface
   -----------------------------
-  dbg_ddr_rb_data_o                         : out std_logic_vector(g_data_width-1 downto 0);
-  dbg_ddr_rb_addr_o                         : out std_logic_vector(g_addr_width-1 downto 0);
+  dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
 );
 end wb_acq_core;
 
 architecture rtl of wb_acq_core is
+
+  alias c_acq_channels : t_acq_chan_param_array(g_acq_num_channels-1 downto 0) is g_acq_channels;
 
   -----------------------------
   -- General Constants
@@ -153,10 +159,12 @@ architecture rtl of wb_acq_core is
   constant c_dpram_depth                    : integer := f_log2_size(g_multishot_ram_size);
   constant c_periph_addr_size               : natural := 3+3;
 
+  constant c_acq_data_width                 : natural :=
+                                   f_acq_chan_find_widest(c_acq_channels);
+
   ------------------------------------------------------------------------------
   -- Types declaration
   ------------------------------------------------------------------------------
-  --type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, POST_TRIG, DECR_SHOT);
 
   -- Registers Signals
   signal regs_in                            : t_acq_core_in_registers;
@@ -207,6 +215,9 @@ architecture rtl of wb_acq_core is
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
+  signal acq_data_marsh                     : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal acq_trig_in                        : std_logic;
+  signal acq_dvalid_in                      : std_logic;
   signal samples_wr_en                      : std_logic;
   --
   ---- Pre/Post trigger and shots counters
@@ -225,6 +236,7 @@ architecture rtl of wb_acq_core is
   ----signal post_trig_value                    : std_logic_vector(31 downto 0);
   --signal post_trig_cnt                      : unsigned(31 downto 0);
   signal acq_post_trig_done                 : std_logic;
+  signal lmt_curr_chan_id                   : unsigned(4 downto 0);
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
   ----signal shots_value                        : std_logic_vector(15 downto 0);
   signal shots_cnt                          : unsigned(15 downto 0);
@@ -243,7 +255,7 @@ architecture rtl of wb_acq_core is
   signal dpram_addra_trig                   : unsigned(c_dpram_depth-1 downto 0);
   signal dpram_addra_post_done              : unsigned(c_dpram_depth-1 downto 0);
   signal dpram_addrb_cnt                    : unsigned(c_dpram_depth-1 downto 0);
-  signal dpram_dout                         : std_logic_vector(g_data_width-1 downto 0);
+  signal dpram_dout                         : std_logic_vector(c_acq_data_width-1 downto 0);
   signal dpram_valid                        : std_logic;
 
   -- FIFO Flow Control signals
@@ -258,11 +270,11 @@ architecture rtl of wb_acq_core is
   signal fifo_fc_full_l                     : std_logic;
 
   -- External memory interface signals
-  signal ext_dout                           : std_logic_vector(g_data_width-1 downto 0);
+  signal ext_dout                           : std_logic_vector(c_acq_data_width-1 downto 0);
   signal ext_valid                          : std_logic;
   signal ext_sof                            : std_logic;
   signal ext_eof                            : std_logic;
-  signal ext_addr                           : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal ext_addr                           : std_logic_vector(g_acq_addr_width-1 downto 0);
   signal ext_dreq                           : std_logic;
   signal ext_stall                          : std_logic;
 
@@ -271,10 +283,10 @@ architecture rtl of wb_acq_core is
   signal ddr3_wr_all_trans_done_l           : std_logic;
   signal sim_in_rb                          : std_logic;
   signal ddr3_rb_lmt_rb_rst                 : std_logic;
-  signal acq_ddr3_rst_n                 : std_logic;
+  signal acq_ddr3_rst_n                     : std_logic;
 
-  signal dbg_ddr_rb_data                    : std_logic_vector(g_data_width-1 downto 0);
-  signal dbg_ddr_rb_addr                    : std_logic_vector(g_addr_width-1 downto 0);
+  signal dbg_ddr_rb_data                    : std_logic_vector(c_acq_data_width-1 downto 0);
+  signal dbg_ddr_rb_addr                    : std_logic_vector(g_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
 
   signal ddr3_rb_all_trans_done_p           : std_logic;
@@ -402,6 +414,8 @@ begin
   post_trig_samples_c                       <= unsigned(regs_out.post_samples_o);
   shots_nb_c                                <= unsigned(regs_out.shots_nb_o);
 
+  lmt_curr_chan_id                          <= unsigned(regs_out.acq_chan_ctl_which_o); -- 5-bit
+
   --acq_ddr3_start_addr                       <= (others => '0');
   -- Synchronous to ext_clk_i
   acq_ddr3_start_addr_full                  <= regs_out.ddr3_start_addr_o;
@@ -411,10 +425,6 @@ begin
   --acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto c_ddr_align_shift);
   acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto 0);
 
-  --acq_start                                 <= '1' when regs_out.ctl_fsm_cmd_wr_o = '1' and
-  --                                             regs_out.ctl_fsm_cmd_o = "01" else '0';
-  --acq_stop                                  <= '1' when regs_out.ctl_fsm_cmd_wr_o = '1' and
-  --                                             regs_out.ctl_fsm_cmd_o = "10" else '0';
   acq_start                                 <= regs_out.ctl_fsm_start_acq_o; -- 1 fs_clk cycle pulse
   acq_stop                                  <= regs_out.ctl_fsm_stop_acq_o; -- 1 fs_clk cycle pulse
   acq_now                                   <= regs_out.ctl_fsm_acq_now_o;
@@ -447,8 +457,10 @@ begin
     acq_start_i                               => acq_start,
     acq_now_i                                 => acq_now,
     acq_stop_i                                => acq_stop,
-    acq_trig_i                                => '0',
-    acq_dvalid_i                              => dvalid_i,
+    --acq_trig_i                                => '0',
+    --acq_dvalid_i                              => dvalid_i,
+    acq_trig_i                                => acq_trig_in,
+    acq_dvalid_i                              => acq_dvalid_in,
 
     -----------------------------
     -- FSM Number of Samples
@@ -481,13 +493,16 @@ begin
     samples_wr_en_o                           => samples_wr_en
   );
 
+  acq_trig_in                                 <= acq_trig_i(to_integer(lmt_curr_chan_id));
+  acq_dvalid_in                               <= acq_dvalid_i(to_integer(lmt_curr_chan_id));
+
   ------------------------------------------------------------------------------
   -- Dual DPRAM buffers for multi-shots acquisition
   -----------------------------------------------------------------------------
   cmp_acq_multishot_dpram : acq_multishot_dpram
   generic map
   (
-    g_data_width                            => g_data_width,
+    g_data_width                            => c_acq_data_width,
     g_multishot_ram_size                    => g_multishot_ram_size
   )
   port map
@@ -496,8 +511,10 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n_i,
 
-    data_i                                  => data_i,
-    dvalid_i                                => dvalid_i,
+    --data_i                                  => data_i,
+    --dvalid_i                                => dvalid_i,
+    data_i                                  => acq_data_marsh(c_acq_data_width-1 downto 0),
+    dvalid_i                                => acq_dvalid_in,
     wr_en_i                                 => samples_wr_en,
     addr_rst_i                              => shots_decr,
 
@@ -515,6 +532,10 @@ begin
     dpram_valid_o                           => dpram_valid
   );
 
+  acq_data_marsh                            <=
+    f_acq_chan_conv_val(f_acq_chan_marshall_val(acq_val_high_i(to_integer(lmt_curr_chan_id)),
+      acq_val_low_i(to_integer(lmt_curr_chan_id))));
+
   dpram_dout_o                              <=  dpram_dout;
   dpram_valid_o                             <=  dpram_valid;
 
@@ -524,9 +545,9 @@ begin
 
   cmp_acq_fc_fifo : acq_fc_fifo
   generic map (
-    g_data_width                            => g_data_width,
+    g_data_width                            => c_acq_data_width,
     g_fifo_size                             => g_fifo_fc_size,
-    g_addr_width                            => g_addr_width
+    g_addr_width                            => g_acq_addr_width
   )
   port map
   (
@@ -541,8 +562,8 @@ begin
     dpram_data_i                            => dpram_dout,
     dpram_dvalid_i                          => dpram_valid,
 
-    pt_data_i                               => data_i,
-    pt_dvalid_i                             => dvalid_i,
+    pt_data_i                               => acq_data_marsh(c_acq_data_width-1 downto 0),
+    pt_dvalid_i                             => acq_dvalid_in,
     pt_wr_en_i                              => samples_wr_en,
 
     -- Request transaction reset as soon as possible (when all outstanding
@@ -649,10 +670,12 @@ begin
   cmp_acq_ddr3_iface : acq_ddr3_iface
   generic map
   (
-    g_data_width                              => g_data_width,
-    g_addr_width                              => g_addr_width,
+    g_acq_addr_width                          => g_acq_addr_width,
+    g_acq_num_channels                        => g_acq_num_channels,
+    g_acq_channels                            => g_acq_channels,
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                       => g_ddr_payload_width,
+    g_ddr_dq_width                            => g_ddr_dq_width,
     g_ddr_addr_width                          => g_ddr_addr_width
   )
   port map
@@ -683,6 +706,8 @@ begin
     --lmt_rst_i                                 => acq_start_sync_ext,
     lmt_rst_i                                 => '0', --remove this signal
 
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        => lmt_curr_chan_id,
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            => lmt_acq_pkt_size,
     -- Number of shots in this acquisition
@@ -746,10 +771,12 @@ begin
     cmp_acq_ddr3_read : acq_ddr3_read
     generic map
     (
-      g_data_width                          => g_data_width,
-      g_addr_width                          => g_addr_width,
+      g_acq_addr_width                      => g_acq_addr_width,
+      g_acq_num_channels                    => g_acq_num_channels,
+      g_acq_channels                        => g_acq_channels,
       -- Do not modify these! As they are dependent of the memory controller generated!
       g_ddr_payload_width                   => g_ddr_payload_width,
+      g_ddr_dq_width                        => g_ddr_dq_width,
       g_ddr_addr_width                      => g_ddr_addr_width
     )
     port map
@@ -777,6 +804,8 @@ begin
       lmt_all_trans_done_p_o                => ddr3_rb_all_trans_done_p,
       lmt_rst_i                             => '0', -- remove this signal!
 
+      -- Current channel selection ID
+      lmt_curr_chan_id_i                    => lmt_curr_chan_id,
       -- Size of the transaction in g_fifo_size bytes
       lmt_pkt_size_i                        => lmt_acq_pkt_size, --Should be lmt_acq_pkt_size/4 !!!
       -- Number of shots in this acquisition
