@@ -178,6 +178,9 @@ module wb_acq_core_tb;
   localparam c_n_shots_width            = 16;
   localparam c_n_pre_samples_width      = 32;
   localparam c_n_post_samples_width     = 32;
+  localparam c_n_chan                   = 5;
+  localparam c_n_width64                = 16'd64;
+  localparam c_n_width128               = 16'd128;
   //localparam c_min_wait_gnt             = 32;
   //localparam c_max_wait_gnt             = 128;
 
@@ -189,10 +192,16 @@ module wb_acq_core_tb;
   localparam ACQ_FIFO_SIZE          = 4096;
 
   // Tests paramaters
-  reg [DATA_WIDTH-1:0] data_test;
-  reg data_test_valid;
-  reg data_test_valid_t;
-  reg trigger_test;
+  //reg [DATA_WIDTH-1:0] data_test;
+  //reg data_test_valid;
+  //reg data_test_valid_t;
+  //reg trigger_test;
+  reg [DATA_WIDTH-1:0] data_test_low [c_n_chan-1:0];
+  reg [16-1:0] data_test_low_0;
+  reg [DATA_WIDTH-1:0] data_test_high [c_n_chan-1:0];
+  reg data_test_dvalid [c_n_chan-1:0];
+  reg data_test_dvalid_t [c_n_chan-1:0];
+  reg data_test_trig [c_n_chan-1:0];
   //wire ext_dreq;
   //reg ext_stall;
   real data_ext_stall_threshold;
@@ -209,6 +218,7 @@ module wb_acq_core_tb;
   reg [c_n_pre_samples_width-1:0] pre_trig_samples;
   reg [c_n_post_samples_width-1:0] post_trig_samples;
   reg [32-1:0] ddr3_start_addr;
+  reg [16-1:0] acq_chan;
   reg [32-1:0] lmt_pkt_size;
   reg skip_trig;
   reg wait_finish;
@@ -269,8 +279,10 @@ module wb_acq_core_tb;
   reg                                       clk_ref_i;
 
   // External interface signals
-  wire [DATA_WIDTH-1:0]                    ext_dout;
+  wire [2*DATA_WIDTH-1:0]                  ext_dout;
+  wire [2*DATA_WIDTH-1:0]                  ext_dout_conv;
   wire [ADDR_WIDTH-1:0]                    ext_addr;
+  wire [ADDR_WIDTH-1:0]                    ext_addr_conv;
   wire                                     ext_valid;
   wire                                     ext_sof;
   wire                                     ext_eof;
@@ -300,7 +312,8 @@ module wb_acq_core_tb;
   //wire                                       ui_app_gnt;
 
   // Debug/Readback signals
-  wire [DATA_WIDTH-1:0]                     dbg_ddr_rb_data;
+  wire [2*DATA_WIDTH-1:0]                   dbg_ddr_rb_data;
+  wire [2*DATA_WIDTH-1:0]                   dbg_ddr_rb_data_conv;
   wire [ADDR_WIDTH-1:0]                     dbg_ddr_rb_addr;
   wire                                      dbg_ddr_rb_valid;
 
@@ -372,9 +385,14 @@ module wb_acq_core_tb;
   );
 
   // DUT
-  wb_acq_core #(.g_ddr_addr_width(ADDR_WIDTH),
-                    .g_addr_width(ADDR_WIDTH),
+  wb_acq_core_plain #(.g_ddr_addr_width(ADDR_WIDTH),
+                    .g_acq_addr_width(ADDR_WIDTH),
                     .g_fifo_fc_size(ACQ_FIFO_SIZE),
+                    //.g_acq_num_channels(5),
+                    //.g_acq_channels({c_n_width64, c_n_width128,
+                    //                c_n_width128, c_n_width128, c_n_width128}),
+                    //.g_acq_channels({16'd64, 16'd128,
+                    //                16'd128, 16'd128, 16'd128}),
                     .g_sim_readback(1)
                     )
   dut(
@@ -403,15 +421,23 @@ module wb_acq_core_tb;
     .wb_rty_o                               (),
     .wb_stall_o                             (),
 
-    .data_i                                 (data_test), //std_logic_vector(63 downto 0);
-    .dvalid_i                               (data_test_valid), //std_logic := '0';
-    .ext_trig_i                             (trigger_test), //std_logic := '0';
+    .acq_val_low_i                         ({data_test_low[4], data_test_low[3], data_test_low[2],
+                                             data_test_low[1], data_test_low[0]}),
+    .acq_val_high_i                        ({data_test_high[4], data_test_high[3], data_test_high[2],
+                                             data_test_high[1], data_test_high[0]}),
+    .acq_dvalid_i                          ({data_test_dvalid[4], data_test_dvalid[3], data_test_dvalid[2],
+                                             data_test_dvalid[1], data_test_dvalid[0]}),
+    .acq_trig_i                            ({data_test_trig[4], data_test_trig[3], data_test_trig[2],
+                                             data_test_trig[1], data_test_trig[0]}),
 
     .dpram_dout_o                           (),
     .dpram_valid_o                          (),
 
     .ext_dout_o                             (ext_dout),
     .ext_valid_o                            (ext_valid),
+    // This is just for debug. It does not epresent the actual address written
+    // to DDR3 controller. The later is determined by the "acq_ddr3_iface" module
+    // considering only the "ddr3_start_addr" signal
     .ext_addr_o                             (ext_addr),
     .ext_sof_o                              (ext_sof),
     .ext_eof_o                              (ext_eof),
@@ -463,7 +489,7 @@ module wb_acq_core_tb;
   // Data readback checker instantiation
   //**************************************************************************//
   data_checker #(.g_addr_width(ADDR_WIDTH),
-                        .g_data_width(DATA_WIDTH),
+                        .g_data_width(2*DATA_WIDTH),
                         .g_fifo_size(DATA_CHECK_FIFO_SIZE)
                     )
   cmp_data_checker(
@@ -471,12 +497,15 @@ module wb_acq_core_tb;
     .ext_rst_n_i                            (ui_clk_sync_rst_n & test_in_progress),
 
     // Expected data
-    .exp_din_i                              (ext_dout),
-    .exp_addr_i                             (ext_addr),
+    .exp_din_i                              (ext_dout_conv),
+     // This is just for debug. It does not epresent the actual address written
+     // to DDR3 controller. The later is determined by the "acq_ddr3_iface" module
+     // considering only the "ddr3_start_addr" signal
+    .exp_addr_i                             (ext_addr_conv),
     .exp_valid_i                            (ext_valid & ~ext_stall),
 
     // Actual data
-    .act_din_i                              (dbg_ddr_rb_data),
+    .act_din_i                              (dbg_ddr_rb_data_conv),
     .act_addr_i                             (dbg_ddr_rb_addr),
     .act_valid_i                            (dbg_ddr_rb_valid),
 
@@ -495,6 +524,13 @@ module wb_acq_core_tb;
     .chk_pass_o                             (chk_pass)
   );
 
+  assign dbg_ddr_rb_data_conv = (acq_chan == 16'd0) ? {64'h0, dbg_ddr_rb_data[63:0]} :
+                                             dbg_ddr_rb_data; 
+  assign ext_dout_conv = (acq_chan == 16'd0) ? {64'h0, ext_dout[63:0]} :
+                                             ext_dout;
+  assign ext_addr_conv = (acq_chan == 16'd0) ? ext_addr :
+                                               2*ext_addr;
+                                 
   //**************************************************************************//
   // DDR3_v6 Controller instantiation
   //**************************************************************************//
@@ -733,7 +769,6 @@ module wb_acq_core_tb;
     // Initial values for ADC data signals
     data_gen_start = 1'b0;
     test_in_progress = 1'b0;
-    trigger_test = 1'b0;
     // Default values. No wait
     min_wait_gnt = 0;
     max_wait_gnt = 0;
@@ -783,6 +818,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
@@ -793,9 +829,9 @@ module wb_acq_core_tb;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
 
     ////////////////////////
     // TEST #2
@@ -808,6 +844,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
@@ -817,97 +854,153 @@ module wb_acq_core_tb;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
-
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
+                
     ////////////////////////
     // TEST #3
     // Number of shots = 1
     // Pre trigger samples only
     // No trigger
     ////////////////////////
-
+    
     test_id = 3;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 256;
     max_wait_gnt_l = 512;
     data_valid_prob = 0.7;
-
+    
     wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
-
+              pre_trig_samples, post_trig_samples,
+              ddr3_start_addr, acq_chan, skip_trig,
+              wait_finish, stop_on_error, min_wait_gnt_l,
+              max_wait_gnt_l, data_valid_prob);
+    
     ////////////////////////
     // TEST #4
     // Number of shots = 1
     // Pre trigger samples only
     // No trigger
     ////////////////////////
-
+    
     test_id = 4;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00001000;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 1024; // watch for errors here!
     max_wait_gnt_l = 2048; // watch for errors here!
     data_valid_prob = 0.5;
-
+    
     wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
-
+              pre_trig_samples, post_trig_samples,
+              ddr3_start_addr, acq_chan, skip_trig,
+              wait_finish, stop_on_error, min_wait_gnt_l,
+              max_wait_gnt_l, data_valid_prob);
+    
     ////////////////////////
     // TEST #5
     // Number of shots = 2
     // Pre trigger samples only
     // No trigger
     ////////////////////////
-
+    
     test_id = 5;
     n_shots = 16'h0002;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 64;
     max_wait_gnt_l = 128;
     data_valid_prob = 0.7;
-
+    
     wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
-
+              pre_trig_samples, post_trig_samples,
+              ddr3_start_addr, acq_chan, skip_trig,
+              wait_finish, stop_on_error, min_wait_gnt_l,
+              max_wait_gnt_l, data_valid_prob);
+    
     ////////////////////////
     // TEST #6
     // Number of shots = 16
     // Pre trigger samples only
     // No trigger
     ////////////////////////
-
+    
     test_id = 6;
     n_shots = 16'h0010;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
+    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    skip_trig = 1'b1;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 64;
+    max_wait_gnt_l = 128;
+    data_valid_prob = 0.6;
+    
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
+    
+    ////////////////////////
+    // TEST #7
+    // Number of shots = 16
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+    
+    test_id = 7;
+    n_shots = 16'h0010;
+    pre_trig_samples = 32'h00000020;
+    post_trig_samples = 32'h00000000;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd0;
+    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    skip_trig = 1'b1;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 128;
+    max_wait_gnt_l = 512;
+    data_valid_prob = 0.6;
+    
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
+                
+    ////////////////////////
+    // TEST #8
+    // Number of shots = 1
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+
+    test_id = 8;
+    n_shots = 16'h0010;
+    pre_trig_samples = 32'h00000010;
+    post_trig_samples = 32'h00000000;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd1;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
@@ -917,22 +1010,23 @@ module wb_acq_core_tb;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #7
+    // TEST #9
     // Number of shots = 16
     // Pre trigger samples only
     // No trigger
     ////////////////////////
 
-    test_id = 7;
+    test_id = 9;
     n_shots = 16'h0010;
     pre_trig_samples = 32'h00000020;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
+    acq_chan = 16'd1;
     lmt_pkt_size = pre_trig_samples + post_trig_samples;
     skip_trig = 1'b1;
     wait_finish = 1'b1;
@@ -942,9 +1036,9 @@ module wb_acq_core_tb;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
-                ddr3_start_addr, skip_trig, wait_finish,
-                stop_on_error, min_wait_gnt_l, max_wait_gnt_l,
-                data_valid_prob);
+                ddr3_start_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, data_valid_prob);
 
     $display("Simulation Done!");
     $display("All Tests Passed!");
@@ -953,23 +1047,58 @@ module wb_acq_core_tb;
   end
 
   // Generate data and valid signals on positive edge of clock
+
   always @(posedge adc_clk)
   begin
     if (data_gen_start) begin
       //data_test <= f_data_gen(c_data_max);
-      if (data_test_valid_t)
-        data_test <= data_test + 1;
-
-      data_test_valid_t <= f_gen_data_rdy_gen(data_valid_threshold);
-      data_test_valid <= data_test_valid_t;
+      if (data_test_dvalid_t[0]) begin
+        data_test_low[0] <= {data_test_low_0 + 16'h30, data_test_low_0 + 16'h20,
+                                        data_test_low_0 + 16'h10, data_test_low_0 + 16'h00};
+        data_test_high[0] <= {64'h0};
+        data_test_low_0 <= data_test_low_0 + 1;
+      end
+  
+      data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold);
+      data_test_dvalid[0] <= data_test_dvalid_t[0];
     end else begin
-      data_test <= 'h0;
-      data_test_valid <= 1'b0;
-      data_test_valid_t <= 1'b0;
+      data_test_low_0 <= 'h0;
+      data_test_low[0] <= 'h0;
+      data_test_high[0] <= 'h0;
+      data_test_dvalid[0] <= 1'b0;
+      data_test_dvalid_t[0] <= 1'b0;
     end
   end
-
-  //assign ext_dreq = 1'b1;
+  
+  genvar ch;
+  
+  generate
+    for (ch = 1; ch < c_n_chan; ch = ch + 1) begin: gen_chan
+      initial begin
+        data_test_low[ch] = 0;
+        data_test_high[ch] = 100;
+      end
+    
+      always @(posedge adc_clk)
+      begin
+        if (data_gen_start) begin
+          //data_test <= f_data_gen(c_data_max);
+          if (data_test_dvalid_t[ch]) begin
+            data_test_low[ch] <= data_test_low[ch] + ch + 1;
+            data_test_high[ch] <=  data_test_high[ch] + ch + 1;
+          end
+      
+          data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold);
+          data_test_dvalid[ch] <= data_test_dvalid_t[ch];
+        end else begin
+          data_test_low[ch] <= 'h0;
+          data_test_high[ch] <= 'h0;
+          data_test_dvalid[ch] <= 1'b0;
+          data_test_dvalid_t[ch] <= 1'b0;
+        end
+      end
+    end
+  endgenerate
 
   /////////////////////////////////////////////////////////////////////////////
   // Functions
@@ -1063,6 +1192,7 @@ module wb_acq_core_tb;
     input [31:0] pre_trig_samples;
     input [31:0] post_trig_samples;
     input [31:0] ddr3_start_addr;
+    input [15:0] acq_chan;
     input skip_trig;
     input wait_finish;
     input stop_on_error;
@@ -1122,6 +1252,11 @@ module wb_acq_core_tb;
     $display("Setting DDR3 start address for the next acquistion %d", skip_trig);
     @(posedge sys_clk);
     WB.write32(`ADDR_ACQ_CORE_DDR3_START_ADDR >> `WB_WORD_ACC, ddr3_start_addr);
+    
+    $display("Setting acquisition channel for the next acquistion %d", acq_chan);
+    @(posedge sys_clk);
+    WB.write32(`ADDR_ACQ_CORE_ACQ_CHAN_CTL >> `WB_WORD_ACC,
+              (acq_chan << `ACQ_CORE_ACQ_CHAN_CTL_WHICH_OFFSET) & `ACQ_CORE_ACQ_CHAN_CTL_WHICH);
 
    // Prepare core_ctl register
     acq_core_fsm_ctl_reg = acq_core_fsm_ctl_reg |
