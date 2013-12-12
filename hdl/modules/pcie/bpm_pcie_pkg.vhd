@@ -101,7 +101,26 @@ package bpm_pcie_pkg is
     CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    ext_rst_o : out std_logic
+    ext_rst_o : out std_logic;
+
+    -- Debug signals
+    dbg_app_addr_o           : out   std_logic_vector(31 downto 0);
+    dbg_app_cmd_o            : out   std_logic_vector(2 downto 0); 
+    dbg_app_en_o             : out   std_logic; 
+    dbg_app_wdf_data_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0); 
+    dbg_app_wdf_end_o        : out   std_logic;
+    dbg_app_wdf_wren_o       : out   std_logic;
+    dbg_app_wdf_mask_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    dbg_app_rd_data_o        : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    dbg_app_rd_data_end_o    : out   std_logic;
+    dbg_app_rd_data_valid_o  : out   std_logic;
+    dbg_app_rdy_o            : out   std_logic;
+    dbg_app_wdf_rdy_o        : out   std_logic;
+    dbg_ddr_ui_clk_o         : out   std_logic;
+    dbg_ddr_ui_reset_o       : out   std_logic;
+
+    dbg_arb_req_o            : out std_logic_vector(1 downto 0);
+    dbg_arb_gnt_o            : out std_logic_vector(1 downto 0)
     );
   end component;
 

@@ -100,7 +100,10 @@ entity DDR_Transact is
 
     --clocking & reset
     user_clk      : in std_logic;
-    user_reset    : in std_logic
+    user_reset    : in std_logic;
+
+    dbg_arb_req_o : out std_logic_vector(1 downto 0);
+    dbg_arb_gnt_o : out std_logic_vector(1 downto 0)
     );
 end entity DDR_Transact;
 
@@ -308,8 +311,8 @@ begin
   end process;
 
   arb_req <= ext_arb_req & pcie_arb_req;
-  --dbg_arb_req_o <= arb_req;
-  --dbg_arb_gnt_o <= ext_arb_gnt & pcie_arb_gnt; -- for debug
+  dbg_arb_req_o <= arb_req;
+  dbg_arb_gnt_o <= ext_arb_gnt & pcie_arb_gnt; -- for debug
 
   ddr_core_arb_mux :
   process (ddr_switch0, ddr_switch1, ddr_switch2, ddr_switch3, ddr_switch4, pcie_cmd_addr, pcie_cmd_instr, pcie_cmd_en, pcie_wr_data, pcie_wr_en, pcie_wr_end, pcie_wr_mask,
