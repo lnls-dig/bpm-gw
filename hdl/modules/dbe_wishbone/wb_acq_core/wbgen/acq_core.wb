@@ -388,7 +388,7 @@ peripheral {
       description = "Selection of path to acquire on next acquisition.";
       prefix = "which";
       type = SLV;
-      size = 16;
+      size = 5;
       clock = "ext_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
