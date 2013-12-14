@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    RxIn_Delay - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    RxIn_Delay - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
+--
+-- Dependencies:
 --
 -- Revision 1.10 - MAX_SIZE_EXCEEDED recalculated for better timing. 31.03.2008
--- 
+--
 -- Revision 1.00 - first release. 20.02.2007
--- 
+--
 -- Additional Comments: Virtual channels resolution.
 --
 ----------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ entity RxIn_Delay is
     m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
     m_axis_rx_tready   : out std_logic;
     Pool_wrBuf_full    : in  std_logic;
-    Link_Buf_full      : in  std_logic;
+    wb_FIFO_full       : in  std_logic;
 
     -- Delay for one clock
     m_axis_rx_tlast_dly    : out std_logic;
@@ -59,10 +59,7 @@ entity RxIn_Delay is
     m_axis_rx_tready_dly   : out std_logic;
     m_axis_rx_tbar_hit_dly : out std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
-
     -- TLP resolution
-    IORd_Type : out std_logic;
-    IOWr_Type : out std_logic;
     MRd_Type  : out std_logic_vector(3 downto 0);
     MWr_Type  : out std_logic_vector(1 downto 0);
     CplD_Type : out std_logic_vector(3 downto 0);
@@ -103,7 +100,6 @@ architecture Behavioral of RxIn_Delay is
   signal MaxPayloadSize_Exceeded : std_logic;
 
   signal Tlp_straddles_4KB_i : std_logic;
-  signal CarryIn_ALC         : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG downto 0);
   signal Tlp_has_4KB_i       : std_logic;
   signal cfg_MRS             : std_logic_vector(C_CFG_MRS_BIT_TOP-C_CFG_MRS_BIT_BOT downto 0);
   signal cfg_MPS             : std_logic_vector(C_CFG_MPS_BIT_TOP-C_CFG_MPS_BIT_BOT downto 0);
@@ -157,24 +153,10 @@ architecture Behavioral of RxIn_Delay is
   signal TLP_is_MWr_BAR2_H4DW : std_logic;
   signal TLP_is_MWr_BAR3_H4DW : std_logic;
 
-  signal TLP_is_IORd_BAR0 : std_logic;
-  signal TLP_is_IORd_BAR1 : std_logic;
-  signal TLP_is_IORd_BAR2 : std_logic;
-  signal TLP_is_IORd_BAR3 : std_logic;
-
-  signal TLP_is_IOWr_BAR0 : std_logic;
-  signal TLP_is_IOWr_BAR1 : std_logic;
-  signal TLP_is_IOWr_BAR2 : std_logic;
-  signal TLP_is_IOWr_BAR3 : std_logic;
-
-  signal TLP_is_IORd : std_logic;
-  signal TLP_is_IOWr : std_logic;
-
   signal TLP_is_CplD   : std_logic;
   signal TLP_is_Cpl    : std_logic;
   signal TLP_is_CplDLk : std_logic;
   signal TLP_is_CplLk  : std_logic;
-
 
   signal TLP_is_MRd_H3DW   : std_logic;
   signal TLP_is_MRd_H4DW   : std_logic;
@@ -184,9 +166,6 @@ architecture Behavioral of RxIn_Delay is
   signal TLP_is_MWr_H3DW : std_logic;
   signal TLP_is_MWr_H4DW : std_logic;
 
-
-  signal IORd_Type_i : std_logic;
-  signal IOWr_Type_i : std_logic;
   signal MRd_Type_i  : std_logic_vector(3 downto 0);
   signal MWr_Type_i  : std_logic_vector(1 downto 0);
   signal CplD_Type_i : std_logic_vector(3 downto 0);
@@ -199,9 +178,7 @@ architecture Behavioral of RxIn_Delay is
 
   -----------------------------------------------------------------
   -- Inbound DW counter
-  signal TLP_Payload_Address_i : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal TLP_DW_Length_i       : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
-  signal TLP_Address_sig       : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG downto 0);
   signal MWr_on_Pool           : std_logic;
   signal MWr_on_EB             : std_logic;
   signal CplD_on_Pool_i        : std_logic;
@@ -224,8 +201,6 @@ architecture Behavioral of RxIn_Delay is
 
   signal FSM_TLP_Cnt : TLPCntStates;
 
-  signal FSM_TLP_Cnt_r1 : TLPCntStates;
-
   --   CplD tag capture FSM (Address at tRAM)
   type AddrOnRAM_States is (AOtSt_RST
                                     , AOtSt_Idle
@@ -239,7 +214,7 @@ architecture Behavioral of RxIn_Delay is
   --old interface helper signals
   signal in_packet_reg : std_logic;
   signal trn_rsof_n    : std_logic;
-  
+
 begin
 
   m_axis_rx_tready       <= m_axis_rx_tready_i;   -- Delay
@@ -253,8 +228,6 @@ begin
 
 
   -- TLP resolution
-  IORd_Type <= '0';                     -- IORd_Type_i          ;
-  IOWr_Type <= '0';                     -- IOWr_Type_i          ;
   MRd_Type  <= MRd_Type_i;
   MWr_Type  <= MWr_Type_i;
   CplD_Type <= CplD_Type_i;
@@ -270,18 +243,14 @@ begin
   CplD_on_Pool     <= CplD_on_Pool_i;
   CplD_on_EB       <= CplD_on_EB_i;
 
-
   Tlp_has_4KB <= Tlp_has_4KB_i;
   Tlp_has_1DW <= Tlp_has_1DW_Length_i;
 
   Tlp_straddles_4KB <= '0';             --Tlp_straddles_4KB_i  ;
 
-
-  --  !! !! 
+  --  !! !!
   MaxReadReqSize_Exceeded <= '0';
   MaxPayloadSize_Exceeded <= '0';
-
-
 
 ----------------------------------------------
 --
@@ -555,7 +524,7 @@ begin
   --    ---------------------------------------------------------
   ----  Pipelining all trn_rx input signals for one clock
   ----    to get better timing
-  ---- 
+  ----
   Trn_Rx_Inputs_Delayed :
   process (user_clk)
   begin
@@ -590,42 +559,12 @@ begin
 
       TLP_is_MWr_H4DW <= '0';
 
-      TLP_is_IORd <= '0';
-
-      TLP_is_IOWr <= '0';
-
       TLP_is_CplD   <= '0';
       TLP_is_CplDLk <= '0';
       TLP_is_Cpl    <= '0';
       TLP_is_CplLk  <= '0';
 
     elsif user_clk'event and user_clk = '1' then
-
-      -- IORd
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_IO_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_IORd <= '1';
-      else
-        TLP_is_IORd <= '0';
-      end if;
-
-      -- IOWr
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_IO_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_IOWr <= '1';
-      else
-        TLP_is_IOWr <= '0';
-      end if;
 
       -- MRd
       if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
@@ -751,9 +690,6 @@ begin
   end process;
 
 -- --------------------------------------------------------------------------
---   TLP_is_IORd        <=  TLP_is_IORd_BAR0       or TLP_is_IORd_BAR1;
---   TLP_is_IOWr        <=  TLP_is_IOWr_BAR0       or TLP_is_IOWr_BAR1;
-
 --   TLP_is_MRd_H3DW    <=  TLP_is_MRd_BAR0_H3DW   or TLP_is_MRd_BAR1_H3DW;
 --   TLP_is_MRdLk_H3DW  <=  TLP_is_MRdLk_BAR0_H3DW or TLP_is_MRdLk_BAR1_H3DW;
 
@@ -765,10 +701,6 @@ begin
 --   TLP_is_MWr_H4DW    <=  TLP_is_MWr_BAR0_H4DW   or TLP_is_MWr_BAR1_H4DW;
 
 -- --------------------------------------------------------------------------
-
-  IORd_Type_i <= TLP_is_IORd and Tlp_has_1DW_Length_i;
-  IOWr_Type_i <= TLP_is_IOWr and Tlp_has_1DW_Length_i;
-
 
   MRd_Type_i <= (TLP_is_MRd_H3DW and not MaxReadReqSize_Exceeded)
                 & (TLP_is_MRdLk_H3DW and not MaxReadReqSize_Exceeded)
@@ -793,7 +725,6 @@ begin
   begin
     if user_reset = '1' then
       FSM_TLP_Cnt           <= TK_RST;
-      TLP_Payload_Address_i <= (others => '1');
       MWr_on_Pool           <= '0';
       CplD_on_Pool_i        <= '0';
       CplD_on_EB_i          <= '0';
@@ -810,17 +741,17 @@ begin
 
         when TK_Idle =>
           m_axis_rx_tready_i <= '1';
-          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
           then
             FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "11"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
           then
             FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
             and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
             and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "01"
           then
@@ -831,7 +762,8 @@ begin
 
         when TK_MWr_3Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
@@ -841,7 +773,8 @@ begin
 
         when TK_MWr_4Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
@@ -851,7 +784,8 @@ begin
 
         when TK_Cpld_Hdr_C =>
           m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt <= TK_Idle;
           elsif m_axis_rx_tvalid = '0' then
             FSM_TLP_Cnt <= TK_Cpld_Hdr_C;
@@ -860,13 +794,15 @@ begin
           end if;
 
         when TK_Body =>
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' then  -- raising edge
+          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' -- raising edge
+            and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt        <= TK_Idle;
-            m_axis_rx_tready_i <= '1';
+            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
+                                      or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
           else
             FSM_TLP_Cnt <= TK_Body;
             m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
-                                      or ((MWr_on_EB or CplD_on_EB_i) and Link_Buf_full));
+                                      or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
           end if;
 
         when others =>
@@ -912,17 +848,8 @@ begin
           CplD_on_EB_i   <= '0';
 
         when TK_CplD_Hdr_C =>
---            if trn_rsof_n='0' and m_axis_rx_tvalid='1' 
---               and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) ="10" 
---               and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) ="01" 
---               then
           CplD_on_Pool_i <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
           CplD_on_EB_i   <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
---            else
---              CplD_on_Pool_i  <= CplD_on_Pool_i;
---              CplD_on_EB_i    <= CplD_on_EB_i;
---            end if;
-
 
         when others =>
           CplD_on_Pool_i <= CplD_on_Pool_i;
@@ -936,14 +863,8 @@ begin
         when TK_RST =>
           CplD_Tag_i <= (others => '1');
 
---          when TK_Idle =>
---              CplD_Tag_i    <= CplD_Tag_i;
-
         when TK_CplD_Hdr_C =>
---            if m_axis_rx_tlast='1' then
---              CplD_Tag_i    <= (OTHERS => '1');
---            els
-          if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1' 
+          if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1'
           then
             CplD_Tag_i <= m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT);
           else
@@ -982,89 +903,13 @@ begin
       else
         CplD_is_the_Last_i <= CplD_is_the_Last_i;
       end if;
-      
+
     end if;
   end process;
-
-  ---------------------------------------------------
-  --
-  -- Synchronous Delay: FSM_TLP_Cnt
-  --
-  SynDelay_FSM_TLP_Cnt :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      FSM_TLP_Cnt_r1 <= FSM_TLP_Cnt;
-    end if;
-  end process;
-
----- --------------------------------------------------------------------------
---
---   TLP_Address_sig      <=  '0' & m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
---
----------------------------------------------------------------------------------------
----- Calculates the Address-Length combination carry-in
---   TLP_Calc_CarryIn_ALC:
---   process ( user_clk, user_reset)
---   begin
---      if user_reset = '1' then
---         CarryIn_ALC    <= (OTHERS =>'0');
---      elsif user_clk'event and user_clk = '1' then
---         CarryIn_ALC    <= ('0'& TLP_DW_Length_i) + TLP_Address_sig;
---      end if;
---   end process;
---
---
---   ---------------------------------------------------
---   --
---   -- Synchronous Registered: Tlp_straddles_4KB
---   --
---   FSM_Output_Tlp_straddles_4KB:
---   process ( user_clk, user_reset)
---   begin
---      if user_reset = '1' then
---         Tlp_straddles_4KB_i   <= '0';
---
---      elsif user_clk'event and user_clk = '1' then
---
---        case FSM_TLP_Cnt_r1 is
---
---          when TK_RST =>
---              Tlp_straddles_4KB_i   <= '0';
---
---          when TK_MWr_3Hdr_C =>
---            if Tlp_has_4KB_i='1'
---               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) 
---                   /=C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
---               then
---               Tlp_straddles_4KB_i <= '1';
---            else
---               Tlp_straddles_4KB_i <= CarryIn_ALC(C_TLP_FLD_WIDTH_OF_LENG);
---            end if;
---
---          when TK_MWr_4Hdr_D =>
---            if Tlp_has_4KB_i='1'
---               and m_axis_rx_tdata(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) 
---                   /=C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
---               then
---               Tlp_straddles_4KB_i <= '1';
---            else
---               Tlp_straddles_4KB_i <= CarryIn_ALC(C_TLP_FLD_WIDTH_OF_LENG);
---            end if;
---
---
---          when OTHERS  =>
---              Tlp_straddles_4KB_i <= Tlp_straddles_4KB_i;
---
---        end case;
---
---      end if;
---   end process;
---
 
   --  ---------------------------------------------------------
   --  To Cpl/D channel as indicator when ReqID matched
-  --  
+  --
   TLP_ReqID_Matched :
   process (user_clk, user_reset)
   begin
@@ -1081,7 +926,7 @@ begin
 
   --  ------------------------------------------------------------
   --  To Cpl/D channel as indicator when us Tag_Descriptor matched
-  --  
+  --
   TLP_usDexTag_Matched :
   process (user_clk, user_reset)
   begin
@@ -1098,7 +943,7 @@ begin
 
   --  ------------------------------------------------------------
   --  To Cpl/D channel as indicator when ds Tag_Descriptor matched
-  --  
+  --
   TLP_dsDexTag_Matched :
   process (user_clk, user_reset)
   begin
@@ -1128,5 +973,5 @@ begin
     end if;
   end process;
   trn_rsof_n <= not(m_axis_rx_tvalid and not(in_packet_reg));
-  
+
 end architecture Behavioral;

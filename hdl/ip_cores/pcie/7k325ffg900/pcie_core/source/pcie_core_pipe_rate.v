@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_rate.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_rate.v
 //  Description  :  PIPE Rate Module for 7 Series Transceiver
-//  Version      :  15.1
+//  Version      :  20.1
 //------------------------------------------------------------------------------
 
 
@@ -66,6 +66,8 @@
 module pcie_core_pipe_rate #
 (
 
+    parameter PCIE_SIM_SPEEDUP  = "FALSE",                  // PCIe sim speedup
+    parameter PCIE_GT_DEVICE    = "GTX",                    // PCIe GT device
     parameter PCIE_USE_MODE     = "3.0",                    // PCIe use mode
     parameter PCIE_PLL_SEL      = "CPLL",                   // PCIe PLL select for Gen1/Gen2 only
     parameter PCIE_POWER_SAVING = "TRUE",                   // PCIe power saving
@@ -88,6 +90,7 @@ module pcie_core_pipe_rate #
     input               RATE_QPLLLOCK,
     input               RATE_MMCM_LOCK,
     input               RATE_DRP_DONE,
+    input               RATE_RXPMARESETDONE,
     input               RATE_TXRESETDONE,
     input               RATE_RXRESETDONE,
     input               RATE_TXRATEDONE,
@@ -108,6 +111,8 @@ module pcie_core_pipe_rate #
     output      [ 1:0]  RATE_SYSCLKSEL,
     output              RATE_PCLK_SEL,
     output              RATE_GEN3,
+    output              RATE_DRP_X16X20_MODE,
+    output              RATE_DRP_X16,
     output      [ 2:0]  RATE_RATE_OUT,
     output              RATE_RESETOVRD_START,
     output              RATE_TXSYNC_START,
@@ -115,40 +120,42 @@ module pcie_core_pipe_rate #
     output              RATE_RXSYNC_START,
     output              RATE_RXSYNC,
     output              RATE_IDLE,
-    output      [23:0]  RATE_FSM
+    output      [ 4:0]  RATE_FSM
 
 );
 
     //---------- Input FF or Buffer ------------------------
-    reg                 rst_idle_reg1;
-    reg         [ 1:0]  rate_in_reg1;
-    reg                 cplllock_reg1;
-    reg                 qplllock_reg1;
-    reg                 mmcm_lock_reg1;
-    reg                 drp_done_reg1;
-    reg                 txresetdone_reg1;
-    reg                 rxresetdone_reg1;
-    reg                 txratedone_reg1;
-    reg                 rxratedone_reg1;
-    reg                 phystatus_reg1;
-    reg                 resetovrd_done_reg1;
-    reg                 txsync_done_reg1;
-    reg                 rxsync_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rst_idle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 cplllock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 qplllock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 mmcm_lock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 resetovrd_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsync_done_reg1;
     
-    reg                 rst_idle_reg2;
-    reg         [ 1:0]  rate_in_reg2;
-    reg                 cplllock_reg2;
-    reg                 qplllock_reg2;
-    reg                 mmcm_lock_reg2;
-    reg                 drp_done_reg2;
-    reg                 txresetdone_reg2;
-    reg                 rxresetdone_reg2;
-    reg                 txratedone_reg2;
-    reg                 rxratedone_reg2;
-    reg                 phystatus_reg2;
-    reg                 resetovrd_done_reg2;
-    reg                 txsync_done_reg2;
-    reg                 rxsync_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rst_idle_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 cplllock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 qplllock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 mmcm_lock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 resetovrd_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsync_done_reg2;
     
     //---------- Internal Signals --------------------------
     wire                pll_lock;
@@ -171,33 +178,43 @@ module pcie_core_pipe_rate #
     reg                 gen3       =  1'd0;
     reg                 pclk_sel   =  1'd0; 
     reg         [ 2:0]  rate_out   =  3'd0; 
-    reg         [23:0]  fsm        = 24'd0;                 
+    reg                 drp_start       = 1'd0;
+    reg                 drp_x16x20_mode = 1'd0;
+    reg                 drp_x16         = 1'd0;
+    reg         [ 4:0]  fsm        = 0;                 
    
     //---------- FSM ---------------------------------------                                         
-    localparam          FSM_IDLE             = 24'b000000000000000000000001; 
-    localparam          FSM_PLL_PU           = 24'b000000000000000000000010; // Gen 3 only
-    localparam          FSM_PLL_PURESET      = 24'b000000000000000000000100; // Gen 3 only
-    localparam          FSM_PLL_LOCK         = 24'b000000000000000000001000; // Gen 3 or reset only
-    localparam          FSM_PMARESET_HOLD    = 24'b000000000000000000010000; // Gen 3 or reset only
-    localparam          FSM_PLL_SEL          = 24'b000000000000000000100000; // Gen 3 or reset only   
-    localparam          FSM_MMCM_LOCK        = 24'b000000000000000001000000; // Gen 3 or reset only             
-    localparam          FSM_DRP_START        = 24'b000000000000000010000000; // Gen 3 or reset only                                 
-    localparam          FSM_DRP_DONE         = 24'b000000000000000100000000; // Gen 3 or reset only
-    localparam          FSM_PMARESET_RELEASE = 24'b000000000000001000000000; // Gen 3 only
-    localparam          FSM_PMARESET_DONE    = 24'b000000000000010000000000; // Gen 3 only
-    localparam          FSM_TXDATA_WAIT      = 24'b000000000000100000000000;           
-    localparam          FSM_PCLK_SEL         = 24'b000000000001000000000000;   
-    localparam          FSM_RATE_SEL         = 24'b000000000010000000000000;
-    localparam          FSM_RATE_DONE        = 24'b000000000100000000000000;
-    localparam          FSM_RESETOVRD_START  = 24'b000000001000000000000000; // PCIe use mode 1.0 only
-    localparam          FSM_RESETOVRD_DONE   = 24'b000000010000000000000000; // PCIe use mode 1.0 only
-    localparam          FSM_PLL_PDRESET      = 24'b000000100000000000000000;
-    localparam          FSM_PLL_PD           = 24'b000001000000000000000000;                          
-    localparam          FSM_TXSYNC_START     = 24'b000010000000000000000000;
-    localparam          FSM_TXSYNC_DONE      = 24'b000100000000000000000000;             
-    localparam          FSM_DONE             = 24'b001000000000000000000000; // Must sync value to pipe_user.v
-    localparam          FSM_RXSYNC_START     = 24'b010000000000000000000000; // Gen 3 only
-    localparam          FSM_RXSYNC_DONE      = 24'b100000000000000000000000; // Gen 3 only                                    
+    localparam          FSM_IDLE               = 0; 
+    localparam          FSM_PLL_PU             = 1; // Gen 3 only
+    localparam          FSM_PLL_PURESET        = 2; // Gen 3 only
+    localparam          FSM_PLL_LOCK           = 3; // Gen 3 or reset only
+    localparam          FSM_DRP_X16_GEN3_START = 4;
+    localparam          FSM_DRP_X16_GEN3_DONE  = 5;    
+    localparam          FSM_PMARESET_HOLD      = 6; // Gen 3 or reset only
+    localparam          FSM_PLL_SEL            = 7; // Gen 3 or reset only   
+    localparam          FSM_MMCM_LOCK          = 8; // Gen 3 or reset only             
+    localparam          FSM_DRP_START          = 9; // Gen 3 or reset only                                 
+    localparam          FSM_DRP_DONE           = 10; // Gen 3 or reset only
+    localparam          FSM_PMARESET_RELEASE   = 11; // Gen 3 only
+    localparam          FSM_PMARESET_DONE      = 12; // Gen 3 only
+    localparam          FSM_TXDATA_WAIT        = 13;           
+    localparam          FSM_PCLK_SEL           = 14; 
+    localparam          FSM_DRP_X16_START      = 15;
+    localparam          FSM_DRP_X16_DONE       = 16;    
+    localparam          FSM_RATE_SEL           = 17;
+    localparam          FSM_RXPMARESETDONE     = 18; 
+    localparam          FSM_DRP_X20_START      = 19;
+    localparam          FSM_DRP_X20_DONE       = 20;   
+    localparam          FSM_RATE_DONE          = 21;
+    localparam          FSM_RESETOVRD_START    = 22; // PCIe use mode 1.0 only
+    localparam          FSM_RESETOVRD_DONE     = 23; // PCIe use mode 1.0 only
+    localparam          FSM_PLL_PDRESET        = 24;
+    localparam          FSM_PLL_PD             = 25;                          
+    localparam          FSM_TXSYNC_START       = 26;
+    localparam          FSM_TXSYNC_DONE        = 27;             
+    localparam          FSM_DONE               = 28; // Must sync value to pipe_user.v
+    localparam          FSM_RXSYNC_START       = 29; // Gen 3 only
+    localparam          FSM_RXSYNC_DONE        = 30; // Gen 3 only                                    
     
     
     
@@ -214,6 +231,7 @@ begin
         qplllock_reg1       <= 1'd0;
         mmcm_lock_reg1      <= 1'd0;
         drp_done_reg1       <= 1'd0;
+        rxpmaresetdone_reg1 <= 1'd0;
         txresetdone_reg1    <= 1'd0;
         rxresetdone_reg1    <= 1'd0;
         txratedone_reg1     <= 1'd0;
@@ -229,6 +247,7 @@ begin
         qplllock_reg2       <= 1'd0;
         mmcm_lock_reg2      <= 1'd0;
         drp_done_reg2       <= 1'd0;
+        rxpmaresetdone_reg2 <= 1'd0;
         txresetdone_reg2    <= 1'd0;
         rxresetdone_reg2    <= 1'd0;
         txratedone_reg2     <= 1'd0;
@@ -247,6 +266,7 @@ begin
         qplllock_reg1       <= RATE_QPLLLOCK;
         mmcm_lock_reg1      <= RATE_MMCM_LOCK;
         drp_done_reg1       <= RATE_DRP_DONE;
+        rxpmaresetdone_reg1 <= RATE_RXPMARESETDONE;
         txresetdone_reg1    <= RATE_TXRESETDONE;
         rxresetdone_reg1    <= RATE_RXRESETDONE;
         txratedone_reg1     <= RATE_TXRATEDONE;
@@ -262,6 +282,7 @@ begin
         qplllock_reg2       <= qplllock_reg1;
         mmcm_lock_reg2      <= mmcm_lock_reg1;
         drp_done_reg2       <= drp_done_reg1;
+        rxpmaresetdone_reg2 <= rxpmaresetdone_reg1;
         txresetdone_reg2    <= txresetdone_reg1;
         rxresetdone_reg2    <= rxresetdone_reg1;
         txratedone_reg2     <= txratedone_reg1;
@@ -395,7 +416,10 @@ begin
         sysclksel  <= (PCIE_PLL_SEL == "QPLL") ? 2'd1 : 2'd0;                               
         pclk_sel   <= 1'd0; 
         gen3       <= 1'd0;
-        rate_out   <= 3'd0;                              
+        rate_out   <= 3'd0;  
+        drp_start       <= 1'd0;
+        drp_x16x20_mode <= 1'd0;  
+        drp_x16         <= 1'd0;                          
         end
     else
         begin
@@ -421,6 +445,9 @@ begin
                 pclk_sel   <= pclk_sel;
                 gen3       <= gen3;
                 rate_out   <= rate_out;
+                drp_start       <= 1'd0;
+                drp_x16x20_mode <= 1'd0;
+                drp_x16         <= 1'd0;    
                 end
             else
                 begin
@@ -436,6 +463,9 @@ begin
                 pclk_sel   <= pclk_sel;
                 gen3       <= gen3;
                 rate_out   <= rate_out;
+                drp_start       <= 1'd0;
+                drp_x16x20_mode <= 1'd0;
+                drp_x16         <= 1'd0;    
                 end
             end 
             
@@ -455,6 +485,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end  
             
         //---------- Release PLL Resets --------------------
@@ -473,13 +506,16 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end 
 
         //---------- Wait for PLL Lock ---------------------
         FSM_PLL_LOCK :
         
             begin
-            fsm        <= (pll_lock ? FSM_PMARESET_HOLD : FSM_PLL_LOCK);  
+            fsm        <= (pll_lock ? ((!rst_idle_reg2 || (rate_in_reg2 == 2'd1)) ? FSM_PMARESET_HOLD : FSM_DRP_X16_GEN3_START) : FSM_PLL_LOCK);  
             gen3_exit  <= gen3_exit;
             cpllpd     <= cpllpd;
             qpllpd     <= qpllpd;
@@ -491,7 +527,52 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
+
+        //---------- Start DRP x16 -------------------------
+        FSM_DRP_X16_GEN3_START :
+            
+            begin
+            fsm        <= (!drp_done_reg2) ? FSM_DRP_X16_GEN3_DONE : FSM_DRP_X16_GEN3_START;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd1;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd1;    
+            end
+            
+        //---------- Wait for DRP x16 Done -----------------    
+        FSM_DRP_X16_GEN3_DONE :
+        
+            begin  
+            fsm        <= drp_done_reg2 ? FSM_PMARESET_HOLD : FSM_DRP_X16_GEN3_DONE;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd1;    
+            end  
 
         //---------- Hold both PMA in Reset ----------------
         //  Gen1 : Release PMA Reset
@@ -513,6 +594,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
 
         //---------- Select PLL ----------------------------
@@ -535,13 +619,16 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
 
         //---------- Check for MMCM Lock -------------------
         FSM_MMCM_LOCK :
         
             begin
-            fsm        <= (mmcm_lock_reg2 ? FSM_DRP_START : FSM_MMCM_LOCK);  
+            fsm        <= (mmcm_lock_reg2 && !rxpmaresetdone_reg2 ? FSM_DRP_START : FSM_MMCM_LOCK);  
             gen3_exit  <= gen3_exit;
             cpllpd     <= cpllpd;
             qpllpd     <= qpllpd;
@@ -553,6 +640,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
 
         //---------- Start DRP -----------------------------
@@ -570,7 +660,10 @@ begin
             sysclksel  <= sysclksel;
             pclk_sel   <= ((rate_in_reg2 == 2'd1) || (rate_in_reg2 == 2'd2));
             gen3       <= (rate_in_reg2 == 2'd2);  
-            rate_out   <= (((rate_in_reg2 == 2'd2) || gen3_exit) ? rate : rate_out);                     
+            rate_out   <= (((rate_in_reg2 == 2'd2) || gen3_exit) ? rate : rate_out);  
+            drp_start       <= 1'd1;
+            drp_x16x20_mode <= 1'd0;  
+            drp_x16         <= 1'd0;                     
             end
 
         //---------- Wait for DRP Done ---------------------
@@ -589,6 +682,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end 
 
         //---------- Release PMA Resets --------------------
@@ -607,6 +703,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
 
         //---------- Wait for both TX/RX PMA Reset Dones and PHYSTATUS Deassertion
@@ -625,6 +724,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
 
         //---------- Wait for TXDATA to TX[P/N] Latency ----
@@ -643,6 +745,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end 
 
         //---------- Select PCLK Frequency -----------------
@@ -653,7 +758,7 @@ begin
         FSM_PCLK_SEL :
         
             begin
-            fsm        <= FSM_RATE_SEL;    
+            fsm        <= ((PCIE_GT_DEVICE == "GTH") && ((rate_in_reg2 == 2'd1) || ((!gen3_exit) && (rate_in_reg2 == 2'd0)))) ? FSM_DRP_X16_START : FSM_RATE_SEL; 
             gen3_exit  <= gen3_exit;
             cpllpd     <= cpllpd;
             qpllpd     <= qpllpd;
@@ -665,13 +770,58 @@ begin
             pclk_sel   <= ((rate_in_reg2 == 2'd1) || (rate_in_reg2 == 2'd2));
             gen3       <= gen3;    
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;    
             end
+
+        //---------- Start DRP x16 -------------------------
+        FSM_DRP_X16_START :
+            
+            begin
+            fsm        <= (!drp_done_reg2) ? FSM_DRP_X16_DONE : FSM_DRP_X16_START;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd1;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd1;
+            end
+            
+        //---------- Wait for DRP x16 Done -----------------    
+        FSM_DRP_X16_DONE :
+        
+            begin  
+            fsm        <= drp_done_reg2 ? FSM_RATE_SEL : FSM_DRP_X16_DONE;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd1;
+            end    
 
         //---------- Select Rate ---------------------------
         FSM_RATE_SEL :
         
             begin
-            fsm        <= FSM_RATE_DONE;
+            fsm        <= ((PCIE_GT_DEVICE == "GTH") && ((rate_in_reg2 == 2'd1) || ((!gen3_exit) && (rate_in_reg2 == 2'd0)))) ? FSM_RXPMARESETDONE : FSM_RATE_DONE;
             gen3_exit  <= gen3_exit;
             cpllpd     <= cpllpd;
             qpllpd     <= qpllpd;
@@ -683,7 +833,73 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate;                             // Update [TX/RX]RATE
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end    
+            
+        //---------- Wait for RXPMARESETDONE De-assertion --
+        FSM_RXPMARESETDONE :
+        
+            begin
+            fsm        <= (!rxpmaresetdone_reg2) ? FSM_DRP_X20_START : FSM_RXPMARESETDONE;  
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
+            end  
+            
+        //---------- Start DRP x20 -------------------------
+        FSM_DRP_X20_START :
+            
+            begin
+            fsm        <= (!drp_done_reg2) ? FSM_DRP_X20_DONE : FSM_DRP_X20_START;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd1;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd0;
+            end
+            
+        //---------- Wait for DRP x20 Done -----------------    
+        FSM_DRP_X20_DONE :
+        
+            begin  
+            fsm        <= drp_done_reg2 ? FSM_RATE_DONE : FSM_DRP_X20_DONE;
+            gen3_exit  <= gen3_exit;
+            cpllpd     <= cpllpd;
+            qpllpd     <= qpllpd;
+            cpllreset  <= cpllreset;
+            qpllreset  <= qpllreset;
+            txpmareset <= txpmareset;
+            rxpmareset <= rxpmareset;
+            sysclksel  <= sysclksel;
+            pclk_sel   <= pclk_sel;
+            gen3       <= gen3;
+            rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd1;
+            drp_x16         <= 1'd0;
+            end       
             
         //---------- Wait for Rate Change Done ------------- 
         FSM_RATE_DONE :
@@ -708,6 +924,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end      
             
         //---------- Reset Override Start ------------------
@@ -726,6 +945,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end
             
         //---------- Reset Override Done -------------------
@@ -744,6 +966,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end  
                 
         //---------- Hold PLL Not Used in Reset ------------
@@ -762,6 +987,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end    
             
         //---------- Power-Down PLL Not Used ---------------
@@ -780,6 +1008,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end         
             
         //---------- Start TX Sync -------------------------
@@ -798,6 +1029,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end
             
         //---------- Wait for TX Sync Done -----------------
@@ -816,6 +1050,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end        
 
         //---------- Rate Change Done ----------------------
@@ -834,6 +1071,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end
                
         //---------- Start RX Sync -------------------------
@@ -852,6 +1092,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end
             
         //---------- Wait for RX Sync Done -----------------
@@ -870,6 +1113,9 @@ begin
             pclk_sel   <= pclk_sel;
             gen3       <= gen3;
             rate_out   <= rate_out;
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end   
                 
         //---------- Default State -------------------------
@@ -888,6 +1134,9 @@ begin
             pclk_sel   <= 1'd0; 
             gen3       <= 1'd0;
             rate_out   <= 3'd0;  
+            drp_start       <= 1'd0;
+            drp_x16x20_mode <= 1'd0;
+            drp_x16         <= 1'd0;
             end
 
         endcase
@@ -906,7 +1155,19 @@ assign RATE_QPLLRESET       = ((PCIE_POWER_SAVING == "FALSE") ? 1'd0 : qpllreset
 assign RATE_TXPMARESET      = txpmareset;
 assign RATE_RXPMARESET      = rxpmareset;
 assign RATE_SYSCLKSEL       = sysclksel;
-assign RATE_DRP_START       = (fsm == FSM_DRP_START); 
+
+//assign RATE_DRP_START       = (fsm == FSM_DRP_START) || (fsm == FSM_DRP_X16_GEN3_START) || (fsm == FSM_DRP_X16_START) || (fsm == FSM_DRP_X20_START); 
+  assign RATE_DRP_START       = drp_start;
+
+//assign RATE_DRP_X16X20_MODE = (fsm == FSM_DRP_X16_GEN3_START) || (fsm == FSM_DRP_X16_GEN3_DONE) ||
+//                              (fsm == FSM_DRP_X16_START)      || (fsm == FSM_DRP_X16_DONE) || 
+//                              (fsm == FSM_DRP_X20_START)      || (fsm == FSM_DRP_X20_DONE);
+  assign RATE_DRP_X16X20_MODE = drp_x16x20_mode;
+
+//assign RATE_DRP_X16         = (fsm == FSM_DRP_X16_GEN3_START) || (fsm == FSM_DRP_X16_GEN3_DONE) ||
+//                              (fsm == FSM_DRP_X16_START)      || (fsm == FSM_DRP_X16_DONE);
+  assign RATE_DRP_X16         = drp_x16;  
+                          
 assign RATE_PCLK_SEL        = pclk_sel;
 assign RATE_GEN3            = gen3;
 assign RATE_RATE_OUT        = rate_out;

@@ -1,0 +1,397 @@
+peripheral {
+  name = "BPM FSM Acquisition registers";
+  description = "Wishbone slave for BPM Core Acquisition";
+  hdl_entity = "acq_core_regs";
+
+  prefix = "acq_core";
+
+  reg {
+    name = "Control register";
+    prefix = "ctl";
+
+    --field {
+    --  name = "State machine commands (ignore on read)";
+    --  description = "1: ACQ_START (start acquisition, only when FSM is idle)\n2: ACQ_STOP (stop acquisition, anytime)";
+    --  prefix = "fsm_cmd";
+    --  type = PASS_THROUGH;
+    --  size = 2;
+    --  clock = "fs_clk_i";
+    --  access_bus = READ_WRITE;
+    --  access_dev = READ_ONLY;
+    --};
+
+    field {
+      name = "State machine acquisition_start command (ignore on read)";
+      description = "1: ACQ_START (start acquisition, only when FSM is idle)";
+      prefix = "fsm_start_acq";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = WRITE_ONLY;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "State machine stop command (ignore on read)";
+      description = "1: ACQ_STOP (stop acquisition, anytime)";
+      prefix = "fsm_stop_acq";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = WRITE_ONLY;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved1";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved1";
+      type = SLV;
+      size = 14;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Acquire data immediately and don't wait for any trigger (ignore on read)";
+      description = "1: Acquire immediately\n0: Wait for trigger";
+      prefix = "fsm_acq_now";
+      type = BIT;
+      align = 16;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved2";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved2";
+      type = SLV;
+      size = 15;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Status register";
+    prefix = "sta";
+
+    field {
+      name = "State machine status";
+      description = "States:\n0: illegal\n1: IDLE\n2: PRE_TRIG\n3: WAIT_TRIG\n4: POST_TRIG\n5: DECR_SHOT\n6: illegal\n7: illegal";
+      prefix = "fsm_state";
+      type = SLV;
+      size = 3;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FSM acquisition status";
+      description = "Values:\n0: in progress\n1: completed";
+      prefix = "fsm_acq_done";
+      type = BIT;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved1";
+      type = SLV;
+      size = 4;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "External flow control transfer status";
+      description = "Values:\n0: in progress\n1: completed";
+      prefix = "fc_trans_done";
+      type = BIT;
+      size = 1;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "External flow control FIFO full status";
+      description = "Values:\n0: not full\n1: full (data may be lost)";
+      prefix = "fc_full";
+      type = BIT;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved2";
+      type = SLV;
+      size = 6;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "DDR3 transfer status";
+      description = "Values:\n0: in progress\n1: completed";
+      prefix = "ddr3_trans_done";
+      type = BIT;
+      size = 1;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved3";
+      type = SLV;
+      size = 15;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
+    name = "Trigger configuration";
+    prefix = "trig_cfg";
+
+    field {
+      name = "Hardware trigger selection";
+      description = "0: internal (data threshold)\n1: external (front panel trigger input)";
+      prefix = "hw_trig_sel";
+      type = BIT;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Hardware trigger polarity";
+      description = "0: positive edge/slope\n1: negative edge/slope";
+      prefix = "hw_trig_pol";
+      type = BIT;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Hardware trigger enable";
+      description = "0: disable\n1: enable";
+      prefix = "hw_trig_en";
+      type = BIT;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Software trigger enable";
+      description = "0: disable\n1: enable";
+      prefix = "sw_trig_en";
+      type = BIT;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Channel selection for internal trigger";
+      description = "00: channel 1\n01: channel 2\n10: channel 3\n11: channel 4";
+      prefix = "int_trig_sel";
+      type = SLV;
+      size = 2;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 10;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Threshold for internal trigger";
+      description = "Treated as binary two's complement and compared to raw ADC data";
+      prefix = "int_trig_thres";
+      type = SLV;
+      size = 16;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Trigger delay";
+    prefix = "trig_dly";
+
+    field {
+      name = "Trigger delay value";
+      description = "Delay to apply on the trigger in sampling clock period.\nThe default clock frequency is 100MHz (period = 10ns).";
+      type = SLV;
+      size = 32;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Software trigger";
+    description = "Writing (anything) to this register generates a software trigger.";
+
+    prefix = "sw_trig";
+    field {
+      name = "Software trigger (ignore on read)";
+      type = PASS_THROUGH;
+      size = 32;
+      clock = "fs_clk_i";
+    };
+   };
+
+  reg {
+    name = "Number of shots";
+    prefix = "shots";
+
+    field {
+      name = "Number of shots";
+      description = "Number of shots required in multi-shot mode, set to one for single-shot mode.";
+      prefix = "nb";
+      type = SLV;
+      size = 16;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Trigger address register";
+    prefix = "trig_pos";
+
+    field {
+      name = "Trigger address";
+      description = "Trigger address in DDR memory.\nOnly used in single-shot mode.";
+      type = SLV;
+      size = 32;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Pre-trigger samples";
+    prefix = "pre_samples";
+
+    field {
+      name = "Pre-trigger samples";
+      description = "Number of requested pre-trigger samples";
+      type = SLV;
+      size = 32;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Post-trigger samples";
+    prefix = "post_samples";
+
+    field {
+      name = "Post-trigger samples";
+      description = "Number of requested post-trigger samples";
+      type = SLV;
+      size = 32;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Samples counter";
+    prefix = "samples_cnt";
+
+    field {
+      name = "Samples counter";
+      description = "Counts the number of samples.\n It is reset on START and then counts the number of pre-trigger + post-trigger samples";
+      type = SLV;
+      size = 32;
+      clock = "fs_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "DDR3 Start Address";
+    prefix = "ddr3_start_addr";
+
+    field {
+      name = "DDR3 Start Address";
+      description = "Start address in DDR3 memory for the next acquisition.\nMust be word aligned (2 LSB zeroed)";
+      type = SLV;
+      size = 32;
+      -- This clock is 2x the sys_clock and a simple 2-stage synchronizer won't help here.
+      -- So, we just ignore that this register is in a differente domain and hope for the best.
+      -- Just kidding. Actually, this is as not as bad as it seems, as this is just a
+      -- configuration register that is ONLY read upon a fully synchronous strobe "acq_start"
+      clock = "ext_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+    
+  reg {
+    name = "Acquisition channel control";
+    prefix = "acq_chan_ctl";
+
+    field {
+      name = "Acquisition channel selection";
+      description = "Selection of path to acquire on next acquisition.";
+      prefix = "which";
+      type = SLV;
+      size = 5;
+      clock = "ext_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+};

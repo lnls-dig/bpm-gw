@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pcie_7x.v
-// Version    : 1.8
+// Version    : 1.10
 //
 // Description: Solution wrapper for Virtex7 Hard Block for PCI Express
 //

@@ -24,6 +24,10 @@
 #include "kmem.h"			/* prototypes for kernel memory */
 #include "sysfs.h"			/* prototypes for sysfs */
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+#define VM_RESERVED (VM_DONTEXPAND | VM_DONTDUMP)
+#endif
+
 /**
  *
  * Allocates new kernel memory including the corresponding management structure, makes
@@ -302,7 +306,7 @@ int pcidriver_mmap_kmem(pcidriver_privdata_t *privdata, struct vm_area_struct *v
 #endif
 
 	mod_info_dbg("Mapping address %08lx / PFN %08lx\n",
-			virt_to_phys((void*)kmem_entry->cpua),
+			(long unsigned int)virt_to_phys((void*)kmem_entry->cpua),
 			page_to_pfn(virt_to_page((void*)kmem_entry->cpua)));
 
 	ret = remap_pfn_range_cpua_compat(

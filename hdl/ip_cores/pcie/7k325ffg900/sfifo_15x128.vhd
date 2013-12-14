@@ -1,23 +1,23 @@
 --------------------------------------------------------------------------------
--- Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
+-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
 --------------------------------------------------------------------------------
 --   ____  ____
 --  /   /\/   /
 -- /___/  \  /    Vendor: Xilinx
--- \   \   \/     Version: P.40xd
+-- \   \   \/     Version: P.68d
 --  \   \         Application: netgen
 --  /   /         Filename: sfifo_15x128.vhd
--- /___/   /\     Timestamp: Wed Oct 24 18:27:07 2012
+-- /___/   /\     Timestamp: Fri Sep 20 18:15:23 2013
 -- \   \  /  \ 
 --  \___\/\___\
 --             
--- Command	: -w -sim -ofmt vhdl /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/sfifo_15x128.ngc /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/sfifo_15x128.vhd 
+-- Command	: -w -sim -ofmt vhdl /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/sfifo_15x128.ngc /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/sfifo_15x128.vhd 
 -- Device	: 7k325tffg900-2
--- Input file	: /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/sfifo_15x128.ngc
--- Output file	: /home/adrian/praca/pcie_brazil/PC/hdlmake/ip_cores/7k325ffg900/tmp/_cg/sfifo_15x128.vhd
+-- Input file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/sfifo_15x128.ngc
+-- Output file	: /home/adrian/praca/creotech/pcie_brazil/bpm-sw/hdl/ip_cores/pcie/7k325ffg900/tmp/_cg/sfifo_15x128.vhd
 -- # of Entities	: 1
 -- Design Name	: sfifo_15x128
--- Xilinx	: /opt/Xilinx/14.3/ISE_DS/ISE/
+-- Xilinx	: /opt/Xilinx/14.6/ISE_DS/ISE/
 --             
 -- Purpose:    
 --     This VHDL netlist is a verification model and uses simulation 
@@ -771,7 +771,7 @@ begin
     );
   U0_xst_fifo_generator_gconvfifo_rf_grf_rf_gntv_or_sync_fifo_gl0_wr_gwss_gpf_wrpf_diff_pntr_3_PWR_41_o_equal_7_o_3_1 : LUT4
     generic map(
-      INIT => X"0080"
+      INIT => X"0800"
     )
     port map (
       I0 => U0_xst_fifo_generator_gconvfifo_rf_grf_rf_gntv_or_sync_fifo_gl0_wr_gwss_gpf_wrpf_diff_pntr_pad(4),

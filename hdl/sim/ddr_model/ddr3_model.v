@@ -81,9 +81,14 @@
 // model flags
 // `define MODEL_PASR
 //Memory Details
-`define x1Gb
-`define sg125
-`define x8
+//`define x4Gb
+//`define sg125
+//`define x8
+
+`define x2Gb
+`define sg15E
+`define x16
+
 module ddr3_model (
     rst_n,
     ck,

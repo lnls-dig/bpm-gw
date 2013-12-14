@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_sync.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_sync.v
 //  Description  :  PIPE Sync Module for 7 Series Transceiver
-//  Version      :  15.0
+//  Version      :  20.1
 //------------------------------------------------------------------------------
 //  PCIE_TXSYNC_MODE  : 0 = Manual TX sync (default).
 //                    : 1 = Auto TX sync.
@@ -94,6 +94,7 @@ module pcie_core_pipe_sync #
     input               SYNC_MMCM_LOCK,
     input               SYNC_RXELECIDLE,
     input               SYNC_RXCDRLOCK,
+    input               SYNC_ACTIVE_LANE,
     
     input               SYNC_TXSYNC_START,
     input               SYNC_TXPHINITDONE,   
@@ -132,43 +133,49 @@ module pcie_core_pipe_sync #
 );          
 
     //---------- Input Register ----------------------------
-    reg                 gen3_reg1;
-    reg                 rate_idle_reg1;
-    reg			            mmcm_lock_reg1;
-    reg                 rxelecidle_reg1;
-    reg                 rxcdrlock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_idle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg		      mmcm_lock_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxelecidle_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxcdrlock_reg1;
     
-    reg                 gen3_reg2;     
-    reg                 rate_idle_reg2;
-    reg				          mmcm_lock_reg2;
-    reg                 rxelecidle_reg2;
-    reg                 rxcdrlock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gen3_reg2;     
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rate_idle_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg		      mmcm_lock_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxelecidle_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxcdrlock_reg2;
     
-    reg					        txsync_start_reg1;
-    reg                 txphinitdone_reg1;
-    reg                 txdlysresetdone_reg1;
-    reg                 txphaligndone_reg1;
-    reg                 txsyncdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg		      txsync_start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphinitdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txdlysresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphaligndone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsyncdone_reg1;
                                                    
-    reg                 txsync_start_reg2;     
-    reg                 txphinitdone_reg2;     
-    reg                 txdlysresetdone_reg2;    
-    reg                 txphaligndone_reg2;   
-    reg                 txsyncdone_reg2; 
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_start_reg2;     
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphinitdone_reg2;     
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txdlysresetdone_reg2;    
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphaligndone_reg2;   
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsyncdone_reg2; 
     
-    reg					        rxsync_start_reg1;
-    reg                 rxdlysresetdone_reg1;
-    reg                 rxphaligndone_m_reg1;
-    reg                 rxphaligndone_s_reg1;
-    reg                 rxsync_donem_reg1;
-    reg                 rxsyncdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_start_reg3;     
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphinitdone_reg3;     
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txdlysresetdone_reg3;    
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txphaligndone_reg3;   
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsyncdone_reg3;     
+    
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg		      rxsync_start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxdlysresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxphaligndone_m_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxphaligndone_s_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsync_donem_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsyncdone_reg1;
 
-    reg					        rxsync_start_reg2;
-    reg                 rxdlysresetdone_reg2;
-    reg                 rxphaligndone_m_reg2;
-    reg                 rxphaligndone_s_reg2;
-    reg                 rxsync_donem_reg2;
-    reg                 rxsyncdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg		      rxsync_start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxdlysresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxphaligndone_m_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxphaligndone_s_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsync_donem_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxsyncdone_reg2;
     
     //---------- Output Register ---------------------------          
     reg                 txdlyen     = 1'd0;
@@ -241,6 +248,13 @@ begin
         rxphaligndone_s_reg2 <= 1'd0;
         rxsync_donem_reg2    <= 1'd0;
         rxsyncdone_reg2      <= 1'd0;
+        //---------- 3rd Stage FF --------------------------
+        txsync_start_reg3	   <= 1'd0;
+        txphinitdone_reg3    <= 1'd0;
+        txdlysresetdone_reg3 <= 1'd0;
+        txphaligndone_reg3   <= 1'd0;
+        txsyncdone_reg3      <= 1'd0;
+        
         end
     else
         begin  
@@ -282,6 +296,12 @@ begin
         rxphaligndone_s_reg2 <= rxphaligndone_s_reg1;
         rxsync_donem_reg2    <= rxsync_donem_reg1; 
         rxsyncdone_reg2      <= rxsyncdone_reg1;
+        //---------- 3rd Stage FF --------------------------
+        txsync_start_reg3    <= txsync_start_reg2;	   
+        txphinitdone_reg3    <= txphinitdone_reg2;    
+        txdlysresetdone_reg3 <= txdlysresetdone_reg2; 
+        txphaligndone_reg3   <= txphaligndone_reg2;   
+        txsyncdone_reg3      <= txsyncdone_reg2;      
         end
         
 end       
@@ -340,7 +360,7 @@ generate if ((PCIE_LINK_SPEED == 3) || (PCIE_TXBUF_EN == "FALSE"))
             FSM_TXSYNC_START :
             
                 begin
-                fsm_tx      <= (((!txdlysresetdone_reg2 && txdlysresetdone_reg1) || (((PCIE_GT_DEVICE == "GTH") || (PCIE_GT_DEVICE == "GTP")) && (PCIE_TXSYNC_MODE == 1) && SYNC_SLAVE)) ? FSM_TXPHINITDONE : FSM_TXSYNC_START);
+                fsm_tx      <= (((!txdlysresetdone_reg3 && txdlysresetdone_reg2) || (((PCIE_GT_DEVICE == "GTH") || (PCIE_GT_DEVICE == "GTP")) && (PCIE_TXSYNC_MODE == 1) && SYNC_SLAVE)) ? FSM_TXPHINITDONE : FSM_TXSYNC_START);
                 txdlyen     <= 1'd0; 
                 txsync_done <= 1'd0;
                 end
@@ -349,7 +369,7 @@ generate if ((PCIE_LINK_SPEED == 3) || (PCIE_TXBUF_EN == "FALSE"))
             FSM_TXPHINITDONE :
             
                 begin
-                fsm_tx      <= (((!txphinitdone_reg2 && txphinitdone_reg1) || (PCIE_TXSYNC_MODE == 1)) ? FSM_TXSYNC_DONE1 : FSM_TXPHINITDONE);
+                fsm_tx      <= (((!txphinitdone_reg3 && txphinitdone_reg2) || (PCIE_TXSYNC_MODE == 1) || (!SYNC_ACTIVE_LANE)) ? FSM_TXSYNC_DONE1 : FSM_TXPHINITDONE);
                 txdlyen     <= 1'd0; 
                 txsync_done <= 1'd0;
                 end
@@ -359,9 +379,9 @@ generate if ((PCIE_LINK_SPEED == 3) || (PCIE_TXBUF_EN == "FALSE"))
             
                 begin
                 if (((PCIE_GT_DEVICE == "GTH") || (PCIE_GT_DEVICE == "GTP")) && (PCIE_TXSYNC_MODE == 1) && !SYNC_SLAVE)
-                   fsm_tx <= ((!txsyncdone_reg2 && txsyncdone_reg1) ? FSM_TXSYNC_DONE2 : FSM_TXSYNC_DONE1); 
+                   fsm_tx <= ((!txsyncdone_reg3 && txsyncdone_reg2)       || (!SYNC_ACTIVE_LANE) ? FSM_TXSYNC_DONE2 : FSM_TXSYNC_DONE1); 
                 else
-                   fsm_tx <= ((!txphaligndone_reg2 && txphaligndone_reg1) ? FSM_TXSYNC_DONE2 : FSM_TXSYNC_DONE1); 
+                   fsm_tx <= ((!txphaligndone_reg3 && txphaligndone_reg2) || (!SYNC_ACTIVE_LANE) ? FSM_TXSYNC_DONE2 : FSM_TXSYNC_DONE1); 
                 
                 txdlyen     <= 1'd0; 
                 txsync_done <= 1'd0;
@@ -371,7 +391,7 @@ generate if ((PCIE_LINK_SPEED == 3) || (PCIE_TXBUF_EN == "FALSE"))
             FSM_TXSYNC_DONE2 :
             
                 begin
-                if ((!txphaligndone_reg2 && txphaligndone_reg1) || SYNC_SLAVE || (((PCIE_GT_DEVICE == "GTH") || (PCIE_GT_DEVICE == "GTP")) && (PCIE_TXSYNC_MODE == 1)) || (BYPASS_TXDELAY_ALIGN == 1)) 
+                if ((!txphaligndone_reg3 && txphaligndone_reg2) || (!SYNC_ACTIVE_LANE) || SYNC_SLAVE || (((PCIE_GT_DEVICE == "GTH") || (PCIE_GT_DEVICE == "GTP")) && (PCIE_TXSYNC_MODE == 1)) || (BYPASS_TXDELAY_ALIGN == 1)) 
                     begin
                     fsm_tx      <= FSM_TXSYNC_IDLE;
                     txdlyen     <= !SYNC_SLAVE; 

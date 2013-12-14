@@ -245,7 +245,7 @@ package fmc_adc_pkg is
     return t_chain_intercon;
 
   function f_first_used_clk(use_clk_chain : std_logic_vector)
-    return natural;
+    return integer;
 
   function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
     return boolean;
@@ -260,7 +260,7 @@ package fmc_adc_pkg is
   function f_with_ref_clk(clk_chain : natural; ref_clk : natural)
     return boolean;
 
-  function f_num_adc_pins(ddr_data : boolean) return natural;
+  function f_num_adc_pins(sdr_data : boolean) return natural;
 
   function f_std_logic_to_bool(input : std_logic) return boolean;
 
@@ -630,7 +630,7 @@ package body fmc_adc_pkg is
 
   -- Determine first used clock
   function f_first_used_clk(use_clk_chain : std_logic_vector)
-    return natural
+    return integer
   is
   begin
     for i in 0 to c_num_adc_channels-1 loop

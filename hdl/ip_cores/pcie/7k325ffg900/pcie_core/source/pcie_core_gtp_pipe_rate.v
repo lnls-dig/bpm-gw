@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gtp_pipe_rate.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  gtp_pipe_rate.v
 //  Description  :  PIPE Rate Module for 7 Series Transceiver
-//  Version      :  0.1
+//  Version      :  19.0
 //------------------------------------------------------------------------------
 
 
@@ -66,7 +66,8 @@
 module pcie_core_gtp_pipe_rate #
 (
 
-    parameter TXDATA_WAIT_MAX   = 4'd15                     // TXDATA wait max
+    parameter PCIE_SIM_SPEEDUP = "FALSE",                   // PCIe sim mode 
+    parameter TXDATA_WAIT_MAX  = 4'd15                      // TXDATA wait max
 
 )
 
@@ -75,8 +76,9 @@ module pcie_core_gtp_pipe_rate #
     //---------- Input -------------------------------------
     input               RATE_CLK,
     input               RATE_RST_N,
-    input               RATE_RST_IDLE,
     input       [ 1:0]  RATE_RATE_IN,
+    input               RATE_DRP_DONE,
+    input               RATE_RXPMARESETDONE,
     input               RATE_TXRATEDONE,
     input               RATE_RXRATEDONE,
     input               RATE_TXSYNC_DONE,
@@ -84,31 +86,34 @@ module pcie_core_gtp_pipe_rate #
     
     //---------- Output ------------------------------------
     output              RATE_PCLK_SEL,
+    output              RATE_DRP_START,
+    output              RATE_DRP_X16,
     output      [ 2:0]  RATE_RATE_OUT,
     output              RATE_TXSYNC_START,
     output              RATE_DONE,
     output              RATE_IDLE,
-    output      [23:0]  RATE_FSM
+    output      [ 4:0]  RATE_FSM
 
 );
 
     //---------- Input FF or Buffer ------------------------
-    reg                 rst_idle_reg1;
-    reg         [ 1:0]  rate_in_reg1;
-    reg                 txratedone_reg1;
-    reg                 rxratedone_reg1;
-    reg                 phystatus_reg1;
-    reg                 txsync_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg1;
     
-    reg                 rst_idle_reg2;
-    reg         [ 1:0]  rate_in_reg2;
-    reg                 txratedone_reg2;
-    reg                 rxratedone_reg2;
-    reg                 phystatus_reg2;
-    reg                 txsync_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_in_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 drp_done_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxpmaresetdone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rxratedone_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 phystatus_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 txsync_done_reg2;
     
     //---------- Internal Signals --------------------------
-    wire                pll_lock;
     wire        [ 2:0]  rate;
     reg         [ 3:0]  txdata_wait_cnt = 4'd0;
     reg                 txratedone      = 1'd0;
@@ -117,20 +122,24 @@ module pcie_core_gtp_pipe_rate #
     reg                 ratedone        = 1'd0;
     
     //---------- Output FF or Buffer -----------------------
-    reg                 pclk_sel   =  1'd0; 
-    reg         [ 2:0]  rate_out   =  3'd0; 
-    reg         [7:0]   fsm        =  8'd0;                 
+    reg                 pclk_sel =  1'd0; 
+    reg         [ 2:0]  rate_out =  3'd0; 
+    reg         [ 3:0]  fsm      =  0;                 
    
     //---------- FSM ---------------------------------------                                         
-    
-    localparam          FSM_IDLE             = 8'b00000001; 
-    localparam          FSM_TXDATA_WAIT      = 8'b00000010;           
-    localparam          FSM_PCLK_SEL         = 8'b00000100;   
-    localparam          FSM_RATE_SEL         = 8'b00001000;
-    localparam          FSM_RATE_DONE        = 8'b00010000;
-    localparam          FSM_TXSYNC_START     = 8'b00100000;
-    localparam          FSM_TXSYNC_DONE      = 8'b01000000;             
-    localparam          FSM_DONE             = 8'b10000000; // Must sync value to pipe_user.v
+    localparam          FSM_IDLE           = 0; 
+    localparam          FSM_TXDATA_WAIT    = 1;           
+    localparam          FSM_PCLK_SEL       = 2; 
+    localparam          FSM_DRP_X16_START  = 3;
+    localparam          FSM_DRP_X16_DONE   = 4;   
+    localparam          FSM_RATE_SEL       = 5;
+    localparam          FSM_RXPMARESETDONE = 6; 
+    localparam          FSM_DRP_X20_START  = 7;
+    localparam          FSM_DRP_X20_DONE   = 8;   
+    localparam          FSM_RATE_DONE      = 9;
+    localparam          FSM_TXSYNC_START   = 10;
+    localparam          FSM_TXSYNC_DONE    = 11;             
+    localparam          FSM_DONE           = 12; // Must sync value to pipe_user.v
     
 //---------- Input FF ----------------------------------------------------------
 always @ (posedge RATE_CLK)
@@ -139,15 +148,17 @@ begin
     if (!RATE_RST_N)
         begin    
         //---------- 1st Stage FF -------------------------- 
-        rst_idle_reg1       <= 1'd0;   
         rate_in_reg1        <= 2'd0;
+        drp_done_reg1       <= 1'd0;
+        rxpmaresetdone_reg1 <= 1'd0;
         txratedone_reg1     <= 1'd0;
         rxratedone_reg1     <= 1'd0;
         phystatus_reg1      <= 1'd0;
         txsync_done_reg1    <= 1'd0;
         //---------- 2nd Stage FF --------------------------
-        rst_idle_reg2       <= 1'd0;
         rate_in_reg2        <= 2'd0;
+        drp_done_reg2       <= 1'd0;
+        rxpmaresetdone_reg2 <= 1'd0;
         txratedone_reg2     <= 1'd0;
         rxratedone_reg2     <= 1'd0;
         phystatus_reg2      <= 1'd0;
@@ -156,15 +167,17 @@ begin
     else
         begin  
         //---------- 1st Stage FF --------------------------
-        rst_idle_reg1       <= RATE_RST_IDLE;
         rate_in_reg1        <= RATE_RATE_IN;
+        drp_done_reg1       <= RATE_DRP_DONE;
+        rxpmaresetdone_reg1 <= RATE_RXPMARESETDONE;
         txratedone_reg1     <= RATE_TXRATEDONE;
         rxratedone_reg1     <= RATE_RXRATEDONE;
         phystatus_reg1      <= RATE_PHYSTATUS;
         txsync_done_reg1    <= RATE_TXSYNC_DONE;
         //---------- 2nd Stage FF --------------------------
-        rst_idle_reg2       <= rst_idle_reg1;
         rate_in_reg2        <= rate_in_reg1;
+        drp_done_reg2       <= drp_done_reg1;
+        rxpmaresetdone_reg2 <= rxpmaresetdone_reg1;
         txratedone_reg2     <= txratedone_reg1;
         rxratedone_reg2     <= rxratedone_reg1;
         phystatus_reg2      <= phystatus_reg1;
@@ -172,9 +185,6 @@ begin
         end
         
 end    
-
-
-
 
 
 
@@ -224,7 +234,7 @@ begin
     else
         begin  
 
-        if (fsm == FSM_RATE_DONE)
+        if ((fsm == FSM_RATE_DONE) || (fsm == FSM_RXPMARESETDONE) || (fsm == FSM_DRP_X20_START) || (fsm == FSM_DRP_X20_DONE))
         
             begin
             
@@ -275,9 +285,9 @@ begin
 
     if (!RATE_RST_N)
         begin
-        fsm        <= FSM_IDLE;
-        pclk_sel   <= 1'd0; 
-        rate_out   <= 3'd0;                              
+        fsm      <= FSM_IDLE;
+        pclk_sel <= 1'd0; 
+        rate_out <= 3'd0;                              
         end
     else
         begin
@@ -291,23 +301,25 @@ begin
             //---------- Detect Rate Change ----------------
             if (rate_in_reg2 != rate_in_reg1)
                 begin
-                fsm        <=  FSM_TXDATA_WAIT;
-                pclk_sel   <= pclk_sel;
-                rate_out   <= rate_out;
+                fsm      <= FSM_TXDATA_WAIT;
+                pclk_sel <= pclk_sel;
+                rate_out <= rate_out;
                 end
             else
                 begin
-                fsm        <= FSM_IDLE;
-                pclk_sel   <= pclk_sel;
-                rate_out   <= rate_out;
+                fsm      <= FSM_IDLE;
+                pclk_sel <= pclk_sel;
+                rate_out <= rate_out;
                 end
             end 
+            
+        //---------- Wait for TXDATA to TX[P/N] Latency ----    
         FSM_TXDATA_WAIT :
         
             begin
-            fsm        <= (txdata_wait_cnt == TXDATA_WAIT_MAX) ? FSM_PCLK_SEL : FSM_TXDATA_WAIT;
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate_out;
+            fsm      <= (txdata_wait_cnt == TXDATA_WAIT_MAX) ? FSM_PCLK_SEL : FSM_TXDATA_WAIT;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
             end 
 
         //---------- Select PCLK Frequency -----------------
@@ -317,67 +329,112 @@ begin
         FSM_PCLK_SEL :
         
             begin
-            fsm        <= FSM_RATE_SEL;    
-            pclk_sel   <= (rate_in_reg2 == 2'd1);
-            rate_out   <= rate_out;
+            fsm      <= (PCIE_SIM_SPEEDUP == "TRUE") ? FSM_RATE_SEL : FSM_DRP_X16_START;    
+            pclk_sel <= (rate_in_reg2 == 2'd1);
+            rate_out <= rate_out;
             end
+            
+        //---------- Start DRP x16 -------------------------
+        FSM_DRP_X16_START :
+            
+            begin
+            fsm      <= (!drp_done_reg2) ? FSM_DRP_X16_DONE : FSM_DRP_X16_START;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
+            end
+            
+        //---------- Wait for DRP x16 Done -----------------    
+        FSM_DRP_X16_DONE :
+        
+            begin  
+            fsm      <= drp_done_reg2 ? FSM_RATE_SEL : FSM_DRP_X16_DONE;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
+            end      
 
         //---------- Select Rate ---------------------------
         FSM_RATE_SEL :
         
             begin
-            fsm        <= FSM_RATE_DONE;
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate;                             // Update [TX/RX]RATE
+            fsm      <= (PCIE_SIM_SPEEDUP == "TRUE") ? FSM_RATE_DONE : FSM_RXPMARESETDONE;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate;                               // Update [TX/RX]RATE
             end    
+            
+        //---------- Wait for RXPMARESETDONE De-assertion --
+        FSM_RXPMARESETDONE :
+        
+            begin
+            fsm      <= (!rxpmaresetdone_reg2) ? FSM_DRP_X20_START : FSM_RXPMARESETDONE;  
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
+            end  
+            
+        //---------- Start DRP x20 -------------------------
+        FSM_DRP_X20_START :
+            
+            begin
+            fsm      <= (!drp_done_reg2) ? FSM_DRP_X20_DONE : FSM_DRP_X20_START;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
+            end
+            
+        //---------- Wait for DRP x20 Done -----------------    
+        FSM_DRP_X20_DONE :
+        
+            begin  
+            fsm      <= drp_done_reg2 ? FSM_RATE_DONE : FSM_DRP_X20_DONE;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
+            end      
             
         //---------- Wait for Rate Change Done ------------- 
         FSM_RATE_DONE :
         
             begin
-            if (ratedone ) 
-                    fsm <= FSM_TXSYNC_START;
+            if (ratedone) 
+                fsm <= FSM_TXSYNC_START;
             else      
-                    fsm <= FSM_RATE_DONE;
+                fsm <= FSM_RATE_DONE;
             
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate_out;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
             end      
             
         //---------- Start TX Sync -------------------------
         FSM_TXSYNC_START:
         
             begin
-            fsm        <= (!txsync_done_reg2 ? FSM_TXSYNC_DONE : FSM_TXSYNC_START);
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate_out;
+            fsm      <= (!txsync_done_reg2 ? FSM_TXSYNC_DONE : FSM_TXSYNC_START);
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
             end
             
         //---------- Wait for TX Sync Done -----------------
         FSM_TXSYNC_DONE:
         
             begin
-            fsm        <= (txsync_done_reg2 ? FSM_DONE : FSM_TXSYNC_DONE);
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate_out;
+            fsm      <= (txsync_done_reg2 ? FSM_DONE : FSM_TXSYNC_DONE);
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
             end        
 
         //---------- Rate Change Done ----------------------
         FSM_DONE :  
           
             begin  
-            fsm        <= FSM_IDLE;
-            pclk_sel   <= pclk_sel;
-            rate_out   <= rate_out;
+            fsm      <= FSM_IDLE;
+            pclk_sel <= pclk_sel;
+            rate_out <= rate_out;
             end
                
         //---------- Default State -------------------------
         default :
         
             begin
-            fsm        <= FSM_IDLE;
-            pclk_sel   <= 1'd0; 
-            rate_out   <= 3'd0;  
+            fsm      <= FSM_IDLE;
+            pclk_sel <= 1'd0; 
+            rate_out <= 3'd0;  
             end
 
         endcase
@@ -389,12 +446,14 @@ end
 
 
 //---------- PIPE Rate Output --------------------------------------------------
-assign RATE_PCLK_SEL        = pclk_sel;
-assign RATE_RATE_OUT        = rate_out;
-assign RATE_TXSYNC_START    = (fsm == FSM_TXSYNC_START);
-assign RATE_DONE            = (fsm == FSM_DONE);
-assign RATE_IDLE            = (fsm == FSM_IDLE);
-assign RATE_FSM             = fsm;   
+assign RATE_PCLK_SEL     = pclk_sel;
+assign RATE_DRP_START    = (fsm == FSM_DRP_X16_START) || (fsm == FSM_DRP_X20_START); 
+assign RATE_DRP_X16      = (fsm == FSM_DRP_X16_START) || (fsm == FSM_DRP_X16_DONE);
+assign RATE_RATE_OUT     = rate_out;
+assign RATE_TXSYNC_START = (fsm == FSM_TXSYNC_START);
+assign RATE_DONE         = (fsm == FSM_DONE);
+assign RATE_IDLE         = (fsm == FSM_IDLE);
+assign RATE_FSM          = {1'd0, fsm};   
 
 
 

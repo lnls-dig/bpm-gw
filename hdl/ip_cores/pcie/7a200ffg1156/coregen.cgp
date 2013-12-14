@@ -1,4 +1,4 @@
-# Date: Fri Feb 22 18:09:18 2013
+# Date: Fri Nov 22 11:22:48 2013
 
 SET addpads = false
 SET asysymbol = false
@@ -14,9 +14,9 @@ SET implementationfiletype = Ngc
 SET package = ffg1156
 SET removerpms = false
 SET simulationfiles = Structural
-SET speedgrade = -2
+SET speedgrade = -1
 SET verilogsim = true
 SET vhdlsim = false
 SET workingdirectory = ./tmp/
 
-# CRC:  4ed6acd
+# CRC: ef472270

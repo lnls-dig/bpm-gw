@@ -58,7 +58,6 @@ entity tx_Transact is
     s_axis_tx_tready  : in  std_logic;
     s_axis_tx_tdsc    : out std_logic;
     tx_buf_av         : in  std_logic_vector(C_TBUF_AWIDTH-1 downto 0);
-    trn_tsof_n        : out std_logic;
 
     -- Upstream DMA transferred bytes count up
     us_DMA_Bytes_Add : out std_logic;
@@ -88,7 +87,6 @@ entity tx_Transact is
     pioCplD_Req  : in  std_logic;
     pioCplD_RE   : out std_logic;
     pioCplD_Qout : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-    pio_FC_stop  : out std_logic;
 
     -- downstream MRd Channel
     dsMRd_Req  : in  std_logic;
@@ -110,7 +108,6 @@ entity tx_Transact is
     DDR_rdc_sof   : out std_logic;
     DDR_rdc_eof   : out std_logic;
     DDR_rdc_v     : out std_logic;
-    DDR_rdc_FA    : out std_logic;
     DDR_rdc_Shift : out std_logic;
     DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     DDR_rdc_full  : in  std_logic;
@@ -123,8 +120,6 @@ entity tx_Transact is
     -- Additional
     Tx_TimeOut    : out std_logic;
     Tx_wb_TimeOut : out std_logic;
-    Format_Shower : out std_logic;
-    mbuf_UserFull : in  std_logic;
     Tx_Reset      : in  std_logic;
     localID       : in  std_logic_vector(C_ID_WIDTH-1 downto 0)
     );
@@ -164,7 +159,6 @@ architecture Behavioral of tx_Transact is
   signal Read_a_Buffer       : std_logic_vector (C_CHANNEL_NUMBER-1 downto 0);
   signal Ack_Indice          : std_logic_vector (C_CHANNEL_NUMBER-1 downto 0);
 
-  signal Tx_Indicator     : std_logic_vector (C_CHANNEL_NUMBER-1 downto 0);
   signal b1_Tx_Indicator  : std_logic_vector (C_CHANNEL_NUMBER-1 downto 0);
   signal vec_ChQout_Valid : std_logic_vector (C_CHANNEL_NUMBER-1 downto 0);
   signal Tx_Busy          : std_logic;
@@ -182,7 +176,7 @@ architecture Behavioral of tx_Transact is
   signal Trn_Qout_reg  : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
   --  Addresses from different channel buffer
-  signal mAddr_pioCplD     : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
+  signal wbaddr_piocpld    : std_logic_vector(C_WB_AWIDTH-1 downto 0);
   signal mAddr_usTlp       : std_logic_vector(C_PRAM_AWIDTH-1+2 downto 0);
   signal DDRAddr_usTlp     : std_logic_vector(C_DDR_IAWIDTH-1 downto 0);
   signal WBAddr_usTlp      : std_logic_vector(C_WB_AWIDTH-1 downto 0);
@@ -219,26 +213,22 @@ architecture Behavioral of tx_Transact is
   signal usTlp_RE_i   : std_logic;
 
   -- Flow controls
-  signal pio_FC_stop_i : std_logic;
   signal us_FC_stop_i  : std_logic;
 
   -- Local reset for tx
   signal trn_tx_Reset_n : std_logic;
 
   -- Alias for transaction interface signals
-  signal s_axis_tx_tdata_i : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal trn_tsof_n_i      : std_logic;
-  signal s_axis_tx_tkeep_i : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
-  signal s_axis_tx_tlast_i : std_logic;
-  signal Format_Shower_i   : std_logic;
-
+  signal s_axis_tx_tdata_i   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal s_axis_tx_tkeep_i   : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
+  signal s_axis_tx_tlast_i   : std_logic;
   signal s_axis_tx_tvalid_i  : std_logic;
   signal s_axis_tx_tdsc_i    : std_logic;
   signal s_axis_tx_terrfwd_i : std_logic;
+  signal s_axis_tx_tready_i  : std_logic;
 
-  signal s_axis_tx_tready_i : std_logic;
-
-  signal tx_buf_av_i : std_logic_vector(C_TBUF_AWIDTH-1 downto 0);
+  signal tx_buf_av_i  : std_logic_vector(C_TBUF_AWIDTH-1 downto 0);
+  signal trn_tsof_n_i : std_logic;
 
   -- Upstream DMA transferred bytes count up
   signal us_DMA_Bytes_Add_i : std_logic;
@@ -256,7 +246,6 @@ architecture Behavioral of tx_Transact is
       DDR_rdc_sof   : out std_logic;
       DDR_rdc_eof   : out std_logic;
       DDR_rdc_v     : out std_logic;
-      DDR_rdc_FA    : out std_logic;
       DDR_rdc_Shift : out std_logic;
       DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_rdc_full  : in  std_logic;
@@ -284,7 +273,6 @@ architecture Behavioral of tx_Transact is
       RdNumber_eq_Two : in  std_logic;
       StartAddr       : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       Shift_1st_QWord : in  std_logic;
-      FixedAddr       : in  std_logic;
       is_CplD         : in  std_logic;
       BAR_value       : in  std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
       RdCmd_Req       : in  std_logic;
@@ -294,7 +282,6 @@ architecture Behavioral of tx_Transact is
       mbuf_Din      : out std_logic_vector(C_DBUS_WIDTH*9/8-1 downto 0);
       mbuf_Full     : in  std_logic;
       mbuf_aFull    : in  std_logic;
-      mbuf_UserFull : in  std_logic;
 
       Tx_TimeOut    : out std_logic;
       Tx_wb_TimeOut : out std_logic;
@@ -308,7 +295,6 @@ architecture Behavioral of tx_Transact is
   signal RdNumber_eq_Two : std_logic;
   signal StartAddr       : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Shift_1st_QWord : std_logic;
-  signal FixedAddr       : std_logic;
   signal is_CplD         : std_logic;
   signal BAR_value       : std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
   signal RdCmd_Req       : std_logic;
@@ -378,9 +364,7 @@ begin
   s_axis_tx_tvalid  <= s_axis_tx_tvalid_i;
   s_axis_tx_tdsc    <= s_axis_tx_tdsc_i;
   s_axis_tx_terrfwd <= s_axis_tx_terrfwd_i;
-  trn_tsof_n        <= trn_tsof_n_i;
 
-  Format_Shower <= Format_Shower_i;
   us_Last_sof   <= usTLP_is_MWr and not trn_tsof_n_i;
   us_Last_eof   <= usTLP_is_MWr and not s_axis_tx_tlast_i;
 
@@ -397,7 +381,6 @@ begin
   us_DMA_Bytes     <= us_DMA_Bytes_i;
 
   -- Flow controls
-  pio_FC_stop <= pio_FC_stop_i;
   us_FC_stop  <= us_FC_stop_i;
 
 ---------------------------------------------------------------------------------
@@ -408,14 +391,11 @@ begin
   begin
     if Tx_Reset = '1' then
       us_FC_stop_i  <= '1';
-      pio_FC_stop_i <= '1';
     elsif user_clk'event and user_clk = '1' then
       if tx_buf_av_i(C_TBUF_AWIDTH-1 downto 1) /= C_ALL_ZEROS(C_TBUF_AWIDTH-1 downto 1) then
         us_FC_stop_i  <= '0';
-        pio_FC_stop_i <= '0';
       else
         us_FC_stop_i  <= '1';
-        pio_FC_stop_i <= '1';
       end if;
     end if;
   end process;
@@ -439,31 +419,6 @@ begin
     end if;
   end process;
 
--- -----------------------------------
---   Format detector
---
-  Syn_Format_Shower :
-  process (user_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      Format_Shower_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Format_Shower_i = '0' then
-        if trn_tsof_n_i = '0' and s_axis_tx_tvalid_i = '1' and s_axis_tx_tready_i = '1' then
-          Format_Shower_i <= '1';
-        else
-          Format_Shower_i <= '0';
-        end if;
-      else
-        if s_axis_tx_tlast_i = '1' and s_axis_tx_tvalid_i = '1' and s_axis_tx_tready_i = '1' then
-          Format_Shower_i <= '0';
-        else
-          Format_Shower_i <= '1';
-        end if;
-      end if;
-    end if;
-  end process;
-
 ------------------------------------------------------------
 ---             Memory reader
 ------------------------------------------------------------
@@ -473,7 +428,6 @@ begin
         DDR_rdc_sof   => DDR_rdc_sof ,  --  OUT   std_logic;
         DDR_rdc_eof   => DDR_rdc_eof ,  --  OUT   std_logic;
         DDR_rdc_v     => DDR_rdc_v ,    --  OUT   std_logic;
-        DDR_rdc_FA    => DDR_rdc_FA ,   --  OUT   std_logic;
         DDR_rdc_Shift => DDR_rdc_Shift ,  --  OUT   std_logic;
         DDR_rdc_din   => DDR_rdc_din ,  --  OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         DDR_rdc_full  => DDR_rdc_full ,   --  IN    std_logic;
@@ -499,7 +453,6 @@ begin
         RdNumber_eq_Two => RdNumber_eq_Two ,  -- IN  std_logic;
         StartAddr       => StartAddr ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         Shift_1st_QWord => Shift_1st_QWord ,  -- IN  std_logic;
-        FixedAddr       => '0',  -- FixedAddr       ,  -- IN  std_logic;
         is_CplD         => is_CplD ,    -- IN  std_logic;
         BAR_value       => BAR_value ,  -- IN  std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
         RdCmd_Req       => RdCmd_Req ,  -- IN  std_logic;
@@ -509,7 +462,6 @@ begin
         mbuf_Din      => mbuf_Din ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         mbuf_Full     => mbuf_Full ,    -- IN  std_logic;
         mbuf_aFull    => mbuf_aFull ,   -- IN  std_logic;
-        mbuf_UserFull => mbuf_UserFull ,  -- IN  std_logic;
 
         Tx_TimeOut    => Tx_TimeOut ,      -- OUT std_logic;
         Tx_wb_TimeOut => Tx_wb_TimeOut ,   -- OUT std_logic;
@@ -590,7 +542,6 @@ begin
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      Tx_Indicator <= b1_Tx_Indicator;
       Tx_Busy      <= (b1_Tx_Indicator(C_CHAN_INDEX_IRPT) and vec_ChQout_Valid(C_CHAN_INDEX_IRPT))
                       or (b1_Tx_Indicator(C_CHAN_INDEX_MRD) and vec_ChQout_Valid(C_CHAN_INDEX_MRD))
                       or (b1_Tx_Indicator(C_CHAN_INDEX_DMA_DS) and vec_ChQout_Valid(C_CHAN_INDEX_DMA_DS))
@@ -667,7 +618,7 @@ begin
       usTlp_Req_2DW_Leng   <= '0';
 
       Regs_Addr_pioCplD <= (others => '1');
-      mAddr_pioCplD     <= (others => '1');
+      wbaddr_piocpld    <= (others => '1');
       mAddr_usTlp       <= (others => '1');
       AInc_usTlp        <= '1';
       BAR_pioCplD       <= (others => '1');
@@ -732,7 +683,7 @@ begin
 
         -- Misc
         Regs_Addr_pioCplD <= pioCplD_Qout(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
-        mAddr_pioCplD     <= pioCplD_Qout(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);  -- !! C_CHBUF_MA_BIT_BOT);
+        wbaddr_piocpld    <= pioCplD_Qout(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT);
         DDRAddr_pioCplD   <= pioCplD_Qout(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT);
         BAR_pioCplD       <= pioCplD_Qout(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT);
         pioCplD_is_0Leng  <= pioCplD_Qout(C_CHBUF_0LENG_BIT);
@@ -741,7 +692,7 @@ begin
         pioCplD_Req_2DW_Leng <= '0';
         pioCplD_Qout_to_TLP  <= (others => '0');
         Regs_Addr_pioCplD    <= (others => '1');
-        mAddr_pioCplD        <= (others => '1');
+        wbaddr_piocpld       <= (others => '1');
         DDRAddr_pioCplD      <= (others => '1');
         BAR_pioCplD          <= (others => '1');
         pioCplD_is_0Leng     <= '0';
@@ -846,7 +797,6 @@ begin
       RdNumber_eq_Two     <= '0';
       StartAddr           <= (others => '0');
       Shift_1st_QWord     <= '0';
---         FixedAddr            <= '0';
       is_CplD             <= '0';
       BAR_value           <= (others => '0');
       RdCmd_Req           <= '0';
@@ -877,7 +827,6 @@ begin
           RdNumber            <= Trn_Qout_wire (C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
           RdNumber_eq_One     <= pioCplD_Req_Min_Leng or usTlp_Req_Min_Leng;
           RdNumber_eq_Two     <= pioCplD_Req_2DW_Leng or usTlp_Req_2DW_Leng;
---              FixedAddr            <= not AInc_usTlp;
 --              BAR_value            <= BAR_pioCplD and BAR_usTlp;
           RdCmd_Req           <= ChBuf_has_Payload;
           if pioCplD_is_0Leng = '1' then
@@ -891,8 +840,8 @@ begin
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            BAR_value       <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_PRAM_AWIDTH+2) & mAddr_pioCplD);
+            BAR_value       <= BAR_pioCplD(C_ENCODE_BAR_NUMBER-1 downto 0);
+            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & wbaddr_piocpld);
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
 --              elsif BAR_usTlp=CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -904,7 +853,7 @@ begin
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';
           elsif BAR_usTlp = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            BAR_value       <= '0' & BAR_usTlp(C_ENCODE_BAR_NUMBER-2 downto 0);
+            BAR_value       <= BAR_usTlp(C_ENCODE_BAR_NUMBER-1 downto 0);
             StartAddr       <= C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_WB_AWIDTH) & WBAddr_usTlp;
             Shift_1st_QWord <= not usTlp_Qout_to_TLP(C_TLP_FMT_BIT_BOT);
             is_CplD         <= '0';
@@ -1045,20 +994,17 @@ begin
           take_an_Arbitration <= '0';
           if s_axis_tx_tready_i = '0' then
             TxTrn_State       <= St_d_Header2;
---                s_axis_tx_tdata_i             <= Trn_Qout_reg (C_DBUS_WIDTH-1+32 downto 32);
             s_axis_tx_tdata_i <= Trn_Qout_reg (C_DBUS_WIDTH-1 downto 0);
             trn_tsof_n_i      <= '0';
             s_axis_tx_tlast_i <= '0';
             mbuf_RE_ok        <= not Trn_Qout_reg (C_TLP_FMT_BIT_BOT);
           elsif Trn_Qout_reg (C_TLP_FMT_BIT_BOT) = '1' then  -- 4DW header
             TxTrn_State       <= St_d_1st_Data;  -- St_d_HeaderPlus;
---                s_axis_tx_tdata_i             <= Trn_Qout_reg (C_DBUS_WIDTH-1+96 downto 96);
             s_axis_tx_tdata_i <= Trn_Qout_reg (C_DBUS_WIDTH*2-1 downto C_DBUS_WIDTH);
             trn_tsof_n_i      <= '1';
             s_axis_tx_tlast_i <= '0';
             mbuf_RE_ok        <= '1';
           else                          -- 3DW header
---                s_axis_tx_tdata_i             <= Trn_Qout_reg (C_DBUS_WIDTH-1+64 downto 64);
             s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1 downto 32)
                                              & Trn_Qout_reg (C_DBUS_WIDTH+32-1 downto C_DBUS_WIDTH);
             trn_tsof_n_i      <= '1';
@@ -1073,7 +1019,6 @@ begin
 
         when St_d_1st_Data =>
           mbuf_RE_ok          <= s_axis_tx_tvalid_i and mbuf_Qout(C_DBUS_WIDTH);
---              trn_tsof_n_i         <= '1';
           take_an_Arbitration <= '0';
           if s_axis_tx_tready_i = '0' then
             TxTrn_State        <= St_d_1st_Data;
@@ -1101,7 +1046,6 @@ begin
 
         when St_d_Payload =>
           mbuf_RE_ok          <= '1';
---              trn_tsof_n_i         <= '1';
           take_an_Arbitration <= '0';
           if s_axis_tx_tready_i = '0' then
             s_axis_tx_tdata_i  <= s_axis_tx_tdata_i;
@@ -1135,7 +1079,6 @@ begin
         when St_d_Payload_used =>
           mbuf_RE_ok          <= '1';
           take_an_Arbitration <= '0';
---              trn_tsof_n_i         <= '1';
           if s_axis_tx_tvalid_i = '1' then
             s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
             s_axis_tx_tvalid_i <= mbuf_Qvalid and s_axis_tx_tready_i;
@@ -1179,7 +1122,6 @@ begin
         when St_d_Tail =>
           take_an_Arbitration <= '0';
           mbuf_RE_ok          <= '0';
---              trn_tsof_n_i         <= '1';
           s_axis_tx_tvalid_i  <= '1';
           if s_axis_tx_tready_i = '0' then
             TxTrn_State       <= St_d_Tail;
@@ -1197,7 +1139,6 @@ begin
         when St_d_Tail_chk =>
           take_an_Arbitration <= '0';
           mbuf_RE_ok          <= '0';
---              trn_tsof_n_i         <= '1';
           if s_axis_tx_tready_i = '0' then
             s_axis_tx_tvalid_i <= '1';
             s_axis_tx_tlast_i  <= '1';
@@ -1218,7 +1159,6 @@ begin
           RdNumber_eq_One     <= '0';
           RdNumber_eq_Two     <= '0';
           StartAddr           <= (others => '0');
---               FixedAddr            <= '0';
           BAR_value           <= (others => '0');
           RdCmd_Req           <= '0';
           mbuf_reset          <= '0';

@@ -101,7 +101,6 @@ entity rx_CplD_Transact is
     DDR_wr_sof   : out std_logic;
     DDR_wr_eof   : out std_logic;
     DDR_wr_v     : out std_logic;
-    DDR_wr_FA    : out std_logic;
     DDR_wr_Shift : out std_logic;
     DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -111,11 +110,9 @@ entity rx_CplD_Transact is
     user_clk    : in std_logic;
     user_reset  : in std_logic;
     user_lnk_up : in std_logic
-
     );
 
 end entity rx_CplD_Transact;
-
 
 architecture Behavioral of rx_CplD_Transact is
 
@@ -152,7 +149,6 @@ architecture Behavioral of rx_CplD_Transact is
 
   -- State delay
   signal RxCplDTrn_State_r1 : RxCplDTrnStates;
-  signal RxCplDTrn_State_r2 : RxCplDTrnStates;
 
   signal CplD_State_is_AFetch       : std_logic;
   signal CplD_State_is_after_AFetch : std_logic;
@@ -176,7 +172,6 @@ architecture Behavioral of rx_CplD_Transact is
   signal m_axis_rx_tdata_Little_r4 : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
 
   --  signal  m_axis_rx_tbar_hit_i   : std_logic_vector(C_BAR_NUMBER-1 downto 0);
-  signal m_axis_rx_terrfwd_i : std_logic;
 
   signal trn_rsof_n_i       : std_logic;
   signal in_packet_reg      : std_logic;
@@ -204,11 +199,9 @@ architecture Behavioral of rx_CplD_Transact is
   signal DDR_wr_sof_i   : std_logic;
   signal DDR_wr_eof_i   : std_logic;
   signal DDR_wr_v_i     : std_logic;
-  signal DDR_wr_FA_i    : std_logic;
   signal DDR_wr_Shift_i : std_logic;
   signal DDR_wr_Mask_i  : std_logic_vector(2-1 downto 0);
   signal DDR_wr_din_i   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DDR_wr_full_i  : std_logic;
 
   -- Event Buffer write port
   signal wb_FIFO_we_i       : std_logic;
@@ -224,7 +217,6 @@ architecture Behavioral of rx_CplD_Transact is
   signal Regs_WrDin_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   --  Calculation @ trn_rsof_n=0
-  signal Dex_CplD_Illegal      : std_logic;
   signal Reg_WrAddr_if_last_us : std_logic_vector(C_EP_AWIDTH-1 downto 0);
   signal Reg_WrAddr_if_last_ds : std_logic_vector(C_EP_AWIDTH-1 downto 0);
 
@@ -268,7 +260,6 @@ architecture Behavioral of rx_CplD_Transact is
 
   -- The top bit of the CplD_Tag is for distinguishing data CplD or descriptor CplD
   signal MSB_DSP_Tag         : std_logic;
-  signal MSB_DSP_Tag_r1      : std_logic;
   signal DSP_Tag_on_RAM      : std_logic;
   signal DSP_Tag_on_RAM_r1   : std_logic;
   signal DSP_Tag_on_RAM_r2   : std_logic;
@@ -334,15 +325,6 @@ architecture Behavioral of rx_CplD_Transact is
   signal hazard_content     : std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
   signal tag_matches_hazard : std_logic;
 
-  --  aka TLB unit
-  signal TLB_Addr    : std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
-  signal TLB_Content : std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-  signal TLB_cnt     : std_logic_vector(4-1 downto 0);
-  signal TLB_Valid   : std_logic;
-  signal TLB_Hit     : std_logic;
-
-  constant C_TLB_VALID_CNT : std_logic_vector(4-1 downto 0) := X"6";
-
 begin
 
   -- Event Buffer write
@@ -355,11 +337,9 @@ begin
   DDR_wr_sof    <= DDR_wr_sof_i;
   DDR_wr_eof    <= DDR_wr_eof_i;
   DDR_wr_v      <= DDR_wr_v_i;
-  DDR_wr_FA     <= DDR_wr_FA_i;
   DDR_wr_Shift  <= DDR_wr_Shift_i;
   DDR_wr_Mask   <= DDR_wr_Mask_i;
   DDR_wr_din    <= DDR_wr_din_i;
-  DDR_wr_full_i <= DDR_wr_full;
 
   ds_DMA_Bytes_Add <= ds_DMA_Bytes_Add_i;
   ds_DMA_Bytes     <= ds_DMA_Bytes_i;
@@ -459,9 +439,6 @@ begin
   CplD_Leng_in_Bytes <= C_ALL_ZEROS(C_DBUS_WIDTH/2-1 downto C_TLP_FLD_WIDTH_OF_LENG+3)
                         & CplD_Length & "00";
 
-  -- Exception signals
-  m_axis_rx_terrfwd_i <= m_axis_rx_terrfwd;
-
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
   trn_rx_throttle <= not(m_axis_rx_tvalid_i) or not(m_axis_rx_tready_i);
 
@@ -531,9 +508,6 @@ begin
       trn_rx_throttle_r3 <= trn_rx_throttle_r2;
       trn_rx_throttle_r4 <= trn_rx_throttle_r3;
 
---         DDR_wr_full_r1        <= DDR_wr_full_i;
---         DDR_wr_full_r2        <= DDR_wr_full_r1;
-
       m_axis_rx_tdata_r1 <= m_axis_rx_tdata_i;
       m_axis_rx_tdata_r2 <= m_axis_rx_tdata_r1;
       m_axis_rx_tdata_r3 <= m_axis_rx_tdata_r2;
@@ -556,8 +530,8 @@ begin
 
 -- ---------------------------------------------
   MSB_DSP_Tag     <= CplD_Tag(C_TAG_WIDTH-1);
-  DSP_Tag_on_RAM  <= not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2);
-  DSP_Tag_on_FIFO <= not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2);
+  DSP_Tag_on_RAM  <= CplD_on_pool and (not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2));
+  DSP_Tag_on_FIFO <= CplD_on_EB and (not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2));
 
 --
 -- Delay Synchronous: MSB_DSP_Tag_r1
@@ -566,7 +540,6 @@ begin
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      MSB_DSP_Tag_r1      <= MSB_DSP_Tag;
       DSP_Tag_on_RAM_r1   <= DSP_Tag_on_RAM;
       DSP_Tag_on_RAM_r2   <= DSP_Tag_on_RAM_r1;
       DSP_Tag_on_RAM_r3   <= DSP_Tag_on_RAM_r2;
@@ -597,7 +570,6 @@ begin
   begin
     if user_clk'event and user_clk = '1' then
       RxCplDTrn_State_r1 <= RxCplDTrn_State;
-      RxCplDTrn_State_r2 <= RxCplDTrn_State_r1;
     end if;
   end process;
 
@@ -896,7 +868,6 @@ begin
   process (user_clk, Local_Reset_i)
   begin
     if Local_Reset_i = '1' then
-      Dex_CplD_Illegal      <= '0';
       Reg_WrAddr_if_last_us <= (others => '0');  -- C_REGS_BASE_ADDR;
       Reg_WrAddr_if_last_ds <= (others => '0');  -- C_REGS_BASE_ADDR;
 
@@ -1287,24 +1258,11 @@ begin
   begin
     if user_clk'event and user_clk = '1' then
 
-----         if CplD_State_is_AFetch='1' then    -- [ avoid confilict in simulation, can be removed ]
---            if TLB_Hit='1'
---               and TLB_Valid='1'               -- [ only for simulation. can be removed for imp.]
---               then
---               tRAM_DoutA_r1 <= TLB_Content;
---            else
---               tRAM_DoutA_r1 <= tRAM_doutA;
---            end if;
-----         else
-----            tRAM_DoutA_r1 <= tRAM_DoutA_r1;
-----         end if;
-
       if Update_was_too_late = '1' and tag_matches_hazard = '1' then
         tRAM_DoutA_r1 <= hazard_content;
       else
         tRAM_DoutA_r1 <= tRAM_doutA;
       end if;
---         tRAM_DoutA_r1 <= tRAM_doutA;
       tRAM_DoutA_r2 <= tRAM_DoutA_r1;
 
     end if;
@@ -1373,50 +1331,6 @@ begin
     end if;
   end process;
 
--- ---------------------------------------------
--- Synchronous Output: TLB  (not used)
---
-  Syn_Reg_TLB_Operation :
-  process (user_clk, Local_Reset_i)
-  begin
-    if Local_Reset_i = '1' then
-      TLB_Addr    <= (others => '1');
-      TLB_Content <= (others => '0');
-      TLB_cnt     <= (others => '0');
-      TLB_Valid   <= '0';
-      TLB_Hit     <= '0';
-    elsif user_clk'event and user_clk = '1' then
-
-      if Updates_tRAM_r1 = '0' then
-        TLB_Content <= TLB_Content;
-        TLB_Addr    <= TLB_Addr;
-        if TLB_cnt = C_ALL_ZEROS(3 downto 0) then
-          TLB_cnt   <= TLB_cnt;
-          TLB_Valid <= '0';
-        else
-          TLB_cnt   <= TLB_cnt - '1';
-          TLB_Valid <= '1';
-        end if;
-      else
-        TLB_Addr  <= tRAM_addra;
-        TLB_cnt   <= C_TLB_VALID_CNT;
-        TLB_Valid <= '0';
-        if Addr_Inc = '1' then
-          TLB_Content <= '1' & tRAM_dina_aInc(C_TAGRAM_DWIDTH-1-1 downto 0);
-        else
-          TLB_Content <= '0' & tRAM_DoutA_r2(C_TAGRAM_DWIDTH-1-1 downto 0);
-        end if;
-      end if;
-
-      if TLB_Addr = tRAM_addra then
-        TLB_Hit <= '1';
-      else
-        TLB_Hit <= '0';
-      end if;
-
-    end if;
-  end process;
-
 -- -------------------------------------------------
 -- Synchronous outputs: DDR_Space_Hit
 --
@@ -1428,7 +1342,6 @@ begin
       DDR_wr_sof_i   <= '0';
       DDR_wr_eof_i   <= '0';
       DDR_wr_v_i     <= '0';
-      DDR_wr_FA_i    <= '0';
       DDR_wr_Shift_i <= '0';
       DDR_wr_Mask_i  <= (others => '0');
       DDR_wr_din_i   <= (others => '0');
@@ -1442,7 +1355,6 @@ begin
           DDR_wr_sof_i   <= '0';
           DDR_wr_eof_i   <= '0';
           DDR_wr_v_i     <= '0';
-          DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
           DDR_wr_Mask_i  <= (others => '0');
           DDR_wr_din_i   <= (others => '0');
@@ -1453,7 +1365,6 @@ begin
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= DSP_Tag_on_RAM_r4p;
             DDR_wr_v_i     <= DSP_Tag_on_RAM_r4p;  -- DSP_Tag_on_RAM;  -- and not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4);
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
             DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
@@ -1462,7 +1373,6 @@ begin
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= '0';
             DDR_wr_v_i     <= '0';      -- not trn_rx_throttle_r1;
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= (others => '0');
             DDR_wr_din_i   <= (others => '0');
@@ -1471,7 +1381,6 @@ begin
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= '0';
             DDR_wr_v_i     <= '0';
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= (others => '0');
             DDR_wr_din_i   <= (others => '0');
@@ -1480,27 +1389,12 @@ begin
         when ST_CplD_AFetch_Special =>
           if DSP_Tag_on_RAM_r1 = '1' then
             DDR_Space_Hit <= '1';
---                  DDR_wr_sof_i   <= '0';
---                  DDR_wr_eof_i   <= '0';
---                  DDR_wr_v_i     <= '0'; -- not trn_rx_throttle_r1;
---                  DDR_wr_FA_i    <= '0';
---                  DDR_wr_Shift_i <= '0';
---                  DDR_wr_Mask_i  <= (OTHERS=>'0');
---                  DDR_wr_din_i   <= (OTHERS=>'0');
           else
             DDR_Space_Hit <= '0';
---                  DDR_wr_sof_i   <= '0';
---                  DDR_wr_eof_i   <= '0';
---                  DDR_wr_v_i     <= '0';
---                  DDR_wr_FA_i    <= '0';
---                  DDR_wr_Shift_i <= '0';
---                  DDR_wr_Mask_i  <= (OTHERS=>'0');
---                  DDR_wr_din_i   <= (OTHERS=>'0');
           end if;
           DDR_wr_sof_i   <= '0';
           DDR_wr_eof_i   <= m_axis_rx_tlast_r4 and DDR_Space_Hit;
           DDR_wr_v_i     <= (not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
-          DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
           DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
           DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
@@ -1511,7 +1405,6 @@ begin
           DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
           DDR_wr_eof_i  <= '0';
           DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_FA_i   <= '0';
           DDR_wr_Mask_i <= (others => '0');
           if Update_was_too_late = '1' and tag_matches_hazard = '1' then
             DDR_wr_Shift_i <= not hazard_content(2);
@@ -1526,7 +1419,6 @@ begin
           DDR_wr_sof_i   <= '0';
           DDR_wr_eof_i   <= '0';
           DDR_wr_v_i     <= '0';
-          DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
           DDR_wr_Mask_i  <= (others => '0');
           DDR_wr_din_i   <= DDR_wr_din_i;
@@ -1536,7 +1428,6 @@ begin
           DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
           DDR_wr_eof_i  <= '0';
           DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_FA_i   <= '0';
           DDR_wr_Mask_i <= (others => '0');
           if Update_was_too_late = '1' and tag_matches_hazard = '1' then
             DDR_wr_Shift_i <= not hazard_content(2);
@@ -1554,7 +1445,6 @@ begin
           DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
           DDR_wr_eof_i  <= '0';
           DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_FA_i   <= '0';
           DDR_wr_Mask_i <= (others => '0');
           if Update_was_too_late = '1' and tag_matches_hazard = '1' then
             DDR_wr_Shift_i <= not hazard_content(2);
@@ -1577,9 +1467,8 @@ begin
           DDR_wr_sof_i   <= '0';
           DDR_wr_eof_i   <= m_axis_rx_tlast_r4 and DDR_Space_Hit;
           DDR_wr_v_i     <= (DDR_wr_sof_i or not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
-          DDR_wr_FA_i    <= '0';
           DDR_wr_Shift_i <= '0';
-          DDR_wr_din_i   <= m_axis_rx_tdata_r4;
+          DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
           if DDR_wr_sof_i = '1' then
             DDR_wr_Mask_i <= "01";
           else

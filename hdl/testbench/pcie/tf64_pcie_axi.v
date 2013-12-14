@@ -31,17 +31,15 @@
 else if (testname == "tf64_pcie_axi")
 begin
 
-    TSK_SIMULATION_TIMEOUT(10000);
-
     // Simulation Initialization
-    board.DMA_bar               = 'H1;
-    board.Rx_MWr_Tag            = 'H80;
-    board.Rx_MRd_Tag            = 'H10;
+    board.DMA_bar = 'H1;
+    board.Rx_MWr_Tag = 'H80;
+    board.Rx_MRd_Tag = 'H10;
     board.localID = 'H01a0;
 
-    board.RP.tx_usrapp.TSK_SIMULATION_TIMEOUT(11000);
-    board.RP.tx_usrapp.TSK_SYSTEM_INITIALIZATION;
-    board.RP.tx_usrapp.TSK_BAR_INIT;
+    TSK_SIMULATION_TIMEOUT(11000);
+    TSK_SYSTEM_INITIALIZATION;
+    TSK_BAR_INIT;
 
   //set MEM+IO access, enable Bus Master mode
     board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
@@ -55,33 +53,36 @@ begin
 
         // reset TX module
       $display("   reset TX module\n");
-      board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-      board.Hdr_Array[2] = `C_ADDR_TX_CTRL;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_TX_CTRL;
       dword_pack_data_store('H0000000A, 0);
     
       TLP_Feed_Rx(`C_BAR0_HIT);
       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+      TSK_TX_CLK_EAT(10); //wait before issuing transaction so that design has time to reset
 
 
          // Test MRd with 4-DW header  BAR[0]
-      $display("%d ns:   Test MRd with 3-DW header  BAR[0]", $time);
-      board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+      $display("%d ns:   Test MRd with 4-DW header  BAR[0]", $time);
+      board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 8'HA1, 4'Hf, 4'Hf};
-      board.Hdr_Array[3] = -1;
-      board.Hdr_Array[2] = `C_ADDR_VERSION;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_VERSION;
     
       TLP_Feed_Rx(`C_BAR0_HIT);
-      board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+      board.Rx_MRd_Tag   = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
   
   
       board.Rx_TLP_Length    = 'H01;
         // reset upstream DMA channel
       $display("%d ns:   reset upstream DMA channel", $time);
-      board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-      board.Hdr_Array[2] = `C_ADDR_DMA_US_CTRL;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_DMA_US_CTRL;
       dword_pack_data_store(`C_DMA_RST_CMD, 0);
     
       TLP_Feed_Rx(`C_BAR0_HIT);
@@ -89,10 +90,10 @@ begin
 
         // reset downstream DMA channel
       $display("%d ns:   reset downstream DMA channel", $time);
-      board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-      board.Hdr_Array[3] = -1;
-      //board.Hdr_Array[3] = `C_ADDR_DMA_DS_CTRL;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_DMA_DS_CTRL;
       dword_pack_data_store(`C_DMA_RST_CMD, 0);
     
       TLP_Feed_Rx(`C_BAR0_HIT);
@@ -101,9 +102,10 @@ begin
 
         // reset Event Buffer FIFO
       $display("%d ns:   reset Event Buffer FIFO", $time);
-      board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-      board.Hdr_Array[2] = `C_ADDR_EB_STACON;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_EB_STACON;
       dword_pack_data_store('H0000000A, 0);
     
       TLP_Feed_Rx(`C_BAR0_HIT);
@@ -112,13 +114,17 @@ begin
 
         // Enable INTerrupts
       $display("%d ns:   Enable INTerrupts", $time);
-      board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-      board.Hdr_Array[2] = `C_ADDR_IRQ_EN;
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_IRQ_EN;
       dword_pack_data_store('H0000_0003, 0);
     
       TLP_Feed_Rx(`C_BAR0_HIT);
       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+    $display("\n  Wait for DDR memory core to finish calibration...");
+    wait (board.EP.bpm_pcie.ddr_calib_done == 1);
 
     /////////////////////////////////////////////////////////////////////
     //                       PIO simulation                            //
@@ -133,9 +139,10 @@ begin
       $display("\n%d ns:   PIO write & read BAR[0]", $time);
        board.PIO_Addr         = `C_ADDR_DMA_US_PAH + 'H8;
        board.PIO_1st_BE       = 4'Hf;
-       board.Hdr_Array[0]     = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
        dword_pack_data_store('HF000_8888, 0);
        board.Rx_TLP_Length    = 'H01;
      
@@ -143,89 +150,289 @@ begin
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
      
-       board.Hdr_Array[0]     = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
      
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
 
     //  ///////////////////////////////////////////////////////////////////
-    //  PIO write & read BAR[1]
-      $display("\n%d ns:   PIO write & read BAR[1]", $time);
+    //  PIO write & read BAR[2]
+      $display("\n%d ns:   PIO write & read BAR[2]", $time);
        board.PIO_Addr         = 'H8000;
        board.PIO_1st_BE       = 4'Hf;
-       board.Hdr_Array[0]     = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
        dword_pack_data_store('HA1111111, 0);
        board.Rx_TLP_Length    = 'H01;
      
-       TLP_Feed_Rx(`C_BAR1_HIT);
+       TLP_Feed_Rx(`C_BAR2_HIT);
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
 
      
-       board.Hdr_Array[0]     = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
      
-       TLP_Feed_Rx(`C_BAR1_HIT);
+       TLP_Feed_Rx(`C_BAR2_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
 
     //  ///////////////////////////////////////////////////////////////////
-    //  PIO write & read BAR[2]
+    //  PIO write & read BAR[4]
     //  NOTE:  FIFO address is 64-bit aligned, only the lower 32-bit is
-    //         accessible by BAR[2] PIO write and is returned in BAR[2] 
+    //         accessible by BAR[4] PIO write and is returned in BAR[4] 
     //         PIO read.
-      $display("\n%d ns:   PIO write & read BAR[2]", $time);
+      $display("\n%d ns:   PIO write & read BAR[4]", $time);
        board.PIO_Addr         = 'H0;
        board.PIO_1st_BE       = 4'Hf;
-       board.Hdr_Array[0]     = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
        dword_pack_data_store('HB222_2222, 0);
        board.Rx_TLP_Length    = 'H01;
      
-       TLP_Feed_Rx(`C_BAR2_HIT);
+       TLP_Feed_Rx(`C_BAR4_HIT);
        board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
-
      
-       board.Hdr_Array[0]     = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0]     = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1]     = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, board.PIO_1st_BE};
-       board.Hdr_Array[2]     = {board.PIO_Addr[31:2], 2'b00};
+       board.Hdr_Array[2]     = 'h0;
+       board.Hdr_Array[3]     = {board.PIO_Addr[31:2], 2'b00};
      
-       TLP_Feed_Rx(`C_BAR2_HIT);
+       TLP_Feed_Rx(`C_BAR4_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
 
+
     $display("%d ns: ### End PIO simulation\n", $time);
 
+    ///////////////////////////////////////////////////////////////////////
+    //  Miscellaneous DDR SDRAM access patterns tests
+    // /////////////////////////////////////////
+    board.Rx_TLP_Length = 'H02;
+     $display("\n%d ns:   Writing QWORD to DDR space (QWORD aligned)", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H0;
+       dword_pack_data_store(32'H55555555, 0);
+       dword_pack_data_store(32'Haaaaaaaa, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+     $display("\n%d ns:   Reading QWORD from DDR space (QWORD aligned)", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H0;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+     $display("\n%d ns:   Writing QWORD to DDR space (QWORD unaligned)", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H4;
+       dword_pack_data_store(32'H55555555, 0);
+       dword_pack_data_store(32'Haaaaaaaa, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+     $display("\n%d ns:   Reading QWORD from DDR space (QWORD unaligned)", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H4;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+    board.Rx_TLP_Length = 'H01;
+      $display("%d ns:   Switch DDR page", $time);
+      board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+      board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+      board.Hdr_Array[2] = 'h0;
+      board.Hdr_Array[3] = `C_ADDR_SDRAM_PG;
+      dword_pack_data_store('H0000_0001, 0);
+    
+      TLP_Feed_Rx(`C_BAR0_HIT);
+      board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+
+    board.Rx_TLP_Length = 'H02;
+     $display("\n%d ns:   Short write QWORD burst to DDR space", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000000;
+       dword_pack_data_store(32'HFFFFFFFF, 0);
+       dword_pack_data_store(32'HFFFFFFFE, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+    board.Rx_TLP_Length = 'H02;
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000008;
+       dword_pack_data_store(32'HFFFFFFFD, 0);
+       dword_pack_data_store(32'HFFFFFFFC, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000010;
+       dword_pack_data_store(32'HFFFFFFFB, 0);
+       dword_pack_data_store(32'HFFFFFFFA, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000018;
+       dword_pack_data_store(32'HFFFFFFF9, 0);
+       dword_pack_data_store(32'HFFFFFFF8, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000038;
+       dword_pack_data_store(32'HFFFFFFF1, 0);
+       dword_pack_data_store(32'HFFFFFFF0, 1);
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+     $display("\n%d ns:   Short QWORD read burst from DDR space", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000000;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000008;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000010;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000038;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+    board.Rx_TLP_Length = 'H01;
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000038;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H0000003C;
+     
+       TLP_Feed_Rx(`C_BAR2_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
+    /////////////////////////////////////////////////////////
+    // Miscellaneous Wishbone tests
+    // //////////////////////////////////////
+    //
+    board.Rx_TLP_Length = 'H04;
+     $display("\n%d ns:   Write double QWORD to Wishbone space", $time);
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000008;
+       dword_pack_data_store(32'HFFFFFFFF, 0);
+       dword_pack_data_store(32'HFFFFFFFE, 1);
+       dword_pack_data_store(32'HFFFFFFFD, 2);
+       dword_pack_data_store(32'HFFFFFFFC, 3);
+     
+       TLP_Feed_Rx(`C_BAR4_HIT);
+       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
+
+
+    board.Rx_TLP_Length = 'H02;
+     $display("\n%d ns:   Read DWORD from Wishbone space", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = 32'H00000008;
+     
+       TLP_Feed_Rx(`C_BAR4_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+    board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
     //  ///////////////////////////////////////////////////////////////////
-    //  DMA write & read BAR[1]
+    //  DMA write & read BAR[2]
     //  Single-descriptor case
-      $display("\n%d ns: ### DMA write & read BAR[1], Single-descriptor case###\n", $time);
+      $display("\n%d ns: ### DMA write & read BAR[2], Single-descriptor case###\n", $time);
        board.DMA_PA   = 'H1234;
+       board.DMA_PA[63:32] = BAR_INIT_P_BAR[`C_BAR2_HIT];
        board.DMA_HA   = 'H5000;
        board.DMA_BDA  = 'Hffff;
-       board.DMA_Leng = 'H0100;
-       board.DMA_bar  = 'H1;
-       board.DMA_ds_is_Last  = 'B1;
-
+       board.DMA_Leng = 'H0400;
+       board.DMA_bar  = 'H2;
+       board.DMA_ds_is_Last = 'B1;
      
 
        //  DMA write
       $display("\n%d ns: >> DMA write", $time);
       board.Rx_TLP_Length    = 'H01;
-
      
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_PAH;
-       dword_pack_data_store(-1, 0);
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_PAH;
+       dword_pack_data_store(board.DMA_PA[63:32], 0);
        //  Write PA_H
        $display("%d ns:   Write PA_H", $time);
      
@@ -234,7 +441,7 @@ begin
 
        //  Write PA_L
        $display("%d ns:   Write PA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_PA[31:00], 0);       //'H0300, 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -242,7 +449,7 @@ begin
 
        //  Write HA_H
        $display("%d ns:   Write HA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[63:32], 0);       // 0,
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -250,7 +457,7 @@ begin
       
        //  Write HA_L
        $display("%d ns:   Write HA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[31:00], 0);     // 'H4000
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -258,7 +465,7 @@ begin
 
        //  Write BDA_H
        $display("%d ns:   Write BDA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[63:32], 0);      // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -266,7 +473,7 @@ begin
 
        //  Write BDA_L
        $display("%d ns:   Write BDA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[31:00], 0); //'H0BDA0090
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -274,7 +481,7 @@ begin
 
        //  Write LENG
        $display("%d ns:   Write LENG", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_Leng, 0);            //'H100
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -282,7 +489,7 @@ begin
 
        //  Write CTRL and start the DMA
        $display("%d ns:   Write CTRL and start the DMA", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store({4'H0
                             ,3'H1, board.DMA_ds_is_Last
                             ,3'H0, 1'B1
@@ -296,19 +503,21 @@ begin
 
           // Polling the DMA status
      $display("%d ns:   Polling the DMA status", $time);
-       board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_STA;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
      
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
 
        board.Tx_MRd_Leng  = board.DMA_Leng>>2;
+       board.Tx_MRd_Leng  = board.Tx_MRd_Leng>>1; //we'll have 2 MRds
        board.Tx_MRd_Addr  = board.DMA_HA[31:0];
        board.tx_MRd_Tag = 'H0;
        board.tx_MRd_Tag_k = board.tx_MRd_Tag;
        board.CplD_Index   = 'H0;
-       board.Rx_TLP_Length = 'H10;
+       board.Rx_TLP_Length = 'H40;
      
        
   fork
@@ -317,7 +526,7 @@ begin
     board.RP.com_usrapp.TSK_EXPECT_MEMRD(3'b000, 1'b0, 1'b0, 2'b00,
 					board.Tx_MRd_Leng,
 					board.localID,
-					7'h0,
+                    board.tx_MRd_Tag,
 					4'hf,
 					4'hf,
 					board.Tx_MRd_Addr[31:2],
@@ -351,7 +560,10 @@ begin
        Copy_rnd_data;
        TLP_Feed_Rx(`C_NO_BAR_HIT);
        board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
+       board.tx_MRd_Tag_k = board.tx_MRd_Tag_k + 1;
+       board.Tx_MRd_Leng  = 'H80;
 
+       //2nd CplD
        board.Hdr_Array[0] = `HEADER0_CPLD | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_CPLD_ID, 4'H0, board.Tx_MRd_Leng[9:0], 2'b00};
        board.Hdr_Array[2] = {board.localID, board.tx_MRd_Tag_k, 1'b0, board.Tx_MRd_Addr[6:0]};
@@ -376,9 +588,10 @@ begin
        board.Rx_TLP_Length    = 'H01;
        while (P_READ_DATA[0] != 'b1) begin
         $display("%d ns:   Polling DMA status", $time);
-         board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+         board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
          board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-         board.Hdr_Array[2] = `C_ADDR_DMA_DS_STA;
+         board.Hdr_Array[2] = 'h0;
+         board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
      
          TLP_Feed_Rx(`C_BAR0_HIT);
          board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
@@ -391,10 +604,11 @@ begin
       $display("\n%d ns: >DMA read", $time);
        board.Rx_TLP_Length    = 'H01;
 
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_PAH;
-       dword_pack_data_store(-1, 0);
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_PAH;
+       dword_pack_data_store(board.DMA_HA[63:32], 0);
        //  Write PA_H
        $display("%d ns:   Write PA_H", $time);
      
@@ -403,7 +617,7 @@ begin
 
        //  Write PA_L
        $display("%d ns:   Write PA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_PA[31:00], 0);       //'H0300,
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -411,7 +625,7 @@ begin
 
        //  Write HA_H
        $display("%d ns:   Write HA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[63:32], 0);       // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -419,7 +633,7 @@ begin
       
        //  Write HA_L
        $display("%d ns:   Write HA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[31:00], 0);     // 'H4000
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -427,7 +641,7 @@ begin
 
        //  Write BDA_H
        $display("%d ns:   Write BDA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[63:32], 0);      // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -435,7 +649,7 @@ begin
 
        //  Write BDA_L
        $display("%d ns:   Write BDA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[31:00], 0); //'H0BDA0090
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -443,7 +657,7 @@ begin
 
        //  Write LENG
        $display("%d ns:   Write LENG", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_Leng, 0);            //'H100
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -451,7 +665,7 @@ begin
 
        //  Write CTRL and start the DMA
        $display("%d ns:   Write CTRL and start the DMA", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store({4'H0
                             ,3'H1, board.DMA_ds_is_Last
                             ,3'H0, 1'B1
@@ -466,9 +680,10 @@ begin
 
        board.Rx_TLP_Length    = 'H01;
      $display("%d ns:   Polling DMA status", $time);
-       board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_STA;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_STA;
      
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MRd_Tag      = board.Rx_MRd_Tag + 1;
@@ -476,9 +691,10 @@ begin
        
        while (P_READ_DATA[0] != 'b1) begin
         $display("%d ns:   Polling DMA status", $time);
-         board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+         board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
          board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-         board.Hdr_Array[2] = `C_ADDR_DMA_US_STA;
+         board.Hdr_Array[2] = 'h0;
+         board.Hdr_Array[3] = `C_ADDR_DMA_US_STA;
      
          TLP_Feed_Rx(`C_BAR0_HIT);
          board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
@@ -490,9 +706,10 @@ begin
        board.Rx_TLP_Length    = 'H01;
          // reset downstream DMA channel
      $display("%d ns:   reset downstream DMA channel", $time);
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_CTRL;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_CTRL;
        dword_pack_data_store(`C_DMA_RST_CMD, 0);
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -502,9 +719,10 @@ begin
        board.Rx_TLP_Length    = 'H01;
          // reset upstream DMA channel
      $display("%d ns:   reset upstream DMA channel", $time);
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_CTRL;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_CTRL;
        dword_pack_data_store(`C_DMA_RST_CMD, 0);
 
      
@@ -515,26 +733,28 @@ begin
 
 
     //  ///////////////////////////////////////////////////////////////////
-    //  DMA write & read BAR[2]
+    //  DMA write & read BAR[4]
     //  Multiple-descriptor case
     //  
-      $display("\n### DMA write & read BAR[2], Multiple-descriptor case ###\n");
+      $display("\n### DMA write & read BAR[4], Multiple-descriptor case ###\n");
        board.DMA_PA   = 'H789AB8;
+       board.DMA_PA[63:32] = BAR_INIT_P_BAR[`C_BAR4_HIT];
        board.DMA_HA   = 'HDF0000;
        board.DMA_BDA  = 'H0BDABDA0;
        board.DMA_Leng = 'H0208;
        board.DMA_L1   = 'H0100;
        board.DMA_L2   = board.DMA_Leng - board.DMA_L1;
-       board.DMA_bar  = 'H2;
+       board.DMA_bar  = 'H4;
        board.DMA_ds_is_Last  = 'B0;
 
 
        board.Rx_TLP_Length    = 'H01;
 
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_PAH;
-       dword_pack_data_store(0, 0);
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_PAH;
+       dword_pack_data_store(board.DMA_PA[63:32], 0);
        //  Write PA_H
        $display("%d ns:   Write PA_H", $time);
      
@@ -543,7 +763,7 @@ begin
 
        //  Write PA_L
        $display("%d ns:   Write PA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_PA[31:00], 0);       //'H0300
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -551,7 +771,7 @@ begin
 
        //  Write HA_H
        $display("%d ns:   Write HA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[63:32], 0);       // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -559,7 +779,7 @@ begin
       
        //  Write HA_L
        $display("%d ns:   Write HA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[31:00], 0);     // 'H4000
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -567,7 +787,7 @@ begin
 
        //  Write BDA_H
        $display("%d ns:   Write BDA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[63:32], 0);      // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -575,7 +795,7 @@ begin
 
        //  Write BDA_L
        $display("%d ns:   Write BDA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[31:00], 0); //'H0BDA0090
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -583,7 +803,7 @@ begin
 
        //  Write LENG
        $display("%d ns:   Write LENG", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_L1, 0);            //'H100
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -591,7 +811,7 @@ begin
 
        //  Write CTRL and start the DMA
        $display("%d ns:   Write CTRL and start the DMA", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store({4'H0
                             ,3'H1, board.DMA_ds_is_Last
                             ,3'H0, 1'B1
@@ -644,8 +864,8 @@ begin
        join
 
        // Second DMA descriptor
-       board.DMA_ds_is_Last    = 'B1;
-       dword_pack_data_store(0, 0);
+       board.DMA_ds_is_Last = 'B1;
+       dword_pack_data_store(board.DMA_PA[63:32], 0);
        dword_pack_data_store(board.DMA_PA[31:00] + 'H500, 1);
        dword_pack_data_store(board.DMA_HA[63:32], 2);          // 0
        dword_pack_data_store(board.DMA_HA[31:00] + 'H500, 3);
@@ -745,9 +965,10 @@ begin
        
        board.Rx_TLP_Length    = 'H01;
      $display("%d ns:   Polling DMA status", $time);
-       board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_STA;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
      
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MRd_Tag      = board.Rx_MRd_Tag + 1;
@@ -755,9 +976,10 @@ begin
        
        while (P_READ_DATA[0] != 'b1) begin
         $display("%d ns:   Polling DMA status", $time);
-         board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+         board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
          board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-         board.Hdr_Array[2] = `C_ADDR_DMA_DS_STA;
+         board.Hdr_Array[2] = 'h0;
+         board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
      
          TLP_Feed_Rx(`C_BAR0_HIT);
          board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
@@ -771,10 +993,11 @@ begin
 
        board.Rx_TLP_Length    = 'H01;
 
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_PAH;
-       dword_pack_data_store(0, 0);
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_PAH;
+       dword_pack_data_store(board.DMA_PA[63:32], 0);
        //  Write PA_H
        $display("%d ns:   Write PA_H", $time);
      
@@ -783,7 +1006,7 @@ begin
 
        //  Write PA_L
        $display("%d ns:   Write PA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_PA[31:00], 0);       //'H0300
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -791,7 +1014,7 @@ begin
 
        //  Write HA_H
        $display("%d ns:   Write HA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[63:32], 0);       // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -799,7 +1022,7 @@ begin
       
        //  Write HA_L
        $display("%d ns:   Write HA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_HA[31:00], 0);     // 'H4000
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -807,7 +1030,7 @@ begin
 
        //  Write BDA_H
        $display("%d ns:   Write BDA_H", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[63:32], 0);      // 0
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -815,7 +1038,7 @@ begin
 
        //  Write BDA_L
        $display("%d ns:   Write BDA_L", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_BDA[31:00] + 'h10000, 0);
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -823,7 +1046,7 @@ begin
 
        //  Write LENG
        $display("%d ns:   Write LENG", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store(board.DMA_L1, 0);            //'H100
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -831,7 +1054,7 @@ begin
 
        //  Write CTRL and start the DMA
        $display("%d ns:   Write CTRL and start the DMA", $time);
-       board.Hdr_Array[2] = board.Hdr_Array[2] + 'H4;
+       board.Hdr_Array[3] = board.Hdr_Array[3] + 'H4;
        dword_pack_data_store({4'H0
                             ,3'H1, board.DMA_us_is_Last
                             ,3'H0, 1'B1
@@ -887,18 +1110,20 @@ begin
 
        board.Rx_TLP_Length    = 'H01;
      $display("%d ns:   Polling DMA status", $time);
-       board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_STA;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_STA;
        TLP_Feed_Rx(`C_BAR0_HIT);
        board.Rx_MRd_Tag      = board.Rx_MRd_Tag + 1;
        TSK_WAIT_FOR_READ_DATA;
        
        while (P_READ_DATA[0] != 'b1) begin
         $display("%d ns:   Polling DMA status", $time);
-         board.Hdr_Array[0] = `HEADER0_MRD3_ | board.Rx_TLP_Length[9:0];
+         board.Hdr_Array[0] = `HEADER0_MRD4_ | board.Rx_TLP_Length[9:0];
          board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
-         board.Hdr_Array[2] = `C_ADDR_DMA_US_STA;
+         board.Hdr_Array[2] = 'h0;
+         board.Hdr_Array[3] = `C_ADDR_DMA_US_STA;
          TLP_Feed_Rx(`C_BAR0_HIT);
          board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
          
@@ -910,9 +1135,10 @@ begin
        board.Rx_TLP_Length    = 'H01;
          // reset downstream DMA channel
      $display("%d ns:   reset DS DMA channel", $time);
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_DS_CTRL;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_CTRL;
        dword_pack_data_store(`C_DMA_RST_CMD, 0);
      
        TLP_Feed_Rx(`C_BAR0_HIT);
@@ -921,9 +1147,10 @@ begin
        board.Rx_TLP_Length    = 'H01;
          // reset upstream DMA channel
      $display("%d ns:   reset US DMA channel", $time);
-       board.Hdr_Array[0] = `HEADER0_MWR3_ | board.Rx_TLP_Length[9:0];
+       board.Hdr_Array[0] = `HEADER0_MWR4_ | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_WRREQ_ID, board.Rx_MWr_Tag, 4'Hf, 4'Hf};
-       board.Hdr_Array[2] = `C_ADDR_DMA_US_CTRL;
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_US_CTRL;
        dword_pack_data_store(`C_DMA_RST_CMD, 0);
      
        TLP_Feed_Rx(`C_BAR0_HIT);

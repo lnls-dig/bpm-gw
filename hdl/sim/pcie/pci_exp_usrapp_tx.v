@@ -259,7 +259,7 @@ initial begin
         BAR_INIT_P_IO_START      =   33'h00000_0000; // start of 32bit io
 
 
-        DEV_VEN_ID = (32'h7021 << 16) | (32'h10EE);
+        DEV_VEN_ID = (32'h7014 << 16) | (32'h10EE);
         PIO_MAX_MEMORY = 8192; // PIO has max of 8Kbytes of memory
         PIO_MAX_NUM_BLOCK_RAMS = 4; // PIO has four block RAMS to test
 
@@ -389,19 +389,19 @@ end
     end
 
 
-    if  (P_READ_DATA[23:20] == 4'h01)
-          $display("[%t] : Check Negotiated Link Width = 01x - PASSED", $realtime);
+    if  (P_READ_DATA[23:20] == 4'h04)
+          $display("[%t] : Check Negotiated Link Width = 04x - PASSED", $realtime);
     else
-          $display("[%t] : Data Error Mismatch, Parameter Data %s != Read Data %x", $realtime, "01", P_READ_DATA[23:20]);
+          $display("[%t] : Data Error Mismatch, Parameter Data %s != Read Data %x", $realtime, "04", P_READ_DATA[23:20]);
 
 
     // Check Device/Vendor ID
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h0, 4'hF);
     TSK_WAIT_FOR_READ_DATA;
 
-    if  (P_READ_DATA[31:16] != 16'h7021) begin
+    if  (P_READ_DATA[31:16] != 16'h7014) begin
         $display("[%t] :    Check Device/Vendor ID - FAILED", $realtime);
-        $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, 16'h7021, P_READ_DATA);
+        $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, 16'h7014, P_READ_DATA);
         error_check = 1;
     end else begin
         $display("[%t] :    Check Device/Vendor ID - PASSED", $realtime);

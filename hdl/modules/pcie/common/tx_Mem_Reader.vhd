@@ -37,7 +37,6 @@ entity tx_Mem_Reader is
     DDR_rdc_sof   : out std_logic;
     DDR_rdc_eof   : out std_logic;
     DDR_rdc_v     : out std_logic;
-    DDR_rdc_FA    : out std_logic;
     DDR_rdc_Shift : out std_logic;
     DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     DDR_rdc_full  : in  std_logic;
@@ -68,7 +67,6 @@ entity tx_Mem_Reader is
     RdNumber_eq_Two : in  std_logic;
     StartAddr       : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     Shift_1st_QWord : in  std_logic;
-    FixedAddr       : in  std_logic;
     is_CplD         : in  std_logic;
     BAR_value       : in  std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
     RdCmd_Req       : in  std_logic;
@@ -79,7 +77,6 @@ entity tx_Mem_Reader is
     mbuf_WE       : out std_logic;
     mbuf_Full     : in  std_logic;
     mbuf_aFull    : in  std_logic;
-    mbuf_UserFull : in  std_logic;  -- Test pin, intended for DDR flow interrupted
 
     -- Common ports
     Tx_TimeOut    : out std_logic;
@@ -92,7 +89,6 @@ end tx_Mem_Reader;
 
 
 architecture Behavioral of tx_Mem_Reader is
-
 
   type mReaderStates is (St_mR_Idle,      -- Memory reader Idle
                          St_mR_CmdLatch,  -- Capture the read command
@@ -112,7 +108,6 @@ architecture Behavioral of tx_Mem_Reader is
   signal DDR_rdc_v_i     : std_logic;
   signal DDR_rdc_Shift_i : std_logic;
   signal DDR_rdc_din_i   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DDR_rdc_full_i  : std_logic;
 
   -- Register read address
   signal Regs_RdAddr_i      : std_logic_vector(C_EP_AWIDTH-1 downto 0);
@@ -164,9 +159,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal mbuf_WE_i       : std_logic;
   signal mbuf_Full_i     : std_logic;
   signal mbuf_aFull_i    : std_logic;
-  signal mbuf_UserFull_i : std_logic;
   signal mbuf_aFull_r1   : std_logic;
-
 
   -- Read command request and acknowledge
   signal RdCmd_Req_i : std_logic;
@@ -224,13 +217,11 @@ begin
   DDR_rdc_sof    <= DDR_rdc_sof_i;
   DDR_rdc_eof    <= DDR_rdc_eof_i;
   DDR_rdc_v      <= DDR_rdc_v_i;
-  DDR_rdc_FA     <= '0';                -- DDR_rdc_FA_i   ;
   DDR_rdc_Shift  <= DDR_rdc_Shift_i;
   DDR_rdc_din    <= DDR_rdc_din_i;
-  DDR_rdc_full_i <= DDR_rdc_full;
 
-  DDR_FIFO_RdQout_swap <= DDR_FIFO_RdQout(C_DBUS_WIDTH/2-1 downto 0) &
-                          DDR_FIFO_RdQout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
+  DDR_FIFO_RdQout_swap <= (DDR_FIFO_RdQout(C_DBUS_WIDTH/2-1 downto 0) &
+                          DDR_FIFO_RdQout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2));
   DDR_FIFO_RdEn <= DDR_FIFO_RdEn_i;
 
   -- Register address for read
@@ -244,7 +235,6 @@ begin
   mbuf_WE         <= mbuf_WE_i;
   mbuf_Full_i     <= mbuf_Full;
   mbuf_aFull_i    <= mbuf_aFull;
-  mbuf_UserFull_i <= mbuf_UserFull;
   --
   Regs_RdAddr_i <= Address_var(C_EP_AWIDTH-1 downto 0);
 
@@ -255,8 +245,7 @@ begin
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      mbuf_aFull_r1 <= mbuf_aFull_i or mbuf_Full_i
-                            or mbuf_UserFull_i;
+      mbuf_aFull_r1 <= mbuf_aFull_i or mbuf_Full_i;
     end if;
   end process;
 
@@ -304,7 +293,7 @@ begin
       Address_var <= (others => '1');
       TxTLP_eof_n <= '1';
 
-      TO_Cnt_Rst <= '0';
+      TO_Cnt_Rst <= '1';
 
       RdCmd_Ack_i     <= '0';
       TxMReader_State <= St_mR_Idle;
@@ -331,8 +320,8 @@ begin
             is_CplD_k         <= is_CplD;
             may_be_MWr_k      <= not is_CplD;
             TxTLP_eof_n       <= '1';
-            if BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            if BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit     <= '0';
               DDR_FIFO_Hit    <= '1';
@@ -340,8 +329,8 @@ begin
               Regs_RdEn       <= '0';
               Address_var     <= Address_var;
               TxMReader_State <= St_mR_DDR_A;
-            elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            elsif BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_REGS_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit  <= '0';
               DDR_FIFO_Hit <= '0';
@@ -353,8 +342,8 @@ begin
                 Address_var(C_EP_AWIDTH-1 downto 0) <= StartAddr(C_EP_AWIDTH-1 downto 0);
               end if;
               TxMReader_State <= St_mR_CmdLatch;
-            elsif BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
-               = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
+            elsif BAR_value(C_ENCODE_BAR_NUMBER-1 downto 0)
+               = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER)
             then
               wb_FIFO_Hit     <= '1';
               DDR_FIFO_Hit    <= '0';
@@ -875,8 +864,7 @@ begin
     if mReader_Rst_n = '0' then
       Tx_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
-      if TimeOut_Counter(21 downto 6) = X"FFFF" then
---         if TimeOut_Counter(4 downto 1)=X"F" then
+      if TimeOut_Counter(21 downto 6) = X"FFFF" and DDR_FIFO_Hit = '1' then
         Tx_TimeOut_i <= '1';
       else
         Tx_TimeOut_i <= Tx_TimeOut_i;
@@ -893,14 +881,7 @@ begin
     if mReader_Rst_n = '0' then
       Tx_wb_TimeOut_i <= '0';
     elsif user_clk'event and user_clk = '1' then
---         if TimeOut_Counter(3 downto 0)=X"F" then
-      if TimeOut_Counter(6 downto 3) = X"F"
-        and is_CplD_k = '1'
-      then
-        Tx_wb_TimeOut_i <= '1';
-      elsif TimeOut_Counter(8 downto 5) = X"F"
-        and may_be_MWr_k = '1'
-      then
+      if TimeOut_Counter(21 downto 6) = X"FFFF" and wb_FIFO_Hit = '1' then
         Tx_wb_TimeOut_i <= '1';
       else
         Tx_wb_TimeOut_i <= Tx_wb_TimeOut_i;

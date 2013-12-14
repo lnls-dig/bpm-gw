@@ -19,7 +19,8 @@ def __import_verilog_lib():
 target = "xilinx"
 action = "simulation"
 #pickup correct top file
-syn_device = "xc7k325t"
+#syn_device = "xc7k325t"
+syn_device = "xc7a200t"
 
 vlog_opt = "+incdir+../../sim/pcie +define+SIMULATION"
 # ENABLE_GT has to be set until I figure out a way
@@ -35,7 +36,7 @@ files = ["board.v",
 
 #top_module = "tf64_pcie_axi"
 modules = {"local" : ["../../modules/pcie",
-                      "../../ip_cores/pcie/7k325ffg900",
+                      "../../ip_cores/pcie/7a200ffg1156",
                       "../../sim/pcie",
                       "../../sim/ddr_model",
                       "../../top/pcie"]}

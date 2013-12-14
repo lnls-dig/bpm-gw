@@ -46,17 +46,13 @@ entity rx_MWr_Transact is
     m_axis_rx_tvalid   : in std_logic;
     m_axis_rx_tready   : in std_logic;  -- !!
     m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
---      trn_rfc_ph_av      : IN  std_logic_vector(7 downto 0);
---      trn_rfc_pd_av      : IN  std_logic_vector(11 downto 0);
---      trn_rfc_nph_av     : IN  std_logic_vector(7 downto 0);
---      trn_rfc_npd_av     : IN  std_logic_vector(11 downto 0);
---      trn_rfc_cplh_av    : IN  std_logic_vector(7 downto 0);
---      trn_rfc_cpld_av    : IN  std_logic_vector(11 downto 0);
+
+    -- SDRAM and Wishbone address page
+    sdram_pg : in std_logic_vector(31 downto 0);
+    wb_pg    : in std_logic_vector(31 downto 0);
 
     -- from pre-process module
-    IOWr_Type         : in std_logic;
     MWr_Type          : in std_logic_vector(1 downto 0);
-    Tlp_straddles_4KB : in std_logic;
 --      Last_DW_of_TLP     : IN  std_logic;
     Tlp_has_4KB       : in std_logic;
 
@@ -81,11 +77,6 @@ entity rx_MWr_Transact is
     DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     DDR_wr_full  : in  std_logic;
-
-    -- Data generator table write
-    tab_we : out std_logic_vector(2-1 downto 0);
-    tab_wa : out std_logic_vector(12-1 downto 0);
-    tab_wd : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Common ports
     user_clk    : in std_logic;
@@ -112,7 +103,7 @@ architecture Behavioral of rx_MWr_Transact is
                                  , ST_MWr_1ST_DATA_THROTTLE
                                  , ST_MWr_DATA
                                  , ST_MWr_DATA_THROTTLE
-                                 , ST_MWr_LAST_DATA
+--                               , ST_MWr_LAST_DATA
                                  );
 
   -- State variables
@@ -120,8 +111,10 @@ architecture Behavioral of rx_MWr_Transact is
   signal RxMWrTrn_State     : RxMWrTrnStates;
 
   -- trn_rx stubs
-  signal m_axis_rx_tdata_i  : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
-  signal m_axis_rx_tdata_r1 : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
+  signal m_axis_rx_tdata_i      : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
+  signal m_axis_rx_tdata_r1     : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
+  signal m_axis_rx_tdata_r2     : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
+  signal m_axis_rx_tdata_hdrfix : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   signal m_axis_rx_tkeep_i  : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
   signal m_axis_rx_tkeep_r1 : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
@@ -130,11 +123,9 @@ architecture Behavioral of rx_MWr_Transact is
   signal m_axis_rx_tbar_hit_r1 : std_logic_vector (C_BAR_NUMBER-1 downto 0);
 
   signal m_axis_rx_tvalid_i  : std_logic;
-  signal m_axis_rx_terrfwd_i : std_logic;
   signal trn_rsof_n_i        : std_logic;
   signal in_packet_reg       : std_logic;
   signal m_axis_rx_tlast_i   : std_logic;
-  signal m_axis_rx_tvalid_r1 : std_logic;
   signal m_axis_rx_tlast_r1  : std_logic;
 
 
@@ -147,19 +138,10 @@ architecture Behavioral of rx_MWr_Transact is
   signal DDR_wr_sof_i       : std_logic;
   signal DDR_wr_eof_i       : std_logic;
   signal DDR_wr_v_i         : std_logic;
-  signal DDR_wr_FA_i        : std_logic;
   signal DDR_wr_Shift_i     : std_logic;
   signal DDR_wr_Mask_i      : std_logic_vector(2-1 downto 0);
   signal ddr_wr_1st_mask_hi : std_logic;
   signal DDR_wr_din_i       : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DDR_wr_full_i      : std_logic;
-
-  -- Data generator sequence table write
-  signal dg_table_Sel : std_logic;
-  signal tab_wa_odd   : std_logic;
-  signal tab_we_i     : std_logic_vector(2-1 downto 0);
-  signal tab_wa_i     : std_logic_vector(12-1 downto 0);
-  signal tab_wd_i     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
   -- Event Buffer write port
   signal wb_FIFO_we_i   : std_logic;
@@ -195,16 +177,9 @@ begin
   DDR_wr_sof    <= DDR_wr_sof_i;
   DDR_wr_eof    <= DDR_wr_eof_i;
   DDR_wr_v      <= DDR_wr_v_i;
-  DDR_wr_FA     <= DDR_wr_FA_i;
   DDR_wr_Shift  <= DDR_wr_Shift_i;
   DDR_wr_Mask   <= DDR_wr_Mask_i;
   DDR_wr_din    <= DDR_wr_din_i;
-  DDR_wr_full_i <= DDR_wr_full;
-
-  -- Data generator table
-  tab_we <= tab_we_i;
-  tab_wa <= tab_wa_i;
-  tab_wd <= tab_wd_i;
 
   -- Registers writing
   Regs_WrEn   <= Regs_WrEn_i;
@@ -212,26 +187,23 @@ begin
   Regs_WrAddr <= Regs_WrAddr_i;
   Regs_WrDin  <= Regs_WrDin_i;          -- Mem_WrData;
 
-
-
   -- TLP info stubs
   m_axis_rx_tdata_i <= m_axis_rx_tdata;
   m_axis_rx_tlast_i <= m_axis_rx_tlast;
   m_axis_rx_tkeep_i <= m_axis_rx_tkeep;
 
+  m_axis_rx_tdata_hdrfix <= m_axis_rx_tdata_r1 when MWr_Has_4DW_Header = '1' else
+                            (m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r2(63 downto 32));
 
   -- Output to the core as handshaking
-  m_axis_rx_terrfwd_i  <= m_axis_rx_terrfwd;
   m_axis_rx_tbar_hit_i <= m_axis_rx_tbar_hit;
 
   -- Output to the core as handshaking
   m_axis_rx_tvalid_i <= m_axis_rx_tvalid;
   m_axis_rx_tready_i <= m_axis_rx_tready;
 
-
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
   trn_rx_throttle <= not(m_axis_rx_tvalid_i) or not(m_axis_rx_tready_i);
-
 
 -- -----------------------------------------------------
 --   Delays: m_axis_rx_tdata_i, m_axis_rx_tbar_hit_i, m_axis_rx_tlast_i
@@ -240,15 +212,14 @@ begin
   process (user_clk)
   begin
     if user_clk'event and user_clk = '1' then
-      m_axis_rx_tvalid_r1   <= m_axis_rx_tvalid_i;
+      trn_rx_throttle_r1    <= trn_rx_throttle;
       m_axis_rx_tlast_r1    <= m_axis_rx_tlast_i;
       m_axis_rx_tdata_r1    <= m_axis_rx_tdata_i;
+      m_axis_rx_tdata_r2    <= m_axis_rx_tdata_r1;
       m_axis_rx_tkeep_r1    <= m_axis_rx_tkeep_i;
       m_axis_rx_tbar_hit_r1 <= m_axis_rx_tbar_hit_i;
-      trn_rx_throttle_r1    <= trn_rx_throttle;
     end if;
   end process;
-
 
 -- -----------------------------------------------------------------------
 -- States synchronous
@@ -269,11 +240,8 @@ begin
   process (
     RxMWrTrn_State
     , MWr_Type
---           , IOWr_Type
-    , Tlp_straddles_4KB
     , trn_rx_throttle
     , m_axis_rx_tlast_i
---           , Last_DW_of_TLP
     )
   begin
     case RxMWrTrn_State is
@@ -289,11 +257,7 @@ begin
             when C_TLP_TYPE_IS_MWR_H4 =>
               RxMWrTrn_NextState <= ST_MWr4_HEAD2;
             when others =>
---               if IOWr_Type='1' then   -- Temp taking IOWr as MWr3
---                 RxMWrTrn_NextState <= ST_MWr3_HEAD1;
---               else
               RxMWrTrn_NextState <= ST_MWr_IDLE;
---               end if;
           end case;  -- MWr_Type
         else
           RxMWrTrn_NextState <= ST_MWr_IDLE;
@@ -331,28 +295,6 @@ begin
           RxMWrTrn_NextState <= ST_MWr4_1ST_DATA;  -- ST_MWr4_HEAD3;
         end if;
 
---        when ST_MWr4_HEAD3 =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr4_HEAD3;
---           else
---              RxMWrTrn_NextState <= ST_MWr_Last_HEAD;
---           end if;
-
-
---        when ST_MWr_Last_HEAD =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr_Last_HEAD;
---           elsif Tlp_straddles_4KB = '1' then      -- !!
---              RxMWrTrn_NextState <= ST_MWr_IDLE;
-----           elsif Last_DW_of_TLP='1' then
-----              RxMWrTrn_NextState <= ST_MWr_LAST_DATA;
---           elsif m_axis_rx_tlast_i = '1' then
---              RxMWrTrn_NextState <= ST_MWr_LAST_DATA;
---           else
---              RxMWrTrn_NextState <= ST_MWr_1ST_DATA;
---           end if;
-
-
       when ST_MWr_1ST_DATA =>
         if trn_rx_throttle = '1' then
           RxMWrTrn_NextState <= ST_MWr_1ST_DATA_THROTTLE;
@@ -380,41 +322,23 @@ begin
           RxMWrTrn_NextState <= ST_MWr_DATA;
         end if;
 
-
       when ST_MWr_DATA =>
         if trn_rx_throttle = '1' then
           RxMWrTrn_NextState <= ST_MWr_DATA_THROTTLE;
         elsif m_axis_rx_tlast_i = '1' then
-          RxMWrTrn_NextState <= ST_MWr_LAST_DATA;
+          RxMWrTrn_NextState <= ST_MWr_IDLE;
         else
           RxMWrTrn_NextState <= ST_MWr_DATA;
         end if;
-
 
       when ST_MWr_DATA_THROTTLE =>
         if trn_rx_throttle = '1' then
           RxMWrTrn_NextState <= ST_MWr_DATA_THROTTLE;
         elsif m_axis_rx_tlast_i = '1' then
-          RxMWrTrn_NextState <= ST_MWr_LAST_DATA;
+          RxMWrTrn_NextState <= ST_MWr_IDLE;
         else
           RxMWrTrn_NextState <= ST_MWr_DATA;
         end if;
-
-
-      when ST_MWr_LAST_DATA =>          -- Same as ST_MWr_IDLE, to support
-                                        --  back-to-back transactions
-        case MWr_Type is
-          when C_TLP_TYPE_IS_MWR_H3 =>
-            RxMWrTrn_NextState <= ST_MWr3_HEAD2;
-          when C_TLP_TYPE_IS_MWR_H4 =>
-            RxMWrTrn_NextState <= ST_MWr4_HEAD2;
-          when others =>
---               if IOWr_Type='1' then
---                 RxMWrTrn_NextState <= ST_MWr3_HEAD1;
---               else
-            RxMWrTrn_NextState <= ST_MWr_IDLE;
---               end if;
-        end case;  -- MWr_Type
 
       when others =>
         RxMWrTrn_NextState <= ST_MWr_RESET;
@@ -651,7 +575,6 @@ begin
       DDR_wr_sof_i       <= '0';
       DDR_wr_eof_i       <= '0';
       DDR_wr_v_i         <= '0';
-      DDR_wr_FA_i        <= '0';
       DDR_wr_Shift_i     <= '0';
       DDR_wr_Mask_i      <= (others => '0');
       DDR_wr_din_i       <= (others => '0');
@@ -668,22 +591,21 @@ begin
             DDR_Space_Sel      <= '1';
             DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
-            DDR_wr_v_i         <= m_axis_rx_tvalid_i;
-            DDR_wr_FA_i        <= '0';
+            DDR_wr_v_i         <= not trn_rx_throttle;
             DDR_wr_Shift_i     <= not m_axis_rx_tdata_i(2);
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '1';
-            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
+            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
+                                  m_axis_rx_tdata_i(C_DDR_PG_WIDTH-1 downto 0);
           else
             DDR_Space_Sel      <= '0';
             DDR_wr_sof_i       <= '0';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= '0';
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= '0';
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
-            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
+            DDR_wr_din_i       <= DDR_wr_din_i;
           end if;
 
         when ST_MWr4_HEAD2 =>
@@ -693,22 +615,21 @@ begin
             DDR_Space_Sel      <= '1';
             DDR_wr_sof_i       <= '1';
             DDR_wr_eof_i       <= '0';
-            DDR_wr_v_i         <= m_axis_rx_tvalid_i;
-            DDR_wr_FA_i        <= '0';
+            DDR_wr_v_i         <= not trn_rx_throttle;
             DDR_wr_Shift_i     <= m_axis_rx_tdata_i(2+32);
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
-            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(63 downto 32);
+            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
+                                  m_axis_rx_tdata_i(32+C_DDR_PG_WIDTH-1 downto 32);
           else
             DDR_Space_Sel      <= '0';
             DDR_wr_sof_i       <= '0';
             DDR_wr_eof_i       <= '0';
             DDR_wr_v_i         <= '0';
-            DDR_wr_FA_i        <= '0';
             DDR_wr_Shift_i     <= '0';
             DDR_wr_Mask_i      <= (others => '0');
             ddr_wr_1st_mask_hi <= '0';
-            DDR_wr_din_i       <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(63 downto 32);
+            DDR_wr_din_i       <= DDR_wr_din_i;
           end if;
 
         when ST_MWr4_1ST_DATA =>
@@ -716,12 +637,10 @@ begin
           DDR_wr_sof_i       <= '0';
           DDR_wr_eof_i       <= '0';
           DDR_wr_v_i         <= '0';
-          DDR_wr_FA_i        <= '0';
           DDR_wr_Shift_i     <= '0';
           DDR_wr_Mask_i      <= (others => '0');
           ddr_wr_1st_mask_hi <= '0';
           DDR_wr_din_i       <= (others => '0');
-
 
         when others =>
           if m_axis_rx_tlast_r1 = '1' then
@@ -730,19 +649,20 @@ begin
             DDR_Space_Sel <= DDR_Space_Sel;
           end if;
 
+          --write the last word unconditionally, otherwise we may lose it
+          --because RxMwTrn_State could switch from IDLE to St_MWR3_HEAD2 before
+          --trn_rx_throttle_r1 deasserts
           if DDR_Space_Sel = '1' then
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= m_axis_rx_tlast_r1;
-            DDR_wr_v_i     <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
-            DDR_wr_FA_i    <= '0';
+            DDR_wr_v_i     <= not(trn_rx_throttle_r1) or m_axis_rx_tlast_r1;
             DDR_wr_Shift_i <= '0';
-            DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(3)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
+            DDR_wr_Mask_i  <= not(m_axis_rx_tkeep_r1(4)) & (not(m_axis_rx_tkeep_r1(0)) or ddr_wr_1st_mask_hi);
             DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
           else
             DDR_wr_sof_i   <= '0';
             DDR_wr_eof_i   <= '0';
             DDR_wr_v_i     <= '0';
-            DDR_wr_FA_i    <= '0';
             DDR_wr_Shift_i <= '0';
             DDR_wr_Mask_i  <= (others => '0');
             DDR_wr_din_i   <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
@@ -752,88 +672,6 @@ begin
           else
             ddr_wr_1st_mask_hi <= ddr_wr_1st_mask_hi;
           end if;
-
-      end case;
-
-    end if;
-
-  end process;
-
--- ----------------------------------------------
---  Synchronous outputs:  DGen Table write     --
--- ----------------------------------------------
-  RxFSM_Output_DGen_Table_write :
-  process (user_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      --  Assume every PIO MWr contains only 1 DW(32 bits) payload
-      dg_table_Sel <= '0';
-      tab_we_i     <= (others => '0');
-      tab_wa_i     <= (others => '0');
-      tab_wd_i     <= (others => '0');
-      tab_wa_odd   <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case RxMWrTrn_State is
-
-        when ST_MWr3_HEAD2 =>
-          if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
-            and Tlp_is_Zero_Length = '0'
-          then
-            dg_table_Sel <= m_axis_rx_tdata_i(19+32) and m_axis_rx_tdata_i(18+32) and not m_axis_rx_tdata_i(17+32) and not m_axis_rx_tdata_i(16+32);  -- any expression
-            tab_we_i     <= (m_axis_rx_tdata_i(19) and m_axis_rx_tdata_i(18) and not m_axis_rx_tdata_i(17) and not m_axis_rx_tdata_i(16) and not m_axis_rx_tdata_i(2))
-                              & (m_axis_rx_tdata_i(19) and m_axis_rx_tdata_i(18) and not m_axis_rx_tdata_i(17) and not m_axis_rx_tdata_i(16) and m_axis_rx_tdata_i(2));
-            tab_wa_i   <= m_axis_rx_tdata_i(3+11 downto 3);
-            tab_wa_odd <= m_axis_rx_tdata_i(2);
-            tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
-          else
-            dg_table_Sel <= '0';
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(3+11 downto 3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(63 downto 32) & m_axis_rx_tdata_i(63 downto 32)));
-          end if;
-
-        when ST_MWr4_HEAD2 =>
-          if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
-            and Tlp_is_Zero_Length = '0'
-          then
-            dg_table_Sel <= m_axis_rx_tdata_i(32+19) and m_axis_rx_tdata_i(32+18) and not m_axis_rx_tdata_i(32+17) and not m_axis_rx_tdata_i(32+16);
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(32+3+11 downto 32+3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(32+2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-          else
-            dg_table_Sel <= '0';
-            tab_we_i     <= (others => '0');
-            tab_wa_i     <= m_axis_rx_tdata_i(32+3+11 downto 32+3);
-            tab_wa_odd   <= m_axis_rx_tdata_i(32+2);
-            tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-          end if;
-
-        when ST_MWr4_1ST_DATA =>
-          dg_table_Sel <= dg_table_Sel;
-          tab_we_i     <= (dg_table_Sel and not trn_rx_throttle and not tab_wa_odd)
-                            & (dg_table_Sel and not trn_rx_throttle and tab_wa_odd);
-          tab_wa_i   <= tab_wa_i;
-          tab_wa_odd <= tab_wa_odd;
-          tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-
-        when ST_MWr_1ST_DATA_THROTTLE =>
-          dg_table_Sel <= dg_table_Sel;
-          tab_we_i     <= (dg_table_Sel and not trn_rx_throttle and not tab_wa_odd)
-                            & (dg_table_Sel and not trn_rx_throttle and tab_wa_odd);
-          tab_wa_i   <= tab_wa_i;
-          tab_wa_odd <= tab_wa_odd;
-          tab_wd_i   <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
-
-        when others =>
-          dg_table_Sel <= '0';
-          tab_we_i     <= (others => '0');
-          tab_wa_i     <= tab_wa_i;
-          tab_wa_odd   <= tab_wa_odd;
-          tab_wd_i     <= Endian_Invert_64 ((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_i(31 downto 0)));
 
       end case;
 
@@ -863,16 +701,16 @@ begin
             and Tlp_is_Zero_Length = '0'
           then
             FIFO_Space_Sel <= '1';
-            wb_FIFO_we_i   <= '1';
+            wb_FIFO_we_i   <= not trn_rx_throttle;
             wb_FIFO_wsof_i <= '1';
             wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
+            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & wb_pg(31-C_WB_PG_WIDTH downto 0) &
+                              m_axis_rx_tdata_i(C_WB_PG_WIDTH-1 downto 0);
           else
             FIFO_Space_Sel <= '0';
             wb_FIFO_we_i   <= '0';
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(31 downto 0);
           end if;
 
         when ST_MWr_1ST_DATA =>
@@ -880,7 +718,7 @@ begin
           wb_FIFO_we_i   <= '0';
           wb_FIFO_wsof_i <= '0';
           wb_FIFO_weof_i <= '0';
-          wb_FIFO_din_i  <= Endian_Invert_64((m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32)));
+          wb_FIFO_din_i  <= wb_FIFO_din_i;
 
 
         when ST_MWr4_HEAD2 =>
@@ -888,27 +726,27 @@ begin
             and Tlp_is_Zero_Length = '0'
           then
             FIFO_Space_Sel <= '1';
-            wb_FIFO_we_i   <= m_axis_rx_tvalid_i;
+            wb_FIFO_we_i   <= not trn_rx_throttle;
             wb_FIFO_wsof_i <= '1';
             wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & m_axis_rx_tdata_i(63 downto 32);
+            wb_FIFO_din_i  <= MWr_Leng_in_Bytes(31 downto 0) & wb_pg(31-C_WB_PG_WIDTH downto 0) &
+                              m_axis_rx_tdata_i(32+C_WB_PG_WIDTH-1 downto 32);
           else
             FIFO_Space_Sel <= '0';
             wb_FIFO_we_i   <= '0';
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= (others => '0');
           end if;
 
         when ST_MWr4_1ST_DATA =>
-          FIFO_Space_Sel <= '0';
-          wb_FIFO_we_i   <= '0';  -- trn_rx_throttle;
-          wb_FIFO_wsof_i <= '0';  -- trn_rx_throttle;
-          wb_FIFO_weof_i <= '0';  -- trn_rx_throttle;
+          FIFO_Space_Sel <= FIFO_Space_Sel;
+          wb_FIFO_we_i   <= '0';
+          wb_FIFO_wsof_i <= '0';
+          wb_FIFO_weof_i <= '0';
           wb_FIFO_din_i  <= wb_FIFO_din_i;
 
         when others =>
-          if m_axis_rx_tlast_r1 = '1' then
+          if m_axis_rx_tlast_r1 = '1' and trn_rx_throttle_r1 = '0' then
             FIFO_Space_Sel <= '0';
           else
             FIFO_Space_Sel <= FIFO_Space_Sel;
@@ -916,13 +754,13 @@ begin
           if FIFO_Space_Sel = '1' then
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= m_axis_rx_tlast_r1;
-            wb_FIFO_we_i   <= not trn_rx_throttle_r1;  -- m_axis_rx_tvalid_r1;
-            wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+            wb_FIFO_we_i   <= not trn_rx_throttle_r1;
+            wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_hdrfix);
           else
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= '0';
             wb_FIFO_we_i   <= '0';
-            wb_FIFO_din_i  <= Endian_Invert_64 (m_axis_rx_tdata_r1(63 downto 32) & m_axis_rx_tdata_r1(31 downto 0));
+            wb_FIFO_din_i  <= wb_FIFO_din_i;
           end if;
 
       end case;

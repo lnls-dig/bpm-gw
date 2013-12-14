@@ -22,7 +22,7 @@ int owr_init(void)
     // get all base addresses
     owr = (owr_t **) memmgr_alloc(sizeof(owr)*owr_devl->size);
 
-    //dbg_print("> owr size: %d\n", owr_devl->size);
+    //DBE_DEBUG(DBG_OWR | DBE_DBG_INFO, "> owr size: %d\n", owr_devl->size);
 
     for (i = 0, dev_p = owr_devl->devices; i < owr_devl->size;
             ++i, dev_p = dev_p->next) {
@@ -30,10 +30,10 @@ int owr_init(void)
         // Default configuration
         owr[i]->CDR = (OWR_CDR_NOR(DEFAULT_OWR_DIVIDER_NOR)) |
                         (OWR_CDR_OVD(DEFAULT_OWR_DIVIDER_OVD));
-        dbg_print("> owr addr[%d]: %08X\n", i, owr[i]);
+        DBE_DEBUG(DBG_OWR | DBE_DBG_INFO, "> owr addr[%d]: %08X\n", i, owr[i]);
     }
 
-    dbg_print("> owr size: %d\n", owr_devl->size);
+    DBE_DEBUG(DBG_OWR | DBE_DBG_INFO, "> owr size: %d\n", owr_devl->size);
     //owr = (owr_t *)owr_devl->devices->base;
     return 0;
 }

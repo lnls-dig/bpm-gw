@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_rxeq_scan.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  rxeq_scan.v
 //  Description  :  PIPE RX Equalization Eye Scan Module for 7 Series Transceiver
@@ -66,6 +66,7 @@ module pcie_core_rxeq_scan #
 (
 
     parameter PCIE_SIM_MODE       = "FALSE",                // PCIe sim mode 
+    parameter PCIE_GT_DEVICE      = "GTX",                  // PCIe GT device
     parameter PCIE_RXEQ_MODE_GEN3 = 1,                      // PCIe RX equalization mode
     parameter CONVERGE_MAX        = 22'd3125000,            // Convergence max count (12ms) 
     parameter CONVERGE_MAX_BYPASS = 22'd2083333             // Convergence max count for phase2/3 bypass mode (8ms)
@@ -97,21 +98,21 @@ module pcie_core_rxeq_scan #
 );
 
     //---------- Input Register ----------------------------
-    reg         [ 2:0]  preset_reg1;
-    reg                 preset_valid_reg1;
-    reg         [ 3:0]  txpreset_reg1;
-    reg         [17:0]  txcoeff_reg1;
-    reg                 new_txcoeff_req_reg1;
-    reg         [ 5:0]  fs_reg1;
-    reg         [ 5:0]  lf_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 2:0]  preset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 preset_valid_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 3:0]  txpreset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [17:0]  txcoeff_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 new_txcoeff_req_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  fs_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  lf_reg1;
     
-    reg         [ 2:0]  preset_reg2;
-    reg                 preset_valid_reg2;
-    reg         [ 3:0]  txpreset_reg2;
-    reg         [17:0]  txcoeff_reg2;
-    reg                 new_txcoeff_req_reg2;
-    reg         [ 5:0]  fs_reg2;
-    reg         [ 5:0]  lf_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 2:0]  preset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 preset_valid_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 3:0]  txpreset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [17:0]  txcoeff_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 new_txcoeff_req_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  fs_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 5:0]  lf_reg2;
 
     //---------- Internal Signals --------------------------
     reg                 adapt_done_cnt = 1'd0;
@@ -231,7 +232,8 @@ begin
                 fsm              <=  FSM_CONVERGE;
                 preset_done      <=  1'd0;
                 converge_cnt     <= 22'd0;
-                new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : 18'd4;
+              //new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : 18'd4;  // Default
+                new_txcoeff      <= (PCIE_RXEQ_MODE_GEN3 == 0) ? txcoeff_reg2 : (PCIE_GT_DEVICE == "GTX") ? 18'd5 : 18'd4;  // Optimized for Gen3 RX JTOL
                 new_txcoeff_done <=  1'd0;
                 lffs_sel         <= (PCIE_RXEQ_MODE_GEN3 == 0) ? 1'd0 : 1'd1;
                 adapt_done       <=  1'd0; 
@@ -291,7 +293,6 @@ begin
                 else
                     fsm <= (converge_cnt == converge_max_bypass_cnt) ? FSM_NEW_TXCOEFF_REQ : FSM_CONVERGE;
                 
-
                 preset_done      <= 1'd0;
                 converge_cnt     <= converge_cnt + 1'd1;
                 new_txcoeff      <= new_txcoeff;

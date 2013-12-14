@@ -99,6 +99,7 @@ architecture Behavioral of wb_transact is
   signal wpipe_empty : std_logic;
   signal wpipe_qout  : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
   signal wpipe_ren   : std_logic;
+  signal wpipe_rd_en : std_logic;
   signal wpipe_valid : std_logic;
   signal wpipe_last  : std_logic;
 
@@ -153,6 +154,7 @@ begin
           when st_IDLE =>
             wb_stb    <= '0';
             wb_cyc    <= '0';
+            wb_we     <= '0';
             wb_sel    <= (others => '0');
             rpiped_we <= '0';
             if wpipe_empty = '0' then
@@ -170,18 +172,17 @@ begin
             end if;
 
           when st_LA =>
-            wb_stb <= '0';
-            wb_cyc <= '0';
+            wb_stb    <= '0';
+            wb_cyc    <= '0';
+            wpipe_ren <= '0';
             if wpipe_valid = '1' then
-              if wpipe_qout(C_DBUS_WIDTH) = '1' then
-                wpipe_ren <= '1';
-                wb_addr   <= unsigned(wpipe_qout(wb_addr'left+3 downto 3));
-                wb_state  <= st_WR_LOAD;
+              if wpipe_qout(C_DBUS_WIDTH) = '1' then --sof
+                wb_addr  <= unsigned(wpipe_qout(wb_addr'left+3 downto 3));
+                wb_state <= st_WR_LOAD;
               else
                 wb_state <= st_IDLE;
               end if;
             elsif rpipec_valid = '1' then
-              wpipe_ren  <= '0';
               wb_addr    <= unsigned(rpipec_qout(wb_addr'left+3 downto 3));
               wb_rd_cnt  <= unsigned(rpipec_qout(C_TLP_FLD_WIDTH_OF_LENG+32+1 downto 32+3)); --omit lowest bit, QW counted
               rpipec_ren <= '0';
@@ -229,7 +230,7 @@ begin
               wb_dat_o   <= wb_dat_o;
               wb_stb     <= '0';
               wb_state   <= st_WR_LOAD;
-              end if;
+            end if;
 
           when st_WR_SEND =>
             wb_cyc <= '1';
@@ -290,6 +291,8 @@ begin
       end if;
     end if;
   end process;
+  -- we access one word at a time, so stall read if we got valid data
+  wpipe_rd_en <= wpipe_ren and not(wpipe_valid);
 
   wpipe_fifo :
     prime_FIFO_plain
@@ -301,7 +304,7 @@ begin
         full      => wpipe_Full,
 
         rd_clk => wb_clk,
-        rd_en  => wpipe_ren,
+        rd_en  => wpipe_rd_en,
         dout   => wpipe_qout,
         empty  => wpipe_empty,
 

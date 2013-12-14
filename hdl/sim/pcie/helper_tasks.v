@@ -59,7 +59,9 @@
 `define  C_ADDR_VERSION                 32'H0000
 `define  C_ADDR_IRQ_STAT                32'H0008
 `define  C_ADDR_IRQ_EN                  32'H0010
+`define  C_ADDR_SDRAM_PG                32'H001C
 `define  C_ADDR_GSR                     32'H0020
+`define  C_ADDR_WB_PG                   32'H0024
 `define  C_ADDR_GCR                     32'H0028
 
   /* Control registers for special ports */
@@ -122,16 +124,23 @@ endtask // Copy_rnd_data
   task TLP_Feed_Rx;
     input [ 6:0]  BAR_Hit_N;     // Which BAR is hit
 
-    reg [63:0] 	  sys_addr;
+    reg [63:0]    sys_addr;
     reg [31:0]    hdr_type;
     reg [31:0]    hdr_mask;
 
   begin
 
     hdr_mask = 32'hFF000000;
-    sys_addr = board.RP.tx_usrapp.BAR_INIT_P_BAR[BAR_Hit_N - 1] +
-	       board.Hdr_Array[2];
     hdr_type = board.Hdr_Array[0] & hdr_mask;
+    if (board.Hdr_Array[0][29]) begin //64bit address
+      sys_addr[63:32] = board.RP.tx_usrapp.BAR_INIT_P_BAR[BAR_Hit_N] +
+        board.Hdr_Array[2];
+      sys_addr[31:0] = board.RP.tx_usrapp.BAR_INIT_P_BAR[BAR_Hit_N - 1];
+      sys_addr = sys_addr + board.Hdr_Array[3];
+    end else begin
+      sys_addr = board.RP.tx_usrapp.BAR_INIT_P_BAR[BAR_Hit_N - 1] +
+        board.Hdr_Array[2];
+    end
 
     if ((board.Hdr_Array[0] & 32'hFF000000) == `HEADER0_MWR4_) begin
       board.RP.tx_usrapp.TSK_TX_MEMORY_WRITE_64(board.Hdr_Array[1][15:8],

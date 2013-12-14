@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gt_top.v
-// Version    : 1.8
+// Version    : 1.10
 //-- Description: GTX module for 7-series Integrated PCIe Block
 //--
 //--
@@ -232,6 +232,7 @@ module pcie_core_gt_top #
    // Non PIPE signals
    input   wire                      sys_clk                ,
    input   wire                      sys_rst_n              ,
+   input   wire                      PIPE_MMCM_RST_N        ,
 
    output  wire                      pipe_clk               ,
    output  wire                      user_clk               ,
@@ -251,8 +252,8 @@ module pcie_core_gt_top #
   localparam                         PCIE_LINK_SPEED = (PL_FAST_TRAIN == "TRUE") ? 2 : 3;
 
 // The parameter PCIE_OOBCLK_MODE_ENABLE value should be "0" for simulation and for synthesis it should be 1
-  localparam                         PCIE_OOBCLK_MODE_ENABLE = (PL_FAST_TRAIN == "TRUE") ? 0 : 1;
-  //localparam                         PCIE_OOBCLK_MODE_ENABLE =  1;
+  //localparam                         PCIE_OOBCLK_MODE_ENABLE = (PL_FAST_TRAIN == "TRUE") ? 0 : 1;
+  localparam                         PCIE_OOBCLK_MODE_ENABLE =  1;
 
   localparam              PCIE_TX_EIDLE_ASSERT_DELAY = (PL_FAST_TRAIN == "TRUE") ? 4 : 2;
 
@@ -344,6 +345,11 @@ endgenerate
   pcie_core_pipe_wrapper #
   (
     .PCIE_SIM_MODE                  ( PL_FAST_TRAIN ),
+ 
+    // synthesis translate_off
+    .PCIE_SIM_SPEEDUP               ( "TRUE" ),
+    // synthesis translate_on
+
     .PCIE_EXT_CLK                   ( PCIE_EXT_CLK ),
     .PCIE_TXBUF_EN                  ( PCIE_TXBUF_EN ),
     .PCIE_ASYNC_EN                  ( PCIE_ASYNC_EN ),
@@ -391,7 +397,7 @@ endgenerate
     .PIPE_RATE                      ( {1'b0,pipe_tx_rate} ),
 
     //---------- PIPE Electrical Command Ports ------------------
-    .PIPE_TXMARGIN                  ( pipe_tx_margin[2] ),
+    .PIPE_TXMARGIN                  ( pipe_tx_margin[2:0] ),
     .PIPE_TXSWING                   ( pipe_tx_swing ),
     .PIPE_TXDEEMPH                  ( {(LINK_CAP_MAX_LINK_WIDTH){pipe_tx_deemph}} ),
     .PIPE_TXEQ_CONTROL              ( {2*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
@@ -399,7 +405,7 @@ endgenerate
     .PIPE_TXEQ_PRESET_DEFAULT       ( {4*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
 
     .PIPE_RXEQ_CONTROL              ( {2*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
-    .PIPE_RXEQ_PRESET               ( {4*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
+    .PIPE_RXEQ_PRESET               ( {3*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
     .PIPE_RXEQ_LFFS                 ( {6*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
     .PIPE_RXEQ_TXPRESET             ( {4*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
     .PIPE_RXEQ_USER_EN              ( {1*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
@@ -425,6 +431,8 @@ endgenerate
     .PIPE_RXBUFSTATUS               ( ),
 
     //---------- PIPE User Ports ---------------------------
+    .PIPE_MMCM_RST_N                ( PIPE_MMCM_RST_N ),        // Async      | Async
+
     .PIPE_RXSLIDE                   ( {1*LINK_CAP_MAX_LINK_WIDTH{1'b0}} ),
 
     .PIPE_CPLL_LOCK                 ( plllkdet ),

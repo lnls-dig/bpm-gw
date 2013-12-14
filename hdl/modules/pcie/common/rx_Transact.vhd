@@ -67,7 +67,6 @@ entity rx_Transact is
     pioCplD_Req  : out std_logic;
     pioCplD_RE   : in  std_logic;
     pioCplD_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-    pio_FC_stop  : in  std_logic;
 
     -- downstream MRd Channel
     dsMRd_Req  : out std_logic;
@@ -87,14 +86,20 @@ entity rx_Transact is
     Irpt_RE   : in  std_logic;
     Irpt_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
+    -- SDRAM and Wishbone pages
+    sdram_pg : in std_logic_vector(31 downto 0);
+    wb_pg    : in std_logic_vector(31 downto 0);
+
     -- Interrupt Interface
-    cfg_interrupt           : out std_logic;
-    cfg_interrupt_rdy       : in  std_logic;
-    cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-    cfg_interrupt_msienable : in  std_logic;
-    cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-    cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-    cfg_interrupt_assert    : out std_logic;
+    cfg_interrupt            : out std_logic;
+    cfg_interrupt_rdy        : in  std_logic;
+    cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+    cfg_interrupt_msienable  : in  std_logic;
+    cfg_interrupt_msixenable : in std_logic;
+    cfg_interrupt_msixfm     : in std_logic;
+    cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+    cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+    cfg_interrupt_assert     : out std_logic;
 
     -- Downstream DMA transferred bytes count up
     ds_DMA_Bytes_Add : out std_logic;
@@ -168,13 +173,10 @@ entity rx_Transact is
     wb_FIFO_wsof : out std_logic;
     wb_FIFO_weof : out std_logic;
     wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_full : in std_logic;
 
-    wb_FIFO_data_count : in  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-    wb_FIFO_Empty      : in  std_logic;
-    wb_FIFO_Reading    : in  std_logic;
-    pio_reading_status : out std_logic;
-
-    Link_Buf_full : in std_logic;
+    wb_FIFO_Empty   : in  std_logic;
+    wb_FIFO_Reading : in  std_logic;
 
     -- Registers Write Port
     Regs_WrEn0   : out std_logic;
@@ -191,7 +193,6 @@ entity rx_Transact is
     DDR_wr_sof_A   : out std_logic;
     DDR_wr_eof_A   : out std_logic;
     DDR_wr_v_A     : out std_logic;
-    DDR_wr_FA_A    : out std_logic;
     DDR_wr_Shift_A : out std_logic;
     DDR_wr_Mask_A  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din_A   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -199,17 +200,11 @@ entity rx_Transact is
     DDR_wr_sof_B   : out std_logic;
     DDR_wr_eof_B   : out std_logic;
     DDR_wr_v_B     : out std_logic;
-    DDR_wr_FA_B    : out std_logic;
     DDR_wr_Shift_B : out std_logic;
     DDR_wr_Mask_B  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din_B   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     DDR_wr_full : in std_logic;
-
-    -- Data generator table write
-    tab_we : out std_logic_vector(2-1 downto 0);
-    tab_wa : out std_logic_vector(12-1 downto 0);
-    tab_wd : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Interrupt generator signals
     IG_Reset        : in  std_logic;
@@ -255,7 +250,7 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
       m_axis_rx_tready   : out std_logic;
       Pool_wrBuf_full    : in  std_logic;
-      Link_Buf_full      : in  std_logic;
+      wb_FIFO_full       : in  std_logic;
 
       -- Delayed
       m_axis_rx_tlast_dly    : out std_logic;
@@ -267,8 +262,6 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_tbar_hit_dly : out std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
       -- TLP resolution
-      IORd_Type : out std_logic;
-      IOWr_Type : out std_logic;
       MRd_Type  : out std_logic_vector(3 downto 0);
       MWr_Type  : out std_logic_vector(1 downto 0);
       CplD_Type : out std_logic_vector(3 downto 0);
@@ -307,8 +300,6 @@ architecture Behavioral of rx_Transact is
   signal m_axis_rx_tbar_hit_dly : std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
   -- TLP types
-  signal IORd_Type : std_logic;
-  signal IOWr_Type : std_logic;
   signal MRd_Type  : std_logic_vector(3 downto 0);
   signal MWr_Type  : std_logic_vector(1 downto 0);
   signal CplD_Type : std_logic_vector(3 downto 0);
@@ -344,17 +335,15 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_tvalid   : in  std_logic;
       m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
-      IORd_Type         : in std_logic;
+      sdram_pg : in std_logic_vector(31 downto 0);
+      wb_pg    : in std_logic_vector(31 downto 0);
+
       MRd_Type          : in std_logic_vector(3 downto 0);
       Tlp_straddles_4KB : in std_logic;
 
       pioCplD_RE         : in  std_logic;
       pioCplD_Req        : out std_logic;
       pioCplD_Qout       : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      FIFO_Empty         : in  std_logic;
-      FIFO_Reading       : in  std_logic;
-      pio_FC_stop        : in  std_logic;
-      pio_reading_status : out std_logic;
 
       Channel_Rst : in std_logic;
 
@@ -379,11 +368,11 @@ architecture Behavioral of rx_Transact is
       m_axis_rx_tvalid   : in std_logic;
       m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
-      IOWr_Type         : in std_logic;
-      MWr_Type          : in std_logic_vector(1 downto 0);
-      Tlp_straddles_4KB : in std_logic;
-      Tlp_has_4KB       : in std_logic;
+      sdram_pg : in std_logic_vector(31 downto 0);
+      wb_pg    : in std_logic_vector(31 downto 0);
 
+      MWr_Type    : in std_logic_vector(1 downto 0);
+      Tlp_has_4KB : in std_logic;
 
       -- Event Buffer write port
       wb_FIFO_we   : out std_logic;
@@ -401,16 +390,10 @@ architecture Behavioral of rx_Transact is
       DDR_wr_sof   : out std_logic;
       DDR_wr_eof   : out std_logic;
       DDR_wr_v     : out std_logic;
-      DDR_wr_FA    : out std_logic;
       DDR_wr_Shift : out std_logic;
       DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
       DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       DDR_wr_full  : in  std_logic;
-
-      -- Data generator table write
-      tab_we : out std_logic_vector(2-1 downto 0);
-      tab_wa : out std_logic_vector(12-1 downto 0);
-      tab_wd : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
       -- Common
       user_clk    : in std_logic;
@@ -488,7 +471,6 @@ architecture Behavioral of rx_Transact is
       DDR_wr_sof   : out std_logic;
       DDR_wr_eof   : out std_logic;
       DDR_wr_v     : out std_logic;
-      DDR_wr_FA    : out std_logic;
       DDR_wr_Shift : out std_logic;
       DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
       DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -529,13 +511,15 @@ architecture Behavioral of rx_Transact is
       IG_Asserting    : out std_logic;
 
       -- cfg interface
-      cfg_interrupt           : out std_logic;
-      cfg_interrupt_rdy       : in  std_logic;
-      cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-      cfg_interrupt_msienable : in  std_logic;
-      cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-      cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-      cfg_interrupt_assert    : out std_logic;
+      cfg_interrupt            : out std_logic;
+      cfg_interrupt_rdy        : in  std_logic;
+      cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+      cfg_interrupt_msienable  : in  std_logic;
+      cfg_interrupt_msixenable : in std_logic;
+      cfg_interrupt_msixfm     : in std_logic;
+      cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+      cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+      cfg_interrupt_assert     : out std_logic;
 
       -- Irpt Channel
       Irpt_Req  : out std_logic;
@@ -554,14 +538,12 @@ architecture Behavioral of rx_Transact is
   component
     usDMA_Transact
     port(
-
       -- command buffer
       usTlp_Req  : out std_logic;
       usTlp_RE   : in  std_logic;
       usTlp_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
 
-      FIFO_Data_Count : in std_logic_vector(C_FIFO_DC_WIDTH downto 0);
-      FIFO_Reading    : in std_logic;
+      FIFO_Reading : in std_logic;
 
       -- Upstream DMA Control Signals from MWr Channel
       usDMA_Start       : in std_logic;
@@ -723,7 +705,7 @@ begin
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit ,  -- IN  std_logic_vector(C_BAR_NUMBER-1 downto 0);
         m_axis_rx_tready   => m_axis_rx_tready ,    -- OUT std_logic;
         Pool_wrBuf_full    => DDR_wr_full ,      -- IN  std_logic;
-        Link_Buf_full      => Link_Buf_full ,    -- IN  std_logic;
+        wb_FIFO_full       => wb_FIFO_full ,    -- IN  std_logic;
 
         -- Delayed
         m_axis_rx_tlast_dly    => m_axis_rx_tlast_dly ,  -- OUT std_logic;
@@ -735,8 +717,6 @@ begin
         m_axis_rx_tbar_hit_dly => m_axis_rx_tbar_hit_dly,  -- OUT std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
         -- TLP resolution
-        IORd_Type => IORd_Type ,        -- OUT std_logic;
-        IOWr_Type => IOWr_Type ,        -- OUT std_logic;
         MRd_Type  => MRd_Type ,         -- OUT std_logic_vector(3 downto 0);
         MWr_Type  => MWr_Type ,         -- OUT std_logic_vector(1 downto 0);
         CplD_Type => CplD_Type ,        -- OUT std_logic_vector(3 downto 0);
@@ -782,18 +762,15 @@ begin
         rx_np_ok           => rx_np_ok,             -- OUT std_logic;
         rx_np_req          => rx_np_req,            -- out std_logic;
 
-        IORd_Type         => IORd_Type ,          -- IN  std_logic;
+        sdram_pg => sdram_pg,
+        wb_pg    => wb_pg,
+
         MRd_Type          => MRd_Type ,  -- IN  std_logic_vector(3 downto 0);
         Tlp_straddles_4KB => Tlp_straddles_4KB ,  -- IN  std_logic;
 
         pioCplD_RE   => pioCplD_RE,     -- IN  std_logic;
         pioCplD_Req  => pioCplD_Req,    -- OUT std_logic;
         pioCplD_Qout => pioCplD_Qout,   -- OUT std_logic_vector(127 downto 0);
-        pio_FC_stop  => pio_FC_stop,    -- IN  std_logic;
-
-        FIFO_Empty         => wb_FIFO_Empty,       -- IN  std_logic;
-        FIFO_Reading       => wb_FIFO_Reading,     -- IN  std_logic;
-        pio_reading_status => pio_reading_status,  -- OUT std_logic;
 
         Channel_Rst => MRd_Channel_Rst,  -- IN  std_logic;
 
@@ -818,10 +795,11 @@ begin
         m_axis_rx_tready   => m_axis_rx_tready_dly,    -- IN  std_logic;
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
 
-        IOWr_Type         => IOWr_Type ,          -- OUT std_logic;
-        MWr_Type          => MWr_Type ,  -- IN  std_logic_vector(1 downto 0);
-        Tlp_straddles_4KB => Tlp_straddles_4KB ,  -- IN  std_logic;
-        Tlp_has_4KB       => Tlp_has_4KB ,        -- IN  std_logic;
+        sdram_pg => sdram_pg,
+        wb_pg    => wb_pg,
+
+        MWr_Type    => MWr_Type ,  -- IN  std_logic_vector(1 downto 0);
+        Tlp_has_4KB => Tlp_has_4KB ,        -- IN  std_logic;
 
         -- Event Buffer write port
         wb_FIFO_we   => wb_FIFO_we_MWr ,   -- OUT std_logic;
@@ -839,16 +817,10 @@ begin
         DDR_wr_sof   => DDR_wr_sof_A ,  --        OUT   std_logic;
         DDR_wr_eof   => DDR_wr_eof_A ,  --        OUT   std_logic;
         DDR_wr_v     => DDR_wr_v_A ,    --        OUT   std_logic;
-        DDR_wr_FA    => DDR_wr_FA_A ,   --        OUT   std_logic;
         DDR_wr_Shift => DDR_wr_Shift_A ,  --        OUT   std_logic;
         DDR_wr_din   => DDR_wr_din_A ,  --        OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         DDR_wr_Mask  => DDR_wr_Mask_A ,  --        OUT   std_logic_vector(2-1 downto 0);
         DDR_wr_full  => DDR_wr_full ,   --        IN    std_logic;
-
-        -- Data generator table write
-        tab_we => tab_we ,              -- OUT std_logic_vector(2-1 downto 0);
-        tab_wa => tab_wa ,              -- OUT std_logic_vector(12-1 downto 0);
-        tab_wd => tab_wd ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
         -- Common
         user_clk    => user_clk ,       --        IN  std_logic;
@@ -920,7 +892,6 @@ begin
         DDR_wr_sof   => DDR_wr_sof_B ,  --        OUT   std_logic;
         DDR_wr_eof   => DDR_wr_eof_B ,  --        OUT   std_logic;
         DDR_wr_v     => DDR_wr_v_B ,    --        OUT   std_logic;
-        DDR_wr_FA    => DDR_wr_FA_B ,   --        OUT   std_logic;
         DDR_wr_Shift => DDR_wr_Shift_B ,  --        OUT   std_logic;
         DDR_wr_Mask  => DDR_wr_Mask_B ,  --        OUT   std_logic_vector(2-1 downto 0);
         DDR_wr_din   => DDR_wr_din_B ,  --        OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -943,7 +914,6 @@ begin
         usTlp_Req  => usTlp_Req,        -- OUT std_logic;
         usTlp_Qout => usTlp_Qout,       -- OUT std_logic_vector(127 downto 0)
 
-        FIFO_Data_Count => wb_FIFO_data_count,  -- IN  std_logic_vector(C_FIFO_DC_WIDTH downto 0);
         FIFO_Reading    => wb_FIFO_Reading,     -- IN  std_logic;
 
         -- upstream Control Signals from MWr Channel
@@ -1073,13 +1043,15 @@ begin
         IG_Asserting    => IG_Asserting ,   -- OUT std_logic;
 
         -- cfg interface
-        cfg_interrupt           => cfg_interrupt ,     -- OUT std_logic;
-        cfg_interrupt_rdy       => cfg_interrupt_rdy ,       -- IN  std_logic;
-        cfg_interrupt_mmenable  => cfg_interrupt_mmenable ,  -- IN  std_logic_vector(2 downto 0);
-        cfg_interrupt_msienable => cfg_interrupt_msienable ,  -- IN  std_logic;
-        cfg_interrupt_di        => cfg_interrupt_di ,  -- OUT std_logic_vector(7 downto 0);
-        cfg_interrupt_do        => cfg_interrupt_do ,  -- IN  std_logic_vector(7 downto 0);
-        cfg_interrupt_assert    => cfg_interrupt_assert ,    -- OUT std_logic;
+        cfg_interrupt            => cfg_interrupt ,     -- OUT std_logic;
+        cfg_interrupt_rdy        => cfg_interrupt_rdy ,       -- IN  std_logic;
+        cfg_interrupt_mmenable   => cfg_interrupt_mmenable ,  -- IN  std_logic_vector(2 downto 0);
+        cfg_interrupt_msienable  => cfg_interrupt_msienable ,  -- IN  std_logic;
+        cfg_interrupt_msixenable => cfg_interrupt_msixenable ,
+        cfg_interrupt_msixfm     => cfg_interrupt_msixfm ,
+        cfg_interrupt_di         => cfg_interrupt_di ,  -- OUT std_logic_vector(7 downto 0);
+        cfg_interrupt_do         => cfg_interrupt_do ,  -- IN  std_logic_vector(7 downto 0);
+        cfg_interrupt_assert     => cfg_interrupt_assert ,    -- OUT std_logic;
 
         -- Irpt Channel
         Irpt_Req  => Irpt_Req ,         -- OUT std_logic;

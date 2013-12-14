@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_clock.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_clock.v
 //  Description  :  PIPE Clock Module for 7 Series Transceiver
@@ -86,7 +86,7 @@ module pcie_core_pipe_clock #
     input       [PCIE_LANE-1:0] CLK_RXOUTCLK_IN,
     input                       CLK_RST_N,
     input       [PCIE_LANE-1:0] CLK_PCLK_SEL,
-    input                       CLK_GEN3,
+    input                       CLK_GEN3,       
     
     //---------- Output ------------------------------------
     output                      CLK_PCLK,
@@ -130,11 +130,11 @@ module pcie_core_pipe_clock #
     localparam          REFCLK_SEL = ((PCIE_TXBUF_EN == "TRUE") && (PCIE_LINK_SPEED != 3)) ? 1'd1 : 1'd0;                                       
        
     //---------- Input Registers ---------------------------
-    reg         [PCIE_LANE-1:0] pclk_sel_reg1 = {PCIE_LANE{1'd0}};
-    reg                         gen3_reg1     = 1'd0;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [PCIE_LANE-1:0] pclk_sel_reg1 = {PCIE_LANE{1'd0}};
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                         gen3_reg1     = 1'd0;
     
-    reg         [PCIE_LANE-1:0] pclk_sel_reg2 = {PCIE_LANE{1'd0}};
-    reg                         gen3_reg2     = 1'd0;   
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [PCIE_LANE-1:0] pclk_sel_reg2 = {PCIE_LANE{1'd0}};
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                         gen3_reg2     = 1'd0;   
        
     //---------- Internal Signals -------------------------- 
     wire                        refclk;

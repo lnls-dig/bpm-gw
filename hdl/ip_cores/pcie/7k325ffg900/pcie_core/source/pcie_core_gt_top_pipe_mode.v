@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gt_top_pipe_mode.v
-// Version    : 1.8
+// Version    : 1.10
 //-- Description: GTX module for 7-series Integrated PCIe Block
 //--
 //--
@@ -232,6 +232,7 @@ module pcie_core_gt_top_pipe_mode #
    // Non PIPE signals
    input   wire                      sys_clk                ,
    input   wire                      sys_rst_n              ,
+   input   wire                      PIPE_MMCM_RST_N        ,
 
    output  wire                      pipe_clk               ,
    output  wire                      user_clk               ,

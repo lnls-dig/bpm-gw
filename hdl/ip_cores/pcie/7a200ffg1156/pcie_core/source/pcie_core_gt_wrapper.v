@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_gt_wrapper.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  gt_wrapper.v
 //  Description  :  GT Wrapper Module for 7 Series Transceiver
@@ -305,7 +305,7 @@ module pcie_core_gt_wrapper #
     //---------- Select TX Receiver Detection Configuration 
     localparam          TX_RXDETECT_CFG = (PCIE_REFCLK_FREQ == 2) ? 14'd250 : 
                                           (PCIE_REFCLK_FREQ == 1) ? 14'd125 : 14'd100;
-    localparam          TX_RXDETECT_REF = (((PCIE_USE_MODE == "1.0") || (PCIE_USE_MODE == "1.1")) && (PCIE_SIM_MODE == "FALSE")) ? 3'b000 : 3'b100;                                                                 
+    localparam          TX_RXDETECT_REF = (((PCIE_USE_MODE == "1.0") || (PCIE_USE_MODE == "1.1")) && (PCIE_SIM_MODE == "FALSE")) ? 3'b000 : 3'b011;                                                                 
                                                       
     //---------- Select PCS_RSVD_ATTR ----------------------
     //  [0]: 1 = enable latch when bypassing TX buffer, 0 = disable latch when using TX buffer 
@@ -477,7 +477,7 @@ generate if (PCIE_GT_DEVICE == "GTP")
         
         //---------- Command Attributes ----------------------------------------                
         .TX_RXDETECT_CFG                (TX_RXDETECT_CFG),                      // 
-        .TX_RXDETECT_REF                ( 3'b100),                              // 
+        .TX_RXDETECT_REF                ( 3'b011),                              // 
         .RX_CM_SEL                      ( 2'd3),                                // 0 = AVTT, 1 = GND, 2 = Float, 3 = Programmable
         .RX_CM_TRIM	                    ( 4'b1010),                             // Select 800mV, Changed from 3 to 4-bits, optimized for IES
         .TX_EIDLE_ASSERT_DELAY          (PCIE_TX_EIDLE_ASSERT_DELAY),           // Optimized for sim
@@ -1105,7 +1105,7 @@ else if (PCIE_GT_DEVICE == "GTH")
         //---------- Command Attributes ----------------------------------------                
         .TX_RXDETECT_CFG                (TX_RXDETECT_CFG),                      //
         .TX_RXDETECT_PRECHARGE_TIME     (17'h00001),                            // GTH new, Optimized for sim
-        .TX_RXDETECT_REF                ( 3'b100),                              // 
+        .TX_RXDETECT_REF                ( 3'b011),                              // 
         .RX_CM_SEL                      ( 2'b11),                                // 0 = AVTT, 1 = GND, 2 = Float, 3 = Programmable, optimized for silicon
         .RX_CM_TRIM                     ( 4'b1010),                             // Select 800mV, Changed from 3 to 4-bits, optimized for silicon
         .TX_EIDLE_ASSERT_DELAY          (PCIE_TX_EIDLE_ASSERT_DELAY),           // Optimized for sim (3'd4)

@@ -555,7 +555,8 @@
       parameter TWLO             =    9000; // tWLO       ps    Write levelization output delay
       parameter TAA_MIN          =   12500; // TAA        ps    Internal READ command to first data
       parameter CL_TIME          =   12500; // CL         ps    Minimum CAS Latency
-  `else `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800E (6-6-6) speed bin
+  `else 
+      `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800E (6-6-6) speed bin
       parameter TCK_MIN          =    2500; // tCK        ps    Minimum Clock Cycle Time
       parameter TJIT_PER         =     100; // tJIT(per)  ps    Period JItter
       parameter TJIT_CC          =     200; // tJIT(cc)   ps    Cycle to Cycle jitter
@@ -783,7 +784,8 @@
       parameter COL_BITS         =      10; // Set this parameter to control how many Column bits are used
       parameter DQ_BITS          =       8; // Set this parameter to control how many Data bits are used       **Same as part bit width**
       parameter DQS_BITS         =       1; // Set this parameter to control how many Dqs bits are used
-  `else `define x16
+  `else 
+      `define x16
       parameter DM_BITS          =       2; // Set this parameter to control how many Data Mask bits are used
       parameter ADDR_BITS        =      15; // MAX Address Bits
       parameter ROW_BITS         =      15; // Set this parameter to control how many Address bits are used
@@ -1505,7 +1507,8 @@
       parameter TWLO             =    9000; // tWLO       ps    Write levelization output delay
       parameter TAA_MIN          =   12500; // TAA        ps    Internal READ command to first data
       parameter CL_TIME          =   12500; // CL         ps    Minimum CAS Latency
-  `else `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800E (6-6-6) speed bin
+  `else 
+      `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800E (6-6-6) speed bin
       parameter TCK_MIN          =    2500; // tCK        ps    Minimum Clock Cycle Time
       parameter TJIT_PER         =     100; // tJIT(per)  ps    Period JItter
       parameter TJIT_CC          =     200; // tJIT(cc)   ps    Cycle to Cycle jitter
@@ -1733,7 +1736,8 @@
       parameter COL_BITS         =      10; // Set this parameter to control how many Column bits are used
       parameter DQ_BITS          =       8; // Set this parameter to control how many Data bits are used       **Same as part bit width**
       parameter DQS_BITS         =       1; // Set this parameter to control how many Dqs bits are used
-  `else `define x16
+  `else 
+      `define x16
       parameter DM_BITS          =       2; // Set this parameter to control how many Data Mask bits are used
       parameter ADDR_BITS        =      14; // MAX Address Bits
       parameter ROW_BITS         =      14; // Set this parameter to control how many Address bits are used
@@ -1931,7 +1935,8 @@
   endfunction
 
 
-`else `define x1Gb // 1Gb parts
+`else 
+   `define x1Gb // 1Gb parts
 
                                             // SYMBOL     UNITS DESCRIPTION
                                             // ------     ----- -----------
@@ -2455,7 +2460,8 @@
       parameter TWLO             =    9000; // tWLO       ps    Write levelization output delay
       parameter TAA_MIN          =   12500; // TAA        ps    Internal READ command to first data
       parameter CL_TIME          =   12500; // CL         ps    Minimum CAS Latency
-  `else `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800 (6-6-6) speed bin
+  `else 
+      `define sg25                        // sg25 is equivalent to the JEDEC DDR3-800 (6-6-6) speed bin
       parameter TCK_MIN          =    2500; // tCK        ps    Minimum Clock Cycle Time
       parameter TJIT_PER         =     100; // tJIT(per)  ps    Period JItter
       parameter TJIT_CC          =     200; // tJIT(cc)   ps    Cycle to Cycle jitter
@@ -2695,7 +2701,8 @@
       parameter COL_BITS         =      10; // Set this parameter to control how many Column bits are used
       parameter DQ_BITS          =       8; // Set this parameter to control how many Data bits are used       **Same as part bit width**
       parameter DQS_BITS         =       1; // Set this parameter to control how many Dqs bits are used
-  `else `define x16
+  `else 
+      `define x16
       parameter DM_BITS          =       2; // Set this parameter to control how many Data Mask bits are used
       parameter ADDR_BITS        =      13; // MAX Address Bits
       parameter ROW_BITS         =      13; // Set this parameter to control how many Address bits are used

@@ -291,7 +291,7 @@ static struct pci_driver pcidriver_driver = {
  * @param pdev Pointer to the PCI device
  *
  */
-static int __devinit pcidriver_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+static int pcidriver_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	int err;
 	int devno;
@@ -307,14 +307,18 @@ static int __devinit pcidriver_probe(struct pci_dev *pdev, const struct pci_devi
 		(id->device == PCIE_KC705_DEV_ID))
 	{
 		mod_info( "Found KC705 at %s\n", dev_name(&pdev->dev));
-		/* Set bus master */
-		pci_set_master(pdev);
 	}
 	else if ((id->vendor == PCIE_XILINX_VENDOR_ID) &&
 		(id->device == PCIE_ML605_DEVICE_ID))
 	{
                 /* It is a PCI-E Xilinx ML605 evaluation board */
 		mod_info("Found ML605 board at %s\n", dev_name(&pdev->dev));
+	}
+	else if ((id->vendor == PCIE_XILINX_VENDOR_ID) &&
+		(id->device == PCIE_AMC_DEV_ID))
+	{
+                /* It is a PCI-E Creotech uTCA AMC board */
+		mod_info("Found uTCA AMC board at %s\n", dev_name(&pdev->dev));
 	}
 	else
 	{
@@ -328,16 +332,23 @@ static int __devinit pcidriver_probe(struct pci_dev *pdev, const struct pci_devi
 		goto probe_pcien_fail;
 	}
 
-	/* Set Memory-Write-Invalidate support */
-	if ((err = pci_set_mwi(pdev)) != 0)
-		mod_info("MWI not supported. Continue without enabling MWI.\n");
+    /* Set bus master */
+    pci_set_master(pdev);
 
+    err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+    if (err) {
+        err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+    }
+    if (err) {
+        dev_err(&pdev->dev, "No suitable DMA available");
+        goto probe_disable_device;
+    }
 	/* Get / Increment the device id */
 	devid = atomic_inc_return(&pcidriver_deviceCount) - 1;
 	if (devid >= MAXDEVICES) {
 		mod_info("Maximum number of devices reached! Increase MAXDEVICES.\n");
 		err = -ENOMSG;
-		goto probe_maxdevices_fail;
+		goto probe_disable_device;
 	}
 
 	/* Allocate and initialize the private data for this device */
@@ -413,7 +424,7 @@ probe_irq_probe_fail:
 	kfree(privdata);
 probe_nomem:
 	atomic_dec(&pcidriver_deviceCount);
-probe_maxdevices_fail:
+probe_disable_device:
 	pci_disable_device(pdev);
 probe_pcien_fail:
  	return err;
@@ -424,7 +435,7 @@ probe_pcien_fail:
  * This function is called when disconnecting a device
  *
  */
-static void __devexit pcidriver_remove(struct pci_dev *pdev)
+static void pcidriver_remove(struct pci_dev *pdev)
 {
 	pcidriver_privdata_t *privdata;
 

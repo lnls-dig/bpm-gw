@@ -2,6 +2,7 @@
 
 TOP_DIR=../..
 DEFAULT_SYN_PATH=${TOP_DIR}/hdl/syn
+EXPECTED_ARGS=1
 
 # Test for parameter presence
 : ${1?"Usage: $0 <bistream_name>"}
@@ -19,7 +20,7 @@ if [ "${BITSTREAM_NUM}" -eq 0 ]; then
 fi
 
 if [ "${BITSTREAM_NUM}" -gt 1 ]; then
-	echo -e "There are "${BITSTREAM_NUM}" bitstreams that match the description:"
+	echo -e "There are "${BITSTREAM_NUM}" bitstreams that matches the description:"
 	echo "${BITSTREAM_LOC}"
 	echo "You must specify a more verbose name"
 	exit 1

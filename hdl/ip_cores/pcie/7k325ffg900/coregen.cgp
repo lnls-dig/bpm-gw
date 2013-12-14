@@ -1,10 +1,10 @@
-# Date: Mon Jan  7 12:25:40 2013
+# Date: Tue Sep 17 13:02:05 2013
 
 SET addpads = false
 SET asysymbol = false
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = VHDL
+SET designentry = Verilog
 SET device = xc7k325t
 SET devicefamily = kintex7
 SET flowvendor = Foundation_ISE
@@ -15,8 +15,8 @@ SET package = ffg900
 SET removerpms = false
 SET simulationfiles = Structural
 SET speedgrade = -2
-SET verilogsim = false
-SET vhdlsim = true
+SET verilogsim = true
+SET vhdlsim = false
 SET workingdirectory = ./tmp/
 
-# CRC: 8a06eaa2
+# CRC: b4a0e4d8

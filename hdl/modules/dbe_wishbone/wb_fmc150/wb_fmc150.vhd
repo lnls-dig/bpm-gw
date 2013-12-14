@@ -480,7 +480,7 @@ begin
 
     -- Simulation / Syntesis Only consructs. Is there a better way to do it?
     s_data(c_num_adc_data_msb downto 0)                     <= s_adc_dout(c_num_adc_data_msb downto 0);
-    s_data(c_wbs_data_width downto c_num_adc_data_msb+1)    <= (others => '0');
+    --s_data(c_wbs_data_width downto c_num_adc_data_msb+1)    <= (others => '0');
 
     gen_stream_valid : if (g_sim = 0) generate
         s_dvalid                            <= cdce_pll_status_i and s_mmcm_adc_locked;

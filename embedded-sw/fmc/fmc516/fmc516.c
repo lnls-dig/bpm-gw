@@ -31,27 +31,27 @@ int fmc516_init(void)
         fmc516[i] = (fmc516_t *) dev_p->base;
 
         // Initialize fmc516 components
-        dbg_print("> initilizing fmc516 regs\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 regs\n");
         fmc516_init_regs(i);
-        dbg_print("> initilizing fmc516 lmk02000\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 lmk02000\n");
         fmc516_lmk02000_init();
-        dbg_print("> fmc516 addr[%d]: %08X\n", i, dev_p->base);
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> fmc516 addr[%d]: %08X\n", i, dev_p->base);
 
         delay(1000);
-        dbg_print("> resetting ADCs\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> resetting ADCs\n");
         fmc516_reset_adcs(i);
         delay(1000);
         fmc516_resetdiv_adcs(i);
         delay(1000);
-        dbg_print("> ADCs reset values(rst|divrst)): %08X|%08X\n",
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> ADCs reset values(rst|divrst)): %08X|%08X\n",
             fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_ADCS,
             fmc516[i]->ADC_CTL & FMC516_ADC_CTL_RST_DIV_ADCS);
 
-        dbg_print("> initilizing fmc516 isla216\n");
+        DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> initilizing fmc516 isla216\n");
         fmc516_isla216_all_init();
     }
 
-    dbg_print("> fmc516 size: %d\n", fmc516_devl->size);
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> fmc516 size: %d\n", fmc516_devl->size);
     //fmc516 = (fmc516_t *)fmc516_devl->devices->base;//BASE_FMC516;
     return 0;
 }
@@ -69,7 +69,7 @@ void fmc516_init_regs(unsigned int id)
 {
     int commit= 1;
 
-    dbg_print("> Leds and clock select\n");
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_INFO, "> Leds and clock select\n");
 
     // No test data. External reference on. Led0 on. VCXO off
     fmc516_clk_sel(id, 1);
@@ -96,24 +96,48 @@ void fmc516_sweep_delays(unsigned int id)
     int commit = 1;
     int i, j;
 
-    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
-    dbg_print("> ADC%d data delay: %d...\n", 1, FMC516_CH1_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH1_FN_DLY));
-    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
-    dbg_print("> ADC%d data delay: %d...\n", 3, FMC516_CH3_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH3_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 0,
+                FMC516_CH0_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 1,
+                FMC516_CH1_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH1_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 2,
+                FMC516_CH2_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fine data delay: %d\n", 3,
+                FMC516_CH3_FN_DLY_DATA_CHAIN_DLY_R(fmc516[id]->CH3_FN_DLY));
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 0,
+                FMC516_CH0_CS_DLY_FE_DLY_R(fmc516[id]->CH0_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 1,
+                FMC516_CH1_CS_DLY_FE_DLY_R(fmc516[id]->CH1_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 2,
+                FMC516_CH2_CS_DLY_FE_DLY_R(fmc516[id]->CH2_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d fe coarse data delay: %d\n", 3,
+                FMC516_CH3_CS_DLY_FE_DLY_R(fmc516[id]->CH3_CS_DLY));
+
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 0,
+                FMC516_CH0_CS_DLY_RG_DLY_R(fmc516[id]->CH0_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 1,
+                FMC516_CH1_CS_DLY_RG_DLY_R(fmc516[id]->CH1_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 2,
+                FMC516_CH2_CS_DLY_RG_DLY_R(fmc516[id]->CH2_CS_DLY));
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d rg coarse data delay: %d\n", 3,
+                FMC516_CH3_CS_DLY_RG_DLY_R(fmc516[id]->CH3_CS_DLY));
 
     //for (i = 0; i < FMC516_NUM_ISLA216; ++i) {
         //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 1, j);
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> sweeping ADC%d clk delay values: %d...\n", 1, j);
         //    fmc516_adj_delay(id, FMC516_ISLA216_ADC1, -1, j, commit);
         //    delay(80000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 0, FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d data delay: %d...\n", 0,
+        //                FMC516_CH0_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH0_FN_DLY));
         //}
 
         //for (j = 0; j < 32; ++j) {
-        //    dbg_print("> sweeping ADC%d clk delay values: %d...\n", 2, j);
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> sweeping ADC%d clk delay values: %d...\n", 2, j);
         //    fmc516_adj_delay(id, FMC516_ISLA216_ADC2, -1, j, commit);
         //    delay(150000000);
-        //    dbg_print("> ADC%d data delay: %d...\n", 2, FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
+        //    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "> ADC%d data delay: %d...\n", 2,
+        //                FMC516_CH2_CTL_CLK_CHAIN_DLY_R(fmc516[id]->CH2_FN_DLY));
         //}
     //}
 }
@@ -286,5 +310,5 @@ void fmc516_fe_rg_dly(unsigned int id, int ch, int fe_dly_d1, int fe_dly_d2,
     // Write register value once
     *fmc_ch_handler = dly_ctl_reg;
 
-    dbg_print("dly_ctl_reg, *fmc_ch_handler = %08X, %08X\n", dly_ctl_reg, *fmc_ch_handler);
+    DBE_DEBUG(DBG_GENERIC | DBE_DBG_TRACE, "dly_ctl_reg, *fmc_ch_handler = %08X, %08X\n", dly_ctl_reg, *fmc_ch_handler);
 }

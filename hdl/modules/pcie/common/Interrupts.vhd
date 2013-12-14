@@ -1,22 +1,22 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Design Name: 
--- Module Name:    Interrupts - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Design Name:
+-- Module Name:    Interrupts - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 1.00 - File Created  14.05.2007
--- 
+--
 -- Revision 1.10 - Msg Tag incremented.  20.07.2007
--- 
--- Additional Comments: 
+--
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -45,15 +45,16 @@ entity Interrupts is
     IG_Num_Deassert : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     IG_Asserting    : out std_logic;
 
-
-    -- Interrupt Interface 
-    cfg_interrupt           : out std_logic;
-    cfg_interrupt_rdy       : in  std_logic;
-    cfg_interrupt_mmenable  : in  std_logic_vector(2 downto 0);
-    cfg_interrupt_msienable : in  std_logic;
-    cfg_interrupt_di        : out std_logic_vector(7 downto 0);
-    cfg_interrupt_do        : in  std_logic_vector(7 downto 0);
-    cfg_interrupt_assert    : out std_logic;
+    -- Interrupt Interface
+    cfg_interrupt            : out std_logic;
+    cfg_interrupt_rdy        : in  std_logic;
+    cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
+    cfg_interrupt_msienable  : in  std_logic;
+    cfg_interrupt_msixenable : in std_logic;
+    cfg_interrupt_msixfm     : in std_logic;
+    cfg_interrupt_di         : out std_logic_vector(7 downto 0);
+    cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
+    cfg_interrupt_assert     : out std_logic;
 
     -- Irpt Channel
     Irpt_Req  : out std_logic;
@@ -79,15 +80,15 @@ architecture Behavioral of Interrupts is
                                     );
 
   signal edge_Intrpt_State  : IrptStates;
-  signal level_Intrpt_State : IrptStates;
 
   signal cfg_interrupt_i        : std_logic;
-  signal cfg_interrupt_rdy_i    : std_logic;
   signal cfg_interrupt_di_i     : std_logic_vector(7 downto 0);
   signal cfg_interrupt_assert_i : std_logic;
 
   signal edge_Irpt_Req_i  : std_logic;
-  signal level_Irpt_Req_i : std_logic;
+
+  signal inta_trigger : std_logic;
+  signal msi_trigger  : std_logic;
 
   signal Irpt_RE_i   : std_logic;
   signal Irpt_Qout_i : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0)
@@ -97,11 +98,11 @@ architecture Behavioral of Interrupts is
   signal Msg_Code   : std_logic_vector(7 downto 0);
 
   signal edge_MsgCode_is_ASSERT  : std_logic;
-  signal level_MsgCode_is_ASSERT : std_logic;
 
-  signal Interrupts_ORed : std_logic;
+  signal Interrupts_ORed    : std_logic;
+  signal Interrupts_ORed_r1 : std_logic;
 
-  -- Interrupt Generator 
+  -- Interrupt Generator
   signal IG_Trigger_i : std_logic;
 
   -- Interrupt Generator Counter
@@ -123,15 +124,12 @@ begin
   -- Interrupt interface
   -- cfg_interrupt should be explicitly clarified!
   cfg_interrupt_assert <= cfg_interrupt_assert_i;
-  cfg_interrupt_rdy_i  <= cfg_interrupt_rdy;
-  -- Only Legacy IntA for the moment ...
   cfg_interrupt_di     <= cfg_interrupt_di_i;
   cfg_interrupt_di_i   <= (others => '0');
 
   -- Channel mode interface.
   Irpt_RE_i <= Irpt_RE;
   Irpt_Qout <= Irpt_Qout_i;
-
 
 --  ---------------------------------------------------
 --  emulates a channel buffer output
@@ -151,14 +149,12 @@ begin
 --         12 : EP
 --   11 ~  10 : Attribute
 --    9 ~   0 : Length
--- 
+--
   Irpt_Qout_i(C_CHBUF_QVALID_BIT)                                       <= '1';
   Irpt_Qout_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)           <= C_MSG_TAG_HI & Msg_Tag_Lo;
   Irpt_Qout_i(C_CHBUF_MSG_CODE_BIT_TOP downto C_CHBUF_MSG_CODE_BIT_BOT) <= Msg_Code;
   Irpt_Qout_i(C_CHBUF_FMT_BIT_TOP downto C_CHBUF_FMT_BIT_BOT)           <= C_FMT4_NO_DATA;
   Irpt_Qout_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT)         <= C_ALL_ZEROS(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT);
-
-
 
 -- ---------------------------------------------------------------
 -- All Interrups are OR'ed
@@ -174,11 +170,19 @@ begin
       else
         Interrupts_ORed <= '1';
       end if;
+      Interrupts_ORed_r1 <= Interrupts_ORed;
     end if;
   end process;
 
-
-
+  p_irpt_trig:
+  process (user_clk)
+  begin
+    if rising_edge(user_clk) then
+      inta_trigger <= Interrupts_ORed;
+      --rising edge, because interrupt handling differs between legacy INTA and MSI
+      msi_trigger  <= Interrupts_ORed and not(Interrupts_ORed_r1);
+    end if;
+  end process;
 -------------------------------------------
 ---- Cfg Interface mode
 -------------------------------------------
@@ -206,10 +210,10 @@ begin
             cfg_interrupt_assert_i <= '0';
 
           when IntST_Idle =>
-            if Interrupts_ORed = '1' then
+            if (inta_trigger or msi_trigger) = '1' then
               edge_Intrpt_State      <= IntST_Asserting;
               cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= '1';
+              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
             else
               edge_Intrpt_State      <= IntST_Idle;
               cfg_interrupt_i        <= '0';
@@ -220,13 +224,16 @@ begin
             if cfg_interrupt_rdy = '0' then
               edge_Intrpt_State      <= IntST_Asserting;
               cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= '1';
+              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
             else
-              edge_Intrpt_State      <= IntST_Asserted;
+              if cfg_interrupt_msienable = '1' then
+                edge_Intrpt_State <= IntST_Idle;
+              else
+                edge_Intrpt_State <= IntST_Asserted;
+              end if;
               cfg_interrupt_i        <= '0';
-              cfg_interrupt_assert_i <= '1';
+              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
             end if;
-
 
           when IntST_Asserted =>
             if Interrupts_ORed = '0' then
@@ -239,9 +246,8 @@ begin
               cfg_interrupt_assert_i <= '1';
             end if;
 
-
           when IntST_Deasserting =>
-            if Irpt_RE_i = '0' then
+            if cfg_interrupt_rdy = '0' then
               edge_Intrpt_State      <= IntST_Deasserting;
               cfg_interrupt_i        <= '1';
               cfg_interrupt_assert_i <= '0';
@@ -250,7 +256,6 @@ begin
               cfg_interrupt_i        <= '0';
               cfg_interrupt_assert_i <= '0';
             end if;
-
 
           when others =>
             edge_Intrpt_State      <= IntST_Idle;
@@ -373,7 +378,7 @@ begin
   end generate;  -- Gen_Chan_MSI: if not USE_CFG_INTERRUPT
 
 
-  -- 
+  --
   --------------      Generate Interrupt Generator       ------------------
   --
   Gen_IG : if IMP_INT_GENERATOR generate
@@ -524,7 +529,7 @@ begin
   end generate;
 
 
-  -- 
+  --
   --------------    No Generation of Interrupt Generator     ----------------
   --
 

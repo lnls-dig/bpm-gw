@@ -5,5 +5,6 @@ OBJS_DEV =	dev/dma.o	\
 			dev/ethmac_adapt.o	\
 			dev/spi.o	\
 			dev/i2c.o	\
-			dev/onewire.o
+			dev/onewire.o	\
+			dev/timer.o	\
 	  

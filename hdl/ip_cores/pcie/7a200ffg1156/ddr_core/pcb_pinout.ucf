@@ -69,3 +69,4 @@ NET "ddr3_we_n"                              LOC = "AM1"     |   IOSTANDARD = SS
 NET "ddr3_reset_n"                           LOC = "AJ9"     |   IOSTANDARD = LVCMOS15              ;                                 
 NET "ddr3_cke[0]"                            LOC = "AJ5"     |   IOSTANDARD = SSTL15                ;                                 
 NET "ddr3_odt[0]"                            LOC = "AP1"     |   IOSTANDARD = SSTL15                ;                                 
+NET "ddr3_cs_n[0]"                           LOC = "AN3"     |   IOSTANDARD = SSTL15                ;                                 

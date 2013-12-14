@@ -36,38 +36,8 @@ use UNISIM.VComponents.all;
 
 entity Regs_Group is
   port (
-
-    -- DCB protocol interface
-    protocol_link_act : in  std_logic_vector(2-1 downto 0);
-    protocol_rst      : out std_logic;
-
-    -- Fabric side: CTL Rx
-    ctl_rv : out std_logic;
-    ctl_rd : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-    -- Fabric side: CTL Tx
-    ctl_ttake : out std_logic;
-    ctl_tv    : in  std_logic;
-    ctl_td    : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    ctl_tstop : out std_logic;
-
-    ctl_reset  : out std_logic;
-    ctl_status : in  std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-    -- Fabric side: DLM Rx
-    dlm_tv : out std_logic;
-    dlm_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-    -- Fabric side: DLM Tx
-    dlm_rv : in std_logic;
-    dlm_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
     -- Event Buffer status + reset
-    wb_FIFO_Status  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     wb_FIFO_Rst     : out std_logic;
-    wb_FIFO_ow      : in  std_logic;
-    H2B_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    B2H_FIFO_Status : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- Write interface
     Regs_WrEnA   : in std_logic;
@@ -156,9 +126,6 @@ entity Regs_Group is
 
     -- to Interrupts Module
     Sys_IRQ : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    DAQ_irq : in  std_logic;
-    CTL_irq : in  std_logic;
-    DLM_irq : in  std_logic;
 
     -- System error and info
     Tx_TimeOut      : in  std_logic;
@@ -166,6 +133,7 @@ entity Regs_Group is
     Msg_Routing     : out std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
     pcie_link_width : in  std_logic_vector(CINT_BIT_LWIDTH_IN_GSR_TOP-CINT_BIT_LWIDTH_IN_GSR_BOT downto 0);
     cfg_dcommand    : in  std_logic_vector(16-1 downto 0);
+    ddr_sdram_ready : in  std_logic;
 
     -- Interrupt Generation Signals
     IG_Reset        : out std_logic;
@@ -175,76 +143,9 @@ entity Regs_Group is
     IG_Num_Deassert : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     IG_Asserting    : in  std_logic;
 
-    -- Data generator control
-    DG_is_Running : in  std_logic;
-    DG_Reset      : out std_logic;
-    DG_Mask       : out std_logic;
-
-    -- SIMONE Register: PC-->FPGA
-    reg01_tv : out std_logic;
-    reg01_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg02_tv : out std_logic;
-    reg02_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg03_tv : out std_logic;
-    reg03_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg04_tv : out std_logic;
-    reg04_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg05_tv : out std_logic;
-    reg05_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg06_tv : out std_logic;
-    reg06_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg07_tv : out std_logic;
-    reg07_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg08_tv : out std_logic;
-    reg08_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg09_tv : out std_logic;
-    reg09_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg10_tv : out std_logic;
-    reg10_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg11_tv : out std_logic;
-    reg11_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg12_tv : out std_logic;
-    reg12_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg13_tv : out std_logic;
-    reg13_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg14_tv : out std_logic;
-    reg14_td : out std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-    -- SIMONE Register: FPGA-->PC
-    reg01_rv : in std_logic;
-    reg01_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg02_rv : in std_logic;
-    reg02_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg03_rv : in std_logic;
-    reg03_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg04_rv : in std_logic;
-    reg04_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg05_rv : in std_logic;
-    reg05_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg06_rv : in std_logic;
-    reg06_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg07_rv : in std_logic;
-    reg07_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg08_rv : in std_logic;
-    reg08_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg09_rv : in std_logic;
-    reg09_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg10_rv : in std_logic;
-    reg10_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg11_rv : in std_logic;
-    reg11_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg12_rv : in std_logic;
-    reg12_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg13_rv : in std_logic;
-    reg13_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-    reg14_rv : in std_logic;
-    reg14_rd : in std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-    --SIMONE debug signals
-    debug_in_1i : out std_logic_vector(31 downto 0);
-    debug_in_2i : out std_logic_vector(31 downto 0);
-    debug_in_3i : out std_logic_vector(31 downto 0);
-    debug_in_4i : out std_logic_vector(31 downto 0);
+    -- SDRAM and Wishbone paging registers
+    sdram_pg : out std_logic_vector(31 downto 0);
+    wb_pg    : out std_logic_vector(31 downto 0);
 
     -- Clock and reset
     user_clk    : in std_logic;
@@ -256,15 +157,6 @@ end Regs_Group;
 
 
 architecture Behavioral of Regs_Group is
-
-  type icapStates is (icapST_Reset
-                                 , icapST_Idle
-                                 , icapST_Access
-                                 , icapST_Abort
-                                 );
-
-  -- State variables of ICAP
-  signal FSM_icap : icapStates;
 
   ----------------------------------------------------------------------------
   ----------------------------------------------------------------------------
@@ -305,7 +197,6 @@ architecture Behavioral of Regs_Group is
   signal Reg_WrMuxer_Hi : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
   signal Reg_WrMuxer_Lo : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
 
-
   -- Signals for Tx reading
   signal Regs_RdAddr_i : std_logic_vector(C_EP_AWIDTH-1 downto 0);
   signal Regs_RdQout_i : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -314,27 +205,13 @@ architecture Behavioral of Regs_Group is
   signal Reg_RdMuxer_Hi : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
   signal Reg_RdMuxer_Lo : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
 
-  -- Optical Link status
-  signal Opto_Link_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal Opto_Link_Status_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal Opto_Link_Status_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   -- Event Buffer
-  signal wb_FIFO_Status_r1     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal wb_FIFO_Status_o_Hi   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal wb_FIFO_Status_o_Lo   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal H2B_FIFO_Status_r1    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal H2B_FIFO_Status_o_Hi  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal H2B_FIFO_Status_o_Lo  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal B2H_FIFO_Status_r1    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal B2H_FIFO_Status_o_Hi  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal B2H_FIFO_Status_o_Lo  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wb_FIFO_Rst_i         : std_logic;
   signal wb_FIFO_Rst_b1        : std_logic;
   signal wb_FIFO_Rst_b2        : std_logic;
   signal wb_FIFO_Rst_b3        : std_logic;
   signal wb_FIFO_Rst_b4        : std_logic;
   signal wb_FIFO_Rst_b5        : std_logic;
-  signal eb_FIFO_OverWritten   : std_logic;
 
   -- Downstream DMA registers
   signal DMA_ds_PA_o_Hi           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -379,16 +256,6 @@ architecture Behavioral of Regs_Group is
   signal Sys_Int_Enable_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Sys_Int_Enable_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-
-  -- Data generator control
-  signal DG_Reset_i      : std_logic;
-  signal DG_Mask_i       : std_logic;
-  signal DG_is_Available : std_logic;
-  signal DG_Rst_Counter  : std_logic_vector(8-1 downto 0);
-  signal DG_Status_i     : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DG_Status_o_Hi  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal DG_Status_o_Lo  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
   -- General Control and Status
   signal Sys_Error_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Sys_Error_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -401,6 +268,13 @@ architecture Behavioral of Regs_Group is
   signal General_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal General_Status_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal General_Status_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+
+  signal sdram_pg_i    : std_logic_vector(32-1 downto 0);
+  signal sdram_pg_o_hi : std_logic_vector(32-1 downto 0);
+  signal sdram_pg_o_lo : std_logic_vector(32-1 downto 0);
+  signal wb_pg_i    : std_logic_vector(32-1 downto 0);
+  signal wb_pg_o_hi : std_logic_vector(32-1 downto 0);
+  signal wb_pg_o_lo : std_logic_vector(32-1 downto 0);
 
   -- Hardward version
   signal HW_Version_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -500,187 +374,7 @@ architecture Behavioral of Regs_Group is
   -- Tx module reset
   signal Tx_Reset_i : std_logic;
 
-
-  -- ICAP
-  signal icap_CLK    : std_logic;
-  signal icap_I      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal icap_CE     : std_logic;
-  signal icap_Write  : std_logic;
-  signal icap_O      : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal icap_O_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal icap_O_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal icap_BUSY   : std_logic;
-
-  -- DCB protocol interface
-  signal protocol_rst_i  : std_logic;
-  signal protocol_rst_b1 : std_logic;
-  signal protocol_rst_b2 : std_logic;
-
-  -- Protocol : CTL
-  signal ctl_rv_i : std_logic;
-  signal ctl_rd_i : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-  signal class_CTL_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal class_CTL_Status_o_Hi : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-  signal class_CTL_Status_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-  signal ctl_td_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal ctl_td_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal ctl_td_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-  signal ctl_reset_i      : std_logic;
-  signal ctl_ttake_i      : std_logic;
-  signal ctl_tstop_i      : std_logic;
-  signal ctl_t_read_Hi_r1 : std_logic;
-  signal ctl_t_read_Lo_r1 : std_logic;
-  signal CTL_read_counter : std_logic_vector(6-1 downto 0);
-
-  -- Protocol : DLM
-  signal dlm_tv_i : std_logic;
-  signal dlm_td_i : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-  signal dlm_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal dlm_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal dlm_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-
-
-  -- SIMONE Register: PC-->FPGA
-  signal reg01_tv_i    : std_logic;
-  signal reg01_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg02_tv_i    : std_logic;
-  signal reg02_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg03_tv_i    : std_logic;
-  signal reg03_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg04_tv_i    : std_logic;
-  signal reg04_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg05_tv_i    : std_logic;
-  signal reg05_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg06_tv_i    : std_logic;
-  signal reg06_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg07_tv_i    : std_logic;
-  signal reg07_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg08_tv_i    : std_logic;
-  signal reg08_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg09_tv_i    : std_logic;
-  signal reg09_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg10_tv_i    : std_logic;
-  signal reg10_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg11_tv_i    : std_logic;
-  signal reg11_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg12_tv_i    : std_logic;
-  signal reg12_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg13_tv_i    : std_logic;
-  signal reg13_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg14_tv_i    : std_logic;
-  signal reg14_td_i    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  -- SIMONE Register: FPGA-->PC
-  signal reg01_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg01_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg01_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg02_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg02_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg02_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg03_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg03_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg03_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg04_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg04_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg04_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg05_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg05_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg05_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg06_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg06_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg06_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg07_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg07_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg07_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg08_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg08_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg08_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg09_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg09_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg09_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg10_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg10_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg10_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg11_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg11_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg11_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg12_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg12_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg12_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg13_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg13_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg13_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg14_rd_o_Hi : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg14_rd_o_Lo : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  signal reg14_rd_r    : std_logic_vector(C_DBUS_WIDTH/2-1 downto 0);
-  --signal  debug_in_1i           : std_logic_vector(31 downto 0);
-  --signal  debug_in_2i           : std_logic_vector(31 downto 0);
-  --signal  debug_in_3i           : std_logic_vector(31 downto 0);
-
-
-
 begin
-
-  DG_Available_Bit : if IMP_DATA_GENERATOR generate
-    DG_is_Available <= '1';
-  end generate;
-
-  DG_Unavailable_Bit : if not IMP_DATA_GENERATOR generate
-    DG_is_Available <= '0';
-  end generate;
-
-  -- SIMONE Register: PC-->FPGA
-  reg01_tv <= reg01_tv_i;
-  reg01_td <= reg01_td_i;
-  reg02_tv <= reg02_tv_i;
-  reg02_td <= reg02_td_i;
-  reg03_tv <= reg03_tv_i;
-  reg03_td <= reg03_td_i;
-  reg04_tv <= reg04_tv_i;
-  reg04_td <= reg04_td_i;
-  reg05_tv <= reg05_tv_i;
-  reg05_td <= reg05_td_i;
-  reg06_tv <= reg06_tv_i;
-  reg06_td <= reg06_td_i;
-  reg07_tv <= reg07_tv_i;
-  reg07_td <= reg07_td_i;
-  reg08_tv <= reg08_tv_i;
-  reg08_td <= reg08_td_i;
-  reg09_tv <= reg09_tv_i;
-  reg09_td <= reg09_td_i;
-  reg10_tv <= reg10_tv_i;
-  reg10_td <= reg10_td_i;
-  reg11_tv <= reg11_tv_i;
-  reg11_td <= reg11_td_i;
-  reg12_tv <= reg12_tv_i;
-  reg12_td <= reg12_td_i;
-  reg13_tv <= reg13_tv_i;
-  reg13_td <= reg13_td_i;
-  reg14_tv <= reg14_tv_i;
-  reg14_td <= reg14_td_i;
-
-
-  -- protocol interface reset
-  protocol_rst <= protocol_rst_i;
-
-  ctl_rv <= ctl_rv_i;
-  ctl_rd <= ctl_rd_i;
-
-  ctl_ttake <= ctl_ttake_i;
-  ctl_tstop <= ctl_tstop_i;
-  ctl_reset <= ctl_reset_i;
-
-  ctl_tstop_i <= '0';                   -- ???
-
-  dlm_tv <= dlm_tv_i;
-  dlm_td <= dlm_td_i;
-
-  -- Data generator control
-  DG_Reset <= DG_Reset_i;
-  DG_Mask  <= DG_Mask_i;
 
   -- Event buffer reset
   wb_FIFO_Rst <= wb_FIFO_Rst_i;
@@ -697,6 +391,8 @@ begin
   -- Downstream DMA engine reset
   dsDMA_Channel_Rst <= dsDMA_Channel_Rst_i;
 
+  sdram_pg <= sdram_pg_i;
+  wb_pg    <= wb_pg_i;
 
   -- Upstream DMA registers
   DMA_us_PA         <= DMA_us_PA_i;
@@ -885,43 +581,6 @@ begin
       Regs_WrEnB_r1 <= Regs_WrEnB;
       Regs_WrEnB_r2 <= Regs_WrEnB_r1;
 
-    end if;
-  end process;
-
--- ----------------------------------------------
--- Synchronous Delay : Opto_Link_Status
---
-  Synch_Delay_Opto_Link_Status :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      Opto_Link_Status_i(C_DBUS_WIDTH-1 downto 2) <= (others => '0');
-      Opto_Link_Status_i(2-1 downto 0)            <= protocol_link_act;
-    end if;
-  end process;
-
--- ----------------------------------------------
--- Synchronous Delay : wb_FIFO_Status
---
-  Synch_Delay_wb_FIFO_Status :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      wb_FIFO_Status_r1 <= wb_FIFO_Status;
-    end if;
-  end process;
-  Synch_Delay_H2B_FIFO_Status :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      H2B_FIFO_Status_r1 <= H2B_FIFO_Status;
-    end if;
-  end process;
-  Synch_Delay_B2H_FIFO_Status :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      B2H_FIFO_Status_r1 <= B2H_FIFO_Status;
     end if;
   end process;
 
@@ -1165,6 +824,59 @@ begin
   end process;
 
 --  -----------------------------------------------
+--  DDR SDRAM address page
+--  -----------------------------------------------
+-- -------------------------------------------------------
+-- Synchronous Registered: wb_pg
+  SDRAM_Addr_page :
+  process (user_clk, user_lnk_up)
+  begin
+    if user_lnk_up = '0' then
+      sdram_pg_i <= (others => '0');
+    elsif user_clk'event and user_clk = '1' then
+
+      if Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
+      then
+        sdram_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+      elsif Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
+      then
+        sdram_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+      else
+        sdram_pg_i <= sdram_pg_i;
+      end if;
+
+    end if;
+  end process;
+
+--  -----------------------------------------------
+--  Wishbone endpoint address page
+--  -----------------------------------------------
+-- -------------------------------------------------------
+-- Synchronous Registered: wb_pg_i
+  Wishbone_addr_page :
+  process (user_clk, user_lnk_up)
+  begin
+    if user_lnk_up = '0' then
+      wb_pg_i <= (others => '0');
+    elsif user_clk'event and user_clk = '1' then
+
+      if Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Hi(CINT_ADDR_WB_PG) = '1'
+      then
+        wb_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+      elsif Regs_WrEn_r2 = '1'
+        and Reg_WrMuxer_Lo(CINT_ADDR_WB_PG) = '1'
+      then
+        wb_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+      else
+        wb_pg_i <= wb_pg_i;
+      end if;
+
+    end if;
+  end process;
+--  -----------------------------------------------
 --    System General Control Register
 --  -----------------------------------------------
 -- -----------------------------------------------
@@ -1192,78 +904,6 @@ begin
         General_Control_i <= General_Control_i;
       end if;
 
-    end if;
-  end process;
-
--- -----------------------------------------------
--- Synchronous Registered: DG_Reset_i
-  SysReg_DGen_Reset :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      DG_Reset_i     <= '1';
-      DG_Rst_Counter <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if DG_Rst_Counter = X"FF" then
-        DG_Rst_Counter <= DG_Rst_Counter;
-      else
-        DG_Rst_Counter <= DG_Rst_Counter + '1';
-      end if;
-
-      if DG_Rst_Counter(7) = '0' then
-        DG_Reset_i <= '1';
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DG_CTRL) = '1'
-      then
-        DG_Reset_i <= Command_is_Reset_Hi;
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DG_CTRL) = '1'
-      then
-        DG_Reset_i <= Command_is_Reset_Lo;
-      else
-        DG_Reset_i <= '0';
-      end if;
-
-    end if;
-  end process;
-
--- -----------------------------------------------
--- Synchronous Registered: DG_Mask_i
-  SysReg_DGen_Mask :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      DG_Mask_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DG_CTRL) = '1'
-      then
-        DG_Mask_i <= Regs_WrDin_r2(32+CINT_BIT_DG_MASK);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DG_CTRL) = '1'
-      then
-        DG_Mask_i <= Regs_WrDin_r2(CINT_BIT_DG_MASK);
-      else
-        DG_Mask_i <= DG_Mask_i;
-      end if;
-
-    end if;
-  end process;
-
---------------------------------------------------------------------------
---  Data generator status
---
-  Synch_DG_Status_i :
-  process (user_clk, DG_Reset_i)
-  begin
-    if DG_Reset_i = '1' then
-      DG_Status_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      DG_Status_i(CINT_BIT_DG_MASK) <= DG_Mask_i;
-      DG_Status_i(CINT_BIT_DG_BUSY) <= DG_is_Running;
     end if;
   end process;
 
@@ -1322,617 +962,6 @@ begin
         IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
       else
         IG_Latency_i <= IG_Latency_i;
-      end if;
-
-    end if;
-  end process;
-
---  ------------------------------------------------------
---      Protocol CTL interface
---  ------------------------------------------------------
-
--- -------------------------------------------------------
--- Synchronous Registered: ctl_rd
-  Syn_CTL_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      ctl_rd_i <= (others => '0');
-      ctl_rv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_CTL_CLASS) = '1' then
-        ctl_rd_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        ctl_rv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_CTL_CLASS) = '1' then
-        ctl_rd_i <= Regs_WrDin_r2(32-1 downto 0);
-        ctl_rv_i <= '1';
-      else
-        ctl_rd_i <= ctl_rd_i;
-        ctl_rv_i <= '0';
-      end if;
-
-    end if;
-  end process;
-
--- -----------------------------------------------
--- Synchronous Registered: ctl_reset
-  SysReg_ctl_reset :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      ctl_reset_i <= '1';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_TC_STATUS) = '1'
-      then
-        ctl_reset_i <= Command_is_Reset_Hi;
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_TC_STATUS) = '1'
-      then
-        ctl_reset_i <= Command_is_Reset_Lo;
-      else
-        ctl_reset_i <= '0';
-      end if;
-
-    end if;
-  end process;
-
--- -------------------------------------------------------
--- Synchronous Registered: ctl_td
---    ++++++++++++ INT triggering  ++++++++++++++++++
-  Syn_CTL_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      ctl_td_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-
-      if ctl_tv = '1' then
-        ctl_td_r <= ctl_td;
-      else
-        ctl_td_r <= ctl_td_r;
-      end if;
-
-    end if;
-  end process;
-
---  ------------------------------------------------------
---      SIMONE USER REGISTER td
---  ------------------------------------------------------
-  SIMONE_Reg01_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg01_td_i <= (others => '0');
-      reg01_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG01) = '1' then
-        reg01_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg01_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG01) = '1' then
-        reg01_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg01_tv_i <= '1';
-      else
-        reg01_td_i <= reg01_td_i;
-        reg01_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg02_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg02_td_i <= (others => '0');
-      reg02_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG02) = '1' then
-        reg02_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg02_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG02) = '1' then
-        reg02_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg02_tv_i <= '1';
-      else
-        reg02_td_i <= reg02_td_i;
-        reg02_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg03_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg03_td_i <= (others => '0');
-      reg03_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG03) = '1' then
-        reg03_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg03_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG03) = '1' then
-        reg03_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg03_tv_i <= '1';
-      else
-        reg03_td_i <= reg03_td_i;
-        reg03_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-
-
---------
-
-  SIMONE_Reg04_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg04_td_i <= (others => '0');
-      reg04_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG04) = '1' then
-        reg04_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg04_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG04) = '1' then
-        reg04_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg04_tv_i <= '1';
-      else
-        reg04_td_i <= reg04_td_i;
-        reg04_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg05_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg05_td_i <= (others => '0');
-      reg05_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG05) = '1' then
-        reg05_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg05_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG05) = '1' then
-        reg05_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg05_tv_i <= '1';
-      else
-        reg05_td_i <= reg05_td_i;
-        reg05_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg06_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg06_td_i <= (others => '0');
-      reg06_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG06) = '1' then
-        reg06_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg06_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG06) = '1' then
-        reg06_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg06_tv_i <= '1';
-      else
-        reg06_td_i <= reg06_td_i;
-        reg06_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg07_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg07_td_i <= (others => '0');
-      reg07_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG07) = '1' then
-        reg07_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg07_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG07) = '1' then
-        reg07_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg07_tv_i <= '1';
-      else
-        reg07_td_i <= reg07_td_i;
-        reg07_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg08_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg08_td_i <= (others => '0');
-      reg08_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG08) = '1' then
-        reg08_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg08_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG08) = '1' then
-        reg08_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg08_tv_i <= '1';
-      else
-        reg08_td_i <= reg08_td_i;
-        reg08_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg09_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg09_td_i <= (others => '0');
-      reg09_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG09) = '1' then
-        reg09_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg09_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG09) = '1' then
-        reg09_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg09_tv_i <= '1';
-      else
-        reg09_td_i <= reg09_td_i;
-        reg09_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg10_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg10_td_i <= (others => '0');
-      reg10_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG10) = '1' then
-        reg10_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg10_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG10) = '1' then
-        reg10_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg10_tv_i <= '1';
-      else
-        reg10_td_i <= reg10_td_i;
-        reg10_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-
-
-
-  SIMONE_Reg11_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg11_td_i <= (others => '0');
-      reg11_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG11) = '1' then
-        reg11_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg11_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG11) = '1' then
-        reg11_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg11_tv_i <= '1';
-      else
-        reg11_td_i <= reg11_td_i;
-        reg11_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg12_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg12_td_i <= (others => '0');
-      reg12_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG12) = '1' then
-        reg12_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg12_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG12) = '1' then
-        reg12_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg12_tv_i <= '1';
-      else
-        reg12_td_i <= reg12_td_i;
-        reg12_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg13_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg13_td_i <= (others => '0');
-      reg13_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG13) = '1' then
-        reg13_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg13_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG13) = '1' then
-        reg13_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg13_tv_i <= '1';
-      else
-        reg13_td_i <= reg13_td_i;
-        reg13_tv_i <= '0';
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg14_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg14_td_i <= (others => '0');
-      reg14_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_REG14) = '1' then
-        reg14_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        reg14_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_REG14) = '1' then
-        reg14_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        reg14_tv_i <= '1';
-      else
-        reg14_td_i <= reg14_td_i;
-        reg14_tv_i <= '0';
-      end if;
-    end if;
-  end process;
---------
-
--- -------------------------------------------------------
-
--- -------------------------------------------------------
---      SIMONE USER REGISTER rd
---  ------------------------------------------------------
-  SIMONE_Reg01_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg01_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg01_rv = '1' then
-        reg01_rd_r <= reg01_rd;
-      else
-        reg01_rd_r <= reg01_rd_r;
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg02_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg02_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg02_rv = '1' then
-        reg02_rd_r <= reg02_rd;
-      else
-        reg02_rd_r <= reg02_rd_r;
-      end if;
-    end if;
-  end process;
-
-  SIMONE_Reg03_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg03_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg03_rv = '1' then
-        reg03_rd_r <= reg03_rd;
-      else
-        reg03_rd_r <= reg03_rd_r;
-      end if;
-    end if;
-  end process;
-
----
-
-  SIMONE_Reg04_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg04_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg04_rv = '1' then
-        reg04_rd_r <= reg04_rd;
-      else
-        reg04_rd_r <= reg04_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg05_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg05_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg05_rv = '1' then
-        reg05_rd_r <= reg05_rd;
-      else
-        reg05_rd_r <= reg05_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg06_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg06_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg06_rv = '1' then
-        reg06_rd_r <= reg06_rd;
-      else
-        reg06_rd_r <= reg06_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg07_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg07_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg07_rv = '1' then
-        reg07_rd_r <= reg07_rd;
-      else
-        reg07_rd_r <= reg07_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg08_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg08_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg08_rv = '1' then
-        reg08_rd_r <= reg08_rd;
-      else
-        reg08_rd_r <= reg08_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg09_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg09_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg09_rv = '1' then
-        reg09_rd_r <= reg09_rd;
-      else
-        reg09_rd_r <= reg09_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg10_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg10_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg10_rv = '1' then
-        reg10_rd_r <= reg10_rd;
-      else
-        reg10_rd_r <= reg10_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg11_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg11_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg11_rv = '1' then
-        reg11_rd_r <= reg11_rd;
-      else
-        reg11_rd_r <= reg11_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg12_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg12_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg12_rv = '1' then
-        reg12_rd_r <= reg12_rd;
-      else
-        reg12_rd_r <= reg12_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg13_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg13_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg13_rv = '1' then
-        reg13_rd_r <= reg13_rd;
-      else
-        reg13_rd_r <= reg13_rd_r;
-      end if;
-    end if;
-  end process;
-  SIMONE_Reg14_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      reg14_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      if reg14_rv = '1' then
-        reg14_rd_r <= reg14_rd;
-      else
-        reg14_rd_r <= reg14_rd_r;
-      end if;
-    end if;
-  end process;
----
-
--- -------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
---  ------------------------------------------------------
---      Protocol DLM interface
---  ------------------------------------------------------
-
--- -------------------------------------------------------
--- Synchronous Registered: dlm_td
-  Syn_DLM_td :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      dlm_td_i <= (others => '0');
-      dlm_tv_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-
-      if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DLM_CLASS) = '1' then
-        dlm_td_i <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        dlm_tv_i <= '1';
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DLM_CLASS) = '1' then
-        dlm_td_i <= Regs_WrDin_r2(32-1 downto 0);
-        dlm_tv_i <= '1';
-      else
-        dlm_td_i <= dlm_td_i;
-        dlm_tv_i <= '0';
-      end if;
-
-    end if;
-  end process;
-
--- -------------------------------------------------------
--- Synchronous Registered: dlm_rd
---    ++++++++++++ INT triggering  ++++++++++++++++++
-  Syn_DLM_rd :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      dlm_rd_r <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-
-      if dlm_rv = '1' then
-        dlm_rd_r <= dlm_rd;
-      else
-        dlm_rd_r <= dlm_rd_r;
       end if;
 
     end if;
@@ -2855,30 +1884,6 @@ begin
   end process;
 
 -- -----------------------------------------------
--- Synchronous output: protocol_rst
---
---            !!!  reset by user_reset  !!!
---
-  Syn_Output_protocol_rst :
-  process (user_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      protocol_rst_i  <= '1';
-      protocol_rst_b1 <= '1';
-      protocol_rst_b2 <= '1';
-    elsif user_clk'event and user_clk = '1' then
-
-      protocol_rst_i  <= protocol_rst_b1 or protocol_rst_b2;
-      protocol_rst_b1 <= protocol_rst_b2;
-      protocol_rst_b2 <= Regs_WrEn_r2
-                         and ((Reg_WrMuxer_Hi(CINT_ADDR_PROTOCOL_STACON)
-                               and Command_is_Reset_Hi)
-                              or (Reg_WrMuxer_Lo(CINT_ADDR_PROTOCOL_STACON)
-                                  and Command_is_Reset_Lo));
-    end if;
-  end process;
-
--- -----------------------------------------------
 -- Synchronous Calculation: DMA_us_Transf_Bytes
 --
   Syn_Calc_DMA_us_Transf_Bytes :
@@ -2917,80 +1922,6 @@ begin
       end if;
     end if;
   end process;
-
----- -------------------------------------------------------
----- Synchronous Registers: icap_Write_i
---   RxTrn_icap_Write:
---   process ( user_clk, user_lnk_up)
---   begin
---      if user_lnk_up = '0' then
---         icap_CLK      <= '0';
---         icap_I        <= (OTHERS => '0');
---         icap_Write    <= '1';
---         icap_CE       <= '1';
---         FSM_icap      <= icapST_Reset;
---
---      elsif user_clk'event and user_clk = '1' then
---
---        case FSM_icap is
---
---          when icapST_Reset =>
---            icap_CLK      <= '0';
---            icap_I        <= (OTHERS => '0');
---            icap_Write    <= '1';
---            icap_CE       <= '1';
---            FSM_icap      <= icapST_Idle;
---
---          when icapST_Idle =>
---
---            if Regs_WrEn_r2='1' and  Reg_WrMuxer(CINT_ADDR_ICAP)='1' then
---               icap_CLK   <= '1';
---               icap_I     <= Regs_WrDin_r2;
---               icap_Write <= '0';
---               icap_CE    <= '0';
---               FSM_icap   <= icapST_Access;
---            elsif Reg_RdMuxer(CINT_ADDR_ICAP)='1' then
---               icap_CLK   <= '1';
---               icap_I     <= icap_I;
---               icap_Write <= '1';
---               icap_CE    <= '0';
---               FSM_icap   <= icapST_Access;
---            else
---               icap_CLK   <= icap_CLK;
---               icap_I     <= icap_I;
---               icap_Write <= icap_Write;
---               icap_CE    <= icap_CE;
---               FSM_icap   <= icapST_Idle;
---            end if;
---
---
---          when icapST_Access =>
---               icap_CLK   <= '1';
---               icap_I     <= icap_I;
---               icap_Write <= icap_Write;
---               icap_CE    <= icap_CE;
---               FSM_icap   <= icapST_Abort;
---
---          when icapST_Abort =>
---               icap_CLK   <= '0';
---               icap_I     <= icap_I;
---               icap_Write <= icap_Write;
---               icap_CE    <= icap_CE;
---               FSM_icap   <= icapST_Idle;
---
---          when Others =>
---            icap_CLK      <= '0';
---            icap_I        <= (OTHERS => '0');
---            icap_Write    <= '1';
---            icap_CE       <= '1';
---            FSM_icap      <= icapST_Idle;
---
---        end case;
---
---      end if;
---   end process;
---
-
 
 ----------------------------------------------------------
 ---------------  Tx reading registers  -------------------
@@ -3041,54 +1972,11 @@ begin
     end if;
   end process;
 
-
-----------------------------------------------------------
--- Synch Register:  CTL_TTake
---
-  Syn_CTL_ttake :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      ctl_ttake_i      <= '0';
-      ctl_t_read_Hi_r1 <= '0';
-      ctl_t_read_Lo_r1 <= '0';
-      CTL_read_counter <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-      ctl_t_read_Hi_r1 <= Reg_RdMuxer_Hi(CINT_ADDR_CTL_CLASS);
-      ctl_t_read_Lo_r1 <= Reg_RdMuxer_Lo(CINT_ADDR_CTL_CLASS);
-      ctl_ttake_i      <= (Reg_RdMuxer_Hi(CINT_ADDR_CTL_CLASS) and not ctl_t_read_Hi_r1)
-                          or (Reg_RdMuxer_Lo(CINT_ADDR_CTL_CLASS) and not ctl_t_read_Lo_r1);
-      if ctl_reset_i = '1' then
-        CTL_read_counter <= (others => '0');
-      else
-        CTL_read_counter <= CTL_read_counter + ctl_ttake_i;
-      end if;
-
-    end if;
-  end process;
-
-----------------------------------------------------------
--- Synch Register:  class_CTL_Status
---
-  Syn_class_CTL_Status :
-  process (user_clk, user_lnk_up)
-  begin
-    if user_lnk_up = '0' then
-      class_CTL_Status_i <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-      class_CTL_Status_i(C_DBUS_WIDTH/2-1 downto 0) <= ctl_status;
-
-    end if;
-  end process;
-
 -- -------------------------------------------------------
 --
   Sys_Int_Status_i <= (
-    CINT_BIT_DLM_IN_ISR => DLM_irq ,
-    CINT_BIT_CTL_IN_ISR => CTL_irq ,
-    CINT_BIT_DAQ_IN_ISR => DAQ_irq ,
+    CINT_BIT_TX_DDR_TOUT_ISR => tx_timeout,
+    CINT_BIT_TX_WB_TOUT_ISR  => tx_wb_timeout,
 
     CINT_BIT_DSTOUT_IN_ISR => DMA_ds_Tout ,
     CINT_BIT_USTOUT_IN_ISR => DMA_us_Tout ,
@@ -3295,144 +2183,6 @@ begin
  <= DMA_ds_Transf_Bytes_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_DS_TRANSF_BC) = '1'
     else (others => '0');
 
-
-  --------------------------------------------------------------------------
-  -- CTL
-  --------------------------------------------------------------------------
-  ctl_td_o_Hi(32-1 downto 0)
- <= ctl_td_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_CTL_CLASS) = '1'
-    else (others => '0');
-
-  ctl_td_o_Lo(32-1 downto 0)
- <= ctl_td_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_CTL_CLASS) = '1'
-    else (others => '0');
-
-  --------------------------------------------------------------------------
-  -- DLM
-  --------------------------------------------------------------------------
-  dlm_rd_o_Hi(32-1 downto 0)
- <= dlm_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_DLM_CLASS) = '1'
-    else (others => '0');
-
-  dlm_rd_o_Lo(32-1 downto 0)
- <= dlm_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_DLM_CLASS) = '1'
-    else (others => '0');
-
-  --------------------------------------------------------------------------
-  -- SIMONE USER REGISTERs
-  --------------------------------------------------------------------------
-  reg01_rd_o_Hi(32-1 downto 0)
- <= reg01_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG01) = '1'
-    else (others => '0');
-
-  reg01_rd_o_Lo(32-1 downto 0)
- <= reg01_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG01) = '1'
-    else (others => '0');
-
-  reg02_rd_o_Hi(32-1 downto 0)
- <= reg02_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG02) = '1'
-    else (others => '0');
-
-  reg02_rd_o_Lo(32-1 downto 0)
- <= reg02_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG02) = '1'
-    else (others => '0');
-
-  reg03_rd_o_Hi(32-1 downto 0)
- <= reg03_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG03) = '1'
-    else (others => '0');
-
-  reg03_rd_o_Lo(32-1 downto 0)
- <= reg03_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG03) = '1'
-    else (others => '0');
-
-  reg04_rd_o_Hi(32-1 downto 0)
- <= reg04_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG04) = '1'
-    else (others => '0');
-
-  reg04_rd_o_Lo(32-1 downto 0)
- <= reg04_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG04) = '1'
-    else (others => '0');
-
-  reg05_rd_o_Hi(32-1 downto 0)
- <= reg05_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG05) = '1'
-    else (others => '0');
-
-  reg05_rd_o_Lo(32-1 downto 0)
- <= reg05_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG05) = '1'
-    else (others => '0');
-
-  reg06_rd_o_Hi(32-1 downto 0)
- <= reg06_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG06) = '1'
-    else (others => '0');
-
-  reg06_rd_o_Lo(32-1 downto 0)
- <= reg06_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG06) = '1'
-    else (others => '0');
-
-  reg07_rd_o_Hi(32-1 downto 0)
- <= reg07_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG07) = '1'
-    else (others => '0');
-
-  reg07_rd_o_Lo(32-1 downto 0)
- <= reg07_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG07) = '1'
-    else (others => '0');
-
-  reg08_rd_o_Hi(32-1 downto 0)
- <= reg08_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG08) = '1'
-    else (others => '0');
-
-  reg08_rd_o_Lo(32-1 downto 0)
- <= reg08_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG08) = '1'
-    else (others => '0');
-
-  reg09_rd_o_Hi(32-1 downto 0)
- <= reg09_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG09) = '1'
-    else (others => '0');
-
-  reg09_rd_o_Lo(32-1 downto 0)
- <= reg09_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG09) = '1'
-    else (others => '0');
-
-  reg10_rd_o_Hi(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG10) = '1'
-    else (others => '0');
-
-  reg10_rd_o_Lo(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG10) = '1'
-    else (others => '0');
-
-  reg11_rd_o_Hi(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG11) = '1'
-    else (others => '0');
-
-  reg11_rd_o_Lo(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG11) = '1'
-    else (others => '0');
-
-  reg12_rd_o_Hi(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG12) = '1'
-    else (others => '0');
-
-  reg12_rd_o_Lo(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG12) = '1'
-    else (others => '0');
-
-  reg13_rd_o_Hi(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG13) = '1'
-    else (others => '0');
-
-  reg13_rd_o_Lo(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG13) = '1'
-    else (others => '0');
-
-  reg14_rd_o_Hi(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_REG14) = '1'
-    else (others => '0');
-
-  reg14_rd_o_Lo(32-1 downto 0)
- <= reg10_rd_r(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_REG14) = '1'
-    else (others => '0');
-
   --------------------------------------------------------------------------
   -- System Interrupt Status
   --------------------------------------------------------------------------
@@ -3451,16 +2201,6 @@ begin
   Sys_Int_Enable_o_Lo(32-1 downto 0)
  <= Sys_Int_Enable_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_IRQ_EN) = '1'
     else (others => '0');
-
-
-  --debug_in_1i <= Sys_Int_Status_i(32-1 downto 0);
-  --debug_in_2i <= Sys_Int_Enable_i(32-1 downto 0);
-  --debug_in_3i <= "0000000000000000000000000000000" & DAQ_irq;
-
-  debug_in_1i <= "0000000000000000000000000000000" & DMA_ds_Done;
-  debug_in_2i <= "0000000000000000000000000000000" & DMA_us_Done;
-  debug_in_3i <= "0000000000000000" & Sys_IRQ_i(C_NUM_OF_INTERRUPTS-1 downto 0);
-  debug_in_4i <= Sys_Int_Enable_i(32-1 downto 0);
 
   -- ----------------------------------------------------------------------------------
   -- ----------------------------------------------------------------------------------
@@ -3516,13 +2256,9 @@ begin
   begin
     if user_lnk_up = '0' then
       Sys_Error_i         <= (others => '0');
-      eb_FIFO_OverWritten <= '0';
     elsif user_clk'event and user_clk = '1' then
       Sys_Error_i(CINT_BIT_TX_TOUT_IN_SER) <= Tx_TimeOut;
       Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_wb_TimeOut;
-      Sys_Error_i(CINT_BIT_EB_OVERWRITTEN) <= eb_FIFO_OverWritten;
-      --  !!!!!!!!!!!!!! capture eb_FIFO overflow, temp cleared by MRd_Channel_Rst_i
-      eb_FIFO_OverWritten                  <= (not MRd_Channel_Rst_i) and (wb_FIFO_ow or eb_FIFO_OverWritten);
     end if;
   end process;
 
@@ -3537,11 +2273,7 @@ begin
     elsif user_clk'event and user_clk = '1' then
       General_Status_i(32-1 downto 32-16)                                            <= cfg_dcommand;
       General_Status_i(CINT_BIT_LWIDTH_IN_GSR_TOP downto CINT_BIT_LWIDTH_IN_GSR_BOT) <= pcie_link_width;
-      General_Status_i(CINT_BIT_ICAP_BUSY_IN_GSR)                                    <= icap_Busy;
-      General_Status_i(CINT_BIT_DG_AVAIL_IN_GSR)                                     <= DG_is_Available;
-      General_Status_i(CINT_BIT_LINK_ACT_IN_GSR+1 downto CINT_BIT_LINK_ACT_IN_GSR)   <= protocol_link_act;
-
---       General_Status_i(8) <= CTL_read_counter(6-1);   ---- DEBUG !!!
+      General_Status_i(CINT_BIT_DDR_RDY_GSR)                                         <= ddr_sdram_ready;
     end if;
   end process;
 
@@ -3557,6 +2289,14 @@ begin
  <= General_Control_i(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_CONTROL) = '1'
     else (others => '0');
 
+  sdram_pg_o_hi
+ <= sdram_pg_i when Reg_RdMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
+    else (others => '0');
+
+  wb_pg_o_hi
+ <= wb_pg_i when Reg_RdMuxer_Hi(CINT_ADDR_WB_PG) = '1'
+    else (others => '0');
+
   Sys_Error_o_Lo(32-1 downto 0)
  <= Sys_Error_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_ERROR) = '1'
     else (others => '0');
@@ -3569,77 +2309,12 @@ begin
  <= General_Control_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_CONTROL) = '1'
     else (others => '0');
 
-  --------------------------------------------------------------------------
-  -- ICAP
-  --------------------------------------------------------------------------
-  icap_O_o_Hi(32-1 downto 0)
- <= icap_O(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_ICAP) = '1'
+  sdram_pg_o_lo
+ <= sdram_pg_i when Reg_RdMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
     else (others => '0');
 
-  icap_O_o_Lo(32-1 downto 0)
- <= icap_O(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_ICAP) = '1'
-    else (others => '0');
-
-  --------------------------------------------------------------------------
-  -- FIFO Statuses (read only)
-  --------------------------------------------------------------------------
-  wb_FIFO_Status_o_Hi(32-1 downto 0)
- <= wb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_EB_STACON) = '1'
-    else (others => '0');
-
-  wb_FIFO_Status_o_Lo(32-1 downto 0)
- <= wb_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_EB_STACON) = '1'
-    else (others => '0');
-
-  H2B_FIFO_Status_o_Hi(32-1 downto 0)
- <= H2B_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_H2B_STACON) = '1'
-    else (others => '0');
-
-  H2B_FIFO_Status_o_Lo(32-1 downto 0)
- <= H2B_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_H2B_STACON) = '1'
-    else (others => '0');
-
-  B2H_FIFO_Status_o_Hi(32-1 downto 0)
- <= B2H_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_B2H_STACON) = '1'
-    else (others => '0');
-
-  B2H_FIFO_Status_o_Lo(32-1 downto 0)
- <= B2H_FIFO_Status_r1(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_B2H_STACON) = '1'
-    else (others => '0');
-
-  --S debug_in_4i <=  B2H_FIFO_Status_r1(32-1 downto 0);
-
-  --------------------------------------------------------------------------
-  -- Optical Link Status
-  --------------------------------------------------------------------------
-  Opto_Link_Status_o_Hi(32-1 downto 0)
- <= Opto_Link_Status_i(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_PROTOCOL_STACON) = '1'
-    else (others => '0');
-
-  Opto_link_Status_o_Lo(32-1 downto 0)
- <= Opto_Link_Status_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_PROTOCOL_STACON) = '1'
-    else (others => '0');
-
-  --------------------------------------------------------------------------
-  -- Class CTL status
-  --------------------------------------------------------------------------
-  class_CTL_Status_o_Hi(32-1 downto 0)
- <= class_CTL_Status_i(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_TC_STATUS) = '1'
-    else (others => '0');
-
-  class_CTL_Status_o_Lo(32-1 downto 0)
- <= class_CTL_Status_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_TC_STATUS) = '1'
-    else (others => '0');
-
-  --------------------------------------------------------------------------
-  -- Data generator Status
-  --------------------------------------------------------------------------
-  DG_Status_o_Hi(32-1 downto 0)
- <= DG_Status_i(32-1 downto 0) when Reg_RdMuxer_Hi(CINT_ADDR_DG_CTRL) = '1'
-    else (others => '0');
-
-  DG_Status_o_Lo(32-1 downto 0)
- <= DG_Status_i(32-1 downto 0) when Reg_RdMuxer_Lo(CINT_ADDR_DG_CTRL) = '1'
+  wb_pg_o_lo
+ <= wb_pg_i when Reg_RdMuxer_Lo(CINT_ADDR_WB_PG) = '1'
     else (others => '0');
 
   --------------------------------------------------------------------------
@@ -3670,6 +2345,8 @@ begin
         or Sys_Error_o_Hi (32-1 downto 0)
         or General_Status_o_Hi (32-1 downto 0)
         or General_Control_o_Hi(32-1 downto 0)
+        or sdram_pg_o_hi(32-1 downto 0)
+        or wb_pg_o_hi(32-1 downto 0)
 
         or Sys_Int_Status_o_Hi (32-1 downto 0)
         or Sys_Int_Enable_o_Hi (32-1 downto 0)
@@ -3698,33 +2375,7 @@ begin
 
         or IG_Latency_o_Hi (32-1 downto 0)
         or IG_Num_Assert_o_Hi (32-1 downto 0)
-        or IG_Num_Deassert_o_Hi(32-1 downto 0)
-
-        or DG_Status_o_Hi (32-1 downto 0)
-        or class_CTL_Status_o_Hi (32-1 downto 0)
-
---                              or  icap_O_o_Hi         (32-1 downto 0)
-        or Opto_Link_Status_o_Hi (32-1 downto 0)
-        or wb_FIFO_Status_o_Hi (32-1 downto 0)
-        or H2B_FIFO_Status_o_Hi (32-1 downto 0)
-        or B2H_FIFO_Status_o_Hi (32-1 downto 0)
-        or dlm_rd_o_Hi
-        or ctl_td_o_Hi
-        or reg01_rd_o_Hi
-        or reg02_rd_o_Hi
-        or reg03_rd_o_Hi
-        or reg04_rd_o_Hi
-        or reg05_rd_o_Hi
-        or reg06_rd_o_Hi
-        or reg07_rd_o_Hi
-        or reg08_rd_o_Hi
-        or reg09_rd_o_Hi
-        or reg10_rd_o_Hi
-        or reg11_rd_o_Hi
-        or reg12_rd_o_Hi
-        or reg13_rd_o_Hi
-        or reg14_rd_o_Hi;
-
+        or IG_Num_Deassert_o_Hi(32-1 downto 0);
 
       Regs_RdQout_i(32-1 downto 0) <=
         HW_Version_o_Lo (32-1 downto 0)
@@ -3732,6 +2383,8 @@ begin
         or Sys_Error_o_Lo (32-1 downto 0)
         or General_Status_o_Lo (32-1 downto 0)
         or General_Control_o_Lo(32-1 downto 0)
+        or sdram_pg_o_lo(32-1 downto 0)
+        or wb_pg_o_lo(32-1 downto 0)
 
         or Sys_Int_Status_o_Lo (32-1 downto 0)
         or Sys_Int_Enable_o_Lo (32-1 downto 0)
@@ -3760,32 +2413,7 @@ begin
 
         or IG_Latency_o_Lo (32-1 downto 0)
         or IG_Num_Assert_o_Lo (32-1 downto 0)
-        or IG_Num_Deassert_o_Lo(32-1 downto 0)
-
-        or DG_Status_o_Lo (32-1 downto 0)
-        or class_CTL_Status_o_Lo (32-1 downto 0)
-
---                              or  icap_O_o_Lo(32-1 downto 0)
-        or Opto_Link_Status_o_Lo (32-1 downto 0)
-        or wb_FIFO_Status_o_Lo (32-1 downto 0)
-        or H2B_FIFO_Status_o_Lo (32-1 downto 0)
-        or B2H_FIFO_Status_o_Lo (32-1 downto 0)
-        or dlm_rd_o_Lo
-        or ctl_td_o_Lo
-        or reg01_rd_o_Lo
-        or reg02_rd_o_Lo
-        or reg03_rd_o_Lo
-        or reg04_rd_o_Lo
-        or reg05_rd_o_Lo
-        or reg06_rd_o_Lo
-        or reg07_rd_o_Lo
-        or reg08_rd_o_Lo
-        or reg09_rd_o_Lo
-        or reg10_rd_o_Lo
-        or reg11_rd_o_Lo
-        or reg12_rd_o_Lo
-        or reg13_rd_o_Lo
-        or reg14_rd_o_Lo;
+        or IG_Num_Deassert_o_Lo(32-1 downto 0);
 
     end if;
   end process;

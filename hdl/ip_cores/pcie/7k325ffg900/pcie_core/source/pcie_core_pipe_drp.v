@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_core_pipe_drp.v
-// Version    : 1.8
+// Version    : 1.10
 //------------------------------------------------------------------------------
 //  Filename     :  pipe_drp.v
 //  Description  :  PIPE DRP Module for 7 Series Transceiver
-//  Version      :  18.1
+//  Version      :  20.0
 //------------------------------------------------------------------------------
 
 
@@ -66,15 +66,17 @@
 module pcie_core_pipe_drp #
 (
 
-    parameter PCIE_GT_DEVICE   = "GTX",                     // PCIe GT device
-    parameter PCIE_USE_MODE    = "3.0",                     // PCIe use mode
-    parameter PCIE_ASYNC_EN    = "FALSE",                   // PCIe async mode
-    parameter PCIE_PLL_SEL     = "CPLL",                    // PCIe PLL select for Gen1/Gen2 only
-    parameter PCIE_TXBUF_EN    = "FALSE",                   // PCIe TX buffer enable for Gen1/Gen2 only
-    parameter PCIE_RXBUF_EN    = "TRUE",                    // PCIe RX buffer enable for Gen3      only
-    parameter PCIE_TXSYNC_MODE = 0,                         // PCIe TX sync mode
-    parameter PCIE_RXSYNC_MODE = 0,                         // PCIe RX sync mode
-    parameter INDEX_MAX        = 5'd21                      // Index max count
+    parameter PCIE_GT_DEVICE       = "GTX",                                     // PCIe GT device
+    parameter PCIE_USE_MODE        = "3.0",                                     // PCIe use mode
+    parameter PCIE_ASYNC_EN        = "FALSE",                                   // PCIe async mode
+    parameter PCIE_PLL_SEL         = "CPLL",                                    // PCIe PLL select for Gen1/Gen2 only
+    parameter PCIE_AUX_CDR_GEN3_EN = "TRUE",                                    // PCIe AUX CDR Gen3 enable
+    parameter PCIE_TXBUF_EN        = "FALSE",                                   // PCIe TX buffer enable for Gen1/Gen2 only
+    parameter PCIE_RXBUF_EN        = "TRUE",                                    // PCIe RX buffer enable for Gen3      only
+    parameter PCIE_TXSYNC_MODE     = 0,                                         // PCIe TX sync mode
+    parameter PCIE_RXSYNC_MODE     = 0,                                         // PCIe RX sync mode
+    parameter LOAD_CNT_MAX         = 2'd1,                                      // Load max count
+    parameter INDEX_MAX            = 5'd21                                      // Index max count
     
 )
 
@@ -85,6 +87,8 @@ module pcie_core_pipe_drp #
     input               DRP_RST_N,
     input               DRP_GTXRESET,
     input       [ 1:0]  DRP_RATE,
+    input               DRP_X16X20_MODE,
+    input               DRP_X16,
     input               DRP_START,
     input       [15:0]  DRP_DO,
     input               DRP_RDY,
@@ -95,24 +99,29 @@ module pcie_core_pipe_drp #
     output      [15:0]  DRP_DI,   
     output              DRP_WE,
     output              DRP_DONE,
-    output      [ 6:0]  DRP_FSM
+    output      [ 2:0]  DRP_FSM
     
 );
 
     //---------- Input Registers ---------------------------
-    reg                 gtxreset_reg1;
-    reg         [ 1:0]  rate_reg1;
-    reg                 start_reg1;
-    reg         [15:0]  do_reg1;
-    reg                 rdy_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gtxreset_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16x20_mode_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg1;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg1;
     
-    reg                 gtxreset_reg2;
-    reg         [ 1:0]  rate_reg2;
-    reg                 start_reg2;
-    reg         [15:0]  do_reg2;
-    reg                 rdy_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 gtxreset_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [ 1:0]  rate_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16x20_mode_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 x16_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 start_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg         [15:0]  do_reg2;
+(* ASYNC_REG = "TRUE", SHIFT_EXTRACT = "NO" *)    reg                 rdy_reg2;
     
     //---------- Internal Signals --------------------------
+    reg         [ 1:0]  load_cnt =  2'd0;
     reg         [ 4:0]  index    =  5'd0;
     reg                 mode     =  1'd0;
     reg         [ 8:0]  addr_reg =  9'd0;
@@ -120,7 +129,7 @@ module pcie_core_pipe_drp #
     
     //---------- Output Registers --------------------------
     reg                 done     =  1'd0;
-    reg         [ 6:0]  fsm      =  7'd1;      
+    reg         [ 2:0]  fsm      =  0;      
                         
     //---------- DRP Address -------------------------------
     //  DRP access for *RXCDR_EIDLE includes 
@@ -151,14 +160,15 @@ module pcie_core_pipe_drp #
     localparam          ADDR_RXCDR_CFG_D          = 9'h0AB;
     localparam          ADDR_RXCDR_CFG_E          = 9'h0AC;
     localparam          ADDR_RXCDR_CFG_F          = 9'h0AD;  // GTH only
-
+    
     //---------- DRP Mask ----------------------------------
     localparam          MASK_PCS_RSVD_ATTR        = 16'b1111111111111001;  // Unmask bit [ 2: 1]
     localparam          MASK_TXOUT_DIV            = 16'b1111111110001111;  // Unmask bit [ 6: 4]
     localparam          MASK_RXOUT_DIV            = 16'b1111111111111000;  // Unmask bit [ 2: 0]
     localparam          MASK_TX_DATA_WIDTH        = 16'b1111111111111000;  // Unmask bit [ 2: 0]   
     localparam          MASK_TX_INT_DATAWIDTH     = 16'b1111111111101111;  // Unmask bit [    4]
-    localparam          MASK_RX_DATA_WIDTH        = 16'b1100011111111111;  // Unmask bit [13:11]   
+    localparam          MASK_RX_DATA_WIDTH        = 16'b1100011111111111;  // Unmask bit [13:11]  
+    localparam          MASK_X16X20_RX_DATA_WIDTH = 16'b1111011111111111;  // Unmask bit [   11] // for x16 or x20 mode only 
     localparam          MASK_RX_INT_DATAWIDTH     = 16'b1011111111111111;  // Unmask bit [   14]  
     localparam          MASK_TXBUF_EN             = 16'b1011111111111111;  // Unmask bit [   14]  
     localparam          MASK_RXBUF_EN             = 16'b1111111111111101;  // Unmask bit [    1] 
@@ -175,10 +185,10 @@ module pcie_core_pipe_drp #
     localparam          MASK_RXCDR_CFG_C          = 16'b0000000000000000;  // Unmask bit [15: 0]    
     localparam          MASK_RXCDR_CFG_D          = 16'b0000000000000000;  // Unmask bit [15: 0]  
     localparam          MASK_RXCDR_CFG_E_GTX      = 16'b1111111100000000;  // Unmask bit [ 7: 0]   
-    localparam          MASK_RXCDR_CFG_E_GTH      = 16'b1111111100000000;  // Unmask bit [15: 0] 
+    localparam          MASK_RXCDR_CFG_E_GTH      = 16'b0000000000000000;  // Unmask bit [15: 0] 
     localparam          MASK_RXCDR_CFG_F_GTX      = 16'b1111111111111111;  // Unmask bit [     ] 
-    localparam          MASK_RXCDR_CFG_F_GTH      = 16'b1111111111111111;  // Unmask bit [ 2: 0]
-
+    localparam          MASK_RXCDR_CFG_F_GTH      = 16'b1111111111111000;  // Unmask bit [ 2: 0]
+         
     //---------- DRP Data for PCIe Gen1 and Gen2 -----------
     localparam          GEN12_TXOUT_DIV           = (PCIE_PLL_SEL == "QPLL") ? 16'b0000000000100000 : 16'b0000000000010000;  // Divide by 4 or 2
     localparam          GEN12_RXOUT_DIV           = (PCIE_PLL_SEL == "QPLL") ? 16'b0000000000000010 : 16'b0000000000000001;  // Divide by 4 or 2
@@ -192,7 +202,6 @@ module pcie_core_pipe_drp #
     localparam          GEN12_RX_XCLK_SEL         = 16'b0000000000000000;  // Use RXREC  
     localparam          GEN12_CLK_CORRECT_USE     = 16'b0100000000000000;  // Use clock correction
     localparam          GEN12_TX_DRIVE_MODE       = 16'b0000000000000001;  // Use PIPE   Gen1 and Gen2 mode    
-  //localparam          GEN12_TX_DRIVE_MODE       = 16'b0000000000000000;  // Use DIRECT Gen1 and Gen2 mode    
     localparam          GEN12_RXCDR_EIDLE         = 16'b0000100000000000;  // Hold RXCDR during electrical idle 
     localparam          GEN12_RX_DFE_LPM_EIDLE    = 16'b0100000000000000;  // Hold RX DFE or LPM during electrical idle
     localparam          GEN12_PMA_RSV_A_GTX       = 16'b1000010010000000;  // 16'h8480
@@ -214,7 +223,7 @@ module pcie_core_pipe_drp #
     localparam          GEN12_RXCDR_CFG_C_GTH     = 16'h2000;              // 16'h2000
     localparam          GEN12_RXCDR_CFG_D_GTH     = 16'h07FE;              // 16'h07FE
     localparam          GEN12_RXCDR_CFG_E_GTH     = 16'h0020;              // 16'h0020
-    localparam          GEN12_RXCDR_CFG_F_GTH     = 16'h0000;              // 16'h0000
+    localparam          GEN12_RXCDR_CFG_F_GTH     = 16'h0000;              // 16'h0000  
     
     //---------- DRP Data for PCIe Gen3 --------------------                 
     localparam          GEN3_TXOUT_DIV            = 16'b0000000000000000;  // Divide by 1
@@ -244,18 +253,36 @@ module pcie_core_pipe_drp #
     localparam          GEN3_RXCDR_CFG_E_GTX      = 16'h000B;              // 16'h000B
     localparam          GEN3_RXCDR_CFG_F_GTX      = 16'h0000;              // 16'h0000
     //----------                                 
+  //localparam          GEN3_RXCDR_CFG_A_GTH_S    = 16'h0018;              // 16'h0018 Sync
+  //localparam          GEN3_RXCDR_CFG_A_GTH_A    = 16'h8018;              // 16'h8018 Async
+  //localparam          GEN3_RXCDR_CFG_B_GTH      = 16'hC208;              // 16'hC848
+  //localparam          GEN3_RXCDR_CFG_C_GTH      = 16'h2000;              // 16'h1000
+  //localparam          GEN3_RXCDR_CFG_D_GTH      = 16'h07FE;              // 16'h07FE v1.0 silicon
+  //localparam          GEN3_RXCDR_CFG_D_GTH_AUX  = 16'h0FFE;              // 16'h07FE v2.0 silicon, [62:59] AUX CDR configuration
+  //localparam          GEN3_RXCDR_CFG_E_GTH      = 16'h0020;              // 16'h0010
+  //localparam          GEN3_RXCDR_CFG_F_GTH      = 16'h0000;              // 16'h0000 v1.0 silicon
+  //localparam          GEN3_RXCDR_CFG_F_GTH_AUX  = 16'h0002;              // 16'h0000 v2.0 silicon, [81] AUX CDR enable
+    //----------                                 
     localparam          GEN3_RXCDR_CFG_A_GTH_S    = 16'h0018;              // 16'h0018 Sync
     localparam          GEN3_RXCDR_CFG_A_GTH_A    = 16'h8018;              // 16'h8018 Async
-    localparam          GEN3_RXCDR_CFG_B_GTH      = 16'hC208;              // 16'hC848
-    localparam          GEN3_RXCDR_CFG_C_GTH      = 16'h2000;              // 16'h1000
-    localparam          GEN3_RXCDR_CFG_D_GTH      = 16'h07FE;              // 16'h07FE
-    localparam          GEN3_RXCDR_CFG_E_GTH      = 16'h0020;              // 16'h0010
-    localparam          GEN3_RXCDR_CFG_F_GTH      = 16'h0000;              // 16'h0000  
-     
+    localparam          GEN3_RXCDR_CFG_B_GTH      = 16'hC848;              // 16'hC848
+    localparam          GEN3_RXCDR_CFG_C_GTH      = 16'h1000;              // 16'h1000
+    localparam          GEN3_RXCDR_CFG_D_GTH      = 16'h07FE;              // 16'h07FE v1.0 silicon
+    localparam          GEN3_RXCDR_CFG_D_GTH_AUX  = 16'h0FFE;              // 16'h07FE v2.0 silicon, [62:59] AUX CDR configuration
+    localparam          GEN3_RXCDR_CFG_E_GTH      = 16'h0010;              // 16'h0010
+    localparam          GEN3_RXCDR_CFG_F_GTH      = 16'h0000;              // 16'h0000 v1.0 silicon
+    localparam          GEN3_RXCDR_CFG_F_GTH_AUX  = 16'h0002;              // 16'h0000 v2.0 silicon, [81] AUX CDR enable
+      
     //---------- DRP Data for PCIe Gen1, Gen2 and Gen3 -----    
     localparam          GEN123_PCS_RSVD_ATTR_A    = 16'b0000000000000000;  // Auto TX and RX sync mode
     localparam          GEN123_PCS_RSVD_ATTR_M_TX = 16'b0000000000000010;  // Manual TX sync mode
     localparam          GEN123_PCS_RSVD_ATTR_M_RX = 16'b0000000000000100;  // Manual RX sync mode
+      
+    //---------- DRP Data for x16 --------------------------
+    localparam          X16_RX_DATAWIDTH   = 16'b0000000000000000;  // 2-byte (16-bit) internal data width
+    
+    //---------- DRP Data for x20 --------------------------                                  
+    localparam          X20_RX_DATAWIDTH   = 16'b0000100000000000;  // 2-byte (20-bit) internal data width       
       
     //---------- DRP Data ----------------------------------     
     wire        [15:0]  data_txout_div;
@@ -286,15 +313,17 @@ module pcie_core_pipe_drp #
     wire        [15:0]  data_pcs_rsvd_attr_m_tx; 
     wire        [15:0]  data_pcs_rsvd_attr_m_rx; 
     wire        [15:0]  data_pcs_rsvd_attr_m;   
+                
+    wire        [15:0]  data_x16x20_rx_datawidth;    
            
     //---------- FSM ---------------------------------------  
-    localparam          FSM_IDLE  = 7'b0000001;  
-    localparam          FSM_LOAD  = 7'b0000010;                           
-    localparam          FSM_READ  = 7'b0000100;
-    localparam          FSM_RRDY  = 7'b0001000;
-    localparam          FSM_WRITE = 7'b0010000;
-    localparam          FSM_WRDY  = 7'b0100000;    
-    localparam          FSM_DONE  = 7'b1000000;   
+    localparam          FSM_IDLE  = 0;  
+    localparam          FSM_LOAD  = 1;                           
+    localparam          FSM_READ  = 2;
+    localparam          FSM_RRDY  = 3;
+    localparam          FSM_WRITE = 4;
+    localparam          FSM_WRDY  = 5;    
+    localparam          FSM_DONE  = 6;   
 
     
     
@@ -305,33 +334,41 @@ begin
     if (!DRP_RST_N)
         begin
         //---------- 1st Stage FF --------------------------
-        gtxreset_reg1 <=  1'd0;
-        rate_reg1     <=  2'd0;
-        do_reg1       <= 16'd0;
-        rdy_reg1      <=  1'd0;
-        start_reg1    <=  1'd0;
+        gtxreset_reg1    <=  1'd0;
+        rate_reg1        <=  2'd0;
+        x16x20_mode_reg1 <=  1'd0;
+        x16_reg1         <=  1'd0;
+        do_reg1          <= 16'd0;
+        rdy_reg1         <=  1'd0;
+        start_reg1       <=  1'd0;
         //---------- 2nd Stage FF --------------------------
-        gtxreset_reg2 <=  1'd0;
-        rate_reg2     <=  2'd0;
-        do_reg2       <= 16'd0;
-        rdy_reg2      <=  1'd0;
-        start_reg2    <=  1'd0;
+        gtxreset_reg2    <=  1'd0;
+        rate_reg2        <=  2'd0;
+        x16x20_mode_reg2 <=  1'd0;
+        x16_reg2         <=  1'd0;
+        do_reg2          <= 16'd0;
+        rdy_reg2         <=  1'd0;
+        start_reg2       <=  1'd0;
         end
         
     else
         begin
         //---------- 1st Stage FF --------------------------
-        gtxreset_reg1 <= DRP_GTXRESET;
-        rate_reg1     <= DRP_RATE;
-        do_reg1       <= DRP_DO;
-        rdy_reg1      <= DRP_RDY;
-        start_reg1    <= DRP_START;
+        gtxreset_reg1    <= DRP_GTXRESET;
+        rate_reg1        <= DRP_RATE;
+        x16x20_mode_reg1 <= DRP_X16X20_MODE;
+        x16_reg1         <= DRP_X16;
+        do_reg1          <= DRP_DO;
+        rdy_reg1         <= DRP_RDY;
+        start_reg1       <= DRP_START;
         //---------- 2nd Stage FF --------------------------
-        gtxreset_reg2 <= gtxreset_reg1;
-        rate_reg2     <= rate_reg1;
-        do_reg2       <= do_reg1;
-        rdy_reg2      <= rdy_reg1;
-        start_reg2    <= start_reg1;
+        gtxreset_reg2    <= gtxreset_reg1;
+        rate_reg2        <= rate_reg1;
+        x16x20_mode_reg2 <= x16x20_mode_reg1;
+        x16_reg2         <= x16_reg1;
+        do_reg2          <= do_reg1;
+        rdy_reg2         <= rdy_reg1;
+        start_reg2       <= start_reg1;
         end
     
 end  
@@ -344,7 +381,9 @@ assign data_rxout_div          =  (rate_reg2 == 2'd2)                           
 assign data_tx_data_width      =  (rate_reg2 == 2'd2)                                ? GEN3_TX_DATA_WIDTH    : GEN12_TX_DATA_WIDTH;
 assign data_tx_int_datawidth   =  (rate_reg2 == 2'd2)                                ? GEN3_TX_INT_DATAWIDTH : GEN12_TX_INT_DATAWIDTH;
 assign data_rx_data_width      =  (rate_reg2 == 2'd2)                                ? GEN3_RX_DATA_WIDTH    : GEN12_RX_DATA_WIDTH;
+
 assign data_rx_int_datawidth   =  (rate_reg2 == 2'd2)                                ? GEN3_RX_INT_DATAWIDTH : GEN12_RX_INT_DATAWIDTH;
+
 assign data_txbuf_en           = ((rate_reg2 == 2'd2) || (PCIE_TXBUF_EN == "FALSE")) ? GEN3_TXBUF_EN         : GEN12_TXBUF_EN;
 assign data_rxbuf_en           = ((rate_reg2 == 2'd2) && (PCIE_RXBUF_EN == "FALSE")) ? GEN3_RXBUF_EN         : GEN12_RXBUF_EN;
 assign data_tx_xclk_sel        = ((rate_reg2 == 2'd2) || (PCIE_TXBUF_EN == "FALSE")) ? GEN3_TX_XCLK_SEL      : GEN12_TX_XCLK_SEL;
@@ -367,19 +406,44 @@ assign data_rxcdr_cfg_b = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  GE
 assign data_rxcdr_cfg_c = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  GEN3_RXCDR_CFG_C_GTH  : GEN3_RXCDR_CFG_C_GTX) :
                                                 ((PCIE_GT_DEVICE == "GTH") ?  GEN12_RXCDR_CFG_C_GTH : GEN12_RXCDR_CFG_C_GTX);
                                                 
-assign data_rxcdr_cfg_d = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  GEN3_RXCDR_CFG_D_GTH  : ((PCIE_ASYNC_EN == "TRUE") ? GEN3_RXCDR_CFG_D_GTX_A : GEN3_RXCDR_CFG_D_GTX_S)) :
+assign data_rxcdr_cfg_d = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  ((PCIE_AUX_CDR_GEN3_EN == "TRUE") ? GEN3_RXCDR_CFG_D_GTH_AUX : GEN3_RXCDR_CFG_D_GTH) : ((PCIE_ASYNC_EN == "TRUE") ? GEN3_RXCDR_CFG_D_GTX_A : GEN3_RXCDR_CFG_D_GTX_S)) :
                                                 ((PCIE_GT_DEVICE == "GTH") ?  GEN12_RXCDR_CFG_D_GTH : ((PCIE_ASYNC_EN == "TRUE") ? GEN3_RXCDR_CFG_D_GTX_A : GEN3_RXCDR_CFG_D_GTX_S));
 
 assign data_rxcdr_cfg_e = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  GEN3_RXCDR_CFG_E_GTH  : GEN3_RXCDR_CFG_E_GTX) :
                                                 ((PCIE_GT_DEVICE == "GTH") ?  GEN12_RXCDR_CFG_E_GTH : GEN12_RXCDR_CFG_E_GTX);
                                                 
-assign data_rxcdr_cfg_f = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  GEN3_RXCDR_CFG_F_GTH  : GEN3_RXCDR_CFG_F_GTX) :
+assign data_rxcdr_cfg_f = (rate_reg2 == 2'd2) ? ((PCIE_GT_DEVICE == "GTH") ?  ((PCIE_AUX_CDR_GEN3_EN == "TRUE") ? GEN3_RXCDR_CFG_F_GTH_AUX : GEN3_RXCDR_CFG_F_GTH) : GEN3_RXCDR_CFG_F_GTX) :
                                                 ((PCIE_GT_DEVICE == "GTH") ?  GEN12_RXCDR_CFG_F_GTH : GEN12_RXCDR_CFG_F_GTX);
 
 assign data_pcs_rsvd_attr_a    = GEN123_PCS_RSVD_ATTR_A;
 assign data_pcs_rsvd_attr_m_tx = PCIE_TXSYNC_MODE ? GEN123_PCS_RSVD_ATTR_A : GEN123_PCS_RSVD_ATTR_M_TX;
 assign data_pcs_rsvd_attr_m_rx = PCIE_RXSYNC_MODE ? GEN123_PCS_RSVD_ATTR_A : GEN123_PCS_RSVD_ATTR_M_RX;
 assign data_pcs_rsvd_attr_m    = data_pcs_rsvd_attr_m_tx | data_pcs_rsvd_attr_m_rx;
+
+assign data_x16x20_rx_datawidth = x16_reg2 ? X16_RX_DATAWIDTH : X20_RX_DATAWIDTH;
+
+
+//---------- Load Counter ------------------------------------------------------
+always @ (posedge DRP_CLK)
+begin
+
+    if (!DRP_RST_N)
+        load_cnt <= 2'd0;
+    else
+    
+        //---------- Increment Load Counter ----------------
+        if ((fsm == FSM_LOAD) && (load_cnt < LOAD_CNT_MAX))
+            load_cnt <= load_cnt + 2'd1;
+            
+        //---------- Hold Load Counter ---------------------
+        else if ((fsm == FSM_LOAD) && (load_cnt == LOAD_CNT_MAX))
+            load_cnt <= load_cnt;
+            
+        //---------- Reset Load Counter --------------------
+        else
+            load_cnt <= 2'd0;
+        
+end 
 
 
 
@@ -400,17 +464,19 @@ begin
         //--------------------------------------------------      
         5'd0:     
             begin
-            addr_reg <= mode ? ADDR_PCS_RSVD_ATTR : ADDR_TXOUT_DIV; 
-            di_reg   <= mode ? ((do_reg2 & MASK_PCS_RSVD_ATTR)  | data_pcs_rsvd_attr_a)
-                             : ((do_reg2 & MASK_TXOUT_DIV) | data_txout_div);
+            addr_reg <= mode             ? ADDR_PCS_RSVD_ATTR : 
+                        x16x20_mode_reg2 ? ADDR_RX_DATA_WIDTH : ADDR_TXOUT_DIV; 
+            di_reg   <= mode             ? ((do_reg2 & MASK_PCS_RSVD_ATTR)        | data_pcs_rsvd_attr_a) : 
+                        x16x20_mode_reg2 ? ((do_reg2 & MASK_X16X20_RX_DATA_WIDTH) | data_x16x20_rx_datawidth) : 
+                                           ((do_reg2 & MASK_TXOUT_DIV)            | data_txout_div);
             end 
             
         //--------------------------------------------------      
         5'd1:    
             begin
             addr_reg <= mode ? ADDR_PCS_RSVD_ATTR : ADDR_RXOUT_DIV;
-            di_reg   <= mode ? ((do_reg2 & MASK_PCS_RSVD_ATTR)  | data_pcs_rsvd_attr_m) 
-                             : ((do_reg2 & MASK_RXOUT_DIV) | data_rxout_div);
+            di_reg   <= mode ? ((do_reg2 & MASK_PCS_RSVD_ATTR)  | data_pcs_rsvd_attr_m) : 
+                               ((do_reg2 & MASK_RXOUT_DIV)      | data_rxout_div);
             end 
             
         //--------------------------------------------------
@@ -497,7 +563,7 @@ begin
             di_reg   <= (do_reg2 & MASK_RX_DFE_LPM_EIDLE) | data_rx_dfe_lpm_eidle;
             end     
             
-       //--------------------------------------------------      
+        //--------------------------------------------------      
         5'd14 :
             begin
             addr_reg <= ADDR_PMA_RSV_A;
@@ -618,7 +684,7 @@ begin
         FSM_LOAD :
         
             begin
-            fsm   <= FSM_READ;
+            fsm   <= (load_cnt == LOAD_CNT_MAX) ? FSM_READ : FSM_LOAD;
             index <= index;
             mode  <= mode;
             done  <= 1'd0;
@@ -669,7 +735,7 @@ begin
         FSM_DONE :
         
             begin
-            if ((index == INDEX_MAX) || (mode && (index == 5'd1)))
+            if ((index == INDEX_MAX) || (mode && (index == 5'd1)) || (x16x20_mode_reg2 && (index == 5'd0)))
                 begin
                 fsm   <= FSM_IDLE;
                 index <= 5'd0;
@@ -707,7 +773,7 @@ end
 assign DRP_ADDR = addr_reg;
 assign DRP_EN   = (fsm == FSM_READ) || (fsm == FSM_WRITE);
 assign DRP_DI   = di_reg;
-assign DRP_WE   = (fsm == FSM_WRITE) || (fsm == FSM_WRDY);
+assign DRP_WE   = (fsm == FSM_WRITE);
 assign DRP_DONE = done;
 assign DRP_FSM  = fsm;
 
