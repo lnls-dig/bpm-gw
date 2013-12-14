@@ -167,6 +167,7 @@ port
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+  adc_rst2x_n_o                             : out std_logic_vector(c_num_adc_channels-1 downto 0);
   adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
   adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
 
@@ -282,6 +283,7 @@ architecture rtl of wb_fmc130m_4ch is
   --signal fs_clk                             : std_logic;
   signal fs_rst_n                           : std_logic;
   signal fs_rst_sync_n                      : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fs_rst2x_sync_n                    : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_rst                            : std_logic; -- ADC reset from wishbone
   signal mmcm_adc_locked                    : std_logic;
 
@@ -508,9 +510,17 @@ begin
         --rst_n_o                                      => fs_rst_sync_n
         rst_n_o                                      => fs_rst_sync_n(i)
       );
+      
+      cmp_reset_fs2x_synch : reset_synch
+      port map(
+        clk_i                                       => fs_clk2x(i),
+        arst_n_i                                    => fs_rst_n,
+        rst_n_o                                     => fs_rst2x_sync_n(i)
+      );
 
       -- Output adc sync'ed reset to downstream FPGA logic
       adc_rst_n_o(i) <= fs_rst_sync_n(i);
+      adc_rst2x_n_o(i) <= fs_rst2x_sync_n(i);
       --fs_rst_sync_n(i) <= fs_rst_n;
     end generate;
   end generate;
