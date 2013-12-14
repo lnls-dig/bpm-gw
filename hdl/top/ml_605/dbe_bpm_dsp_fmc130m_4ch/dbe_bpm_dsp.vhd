@@ -339,6 +339,7 @@ architecture rtl of dbe_bpm_dsp is
 
   signal rs232_rstn                         : std_logic;
   signal fs_rstn                            : std_logic;
+  signal fs_rst2xn                          : std_logic;
 
   -- 200 Mhz clocck for iodelay_ctrl
   signal clk_200mhz                         : std_logic;
@@ -349,6 +350,7 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
+  signal sys_clk_bufg                       : std_logic;
 
   -- Ethernet MAC signals
   signal ethmac_int                         : std_logic;
@@ -401,6 +403,7 @@ architecture rtl of dbe_bpm_dsp is
   signal fmc_debug                          : std_logic;
   signal reset_adc_counter                  : unsigned(6 downto 0) := (others => '0');
   signal fmc_130m_4ch_rst_n                 : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc_130m_4ch_rst2x_n               : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   -- fmc130m_4ch Debug
   signal fmc130m_4ch_debug_valid_int        : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -797,7 +800,8 @@ architecture rtl of dbe_bpm_dsp is
   port(
     sys_clk_p_i                             : in std_logic;
     sys_clk_n_i                             : in std_logic;
-    sys_clk_o                               : out std_logic
+    sys_clk_o                               : out std_logic;
+    sys_clk_bufg_o                          : out std_logic
   );
   end component;
 
@@ -974,14 +978,15 @@ begin
   port map (
     sys_clk_p_i                             => sys_clk_p_i,
     sys_clk_n_i                             => sys_clk_n_i,
-    sys_clk_o                               => sys_clk_gen
+    sys_clk_o                               => sys_clk_gen,
+    sys_clk_bufg_o                          => sys_clk_bufg
   );
 
   -- Obtain core locking and generate necessary clocks
   cmp_sys_pll_inst : sys_pll
   port map (
     rst_i                                   => '0',
-    clk_i                                   => sys_clk_gen,
+    clk_i                                   => sys_clk_bufg,
     clk0_o                                  => clk_sys,     -- 100MHz locked clock
     clk1_o                                  => clk_200mhz,  -- 200MHz locked clock
     locked_o                                => locked        -- '1' when the PLL has locked
@@ -993,7 +998,7 @@ begin
     g_clocks                                => 1    -- CLK_SYS
   )
   port map(
-    free_clk_i                              => sys_clk_gen,
+    free_clk_i                              => sys_clk_bufg,
     locked_i                                => locked,
     clks_i                                  => reset_clks,
     rstn_o                                  => reset_rstn
@@ -1393,6 +1398,7 @@ begin
     adc_clk_o                               => fmc_130m_4ch_clk,
     adc_clk2x_o                             => fmc_130m_4ch_clk2x,
     adc_rst_n_o                             => fmc_130m_4ch_rst_n,
+    adc_rst2x_n_o                           => fmc_130m_4ch_rst2x_n,
     adc_data_o                              => fmc_130m_4ch_data,
     adc_data_valid_o                        => fmc_130m_4ch_data_valid,
 
@@ -1439,6 +1445,7 @@ begin
   fs_clk                                    <= fmc_130m_4ch_clk(c_adc_ref_clk);
   fs_rstn                                   <= fmc_130m_4ch_rst_n(c_adc_ref_clk);
   fs_clk2x                                  <= fmc_130m_4ch_clk2x(c_adc_ref_clk);
+  fs_rst2xn                                 <= fmc_130m_4ch_rst2x_n(c_adc_ref_clk);
 
   --led_south_o                               <= fmc_led1_int;
   --led_east_o                                <= fmc_led2_int;
@@ -1559,9 +1566,10 @@ begin
     ctrl2_o                                 => open
   );
 
-  --clk_swap_o                                <= clk_rffe_swap;
-  clk_swap_o                                <= fs_clk; -- FIXME!!!!
-  clk_swap2x_o                              <= fs_clk2x; -- FIXME!!!!
+  clk_swap_o                                <= clk_rffe_swap;
+  clk_swap2x_o                              <= clk_rffe_swap; -- FIXME!!!!
+  --clk_swap_o                                <= fs_clk; -- FIXME!!!!
+  --clk_swap2x_o                              <= fs_clk2x; -- FIXME!!!!
 
   -- Position calc core is slave 7
   cmp_xwb_position_calc_core : xwb_position_calc_core
@@ -1574,6 +1582,7 @@ begin
     rst_n_i                                 => clk_sys_rstn,
     clk_i                                   => clk_sys,  -- Wishbone clock
     fs_rst_n_i                              => fs_rstn,
+    fs_rst2x_n_i                            => fs_rst2xn,
     fs_clk_i                                => fs_clk,   -- clock period = 8.8823218389287 ns (112.583175675676 Mhz)
     fs_clk2x_i                              => fs_clk2x, -- clock period = 4.44116091946435 ns (225.16635135135124 Mhz)
 
