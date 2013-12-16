@@ -44,11 +44,30 @@ use work.fmc_adc_pkg.all;
 use work.dsp_cores_pkg.all;
 -- Genrams
 use work.genram_pkg.all;
+-- Data Acquisition core
+use work.acq_core_pkg.all;
+-- PCIe Core
+use work.bpm_pcie_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
 
 entity dbe_bpm_dsp is
+generic(
+  -- PCIe Lanes
+  g_pcieLanes                               : integer := 4;
+  -- PCIE Constants. TEMPORARY!
+  constant pcieLanes                        : integer := 4;
+  constant DDR_DQ_WIDTH                     : integer := 64;
+  constant DDR_PAYLOAD_WIDTH                : integer := 256;
+  constant DDR_DQS_WIDTH                    : integer := 8;
+  constant DDR_DM_WIDTH                     : integer := 8;
+  constant DDR_ROW_WIDTH                    : integer := 14;
+  constant DDR_BANK_WIDTH                   : integer := 3;
+  constant DDR_CK_WIDTH                     : integer := 1;
+  constant DDR_CKE_WIDTH                    : integer := 1;
+  constant DDR_ODT_WIDTH                    : integer := 1
+);
 port(
   -----------------------------------------
   -- Clocking pins
@@ -190,9 +209,41 @@ port(
   fmc_pll_status_led_o                      : out std_logic;
 
   -----------------------------------------
+  -- PCIe pins
+  -----------------------------------------
+
+  -- DDR3 memory pins
+  ddr3_dq_b                                 : inout std_logic_vector(DDR_DQ_WIDTH-1 downto 0);
+  ddr3_dqs_p_b                              : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+  ddr3_dqs_n_b                              : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
+  ddr3_addr_o                               : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
+  ddr3_ba_o                                 : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
+  ddr3_cs_n_o                               : out   std_logic_vector(0 downto 0);
+  ddr3_ras_n_o                              : out   std_logic;
+  ddr3_cas_n_o                              : out   std_logic;
+  ddr3_we_n_o                               : out   std_logic;
+  ddr3_reset_n_o                            : out   std_logic;
+  ddr3_ck_p_o                               : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+  ddr3_ck_n_o                               : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
+  ddr3_cke_o                                : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+  ddr3_dm_o                                 : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
+  ddr3_odt_o                                : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
+
+  -- PCIe transceivers
+  pci_exp_rxp_i                             : in  std_logic_vector(g_pcieLanes - 1 downto 0);
+  pci_exp_rxn_i                             : in  std_logic_vector(g_pcieLanes - 1 downto 0);
+  pci_exp_txp_o                             : out std_logic_vector(g_pcieLanes - 1 downto 0);
+  pci_exp_txn_o                             : out std_logic_vector(g_pcieLanes - 1 downto 0);
+
+  -- PCI clock and reset signals
+  pcie_rst_n_i                              : in std_logic;
+  pcie_clk_p_i                              : in std_logic;
+  pcie_clk_n_i                              : in std_logic;
+
+  -----------------------------------------
   -- Button pins
   -----------------------------------------
-  buttons_i                                 : in std_logic_vector(7 downto 0);
+  --buttons_i                                 : in std_logic_vector(7 downto 0);
 
   -----------------------------------------
   -- User LEDs
@@ -205,12 +256,12 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 10;
+  constant c_slaves                         : natural := 11;
   -- General Dual-port memory, Buffer Single-port memory, DMA control port, MAC,
   --Etherbone, FMC516, Peripherals
   -- Number of masters
   --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone, RS232-Syscon
-  constant c_masters                        : natural := 7;            -- RS232-Syscon,
+  constant c_masters                        : natural := 8;            -- RS232-Syscon, PCIe
   --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone
 
   --constant c_dpram_size                     : natural := 131072/4; -- in 32-bit words (128KB)
@@ -218,6 +269,43 @@ architecture rtl of dbe_bpm_dsp is
   --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
   --constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
   constant c_dpram_ethbuf_size                : natural := 16384/4; -- in 32-bit words (16KB)
+
+  constant c_acq_fifo_size                  : natural := 256;
+
+  -- TEMPORARY! DON'T TOUCH!
+  --constant c_acq_data_width                 : natural := 64;
+  constant c_acq_addr_width                 : natural := 28;
+  constant c_acq_ddr_payload_width          : natural := DDR_PAYLOAD_WIDTH; -- DDR3 UI (256 bits)
+  constant c_acq_ddr_addr_width             : natural := 28;
+  constant c_acq_ddr_addr_res_width         : natural := 32;
+  constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_acq_ddr_addr_width;
+
+  constant c_acq_adc_id                     : natural := 0;
+  constant c_acq_tbt_amp_id                 : natural := 1;
+  constant c_acq_tbt_pos_id                 : natural := 2;
+  constant c_acq_fofb_amp_id                : natural := 3;
+  constant c_acq_fofb_pos_id                : natural := 4;
+  constant c_acq_monit_amp_id               : natural := 5;
+  constant c_acq_monit_pos_id               : natural := 6;
+  constant c_acq_monit_1_pos_id             : natural := 7;
+
+
+  constant c_acq_pos_ddr3_width             : natural := 32;
+  constant c_acq_num_channels               : natural := 8; -- ADC + TBT AMP + TBT POS +
+                                                            -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
+  constant c_acq_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
+    ( c_acq_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
+      c_acq_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_fofb_pos_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_monit_amp_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2))
+    );
+
+  -- DDR3 constants
+  constant c_ddr_dq_width                   : natural := 64;
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -235,6 +323,11 @@ architecture rtl of dbe_bpm_dsp is
   -- number of the ADC reference clock used for all downstream
   -- FPGA logic
   constant c_adc_ref_clk                    : natural := 1;
+
+  -- Number of top level clocks
+  constant c_num_tlvl_clks                  : natural := 2; -- CLK_SYS and CLK_200 MHz
+  constant c_clk_sys_id                     : natural := 0; -- CLK_SYS and CLK_200 MHz
+  constant c_clk_200mhz_id                  : natural := 1; -- CLK_SYS and CLK_200 MHz
 
   -- DSP constants
   --constant c_dsp_ref_num_bits               : natural := 24;
@@ -283,22 +376,23 @@ architecture rtl of dbe_bpm_dsp is
 
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-    ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 128KB RAM
-      1 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"10000000"),   -- Second port to the same memory
+    ( 0 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 90KB RAM
+      1 => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00100000"),   -- Second port to the same memory
       2 => f_sdb_embed_device(f_xwb_dpram(c_dpram_ethbuf_size),
-                                                          x"20000000"),   -- 64KB RAM
-      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"30004000"),   -- DMA control port
-      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"30005000"),   -- Ethernet MAC control port
-      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"30006000"),   -- Ethernet Adapter control port
-      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"30007000"),   -- Etherbone control port
+                                                          x"00200000"),   -- 64KB RAM
+      3 => f_sdb_embed_device(c_xwb_dma_sdb,              x"00304000"),   -- DMA control port
+      4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"00305000"),   -- Ethernet MAC control port
+      5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"00306000"),   -- Ethernet Adapter control port
+      6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"00307000"),   -- Etherbone control port
       7 => f_sdb_embed_device(c_xwb_position_calc_core_sdb,
-                                                          x"30008000"),   -- Position Calc Core control port
-      8 => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"30010000"),   -- FMC130m_4ch control port
-      9 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"30020000")    -- General peripherals control port
+                                                          x"00308000"),   -- Position Calc Core control port
+      8 => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00310000"),   -- FMC130m_4ch control port
+      9 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00320000"),    -- General peripherals control port
+      10 => f_sdb_embed_device(c_xwb_acq_core_sdb,        x"00330000")    -- Data Acquisition control port
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
-  constant c_sdb_address                    : t_wishbone_address := x"30000000";
+  constant c_sdb_address                    : t_wishbone_address := x"00300000";
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
@@ -324,18 +418,100 @@ architecture rtl of dbe_bpm_dsp is
   signal lm32_interrupt                     : std_logic_vector(31 downto 0);
   signal lm32_rstn                          : std_logic;
 
+  -- PCIe signals
+  signal wb_ma_pcie_ack_in                  : std_logic;
+  signal wb_ma_pcie_dat_in                  : std_logic_vector(63 downto 0);
+  signal wb_ma_pcie_addr_out                : std_logic_vector(28 downto 0);
+  signal wb_ma_pcie_dat_out                 : std_logic_vector(63 downto 0);
+  signal wb_ma_pcie_we_out                  : std_logic;
+  signal wb_ma_pcie_stb_out                 : std_logic;
+  signal wb_ma_pcie_sel_out                 : std_logic;
+  signal wb_ma_pcie_cyc_out                 : std_logic;
+
+  signal wb_ma_pcie_rst                     : std_logic;
+  signal wb_ma_pcie_rstn                    : std_logic;
+
+  signal wb_ma_sladp_pcie_ack_in            : std_logic;
+  signal wb_ma_sladp_pcie_dat_in            : std_logic_vector(31 downto 0);
+  signal wb_ma_sladp_pcie_addr_out          : std_logic_vector(31 downto 0);
+  signal wb_ma_sladp_pcie_dat_out           : std_logic_vector(31 downto 0);
+  signal wb_ma_sladp_pcie_we_out            : std_logic;
+  signal wb_ma_sladp_pcie_stb_out           : std_logic;
+  signal wb_ma_sladp_pcie_sel_out           : std_logic_vector(3 downto 0);
+  signal wb_ma_sladp_pcie_cyc_out           : std_logic;
+
+  -- PCIe Debug signals
+
+  signal dbg_app_addr                       : std_logic_vector(31 downto 0);
+  signal dbg_app_cmd                        : std_logic_vector(2 downto 0);
+  signal dbg_app_en                         : std_logic;
+  signal dbg_app_wdf_data                   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal dbg_app_wdf_end                    : std_logic;
+  signal dbg_app_wdf_wren                   : std_logic;
+  signal dbg_app_wdf_mask                   : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+  signal dbg_app_rd_data                    : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal dbg_app_rd_data_end                : std_logic;
+  signal dbg_app_rd_data_valid              : std_logic;
+  signal dbg_app_rdy                        : std_logic;
+  signal dbg_app_wdf_rdy                    : std_logic;
+  signal dbg_ddr_ui_clk                     : std_logic;
+  signal dbg_ddr_ui_reset                   : std_logic;
+
+  signal dbg_arb_req                        : std_logic_vector(1 downto 0);
+  signal dbg_arb_gnt                        : std_logic_vector(1 downto 0);
+
+  -- To/From Acquisition Core
+  signal acq_chan_array                     : t_acq_chan_array(c_acq_num_channels-1 downto 0);
+
+  signal bpm_acq_dpram_dout                 : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal bpm_acq_dpram_valid                : std_logic;
+
+  signal bpm_acq_ext_dout                   : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal bpm_acq_ext_valid                  : std_logic;
+  signal bpm_acq_ext_addr                   : std_logic_vector(c_acq_addr_width-1 downto 0);
+  signal bpm_acq_ext_sof                    : std_logic;
+  signal bpm_acq_ext_eof                    : std_logic;
+  signal bpm_acq_ext_dreq                   : std_logic;
+  signal bpm_acq_ext_stall                  : std_logic;
+
+  signal memc_ui_clk                        : std_logic;
+  signal memc_ui_rst                        : std_logic;
+  signal memc_ui_rstn                       : std_logic;
+  signal memc_cmd_rdy                       : std_logic;
+  signal memc_cmd_en                        : std_logic;
+  signal memc_cmd_instr                     : std_logic_vector(2 downto 0);
+  signal memc_cmd_addr_resized              : std_logic_vector(c_acq_ddr_addr_res_width-1 downto 0);
+  signal memc_cmd_addr                      : std_logic_vector(c_acq_ddr_addr_width-1 downto 0);
+  signal memc_wr_en                         : std_logic;
+  signal memc_wr_end                        : std_logic;
+  signal memc_wr_mask                       : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+  signal memc_wr_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_wr_rdy                        : std_logic;
+  signal memc_rd_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_valid                      : std_logic;
+
+  signal dbg_ddr_rb_data                    : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal dbg_ddr_rb_addr                    : std_logic_vector(c_acq_addr_width-1 downto 0);
+  signal dbg_ddr_rb_valid                   : std_logic;
+
+  -- memory arbiter interface
+  signal memarb_acc_req                     : std_logic;
+  signal memarb_acc_gnt                     : std_logic;
+
   -- Clocks and resets signals
   signal locked                             : std_logic;
   signal clk_sys_rstn                       : std_logic;
   signal clk_sys_rst                        : std_logic;
+  signal clk_200mhz_rst                     : std_logic;
+  signal clk_200mhz_rstn                    : std_logic;
 
   signal rst_button_sys_pp                  : std_logic;
   signal rst_button_sys                     : std_logic;
   signal rst_button_sys_n                   : std_logic;
 
-  -- Only one clock domain
-  signal reset_clks                         : std_logic_vector(0 downto 0);
-  signal reset_rstn                         : std_logic_vector(0 downto 0);
+  -- "c_num_tlvl_clks" clocks
+  signal reset_clks                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
+  signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
 
   signal rs232_rstn                         : std_logic;
   signal fs_rstn                            : std_logic;
@@ -348,9 +524,9 @@ architecture rtl of dbe_bpm_dsp is
   signal fs_clk                             : std_logic;
   signal fs_clk2x                           : std_logic;
 
-  -- Global Clock Single ended
+   -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
-  signal sys_clk_bufg                       : std_logic;
+  signal sys_clk_gen_bufg                   : std_logic;
 
   -- Ethernet MAC signals
   signal ethmac_int                         : std_logic;
@@ -631,6 +807,8 @@ architecture rtl of dbe_bpm_dsp is
   signal gpio_slave_led_i                   : t_wishbone_slave_in;
   signal gpio_leds_int                      : std_logic_vector(c_leds_num_pins-1 downto 0);
   -- signal leds_gpio_dummy_in                : std_logic_vector(c_leds_num_pins-1 downto 0);
+
+  signal buttons_dummy                      : std_logic_vector(7 downto 0) := (others => '0');
 
   -- GPIO Button signals
   signal gpio_slave_button_o                : t_wishbone_slave_out;
@@ -979,14 +1157,14 @@ begin
     sys_clk_p_i                             => sys_clk_p_i,
     sys_clk_n_i                             => sys_clk_n_i,
     sys_clk_o                               => sys_clk_gen,
-    sys_clk_bufg_o                          => sys_clk_bufg
+    sys_clk_bufg_o                          => sys_clk_gen_bufg
   );
 
   -- Obtain core locking and generate necessary clocks
   cmp_sys_pll_inst : sys_pll
   port map (
     rst_i                                   => '0',
-    clk_i                                   => sys_clk_bufg,
+    clk_i                                   => sys_clk_gen_bufg,
     clk0_o                                  => clk_sys,     -- 100MHz locked clock
     clk1_o                                  => clk_200mhz,  -- 200MHz locked clock
     locked_o                                => locked        -- '1' when the PLL has locked
@@ -995,19 +1173,25 @@ begin
   -- Reset synchronization. Hold reset line until few locked cycles have passed.
   cmp_reset : gc_reset
   generic map(
-    g_clocks                                => 1    -- CLK_SYS
+    g_clocks                                => c_num_tlvl_clks    -- CLK_SYS & CLK_200
   )
   port map(
-    free_clk_i                              => sys_clk_bufg,
+    --free_clk_i                              => sys_clk_gen,
+    free_clk_i                              => sys_clk_gen_bufg,
     locked_i                                => locked,
     clks_i                                  => reset_clks,
     rstn_o                                  => reset_rstn
   );
 
-  reset_clks(0)                             <= clk_sys;
-  clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n and rs232_rstn;
+  reset_clks(c_clk_sys_id)                  <= clk_sys;
+  reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
+  --clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
+  clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
+                                                  rs232_rstn and wb_ma_pcie_rstn;
   clk_sys_rst                               <= not clk_sys_rstn;
   mrstn_o                                   <= clk_sys_rstn;
+  clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
+  clk_200mhz_rst                            <=  not(reset_rstn(c_clk_200mhz_id));
 
   -- Generate button reset synchronous to each clock domain
   -- Detect button positive edge of clk_sys
@@ -1079,9 +1263,155 @@ begin
   -- Interrupt '4' is Ethernet Adapter TX completion.
   -- Interrupts 31 downto 5 are disabled
 
-  lm32_interrupt <= (0 => ethmac_int, 1 => dma_int, 2 => not buttons_i(0), 3 => irq_rx_done,
-                      4 => irq_tx_done, others => '0');
+  --lm32_interrupt <= (0 => ethmac_int, 1 => dma_int, 2 => not buttons_i(0), 3 => irq_rx_done,
+  --                    4 => irq_tx_done, others => '0');
 
+  ----------------------------------
+  --         PCIe Core            --
+  ----------------------------------
+  cmp_bpm_pcie_ml605 : bpm_pcie_ml605
+  generic map (
+    SIM_BYPASS_INIT_CAL                     => "OFF" -- Full calibration sequence
+  )
+  port map (
+    --DDR3 memory pins
+    ddr3_dq                                 => ddr3_dq_b,
+    ddr3_dqs_p                              => ddr3_dqs_p_b,
+    ddr3_dqs_n                              => ddr3_dqs_n_b,
+    ddr3_addr                               => ddr3_addr_o,
+    ddr3_ba                                 => ddr3_ba_o,
+    ddr3_cs_n                               => ddr3_cs_n_o,
+    ddr3_ras_n                              => ddr3_ras_n_o,
+    ddr3_cas_n                              => ddr3_cas_n_o,
+    ddr3_we_n                               => ddr3_we_n_o,
+    ddr3_reset_n                            => ddr3_reset_n_o,
+    ddr3_ck_p                               => ddr3_ck_p_o,
+    ddr3_ck_n                               => ddr3_ck_n_o,
+    ddr3_cke                                => ddr3_cke_o,
+    ddr3_dm                                 => ddr3_dm_o,
+    ddr3_odt                                => ddr3_odt_o,
+    -- PCIe transceivers
+    pci_exp_rxp                             => pci_exp_rxp_i,
+    pci_exp_rxn                             => pci_exp_rxn_i,
+    pci_exp_txp                             => pci_exp_txp_o,
+    pci_exp_txn                             => pci_exp_txn_o,
+    -- Necessity signals
+    ddr_sys_clk_p                           => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
+    --ddr_sys_clk_p                           => sys_clk_gen_bufg, --200 MHz DDR core clock (connect through BUFG or PLL)
+    sys_clk_p                               => pcie_clk_p_i,  --100 MHz PCIe Clock (connect directly to input pin)
+    sys_clk_n                               => pcie_clk_n_i,  --100 MHz PCIe Clock
+    sys_rst_n                               => pcie_rst_n_i, -- PCIe core reset
+
+    -- DDR memory controller interface --
+    ddr_core_rst                            => wb_ma_pcie_rst,
+    memc_ui_clk                             => memc_ui_clk,
+    memc_ui_rst                             => memc_ui_rst,
+    memc_cmd_rdy                            => memc_cmd_rdy,
+    memc_cmd_en                             => memc_cmd_en,
+    memc_cmd_instr                          => memc_cmd_instr,
+    --memc_cmd_addr                           => memc_cmd_addr,
+    memc_cmd_addr                           => memc_cmd_addr_resized,
+    memc_wr_en                              => memc_wr_en,
+    memc_wr_end                             => memc_wr_end,
+    memc_wr_mask                            => memc_wr_mask,
+    memc_wr_data                            => memc_wr_data,
+    memc_wr_rdy                             => memc_wr_rdy,
+    memc_rd_data                            => memc_rd_data,
+    memc_rd_valid                           => memc_rd_valid,
+    -- memory arbiter interface
+    memarb_acc_req                          => memarb_acc_req,
+    memarb_acc_gnt                          => memarb_acc_gnt,
+    --/ DDR memory controller interface
+
+    -- Wishbone interface --
+    -- uncomment when instantiating in another project
+    clk_i                                   => clk_sys,
+    rst_i                                   => clk_sys_rst,
+    ack_i                                   => wb_ma_pcie_ack_in,
+    dat_i                                   => wb_ma_pcie_dat_in,
+    addr_o                                  => wb_ma_pcie_addr_out,
+    dat_o                                   => wb_ma_pcie_dat_out,
+    we_o                                    => wb_ma_pcie_we_out,
+    stb_o                                   => wb_ma_pcie_stb_out,
+    sel_o                                   => wb_ma_pcie_sel_out,
+    cyc_o                                   => wb_ma_pcie_cyc_out,
+    --/ Wishbone interface
+    -- Additional exported signals for instantiation
+    ext_rst_o                               => wb_ma_pcie_rst,
+
+    -- Debug signals
+    dbg_app_addr_o                          => dbg_app_addr,
+    dbg_app_cmd_o                           => dbg_app_cmd,
+    dbg_app_en_o                            => dbg_app_en,
+    dbg_app_wdf_data_o                      => dbg_app_wdf_data,
+    dbg_app_wdf_end_o                       => dbg_app_wdf_end,
+    dbg_app_wdf_wren_o                      => dbg_app_wdf_wren,
+    dbg_app_wdf_mask_o                      => dbg_app_wdf_mask,
+    dbg_app_rd_data_o                       => dbg_app_rd_data,
+    dbg_app_rd_data_end_o                   => dbg_app_rd_data_end,
+    dbg_app_rd_data_valid_o                 => dbg_app_rd_data_valid,
+    dbg_app_rdy_o                           => dbg_app_rdy,
+    dbg_app_wdf_rdy_o                       => dbg_app_wdf_rdy,
+    dbg_ddr_ui_clk_o                        => dbg_ddr_ui_clk,
+    dbg_ddr_ui_reset_o                      => dbg_ddr_ui_reset,
+
+    dbg_arb_req_o                           => dbg_arb_req,
+    dbg_arb_gnt_o                           => dbg_arb_gnt
+  );
+
+  wb_ma_pcie_rstn                           <= not(wb_ma_pcie_rst);
+
+  cmp_pcie_ma_iface_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => true,
+    g_master_mode                           => PIPELINED,
+    g_master_granularity                    => WORD,
+    g_slave_use_struct                      => false,
+    g_slave_mode                            => CLASSIC,
+    g_slave_granularity                     => WORD
+  )
+  port map (
+    clk_sys_i                               => clk_sys,
+    rst_n_i                                 => clk_sys_rstn,
+
+    sl_adr_i                                => wb_ma_sladp_pcie_addr_out,
+    sl_dat_i                                => wb_ma_sladp_pcie_dat_out,
+    sl_sel_i                                => wb_ma_sladp_pcie_sel_out,
+    sl_cyc_i                                => wb_ma_sladp_pcie_cyc_out,
+    sl_stb_i                                => wb_ma_sladp_pcie_stb_out,
+    sl_we_i                                 => wb_ma_sladp_pcie_we_out,
+    sl_dat_o                                => wb_ma_sladp_pcie_dat_in,
+    sl_ack_o                                => wb_ma_sladp_pcie_ack_in,
+    sl_stall_o                              => open,
+    sl_int_o                                => open,
+    sl_rty_o                                => open,
+    sl_err_o                                => open,
+
+    master_i                                => cbar_slave_o(0),
+    master_o                                => cbar_slave_i(0)
+  );
+
+  -- Connect PCIe to the Wishbone Crossbar
+  wb_ma_sladp_pcie_addr_out(wb_ma_sladp_pcie_addr_out'left downto wb_ma_pcie_addr_out'left+1)
+                                              <= (others => '0');
+  wb_ma_sladp_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0)
+                                              <= wb_ma_pcie_addr_out;
+  wb_ma_sladp_pcie_dat_out                    <= wb_ma_pcie_dat_out(wb_ma_sladp_pcie_dat_out'left downto 0);
+  wb_ma_sladp_pcie_sel_out                    <= wb_ma_pcie_sel_out & wb_ma_pcie_sel_out &
+                                                 wb_ma_pcie_sel_out & wb_ma_pcie_sel_out;
+  wb_ma_sladp_pcie_cyc_out                    <= wb_ma_pcie_cyc_out;
+  wb_ma_sladp_pcie_stb_out                    <= wb_ma_pcie_stb_out;
+  wb_ma_sladp_pcie_we_out                     <= wb_ma_pcie_we_out;
+  wb_ma_pcie_dat_in(wb_ma_pcie_dat_in'left downto wb_ma_sladp_pcie_dat_in'left+1)
+                                              <= (others => '0');
+  wb_ma_pcie_dat_in(wb_ma_sladp_pcie_dat_in'left downto 0)
+                                              <= wb_ma_sladp_pcie_dat_in;
+
+  wb_ma_pcie_ack_in                           <= wb_ma_sladp_pcie_ack_in;
+
+  ----------------------------------
+  --         RS232 Core            --
+  ----------------------------------
   cmp_xwb_rs232_syscon : xwb_rs232_syscon
   generic map (
     g_ma_interface_mode                       => PIPELINED,
@@ -1100,8 +1430,8 @@ begin
     rstn_o                                    => rs232_rstn,
 
     -- WISHBONE master
-    wb_master_i                               => cbar_slave_o(0),
-    wb_master_o                               => cbar_slave_i(0)
+    wb_master_i                               => cbar_slave_o(1),
+    wb_master_o                               => cbar_slave_i(1)
   );
 
   -- A DMA controller is master 2+3, slave 3, and interrupt 1
@@ -1111,10 +1441,10 @@ begin
     rst_n_i                                 => clk_sys_rstn,
     slave_i                                 => cbar_master_o(3),
     slave_o                                 => cbar_master_i(3),
-    r_master_i                              => cbar_slave_o(1),
-    r_master_o                              => cbar_slave_i(1),
-    w_master_i                              => cbar_slave_o(2),
-    w_master_o                              => cbar_slave_i(2),
+    r_master_i                              => cbar_slave_o(2),
+    r_master_o                              => cbar_slave_i(2),
+    w_master_i                              => cbar_slave_o(3),
+    w_master_o                              => cbar_slave_i(3),
     interrupt_o                             => dma_int
   );
 
@@ -1186,8 +1516,8 @@ begin
     wb_slave_out                            => cbar_master_i(4),
 
     -- WISHBONE master
-    wb_master_in                            => cbar_slave_o(3),
-    wb_master_out                           => cbar_slave_i(3),
+    wb_master_in                            => cbar_slave_o(4),
+    wb_master_out                           => cbar_slave_i(4),
 
     -- PHY TX
     mtx_clk_pad_i                           => mtx_clk_pad_i,
@@ -1235,11 +1565,11 @@ begin
     wb_slave_o                              => cbar_master_i(5),
     wb_slave_i                              => cbar_master_o(5),
 
-    tx_ram_o                                => cbar_slave_i(4),
-    tx_ram_i                                => cbar_slave_o(4),
+    tx_ram_o                                => cbar_slave_i(5),
+    tx_ram_i                                => cbar_slave_o(5),
 
-    rx_ram_o                                => cbar_slave_i(5),
-    rx_ram_i                                => cbar_slave_o(5),
+    rx_ram_o                                => cbar_slave_i(6),
+    rx_ram_i                                => cbar_slave_o(6),
 
     rx_eb_o                                 => eb_snk_i,
     rx_eb_i                                 => eb_snk_o,
@@ -1278,8 +1608,8 @@ begin
     master_i                                => wb_ebone_in
   );
 
-  cbar_slave_i(6)                           <= wb_ebone_out;
-  wb_ebone_in                               <= cbar_slave_o(6);
+  cbar_slave_i(7)                           <= wb_ebone_out;
+  wb_ebone_in                               <= cbar_slave_o(7);
 
   -- The FMC130M_4CH is slave 8
   cmp_xwb_fmc130m_4ch : xwb_fmc130m_4ch
@@ -1891,7 +2221,8 @@ begin
 
     -- Buttons
     button_out_o                              => open,
-    button_in_i                               => buttons_i,
+    --button_in_i                               => buttons_i,
+    button_in_i                               => buttons_dummy,
     button_oen_o                              => open,
 
     -- Wishbone
@@ -1900,6 +2231,198 @@ begin
   );
 
   leds_o <= gpio_leds_int;
+
+  --------------------
+  -- ADC data
+  --------------------
+  acq_chan_array(c_acq_adc_id).val_low       <= dsp_adc_ch3_data &
+                                                dsp_adc_ch2_data &
+                                                dsp_adc_ch1_data &
+                                                dsp_adc_ch0_data;
+  acq_chan_array(c_acq_adc_id).val_high      <= (others => '0');
+  acq_chan_array(c_acq_adc_id).dvalid        <= '1';
+  acq_chan_array(c_acq_adc_id).trig          <= '0';
+
+  --------------------
+  -- TBT AMP data
+  --------------------
+  acq_chan_array(c_acq_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp_tbt_amp_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp_tbt_amp_ch0), 32));
+
+  acq_chan_array(c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_tbt_amp_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp_tbt_amp_ch2), 32));
+
+  acq_chan_array(c_acq_tbt_amp_id).dvalid    <= dsp_tbt_amp_ch0_valid;
+  acq_chan_array(c_acq_tbt_amp_id).trig      <= '0';
+
+  --------------------
+  -- TBT POS data
+  --------------------
+  acq_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_tbt), 32)) &
+                                                std_logic_vector(resize(signed(dsp_x_tbt), 32));
+
+  acq_chan_array(c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_tbt), 32)) &
+                                                std_logic_vector(resize(signed(dsp_q_tbt), 32));
+
+  acq_chan_array(c_acq_tbt_pos_id).dvalid    <= dsp_x_tbt_valid;
+  acq_chan_array(c_acq_tbt_pos_id).trig      <= '0';
+
+  --------------------
+  -- FOFB AMP data
+  --------------------
+  acq_chan_array(c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp_fofb_amp_ch1), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_fofb_amp_ch0), 32));
+
+  acq_chan_array(c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_fofb_amp_ch3), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_fofb_amp_ch2), 32));
+
+  acq_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp_fofb_amp_ch0_valid;
+  acq_chan_array(c_acq_fofb_amp_id).trig      <= '0';
+
+  --------------------
+  -- FOFB POS data
+  --------------------
+  acq_chan_array(c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_fofb), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_x_fofb), 32));
+
+  acq_chan_array(c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_fofb), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_q_fofb), 32));
+
+  acq_chan_array(c_acq_fofb_pos_id).dvalid    <= dsp_x_fofb_valid;
+  acq_chan_array(c_acq_fofb_pos_id).trig      <= '0';
+
+  --------------------
+  -- MONIT AMP data
+  --------------------
+  acq_chan_array(c_acq_monit_amp_id).val_low   <= std_logic_vector(resize(signed(dsp_monit_amp_ch1), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_monit_amp_ch0), 32));
+
+  acq_chan_array(c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_monit_amp_ch3), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_monit_amp_ch2), 32));
+
+  acq_chan_array(c_acq_monit_amp_id).dvalid    <= dsp_monit_amp_ch0_valid;
+  acq_chan_array(c_acq_monit_amp_id).trig      <= '0';
+
+  --------------------
+  -- MONIT POS data
+  --------------------
+  acq_chan_array(c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_monit), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_x_monit), 32));
+
+  acq_chan_array(c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_monit), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_q_monit), 32));
+
+  acq_chan_array(c_acq_monit_pos_id).dvalid    <= dsp_x_monit_valid;
+  acq_chan_array(c_acq_monit_pos_id).trig      <= '0';
+
+  --------------------
+  -- MONIT1 POS data
+  --------------------
+  acq_chan_array(c_acq_monit_1_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_monit_1), 32)) &
+                                                    std_logic_vector(resize(signed(dsp_x_monit_1), 32));
+
+  acq_chan_array(c_acq_monit_1_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_monit_1), 32)) &
+                                                    std_logic_vector(resize(signed(dsp_q_monit_1), 32));
+
+  acq_chan_array(c_acq_monit_1_pos_id).dvalid    <= dsp_x_monit_1_valid;
+  acq_chan_array(c_acq_monit_1_pos_id).trig      <= '0';
+
+  -- The xwb_acq_core is slave 9
+  cmp_xwb_acq_core : xwb_acq_core
+  generic map
+  (
+    g_interface_mode                          => PIPELINED,
+    g_address_granularity                     => WORD,
+    g_acq_addr_width                          => c_acq_addr_width,
+    g_acq_num_channels                        => c_acq_num_channels,
+    g_acq_channels                            => c_acq_channels,
+    g_ddr_payload_width                       => c_acq_ddr_payload_width,
+    g_ddr_dq_width                            => c_ddr_dq_width,
+    g_ddr_addr_width                          => c_acq_ddr_addr_width,
+    --g_multishot_ram_size                      => 2048,
+    g_fifo_fc_size                            => c_acq_fifo_size -- avoid fifo overflow
+    --g_sim_readback                            => false
+  )
+  port map
+  (
+   -- assign to a better and shorter name
+    fs_clk_i                                  => fmc_130m_4ch_clk(c_adc_ref_clk),
+    fs_ce_i                                   => '1',
+    -- assign to a better and shorter name
+    fs_rst_n_i                                => fmc_130m_4ch_rst_n(c_adc_ref_clk),
+
+    sys_clk_i                                 => clk_sys,
+    sys_rst_n_i                               => clk_sys_rstn,
+
+    -- From DDR3 Controller
+    ext_clk_i                                 => memc_ui_clk,
+    ext_rst_n_i                               => memc_ui_rstn,
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+    wb_slv_i                                  => cbar_master_o(10),
+    wb_slv_o                                  => cbar_master_i(10),
+
+    -----------------------------
+    -- External Interface
+    -----------------------------
+    --data_i                                    => fmc_130m_4ch_data, -- ch4 ch3 ch2 ch1
+    --dvalid_i                                  => fmc_130m_4ch_data_valid(c_adc_ref_clk), -- Change this!!
+    --ext_trig_i                                => '0',
+    acq_chan_array_i                         => acq_chan_array,
+
+    -----------------------------
+    -- DRRAM Interface
+    -----------------------------
+    dpram_dout_o                              => bpm_acq_dpram_dout , -- to chipscope
+    dpram_valid_o                             => bpm_acq_dpram_valid, -- to chipscope
+
+    -----------------------------
+    -- External Interface (w/ FLow Control)
+    -----------------------------
+    ext_dout_o                                => bpm_acq_ext_dout, -- to chipscope
+    ext_valid_o                               => bpm_acq_ext_valid, -- to chipscope
+    ext_addr_o                                => bpm_acq_ext_addr, -- to chipscope
+    ext_sof_o                                 => bpm_acq_ext_sof, -- to chipscope
+    ext_eof_o                                 => bpm_acq_ext_eof, -- to chipscope
+    ext_dreq_o                                => bpm_acq_ext_dreq, -- to chipscope
+    ext_stall_o                               => bpm_acq_ext_stall, -- to chipscope
+
+    -----------------------------
+    -- DDR3 SDRAM Interface
+    -----------------------------
+    ui_app_addr_o                             => memc_cmd_addr,
+    ui_app_cmd_o                              => memc_cmd_instr,
+    ui_app_en_o                               => memc_cmd_en,
+    ui_app_rdy_i                              => memc_cmd_rdy,
+
+    ui_app_wdf_data_o                         => memc_wr_data,
+    ui_app_wdf_end_o                          => memc_wr_end,
+    ui_app_wdf_mask_o                         => memc_wr_mask,
+    ui_app_wdf_wren_o                         => memc_wr_en,
+    ui_app_wdf_rdy_i                          => memc_wr_rdy,
+
+    ui_app_rd_data_i                          => memc_rd_data,  -- not used!
+    ui_app_rd_data_end_i                      => '0',  -- not used!
+    ui_app_rd_data_valid_i                    => memc_rd_valid,  -- not used!
+
+    -- DDR3 arbitrer for multiple accesses
+    ui_app_req_o                              => memarb_acc_req,
+    ui_app_gnt_i                              => memarb_acc_gnt,
+
+    -----------------------------
+    -- Debug Interface
+    -----------------------------
+    dbg_ddr_rb_data_o                         => dbg_ddr_rb_data,
+    dbg_ddr_rb_addr_o                         => dbg_ddr_rb_addr,
+    dbg_ddr_rb_valid_o                        => dbg_ddr_rb_valid
+  );
+
+  memc_ui_rstn <= not(memc_ui_rst);
+
+  memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
+                               memc_cmd_addr;
 
   -- Chipscope Analysis
   cmp_chipscope_icon_13 : chipscope_icon_13_port
@@ -2275,6 +2798,4 @@ begin
   dsp_dds_config_valid_ch2                  <= vio_out_dsp_config(242);
   dsp_dds_config_valid_ch3                  <= vio_out_dsp_config(243);
 
--- edge detect for dds config.... not actually needed as
--- long as we deassert valid not too much after
 end rtl;
