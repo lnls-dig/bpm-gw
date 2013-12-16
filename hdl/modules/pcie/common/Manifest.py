@@ -20,5 +20,4 @@ files = ["v6abb64Package_efifo_elink.vhd",
          "tx_Mem_Reader.vhd",
          "tx_Transact.vhd",
          "wb_transact.vhd",
-         "wb_mem.vhd",
-         "sfifo_15x128_tim.vhd"]
+         "wb_mem.vhd"]
