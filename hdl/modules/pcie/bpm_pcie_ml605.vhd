@@ -465,9 +465,6 @@ architecture Behavioral of bpm_pcie_ml605 is
   -- Wishbone interface module
   -- -----------------------------------------------------------------------
   component wb_transact is
-    generic (
-      C_ASYNFIFO_WIDTH : integer := 72
-      );
     port (
       -- PCIE user clk
       user_clk : in std_logic;

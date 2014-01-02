@@ -263,22 +263,6 @@ begin
           RxMWrTrn_NextState <= ST_MWr_IDLE;
         end if;
 
-
---        when ST_MWr3_HEAD1 =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr3_HEAD1;
---           else
---              RxMWrTrn_NextState <= ST_MWr3_HEAD2;
---           end if;
-
---        when ST_MWr4_HEAD1 =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr4_HEAD1;
---           else
---              RxMWrTrn_NextState <= ST_MWr4_HEAD2;
---           end if;
-
-
       when ST_MWr3_HEAD2 =>
         if trn_rx_throttle = '1' then
           RxMWrTrn_NextState <= ST_MWr3_HEAD2;
@@ -469,7 +453,6 @@ begin
             Regs_WrDin_i  <= (others => '0');
           end if;
 
-
         when ST_MWr_DATA_THROTTLE =>
           if REGS_Space_Sel = '1' then
             Regs_WrEn_i <= not trn_rx_throttle;  -- '1';
@@ -486,7 +469,6 @@ begin
             Regs_WrAddr_i <= (others => '1');
             Regs_WrDin_i  <= (others => '0');
           end if;
-
 
         when others =>
           Regs_WrEn_i   <= '0';
