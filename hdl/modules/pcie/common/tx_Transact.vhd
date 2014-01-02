@@ -36,11 +36,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity tx_Transact is
   port (
@@ -300,29 +296,7 @@ architecture Behavioral of tx_Transact is
   signal RdCmd_Req       : std_logic;
   signal RdCmd_Ack       : std_logic;
 
-  ---------------------  Memory Buffer  -----------------------------
-  ---
-  --- A unified memory buffer holding the payload for the next tx TLP
-  ---   34 bits wide, wherein 2 additional framing bits
-  ---   temporarily 64 data depth, possibly deepened.
-  ---
-  -------------------------------------------------------------------
-  component
-    mBuf_128x72
-    port (
-      clk       : in  std_logic;
-      rst       : in  std_logic;
-      wr_en     : in  std_logic;
-      din       : in  std_logic_vector(C_DBUS_WIDTH*9/8-1 downto 0);
-      prog_full : out std_logic;
-      full      : out std_logic;
-      rd_en     : in  std_logic;
-      dout      : out std_logic_vector(C_DBUS_WIDTH*9/8-1 downto 0);
-      empty     : out std_logic
-      );
-  end component;
-
-  signal mbuf_reset  : std_logic;
+  signal mbuf_reset_n : std_logic;
   signal mbuf_WE     : std_logic;
   signal mbuf_Din    : std_logic_vector(C_DBUS_WIDTH*9/8-1 downto 0);
   signal mbuf_Full   : std_logic;
@@ -469,22 +443,39 @@ begin
         user_clk      => user_clk          -- IN  std_logic
         );
 
-------------------------------------------------------------
----             Memory buffer
-------------------------------------------------------------
+---------------------  Memory Buffer  -----------------------------
+---
+--- A unified memory buffer holding the payload for the next tx TLP
+---   34 bits wide, wherein 2 additional framing bits
+---   temporarily 64 data depth, possibly deepened.
+---
+-------------------------------------------------------------------
+
   ABB_Tx_MBuffer :
-    mBuf_128x72
+    generic_sync_fifo
+      generic map (
+        g_data_width => 72,
+        g_size => 128,
+        g_show_ahead => false,
+        g_with_empty => true,
+        g_with_full => true,
+        g_with_almost_empty => false,
+        g_with_almost_full => true,
+        g_with_count => false,
+        g_almost_full_threshold => 125)
       port map(
-        wr_en     => mbuf_WE ,          -- IN  std_logic;
-        din       => mbuf_Din ,  -- IN  std_logic_VECTOR(C_DBUS_WIDTH+1 downto 0);
-        prog_full => mbuf_aFull ,       -- OUT std_logic;
-        full      => mbuf_Full ,        -- OUT std_logic;
-        rd_en     => mbuf_RE ,          -- IN  std_logic;
-        dout      => mbuf_Qout ,  -- OUT std_logic_VECTOR(C_DBUS_WIDTH+1 downto 0);
-        empty     => mbuf_Empty ,       -- OUT std_logic
-        rst       => mbuf_reset,  --Tx_Reset              , -- IN  std_logic;
-        clk       => user_clk           -- IN  std_logic;
-        );
+        rst_n_i => mbuf_reset_n,
+        clk_i   => user_clk,
+
+        d_i            => mbuf_din,
+        we_i           => mbuf_we,
+        q_o            => mbuf_qout,
+        rd_i           => mbuf_re,
+        empty_o        => mbuf_empty,
+        full_o         => mbuf_full,
+        almost_empty_o => open,
+        almost_full_o  => mbuf_afull,
+        count_o        => open);
 
   mbuf_RE <= mbuf_RE_ok and (s_axis_tx_tready_i or not s_axis_tx_tvalid_i);
 
@@ -800,7 +791,7 @@ begin
       is_CplD             <= '0';
       BAR_value           <= (others => '0');
       RdCmd_Req           <= '0';
-      mbuf_reset          <= '1';
+      mbuf_reset_n        <= '0';
       mbuf_RE_ok          <= '0';
       s_axis_tx_tvalid_i  <= '0';
       trn_tsof_n_i        <= '1';
@@ -867,13 +858,13 @@ begin
 
           if ChBuf_has_Payload = '1' then
             TxTrn_State <= St_d_CmdReq;
-            mbuf_reset  <= '0';
+            mbuf_reset_n <= '1';
           elsif ChBuf_No_Payload = '1' then
             TxTrn_State <= St_nd_Prepare;
-            mbuf_reset  <= '0';
+            mbuf_reset_n <= '1';
           else
             TxTrn_State <= St_TxIdle;
-            mbuf_reset  <= not mbuf_Empty;  -- '1';
+            mbuf_reset_n <= mbuf_Empty;  -- '1';
           end if;
 
           --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -1161,7 +1152,7 @@ begin
           StartAddr           <= (others => '0');
           BAR_value           <= (others => '0');
           RdCmd_Req           <= '0';
-          mbuf_reset          <= '0';
+          mbuf_reset_n        <= '1';
           mbuf_RE_ok          <= '0';
           s_axis_tx_tvalid_i  <= '0';
           trn_tsof_n_i        <= '1';

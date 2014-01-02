@@ -34,11 +34,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity dsDMA_Transact is
   port (
@@ -120,7 +116,8 @@ architecture Behavioral of dsDMA_Transact is
   signal dsFC_stop_4096B : std_logic;
 
   -- Reset
-  signal Local_Reset_i : std_logic;
+  signal Local_Reset_i   : std_logic;
+  signal Local_Reset_n_i : std_logic;
 
   signal cfg_MRS : std_logic_vector(C_CFG_MRS_BIT_TOP-C_CFG_MRS_BIT_BOT downto 0);
 
@@ -367,6 +364,7 @@ begin
 
   -- positive local reset
   Local_Reset_i <= dsDMA_Channel_Rst;
+  Local_Reset_n_i <= not(Local_Reset_i);
 
   -- Max Read Request Size bits
   cfg_MRS <= cfg_dcommand(C_CFG_MRS_BIT_TOP downto C_CFG_MRS_BIT_BOT);
@@ -651,21 +649,31 @@ begin
   -- ds MRd TLP Buffer
   -- -------------------------------------------------
   DMA_DSP_Buffer :
-    sfifo_15x128
+    generic_sync_fifo
+      generic map (
+        g_data_width => 128,
+        g_size => 16,
+        g_show_ahead => false,
+        g_with_empty => true,
+        g_with_full => false,
+        g_with_almost_empty => true,
+        g_with_almost_full => true,
+        g_with_count => false,
+        g_almost_empty_threshold => 3,
+        g_almost_full_threshold => 13)
       port map (
-        clk        => user_clk,
-        rst        => Local_Reset_i,
-        prog_full  => MRd_dsp_prog_Full,
---         wr_clk        => user_clk,
-        wr_en      => MRd_dsp_we,
-        din        => MRd_dsp_din,
-        full       => MRd_dsp_full,
---         rd_clk        => user_clk,
-        rd_en      => MRd_dsp_re_i,
-        dout       => MRd_dsp_dout,
-        prog_empty => open,
-        empty      => MRd_dsp_empty_i
-        );
+        rst_n_i => Local_Reset_n_i,
+        clk_i   => user_clk,
+
+        d_i            => MRd_dsp_din,
+        we_i           => MRd_dsp_we,
+        q_o            => MRd_dsp_dout,
+        rd_i           => MRd_dsp_re_i,
+        empty_o        => MRd_dsp_empty_i,
+        full_o         => MRd_dsp_full,
+        almost_empty_o => open,
+        almost_full_o  => MRd_dsp_prog_Full,
+        count_o        => open);
 
 -- ---------------------------------------------
 --  Delay of Empty and prog_Full

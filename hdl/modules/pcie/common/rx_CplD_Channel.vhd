@@ -30,11 +30,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity rx_CplD_Transact is
   port (
@@ -282,23 +278,6 @@ architecture Behavioral of rx_CplD_Transact is
 
   -- downstream Descriptors' tags
   signal dsDMA_dex_Tag_i : std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-  --- ------------------------------------------
-  ---   Dual port Block Memory, used as tag RAM
-  component
-    FF_TagRam64x36
-    port (
-      clk   : in  std_logic;
-      addra : in  std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
-      wea   : in  std_logic;
-      dina  : in  std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-      douta : out std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-      addrb : in  std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
-      web   : in  std_logic;
-      dinb  : in  std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-      doutb : out std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0)
-      );
-  end component;
 
   signal tRAM_wea   : std_logic_vector(0 downto 0);
   signal tRAM_addra : std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
@@ -1147,21 +1126,29 @@ begin
   tRAM_weB_i(0) <= tRAM_weB;
 
   dspTag_BRAM :
-    FF_TagRam64x36
+    generic_dpram
+      generic map(
+        g_data_width => 36,
+        g_size => 64,
+        g_with_byte_enable => false,
+        g_addr_conflict_resolution => "dont_care",
+        g_init_file => "none",
+        g_dual_clock => false)
       port map(
-        clk => user_clk ,
+        rst_n_i => '1',
+        clka_i  => user_clk,
+        clkb_i  => user_clk,
 
-        wea   => tRAM_wea(0) ,
-        addra => tRAM_addra ,
-        dina  => tRAM_dina ,
-        douta => tRAM_doutA ,
+        wea_i   => tRAM_wea(0) ,
+        aa_i    => tRAM_addra ,
+        da_i    => tRAM_dina ,
+        qa_o    => tRAM_doutA ,
 
-        web   => tRAM_weB_i(0) ,
-        addrb => tRAM_addrB ,
-        dinb  => tRAM_dinB ,
-        doutb => open
+        web_i => tRAM_weB_i(0) ,
+        ab_i  => tRAM_addrB ,
+        db_i  => tRAM_dinB ,
+        qb_o  => open
         );
-
 
 -- Synchronous delay: CplD_is_the_Last
 --
