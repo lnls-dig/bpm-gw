@@ -1,0 +1,6 @@
+WARNING!     WARNING!    WARNING!    WARNING!
+
+You should comment the rs232 module from the Manifest
+located in "hdl/modules/dbe_wishbone/Manifest.py"
+as modelsim is not appeased with some concatenation.
+The error does not appears in synthesis (Xst).
