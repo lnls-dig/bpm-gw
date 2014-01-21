@@ -371,6 +371,9 @@ architecture rtl of dbe_bpm_dsp is
   -- FMC130m_4ch
   constant c_fmc130m_4ch_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000800");
 
+  -- Position CAlC. layout. Regs, SWAP
+  constant c_pos_calc_core_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000600");
+
   -- General peripherals layout. UART, LEDs (GPIO), Buttons (GPIO) and Tics counter
   constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
 
@@ -384,7 +387,7 @@ architecture rtl of dbe_bpm_dsp is
       4 => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"00305000"),   -- Ethernet MAC control port
       5 => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"00306000"),   -- Ethernet Adapter control port
       6 => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"00307000"),   -- Etherbone control port
-      7 => f_sdb_embed_device(c_xwb_position_calc_core_sdb,
+      7 => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                           x"00308000"),   -- Position Calc Core control port
       8 => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00310000"),   -- FMC130m_4ch control port
       9 => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00320000"),    -- General peripherals control port
@@ -669,99 +672,65 @@ architecture rtl of dbe_bpm_dsp is
 
   signal dsp_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp_poly35_valid                   : std_logic;
 
   signal dsp_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp_cic_fofb_valid                 : std_logic;
 
   signal dsp_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_amp_ch0_valid              : std_logic;
   signal dsp_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_amp_ch1_valid              : std_logic;
   signal dsp_tbt_amp_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_amp_ch2_valid              : std_logic;
   signal dsp_tbt_amp_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_amp_ch3_valid              : std_logic;
+  signal dsp_tbt_amp_valid                  : std_logic;
 
   signal dsp_tbt_pha_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_pha_ch0_valid              : std_logic;
   signal dsp_tbt_pha_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_pha_ch1_valid              : std_logic;
   signal dsp_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_pha_ch2_valid              : std_logic;
   signal dsp_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_tbt_pha_ch3_valid              : std_logic;
+  signal dsp_tbt_pha_valid                  : std_logic;
 
   signal dsp_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_amp_ch0_valid             : std_logic;
   signal dsp_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_amp_ch1_valid             : std_logic;
   signal dsp_fofb_amp_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_amp_ch2_valid             : std_logic;
   signal dsp_fofb_amp_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_amp_ch3_valid             : std_logic;
+  signal dsp_fofb_amp_valid                 : std_logic;
 
   signal dsp_fofb_pha_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_pha_ch0_valid             : std_logic;
   signal dsp_fofb_pha_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_pha_ch1_valid             : std_logic;
   signal dsp_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_pha_ch2_valid             : std_logic;
   signal dsp_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_fofb_pha_ch3_valid             : std_logic;
-
+  signal dsp_fofb_pha_valid                 : std_logic;
+ 
   signal dsp_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_monit_amp_ch0_valid            : std_logic;
   signal dsp_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_monit_amp_ch1_valid            : std_logic;
   signal dsp_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_monit_amp_ch2_valid            : std_logic;
   signal dsp_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp_monit_amp_ch3_valid            : std_logic;
+  signal dsp_monit_amp_valid                : std_logic;
 
-  signal dsp_x_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_x_tbt_valid                    : std_logic;
-  signal dsp_y_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_y_tbt_valid                    : std_logic;
-  signal dsp_q_tbt                          : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_q_tbt_valid                    : std_logic;
-  signal dsp_sum_tbt                        : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_sum_tbt_valid                  : std_logic;
+  signal dsp_pos_x_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_y_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_q_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_sum_tbt                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_tbt_valid                  : std_logic;
 
-  signal dsp_x_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_x_fofb_valid                   : std_logic;
-  signal dsp_y_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_y_fofb_valid                   : std_logic;
-  signal dsp_q_fofb                         : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_q_fofb_valid                   : std_logic;
-  signal dsp_sum_fofb                       : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_sum_fofb_valid                 : std_logic;
+  signal dsp_pos_x_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_y_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_q_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_sum_fofb                   : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_fofb_valid                 : std_logic;
 
-  signal dsp_x_monit                        : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_x_monit_valid                  : std_logic;
-  signal dsp_y_monit                        : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_y_monit_valid                  : std_logic;
-  signal dsp_q_monit                        : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_q_monit_valid                  : std_logic;
-  signal dsp_sum_monit                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_sum_monit_valid                : std_logic;
+  signal dsp_pos_x_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_y_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_q_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_sum_monit                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_monit_valid                : std_logic;
 
-  signal dsp_x_monit_1                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_x_monit_1_valid                : std_logic;
-  signal dsp_y_monit_1                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_y_monit_1_valid                : std_logic;
-  signal dsp_q_monit_1                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_q_monit_1_valid                : std_logic;
-  signal dsp_sum_monit_1                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp_sum_monit_1_valid              : std_logic;
-
-  signal dsp_tbt_decim_q_ch01_incorrect     : std_logic;
-  signal dsp_tbt_decim_q_ch23_incorrect     : std_logic;
-  signal dsp_fofb_decim_q_01_missing        : std_logic;
-  signal dsp_fofb_decim_q_23_missing        : std_logic;
-  signal dsp_monit_cic_unexpected           : std_logic;
-  signal dsp_monit_cfir_incorrect           : std_logic;
-  signal dsp_monit_pfir_incorrect           : std_logic;
-  signal dsp_monit_pos_1_incorrect          : std_logic;
+  signal dsp_pos_x_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_y_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_q_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_sum_monit_1                : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp_pos_monit_1_valid              : std_logic;
 
   signal dsp_clk_ce_1                       : std_logic;
   signal dsp_clk_ce_2                       : std_logic;
@@ -1187,7 +1156,7 @@ begin
   reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
   --clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
   clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
-                                                  rs232_rstn and wb_ma_pcie_rstn;
+                                                  rs232_rstn;-- and wb_ma_pcie_rstn;
   clk_sys_rst                               <= not clk_sys_rstn;
   mrstn_o                                   <= clk_sys_rstn;
   clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
@@ -1303,7 +1272,8 @@ begin
     sys_rst_n                               => pcie_rst_n_i, -- PCIe core reset
 
     -- DDR memory controller interface --
-    ddr_core_rst                            => wb_ma_pcie_rst,
+    --ddr_core_rst                            => wb_ma_pcie_rst,
+    ddr_core_rst                            => clk_sys_rst,
     memc_ui_clk                             => memc_ui_clk,
     memc_ui_rst                             => memc_ui_rst,
     memc_cmd_rdy                            => memc_cmd_rdy,
@@ -1843,58 +1813,58 @@ begin
   adc_ch2_data                              <= synth_adc2 when adc_synth_data_en = '1' else adc_data_ch2;
   adc_ch3_data                              <= synth_adc3 when adc_synth_data_en = '1' else adc_data_ch3;
 
-  -- Switch testing. This should be inside position calc core!!!!
-  cmp_un_cross_top : un_cross_top
-  generic map (
-    g_delay_vec_width                       => 16,
-    g_swap_div_freq_vec_width               => 16
-  )
-  port map (
-    -- Commom signals
-    clk_i                                   => fs_clk,
-    rst_n_i                                 => fs_rstn,
-
-    -- inv_chs_top core signal
-    const_aa_i                              => un_cross_gain_aa,
-    const_bb_i                              => un_cross_gain_bb,
-    const_cc_i                              => un_cross_gain_cc,
-    const_dd_i                              => un_cross_gain_dd,
-    const_ac_i                              => un_cross_gain_ac,
-    const_bd_i                              => un_cross_gain_bd,
-    const_ca_i                              => un_cross_gain_ca,
-    const_db_i                              => un_cross_gain_db,
-
-    delay1_i                                => un_cross_delay_1,
-    delay2_i                                => un_cross_delay_2,
-
-    --flag1_o                                 => flag1_int,
-    --flag2_o                                 => flag2_int,
-
-    -- Input from ADC FMC board
-    cha_i                                   => adc_ch0_data,
-    chb_i                                   => adc_ch1_data,
-    chc_i                                   => adc_ch2_data,
-    chd_i                                   => adc_ch3_data,
-
-    -- Output to data processing level
-    cha_o                                   => adc_ch0_data_uncross,
-    chb_o                                   => adc_ch1_data_uncross,
-    chc_o                                   => adc_ch2_data_uncross,
-    chd_o                                   => adc_ch3_data_uncross,
-
-    -- Swap clock for RFFE
-    clk_swap_o                              => clk_rffe_swap,
-
-    -- swap_cnt_top signal
-    mode1_i                                 => un_cross_mode_1,
-    mode2_i                                 => un_cross_mode_2,
-
-    swap_div_f_i                            => un_cross_div_f,
-
-    -- Output to RFFE board
-    ctrl1_o                                 => open,
-    ctrl2_o                                 => open
-  );
+  ---- Switch testing. This should be inside position calc core!!!!
+  --cmp_un_cross_top : un_cross_top
+  --generic map (
+  --  g_delay_vec_width                       => 16,
+  --  g_swap_div_freq_vec_width               => 16
+  --)
+  --port map (
+  --  -- Commom signals
+  --  clk_i                                   => fs_clk,
+  --  rst_n_i                                 => fs_rstn,
+  --
+  --  -- inv_chs_top core signal
+  --  const_aa_i                              => un_cross_gain_aa,
+  --  const_bb_i                              => un_cross_gain_bb,
+  --  const_cc_i                              => un_cross_gain_cc,
+  --  const_dd_i                              => un_cross_gain_dd,
+  --  const_ac_i                              => un_cross_gain_ac,
+  --  const_bd_i                              => un_cross_gain_bd,
+  --  const_ca_i                              => un_cross_gain_ca,
+  --  const_db_i                              => un_cross_gain_db,
+  --
+  --  delay1_i                                => un_cross_delay_1,
+  --  delay2_i                                => un_cross_delay_2,
+  --
+  --  --flag1_o                                 => flag1_int,
+  --  --flag2_o                                 => flag2_int,
+  --
+  --  -- Input from ADC FMC board
+  --  cha_i                                   => adc_ch0_data,
+  --  chb_i                                   => adc_ch1_data,
+  --  chc_i                                   => adc_ch2_data,
+  --  chd_i                                   => adc_ch3_data,
+  --
+  --  -- Output to data processing level
+  --  cha_o                                   => adc_ch0_data_uncross,
+  --  chb_o                                   => adc_ch1_data_uncross,
+  --  chc_o                                   => adc_ch2_data_uncross,
+  --  chd_o                                   => adc_ch3_data_uncross,
+  --
+  --  -- Swap clock for RFFE
+  --  clk_swap_o                              => clk_rffe_swap,
+  --
+  --  -- swap_cnt_top signal
+  --  mode1_i                                 => un_cross_mode_1,
+  --  mode2_i                                 => un_cross_mode_2,
+  --
+  --  swap_div_f_i                            => un_cross_div_f,
+  --
+  --  -- Output to RFFE board
+  --  ctrl1_o                                 => open,
+  --  ctrl2_o                                 => open
+  --);
 
   clk_swap_o                                <= clk_rffe_swap;
   clk_swap2x_o                              <= clk_rffe_swap; -- FIXME!!!!
@@ -1905,7 +1875,8 @@ begin
   cmp_xwb_position_calc_core : xwb_position_calc_core
   generic map (
     g_interface_mode                        => PIPELINED,
-    g_address_granularity                   => WORD,
+    --g_address_granularity                   => WORD,
+    g_address_granularity                   => BYTE,
     g_with_switching                        => 0
   )
   port map (
@@ -1925,34 +1896,38 @@ begin
     -----------------------------
     -- Raw ADC signals
     -----------------------------
-    adc_ch0_i                               => adc_ch0_data_uncross,
-    adc_ch1_i                               => adc_ch1_data_uncross,
-    adc_ch2_i                               => adc_ch2_data_uncross,
-    adc_ch3_i                               => adc_ch3_data_uncross,
+    --adc_ch0_i                               => adc_ch0_data_uncross,
+    --adc_ch1_i                               => adc_ch1_data_uncross,
+    --adc_ch2_i                               => adc_ch2_data_uncross,
+    --adc_ch3_i                               => adc_ch3_data_uncross,
+    adc_ch0_i                               => adc_ch0_data,
+    adc_ch1_i                               => adc_ch1_data,
+    adc_ch2_i                               => adc_ch2_data,
+    adc_ch3_i                               => adc_ch3_data,
 
-    -----------------------------
-    -- DSP config parameter signals
-    -----------------------------
-    kx_i                                    => dsp_kx,
-    ky_i                                    => dsp_ky,
-    ksum_i                                  => dsp_ksum,
-
-    del_sig_div_fofb_thres_i                => dsp_del_sig_div_thres,
-    del_sig_div_tbt_thres_i                 => dsp_del_sig_div_thres,
-    del_sig_div_monit_thres_i               => dsp_del_sig_div_thres,
-
-    dds_config_valid_ch0_i                  => dsp_dds_config_valid_ch0,
-    dds_config_valid_ch1_i                  => dsp_dds_config_valid_ch1,
-    dds_config_valid_ch2_i                  => dsp_dds_config_valid_ch2,
-    dds_config_valid_ch3_i                  => dsp_dds_config_valid_ch3,
-    dds_pinc_ch0_i                          => dsp_dds_pinc_ch0,
-    dds_pinc_ch1_i                          => dsp_dds_pinc_ch1,
-    dds_pinc_ch2_i                          => dsp_dds_pinc_ch2,
-    dds_pinc_ch3_i                          => dsp_dds_pinc_ch3,
-    dds_poff_ch0_i                          => dsp_dds_poff_ch0,
-    dds_poff_ch1_i                          => dsp_dds_poff_ch1,
-    dds_poff_ch2_i                          => dsp_dds_poff_ch2,
-    dds_poff_ch3_i                          => dsp_dds_poff_ch3,
+    -------------------------------
+    ---- DSP config parameter signals
+    -------------------------------
+    --kx_i                                    => dsp_kx,
+    --ky_i                                    => dsp_ky,
+    --ksum_i                                  => dsp_ksum,
+    --
+    --del_sig_div_fofb_thres_i                => dsp_del_sig_div_thres,
+    --del_sig_div_tbt_thres_i                 => dsp_del_sig_div_thres,
+    --del_sig_div_monit_thres_i               => dsp_del_sig_div_thres,
+    --
+    --dds_config_valid_ch0_i                  => dsp_dds_config_valid_ch0,
+    --dds_config_valid_ch1_i                  => dsp_dds_config_valid_ch1,
+    --dds_config_valid_ch2_i                  => dsp_dds_config_valid_ch2,
+    --dds_config_valid_ch3_i                  => dsp_dds_config_valid_ch3,
+    --dds_pinc_ch0_i                          => dsp_dds_pinc_ch0,
+    --dds_pinc_ch1_i                          => dsp_dds_pinc_ch1,
+    --dds_pinc_ch2_i                          => dsp_dds_pinc_ch2,
+    --dds_pinc_ch3_i                          => dsp_dds_pinc_ch3,
+    --dds_poff_ch0_i                          => dsp_dds_poff_ch0,
+    --dds_poff_ch1_i                          => dsp_dds_poff_ch1,
+    --dds_poff_ch2_i                          => dsp_dds_poff_ch2,
+    --dds_poff_ch3_i                          => dsp_dds_poff_ch3,
 
     -----------------------------
     -- Position calculation at various rates
@@ -1988,27 +1963,22 @@ begin
     --poly35_ch2_q_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch3_i_o                          => out std_logic_vector(23 downto 0);
     --poly35_ch3_q_o                          => out std_logic_vector(23 downto 0);
+    tbt_decim_valid_o                       => dsp_poly35_valid,
 
-    tbt_decim_q_ch01_incorrect_o            => dsp_tbt_decim_q_ch01_incorrect,
-    tbt_decim_q_ch23_incorrect_o            => dsp_tbt_decim_q_ch23_incorrect,
+    --tbt_decim_q_ch01_incorrect_o            => dsp_tbt_decim_q_ch01_incorrect,
+    --tbt_decim_q_ch23_incorrect_o            => dsp_tbt_decim_q_ch23_incorrect,
 
     tbt_amp_ch0_o                           => dsp_tbt_amp_ch0,
-    tbt_amp_ch0_valid_o                     => dsp_tbt_amp_ch0_valid,
     tbt_amp_ch1_o                           => dsp_tbt_amp_ch1,
-    tbt_amp_ch1_valid_o                     => dsp_tbt_amp_ch1_valid,
     tbt_amp_ch2_o                           => dsp_tbt_amp_ch2,
-    tbt_amp_ch2_valid_o                     => dsp_tbt_amp_ch2_valid,
     tbt_amp_ch3_o                           => dsp_tbt_amp_ch3,
-    tbt_amp_ch3_valid_o                     => dsp_tbt_amp_ch3_valid,
+    tbt_amp_valid_o                         => dsp_tbt_amp_valid,
 
     tbt_pha_ch0_o                           => dsp_tbt_pha_ch0,
-    tbt_pha_ch0_valid_o                     => dsp_tbt_pha_ch0_valid,
     tbt_pha_ch1_o                           => dsp_tbt_pha_ch1,
-    tbt_pha_ch1_valid_o                     => dsp_tbt_pha_ch1_valid,
     tbt_pha_ch2_o                           => dsp_tbt_pha_ch2,
-    tbt_pha_ch2_valid_o                     => dsp_tbt_pha_ch2_valid,
     tbt_pha_ch3_o                           => dsp_tbt_pha_ch3,
-    tbt_pha_ch3_valid_o                     => dsp_tbt_pha_ch3_valid,
+    tbt_pha_valid_o                         => dsp_tbt_pha_valid,
 
     fofb_decim_ch0_i_o                      => dsp_cic_fofb_ch0, --out std_logic_vector(23 downto 0);
     --cic_fofb_ch0_q_o                        => out std_logic_vector(24 downto 0);
@@ -2018,81 +1988,54 @@ begin
     --cic_fofb_ch2_q_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch3_i_o                        => out std_logic_vector(24 downto 0);
     --cic_fofb_ch3_q_o                        => out std_logic_vector(24 downto 0);
-
-    fofb_decim_q_01_missing_o               => dsp_fofb_decim_q_01_missing,
-    fofb_decim_q_23_missing_o               => dsp_fofb_decim_q_23_missing,
+    fofb_decim_valid_o                     => dsp_cic_fofb_valid,
 
     fofb_amp_ch0_o                          => dsp_fofb_amp_ch0,
-    fofb_amp_ch0_valid_o                    => dsp_fofb_amp_ch0_valid,
     fofb_amp_ch1_o                          => dsp_fofb_amp_ch1,
-    fofb_amp_ch1_valid_o                    => dsp_fofb_amp_ch1_valid,
     fofb_amp_ch2_o                          => dsp_fofb_amp_ch2,
-    fofb_amp_ch2_valid_o                    => dsp_fofb_amp_ch2_valid,
     fofb_amp_ch3_o                          => dsp_fofb_amp_ch3,
-    fofb_amp_ch3_valid_o                    => dsp_fofb_amp_ch3_valid,
+    fofb_amp_valid_o                        => dsp_fofb_amp_valid,
 
     fofb_pha_ch0_o                          => dsp_fofb_pha_ch0,
-    fofb_pha_ch0_valid_o                    => dsp_fofb_pha_ch0_valid,
     fofb_pha_ch1_o                          => dsp_fofb_pha_ch1,
-    fofb_pha_ch1_valid_o                    => dsp_fofb_pha_ch1_valid,
     fofb_pha_ch2_o                          => dsp_fofb_pha_ch2,
-    fofb_pha_ch2_valid_o                    => dsp_fofb_pha_ch2_valid,
     fofb_pha_ch3_o                          => dsp_fofb_pha_ch3,
-    fofb_pha_ch3_valid_o                    => dsp_fofb_pha_ch3_valid,
+    fofb_pha_valid_o                        => dsp_fofb_pha_valid,
 
     monit_amp_ch0_o                         => dsp_monit_amp_ch0,
-    monit_amp_ch0_valid_o                   => dsp_monit_amp_ch0_valid,
     monit_amp_ch1_o                         => dsp_monit_amp_ch1,
-    monit_amp_ch1_valid_o                   => dsp_monit_amp_ch1_valid,
     monit_amp_ch2_o                         => dsp_monit_amp_ch2,
-    monit_amp_ch2_valid_o                   => dsp_monit_amp_ch2_valid,
     monit_amp_ch3_o                         => dsp_monit_amp_ch3,
-    monit_amp_ch3_valid_o                   => dsp_monit_amp_ch3_valid,
+    monit_amp_valid_o                       => dsp_monit_amp_valid,
 
-    x_tbt_o                                 => dsp_x_tbt,
-    x_tbt_valid_o                           => dsp_x_tbt_valid,
-    y_tbt_o                                 => dsp_y_tbt,
-    y_tbt_valid_o                           => dsp_y_tbt_valid,
-    q_tbt_o                                 => dsp_q_tbt,
-    q_tbt_valid_o                           => dsp_q_tbt_valid,
-    sum_tbt_o                               => dsp_sum_tbt,
-    sum_tbt_valid_o                         => dsp_sum_tbt_valid,
-
-    x_fofb_o                                => dsp_x_fofb,
-    x_fofb_valid_o                          => dsp_x_fofb_valid,
-    y_fofb_o                                => dsp_y_fofb,
-    y_fofb_valid_o                          => dsp_y_fofb_valid,
-    q_fofb_o                                => dsp_q_fofb,
-    q_fofb_valid_o                          => dsp_q_fofb_valid,
-    sum_fofb_o                              => dsp_sum_fofb,
-    sum_fofb_valid_o                        => dsp_sum_fofb_valid,
-
-    x_monit_o                               => dsp_x_monit,
-    x_monit_valid_o                         => dsp_x_monit_valid,
-    y_monit_o                               => dsp_y_monit,
-    y_monit_valid_o                         => dsp_y_monit_valid,
-    q_monit_o                               => dsp_q_monit,
-    q_monit_valid_o                         => dsp_q_monit_valid,
-    sum_monit_o                             => dsp_sum_monit,
-    sum_monit_valid_o                       => dsp_sum_monit_valid,
-
-    x_monit_1_o                             => dsp_x_monit_1,
-    x_monit_1_valid_o                       => dsp_x_monit_1_valid,
-    y_monit_1_o                             => dsp_y_monit_1,
-    y_monit_1_valid_o                       => dsp_y_monit_1_valid,
-    q_monit_1_o                             => dsp_q_monit_1,
-    q_monit_1_valid_o                       => dsp_q_monit_1_valid,
-    sum_monit_1_o                           => dsp_sum_monit_1,
-    sum_monit_1_valid_o                     => dsp_sum_monit_1_valid,
-
-    monit_cic_unexpected_o                  => dsp_monit_cic_unexpected,
-    monit_cfir_incorrect_o                  => dsp_monit_cfir_incorrect,
-    monit_pfir_incorrect_o                  => dsp_monit_pfir_incorrect,
+    pos_x_tbt_o                             => dsp_pos_x_tbt,
+    pos_y_tbt_o                             => dsp_pos_y_tbt,
+    pos_q_tbt_o                             => dsp_pos_q_tbt,
+    pos_sum_tbt_o                           => dsp_pos_sum_tbt,
+    pos_tbt_valid_o                         => dsp_pos_tbt_valid,
+                                                   
+    pos_x_fofb_o                            => dsp_pos_x_fofb,
+    pos_y_fofb_o                            => dsp_pos_y_fofb,
+    pos_q_fofb_o                            => dsp_pos_q_fofb,
+    pos_sum_fofb_o                          => dsp_pos_sum_fofb,
+    pos_fofb_valid_o                        => dsp_pos_fofb_valid,
+                                                   
+    pos_x_monit_o                           => dsp_pos_x_monit,
+    pos_y_monit_o                           => dsp_pos_y_monit,
+    pos_q_monit_o                           => dsp_pos_q_monit,
+    pos_sum_monit_o                         => dsp_pos_sum_monit,
+    pos_monit_valid_o                       => dsp_pos_monit_valid,
+                                                   
+    pos_x_monit_1_o                         => dsp_pos_x_monit_1,
+    pos_y_monit_1_o                         => dsp_pos_y_monit_1,
+    pos_q_monit_1_o                         => dsp_pos_q_monit_1,
+    pos_sum_monit_1_o                       => dsp_pos_sum_monit_1,
+    pos_monit_1_valid_o                     => dsp_pos_monit_1_valid,
 
     -----------------------------
     -- Output to RFFE board
     -----------------------------
-    clk_swap_o                              => open,
+    clk_swap_o                              => clk_rffe_swap,
     ctrl1_o                                 => open,
     ctrl2_o                                 => open,
 
@@ -2125,56 +2068,56 @@ begin
   -- Signals for the DSP chain
   --dsp_del_sig_div_thres                     <= "00000000000000001000000000"; -- aprox 1.22e-4 FIX26_22
 
-  -- register DSP parameters
-  p_register_in_dsp_param : process(fs_clk2x)
-  begin
-    if rising_edge(fs_clk2x) then
-      if fs_rstn = '0' then
-        dsp_del_sig_div_thres  <= (others => '0');
-        dsp_kx                 <= (others => '0');
-        dsp_ky                 <= (others => '0');
-        dsp_ksum               <= (others => '0');
-      else
-        dsp_del_sig_div_thres  <=  dsp_del_sig_div_thres_in;
-        dsp_kx                 <=  dsp_kx_in;
-        dsp_ky                 <=  dsp_ky_in;
-        dsp_ksum               <=  dsp_ksum_in;
-      end if;
-    end if;
-  end process;
-
-  -- Division Threshold selection
-  with dsp_del_sig_div_thres_sel select
-    dsp_del_sig_div_thres_in <= "00000000000000001000000000" when "00", -- aprox 1.2207e-04 FIX26_22
-                             "00000000000000000001000000" when "01", -- aprox 1.5259e-05 FIX26_22
-                             "00000000000000000000001000" when "10", -- aprox 1.9073e-06 FIX26_22
-                             "00000000000000000000000000" when "11", -- 0 FIX26_22
-                             "00000000000000001000000000" when others;
-
-  -- Kx selection
-  with dsp_kx_sel select
-    dsp_kx_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
-                             "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
-                             "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
-                             "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
-                             "0100110001001011010000000" when others; -- 10000000 UFIX25_0
-
-  -- Ky selection
-  with dsp_ky_sel select
-    dsp_ky_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
-                             "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
-                             "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
-                             "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
-                             "0100110001001011010000000" when others; -- 10000000 UFIX25_0
-
-  -- Ksum selection
-  with dsp_ksum_sel select
-    dsp_ksum_in              <= "0111111111111111111111111" when "00",   -- 1.0 FIX25_24
-                             "0011111111111111111111111" when "01",   -- 0.5 FIX25_24
-                             "0001111111111111111111111" when "10",  -- 0.25 FIX25_24
-                             "0000111111111111111111111" when "11",  -- 0.125 FIX25_24
-                             "0111111111111111111111111" when others; -- 1.0 FIX25_24
-
+  ---- register DSP parameters
+  --p_register_in_dsp_param : process(fs_clk2x)
+  --begin
+  --  if rising_edge(fs_clk2x) then
+  --    if fs_rstn = '0' then
+  --      dsp_del_sig_div_thres  <= (others => '0');
+  --      dsp_kx                 <= (others => '0');
+  --      dsp_ky                 <= (others => '0');
+  --      dsp_ksum               <= (others => '0');
+  --    else
+  --      dsp_del_sig_div_thres  <=  dsp_del_sig_div_thres_in;
+  --      dsp_kx                 <=  dsp_kx_in;
+  --      dsp_ky                 <=  dsp_ky_in;
+  --      dsp_ksum               <=  dsp_ksum_in;
+  --    end if;
+  --  end if;
+  --end process;
+  --
+  ---- Division Threshold selection
+  --with dsp_del_sig_div_thres_sel select
+  --  dsp_del_sig_div_thres_in <= "00000000000000001000000000" when "00", -- aprox 1.2207e-04 FIX26_22
+  --                           "00000000000000000001000000" when "01", -- aprox 1.5259e-05 FIX26_22
+  --                           "00000000000000000000001000" when "10", -- aprox 1.9073e-06 FIX26_22
+  --                           "00000000000000000000000000" when "11", -- 0 FIX26_22
+  --                           "00000000000000001000000000" when others;
+  --
+  ---- Kx selection
+  --with dsp_kx_sel select
+  --  dsp_kx_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
+  --                           "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
+  --                           "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
+  --                           "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
+  --                           "0100110001001011010000000" when others; -- 10000000 UFIX25_0
+  --
+  ---- Ky selection
+  --with dsp_ky_sel select
+  --  dsp_ky_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
+  --                           "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
+  --                           "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
+  --                           "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
+  --                           "0100110001001011010000000" when others; -- 10000000 UFIX25_0
+  --
+  ---- Ksum selection
+  --with dsp_ksum_sel select
+  --  dsp_ksum_in              <= "0111111111111111111111111" when "00",   -- 1.0 FIX25_24
+  --                           "0011111111111111111111111" when "01",   -- 0.5 FIX25_24
+  --                           "0001111111111111111111111" when "10",  -- 0.25 FIX25_24
+  --                           "0000111111111111111111111" when "11",  -- 0.125 FIX25_24
+  --                           "0111111111111111111111111" when others; -- 1.0 FIX25_24
+  --
   --dsp_kx                                    <= "0100110001001011010000000"; -- 10000000 UFIX25_0
   --dsp_kx                                    <= "0100000000000000000000000"; -- ??? UFIX25_0
   --dsp_kx                                    <= "00100110001001011010000000"; -- 10000000 UFIX26_0
@@ -2252,19 +2195,19 @@ begin
   acq_chan_array(c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_tbt_amp_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp_tbt_amp_ch2), 32));
 
-  acq_chan_array(c_acq_tbt_amp_id).dvalid    <= dsp_tbt_amp_ch0_valid;
+  acq_chan_array(c_acq_tbt_amp_id).dvalid    <= dsp_tbt_amp_valid;
   acq_chan_array(c_acq_tbt_amp_id).trig      <= '0';
 
   --------------------
   -- TBT POS data
   --------------------
-  acq_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_tbt), 32)) &
-                                                std_logic_vector(resize(signed(dsp_x_tbt), 32));
+  acq_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_pos_y_tbt), 32)) &
+                                                std_logic_vector(resize(signed(dsp_pos_x_tbt), 32));
 
-  acq_chan_array(c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_tbt), 32)) &
-                                                std_logic_vector(resize(signed(dsp_q_tbt), 32));
+  acq_chan_array(c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_pos_sum_tbt), 32)) &
+                                                std_logic_vector(resize(signed(dsp_pos_q_tbt), 32));
 
-  acq_chan_array(c_acq_tbt_pos_id).dvalid    <= dsp_x_tbt_valid;
+  acq_chan_array(c_acq_tbt_pos_id).dvalid    <= dsp_pos_tbt_valid;
   acq_chan_array(c_acq_tbt_pos_id).trig      <= '0';
 
   --------------------
@@ -2276,19 +2219,19 @@ begin
   acq_chan_array(c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_fofb_amp_ch3), 32)) &
                                                  std_logic_vector(resize(signed(dsp_fofb_amp_ch2), 32));
 
-  acq_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp_fofb_amp_ch0_valid;
+  acq_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp_fofb_amp_valid;
   acq_chan_array(c_acq_fofb_amp_id).trig      <= '0';
 
   --------------------
   -- FOFB POS data
   --------------------
-  acq_chan_array(c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_fofb), 32)) &
-                                                 std_logic_vector(resize(signed(dsp_x_fofb), 32));
+  acq_chan_array(c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_pos_y_fofb), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_pos_x_fofb), 32));
 
-  acq_chan_array(c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_fofb), 32)) &
-                                                 std_logic_vector(resize(signed(dsp_q_fofb), 32));
+  acq_chan_array(c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_pos_sum_fofb), 32)) &
+                                                 std_logic_vector(resize(signed(dsp_pos_q_fofb), 32));
 
-  acq_chan_array(c_acq_fofb_pos_id).dvalid    <= dsp_x_fofb_valid;
+  acq_chan_array(c_acq_fofb_pos_id).dvalid    <= dsp_pos_fofb_valid;
   acq_chan_array(c_acq_fofb_pos_id).trig      <= '0';
 
   --------------------
@@ -2300,31 +2243,31 @@ begin
   acq_chan_array(c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp_monit_amp_ch3), 32)) &
                                                   std_logic_vector(resize(signed(dsp_monit_amp_ch2), 32));
 
-  acq_chan_array(c_acq_monit_amp_id).dvalid    <= dsp_monit_amp_ch0_valid;
+  acq_chan_array(c_acq_monit_amp_id).dvalid    <= dsp_monit_amp_valid;
   acq_chan_array(c_acq_monit_amp_id).trig      <= '0';
 
   --------------------
   -- MONIT POS data
   --------------------
-  acq_chan_array(c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_monit), 32)) &
-                                                  std_logic_vector(resize(signed(dsp_x_monit), 32));
+  acq_chan_array(c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_pos_y_monit), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_pos_x_monit), 32));
 
-  acq_chan_array(c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_monit), 32)) &
-                                                  std_logic_vector(resize(signed(dsp_q_monit), 32));
+  acq_chan_array(c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_pos_sum_monit), 32)) &
+                                                  std_logic_vector(resize(signed(dsp_pos_q_monit), 32));
 
-  acq_chan_array(c_acq_monit_pos_id).dvalid    <= dsp_x_monit_valid;
+  acq_chan_array(c_acq_monit_pos_id).dvalid    <= dsp_pos_monit_valid;
   acq_chan_array(c_acq_monit_pos_id).trig      <= '0';
 
   --------------------
   -- MONIT1 POS data
   --------------------
-  acq_chan_array(c_acq_monit_1_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_y_monit_1), 32)) &
-                                                    std_logic_vector(resize(signed(dsp_x_monit_1), 32));
+  acq_chan_array(c_acq_monit_1_pos_id).val_low   <= std_logic_vector(resize(signed(dsp_pos_y_monit_1), 32)) &
+                                                    std_logic_vector(resize(signed(dsp_pos_x_monit_1), 32));
 
-  acq_chan_array(c_acq_monit_1_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_sum_monit_1), 32)) &
-                                                    std_logic_vector(resize(signed(dsp_q_monit_1), 32));
+  acq_chan_array(c_acq_monit_1_pos_id).val_high  <= std_logic_vector(resize(signed(dsp_pos_sum_monit_1), 32)) &
+                                                    std_logic_vector(resize(signed(dsp_pos_q_monit_1), 32));
 
-  acq_chan_array(c_acq_monit_1_pos_id).dvalid    <= dsp_x_monit_1_valid;
+  acq_chan_array(c_acq_monit_1_pos_id).dvalid    <= dsp_pos_monit_1_valid;
   acq_chan_array(c_acq_monit_1_pos_id).trig      <= '0';
 
   -- The xwb_acq_core is slave 9
@@ -2502,7 +2445,7 @@ begin
     TRIG4                                   => TRIG_ILA2_4
   );
 
-  TRIG_ILA2_0(0)                            <= dsp_tbt_amp_ch0_valid;
+  TRIG_ILA2_0(0)                            <= dsp_tbt_amp_valid;
   TRIG_ILA2_0(1)                            <= '0';
   TRIG_ILA2_0(2)                            <= '0';
   TRIG_ILA2_0(3)                            <= '0';
@@ -2530,7 +2473,7 @@ begin
     TRIG4                                   => TRIG_ILA3_4
   );
 
-  TRIG_ILA3_0(0)                            <= dsp_x_tbt_valid;
+  TRIG_ILA3_0(0)                            <= dsp_pos_tbt_valid;
   TRIG_ILA3_0(1)                            <= '0';
   TRIG_ILA3_0(2)                            <= '0';
   TRIG_ILA3_0(3)                            <= '0';
@@ -2538,10 +2481,10 @@ begin
   TRIG_ILA3_0(5)                            <= '0';
   TRIG_ILA3_0(6)                            <= '0';
 
-  TRIG_ILA3_1(dsp_x_tbt'left downto 0)       <= dsp_x_tbt;
-  TRIG_ILA3_2(dsp_y_tbt'left downto 0)       <= dsp_y_tbt;
-  TRIG_ILA3_3(dsp_q_tbt'left downto 0)       <= dsp_q_tbt;
-  TRIG_ILA3_4(dsp_sum_tbt'left downto 0)     <= dsp_sum_tbt;
+  TRIG_ILA3_1(dsp_pos_x_tbt'left downto 0)       <= dsp_pos_x_tbt;
+  TRIG_ILA3_2(dsp_pos_y_tbt'left downto 0)       <= dsp_pos_y_tbt;
+  TRIG_ILA3_3(dsp_pos_q_tbt'left downto 0)       <= dsp_pos_q_tbt;
+  TRIG_ILA3_4(dsp_pos_sum_tbt'left downto 0)     <= dsp_pos_sum_tbt;
 
   -- FOFB amplitudes data
 
@@ -2559,7 +2502,7 @@ begin
     TRIG4                                   => TRIG_ILA4_4
   );
 
-  TRIG_ILA4_0(0)                            <= dsp_fofb_amp_ch0_valid;
+  TRIG_ILA4_0(0)                            <= dsp_fofb_amp_valid;
   TRIG_ILA4_0(1)                            <= '0';
   TRIG_ILA4_0(2)                            <= '0';
   TRIG_ILA4_0(3)                            <= '0';
@@ -2589,7 +2532,7 @@ begin
     TRIG4                                   => TRIG_ILA5_4
   );
 
-  TRIG_ILA5_0(0)                            <= dsp_x_fofb_valid;
+  TRIG_ILA5_0(0)                            <= dsp_pos_fofb_valid;
   TRIG_ILA5_0(1)                            <= '0';
   TRIG_ILA5_0(2)                            <= '0';
   TRIG_ILA5_0(3)                            <= '0';
@@ -2597,10 +2540,10 @@ begin
   TRIG_ILA5_0(5)                            <= '0';
   TRIG_ILA5_0(6)                            <= '0';
 
-  TRIG_ILA5_1(dsp_x_fofb'left downto 0)        <= dsp_x_fofb;
-  TRIG_ILA5_2(dsp_y_fofb'left downto 0)        <= dsp_y_fofb;
-  TRIG_ILA5_3(dsp_q_fofb'left downto 0)        <= dsp_q_fofb;
-  TRIG_ILA5_4(dsp_sum_fofb'left downto 0)      <= dsp_sum_fofb;
+  TRIG_ILA5_1(dsp_pos_x_fofb'left downto 0)        <= dsp_pos_x_fofb;
+  TRIG_ILA5_2(dsp_pos_y_fofb'left downto 0)        <= dsp_pos_y_fofb;
+  TRIG_ILA5_3(dsp_pos_q_fofb'left downto 0)        <= dsp_pos_q_fofb;
+  TRIG_ILA5_4(dsp_pos_sum_fofb'left downto 0)      <= dsp_pos_sum_fofb;
 
   -- Monitoring position amplitude
 
@@ -2617,7 +2560,7 @@ begin
     TRIG4                                   => TRIG_ILA6_4
   );
 
-  TRIG_ILA6_0(0)                            <= dsp_monit_amp_ch0_valid;
+  TRIG_ILA6_0(0)                            <= dsp_monit_amp_valid;
   TRIG_ILA6_0(1)                            <= '0';
   TRIG_ILA6_0(2)                            <= '0';
   TRIG_ILA6_0(3)                            <= '0';
@@ -2645,7 +2588,7 @@ begin
     TRIG4                                   => TRIG_ILA7_4
   );
 
-  TRIG_ILA7_0(0)                            <= dsp_x_monit_valid;
+  TRIG_ILA7_0(0)                            <= dsp_pos_monit_valid;
   TRIG_ILA7_0(1)                            <= '0';
   TRIG_ILA7_0(2)                            <= '0';
   TRIG_ILA7_0(3)                            <= '0';
@@ -2653,10 +2596,10 @@ begin
   TRIG_ILA7_0(5)                            <= '0';
   TRIG_ILA7_0(6)                            <= '0';
 
-  TRIG_ILA7_1(dsp_x_monit'left downto 0)      <= dsp_x_monit;
-  TRIG_ILA7_2(dsp_y_monit'left downto 0)      <= dsp_y_monit;
-  TRIG_ILA7_3(dsp_q_monit'left downto 0)      <= dsp_q_monit;
-  TRIG_ILA7_4(dsp_sum_monit'left downto 0)    <= dsp_sum_monit;
+  TRIG_ILA7_1(dsp_pos_x_monit'left downto 0)      <= dsp_pos_x_monit;
+  TRIG_ILA7_2(dsp_pos_y_monit'left downto 0)      <= dsp_pos_y_monit;
+  TRIG_ILA7_3(dsp_pos_q_monit'left downto 0)      <= dsp_pos_q_monit;
+  TRIG_ILA7_4(dsp_pos_sum_monit'left downto 0)    <= dsp_pos_sum_monit;
 
   -- Monitoring 1 position data
 
@@ -2673,7 +2616,7 @@ begin
     TRIG4                                   => TRIG_ILA8_4
   );
 
-  TRIG_ILA8_0(0)                            <= dsp_x_monit_1_valid;
+  TRIG_ILA8_0(0)                            <= dsp_pos_monit_1_valid;
   TRIG_ILA8_0(1)                            <= '0';
   TRIG_ILA8_0(2)                            <= '0';
   TRIG_ILA8_0(3)                            <= '0';
@@ -2681,10 +2624,10 @@ begin
   TRIG_ILA8_0(5)                            <= '0';
   TRIG_ILA8_0(6)                            <= '0';
 
-  TRIG_ILA8_1(dsp_x_monit_1'left downto 0)     <= dsp_x_monit_1;
-  TRIG_ILA8_2(dsp_y_monit_1'left downto 0)     <= dsp_y_monit_1;
-  TRIG_ILA8_3(dsp_q_monit_1'left downto 0)     <= dsp_q_monit_1;
-  TRIG_ILA8_4(dsp_sum_monit_1'left downto 0)   <= dsp_sum_monit_1;
+  TRIG_ILA8_1(dsp_pos_x_monit_1'left downto 0)     <= dsp_pos_x_monit_1;
+  TRIG_ILA8_2(dsp_pos_y_monit_1'left downto 0)     <= dsp_pos_y_monit_1;
+  TRIG_ILA8_3(dsp_pos_q_monit_1'left downto 0)     <= dsp_pos_q_monit_1;
+  TRIG_ILA8_4(dsp_pos_sum_monit_1'left downto 0)   <= dsp_pos_sum_monit_1;
 
   -- TBT Phase data
 
@@ -2701,7 +2644,7 @@ begin
     TRIG4                                   => TRIG_ILA9_4
   );
 
-  TRIG_ILA9_0(0)                            <= dsp_tbt_pha_ch0_valid;
+  TRIG_ILA9_0(0)                            <= dsp_tbt_pha_valid;
   TRIG_ILA9_0(1)                            <= '0';
   TRIG_ILA9_0(2)                            <= '0';
   TRIG_ILA9_0(3)                            <= '0';
@@ -2729,7 +2672,7 @@ begin
     TRIG4                                   => TRIG_ILA10_4
   );
 
-  TRIG_ILA10_0(0)                           <= dsp_fofb_pha_ch0_valid;
+  TRIG_ILA10_0(0)                           <= dsp_fofb_pha_valid;
   TRIG_ILA10_0(1)                           <= '0';
   TRIG_ILA10_0(2)                           <= '0';
   TRIG_ILA10_0(3)                           <= '0';
