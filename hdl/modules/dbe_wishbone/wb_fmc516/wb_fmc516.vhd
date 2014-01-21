@@ -271,8 +271,8 @@ architecture rtl of wb_fmc516 is
     2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
     3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- LMK SPI
     4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO Si571 I2C
-    5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),   -- One-wire DS2431
-    6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")    -- One-wire DS2432
+    5 => f_sdb_embed_device(c_xwb_onewire_master_sdb,    x"00000500"),   -- One-wire DS2431
+    6 => f_sdb_embed_device(c_xwb_onewire_master_sdb,    x"00000600")    -- One-wire DS2432
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
