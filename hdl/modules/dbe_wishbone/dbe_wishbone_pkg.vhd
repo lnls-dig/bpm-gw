@@ -1382,40 +1382,6 @@ package dbe_wishbone_pkg is
     date          => x"20121124",
     name          => "OCORES_SPI         ")));
 
-  -- I2C Opencores Interface
-  constant c_xwb_i2c_master_sdb : t_sdb_device := (
-    abi_class     => x"0000",                 -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"00",
-    wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
-    sdb_component => (
-    addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000FF",
-    product => (
-    vendor_id     => x"100000004E2C05E5",     -- OpenCores
-    device_id     => x"97b6323d",
-    version       => x"00000001",
-    date          => x"20121124",
-    name          => "OCORES_I2C_MASTER  ")));
-
-  -- 1-Wire Opencores Interface
-  constant c_xwb_1_wire_master_sdb : t_sdb_device := (
-    abi_class     => x"0000",                 -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"00",
-    wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
-    sdb_component => (
-    addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000FF",
-    product => (
-    vendor_id     => x"100000004E2C05E5",     -- OpenCores
-    device_id     => x"525fbb09",
-    version       => x"00000001",
-    date          => x"20121124",
-    name          => "OCORES_1_WIRE      ")));
-
   -- Simple TICs counter Interface
   constant c_xwb_tics_counter_sdb : t_sdb_device := (
     abi_class     => x"0000",                 -- undocumented device
