@@ -339,9 +339,7 @@ begin
     g_size                                => async_fifo_size
   )
   port map(
-    --rst_n_i                               => sys_rst_n_i,
-    -- We don't need this reset as this FIFO is used for CDC only
-    rst_n_i                               => '1',
+    rst_n_i                               => sys_rst_n_i,
 
     -- write port
     clk_wr_i                              => adc_clk_bufr,
