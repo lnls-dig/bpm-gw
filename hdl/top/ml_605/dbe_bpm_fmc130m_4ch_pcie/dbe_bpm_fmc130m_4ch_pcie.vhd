@@ -747,7 +747,6 @@ begin
 
   reset_clks(c_clk_sys_id)                  <= clk_sys;
   reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
-  --clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
   clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
                                                   rs232_rstn and wb_ma_pcie_rstn;
   clk_sys_rst                               <= not clk_sys_rstn;
@@ -955,22 +954,6 @@ begin
   );
 
   -- Connect PCIe to the Wishbone Crossbar
-  --wb_ma_pcie_ack_in                         <= cbar_slave_o(0).ack;
-  --wb_ma_pcie_dat_in(c_wishbone_data_width-1 downto 0)
-  --                                          <= cbar_slave_o(0).dat;
-  --wb_ma_pcie_dat_in(wb_ma_pcie_dat_in'left downto c_wishbone_data_width)
-  --                                          <= (others => '0');
-  --cbar_slave_i(0).adr(c_wishbone_address_width-1 downto wb_ma_pcie_addr_out'left+1)
-  --                                          <= (others => '0');
-  --cbar_slave_i(0).adr(wb_ma_pcie_addr_out'left downto 0)
-  --                                          <= wb_ma_pcie_addr_out;
-  --cbar_slave_i(0).dat                       <= wb_ma_pcie_dat_out(c_wishbone_data_width-1 downto 0);
-  --cbar_slave_i(0).we                        <= wb_ma_pcie_we_out;
-  --cbar_slave_i(0).stb                       <= wb_ma_pcie_stb_out;
-  --cbar_slave_i(0).sel                       <= wb_ma_pcie_sel_out & wb_ma_pcie_sel_out &
-  --                                               wb_ma_pcie_sel_out & wb_ma_pcie_sel_out;
-  --cbar_slave_i(0).cyc                       <= wb_ma_pcie_cyc_out;
-
   wb_ma_sladp_pcie_addr_out(wb_ma_sladp_pcie_addr_out'left downto wb_ma_pcie_addr_out'left+1)
                                               <= (others => '0');
   wb_ma_sladp_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0)
@@ -1536,303 +1519,199 @@ begin
   memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
                                memc_cmd_addr;
 
-  ---- Xilinx Chipscope
-  --cmp_chipscope_icon_0 : chipscope_icon_6_port
-  --port map (
-  --  CONTROL0                                => CONTROL0,
-  --  CONTROL1                                => CONTROL1,
-  --  CONTROL2                                => CONTROL2,
-  --  CONTROL3                                => CONTROL3,
-  --  CONTROL4                                => CONTROL4,
-  --  CONTROL5                                => CONTROL5
-  --);
-  --
-  --cmp_chipscope_ila_0_fmc130m_4ch_clk0 : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL0,
-  --  --CLK                                     => clk_sys,
-  --  CLK                                     => fmc_130m_4ch_clk(c_adc_ref_clk),
-  --  TRIG0                                   => TRIG_ILA0_0,
-  --  TRIG1                                   => TRIG_ILA0_1,
-  --  TRIG2                                   => TRIG_ILA0_2,
-  --  TRIG3                                   => TRIG_ILA0_3
-  --);
-  --
-  ---- fmc130m_4ch WBS master output data
-  ----TRIG_ILA0_0                               <= wbs_fmc130m_4ch_out_array(3).dat &
-  ----                                               wbs_fmc130m_4ch_out_array(2).dat;
-  --TRIG_ILA0_0                               <= fmc_130m_4ch_data(31 downto 16) &
-  --                                               fmc_130m_4ch_data(47 downto 32);
-  --
-  ---- fmc130m_4ch WBS master output data
-  ----TRIG_ILA0_1                               <= wbs_fmc130m_4ch_out_array(1).dat &
-  ----                                               wbs_fmc130m_4ch_out_array(0).dat;
-  ----TRIG_ILA0_1                               <= fmc130m_4ch_adc_data(15 downto 0) &
-  ----                                               fmc130m_4ch_adc_data(47 downto 32);
-  --TRIG_ILA0_1(11 downto 0)                   <= adc_dly_debug_int(1).clk_chain.idelay.pulse &
-  --                                              adc_dly_debug_int(1).data_chain.idelay.pulse &
-  --                                              adc_dly_debug_int(1).clk_chain.idelay.val &
-  --                                              adc_dly_debug_int(1).data_chain.idelay.val;
-  --TRIG_ILA0_1(31 downto 12)                  <= (others => '0');
-  --
-  ---- fmc130m_4ch WBS master output control signals
-  --TRIG_ILA0_2(17 downto 0)                   <= wbs_fmc130m_4ch_out_array(1).cyc &
-  --                                               wbs_fmc130m_4ch_out_array(1).stb &
-  --                                               wbs_fmc130m_4ch_out_array(1).adr &
-  --                                               wbs_fmc130m_4ch_out_array(1).sel &
-  --                                               wbs_fmc130m_4ch_out_array(1).we &
-  --                                               wbs_fmc130m_4ch_out_array(2).cyc &
-  --                                               wbs_fmc130m_4ch_out_array(2).stb &
-  --                                               wbs_fmc130m_4ch_out_array(2).adr &
-  --                                               wbs_fmc130m_4ch_out_array(2).sel &
-  --                                               wbs_fmc130m_4ch_out_array(2).we;
-  --TRIG_ILA0_2(18)                            <= '0';
-  --TRIG_ILA0_2(22 downto 19)                  <= fmc_130m_4ch_data_valid;
-  --TRIG_ILA0_2(23)                            <= fmc_mmcm_lock_int;
-  --TRIG_ILA0_2(24)                            <= fmc_pll_status_int;
-  --TRIG_ILA0_2(25)                            <= fmc130m_4ch_debug_valid_int(1);
-  --TRIG_ILA0_2(26)                            <= fmc130m_4ch_debug_full_int(1);
-  --TRIG_ILA0_2(27)                            <= fmc130m_4ch_debug_empty_int(1);
-  --TRIG_ILA0_2(31 downto 28)                  <= (others => '0');
-  --
-  ---- fmc130m_4ch WBS master output control signals
-  ----TRIG_ILA0_3(17 downto 0)                  <= wbs_fmc130m_4ch_out_array(1).cyc &
-  ----                                               wbs_fmc130m_4ch_out_array(1).stb &
-  ----                                               wbs_fmc130m_4ch_out_array(1).adr &
-  ----                                               wbs_fmc130m_4ch_out_array(1).sel &
-  ----                                               wbs_fmc130m_4ch_out_array(1).we &
-  ----                                               wbs_fmc130m_4ch_out_array(0).cyc &
-  ----                                               wbs_fmc130m_4ch_out_array(0).stb &
-  ----                                               wbs_fmc130m_4ch_out_array(0).adr &
-  ----                                               wbs_fmc130m_4ch_out_array(0).sel &
-  ----                                               wbs_fmc130m_4ch_out_array(0).we;
-  ----TRIG_ILA0_3(18)                           <= fmc_reset_adcs_n_out;
-  ----TRIG_ILA0_3(22 downto 19)                 <= fmc130m_4ch_adc_valid;
-  ----TRIG_ILA0_3(23)                           <= fmc130m_4ch_mmcm_lock_int;
-  ----TRIG_ILA0_3(24)                           <= fmc130m_4ch_lmk_lock_int;
-  ----TRIG_ILA0_3(25)                            <= fmc130m_4ch_debug_valid_int(1);
-  ----TRIG_ILA0_3(26)                            <= fmc130m_4ch_debug_full_int(1);
-  ----TRIG_ILA0_3(27)                            <= fmc130m_4ch_debug_empty_int(1);
-  ----TRIG_ILA0_3(31 downto 28)                 <= (others => '0');
-  --TRIG_ILA0_3                                 <= (others => '0');
-  --
-  ---- Etherbone debuging signals
-  ----cmp_chipscope_ila_1_etherbone : chipscope_ila
-  ----port map (
-  ----    CONTROL                               => CONTROL1,
-  ----    CLK                                   => clk_sys,
-  ----    TRIG0                                 => TRIG_ILA1_0,
-  ----    TRIG1                                 => TRIG_ILA1_1,
-  ----    TRIG2                                 => TRIG_ILA1_2,
-  ----    TRIG3                                 => TRIG_ILA1_3
-  ----);
-  --
-  ----TRIG_ILA1_0                               <= wb_ebone_out.dat;
-  ----TRIG_ILA1_1                               <= wb_ebone_in.dat;
-  ----TRIG_ILA1_2                               <= wb_ebone_out.adr;
-  ----TRIG_ILA1_3(6 downto 0)                   <= wb_ebone_out.cyc &
-  ----                                              wb_ebone_out.stb &
-  ----                                              wb_ebone_out.sel &
-  ----                                              wb_ebone_out.we;
-  ----TRIG_ILA1_3(11 downto 7)                   <= wb_ebone_in.ack &
-  ----                                              wb_ebone_in.err &
-  ----                                              wb_ebone_in.rty &
-  ----                                              wb_ebone_in.stall &
-  ----                                              wb_ebone_in.int;
-  ----TRIG_ILA1_3(31 downto 12)                  <= (others => '0');
-  --
-  ----cmp_chipscope_ila_1_ethmac_rx : chipscope_ila
-  ----port map (
-  ----  CONTROL                                 => CONTROL1,
-  ----  CLK                                     => mrx_clk_pad_i,
-  ----  TRIG0                                   => TRIG_ILA1_0,
-  ----  TRIG1                                   => TRIG_ILA1_1,
-  ----  TRIG2                                   => TRIG_ILA1_2,
-  ----  TRIG3                                   => TRIG_ILA1_3
-  ----);
-  ----
-  ----TRIG_ILA1_0(7 downto 0)                   <= mrxd_pad_i &
-  ----                                               mrxdv_pad_i &
-  ----                                               mrxerr_pad_i &
-  ----                                               mcoll_pad_i &
-  ----                                               mcrs_pad_i;
-  ----
-  ----TRIG_ILA1_0(31 downto 8)                  <= (others => '0');
-  ----TRIG_ILA1_1                               <= (others => '0');
-  ----TRIG_ILA1_2                               <= (others => '0');
-  ----TRIG_ILA1_3                               <= (others => '0');
-  --
-  --cmp_chipscope_ila_1_fmc130m_4ch_clk1 : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL1,
-  --  --CLK                                     => fmc_130m_4ch_clk(1),
-  --  CLK                                     => fmc_130m_4ch_clk(c_adc_ref_clk),
-  --  TRIG0                                   => TRIG_ILA1_0,
-  --  TRIG1                                   => TRIG_ILA1_1,
-  --  TRIG2                                   => TRIG_ILA1_2,
-  --  TRIG3                                   => TRIG_ILA1_3
-  --);
-  --
-  --  -- fmc130m_4ch WBS master output data
-  --TRIG_ILA1_0                               <= fmc_130m_4ch_data(15 downto 0) &
-  --                                               fmc_130m_4ch_data(63 downto 48);
-  --
-  ---- fmc130m_4ch WBS master output data
-  --TRIG_ILA1_1                               <= (others => '0');
-  --
-  ---- fmc130m_4ch WBS master output control signals
-  --TRIG_ILA1_2(17 downto 0)                   <= wbs_fmc130m_4ch_out_array(0).cyc &
-  --                                               wbs_fmc130m_4ch_out_array(0).stb &
-  --                                               wbs_fmc130m_4ch_out_array(0).adr &
-  --                                               wbs_fmc130m_4ch_out_array(0).sel &
-  --                                               wbs_fmc130m_4ch_out_array(0).we &
-  --                                               wbs_fmc130m_4ch_out_array(3).cyc &
-  --                                               wbs_fmc130m_4ch_out_array(3).stb &
-  --                                               wbs_fmc130m_4ch_out_array(3).adr &
-  --                                               wbs_fmc130m_4ch_out_array(3).sel &
-  --                                               wbs_fmc130m_4ch_out_array(3).we;
-  --TRIG_ILA1_2(18)                            <= '0';
-  --TRIG_ILA1_2(22 downto 19)                  <= fmc_130m_4ch_data_valid;
-  --TRIG_ILA1_2(23)                            <= fmc_mmcm_lock_int;
-  --TRIG_ILA1_2(24)                            <= fmc_pll_status_int;
-  --TRIG_ILA1_2(25)                            <= fmc130m_4ch_debug_valid_int(0);
-  --TRIG_ILA1_2(26)                            <= fmc130m_4ch_debug_full_int(0);
-  --TRIG_ILA1_2(27)                            <= fmc130m_4ch_debug_empty_int(0);
-  --TRIG_ILA1_2(31 downto 28)                  <= (others => '0');
-  --
-  --TRIG_ILA1_3                                 <= (others => '0');
-  --
-  --
-  --cmp_chipscope_ila_2_ethmac_tx : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL2,
-  --  CLK                                     => mtx_clk_pad_i,
-  --  TRIG0                                   => TRIG_ILA2_0,
-  --  TRIG1                                   => TRIG_ILA2_1,
-  --  TRIG2                                   => TRIG_ILA2_2,
-  --  TRIG3                                   => TRIG_ILA2_3
-  --);
-  --
-  --TRIG_ILA2_0(5 downto 0)                   <= mtxd_pad_int &
-  --                                              mtxen_pad_int &
-  --                                              mtxerr_pad_int;
-  --
-  --TRIG_ILA2_0(31 downto 6)                  <= (others => '0');
-  --TRIG_ILA2_1                               <= (others => '0');
-  --TRIG_ILA2_2                               <= (others => '0');
-  --TRIG_ILA2_3                               <= (others => '0');
-  --
-  ----cmp_chipscope_ila_3_ethmac_miim : chipscope_ila
-  ----port map (
-  ----  CONTROL                                 => CONTROL3,
-  ----  CLK                                     => clk_sys,
-  ----  TRIG0                                   => TRIG_ILA3_0,
-  ----  TRIG1                                   => TRIG_ILA3_1,
-  ----  TRIG2                                   => TRIG_ILA3_2,
-  ----  TRIG3                                   => TRIG_ILA3_3
-  ----);
-  ----
-  ----TRIG_ILA3_0(4 downto 0)                   <= mdc_pad_int &
-  ----                                               ethmac_md_in &
-  ----                                               ethmac_md_out &
-  ----                                               ethmac_md_oe &
-  ----                                               ethmac_int;
-  ----
-  ----TRIG_ILA3_0(31 downto 6)                  <= (others => '0');
-  ----TRIG_ILA3_1                               <= (others => '0');
-  ----TRIG_ILA3_2                               <= (others => '0');
-  ----TRIG_ILA3_3                               <= (others => '0');
-  --
-  ---- The clocks to/from peripherals are derived from the bus clock.
-  ---- Therefore we don't have to worry about synchronization here, just
-  ---- keep in mind that the data/ss lines will appear longer than normal
-  --cmp_chipscope_ila_3_fmc130m_4ch_periph : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL3,
-  --  CLK                                     => clk_sys, -- Wishbone clock
-  --  TRIG0                                   => TRIG_ILA3_0,
-  --  TRIG1                                   => TRIG_ILA3_1,
-  --  TRIG2                                   => TRIG_ILA3_2,
-  --  TRIG3                                   => TRIG_ILA3_3
-  --);
-  --
-  --TRIG_ILA3_0                               <= wb_ma_pcie_dat_in(31 downto 0);
-  --TRIG_ILA3_1                               <= wb_ma_pcie_dat_out(31 downto 0);
-  --TRIG_ILA3_2(31 downto wb_ma_pcie_addr_out'left + 1) <= (others => '0');
-  --TRIG_ILA3_2(wb_ma_pcie_addr_out'left downto 0)
-  --                                          <= wb_ma_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0);
-  --TRIG_ILA3_3(31 downto 5)                  <= (others => '0');
-  --TRIG_ILA3_3(4 downto 0)                   <= wb_ma_pcie_ack_in &
-  --                                              wb_ma_pcie_we_out &
-  --                                              wb_ma_pcie_stb_out &
-  --                                              wb_ma_pcie_sel_out &
-  --                                              wb_ma_pcie_cyc_out;
-  --
-  --cmp_chipscope_ila_4_bpm_acq : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL4,
-  --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
-  --  TRIG0                                   => TRIG_ILA4_0,
-  --  TRIG1                                   => TRIG_ILA4_1,
-  --  TRIG2                                   => TRIG_ILA4_2,
-  --  TRIG3                                   => TRIG_ILA4_3
-  --);
-  --
-  ----TRIG_ILA4_0                               <= cbar_master_i(9).dat;
-  ----TRIG_ILA4_1                               <= cbar_master_o(9).dat;
-  ----TRIG_ILA4_2                               <= cbar_master_o(9).adr;
-  ----TRIG_ILA4_3(31 downto 8)                  <= (others => '0');
-  ----TRIG_ILA4_3(7 downto 0)                   <=  cbar_master_i(9).ack &
-  ----                                              cbar_master_o(9).we &
-  ----                                              cbar_master_o(9).stb &
-  ----                                              cbar_master_o(9).sel &
-  ----                                              cbar_master_o(9).cyc;
-  --TRIG_ILA4_0                               <= dbg_app_rd_data(207 downto 192) &
-  --                                               dbg_app_rd_data(143 downto 128);
-  --TRIG_ILA4_1                               <= dbg_app_rd_data(79 downto 64) &
-  --                                               dbg_app_rd_data(15 downto 0);
-  --                                               
-  --TRIG_ILA4_2                               <= dbg_app_addr;
-  --
-  --TRIG_ILA4_3(31 downto 11)                  <= (others => '0');
-  --TRIG_ILA4_3(10 downto 0)                   <=  dbg_app_rd_data_end & 
-  --                                               dbg_app_rd_data_valid &
-  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
-  --                                               dbg_app_en &
-  --                                               dbg_app_rdy &
-  --                                               dbg_arb_req &
-  --                                               dbg_arb_gnt;
-  --
-  --cmp_chipscope_ila_5_bpm_acq : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL5,
-  --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
-  --  TRIG0                                   => TRIG_ILA5_0,
-  --  TRIG1                                   => TRIG_ILA5_1,
-  --  TRIG2                                   => TRIG_ILA5_2,
-  --  TRIG3                                   => TRIG_ILA5_3
-  --);
-  --
-  ----TRIG_ILA5_0                               <= memc_wr_data(15 downto 0) &
-  ----                                               bpm_acq_ext_dout(15 downto 0);
-  ----TRIG_ILA5_1                               <= bpm_acq_ext_addr(15 downto 0) &
-  ----                                               memc_cmd_addr(15 downto 0);
-  --TRIG_ILA5_0                               <= dbg_app_wdf_data(207 downto 192) &
-  --                                               dbg_app_wdf_data(143 downto 128);
-  --TRIG_ILA5_1                               <= dbg_app_wdf_data(79 downto 64) &
-  --                                               dbg_app_wdf_data(15 downto 0);
-  --                                               
-  --TRIG_ILA5_2                               <= dbg_app_addr;
-  --TRIG_ILA5_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA5_3(29 downto 0)                  <= memc_ui_rst &
-  --                                               clk_200mhz_rstn &
-  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
-  --                                               dbg_app_en &
-  --                                               dbg_app_rdy &
-  --                                               dbg_app_wdf_end &
-  --                                               dbg_app_wdf_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
-  --                                               dbg_app_wdf_wren &
-  --                                               dbg_app_wdf_rdy &
-  --                                               dbg_arb_req &
-  --                                               dbg_arb_gnt;
+  -- Xilinx Chipscope
+  cmp_chipscope_icon_0 : chipscope_icon_6_port
+  port map (
+    CONTROL0                                => CONTROL0,
+    CONTROL1                                => CONTROL1,
+    CONTROL2                                => CONTROL2,
+    CONTROL3                                => CONTROL3,
+    CONTROL4                                => CONTROL4,
+    CONTROL5                                => CONTROL5
+  );
+  
+  cmp_chipscope_ila_0_fmc130m_4ch_clk0 : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL0,
+    CLK                                     => fmc_130m_4ch_clk(c_adc_ref_clk),
+    TRIG0                                   => TRIG_ILA0_0,
+    TRIG1                                   => TRIG_ILA0_1,
+    TRIG2                                   => TRIG_ILA0_2,
+    TRIG3                                   => TRIG_ILA0_3
+  );
+  
+  -- fmc130m_4ch WBS master output data
+  --TRIG_ILA0_0                               <= wbs_fmc130m_4ch_out_array(3).dat &
+  --                                               wbs_fmc130m_4ch_out_array(2).dat;
+  TRIG_ILA0_0                               <= fmc_130m_4ch_data(31 downto 16) &
+                                                 fmc_130m_4ch_data(47 downto 32);
+  
+  -- fmc130m_4ch WBS master output data
+  TRIG_ILA0_1(11 downto 0)                   <= adc_dly_debug_int(1).clk_chain.idelay.pulse &
+                                                adc_dly_debug_int(1).data_chain.idelay.pulse &
+                                                adc_dly_debug_int(1).clk_chain.idelay.val &
+                                                adc_dly_debug_int(1).data_chain.idelay.val;
+  TRIG_ILA0_1(31 downto 12)                  <= (others => '0');
+  
+  -- fmc130m_4ch WBS master output control signals
+  TRIG_ILA0_2(17 downto 0)                   <= wbs_fmc130m_4ch_out_array(1).cyc &
+                                                 wbs_fmc130m_4ch_out_array(1).stb &
+                                                 wbs_fmc130m_4ch_out_array(1).adr &
+                                                 wbs_fmc130m_4ch_out_array(1).sel &
+                                                 wbs_fmc130m_4ch_out_array(1).we &
+                                                 wbs_fmc130m_4ch_out_array(2).cyc &
+                                                 wbs_fmc130m_4ch_out_array(2).stb &
+                                                 wbs_fmc130m_4ch_out_array(2).adr &
+                                                 wbs_fmc130m_4ch_out_array(2).sel &
+                                                 wbs_fmc130m_4ch_out_array(2).we;
+  TRIG_ILA0_2(18)                            <= '0';
+  TRIG_ILA0_2(22 downto 19)                  <= fmc_130m_4ch_data_valid;
+  TRIG_ILA0_2(23)                            <= fmc_mmcm_lock_int;
+  TRIG_ILA0_2(24)                            <= fmc_pll_status_int;
+  TRIG_ILA0_2(25)                            <= fmc130m_4ch_debug_valid_int(1);
+  TRIG_ILA0_2(26)                            <= fmc130m_4ch_debug_full_int(1);
+  TRIG_ILA0_2(27)                            <= fmc130m_4ch_debug_empty_int(1);
+  TRIG_ILA0_2(31 downto 28)                  <= (others => '0');
+  
+  TRIG_ILA0_3                                <= (others => '0');
+  
+  cmp_chipscope_ila_1_fmc130m_4ch_clk1 : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL1,
+    --CLK                                     => fmc_130m_4ch_clk(1),
+    CLK                                     => fmc_130m_4ch_clk(c_adc_ref_clk),
+    TRIG0                                   => TRIG_ILA1_0,
+    TRIG1                                   => TRIG_ILA1_1,
+    TRIG2                                   => TRIG_ILA1_2,
+    TRIG3                                   => TRIG_ILA1_3
+  );
+  
+    -- fmc130m_4ch WBS master output data
+  TRIG_ILA1_0                               <= fmc_130m_4ch_data(15 downto 0) &
+                                                 fmc_130m_4ch_data(63 downto 48);
+  
+  -- fmc130m_4ch WBS master output data
+  TRIG_ILA1_1                               <= (others => '0');
+  
+  -- fmc130m_4ch WBS master output control signals
+  TRIG_ILA1_2(17 downto 0)                   <= wbs_fmc130m_4ch_out_array(0).cyc &
+                                                 wbs_fmc130m_4ch_out_array(0).stb &
+                                                 wbs_fmc130m_4ch_out_array(0).adr &
+                                                 wbs_fmc130m_4ch_out_array(0).sel &
+                                                 wbs_fmc130m_4ch_out_array(0).we &
+                                                 wbs_fmc130m_4ch_out_array(3).cyc &
+                                                 wbs_fmc130m_4ch_out_array(3).stb &
+                                                 wbs_fmc130m_4ch_out_array(3).adr &
+                                                 wbs_fmc130m_4ch_out_array(3).sel &
+                                                 wbs_fmc130m_4ch_out_array(3).we;
+  TRIG_ILA1_2(18)                            <= '0';
+  TRIG_ILA1_2(22 downto 19)                  <= fmc_130m_4ch_data_valid;
+  TRIG_ILA1_2(23)                            <= fmc_mmcm_lock_int;
+  TRIG_ILA1_2(24)                            <= fmc_pll_status_int;
+  TRIG_ILA1_2(25)                            <= fmc130m_4ch_debug_valid_int(0);
+  TRIG_ILA1_2(26)                            <= fmc130m_4ch_debug_full_int(0);
+  TRIG_ILA1_2(27)                            <= fmc130m_4ch_debug_empty_int(0);
+  TRIG_ILA1_2(31 downto 28)                  <= (others => '0');
+  
+  TRIG_ILA1_3                                 <= (others => '0');
+  
+  
+  cmp_chipscope_ila_2_ethmac_tx : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL2,
+    CLK                                     => mtx_clk_pad_i,
+    TRIG0                                   => TRIG_ILA2_0,
+    TRIG1                                   => TRIG_ILA2_1,
+    TRIG2                                   => TRIG_ILA2_2,
+    TRIG3                                   => TRIG_ILA2_3
+  );
+  
+  TRIG_ILA2_0(5 downto 0)                   <= mtxd_pad_int &
+                                                mtxen_pad_int &
+                                                mtxerr_pad_int;
+  
+  TRIG_ILA2_0(31 downto 6)                  <= (others => '0');
+  TRIG_ILA2_1                               <= (others => '0');
+  TRIG_ILA2_2                               <= (others => '0');
+  TRIG_ILA2_3                               <= (others => '0');
+  
+  -- The clocks to/from peripherals are derived from the bus clock.
+  -- Therefore we don't have to worry about synchronization here, just
+  -- keep in mind that the data/ss lines will appear longer than normal
+  cmp_chipscope_ila_3_fmc130m_4ch_periph : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL3,
+    CLK                                     => clk_sys, -- Wishbone clock
+    TRIG0                                   => TRIG_ILA3_0,
+    TRIG1                                   => TRIG_ILA3_1,
+    TRIG2                                   => TRIG_ILA3_2,
+    TRIG3                                   => TRIG_ILA3_3
+  );
+  
+  TRIG_ILA3_0                               <= wb_ma_pcie_dat_in(31 downto 0);
+  TRIG_ILA3_1                               <= wb_ma_pcie_dat_out(31 downto 0);
+  TRIG_ILA3_2(31 downto wb_ma_pcie_addr_out'left + 1) <= (others => '0');
+  TRIG_ILA3_2(wb_ma_pcie_addr_out'left downto 0)
+                                            <= wb_ma_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0);
+  TRIG_ILA3_3(31 downto 5)                  <= (others => '0');
+  TRIG_ILA3_3(4 downto 0)                   <= wb_ma_pcie_ack_in &
+                                                wb_ma_pcie_we_out &
+                                                wb_ma_pcie_stb_out &
+                                                wb_ma_pcie_sel_out &
+                                                wb_ma_pcie_cyc_out;
+  
+  cmp_chipscope_ila_4_bpm_acq : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL4,
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
+    TRIG0                                   => TRIG_ILA4_0,
+    TRIG1                                   => TRIG_ILA4_1,
+    TRIG2                                   => TRIG_ILA4_2,
+    TRIG3                                   => TRIG_ILA4_3
+  );
+  
+  TRIG_ILA4_0                               <= dbg_app_rd_data(207 downto 192) &
+                                                 dbg_app_rd_data(143 downto 128);
+  TRIG_ILA4_1                               <= dbg_app_rd_data(79 downto 64) &
+                                                 dbg_app_rd_data(15 downto 0);
+                                                 
+  TRIG_ILA4_2                               <= dbg_app_addr;
+  
+  TRIG_ILA4_3(31 downto 11)                  <= (others => '0');
+  TRIG_ILA4_3(10 downto 0)                   <=  dbg_app_rd_data_end & 
+                                                 dbg_app_rd_data_valid &
+                                                 dbg_app_cmd & -- std_logic_vector(2 downto 0);
+                                                 dbg_app_en &
+                                                 dbg_app_rdy &
+                                                 dbg_arb_req &
+                                                 dbg_arb_gnt;
+  
+  cmp_chipscope_ila_5_bpm_acq : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL5,
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
+    TRIG0                                   => TRIG_ILA5_0,
+    TRIG1                                   => TRIG_ILA5_1,
+    TRIG2                                   => TRIG_ILA5_2,
+    TRIG3                                   => TRIG_ILA5_3
+  );
+  
+  TRIG_ILA5_0                               <= dbg_app_wdf_data(207 downto 192) &
+                                                 dbg_app_wdf_data(143 downto 128);
+  TRIG_ILA5_1                               <= dbg_app_wdf_data(79 downto 64) &
+                                                 dbg_app_wdf_data(15 downto 0);
+                                                 
+  TRIG_ILA5_2                               <= dbg_app_addr;
+  TRIG_ILA5_3(31 downto 30)                 <= (others => '0');
+  TRIG_ILA5_3(29 downto 0)                  <= memc_ui_rst &
+                                                 clk_200mhz_rstn &
+                                                 dbg_app_cmd & -- std_logic_vector(2 downto 0);
+                                                 dbg_app_en &
+                                                 dbg_app_rdy &
+                                                 dbg_app_wdf_end &
+                                                 dbg_app_wdf_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
+                                                 dbg_app_wdf_wren &
+                                                 dbg_app_wdf_rdy &
+                                                 dbg_arb_req &
+                                                 dbg_arb_gnt;
 end rtl;
