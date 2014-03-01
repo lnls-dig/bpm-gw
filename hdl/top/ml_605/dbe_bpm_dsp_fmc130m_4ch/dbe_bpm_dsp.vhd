@@ -748,6 +748,12 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_clk_ce_2780000                 : std_logic;
   signal dsp_clk_ce_5560000                 : std_logic;
 
+  signal dbg_cur_address                    : std_logic_vector(31 downto 0);
+  signal dbg_adc_ch0_cond                   : std_logic_vector(15 downto 0);
+  signal dbg_adc_ch1_cond                   : std_logic_vector(15 downto 0);
+  signal dbg_adc_ch2_cond                   : std_logic_vector(15 downto 0);
+  signal dbg_adc_ch3_cond                   : std_logic_vector(15 downto 0);
+
   -- DDS test
   signal dds_data                           : std_logic_vector(2*c_num_adc_bits-1 downto 0); -- cosine + sine
   signal dds_sine                           : std_logic_vector(c_num_adc_bits-1 downto 0);
@@ -803,6 +809,7 @@ architecture rtl of dbe_bpm_dsp is
   signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
   signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA0_4                        : std_logic_vector(31 downto 0);
 
   -- Chipscope ILA 1 signals
   signal TRIG_ILA1_0                        : std_logic_vector(7 downto 0);
@@ -1068,9 +1075,42 @@ architecture rtl of dbe_bpm_dsp is
     trig3                                   : in std_logic_vector(31 downto 0)
   );
   end component;
-
+  
   -- Xilinx Chipscope Logic Analyser
+  component chipscope_ila_1024_5_port
+  port (
+    control                                 : inout std_logic_vector(35 downto 0);
+    clk                                     : in std_logic;
+    trig0                                   : in std_logic_vector(31 downto 0);
+    trig1                                   : in std_logic_vector(31 downto 0);
+    trig2                                   : in std_logic_vector(31 downto 0);
+    trig3                                   : in std_logic_vector(31 downto 0);
+    trig4                                   : in std_logic_vector(31 downto 0));
+  end component;
+  
+  component chipscope_ila_8192_5_port
+  port (
+    control                                 : inout std_logic_vector(35 downto 0);
+    clk                                     : in std_logic;
+    trig0                                   : in std_logic_vector(31 downto 0);
+    trig1                                   : in std_logic_vector(31 downto 0);
+    trig2                                   : in std_logic_vector(31 downto 0);
+    trig3                                   : in std_logic_vector(31 downto 0);
+    trig4                                   : in std_logic_vector(31 downto 0));
+  end component;
+  
   component chipscope_ila_1024
+  port (
+    control                                 : inout std_logic_vector(35 downto 0);
+    clk                                     : in std_logic;
+    trig0                                   : in std_logic_vector(7 downto 0);
+    trig1                                   : in std_logic_vector(31 downto 0);
+    trig2                                   : in std_logic_vector(31 downto 0);
+    trig3                                   : in std_logic_vector(31 downto 0);
+    trig4                                   : in std_logic_vector(31 downto 0));
+  end component;
+  
+  component chipscope_ila_4096
   port (
     control                                 : inout std_logic_vector(35 downto 0);
     clk                                     : in std_logic;
@@ -2054,7 +2094,13 @@ begin
     clk_ce_5000_o                           => dsp_clk_ce_5000,
     clk_ce_556_o                            => dsp_clk_ce_556,
     clk_ce_5560000_o                        => dsp_clk_ce_5560000,
-    clk_ce_70_o                             => dsp_clk_ce_70
+    clk_ce_70_o                             => dsp_clk_ce_70,
+
+    dbg_cur_address_o                       => dbg_cur_address,
+    dbg_adc_ch0_cond_o                      => dbg_adc_ch0_cond,
+    dbg_adc_ch1_cond_o                      => dbg_adc_ch1_cond,
+    dbg_adc_ch2_cond_o                      => dbg_adc_ch2_cond,
+    dbg_adc_ch3_cond_o                      => dbg_adc_ch3_cond
   );
 
   --dsp_poly35_ch0 <= (others => '0');
@@ -2385,23 +2431,28 @@ begin
      CONTROL12                              => CONTROL12
   );
 
-  cmp_chipscope_ila_0_adc : chipscope_ila
+  --cmp_chipscope_ila_0_adc : chipscope_ila
+  --cmp_chipscope_ila_adc : chipscope_ila_1024_5_port
+  cmp_chipscope_ila_adc : chipscope_ila_8192_5_port
   port map (
     CONTROL                                => CONTROL0,
     CLK                                    => fs_clk,
     TRIG0                                  => TRIG_ILA0_0,
     TRIG1                                  => TRIG_ILA0_1,
     TRIG2                                  => TRIG_ILA0_2,
-    TRIG3                                  => TRIG_ILA0_3
+    TRIG3                                  => TRIG_ILA0_3,
+    TRIG4                                  => TRIG_ILA0_4
   );
 
   -- ADC Data
   TRIG_ILA0_0                               <= dsp_adc_ch1_data & dsp_adc_ch0_data;
   TRIG_ILA0_1                               <= dsp_adc_ch3_data & dsp_adc_ch2_data;
 
-  TRIG_ILA0_2                               <= (others => '0');
-  TRIG_ILA0_3                               <= (others => '0');
-
+  TRIG_ILA0_2                               <= dbg_adc_ch1_cond & dbg_adc_ch0_cond;
+  TRIG_ILA0_3                               <= dbg_adc_ch3_cond & dbg_adc_ch2_cond;
+  TRIG_ILA0_4(dbg_cur_address'left downto 0) 
+  	                                    <= dbg_cur_address;
+  
   -- Mix and BPF data
 
   --cmp_chipscope_ila_4096_bpf_mix : chipscope_ila_4096  (
@@ -2741,4 +2792,4 @@ begin
   dsp_dds_config_valid_ch2                  <= vio_out_dsp_config(242);
   dsp_dds_config_valid_ch3                  <= vio_out_dsp_config(243);
 
-end rtl;
+end ;
