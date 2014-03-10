@@ -250,7 +250,6 @@ VHDL_SRC := ../../modules/pcie/common/v6abb64Package_efifo_elink.vhd \
 ../../modules/pcie/common/DDR_Blinker.vhd \
 ../../modules/pcie/common/DMA_Calculate.vhd \
 ../../modules/pcie/common/DMA_FSM.vhd \
-../../modules/pcie/common/FF_tagram64x36.vhd \
 ../../modules/pcie/common/Interrupts.vhd \
 ../../modules/pcie/common/Registers.vhd \
 ../../modules/pcie/common/RxIn_Delays.vhd \
@@ -375,7 +374,6 @@ work/top_a7/.top_a7_vhd \
 work/DDR_Blinker/.DDR_Blinker_vhd \
 work/DMA_Calculate/.DMA_Calculate_vhd \
 work/DMA_FSM/.DMA_FSM_vhd \
-work/FF_tagram64x36/.FF_tagram64x36_vhd \
 work/Interrupts/.Interrupts_vhd \
 work/Registers/.Registers_vhd \
 work/RxIn_Delays/.RxIn_Delays_vhd \
@@ -1133,14 +1131,6 @@ work/DMA_FSM/.DMA_FSM_vhd: ../../modules/pcie/common/DMA_FSM.vhd
 
 
 work/DMA_FSM/.DMA_FSM: \
-work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
-
-work/FF_tagram64x36/.FF_tagram64x36_vhd: ../../modules/pcie/common/FF_tagram64x36.vhd
-		vcom $(VCOM_FLAGS)  -work work $< 
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/FF_tagram64x36/.FF_tagram64x36: \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink
 
 work/Interrupts/.Interrupts_vhd: ../../modules/pcie/common/Interrupts.vhd

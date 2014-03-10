@@ -72,7 +72,6 @@ entity rx_MWr_Transact is
     DDR_wr_sof   : out std_logic;
     DDR_wr_eof   : out std_logic;
     DDR_wr_v     : out std_logic;
-    DDR_wr_FA    : out std_logic;
     DDR_wr_Shift : out std_logic;
     DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
