@@ -167,8 +167,9 @@ architecture rtl of acq_fc_fifo is
   signal req_rst_trans_sync                 : std_logic;
   signal rst_trans_fs_sync                  : std_logic;
   signal rst_trans_ext_sync                 : std_logic;
-  signal pl_rst_trans            : std_logic;
-  signal acq_cnt_rst_n                  : std_logic;
+  signal rst_trans_ext_sync_d               : std_logic;
+  signal pl_rst_trans                       : std_logic;
+  signal acq_cnt_rst_n                      : std_logic;
 
   -- Samples counts
   -- counts the words written in the FIFO
@@ -194,6 +195,7 @@ architecture rtl of acq_fc_fifo is
 
   -- End of transcation signals
   signal fifo_fc_all_trans_done             : std_logic;
+  signal fifo_fc_all_trans_done_lvl         : std_logic;
   signal fifo_fc_all_trans_done_sync        : std_logic;
 
 begin
@@ -375,7 +377,20 @@ begin
     ppulse_o                                => open
   );
 
-  rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and fifo_fc_all_trans_done = '1' else '0';
+  rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and 
+			fifo_fc_all_trans_done_lvl = '1' else '0';
+
+  -- Delay Reset signal to Level logic. This will give a few cycles
+  -- for all modules to safely reset
+  cmp_sync_rst_trans_ext : gc_sync_ffs
+  port map(
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
+    data_i                                  => rst_trans_ext_sync,
+    synced_o                                => rst_trans_ext_sync_d,
+    npulse_o                                => open,
+    ppulse_o                                => open
+  );
 
   cmp_rst_trans_gc_pulse_synchronizer : gc_pulse_synchronizer
   port map (
@@ -466,6 +481,24 @@ begin
   fifo_fc_all_trans_done <= shots_sent_all; -- sync to ext_clk_i
 
   fifo_fc_all_trans_done_p_o <= fifo_fc_all_trans_done_sync;
+
+  -------------------------------------------------------------------------
+  -- Pulse to level conversion
+  -------------------------------------------------------------------------
+  p_conv_fifo_fc_all_trans_done : process (ext_clk_i)
+  begin
+  if rising_edge(ext_clk_i) then
+    if ext_rst_n_i = '0' then
+      fifo_fc_all_trans_done_lvl <= '0';
+    else
+      if rst_trans_ext_sync_d = '1' then
+        fifo_fc_all_trans_done_lvl <= '0';
+      elsif fifo_fc_all_trans_done = '1' then
+        fifo_fc_all_trans_done_lvl <= '1';
+      end if;
+    end if;
+  end if;
+  end process;
 
   ------------------------------------------------------------------------------
   -- Output Protocol Logic
