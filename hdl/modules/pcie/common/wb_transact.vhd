@@ -43,6 +43,7 @@ entity wb_transact is
     rdc_v    : in std_logic;
     rdc_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     rdc_full : out std_logic;
+    rd_tout  : in std_logic;
     -- Read data port
     rd_ren   : in std_logic;
     rd_empty : out std_logic;
@@ -113,13 +114,17 @@ architecture Behavioral of wb_transact is
   signal wb_stb    : std_logic;
   signal wb_cyc    : std_logic;
 
-  signal rst_i   : std_logic;
-  signal rst_n_i : std_logic;
+  signal rst_i      : std_logic;
+  signal rst_rd_i   : std_logic;
+  signal rst_n_i    : std_logic;
+  signal rst_rd_n_i : std_logic;
 
 begin
 
   rst_i   <= wb_rst or rst;
+  rst_rd_i <= rst_i or rd_tout;
   rst_n_i <= not rst_i;
+  rst_rd_n_i <= not rst_rd_i;
 
   --Wishbone interface FSM
   WB_fsm :
@@ -184,7 +189,11 @@ begin
             wb_cyc <= '1';
             wb_sel <= (others => '1');
             wb_we  <= '0';
-            if wb_stb = '1' and ack_i = '1' then
+            if rd_tout = '1' then
+              wb_stb   <= '0';
+              wb_cyc   <= '0';
+              wb_state <= st_IDLE;
+            elsif wb_stb = '1' and ack_i = '1' then
               rpiped_din <= dat_i;
               rpiped_we  <= '1';
               wb_addr    <= wb_addr + 1;
@@ -363,7 +372,7 @@ begin
         g_with_wr_count => false,
         g_almost_full_threshold => 30)
       port map(
-        rst_n_i => rst_n_i,
+        rst_n_i => rst_rd_n_i,
 
         clk_wr_i          => user_clk,
         d_i               => rpipec_din,
@@ -401,7 +410,7 @@ begin
         g_with_wr_count => false,
         g_almost_full_threshold => 124)
       port map(
-        rst_n_i => rst_n_i,
+        rst_n_i => rst_rd_n_i,
 
         clk_wr_i          => wb_clk,
         d_i               => rpiped_din,

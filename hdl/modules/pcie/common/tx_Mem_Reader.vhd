@@ -184,7 +184,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal TimeOut_Counter : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal TO_Cnt_Rst      : std_logic;
   signal Tx_TimeOut_i    : std_logic;
-  signal Tx_wb_TimeOut_i : std_logic;
+  signal Tx_wb_TimeOut_i : std_logic := '0';
 
 
 begin

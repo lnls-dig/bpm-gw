@@ -50,6 +50,7 @@ entity tlpControl is
     wb_rdc_v    : out std_logic;
     wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     wb_rdc_full : in std_logic;
+    wb_timeout  : out std_logic;
 
     -- Wisbbone Buffer read port
     wb_FIFO_re    : out std_logic;
@@ -710,6 +711,7 @@ begin
   DDR_wr_din   <= DDR_wr_din_i;
 
   wb_FIFO_re <= wb_FIFO_RdEn_i;
+  wb_timeout <= Tx_wb_TimeOut;
 
   -- -------------------------------------------------------
   -- Delay DDR write port A for 2 cycles
