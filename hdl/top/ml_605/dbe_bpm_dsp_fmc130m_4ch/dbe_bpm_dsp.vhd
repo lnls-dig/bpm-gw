@@ -2076,6 +2076,8 @@ begin
     -- Output to RFFE board
     -----------------------------
     clk_swap_o                              => clk_rffe_swap,
+    flag1_o                                 => flag1_int,
+    flag2_o                                 => flag2_int,
     ctrl1_o                                 => open,
     ctrl2_o                                 => open,
 
@@ -2176,8 +2178,8 @@ begin
   --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
 
   --flag1_int                                 <= fs_clk;
-  flag1_int                                 <= dsp_clk_ce_35;     -- FIXME!!
-  flag2_int                                 <= dsp_clk_ce_70;     -- FIXME!!
+  --flag1_int                                 <= dsp_clk_ce_35;     -- FIXME!!
+  --flag2_int                                 <= dsp_clk_ce_70;     -- FIXME!!
 
   flag1_o                                   <= flag1_int;
   flag2_o                                   <= flag2_int;
