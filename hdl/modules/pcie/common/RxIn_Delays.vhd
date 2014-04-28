@@ -226,7 +226,6 @@ begin
   m_axis_rx_tready_dly   <= m_axis_rx_tready_r1;  -- m_axis_rx_tready_r1    ;
   m_axis_rx_tbar_hit_dly <= m_axis_rx_tbar_hit_r1;
 
-
   -- TLP resolution
   MRd_Type  <= MRd_Type_i;
   MWr_Type  <= MWr_Type_i;
@@ -794,8 +793,9 @@ begin
           end if;
 
         when TK_Body =>
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0' -- raising edge
-            and m_axis_rx_tready_i = '1' then
+          --for TLP body we can't wait for rising edge because there is a chance that TLP EOF
+          --will hit when *_tready_i = 0 which will cause deadlock
+          if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt        <= TK_Idle;
             m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
                                       or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));

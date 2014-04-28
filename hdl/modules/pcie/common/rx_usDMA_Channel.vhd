@@ -32,11 +32,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity usDMA_Transact is
   port (
@@ -103,12 +99,11 @@ end entity usDMA_Transact;
 architecture Behavioral of usDMA_Transact is
 
   -- Upstream DMA channel
-  signal Local_Reset_i : std_logic;
-  signal DMA_Status_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-  signal cfg_MPS : std_logic_vector(C_CFG_MPS_BIT_TOP-C_CFG_MPS_BIT_BOT downto 0);
-
-  signal usDMA_MWr_Tag : std_logic_vector(C_TAG_WIDTH-1 downto 0);
+  signal Local_Reset_i   : std_logic;
+  signal Local_Reset_n_i : std_logic;
+  signal DMA_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal cfg_MPS         : std_logic_vector(C_CFG_MPS_BIT_TOP-C_CFG_MPS_BIT_BOT downto 0);
+  signal usDMA_MWr_Tag   : std_logic_vector(C_TAG_WIDTH-1 downto 0);
 
   -- DMA calculation
   component DMA_Calculate
@@ -283,26 +278,6 @@ architecture Behavioral of usDMA_Transact is
   signal usDMA_Busy_i    : std_logic;
   signal usDMA_Done_i    : std_logic;
 
-
-  -- Built-in single-port fifo as downstream DMA channel buffer
-  --   128-bit wide, for 64-bit address
-  component sfifo_15x128
-    port (
-      clk        : in  std_logic;
-      rst        : in  std_logic;
-      prog_full  : out std_logic;
---          wr_clk             : IN  std_logic;
-      wr_en      : in  std_logic;
-      din        : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      full       : out std_logic;
---          rd_clk             : IN  std_logic;
-      rd_en      : in  std_logic;
-      dout       : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      prog_empty : out std_logic;
-      empty      : out std_logic
-      );
-  end component;
-
   -- Signal with DMA_upstream channel abstract buffer
   signal usTlp_din       : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
   signal usTlp_Qout_wire : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
@@ -356,6 +331,7 @@ begin
 
   -- positive local reset
   Local_Reset_i <= usDMA_Channel_Rst;
+  local_reset_n_i <= not local_reset_i;
 
   -- Max Payload Size bits
   cfg_MPS <= cfg_dcommand(C_CFG_MPS_BIT_TOP downto C_CFG_MPS_BIT_BOT);
@@ -539,20 +515,35 @@ begin
   -- -------------------------------------------------
   -- us MWr/MRd TLP Buffer
   -- -------------------------------------------------
+  -- Built-in single-port fifo as downstream DMA channel buffer
+  --   128-bit wide, for 64-bit address
+
   US_TLP_Buffer :
-    sfifo_15x128
+    generic_sync_fifo
+      generic map (
+        g_data_width => 128,
+        g_size => 16,
+        g_show_ahead => false,
+        g_with_empty => true,
+        g_with_full => false,
+        g_with_almost_empty => true,
+        g_with_almost_full => true,
+        g_with_count => false,
+        g_almost_empty_threshold => 3,
+        g_almost_full_threshold => 13)
       port map (
-        clk        => user_clk,
-        rst        => Local_Reset_i,
-        prog_full  => usTlp_prog_Full ,
-        wr_en      => usTlp_we,
-        din        => usTlp_din,
-        full       => open,
-        rd_en      => usTlp_RE_i,
-        dout       => usTlp_Qout_wire,
-        prog_empty => usTlp_pempty,
-        empty      => usTlp_empty_i
-        );
+        rst_n_i => Local_Reset_n_i,
+        clk_i   => user_clk,
+
+        d_i            => usTlp_din,
+        we_i           => usTlp_we,
+        q_o            => usTlp_Qout_wire,
+        rd_i           => usTlp_RE_i,
+        empty_o        => usTlp_empty_i,
+        full_o         => open,
+        almost_empty_o => usTlp_pempty,
+        almost_full_o  => usTlp_prog_Full,
+        count_o        => open);
 
 -- ---------------------------------------------
 --  Synchronous delay

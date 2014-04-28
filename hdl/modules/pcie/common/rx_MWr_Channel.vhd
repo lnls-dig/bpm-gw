@@ -72,7 +72,6 @@ entity rx_MWr_Transact is
     DDR_wr_sof   : out std_logic;
     DDR_wr_eof   : out std_logic;
     DDR_wr_v     : out std_logic;
-    DDR_wr_FA    : out std_logic;
     DDR_wr_Shift : out std_logic;
     DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
     DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -262,22 +261,6 @@ begin
         else
           RxMWrTrn_NextState <= ST_MWr_IDLE;
         end if;
-
-
---        when ST_MWr3_HEAD1 =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr3_HEAD1;
---           else
---              RxMWrTrn_NextState <= ST_MWr3_HEAD2;
---           end if;
-
---        when ST_MWr4_HEAD1 =>
---           if trn_rx_throttle = '1' then
---              RxMWrTrn_NextState <= ST_MWr4_HEAD1;
---           else
---              RxMWrTrn_NextState <= ST_MWr4_HEAD2;
---           end if;
-
 
       when ST_MWr3_HEAD2 =>
         if trn_rx_throttle = '1' then
@@ -469,7 +452,6 @@ begin
             Regs_WrDin_i  <= (others => '0');
           end if;
 
-
         when ST_MWr_DATA_THROTTLE =>
           if REGS_Space_Sel = '1' then
             Regs_WrEn_i <= not trn_rx_throttle;  -- '1';
@@ -486,7 +468,6 @@ begin
             Regs_WrAddr_i <= (others => '1');
             Regs_WrDin_i  <= (others => '0');
           end if;
-
 
         when others =>
           Regs_WrEn_i   <= '0';

@@ -23,10 +23,11 @@ use ieee.numeric_std.all;
 
 library work;
 use work.abb64Package.all;
+use work.genram_pkg.all;
 
 entity wb_transact is
   generic (
-    C_ASYNFIFO_WIDTH : integer := 72
+    C_ASYNFIFO_WIDTH : integer := 66
     );
   port (
     -- PCIE user clk
@@ -42,6 +43,7 @@ entity wb_transact is
     rdc_v    : in std_logic;
     rdc_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     rdc_full : out std_logic;
+    rd_tout  : in std_logic;
     -- Read data port
     rd_ren   : in std_logic;
     rd_empty : out std_logic;
@@ -66,21 +68,6 @@ end entity wb_transact;
 
 
 architecture Behavioral of wb_transact is
-
-  component prime_FIFO_plain
-    port (
-      wr_clk    : in  std_logic;
-      wr_en     : in  std_logic;
-      din       : in  std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
-      full      : out std_logic;
-      prog_full : out std_logic;
-      rd_clk    : in  std_logic;
-      rd_en     : in  std_logic;
-      dout      : out std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
-      empty     : out std_logic;
-      rst       : in  std_logic
-      );
-  end component;
 
   type wb_states is (st_RESET,
                       st_IDLE,
@@ -112,8 +99,8 @@ architecture Behavioral of wb_transact is
   signal rpipec_full  : std_logic;
   signal rpipec_afull : std_logic;
 
-  signal rpiped_din   : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0) := (others => '0');
-  signal rpiped_qout  : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
+  signal rpiped_din   : std_logic_vector(63 downto 0) := (others => '0');
+  signal rpiped_qout  : std_logic_vector(63 downto 0);
   signal rpiped_full  : std_logic;
   signal rpiped_we    : std_logic;
   signal rpiped_afull : std_logic;
@@ -127,11 +114,17 @@ architecture Behavioral of wb_transact is
   signal wb_stb    : std_logic;
   signal wb_cyc    : std_logic;
 
-  signal rst_i : std_logic;
+  signal rst_i      : std_logic;
+  signal rst_rd_i   : std_logic;
+  signal rst_n_i    : std_logic;
+  signal rst_rd_n_i : std_logic;
 
 begin
 
-  rst_i <= wb_rst or rst;
+  rst_i   <= wb_rst or rst;
+  rst_rd_i <= rst_i or rd_tout;
+  rst_n_i <= not rst_i;
+  rst_rd_n_i <= not rst_rd_i;
 
   --Wishbone interface FSM
   WB_fsm :
@@ -196,11 +189,15 @@ begin
             wb_cyc <= '1';
             wb_sel <= (others => '1');
             wb_we  <= '0';
-            if wb_stb = '1' and ack_i = '1' then
-              rpiped_din(dat_i'range) <= dat_i;
-              rpiped_we               <= '1';
-              wb_addr                 <= wb_addr + 1;
-              wb_rd_cnt               <= wb_rd_cnt - 1;
+            if rd_tout = '1' then
+              wb_stb   <= '0';
+              wb_cyc   <= '0';
+              wb_state <= st_IDLE;
+            elsif wb_stb = '1' and ack_i = '1' then
+              rpiped_din <= dat_i;
+              rpiped_we  <= '1';
+              wb_addr    <= wb_addr + 1;
+              wb_rd_cnt  <= wb_rd_cnt - 1;
               if wb_rd_cnt <= 1 then
                 wb_stb   <= '0';
                 wb_cyc   <= '0';
@@ -295,21 +292,42 @@ begin
   wpipe_rd_en <= wpipe_ren and not(wpipe_valid);
 
   wpipe_fifo :
-    prime_FIFO_plain
+    generic_async_fifo
+      generic map (
+        g_data_width => C_ASYNFIFO_WIDTH,
+        g_size => 128,
+        g_show_ahead => false,
+        g_with_rd_empty => true,
+        g_with_rd_full => false,
+        g_with_rd_almost_empty => false,
+        g_with_rd_almost_full => false,
+        g_with_rd_count => false,
+        g_with_wr_empty => false,
+        g_with_wr_full => true,
+        g_with_wr_almost_empty => false,
+        g_with_wr_almost_full => true,
+        g_with_wr_count => false,
+        g_almost_full_threshold => 120)
       port map(
-        wr_clk    => user_clk,
-        wr_en     => wpipe_wEn,
-        din       => wpipe_Din,
-        prog_full => wpipe_aFull,
-        full      => wpipe_Full,
+        rst_n_i => rst_n_i,
 
-        rd_clk => wb_clk,
-        rd_en  => wpipe_rd_en,
-        dout   => wpipe_qout,
-        empty  => wpipe_empty,
+        clk_wr_i          => user_clk,
+        d_i               => wpipe_Din,
+        we_i              => wpipe_wEn,
+        wr_empty_o        => open,
+        wr_full_o         => wpipe_Full,
+        wr_almost_empty_o => open,
+        wr_almost_full_o  => wpipe_aFull,
+        wr_count_o        => open,
 
-        rst => rst_i
-        );
+        clk_rd_i          => wb_clk,
+        q_o               => wpipe_qout,
+        rd_i              => wpipe_rd_en,
+        rd_empty_o        => wpipe_empty,
+        rd_full_o         => open,
+        rd_almost_empty_o => open,
+        rd_almost_full_o  => open,
+        rd_count_o        => open);
 
   rpipe_syn :
   process (user_clk)
@@ -337,39 +355,81 @@ begin
   rpipec_wen <= rpipec_din(C_DBUS_WIDTH);
 
   rpipec_fifo :
-    prime_FIFO_plain
+    generic_async_fifo
+      generic map (
+        g_data_width => C_ASYNFIFO_WIDTH,
+        g_size => 32,
+        g_show_ahead => false,
+        g_with_rd_empty => true,
+        g_with_rd_full => false,
+        g_with_rd_almost_empty => false,
+        g_with_rd_almost_full => false,
+        g_with_rd_count => false,
+        g_with_wr_empty => false,
+        g_with_wr_full => true,
+        g_with_wr_almost_empty => false,
+        g_with_wr_almost_full => true,
+        g_with_wr_count => false,
+        g_almost_full_threshold => 30)
       port map(
-        wr_clk    => user_clk,
-        wr_en     => rpipec_wEn,
-        din       => rpipec_Din,
-        prog_full => rpipec_aFull,
-        full      => rpipec_Full,
+        rst_n_i => rst_rd_n_i,
 
-        rd_clk => wb_clk,
-        rd_en  => rpipec_ren,
-        dout   => rpipec_qout,
-        empty  => rpipec_empty,
+        clk_wr_i          => user_clk,
+        d_i               => rpipec_din,
+        we_i              => rpipec_wen,
+        wr_empty_o        => open,
+        wr_full_o         => rpipec_full,
+        wr_almost_empty_o => open,
+        wr_almost_full_o  => rpipec_afull,
+        wr_count_o        => open,
 
-        rst => rst_i
-        );
+        clk_rd_i          => wb_clk,
+        q_o               => rpipec_qout,
+        rd_i              => rpipec_ren,
+        rd_empty_o        => rpipec_empty,
+        rd_full_o         => open,
+        rd_almost_empty_o => open,
+        rd_almost_full_o  => open,
+        rd_count_o        => open);
 
   rpiped_fifo :
-    prime_FIFO_plain
+    generic_async_fifo
+      generic map (
+        g_data_width => 64,
+        g_size => 128,
+        g_show_ahead => false,
+        g_with_rd_empty => true,
+        g_with_rd_full => false,
+        g_with_rd_almost_empty => false,
+        g_with_rd_almost_full => false,
+        g_with_rd_count => false,
+        g_with_wr_empty => false,
+        g_with_wr_full => true,
+        g_with_wr_almost_empty => false,
+        g_with_wr_almost_full => true,
+        g_with_wr_count => false,
+        g_almost_full_threshold => 124)
       port map(
-        wr_clk    => wb_clk,
-        wr_en     => rpiped_we,
-        din       => rpiped_Din,
-        prog_full => rpiped_aFull,
-        full      => rpiped_Full,
+        rst_n_i => rst_rd_n_i,
 
-        rd_clk => user_clk,
-        rd_en  => rd_ren,
-        dout   => rpiped_qout,
-        empty  => rd_empty,
+        clk_wr_i          => wb_clk,
+        d_i               => rpiped_din,
+        we_i              => rpiped_we,
+        wr_empty_o        => open,
+        wr_full_o         => rpiped_full,
+        wr_almost_empty_o => open,
+        wr_almost_full_o  => rpiped_afull,
+        wr_count_o        => open,
 
-        rst => rst_i
-        );
+        clk_rd_i          => user_clk,
+        q_o               => rpiped_qout,
+        rd_i              => rd_ren,
+        rd_empty_o        => rd_empty,
+        rd_full_o         => open,
+        rd_almost_empty_o => open,
+        rd_almost_full_o  => open,
+        rd_count_o        => open);
 
-  rd_dout <= rpiped_qout(rd_dout'range);
+  rd_dout <= rpiped_qout;
 
 end architecture Behavioral;

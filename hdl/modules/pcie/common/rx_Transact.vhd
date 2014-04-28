@@ -33,12 +33,6 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 library work;
 use work.abb64Package.all;
 
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity rx_Transact is
   port (
     -- Common ports

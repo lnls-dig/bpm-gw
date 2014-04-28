@@ -487,9 +487,6 @@ architecture Behavioral of bpm_pcie_ml605 is
   -- Wishbone interface module
   -- -----------------------------------------------------------------------
   component wb_transact is
-    generic (
-      C_ASYNFIFO_WIDTH : integer := 72
-      );
     port (
       -- PCIE user clk
       user_clk : in std_logic;
@@ -504,6 +501,7 @@ architecture Behavioral of bpm_pcie_ml605 is
       rdc_v    : in std_logic;
       rdc_din  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       rdc_full : out std_logic;
+      rd_tout  : in std_logic;
       -- Read data port
       rd_ren   : in std_logic;
       rd_empty : out std_logic;
@@ -537,6 +535,7 @@ architecture Behavioral of bpm_pcie_ml605 is
   signal wb_rdc_v      : std_logic;
   signal wb_rdc_din    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wb_rdc_full   : std_logic;
+  signal wb_timeout    : std_logic;
   signal wb_rdd_ren    : std_logic;
   signal wb_rdd_dout   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wb_rdd_pempty : std_logic;
@@ -570,6 +569,7 @@ architecture Behavioral of bpm_pcie_ml605 is
       wb_rdc_v    : out std_logic;
       wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
       wb_rdc_full : in std_logic;
+      wb_timeout  : out std_logic;
 
       -- Wisbbone Buffer read port
       wb_FIFO_re    : out std_logic;
@@ -1021,6 +1021,7 @@ begin
         wb_rdc_v    => wb_rdc_v, --out std_logic;
         wb_rdc_din  => wb_rdc_din, --out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         wb_rdc_full => wb_rdc_full, --in std_logic;
+        wb_timeout  => wb_timeout,
 
         wb_FIFO_Rst => wb_fifo_rst ,     --  OUT std_logic;
 
@@ -1224,6 +1225,7 @@ begin
         rdc_v    => wb_rdc_v, --in std_logic;
         rdc_din  => wb_rdc_din, --in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
         rdc_full => wb_rdc_full,--out std_logic;
+        rd_tout  => wb_timeout,
         -- Read data port
         rd_ren   => wb_rdd_ren, --in std_logic;
         rd_empty => wb_rdd_empty, --out std_logic;

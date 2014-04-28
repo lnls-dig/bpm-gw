@@ -26,11 +26,6 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 library work;
 use work.abb64Package.all;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity tx_Mem_Reader is
   port (
     -- DDR Read Interface
@@ -189,7 +184,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal TimeOut_Counter : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal TO_Cnt_Rst      : std_logic;
   signal Tx_TimeOut_i    : std_logic;
-  signal Tx_wb_TimeOut_i : std_logic;
+  signal Tx_wb_TimeOut_i : std_logic := '0';
 
 
 begin
@@ -770,23 +765,7 @@ begin
     end if;
   end process;
 
-
---S SIMONE BEGIN: Mi trovo in lettura dalla FIFO MSB<-->LSB Invertiti...  Provo a togliere lo SWAP!!!
-  --wb_FIFO_qout_swapped <= wb_FIFO_qout;
---   wb_FIFO_qout_swapped  <= wb_FIFO_qout(C_DBUS_WIDTH/2+7  downto C_DBUS_WIDTH/2)
---                          & wb_FIFO_qout(C_DBUS_WIDTH/2+15 downto C_DBUS_WIDTH/2+8)
---                          & wb_FIFO_qout(C_DBUS_WIDTH/2+23 downto C_DBUS_WIDTH/2+16)
---                          & wb_FIFO_qout(C_DBUS_WIDTH/2+31 downto C_DBUS_WIDTH/2+24)
---
---                          & wb_FIFO_qout(7  downto 0)
---                          & wb_FIFO_qout(15 downto 8)
---                          & wb_FIFO_qout(23 downto 16)
---                          & wb_FIFO_qout(31 downto 24)
---                          ;
---S SIMONE END:
-
   wb_FIFO_qout_swapped  <= wb_FIFO_qout(C_DBUS_WIDTH/2-1 downto 0) & wb_FIFO_qout(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2);
-
 
 -----------------------------------------------------
 -- Synchronous Delay: wb_FIFO_qout

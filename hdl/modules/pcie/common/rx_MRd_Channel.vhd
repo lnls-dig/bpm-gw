@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Company:
--- Engineer:
+-- Engineer: abyszuk
 --
 -- Design Name:
 -- Module Name:    rx_MRd_Transact - Behavioral
@@ -10,6 +10,8 @@
 -- Description:
 --
 -- Dependencies:
+--
+-- Revision 1.30 - Ported to AXI and OHWR general-cores components 12.2013
 --
 -- Revision 1.20 - Literal assignments removed.   30.07.2007
 --
@@ -32,11 +34,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity rx_MRd_Transact is
   port (
@@ -100,7 +98,8 @@ architecture Behavioral of rx_MRd_Transact is
   signal Encoded_BAR_Index : std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
 
   -- Reset
-  signal local_Reset : std_logic;
+  signal local_Reset   : std_logic;
+  signal local_Reset_n : std_logic;
 
   -- Output signals
 --  signal  m_axis_rx_tready_i       : std_logic;
@@ -114,24 +113,6 @@ architecture Behavioral of rx_MRd_Transact is
   signal MRd_Has_4DW_Header   : std_logic;
   signal Tlp_is_Zero_Length   : std_logic;
   signal Illegal_Leng_on_FIFO : std_logic;
-
-  -- Built-in single-port fifo as MRd channel buffer
-  component sfifo_15x128
-    port (
-      clk       : in  std_logic;
-      rst       : in  std_logic;
-      prog_full : out std_logic;
---          wr_clk               : IN  std_logic;
-      wr_en     : in  std_logic;
-      din       : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      full      : out std_logic;
---          rd_clk               : IN  std_logic;
-      rd_en     : in  std_logic;
-      dout      : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      empty     : out std_logic
-      );
-  end component;
-
 
   -- Signal with MRd channel FIFO
   signal pioCplD_din          : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
@@ -164,8 +145,8 @@ architecture Behavioral of rx_MRd_Transact is
 begin
 
   -- positive reset and local
-  local_Reset <= user_reset or Channel_Rst;
-
+  local_Reset   <= user_reset or Channel_Rst;
+  local_reset_n <= not local_reset;
 
   -- MRd channel buffer control
 --   pioCplD_RE_i      <= pioCplD_RE;
@@ -508,20 +489,30 @@ begin
   -- MRd TLP Buffer
   -- -------------------------------------------------
   pioCplD_Buffer :
-    sfifo_15x128
+    generic_sync_fifo
+      generic map (
+        g_data_width => 128,
+        g_size => 16,
+        g_show_ahead => false,
+        g_with_empty => true,
+        g_with_full => false,
+        g_with_almost_empty => false,
+        g_with_almost_full => true,
+        g_with_count => false,
+        g_almost_full_threshold => 12)
       port map (
-        clk       => user_clk,
-        rst       => local_Reset,
-        prog_full => pioCplD_prog_Full,
---         wr_clk        => user_clk,
-        wr_en     => pioCplD_we,
-        din       => pioCplD_din,
-        full      => pioCplD_full,
---         rd_clk        => user_clk,
-        rd_en     => pioCplD_RE_i,
-        dout      => pioCplD_Qout_wire,
-        empty     => pioCplD_empty_i
-        );
+        rst_n_i => local_Reset_n,
+        clk_i   => user_clk,
+
+        d_i            => pioCplD_din,
+        we_i           => pioCplD_we,
+        q_o            => pioCplD_Qout_wire,
+        rd_i           => pioCplD_RE_i,
+        empty_o        => pioCplD_empty_i,
+        full_o         => pioCplD_full,
+        almost_empty_o => open,
+        almost_full_o  => pioCplD_prog_Full,
+        count_o        => open);
 
 -- ---------------------------------------------
 --  Request for arbitration
