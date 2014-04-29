@@ -1,7 +1,11 @@
 files = ["bpm_pcie_a7.vhd",
         "bpm_pcie_k7.vhd",
         "bpm_pcie_ml605.vhd",
-        "bpm_pcie_pkg.vhd"]
+        "bpm_pcie_pkg.vhd",
+        "bpm_pcie_ml605_pkg.vhd",
+        "bpm_pcie_a7_pkg.vhd",
+        "bpm_pcie_k7_pkg.vhd"
+        ]
 
 modules = {"local" : ["common"],
         "git" : ["https://github.com/lerwys/general-cores.git"]}
