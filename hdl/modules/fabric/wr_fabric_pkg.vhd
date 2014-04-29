@@ -12,6 +12,8 @@ package wr_fabric_pkg is
   constant c_WRF_OOB_TYPE_RX : std_logic_vector(3 downto 0) := "0000";
   constant c_WRF_OOB_TYPE_TX : std_logic_vector(3 downto 0) := "0001";
 
+  type t_wrf_mux_class is array (natural range <>) of std_logic_vector(7 downto 0);
+
   type t_wrf_status_reg is record
     is_hp       : std_logic;
     has_smac    : std_logic;
@@ -63,6 +65,31 @@ package wr_fabric_pkg is
     ('0', '0', '0', '0');
   constant c_dummy_snk_in : t_wrf_sink_in :=
     ("XX", "XXXXXXXXXXXXXXXX", '0', '0', '0', "XX");
+
+
+  -----------------------------------------------------------------------------
+  -- WRF MUX
+  -----------------------------------------------------------------------------
+  component xwrf_mux is
+    generic(
+      g_muxed_ports	:	integer := 2);
+    port(
+      clk_sys_i	: in std_logic;
+      rst_n_i		: in std_logic;
+      --ENDPOINT
+      ep_src_o	:	out t_wrf_source_out;
+      ep_src_i	: in  t_wrf_source_in;
+      ep_snk_o	: out t_wrf_sink_out;
+      ep_snk_i  : in  t_wrf_sink_in;
+      --Muxed ports
+      mux_src_o : out t_wrf_source_out_array(g_muxed_ports-1 downto 0);
+      mux_src_i : in  t_wrf_source_in_array(g_muxed_ports-1 downto 0);
+      mux_snk_o : out t_wrf_sink_out_array(g_muxed_ports-1 downto 0);
+      mux_snk_i : in  t_wrf_sink_in_array(g_muxed_ports-1 downto 0);
+      --
+      mux_class_i : in t_wrf_mux_class(g_muxed_ports-1 downto 0)
+    );
+  end component;
 
 end wr_fabric_pkg;
 
