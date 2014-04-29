@@ -316,10 +316,6 @@ architecture rtl of dbe_bpm_dsp is
   constant c_clk_sys_id                     : natural := 0; -- CLK_SYS and CLK_200 MHz
   constant c_clk_200mhz_id                  : natural := 1; -- CLK_SYS and CLK_200 MHz
 
-  -- DSP constants
-  --constant c_dsp_ref_num_bits               : natural := 24;
-  --constant c_dsp_pos_num_bits               : natural := 26;
-
   constant c_xwb_etherbone_sdb : t_sdb_device := (
     abi_class     => x"0000", -- undocumented device
     abi_ver_major => x"01",
@@ -579,28 +575,6 @@ architecture rtl of dbe_bpm_dsp is
   signal adc_dly_debug_int                  : t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
 
   -- Uncross signals
-  signal un_cross_gain_aa                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_bb                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_cc                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_dd                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_ac                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_bd                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_ca                   : std_logic_vector(15 downto 0);
-  signal un_cross_gain_db                   : std_logic_vector(15 downto 0);
-
-  signal un_cross_delay_1                   : std_logic_vector(15 downto 0);
-  signal un_cross_delay_2                   : std_logic_vector(15 downto 0);
-
-  signal adc_ch0_data_uncross               : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal adc_ch1_data_uncross               : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal adc_ch2_data_uncross               : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal adc_ch3_data_uncross               : std_logic_vector(c_num_adc_bits-1 downto 0);
-
-  signal un_cross_mode_1                    : std_logic_vector(1 downto 0);
-  signal un_cross_mode_2                    : std_logic_vector(1 downto 0);
-
-  signal un_cross_div_f                     : std_logic_vector(15 downto 0);
-
   signal flag1_int                          : std_logic;
   signal flag2_int                          : std_logic;
 
@@ -1840,69 +1814,10 @@ begin
   adc_ch2_data                              <= synth_adc2 when adc_synth_data_en = '1' else adc_data_ch2;
   adc_ch3_data                              <= synth_adc3 when adc_synth_data_en = '1' else adc_data_ch3;
 
-  ---- Switch testing. This should be inside position calc core!!!!
-  --cmp_un_cross_top : un_cross_top
-  --generic map (
-  --  g_delay_vec_width                       => 16,
-  --  g_swap_div_freq_vec_width               => 16
-  --)
-  --port map (
-  --  -- Commom signals
-  --  clk_i                                   => fs_clk,
-  --  rst_n_i                                 => fs_rstn,
-  --
-  --  -- inv_chs_top core signal
-  --  const_aa_i                              => un_cross_gain_aa,
-  --  const_bb_i                              => un_cross_gain_bb,
-  --  const_cc_i                              => un_cross_gain_cc,
-  --  const_dd_i                              => un_cross_gain_dd,
-  --  const_ac_i                              => un_cross_gain_ac,
-  --  const_bd_i                              => un_cross_gain_bd,
-  --  const_ca_i                              => un_cross_gain_ca,
-  --  const_db_i                              => un_cross_gain_db,
-  --
-  --  delay1_i                                => un_cross_delay_1,
-  --  delay2_i                                => un_cross_delay_2,
-  --
-  --  --flag1_o                                 => flag1_int,
-  --  --flag2_o                                 => flag2_int,
-  --
-  --  -- Input from ADC FMC board
-  --  cha_i                                   => adc_ch0_data,
-  --  chb_i                                   => adc_ch1_data,
-  --  chc_i                                   => adc_ch2_data,
-  --  chd_i                                   => adc_ch3_data,
-  --
-  --  -- Output to data processing level
-  --  cha_o                                   => adc_ch0_data_uncross,
-  --  chb_o                                   => adc_ch1_data_uncross,
-  --  chc_o                                   => adc_ch2_data_uncross,
-  --  chd_o                                   => adc_ch3_data_uncross,
-  --
-  --  -- Swap clock for RFFE
-  --  clk_swap_o                              => clk_rffe_swap,
-  --
-  --  -- swap_cnt_top signal
-  --  mode1_i                                 => un_cross_mode_1,
-  --  mode2_i                                 => un_cross_mode_2,
-  --
-  --  swap_div_f_i                            => un_cross_div_f,
-  --
-  --  -- Output to RFFE board
-  --  ctrl1_o                                 => open,
-  --  ctrl2_o                                 => open
-  --);
-
-  clk_swap_o                                <= clk_rffe_swap;
-  clk_swap2x_o                              <= clk_rffe_swap; -- FIXME!!!!
-  --clk_swap_o                                <= fs_clk; -- FIXME!!!!
-  --clk_swap2x_o                              <= fs_clk2x; -- FIXME!!!!
-
   -- Position calc core is slave 7
   cmp_xwb_position_calc_core : xwb_position_calc_core
   generic map (
     g_interface_mode                        => PIPELINED,
-    --g_address_granularity                   => WORD,
     g_address_granularity                   => BYTE,
     g_with_switching                        => 0
   )
@@ -2092,84 +2007,11 @@ begin
     dbg_adc_ch3_cond_o                      => dbg_adc_ch3_cond
   );
 
-  --dsp_poly35_ch0 <= (others => '0');
-  --dsp_poly35_ch2 <= (others => '0');
-  --
-  --dsp_monit_amp_ch0 <= (others => '0');
-  --dsp_monit_amp_ch1 <= (others => '0');
-  --dsp_monit_amp_ch2 <= (others => '0');
-  --dsp_monit_amp_ch3 <= (others => '0');
-
-  -- Signals for the DSP chain
-  --dsp_del_sig_div_thres                     <= "00000000000000001000000000"; -- aprox 1.22e-4 FIX26_22
-
-  ---- register DSP parameters
-  --p_register_in_dsp_param : process(fs_clk2x)
-  --begin
-  --  if rising_edge(fs_clk2x) then
-  --    if fs_rstn = '0' then
-  --      dsp_del_sig_div_thres  <= (others => '0');
-  --      dsp_kx                 <= (others => '0');
-  --      dsp_ky                 <= (others => '0');
-  --      dsp_ksum               <= (others => '0');
-  --    else
-  --      dsp_del_sig_div_thres  <=  dsp_del_sig_div_thres_in;
-  --      dsp_kx                 <=  dsp_kx_in;
-  --      dsp_ky                 <=  dsp_ky_in;
-  --      dsp_ksum               <=  dsp_ksum_in;
-  --    end if;
-  --  end if;
-  --end process;
-  --
-  ---- Division Threshold selection
-  --with dsp_del_sig_div_thres_sel select
-  --  dsp_del_sig_div_thres_in <= "00000000000000001000000000" when "00", -- aprox 1.2207e-04 FIX26_22
-  --                           "00000000000000000001000000" when "01", -- aprox 1.5259e-05 FIX26_22
-  --                           "00000000000000000000001000" when "10", -- aprox 1.9073e-06 FIX26_22
-  --                           "00000000000000000000000000" when "11", -- 0 FIX26_22
-  --                           "00000000000000001000000000" when others;
-  --
-  ---- Kx selection
-  --with dsp_kx_sel select
-  --  dsp_kx_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
-  --                           "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
-  --                           "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
-  --                           "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
-  --                           "0100110001001011010000000" when others; -- 10000000 UFIX25_0
-  --
-  ---- Ky selection
-  --with dsp_ky_sel select
-  --  dsp_ky_in                <= "0100110001001011010000000" when "00",   -- 10000000 UFIX25_0
-  --                           "0010011000100101101000000" when "01",   -- 5000000 UFIX25_0
-  --                           "0001001100010010110100000" when "10",   -- 2500000 UFIX25_0
-  --                           "1000000000000000000000000" when "11",   -- 33554432 UFIX25_0 for testing bit truncation
-  --                           "0100110001001011010000000" when others; -- 10000000 UFIX25_0
-  --
-  ---- Ksum selection
-  --with dsp_ksum_sel select
-  --  dsp_ksum_in              <= "0111111111111111111111111" when "00",   -- 1.0 FIX25_24
-  --                           "0011111111111111111111111" when "01",   -- 0.5 FIX25_24
-  --                           "0001111111111111111111111" when "10",  -- 0.25 FIX25_24
-  --                           "0000111111111111111111111" when "11",  -- 0.125 FIX25_24
-  --                           "0111111111111111111111111" when others; -- 1.0 FIX25_24
-  --
-  --dsp_kx                                    <= "0100110001001011010000000"; -- 10000000 UFIX25_0
-  --dsp_kx                                    <= "0100000000000000000000000"; -- ??? UFIX25_0
-  --dsp_kx                                    <= "00100110001001011010000000"; -- 10000000 UFIX26_0
-  --dsp_ky                                    <= "100110001001011010000000"; -- 10000000 UFIX24_0
-  --dsp_ky                                    <= "0100000000000000000000000"; -- ??? UFIX25_0
-  --dsp_ky                                    <= "00100110001001011010000000"; -- 10000000 UFIX26_0
-  --dsp_ksum                                  <= "0111111111111111111111111"; -- 1.0 FIX25_24
-  --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
-  --dsp_ksum                                  <= "100000000000000000000000"; -- 1.0 FIX24_23
-  --dsp_ksum                                  <= "10000000000000000000000000"; -- 1.0 FIX26_25
-
-  --flag1_int                                 <= fs_clk;
-  --flag1_int                                 <= dsp_clk_ce_35;     -- FIXME!!
-  --flag2_int                                 <= dsp_clk_ce_70;     -- FIXME!!
-
   flag1_o                                   <= flag1_int;
   flag2_o                                   <= flag2_int;
+  -- There is no clk_swap2x_o, so we just output the same as clk_swap_o
+  clk_swap_o                                <= clk_rffe_swap;
+  clk_swap2x_o                              <= clk_rffe_swap;
 
   -- The board peripherals components is slave 9
   cmp_xwb_dbe_periph : xwb_dbe_periph
@@ -2323,10 +2165,8 @@ begin
   )
   port map
   (
-   -- assign to a better and shorter name
     fs_clk_i                                  => fmc_130m_4ch_clk(c_adc_ref_clk),
     fs_ce_i                                   => '1',
-    -- assign to a better and shorter name
     fs_rst_n_i                                => fmc_130m_4ch_rst_n(c_adc_ref_clk),
 
     sys_clk_i                                 => clk_sys,
@@ -2345,9 +2185,6 @@ begin
     -----------------------------
     -- External Interface
     -----------------------------
-    --data_i                                    => fmc_130m_4ch_data, -- ch4 ch3 ch2 ch1
-    --dvalid_i                                  => fmc_130m_4ch_data_valid(c_adc_ref_clk), -- Change this!!
-    --ext_trig_i                                => '0',
     acq_chan_array_i                         => acq_chan_array,
 
     -----------------------------
@@ -2421,7 +2258,6 @@ begin
   );
 
   --cmp_chipscope_ila_0_adc : chipscope_ila
-  --cmp_chipscope_ila_adc : chipscope_ila_1024_5_port
   cmp_chipscope_ila_adc : chipscope_ila_8192_5_port
   port map (
     CONTROL                                => CONTROL0,
@@ -2443,12 +2279,9 @@ begin
   	                                    <= dbg_cur_address;
 
   -- Mix and BPF data
-
-  --cmp_chipscope_ila_4096_bpf_mix : chipscope_ila_4096  (
   cmp_chipscope_ila_1024_bpf_mix : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL1,
-    --CLK                                    => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA1_0,
     TRIG1                                   => TRIG_ILA1_1,
@@ -2457,7 +2290,7 @@ begin
     TRIG4                                   => TRIG_ILA1_4
   );
 
-  TRIG_ILA1_0(0)                            <= dsp_bpf_valid; -- or dsp_mix_valid
+  TRIG_ILA1_0(0)                            <= dsp_bpf_valid;
   TRIG_ILA1_0(1)                            <= '0';
   TRIG_ILA1_0(2)                            <= '0';
   TRIG_ILA1_0(3)                            <= '0';
@@ -2471,12 +2304,9 @@ begin
   TRIG_ILA1_4(dsp_mix_ch2'left downto 0)    <= dsp_mix_ch2;
 
   --TBT amplitudes data
-
-  --cmp_chipscope_ila_4096_tbt_amp : chipscope_ila_4096  (
   cmp_chipscope_ila_1024_tbt_amp : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL2,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA2_0,
     TRIG1                                   => TRIG_ILA2_1,
@@ -2499,12 +2329,9 @@ begin
   TRIG_ILA2_4(dsp_tbt_amp_ch3'left downto 0) <= dsp_tbt_amp_ch3;
 
   -- TBT position data
-
-  --cmp_chipscope_ila_4096_tbt_pos : chipscope_ila_4096
   cmp_chipscope_ila_1024_tbt_pos : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL3,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA3_0,
     TRIG1                                   => TRIG_ILA3_1,
@@ -2528,12 +2355,9 @@ begin
 
   -- FOFB amplitudes data
 
-  --cmp_chipscope_ila_4096_fofb_amp : chipscope_ila_4096
-  cmp_chipscope_ila_1024_fofb_amp : chipscope_ila_1024 -- TESTING SYNTHESIS TIME!
-  --cmp_chipscope_ila_65536_fofb_amp : chipscope_ila_65536
+  cmp_chipscope_ila_1024_fofb_amp : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL4,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA4_0,
     TRIG1                                   => TRIG_ILA4_1,
@@ -2556,14 +2380,9 @@ begin
   TRIG_ILA4_4(dsp_fofb_amp_ch3'left downto 0)  <= dsp_fofb_amp_ch3;
 
   -- FOFB position data
-
-  --cmp_chipscope_ila_4096_fofb_pos : chipscope_ila_4096
-  --cmp_chipscope_ila_131072_fofb_pos : chipscope_ila_131072
-  --cmp_chipscope_ila_65536_fofb_pos : chipscope_ila_65536
   cmp_chipscope_ila_1024_fofb_pos : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL5,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA5_0,
     TRIG1                                   => TRIG_ILA5_1,
@@ -2586,12 +2405,9 @@ begin
   TRIG_ILA5_4(dsp_pos_sum_fofb'left downto 0)      <= dsp_pos_sum_fofb;
 
   -- Monitoring position amplitude
-
-  --chipscope_ila_4096 cmp_chipscope_ila_4096_monit_amp_i
   cmp_chipscope_ila_1024_monit_amp : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL6,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA6_0,
     TRIG1                                   => TRIG_ILA6_1,
@@ -2619,7 +2435,6 @@ begin
   cmp_chipscope_ila_1024_monit_pos : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL7,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA7_0,
     TRIG1                                   => TRIG_ILA7_1,
@@ -2642,12 +2457,9 @@ begin
   TRIG_ILA7_4(dsp_pos_sum_monit'left downto 0)    <= dsp_pos_sum_monit;
 
   -- Monitoring 1 position data
-
-  --cmp_chipscope_ila_32768_monit_pos_1 : chipscope_ila_32768
   cmp_chipscope_ila_1024_monit_pos_1 : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL8,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA8_0,
     TRIG1                                   => TRIG_ILA8_1,
@@ -2670,12 +2482,9 @@ begin
   TRIG_ILA8_4(dsp_pos_sum_monit_1'left downto 0)   <= dsp_pos_sum_monit_1;
 
   -- TBT Phase data
-
-  --cmp_chipscope_ila_4096_tbt_pha : chipscope_ila_4096
   cmp_chipscope_ila_1024_tbt_pha : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL9,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA9_0,
     TRIG1                                   => TRIG_ILA9_1,
@@ -2698,12 +2507,9 @@ begin
   TRIG_ILA9_4(dsp_tbt_pha_ch3'left downto 0)      <= dsp_tbt_pha_ch3;
 
   -- FOFB Phase data
-
-  --cmp_chipscope_ila_4096_fofb_pha : chipscope_ila_4096
   cmp_chipscope_ila_1024_fofb_pha : chipscope_ila_1024
   port map (
     CONTROL                                 => CONTROL10,
-    --CLK                                     => fs_clk2x,
     CLK                                     => fs_clk,
     TRIG0                                   => TRIG_ILA10_0,
     TRIG1                                   => TRIG_ILA10_1,
@@ -2738,28 +2544,6 @@ begin
   dds_sine_gain_ch3                         <= vio_out(40-1 downto 30);
   adc_synth_data_en                         <= vio_out(40);
 
-  un_cross_gain_aa                          <= vio_out(65 downto 50);
-  un_cross_gain_bb                          <= vio_out(81 downto 66);
-  un_cross_gain_cc                          <= vio_out(97 downto 82);
-  un_cross_gain_dd                          <= vio_out(113 downto 98);
-  un_cross_gain_ac                          <= vio_out(129 downto 114);
-  un_cross_gain_bd                          <= vio_out(145 downto 130);
-  un_cross_gain_ca                          <= vio_out(161 downto 146);
-  un_cross_gain_db                          <= vio_out(177 downto 162);
-
-  un_cross_delay_1                          <= vio_out(193 downto 178);
-  un_cross_delay_2                          <= vio_out(209 downto 194);
-
-  un_cross_mode_1                           <= vio_out(211 downto 210);
-  un_cross_mode_2                           <= vio_out(213 downto 212);
-
-  un_cross_div_f                            <= vio_out(229 downto 214);
-
-  dsp_del_sig_div_thres_sel                 <= vio_out(231 downto 230);
-  dsp_kx_sel                                <= vio_out(233 downto 232);
-  dsp_ky_sel                                <= vio_out(235 downto 234);
-  dsp_ksum_sel                              <= vio_out(237 downto 236);
-
   -- Controllable DDS frequency and phase
   cmp_chipscope_vio_256_dsp_config : chipscope_vio_256
   port map (
@@ -2767,18 +2551,5 @@ begin
     ASYNC_OUT                               => vio_out_dsp_config
   );
 
-  dsp_dds_pinc_ch0                          <= vio_out_dsp_config(29 downto 0);
-  dsp_dds_pinc_ch1                          <= vio_out_dsp_config(59 downto 30);
-  dsp_dds_pinc_ch2                          <= vio_out_dsp_config(89 downto 60);
-  dsp_dds_pinc_ch3                          <= vio_out_dsp_config(119 downto 90);
-  dsp_dds_poff_ch0                          <= vio_out_dsp_config(149 downto 120);
-  dsp_dds_poff_ch1                          <= vio_out_dsp_config(179 downto 150);
-  dsp_dds_poff_ch2                          <= vio_out_dsp_config(209 downto 180);
-  dsp_dds_poff_ch3                          <= vio_out_dsp_config(239 downto 210);
-
-  dsp_dds_config_valid_ch0                  <= vio_out_dsp_config(240);
-  dsp_dds_config_valid_ch1                  <= vio_out_dsp_config(241);
-  dsp_dds_config_valid_ch2                  <= vio_out_dsp_config(242);
-  dsp_dds_config_valid_ch3                  <= vio_out_dsp_config(243);
-
 end ;
+
