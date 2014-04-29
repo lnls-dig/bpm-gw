@@ -48,26 +48,13 @@ use work.genram_pkg.all;
 use work.acq_core_pkg.all;
 -- PCIe Core
 use work.bpm_pcie_pkg.all;
+-- PCIe Core
+use work.bpm_pcie_ml605_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
 
 entity dbe_bpm_dsp is
-generic(
-  -- PCIe Lanes
-  g_pcieLanes                               : integer := 4;
-  -- PCIE Constants. TEMPORARY!
-  constant pcieLanes                        : integer := 4;
-  constant DDR_DQ_WIDTH                     : integer := 64;
-  constant DDR_PAYLOAD_WIDTH                : integer := 256;
-  constant DDR_DQS_WIDTH                    : integer := 8;
-  constant DDR_DM_WIDTH                     : integer := 8;
-  constant DDR_ROW_WIDTH                    : integer := 14;
-  constant DDR_BANK_WIDTH                   : integer := 3;
-  constant DDR_CK_WIDTH                     : integer := 1;
-  constant DDR_CKE_WIDTH                    : integer := 1;
-  constant DDR_ODT_WIDTH                    : integer := 1
-);
 port(
   -----------------------------------------
   -- Clocking pins
@@ -213,27 +200,27 @@ port(
   -----------------------------------------
 
   -- DDR3 memory pins
-  ddr3_dq_b                                 : inout std_logic_vector(DDR_DQ_WIDTH-1 downto 0);
-  ddr3_dqs_p_b                              : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
-  ddr3_dqs_n_b                              : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
-  ddr3_addr_o                               : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
-  ddr3_ba_o                                 : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
+  ddr3_dq_b                                 : inout std_logic_vector(c_ddr_dq_width-1 downto 0);
+  ddr3_dqs_p_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
+  ddr3_dqs_n_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
+  ddr3_addr_o                               : out   std_logic_vector(c_ddr_row_width-1 downto 0);
+  ddr3_ba_o                                 : out   std_logic_vector(c_ddr_bank_width-1 downto 0);
   ddr3_cs_n_o                               : out   std_logic_vector(0 downto 0);
   ddr3_ras_n_o                              : out   std_logic;
   ddr3_cas_n_o                              : out   std_logic;
   ddr3_we_n_o                               : out   std_logic;
   ddr3_reset_n_o                            : out   std_logic;
-  ddr3_ck_p_o                               : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
-  ddr3_ck_n_o                               : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
-  ddr3_cke_o                                : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
-  ddr3_dm_o                                 : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
-  ddr3_odt_o                                : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
+  ddr3_ck_p_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
+  ddr3_ck_n_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
+  ddr3_cke_o                                : out   std_logic_vector(c_ddr_cke_width-1 downto 0);
+  ddr3_dm_o                                 : out   std_logic_vector(c_ddr_dm_width-1 downto 0);
+  ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
 
   -- PCIe transceivers
-  pci_exp_rxp_i                             : in  std_logic_vector(g_pcieLanes - 1 downto 0);
-  pci_exp_rxn_i                             : in  std_logic_vector(g_pcieLanes - 1 downto 0);
-  pci_exp_txp_o                             : out std_logic_vector(g_pcieLanes - 1 downto 0);
-  pci_exp_txn_o                             : out std_logic_vector(g_pcieLanes - 1 downto 0);
+  pci_exp_rxp_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
+  pci_exp_rxn_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
+  pci_exp_txp_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
+  pci_exp_txn_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
 
   -- PCI clock and reset signals
   pcie_rst_n_i                              : in std_logic;
@@ -275,7 +262,7 @@ architecture rtl of dbe_bpm_dsp is
   -- TEMPORARY! DON'T TOUCH!
   --constant c_acq_data_width                 : natural := 64;
   constant c_acq_addr_width                 : natural := 28;
-  constant c_acq_ddr_payload_width          : natural := DDR_PAYLOAD_WIDTH; -- DDR3 UI (256 bits)
+  constant c_acq_ddr_payload_width          : natural := c_ddr_payload_width; -- DDR3 UI (256 bits)
   constant c_acq_ddr_addr_width             : natural := 28;
   constant c_acq_ddr_addr_res_width         : natural := 32;
   constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_acq_ddr_addr_width;
@@ -448,11 +435,11 @@ architecture rtl of dbe_bpm_dsp is
   signal dbg_app_addr                       : std_logic_vector(31 downto 0);
   signal dbg_app_cmd                        : std_logic_vector(2 downto 0);
   signal dbg_app_en                         : std_logic;
-  signal dbg_app_wdf_data                   : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal dbg_app_wdf_data                   : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal dbg_app_wdf_end                    : std_logic;
   signal dbg_app_wdf_wren                   : std_logic;
-  signal dbg_app_wdf_mask                   : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-  signal dbg_app_rd_data                    : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal dbg_app_wdf_mask                   : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
+  signal dbg_app_rd_data                    : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal dbg_app_rd_data_end                : std_logic;
   signal dbg_app_rd_data_valid              : std_logic;
   signal dbg_app_rdy                        : std_logic;
@@ -487,10 +474,10 @@ architecture rtl of dbe_bpm_dsp is
   signal memc_cmd_addr                      : std_logic_vector(c_acq_ddr_addr_width-1 downto 0);
   signal memc_wr_en                         : std_logic;
   signal memc_wr_end                        : std_logic;
-  signal memc_wr_mask                       : std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-  signal memc_wr_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_wr_mask                       : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
+  signal memc_wr_data                       : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal memc_wr_rdy                        : std_logic;
-  signal memc_rd_data                       : std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+  signal memc_rd_data                       : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal memc_rd_valid                      : std_logic;
 
   signal dbg_ddr_rb_data                    : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
@@ -701,7 +688,7 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_fofb_pha_valid                 : std_logic;
- 
+
   signal dsp_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
   signal dsp_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
@@ -1075,7 +1062,7 @@ architecture rtl of dbe_bpm_dsp is
     trig3                                   : in std_logic_vector(31 downto 0)
   );
   end component;
-  
+
   -- Xilinx Chipscope Logic Analyser
   component chipscope_ila_1024_5_port
   port (
@@ -1087,7 +1074,7 @@ architecture rtl of dbe_bpm_dsp is
     trig3                                   : in std_logic_vector(31 downto 0);
     trig4                                   : in std_logic_vector(31 downto 0));
   end component;
-  
+
   component chipscope_ila_8192_5_port
   port (
     control                                 : inout std_logic_vector(35 downto 0);
@@ -1098,7 +1085,7 @@ architecture rtl of dbe_bpm_dsp is
     trig3                                   : in std_logic_vector(31 downto 0);
     trig4                                   : in std_logic_vector(31 downto 0));
   end component;
-  
+
   component chipscope_ila_1024
   port (
     control                                 : inout std_logic_vector(35 downto 0);
@@ -1109,7 +1096,7 @@ architecture rtl of dbe_bpm_dsp is
     trig3                                   : in std_logic_vector(31 downto 0);
     trig4                                   : in std_logic_vector(31 downto 0));
   end component;
-  
+
   component chipscope_ila_4096
   port (
     control                                 : inout std_logic_vector(35 downto 0);
@@ -2053,19 +2040,19 @@ begin
     pos_q_tbt_o                             => dsp_pos_q_tbt,
     pos_sum_tbt_o                           => dsp_pos_sum_tbt,
     pos_tbt_valid_o                         => dsp_pos_tbt_valid,
-                                                   
+
     pos_x_fofb_o                            => dsp_pos_x_fofb,
     pos_y_fofb_o                            => dsp_pos_y_fofb,
     pos_q_fofb_o                            => dsp_pos_q_fofb,
     pos_sum_fofb_o                          => dsp_pos_sum_fofb,
     pos_fofb_valid_o                        => dsp_pos_fofb_valid,
-                                                   
+
     pos_x_monit_o                           => dsp_pos_x_monit,
     pos_y_monit_o                           => dsp_pos_y_monit,
     pos_q_monit_o                           => dsp_pos_q_monit,
     pos_sum_monit_o                         => dsp_pos_sum_monit,
     pos_monit_valid_o                       => dsp_pos_monit_valid,
-                                                   
+
     pos_x_monit_1_o                         => dsp_pos_x_monit_1,
     pos_y_monit_1_o                         => dsp_pos_y_monit_1,
     pos_q_monit_1_o                         => dsp_pos_q_monit_1,
@@ -2452,9 +2439,9 @@ begin
 
   TRIG_ILA0_2                               <= dbg_adc_ch1_cond & dbg_adc_ch0_cond;
   TRIG_ILA0_3                               <= dbg_adc_ch3_cond & dbg_adc_ch2_cond;
-  TRIG_ILA0_4(dbg_cur_address'left downto 0) 
+  TRIG_ILA0_4(dbg_cur_address'left downto 0)
   	                                    <= dbg_cur_address;
-  
+
   -- Mix and BPF data
 
   --cmp_chipscope_ila_4096_bpf_mix : chipscope_ila_4096  (
