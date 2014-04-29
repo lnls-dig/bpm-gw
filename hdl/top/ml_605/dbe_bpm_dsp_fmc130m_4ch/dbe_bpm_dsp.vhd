@@ -750,161 +750,101 @@ architecture rtl of dbe_bpm_dsp is
   signal gpio_slave_button_o                : t_wishbone_slave_out;
   signal gpio_slave_button_i                : t_wishbone_slave_in;
 
-  -- Chipscope control signals
-  signal CONTROL0                           : std_logic_vector(35 downto 0);
-  signal CONTROL1                           : std_logic_vector(35 downto 0);
-  signal CONTROL2                           : std_logic_vector(35 downto 0);
-  signal CONTROL3                           : std_logic_vector(35 downto 0);
-  signal CONTROL4                           : std_logic_vector(35 downto 0);
-  signal CONTROL5                           : std_logic_vector(35 downto 0);
-  signal CONTROL6                           : std_logic_vector(35 downto 0);
-  signal CONTROL7                           : std_logic_vector(35 downto 0);
-  signal CONTROL8                           : std_logic_vector(35 downto 0);
-  signal CONTROL9                           : std_logic_vector(35 downto 0);
-  signal CONTROL10                          : std_logic_vector(35 downto 0);
-  signal CONTROL11                          : std_logic_vector(35 downto 0);
-  signal CONTROL12                          : std_logic_vector(35 downto 0);
+  ---- Chipscope control signals
+  --signal CONTROL0                           : std_logic_vector(35 downto 0);
+  --signal CONTROL1                           : std_logic_vector(35 downto 0);
+  --signal CONTROL2                           : std_logic_vector(35 downto 0);
+  --signal CONTROL3                           : std_logic_vector(35 downto 0);
+  --signal CONTROL4                           : std_logic_vector(35 downto 0);
+  --signal CONTROL5                           : std_logic_vector(35 downto 0);
+  --signal CONTROL6                           : std_logic_vector(35 downto 0);
+  --signal CONTROL7                           : std_logic_vector(35 downto 0);
+  --signal CONTROL8                           : std_logic_vector(35 downto 0);
+  --signal CONTROL9                           : std_logic_vector(35 downto 0);
+  --signal CONTROL10                          : std_logic_vector(35 downto 0);
+  --signal CONTROL11                          : std_logic_vector(35 downto 0);
+  --signal CONTROL12                          : std_logic_vector(35 downto 0);
 
-  -- Chipscope ILA 0 signals
-  signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 0 signals
+  --signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA0_4                        : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 1 signals
-  signal TRIG_ILA1_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 1 signals
+  --signal TRIG_ILA1_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA1_4                        : std_logic_vector(31 downto 0);
 
-  signal fifo_in_ila1                       : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila1                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila1_rd                       : std_logic;
-  signal fifo_ila1_empty                    : std_logic;
-  signal fifo_ila1_valid                    : std_logic;
+  ---- Chipscope ILA 2 signals
+  --signal TRIG_ILA2_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA2_4                        : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 2 signals
-  signal TRIG_ILA2_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 3 signals
+  --signal TRIG_ILA3_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA3_4                        : std_logic_vector(31 downto 0);
 
-  signal fifo_in_ila2                       : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila2                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila2_rd                       : std_logic;
-  signal fifo_ila2_empty                    : std_logic;
-  signal fifo_ila2_valid                    : std_logic;
+  ---- Chipscope ILA 4 signals
+  --signal TRIG_ILA4_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA4_4                        : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 3 signals
-  signal TRIG_ILA3_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 5 signals
+  --signal TRIG_ILA5_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA5_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA5_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA5_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA5_4                        : std_logic_vector(31 downto 0);
 
-  signal fifo_in_ila3                       : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_out_ila3                      : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_ila3_rd                       : std_logic;
-  signal fifo_ila3_empty                    : std_logic;
-  signal fifo_ila3_valid                    : std_logic;
+  ---- Chipscope ILA 6 signals
+  --signal TRIG_ILA6_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA6_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA6_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA6_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA6_4                        : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 4 signals
-  signal TRIG_ILA4_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 7 signals
+  --signal TRIG_ILA7_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA7_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA7_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA7_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA7_4                        : std_logic_vector(31 downto 0);
 
-  signal fifo_in_ila4                       : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila4                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila4_rd                       : std_logic;
-  signal fifo_ila4_empty                    : std_logic;
-  signal fifo_ila4_valid                    : std_logic;
+  ---- Chipscope ILA 8 signals
+  --signal TRIG_ILA8_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA8_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA8_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA8_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA8_4                        : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 5 signals
-  signal TRIG_ILA5_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA5_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA5_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA5_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA5_4                        : std_logic_vector(31 downto 0);
+  ---- Chipscope ILA 9 signals
+  --signal TRIG_ILA9_0                        : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA9_1                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA9_2                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA9_3                        : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA9_4                        : std_logic_vector(31 downto 0);
 
-  signal fifo_in_ila5                       : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_out_ila5                      : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_ila5_rd                       : std_logic;
-  signal fifo_ila5_empty                    : std_logic;
-  signal fifo_ila5_valid                    : std_logic;
+  ---- Chipscope ILA 10 signals
+  --signal TRIG_ILA10_0                       : std_logic_vector(7 downto 0);
+  --signal TRIG_ILA10_1                       : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA10_2                       : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA10_3                       : std_logic_vector(31 downto 0);
+  --signal TRIG_ILA10_4                       : std_logic_vector(31 downto 0);
 
-  -- Chipscope ILA 6 signals
-  signal TRIG_ILA6_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA6_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA6_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA6_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA6_4                        : std_logic_vector(31 downto 0);
-
-  signal fifo_in_ila6                       : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila6                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila6_rd                       : std_logic;
-  signal fifo_ila6_empty                    : std_logic;
-  signal fifo_ila6_valid                    : std_logic;
-
-  -- Chipscope ILA 7 signals
-  signal TRIG_ILA7_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA7_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA7_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA7_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA7_4                        : std_logic_vector(31 downto 0);
-
-  signal fifo_in_ila7                       : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_out_ila7                      : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_ila7_rd                       : std_logic;
-  signal fifo_ila7_empty                    : std_logic;
-  signal fifo_ila7_valid                    : std_logic;
-
-  -- Chipscope ILA 8 signals
-  signal TRIG_ILA8_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA8_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA8_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA8_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA8_4                        : std_logic_vector(31 downto 0);
-
-  signal fifo_in_ila8                       : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_out_ila8                      : std_logic_vector(4*c_dsp_pos_num_bits-1 downto 0);
-  signal fifo_ila8_rd                       : std_logic;
-  signal fifo_ila8_empty                    : std_logic;
-  signal fifo_ila8_valid                    : std_logic;
-
-  -- Chipscope ILA 9 signals
-  signal TRIG_ILA9_0                        : std_logic_vector(7 downto 0);
-  signal TRIG_ILA9_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA9_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA9_3                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA9_4                        : std_logic_vector(31 downto 0);
-
-  signal fifo_in_ila9                       : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila9                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila9_rd                       : std_logic;
-  signal fifo_ila9_empty                    : std_logic;
-  signal fifo_ila9_valid                    : std_logic;
-
-  -- Chipscope ILA 10 signals
-  signal TRIG_ILA10_0                       : std_logic_vector(7 downto 0);
-  signal TRIG_ILA10_1                       : std_logic_vector(31 downto 0);
-  signal TRIG_ILA10_2                       : std_logic_vector(31 downto 0);
-  signal TRIG_ILA10_3                       : std_logic_vector(31 downto 0);
-  signal TRIG_ILA10_4                       : std_logic_vector(31 downto 0);
-
-  signal fifo_in_ila10                      : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_out_ila10                     : std_logic_vector(4*c_dsp_ref_num_bits-1 downto 0);
-  signal fifo_ila10_rd                      : std_logic;
-  signal fifo_ila10_empty                   : std_logic;
-  signal fifo_ila10_valid                    : std_logic;
-
-  -- Chipscope VIO signals
- signal vio_out                             : std_logic_vector(255 downto 0);
- signal vio_out_dsp_config                  : std_logic_vector(255 downto 0);
+  ---- Chipscope VIO signals
+  --signal vio_out                             : std_logic_vector(255 downto 0);
+  --signal vio_out_dsp_config                  : std_logic_vector(255 downto 0);
 
   ---------------------------
   --      Components       --
@@ -920,7 +860,7 @@ architecture rtl of dbe_bpm_dsp is
   );
   end component;
 
-  -- Xilinx Megafunction
+  -- Xilinx PLL
   component sys_pll is
   port(
     rst_i                                   : in std_logic := '0';
@@ -928,59 +868,6 @@ architecture rtl of dbe_bpm_dsp is
     clk0_o                                  : out std_logic;
     clk1_o                                  : out std_logic;
     locked_o                                : out std_logic
-  );
-  end component;
-
-  component un_cross_top
-  generic(
-    g_delay_vec_width         : natural range 0 to 16 := 16;
-    g_swap_div_freq_vec_width : natural range 0 to 16 := 16
-  );
-  port(
-    -- Commom signals
-    clk_i        :  in   std_logic;
-    rst_n_i      :  in   std_logic;
-
-    -- inv_chs_top core signal
-    const_aa_i   :  in   std_logic_vector(15 downto 0);
-    const_bb_i   :  in   std_logic_vector(15 downto 0);
-    const_cc_i   :  in   std_logic_vector(15 downto 0);
-    const_dd_i   :  in   std_logic_vector(15 downto 0);
-    const_ac_i   :  in   std_logic_vector(15 downto 0);
-    const_bd_i   :  in   std_logic_vector(15 downto 0);
-    const_ca_i   :  in   std_logic_vector(15 downto 0);
-    const_db_i   :  in   std_logic_vector(15 downto 0);
-
-    delay1_i     :  in   std_logic_vector(g_delay_vec_width-1 downto 0);
-    delay2_i     :  in   std_logic_vector(g_delay_vec_width-1 downto 0);
-
-    flag1_o      :  out   std_logic;
-    flag2_o      :  out   std_logic;
-
-    -- Input from ADC FMC board
-    cha_i        :  in   std_logic_vector(15 downto 0);
-    chb_i        :  in   std_logic_vector(15 downto 0);
-    chc_i        :  in   std_logic_vector(15 downto 0);
-    chd_i        :  in   std_logic_vector(15 downto 0);
-
-    -- Output to data processing level
-    cha_o        :  out  std_logic_vector(15 downto 0);
-    chb_o        :  out  std_logic_vector(15 downto 0);
-    chc_o        :  out  std_logic_vector(15 downto 0);
-    chd_o        :  out  std_logic_vector(15 downto 0);
-
-    -- Swap clock for RFFE
-    clk_swap_o   : out std_logic;
-
-    -- swap_cnt_top signal
-    mode1_i      :  in    std_logic_vector(1 downto 0);
-    mode2_i      :  in    std_logic_vector(1 downto 0);
-
-    swap_div_f_i :  in    std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
-
-    -- Output to RFFE board
-    ctrl1_o      :  out   std_logic_vector(7 downto 0);
-    ctrl2_o      :  out   std_logic_vector(7 downto 0)
   );
   end component;
 
@@ -2239,317 +2126,317 @@ begin
   memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
                                memc_cmd_addr;
 
-  -- Chipscope Analysis
-  cmp_chipscope_icon_13 : chipscope_icon_13_port
-  port map (
-     CONTROL0                               => CONTROL0,
-     CONTROL1                               => CONTROL1,
-     CONTROL2                               => CONTROL2,
-     CONTROL3                               => CONTROL3,
-     CONTROL4                               => CONTROL4,
-     CONTROL5                               => CONTROL5,
-     CONTROL6                               => CONTROL6,
-     CONTROL7                               => CONTROL7,
-     CONTROL8                               => CONTROL8,
-     CONTROL9                               => CONTROL9,
-     CONTROL10                              => CONTROL10,
-     CONTROL11                              => CONTROL11,
-     CONTROL12                              => CONTROL12
-  );
+  ---- Chipscope Analysis
+  --cmp_chipscope_icon_13 : chipscope_icon_13_port
+  --port map (
+  --   CONTROL0                               => CONTROL0,
+  --   CONTROL1                               => CONTROL1,
+  --   CONTROL2                               => CONTROL2,
+  --   CONTROL3                               => CONTROL3,
+  --   CONTROL4                               => CONTROL4,
+  --   CONTROL5                               => CONTROL5,
+  --   CONTROL6                               => CONTROL6,
+  --   CONTROL7                               => CONTROL7,
+  --   CONTROL8                               => CONTROL8,
+  --   CONTROL9                               => CONTROL9,
+  --   CONTROL10                              => CONTROL10,
+  --   CONTROL11                              => CONTROL11,
+  --   CONTROL12                              => CONTROL12
+  --);
 
-  --cmp_chipscope_ila_0_adc : chipscope_ila
-  cmp_chipscope_ila_adc : chipscope_ila_8192_5_port
-  port map (
-    CONTROL                                => CONTROL0,
-    CLK                                    => fs_clk,
-    TRIG0                                  => TRIG_ILA0_0,
-    TRIG1                                  => TRIG_ILA0_1,
-    TRIG2                                  => TRIG_ILA0_2,
-    TRIG3                                  => TRIG_ILA0_3,
-    TRIG4                                  => TRIG_ILA0_4
-  );
+  ----cmp_chipscope_ila_0_adc : chipscope_ila
+  --cmp_chipscope_ila_adc : chipscope_ila_8192_5_port
+  --port map (
+  --  CONTROL                                => CONTROL0,
+  --  CLK                                    => fs_clk,
+  --  TRIG0                                  => TRIG_ILA0_0,
+  --  TRIG1                                  => TRIG_ILA0_1,
+  --  TRIG2                                  => TRIG_ILA0_2,
+  --  TRIG3                                  => TRIG_ILA0_3,
+  --  TRIG4                                  => TRIG_ILA0_4
+  --);
 
-  -- ADC Data
-  TRIG_ILA0_0                               <= dsp_adc_ch1_data & dsp_adc_ch0_data;
-  TRIG_ILA0_1                               <= dsp_adc_ch3_data & dsp_adc_ch2_data;
+  ---- ADC Data
+  --TRIG_ILA0_0                               <= dsp_adc_ch1_data & dsp_adc_ch0_data;
+  --TRIG_ILA0_1                               <= dsp_adc_ch3_data & dsp_adc_ch2_data;
 
-  TRIG_ILA0_2                               <= dbg_adc_ch1_cond & dbg_adc_ch0_cond;
-  TRIG_ILA0_3                               <= dbg_adc_ch3_cond & dbg_adc_ch2_cond;
-  TRIG_ILA0_4(dbg_cur_address'left downto 0)
-  	                                    <= dbg_cur_address;
+  --TRIG_ILA0_2                               <= dbg_adc_ch1_cond & dbg_adc_ch0_cond;
+  --TRIG_ILA0_3                               <= dbg_adc_ch3_cond & dbg_adc_ch2_cond;
+  --TRIG_ILA0_4(dbg_cur_address'left downto 0)
+  --	                                    <= dbg_cur_address;
 
-  -- Mix and BPF data
-  cmp_chipscope_ila_1024_bpf_mix : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL1,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA1_0,
-    TRIG1                                   => TRIG_ILA1_1,
-    TRIG2                                   => TRIG_ILA1_2,
-    TRIG3                                   => TRIG_ILA1_3,
-    TRIG4                                   => TRIG_ILA1_4
-  );
+  ---- Mix and BPF data
+  --cmp_chipscope_ila_1024_bpf_mix : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL1,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA1_0,
+  --  TRIG1                                   => TRIG_ILA1_1,
+  --  TRIG2                                   => TRIG_ILA1_2,
+  --  TRIG3                                   => TRIG_ILA1_3,
+  --  TRIG4                                   => TRIG_ILA1_4
+  --);
 
-  TRIG_ILA1_0(0)                            <= dsp_bpf_valid;
-  TRIG_ILA1_0(1)                            <= '0';
-  TRIG_ILA1_0(2)                            <= '0';
-  TRIG_ILA1_0(3)                            <= '0';
-  TRIG_ILA1_0(4)                            <= '0';
-  TRIG_ILA1_0(5)                            <= '0';
-  TRIG_ILA1_0(6)                            <= '0';
+  --TRIG_ILA1_0(0)                            <= dsp_bpf_valid;
+  --TRIG_ILA1_0(1)                            <= '0';
+  --TRIG_ILA1_0(2)                            <= '0';
+  --TRIG_ILA1_0(3)                            <= '0';
+  --TRIG_ILA1_0(4)                            <= '0';
+  --TRIG_ILA1_0(5)                            <= '0';
+  --TRIG_ILA1_0(6)                            <= '0';
 
-  TRIG_ILA1_1(dsp_bpf_ch0'left downto 0)    <= dsp_bpf_ch0;
-  TRIG_ILA1_2(dsp_bpf_ch2'left downto 0)    <= dsp_bpf_ch2;
-  TRIG_ILA1_3(dsp_mix_ch0'left downto 0)    <= dsp_mix_ch0;
-  TRIG_ILA1_4(dsp_mix_ch2'left downto 0)    <= dsp_mix_ch2;
+  --TRIG_ILA1_1(dsp_bpf_ch0'left downto 0)    <= dsp_bpf_ch0;
+  --TRIG_ILA1_2(dsp_bpf_ch2'left downto 0)    <= dsp_bpf_ch2;
+  --TRIG_ILA1_3(dsp_mix_ch0'left downto 0)    <= dsp_mix_ch0;
+  --TRIG_ILA1_4(dsp_mix_ch2'left downto 0)    <= dsp_mix_ch2;
 
-  --TBT amplitudes data
-  cmp_chipscope_ila_1024_tbt_amp : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL2,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA2_0,
-    TRIG1                                   => TRIG_ILA2_1,
-    TRIG2                                   => TRIG_ILA2_2,
-    TRIG3                                   => TRIG_ILA2_3,
-    TRIG4                                   => TRIG_ILA2_4
-  );
+  ----TBT amplitudes data
+  --cmp_chipscope_ila_1024_tbt_amp : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL2,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA2_0,
+  --  TRIG1                                   => TRIG_ILA2_1,
+  --  TRIG2                                   => TRIG_ILA2_2,
+  --  TRIG3                                   => TRIG_ILA2_3,
+  --  TRIG4                                   => TRIG_ILA2_4
+  --);
 
-  TRIG_ILA2_0(0)                            <= dsp_tbt_amp_valid;
-  TRIG_ILA2_0(1)                            <= '0';
-  TRIG_ILA2_0(2)                            <= '0';
-  TRIG_ILA2_0(3)                            <= '0';
-  TRIG_ILA2_0(4)                            <= '0';
-  TRIG_ILA2_0(5)                            <= '0';
-  TRIG_ILA2_0(6)                            <= '0';
+  --TRIG_ILA2_0(0)                            <= dsp_tbt_amp_valid;
+  --TRIG_ILA2_0(1)                            <= '0';
+  --TRIG_ILA2_0(2)                            <= '0';
+  --TRIG_ILA2_0(3)                            <= '0';
+  --TRIG_ILA2_0(4)                            <= '0';
+  --TRIG_ILA2_0(5)                            <= '0';
+  --TRIG_ILA2_0(6)                            <= '0';
 
-  TRIG_ILA2_1(dsp_tbt_amp_ch0'left downto 0) <= dsp_tbt_amp_ch0;
-  TRIG_ILA2_2(dsp_tbt_amp_ch1'left downto 0) <= dsp_tbt_amp_ch1;
-  TRIG_ILA2_3(dsp_tbt_amp_ch2'left downto 0) <= dsp_tbt_amp_ch2;
-  TRIG_ILA2_4(dsp_tbt_amp_ch3'left downto 0) <= dsp_tbt_amp_ch3;
+  --TRIG_ILA2_1(dsp_tbt_amp_ch0'left downto 0) <= dsp_tbt_amp_ch0;
+  --TRIG_ILA2_2(dsp_tbt_amp_ch1'left downto 0) <= dsp_tbt_amp_ch1;
+  --TRIG_ILA2_3(dsp_tbt_amp_ch2'left downto 0) <= dsp_tbt_amp_ch2;
+  --TRIG_ILA2_4(dsp_tbt_amp_ch3'left downto 0) <= dsp_tbt_amp_ch3;
 
-  -- TBT position data
-  cmp_chipscope_ila_1024_tbt_pos : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL3,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA3_0,
-    TRIG1                                   => TRIG_ILA3_1,
-    TRIG2                                   => TRIG_ILA3_2,
-    TRIG3                                   => TRIG_ILA3_3,
-    TRIG4                                   => TRIG_ILA3_4
-  );
+  ---- TBT position data
+  --cmp_chipscope_ila_1024_tbt_pos : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL3,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA3_0,
+  --  TRIG1                                   => TRIG_ILA3_1,
+  --  TRIG2                                   => TRIG_ILA3_2,
+  --  TRIG3                                   => TRIG_ILA3_3,
+  --  TRIG4                                   => TRIG_ILA3_4
+  --);
 
-  TRIG_ILA3_0(0)                            <= dsp_pos_tbt_valid;
-  TRIG_ILA3_0(1)                            <= '0';
-  TRIG_ILA3_0(2)                            <= '0';
-  TRIG_ILA3_0(3)                            <= '0';
-  TRIG_ILA3_0(4)                            <= '0';
-  TRIG_ILA3_0(5)                            <= '0';
-  TRIG_ILA3_0(6)                            <= '0';
+  --TRIG_ILA3_0(0)                            <= dsp_pos_tbt_valid;
+  --TRIG_ILA3_0(1)                            <= '0';
+  --TRIG_ILA3_0(2)                            <= '0';
+  --TRIG_ILA3_0(3)                            <= '0';
+  --TRIG_ILA3_0(4)                            <= '0';
+  --TRIG_ILA3_0(5)                            <= '0';
+  --TRIG_ILA3_0(6)                            <= '0';
 
-  TRIG_ILA3_1(dsp_pos_x_tbt'left downto 0)       <= dsp_pos_x_tbt;
-  TRIG_ILA3_2(dsp_pos_y_tbt'left downto 0)       <= dsp_pos_y_tbt;
-  TRIG_ILA3_3(dsp_pos_q_tbt'left downto 0)       <= dsp_pos_q_tbt;
-  TRIG_ILA3_4(dsp_pos_sum_tbt'left downto 0)     <= dsp_pos_sum_tbt;
+  --TRIG_ILA3_1(dsp_pos_x_tbt'left downto 0)       <= dsp_pos_x_tbt;
+  --TRIG_ILA3_2(dsp_pos_y_tbt'left downto 0)       <= dsp_pos_y_tbt;
+  --TRIG_ILA3_3(dsp_pos_q_tbt'left downto 0)       <= dsp_pos_q_tbt;
+  --TRIG_ILA3_4(dsp_pos_sum_tbt'left downto 0)     <= dsp_pos_sum_tbt;
 
-  -- FOFB amplitudes data
+  ---- FOFB amplitudes data
 
-  cmp_chipscope_ila_1024_fofb_amp : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL4,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA4_0,
-    TRIG1                                   => TRIG_ILA4_1,
-    TRIG2                                   => TRIG_ILA4_2,
-    TRIG3                                   => TRIG_ILA4_3,
-    TRIG4                                   => TRIG_ILA4_4
-  );
+  --cmp_chipscope_ila_1024_fofb_amp : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL4,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA4_0,
+  --  TRIG1                                   => TRIG_ILA4_1,
+  --  TRIG2                                   => TRIG_ILA4_2,
+  --  TRIG3                                   => TRIG_ILA4_3,
+  --  TRIG4                                   => TRIG_ILA4_4
+  --);
 
-  TRIG_ILA4_0(0)                            <= dsp_fofb_amp_valid;
-  TRIG_ILA4_0(1)                            <= '0';
-  TRIG_ILA4_0(2)                            <= '0';
-  TRIG_ILA4_0(3)                            <= '0';
-  TRIG_ILA4_0(4)                            <= '0';
-  TRIG_ILA4_0(5)                            <= '0';
-  TRIG_ILA4_0(6)                            <= '0';
+  --TRIG_ILA4_0(0)                            <= dsp_fofb_amp_valid;
+  --TRIG_ILA4_0(1)                            <= '0';
+  --TRIG_ILA4_0(2)                            <= '0';
+  --TRIG_ILA4_0(3)                            <= '0';
+  --TRIG_ILA4_0(4)                            <= '0';
+  --TRIG_ILA4_0(5)                            <= '0';
+  --TRIG_ILA4_0(6)                            <= '0';
 
-  TRIG_ILA4_1(dsp_fofb_amp_ch0'left downto 0)  <= dsp_fofb_amp_ch0;
-  TRIG_ILA4_2(dsp_fofb_amp_ch1'left downto 0)  <= dsp_fofb_amp_ch1;
-  TRIG_ILA4_3(dsp_fofb_amp_ch2'left downto 0)  <= dsp_fofb_amp_ch2;
-  TRIG_ILA4_4(dsp_fofb_amp_ch3'left downto 0)  <= dsp_fofb_amp_ch3;
+  --TRIG_ILA4_1(dsp_fofb_amp_ch0'left downto 0)  <= dsp_fofb_amp_ch0;
+  --TRIG_ILA4_2(dsp_fofb_amp_ch1'left downto 0)  <= dsp_fofb_amp_ch1;
+  --TRIG_ILA4_3(dsp_fofb_amp_ch2'left downto 0)  <= dsp_fofb_amp_ch2;
+  --TRIG_ILA4_4(dsp_fofb_amp_ch3'left downto 0)  <= dsp_fofb_amp_ch3;
 
-  -- FOFB position data
-  cmp_chipscope_ila_1024_fofb_pos : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL5,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA5_0,
-    TRIG1                                   => TRIG_ILA5_1,
-    TRIG2                                   => TRIG_ILA5_2,
-    TRIG3                                   => TRIG_ILA5_3,
-    TRIG4                                   => TRIG_ILA5_4
-  );
+  ---- FOFB position data
+  --cmp_chipscope_ila_1024_fofb_pos : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL5,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA5_0,
+  --  TRIG1                                   => TRIG_ILA5_1,
+  --  TRIG2                                   => TRIG_ILA5_2,
+  --  TRIG3                                   => TRIG_ILA5_3,
+  --  TRIG4                                   => TRIG_ILA5_4
+  --);
 
-  TRIG_ILA5_0(0)                            <= dsp_pos_fofb_valid;
-  TRIG_ILA5_0(1)                            <= '0';
-  TRIG_ILA5_0(2)                            <= '0';
-  TRIG_ILA5_0(3)                            <= '0';
-  TRIG_ILA5_0(4)                            <= '0';
-  TRIG_ILA5_0(5)                            <= '0';
-  TRIG_ILA5_0(6)                            <= '0';
+  --TRIG_ILA5_0(0)                            <= dsp_pos_fofb_valid;
+  --TRIG_ILA5_0(1)                            <= '0';
+  --TRIG_ILA5_0(2)                            <= '0';
+  --TRIG_ILA5_0(3)                            <= '0';
+  --TRIG_ILA5_0(4)                            <= '0';
+  --TRIG_ILA5_0(5)                            <= '0';
+  --TRIG_ILA5_0(6)                            <= '0';
 
-  TRIG_ILA5_1(dsp_pos_x_fofb'left downto 0)        <= dsp_pos_x_fofb;
-  TRIG_ILA5_2(dsp_pos_y_fofb'left downto 0)        <= dsp_pos_y_fofb;
-  TRIG_ILA5_3(dsp_pos_q_fofb'left downto 0)        <= dsp_pos_q_fofb;
-  TRIG_ILA5_4(dsp_pos_sum_fofb'left downto 0)      <= dsp_pos_sum_fofb;
+  --TRIG_ILA5_1(dsp_pos_x_fofb'left downto 0)        <= dsp_pos_x_fofb;
+  --TRIG_ILA5_2(dsp_pos_y_fofb'left downto 0)        <= dsp_pos_y_fofb;
+  --TRIG_ILA5_3(dsp_pos_q_fofb'left downto 0)        <= dsp_pos_q_fofb;
+  --TRIG_ILA5_4(dsp_pos_sum_fofb'left downto 0)      <= dsp_pos_sum_fofb;
 
-  -- Monitoring position amplitude
-  cmp_chipscope_ila_1024_monit_amp : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL6,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA6_0,
-    TRIG1                                   => TRIG_ILA6_1,
-    TRIG2                                   => TRIG_ILA6_2,
-    TRIG3                                   => TRIG_ILA6_3,
-    TRIG4                                   => TRIG_ILA6_4
-  );
+  ---- Monitoring position amplitude
+  --cmp_chipscope_ila_1024_monit_amp : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL6,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA6_0,
+  --  TRIG1                                   => TRIG_ILA6_1,
+  --  TRIG2                                   => TRIG_ILA6_2,
+  --  TRIG3                                   => TRIG_ILA6_3,
+  --  TRIG4                                   => TRIG_ILA6_4
+  --);
 
-  TRIG_ILA6_0(0)                            <= dsp_monit_amp_valid;
-  TRIG_ILA6_0(1)                            <= '0';
-  TRIG_ILA6_0(2)                            <= '0';
-  TRIG_ILA6_0(3)                            <= '0';
-  TRIG_ILA6_0(4)                            <= '0';
-  TRIG_ILA6_0(5)                            <= '0';
-  TRIG_ILA6_0(6)                            <= '0';
+  --TRIG_ILA6_0(0)                            <= dsp_monit_amp_valid;
+  --TRIG_ILA6_0(1)                            <= '0';
+  --TRIG_ILA6_0(2)                            <= '0';
+  --TRIG_ILA6_0(3)                            <= '0';
+  --TRIG_ILA6_0(4)                            <= '0';
+  --TRIG_ILA6_0(5)                            <= '0';
+  --TRIG_ILA6_0(6)                            <= '0';
 
-  TRIG_ILA6_1(dsp_monit_amp_ch0'left downto 0)  <= dsp_monit_amp_ch0;
-  TRIG_ILA6_2(dsp_monit_amp_ch1'left downto 0)  <= dsp_monit_amp_ch1;
-  TRIG_ILA6_3(dsp_monit_amp_ch2'left downto 0)  <= dsp_monit_amp_ch2;
-  TRIG_ILA6_4(dsp_monit_amp_ch3'left downto 0)  <= dsp_monit_amp_ch3;
+  --TRIG_ILA6_1(dsp_monit_amp_ch0'left downto 0)  <= dsp_monit_amp_ch0;
+  --TRIG_ILA6_2(dsp_monit_amp_ch1'left downto 0)  <= dsp_monit_amp_ch1;
+  --TRIG_ILA6_3(dsp_monit_amp_ch2'left downto 0)  <= dsp_monit_amp_ch2;
+  --TRIG_ILA6_4(dsp_monit_amp_ch3'left downto 0)  <= dsp_monit_amp_ch3;
 
-  -- Monitoring position data
+  ---- Monitoring position data
 
-  -- cmp_chipscope_ila_4096_monit_pos : chipscope_ila_4096
-  cmp_chipscope_ila_1024_monit_pos : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL7,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA7_0,
-    TRIG1                                   => TRIG_ILA7_1,
-    TRIG2                                   => TRIG_ILA7_2,
-    TRIG3                                   => TRIG_ILA7_3,
-    TRIG4                                   => TRIG_ILA7_4
-  );
+  ---- cmp_chipscope_ila_4096_monit_pos : chipscope_ila_4096
+  --cmp_chipscope_ila_1024_monit_pos : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL7,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA7_0,
+  --  TRIG1                                   => TRIG_ILA7_1,
+  --  TRIG2                                   => TRIG_ILA7_2,
+  --  TRIG3                                   => TRIG_ILA7_3,
+  --  TRIG4                                   => TRIG_ILA7_4
+  --);
 
-  TRIG_ILA7_0(0)                            <= dsp_pos_monit_valid;
-  TRIG_ILA7_0(1)                            <= '0';
-  TRIG_ILA7_0(2)                            <= '0';
-  TRIG_ILA7_0(3)                            <= '0';
-  TRIG_ILA7_0(4)                            <= '0';
-  TRIG_ILA7_0(5)                            <= '0';
-  TRIG_ILA7_0(6)                            <= '0';
+  --TRIG_ILA7_0(0)                            <= dsp_pos_monit_valid;
+  --TRIG_ILA7_0(1)                            <= '0';
+  --TRIG_ILA7_0(2)                            <= '0';
+  --TRIG_ILA7_0(3)                            <= '0';
+  --TRIG_ILA7_0(4)                            <= '0';
+  --TRIG_ILA7_0(5)                            <= '0';
+  --TRIG_ILA7_0(6)                            <= '0';
 
-  TRIG_ILA7_1(dsp_pos_x_monit'left downto 0)      <= dsp_pos_x_monit;
-  TRIG_ILA7_2(dsp_pos_y_monit'left downto 0)      <= dsp_pos_y_monit;
-  TRIG_ILA7_3(dsp_pos_q_monit'left downto 0)      <= dsp_pos_q_monit;
-  TRIG_ILA7_4(dsp_pos_sum_monit'left downto 0)    <= dsp_pos_sum_monit;
+  --TRIG_ILA7_1(dsp_pos_x_monit'left downto 0)      <= dsp_pos_x_monit;
+  --TRIG_ILA7_2(dsp_pos_y_monit'left downto 0)      <= dsp_pos_y_monit;
+  --TRIG_ILA7_3(dsp_pos_q_monit'left downto 0)      <= dsp_pos_q_monit;
+  --TRIG_ILA7_4(dsp_pos_sum_monit'left downto 0)    <= dsp_pos_sum_monit;
 
-  -- Monitoring 1 position data
-  cmp_chipscope_ila_1024_monit_pos_1 : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL8,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA8_0,
-    TRIG1                                   => TRIG_ILA8_1,
-    TRIG2                                   => TRIG_ILA8_2,
-    TRIG3                                   => TRIG_ILA8_3,
-    TRIG4                                   => TRIG_ILA8_4
-  );
+  ---- Monitoring 1 position data
+  --cmp_chipscope_ila_1024_monit_pos_1 : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL8,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA8_0,
+  --  TRIG1                                   => TRIG_ILA8_1,
+  --  TRIG2                                   => TRIG_ILA8_2,
+  --  TRIG3                                   => TRIG_ILA8_3,
+  --  TRIG4                                   => TRIG_ILA8_4
+  --);
 
-  TRIG_ILA8_0(0)                            <= dsp_pos_monit_1_valid;
-  TRIG_ILA8_0(1)                            <= '0';
-  TRIG_ILA8_0(2)                            <= '0';
-  TRIG_ILA8_0(3)                            <= '0';
-  TRIG_ILA8_0(4)                            <= '0';
-  TRIG_ILA8_0(5)                            <= '0';
-  TRIG_ILA8_0(6)                            <= '0';
+  --TRIG_ILA8_0(0)                            <= dsp_pos_monit_1_valid;
+  --TRIG_ILA8_0(1)                            <= '0';
+  --TRIG_ILA8_0(2)                            <= '0';
+  --TRIG_ILA8_0(3)                            <= '0';
+  --TRIG_ILA8_0(4)                            <= '0';
+  --TRIG_ILA8_0(5)                            <= '0';
+  --TRIG_ILA8_0(6)                            <= '0';
 
-  TRIG_ILA8_1(dsp_pos_x_monit_1'left downto 0)     <= dsp_pos_x_monit_1;
-  TRIG_ILA8_2(dsp_pos_y_monit_1'left downto 0)     <= dsp_pos_y_monit_1;
-  TRIG_ILA8_3(dsp_pos_q_monit_1'left downto 0)     <= dsp_pos_q_monit_1;
-  TRIG_ILA8_4(dsp_pos_sum_monit_1'left downto 0)   <= dsp_pos_sum_monit_1;
+  --TRIG_ILA8_1(dsp_pos_x_monit_1'left downto 0)     <= dsp_pos_x_monit_1;
+  --TRIG_ILA8_2(dsp_pos_y_monit_1'left downto 0)     <= dsp_pos_y_monit_1;
+  --TRIG_ILA8_3(dsp_pos_q_monit_1'left downto 0)     <= dsp_pos_q_monit_1;
+  --TRIG_ILA8_4(dsp_pos_sum_monit_1'left downto 0)   <= dsp_pos_sum_monit_1;
 
-  -- TBT Phase data
-  cmp_chipscope_ila_1024_tbt_pha : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL9,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA9_0,
-    TRIG1                                   => TRIG_ILA9_1,
-    TRIG2                                   => TRIG_ILA9_2,
-    TRIG3                                   => TRIG_ILA9_3,
-    TRIG4                                   => TRIG_ILA9_4
-  );
+  ---- TBT Phase data
+  --cmp_chipscope_ila_1024_tbt_pha : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL9,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA9_0,
+  --  TRIG1                                   => TRIG_ILA9_1,
+  --  TRIG2                                   => TRIG_ILA9_2,
+  --  TRIG3                                   => TRIG_ILA9_3,
+  --  TRIG4                                   => TRIG_ILA9_4
+  --);
 
-  TRIG_ILA9_0(0)                            <= dsp_tbt_pha_valid;
-  TRIG_ILA9_0(1)                            <= '0';
-  TRIG_ILA9_0(2)                            <= '0';
-  TRIG_ILA9_0(3)                            <= '0';
-  TRIG_ILA9_0(4)                            <= '0';
-  TRIG_ILA9_0(5)                            <= '0';
-  TRIG_ILA9_0(6)                            <= '0';
+  --TRIG_ILA9_0(0)                            <= dsp_tbt_pha_valid;
+  --TRIG_ILA9_0(1)                            <= '0';
+  --TRIG_ILA9_0(2)                            <= '0';
+  --TRIG_ILA9_0(3)                            <= '0';
+  --TRIG_ILA9_0(4)                            <= '0';
+  --TRIG_ILA9_0(5)                            <= '0';
+  --TRIG_ILA9_0(6)                            <= '0';
 
-  TRIG_ILA9_1(dsp_tbt_pha_ch0'left downto 0)      <= dsp_tbt_pha_ch0;
-  TRIG_ILA9_2(dsp_tbt_pha_ch1'left downto 0)      <= dsp_tbt_pha_ch1;
-  TRIG_ILA9_3(dsp_tbt_pha_ch2'left downto 0)      <= dsp_tbt_pha_ch2;
-  TRIG_ILA9_4(dsp_tbt_pha_ch3'left downto 0)      <= dsp_tbt_pha_ch3;
+  --TRIG_ILA9_1(dsp_tbt_pha_ch0'left downto 0)      <= dsp_tbt_pha_ch0;
+  --TRIG_ILA9_2(dsp_tbt_pha_ch1'left downto 0)      <= dsp_tbt_pha_ch1;
+  --TRIG_ILA9_3(dsp_tbt_pha_ch2'left downto 0)      <= dsp_tbt_pha_ch2;
+  --TRIG_ILA9_4(dsp_tbt_pha_ch3'left downto 0)      <= dsp_tbt_pha_ch3;
 
-  -- FOFB Phase data
-  cmp_chipscope_ila_1024_fofb_pha : chipscope_ila_1024
-  port map (
-    CONTROL                                 => CONTROL10,
-    CLK                                     => fs_clk,
-    TRIG0                                   => TRIG_ILA10_0,
-    TRIG1                                   => TRIG_ILA10_1,
-    TRIG2                                   => TRIG_ILA10_2,
-    TRIG3                                   => TRIG_ILA10_3,
-    TRIG4                                   => TRIG_ILA10_4
-  );
+  ---- FOFB Phase data
+  --cmp_chipscope_ila_1024_fofb_pha : chipscope_ila_1024
+  --port map (
+  --  CONTROL                                 => CONTROL10,
+  --  CLK                                     => fs_clk,
+  --  TRIG0                                   => TRIG_ILA10_0,
+  --  TRIG1                                   => TRIG_ILA10_1,
+  --  TRIG2                                   => TRIG_ILA10_2,
+  --  TRIG3                                   => TRIG_ILA10_3,
+  --  TRIG4                                   => TRIG_ILA10_4
+  --);
 
-  TRIG_ILA10_0(0)                           <= dsp_fofb_pha_valid;
-  TRIG_ILA10_0(1)                           <= '0';
-  TRIG_ILA10_0(2)                           <= '0';
-  TRIG_ILA10_0(3)                           <= '0';
-  TRIG_ILA10_0(4)                           <= '0';
-  TRIG_ILA10_0(5)                           <= '0';
-  TRIG_ILA10_0(6)                           <= '0';
+  --TRIG_ILA10_0(0)                           <= dsp_fofb_pha_valid;
+  --TRIG_ILA10_0(1)                           <= '0';
+  --TRIG_ILA10_0(2)                           <= '0';
+  --TRIG_ILA10_0(3)                           <= '0';
+  --TRIG_ILA10_0(4)                           <= '0';
+  --TRIG_ILA10_0(5)                           <= '0';
+  --TRIG_ILA10_0(6)                           <= '0';
 
-  TRIG_ILA10_1(dsp_fofb_pha_ch0'left downto 0)    <= dsp_fofb_pha_ch0;
-  TRIG_ILA10_2(dsp_fofb_pha_ch1'left downto 0)    <= dsp_fofb_pha_ch1;
-  TRIG_ILA10_3(dsp_fofb_pha_ch2'left downto 0)    <= dsp_fofb_pha_ch2;
-  TRIG_ILA10_4(dsp_fofb_pha_ch3'left downto 0)    <= dsp_fofb_pha_ch3;
+  --TRIG_ILA10_1(dsp_fofb_pha_ch0'left downto 0)    <= dsp_fofb_pha_ch0;
+  --TRIG_ILA10_2(dsp_fofb_pha_ch1'left downto 0)    <= dsp_fofb_pha_ch1;
+  --TRIG_ILA10_3(dsp_fofb_pha_ch2'left downto 0)    <= dsp_fofb_pha_ch2;
+  --TRIG_ILA10_4(dsp_fofb_pha_ch3'left downto 0)    <= dsp_fofb_pha_ch3;
 
-  -- Controllable gain for test data
-  cmp_chipscope_vio_256 : chipscope_vio_256
-  port map (
-    CONTROL                                 => CONTROL11,
-    ASYNC_OUT                               => vio_out
-  );
+  ---- Controllable gain for test data
+  --cmp_chipscope_vio_256 : chipscope_vio_256
+  --port map (
+  --  CONTROL                                 => CONTROL11,
+  --  ASYNC_OUT                               => vio_out
+  --);
 
-  dds_sine_gain_ch0                         <= vio_out(10-1 downto 0);
-  dds_sine_gain_ch1                         <= vio_out(20-1 downto 10);
-  dds_sine_gain_ch2                         <= vio_out(30-1 downto 20);
-  dds_sine_gain_ch3                         <= vio_out(40-1 downto 30);
-  adc_synth_data_en                         <= vio_out(40);
+  --dds_sine_gain_ch0                         <= vio_out(10-1 downto 0);
+  --dds_sine_gain_ch1                         <= vio_out(20-1 downto 10);
+  --dds_sine_gain_ch2                         <= vio_out(30-1 downto 20);
+  --dds_sine_gain_ch3                         <= vio_out(40-1 downto 30);
+  --adc_synth_data_en                         <= vio_out(40);
 
-  -- Controllable DDS frequency and phase
-  cmp_chipscope_vio_256_dsp_config : chipscope_vio_256
-  port map (
-    CONTROL                                 => CONTROL12,
-    ASYNC_OUT                               => vio_out_dsp_config
-  );
+  ---- Controllable DDS frequency and phase
+  --cmp_chipscope_vio_256_dsp_config : chipscope_vio_256
+  --port map (
+  --  CONTROL                                 => CONTROL12,
+  --  ASYNC_OUT                               => vio_out_dsp_config
+  --);
 
 end ;
 
