@@ -1978,7 +1978,7 @@ begin
   generic map
   (
     g_interface_mode                          => PIPELINED,
-    g_address_granularity                     => WORD,
+    g_address_granularity                     => BYTE,
     g_acq_addr_width                          => c_acq_addr_width,
     g_acq_num_channels                        => c_acq_num_channels,
     g_acq_channels                            => c_acq_channels,
