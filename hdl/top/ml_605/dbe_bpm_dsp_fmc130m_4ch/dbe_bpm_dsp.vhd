@@ -252,20 +252,16 @@ architecture rtl of dbe_bpm_dsp is
   --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone
 
   --constant c_dpram_size                     : natural := 131072/4; -- in 32-bit words (128KB)
-  constant c_dpram_size                       : natural := 90112/4; -- in 32-bit words (90KB)
+  constant c_dpram_size                     : natural := 90112/4; -- in 32-bit words (90KB)
   --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
   --constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
-  constant c_dpram_ethbuf_size                : natural := 16384/4; -- in 32-bit words (16KB)
+  constant c_dpram_ethbuf_size              : natural := 16384/4; -- in 32-bit words (16KB)
 
   constant c_acq_fifo_size                  : natural := 256;
 
-  -- TEMPORARY! DON'T TOUCH!
-  --constant c_acq_data_width                 : natural := 64;
-  constant c_acq_addr_width                 : natural := 28;
-  constant c_acq_ddr_payload_width          : natural := c_ddr_payload_width; -- DDR3 UI (256 bits)
-  constant c_acq_ddr_addr_width             : natural := 28;
+  constant c_acq_addr_width                 : natural := c_ddr_addr_width;
   constant c_acq_ddr_addr_res_width         : natural := 32;
-  constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_acq_ddr_addr_width;
+  constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
 
   constant c_acq_adc_id                     : natural := 0;
   constant c_acq_tbt_amp_id                 : natural := 1;
@@ -290,9 +286,6 @@ architecture rtl of dbe_bpm_dsp is
       c_acq_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2))
     );
-
-  -- DDR3 constants
-  constant c_ddr_dq_width                   : natural := 64;
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -467,7 +460,7 @@ architecture rtl of dbe_bpm_dsp is
   signal memc_cmd_en                        : std_logic;
   signal memc_cmd_instr                     : std_logic_vector(2 downto 0);
   signal memc_cmd_addr_resized              : std_logic_vector(c_acq_ddr_addr_res_width-1 downto 0);
-  signal memc_cmd_addr                      : std_logic_vector(c_acq_ddr_addr_width-1 downto 0);
+  signal memc_cmd_addr                      : std_logic_vector(c_ddr_addr_width-1 downto 0);
   signal memc_wr_en                         : std_logic;
   signal memc_wr_end                        : std_logic;
   signal memc_wr_mask                       : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
@@ -1989,9 +1982,9 @@ begin
     g_acq_addr_width                          => c_acq_addr_width,
     g_acq_num_channels                        => c_acq_num_channels,
     g_acq_channels                            => c_acq_channels,
-    g_ddr_payload_width                       => c_acq_ddr_payload_width,
+    g_ddr_payload_width                       => c_ddr_payload_width,
     g_ddr_dq_width                            => c_ddr_dq_width,
-    g_ddr_addr_width                          => c_acq_ddr_addr_width,
+    g_ddr_addr_width                          => c_ddr_addr_width,
     --g_multishot_ram_size                      => 2048,
     g_fifo_fc_size                            => c_acq_fifo_size -- avoid fifo overflow
     --g_sim_readback                            => false
