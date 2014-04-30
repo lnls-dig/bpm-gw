@@ -3,7 +3,7 @@
 modules = { "local": [
                 "modules/dbe_wishbone",
                 "modules/dbe_common",
-                "modules/rffe_top",
+#                "modules/rffe_top",
                 "modules/fabric",
                 "modules/fmc_adc_common",
                 "modules/pcie",
