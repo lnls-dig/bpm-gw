@@ -3,29 +3,14 @@ use ieee.std_logic_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.wishbone_pkg.all;
 
-package bpm_pcie_ml605_pkg is
-
-  --------------------------------------------------------------------
-  -- Constants
-  --------------------------------------------------------------------
-  -- PCIe Lanes
-  constant c_pcie_lanes                       : integer := 4;
-  -- PCIE Constants.
-  constant c_ddr_dq_width                     : integer := 64;
-  constant c_ddr_payload_width                : integer := 256;
-  constant c_ddr_dqs_width                    : integer := 8;
-  constant c_ddr_dm_width                     : integer := 8;
-  constant c_ddr_row_width                    : integer := 14;
-  constant c_ddr_bank_width                   : integer := 3;
-  constant c_ddr_ck_width                     : integer := 1;
-  constant c_ddr_cke_width                    : integer := 1;
-  constant c_ddr_odt_width                    : integer := 1;
+package bpm_pcie_a7_priv_pkg is
 
   --------------------------------------------------------------------
   -- Components
   --------------------------------------------------------------------
-  component bpm_pcie_ml605
+  component bpm_pcie_a7
   generic (
     SIMULATION   : string := "FALSE";
     -- ****
@@ -38,11 +23,11 @@ package bpm_pcie_ml605_pkg is
     -- Necessary parameters for DDR core support
     -- (dependent on memory chip connected to FPGA, not to be modified at will)
     --***************************************************************************
-    constant DDR_DQ_WIDTH      : integer := 64;
+    constant DDR_DQ_WIDTH      : integer := 32;
     constant DDR_PAYLOAD_WIDTH : integer := 256;
-    constant DDR_DQS_WIDTH     : integer := 8;
-    constant DDR_DM_WIDTH      : integer := 8;
-    constant DDR_ROW_WIDTH     : integer := 14;
+    constant DDR_DQS_WIDTH     : integer := 4;
+    constant DDR_DM_WIDTH      : integer := 4;
+    constant DDR_ROW_WIDTH     : integer := 16;
     constant DDR_BANK_WIDTH    : integer := 3;
     constant DDR_CK_WIDTH      : integer := 1;
     constant DDR_CKE_WIDTH     : integer := 1;
@@ -61,7 +46,6 @@ package bpm_pcie_ml605_pkg is
     ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
     ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
     ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
-    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_ras_n   : out   std_logic;
     ddr3_cas_n   : out   std_logic;
     ddr3_we_n    : out   std_logic;
@@ -69,6 +53,7 @@ package bpm_pcie_ml605_pkg is
     ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
@@ -78,12 +63,12 @@ package bpm_pcie_ml605_pkg is
     pci_exp_txn : out std_logic_vector(pcieLanes - 1 downto 0);
     -- Necessity signals
     ddr_sys_clk_p : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
+    ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
     sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
     sys_clk_n     : in std_logic; --100 MHz PCIe Clock
     sys_rst_n     : in std_logic; --Reset to PCIe core
 
     -- DDR memory controller interface --
-    -- uncomment when instantiating in another project
     ddr_core_rst   : in  std_logic;
     memc_ui_clk    : out std_logic;
     memc_ui_rst    : out std_logic;
@@ -104,7 +89,6 @@ package bpm_pcie_ml605_pkg is
     --/ DDR memory controller interface
 
     -- Wishbone interface --
-    -- uncomment when instantiating in another project
     CLK_I : in  std_logic;
     RST_I : in  std_logic;
     ACK_I : in  std_logic;
@@ -117,27 +101,8 @@ package bpm_pcie_ml605_pkg is
     CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    ext_rst_o : out std_logic;
-
-    -- Debug signals
-    dbg_app_addr_o           : out   std_logic_vector(31 downto 0);
-    dbg_app_cmd_o            : out   std_logic_vector(2 downto 0);
-    dbg_app_en_o             : out   std_logic;
-    dbg_app_wdf_data_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    dbg_app_wdf_end_o        : out   std_logic;
-    dbg_app_wdf_wren_o       : out   std_logic;
-    dbg_app_wdf_mask_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
-    dbg_app_rd_data_o        : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
-    dbg_app_rd_data_end_o    : out   std_logic;
-    dbg_app_rd_data_valid_o  : out   std_logic;
-    dbg_app_rdy_o            : out   std_logic;
-    dbg_app_wdf_rdy_o        : out   std_logic;
-    dbg_ddr_ui_clk_o         : out   std_logic;
-    dbg_ddr_ui_reset_o       : out   std_logic;
-
-    dbg_arb_req_o            : out std_logic_vector(1 downto 0);
-    dbg_arb_gnt_o            : out std_logic_vector(1 downto 0)
+    ext_rst_o : out std_logic
     );
   end component;
 
-end bpm_pcie_ml605_pkg;
+end bpm_pcie_a7_priv_pkg;

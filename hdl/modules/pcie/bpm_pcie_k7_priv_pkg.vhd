@@ -3,29 +3,14 @@ use ieee.std_logic_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.wishbone_pkg.all;
 
-package bpm_pcie_a7_pkg is
-
-  --------------------------------------------------------------------
-  -- Constants
-  --------------------------------------------------------------------
-  -- PCIe Lanes
-  constant c_pcie_lanes                       : integer := 4;
-  -- PCIE Constants.
-  constant c_ddr_dq_width                     : integer := 32;
-  constant c_ddr_payload_width                : integer := 256;
-  constant c_ddr_dqs_width                    : integer := 4;
-  constant c_ddr_dm_width                     : integer := 4;
-  constant c_ddr_row_width                    : integer := 16;
-  constant c_ddr_bank_width                   : integer := 3;
-  constant c_ddr_ck_width                     : integer := 1;
-  constant c_ddr_cke_width                    : integer := 1;
-  constant c_ddr_odt_width                    : integer := 1;
+package bpm_pcie_k7_priv_pkg is
 
   --------------------------------------------------------------------
   -- Components
   --------------------------------------------------------------------
-  component bpm_pcie_a7
+  component bpm_pcie_k7
   generic (
     SIMULATION   : string := "FALSE";
     -- ****
@@ -38,11 +23,11 @@ package bpm_pcie_a7_pkg is
     -- Necessary parameters for DDR core support
     -- (dependent on memory chip connected to FPGA, not to be modified at will)
     --***************************************************************************
-    constant DDR_DQ_WIDTH      : integer := 32;
-    constant DDR_PAYLOAD_WIDTH : integer := 256;
-    constant DDR_DQS_WIDTH     : integer := 4;
-    constant DDR_DM_WIDTH      : integer := 4;
-    constant DDR_ROW_WIDTH     : integer := 16;
+    constant DDR_DQ_WIDTH      : integer := 64;
+    constant DDR_PAYLOAD_WIDTH : integer := 512;
+    constant DDR_DQS_WIDTH     : integer := 8;
+    constant DDR_DM_WIDTH      : integer := 8;
+    constant DDR_ROW_WIDTH     : integer := 14;
     constant DDR_BANK_WIDTH    : integer := 3;
     constant DDR_CK_WIDTH      : integer := 1;
     constant DDR_CKE_WIDTH     : integer := 1;
@@ -77,13 +62,14 @@ package bpm_pcie_a7_pkg is
     pci_exp_txp : out std_logic_vector(pcieLanes - 1 downto 0);
     pci_exp_txn : out std_logic_vector(pcieLanes - 1 downto 0);
     -- Necessity signals
-    ddr_sys_clk_p : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
-    ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
-    sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
-    sys_clk_n     : in std_logic; --100 MHz PCIe Clock
+    ddr_sys_clk_p : in std_logic;
+    ddr_sys_clk_n : in std_logic;
+    sys_clk_p     : in std_logic;         --100 MHz PCIe Clock
+    sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
     sys_rst_n     : in std_logic; --Reset to PCIe core
 
     -- DDR memory controller interface --
+    -- uncomment when instantiating in another project
     ddr_core_rst   : in  std_logic;
     memc_ui_clk    : out std_logic;
     memc_ui_rst    : out std_logic;
@@ -98,12 +84,13 @@ package bpm_pcie_a7_pkg is
     memc_wr_rdy    : out std_logic;
     memc_rd_data   : out std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
     memc_rd_valid  : out std_logic;
-    ---- memory arbiter interface
+    -- memory arbiter interface
     memarb_acc_req : in  std_logic;
     memarb_acc_gnt : out std_logic;
     --/ DDR memory controller interface
 
     -- Wishbone interface --
+    -- uncomment when instantiating in another project
     CLK_I : in  std_logic;
     RST_I : in  std_logic;
     ACK_I : in  std_logic;
@@ -120,4 +107,4 @@ package bpm_pcie_a7_pkg is
     );
   end component;
 
-end bpm_pcie_a7_pkg;
+end bpm_pcie_k7_priv_pkg;
