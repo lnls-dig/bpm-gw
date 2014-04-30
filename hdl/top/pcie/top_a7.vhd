@@ -4,7 +4,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
-use work.bpm_pcie_a7_pkg.all;
+use work.bpm_pcie_a7_priv_pkg.all;
 
 library UNISIM;
 use UNISIM.VComponents.all;
