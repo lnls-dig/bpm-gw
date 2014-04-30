@@ -68,6 +68,7 @@ package bpm_pcie_a7_pkg is
     ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
     ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
