@@ -47,8 +47,6 @@ use work.genram_pkg.all;
 -- Data Acquisition core
 use work.acq_core_pkg.all;
 -- PCIe Core
-use work.bpm_pcie_pkg.all;
--- PCIe Core
 use work.bpm_pcie_ml605_pkg.all;
 
 library UNISIM;
