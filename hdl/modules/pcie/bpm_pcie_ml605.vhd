@@ -29,6 +29,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.bpm_pcie_ml605_const_pkg.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -131,9 +132,9 @@ entity bpm_pcie_ml605 is
 
     -- Debug signals
     dbg_app_addr_o           : out   std_logic_vector(31 downto 0);
-    dbg_app_cmd_o            : out   std_logic_vector(2 downto 0); 
-    dbg_app_en_o             : out   std_logic; 
-    dbg_app_wdf_data_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0); 
+    dbg_app_cmd_o            : out   std_logic_vector(2 downto 0);
+    dbg_app_en_o             : out   std_logic;
+    dbg_app_wdf_data_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
     dbg_app_wdf_end_o        : out   std_logic;
     dbg_app_wdf_wren_o       : out   std_logic;
     dbg_app_wdf_mask_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
@@ -152,7 +153,7 @@ end entity bpm_pcie_ml605;
 
 architecture Behavioral of bpm_pcie_ml605 is
 
-  constant DDR_ADDR_WIDTH : integer := 28;
+  constant DDR_ADDR_WIDTH : integer := c_ddr_addr_width;
 
   component pcie_core
     generic (
@@ -1312,7 +1313,7 @@ begin
   ddr_ref_clk_i   <= ddr_sys_clk_p;
   ddr_sys_reset_i <= ddr_core_rst;
   memc_ui_rst     <= ddr_ui_reset;
-                              
+
   dbg_app_addr_o           <= "0000" & app_addr;
   dbg_app_cmd_o            <= app_cmd;
   dbg_app_en_o             <= app_en;

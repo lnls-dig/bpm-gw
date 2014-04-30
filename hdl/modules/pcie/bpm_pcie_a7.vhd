@@ -29,6 +29,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.bpm_pcie_a7_const_pkg.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -132,7 +133,7 @@ end entity bpm_pcie_a7;
 
 architecture Behavioral of bpm_pcie_a7 is
 
-  constant DDR_ADDR_WIDTH : integer := 30;
+  constant DDR_ADDR_WIDTH : integer := c_ddr_addr_width;
 
   component pcie_core
     generic (

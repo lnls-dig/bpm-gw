@@ -20,4 +20,6 @@ package bpm_pcie_a7_const_pkg is
   constant c_ddr_cke_width                    : integer := 1;
   constant c_ddr_odt_width                    : integer := 1;
 
+  constant c_ddr_addr_width                   : integer := 30;
+
 end bpm_pcie_a7_const_pkg;
