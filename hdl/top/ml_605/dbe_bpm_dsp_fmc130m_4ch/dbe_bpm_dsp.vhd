@@ -48,6 +48,8 @@ use work.genram_pkg.all;
 use work.acq_core_pkg.all;
 -- PCIe Core
 use work.bpm_pcie_ml605_pkg.all;
+-- PCIe Core Constants
+use work.bpm_pcie_ml605_const_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
@@ -1124,146 +1126,92 @@ begin
   ----------------------------------
   --         PCIe Core            --
   ----------------------------------
-  cmp_bpm_pcie_ml605 : bpm_pcie_ml605
+
+  cmp_xwb_bpm_pcie_ml605 : xwb_bpm_pcie_ml605
   generic map (
-    SIM_BYPASS_INIT_CAL                     => "OFF" -- Full calibration sequence
+    g_ma_interface_mode                       => PIPELINED,
+    g_ma_address_granularity                  => BYTE,
+    g_sim_bypass_init_cal                     => "OFF"
   )
   port map (
-    --DDR3 memory pins
-    ddr3_dq                                 => ddr3_dq_b,
-    ddr3_dqs_p                              => ddr3_dqs_p_b,
-    ddr3_dqs_n                              => ddr3_dqs_n_b,
-    ddr3_addr                               => ddr3_addr_o,
-    ddr3_ba                                 => ddr3_ba_o,
-    ddr3_cs_n                               => ddr3_cs_n_o,
-    ddr3_ras_n                              => ddr3_ras_n_o,
-    ddr3_cas_n                              => ddr3_cas_n_o,
-    ddr3_we_n                               => ddr3_we_n_o,
-    ddr3_reset_n                            => ddr3_reset_n_o,
-    ddr3_ck_p                               => ddr3_ck_p_o,
-    ddr3_ck_n                               => ddr3_ck_n_o,
-    ddr3_cke                                => ddr3_cke_o,
-    ddr3_dm                                 => ddr3_dm_o,
-    ddr3_odt                                => ddr3_odt_o,
+    -- DDR3 memory pins
+    ddr3_dq_b                                 => ddr3_dq_b,
+    ddr3_dqs_p_b                              => ddr3_dqs_p_b,
+    ddr3_dqs_n_b                              => ddr3_dqs_n_b,
+    ddr3_addr_o                               => ddr3_addr_o,
+    ddr3_ba_o                                 => ddr3_ba_o,
+    ddr3_cs_n_o                               => ddr3_cs_n_o,
+    ddr3_ras_n_o                              => ddr3_ras_n_o,
+    ddr3_cas_n_o                              => ddr3_cas_n_o,
+    ddr3_we_n_o                               => ddr3_we_n_o,
+    ddr3_reset_n_o                            => ddr3_reset_n_o,
+    ddr3_ck_p_o                               => ddr3_ck_p_o,
+    ddr3_ck_n_o                               => ddr3_ck_n_o,
+    ddr3_cke_o                                => ddr3_cke_o,
+    ddr3_dm_o                                 => ddr3_dm_o,
+    ddr3_odt_o                                => ddr3_odt_o,
+
     -- PCIe transceivers
-    pci_exp_rxp                             => pci_exp_rxp_i,
-    pci_exp_rxn                             => pci_exp_rxn_i,
-    pci_exp_txp                             => pci_exp_txp_o,
-    pci_exp_txn                             => pci_exp_txn_o,
+    pci_exp_rxp_i                             => pci_exp_rxp_i,
+    pci_exp_rxn_i                             => pci_exp_rxn_i,
+    pci_exp_txp_o                             => pci_exp_txp_o,
+    pci_exp_txn_o                             => pci_exp_txn_o,
+
     -- Necessity signals
-    ddr_sys_clk_p                           => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
-    --ddr_sys_clk_p                           => sys_clk_gen_bufg, --200 MHz DDR core clock (connect through BUFG or PLL)
-    sys_clk_p                               => pcie_clk_p_i,  --100 MHz PCIe Clock (connect directly to input pin)
-    sys_clk_n                               => pcie_clk_n_i,  --100 MHz PCIe Clock
-    sys_rst_n                               => pcie_rst_n_i, -- PCIe core reset
+    ddr_clk_p_i                               => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
+    ddr_clk_n_i                               => '0',          --200 MHz DDR core clock (connect through BUFG or PLL)
+    pcie_clk_p_i                              => pcie_clk_p_i,  --100 MHz PCIe Clock (connect directly to input pin)
+    pcie_clk_n_i                              => pcie_clk_n_i,  --100 MHz PCIe Clock
+    pcie_rst_n_i                              => pcie_rst_n_i, -- PCIe core reset
 
     -- DDR memory controller interface --
-    --ddr_core_rst                            => wb_ma_pcie_rst,
-    ddr_core_rst                            => clk_sys_rst,
-    memc_ui_clk                             => memc_ui_clk,
-    memc_ui_rst                             => memc_ui_rst,
-    memc_cmd_rdy                            => memc_cmd_rdy,
-    memc_cmd_en                             => memc_cmd_en,
-    memc_cmd_instr                          => memc_cmd_instr,
-    --memc_cmd_addr                           => memc_cmd_addr,
-    memc_cmd_addr                           => memc_cmd_addr_resized,
-    memc_wr_en                              => memc_wr_en,
-    memc_wr_end                             => memc_wr_end,
-    memc_wr_mask                            => memc_wr_mask,
-    memc_wr_data                            => memc_wr_data,
-    memc_wr_rdy                             => memc_wr_rdy,
-    memc_rd_data                            => memc_rd_data,
-    memc_rd_valid                           => memc_rd_valid,
-    -- memory arbiter interface
-    memarb_acc_req                          => memarb_acc_req,
-    memarb_acc_gnt                          => memarb_acc_gnt,
-    --/ DDR memory controller interface
+    ddr_core_rst_i                            => clk_sys_rst,
+    memc_ui_clk_o                             => memc_ui_clk,
+    memc_ui_rst_o                             => memc_ui_rst,
+    memc_cmd_rdy_o                            => memc_cmd_rdy,
+    memc_cmd_en_i                             => memc_cmd_en,
+    memc_cmd_instr_i                          => memc_cmd_instr,
+    memc_cmd_addr_i                           => memc_cmd_addr_resized,
+    memc_wr_en_i                              => memc_wr_en,
+    memc_wr_end_i                             => memc_wr_end,
+    memc_wr_mask_i                            => memc_wr_mask,
+    memc_wr_data_i                            => memc_wr_data,
+    memc_wr_rdy_o                             => memc_wr_rdy,
+    memc_rd_data_o                            => memc_rd_data,
+    memc_rd_valid_o                           => memc_rd_valid,
+    ---- memory arbiter interface
+    memarb_acc_req_i                          => memarb_acc_req,
+    memarb_acc_gnt_o                          => memarb_acc_gnt,
 
     -- Wishbone interface --
-    -- uncomment when instantiating in another project
-    clk_i                                   => clk_sys,
-    rst_i                                   => clk_sys_rst,
-    ack_i                                   => wb_ma_pcie_ack_in,
-    dat_i                                   => wb_ma_pcie_dat_in,
-    addr_o                                  => wb_ma_pcie_addr_out,
-    dat_o                                   => wb_ma_pcie_dat_out,
-    we_o                                    => wb_ma_pcie_we_out,
-    stb_o                                   => wb_ma_pcie_stb_out,
-    sel_o                                   => wb_ma_pcie_sel_out,
-    cyc_o                                   => wb_ma_pcie_cyc_out,
-    --/ Wishbone interface
+    wb_clk_i                                  => clk_sys,
+    wb_rst_i                                  => clk_sys_rst,
+    wb_ma_i                                   => cbar_slave_o(0),
+    wb_ma_o                                   => cbar_slave_i(0),
     -- Additional exported signals for instantiation
-    ext_rst_o                               => wb_ma_pcie_rst,
+    wb_ma_pcie_rst_o                          => wb_ma_pcie_rst,
 
     -- Debug signals
-    dbg_app_addr_o                          => dbg_app_addr,
-    dbg_app_cmd_o                           => dbg_app_cmd,
-    dbg_app_en_o                            => dbg_app_en,
-    dbg_app_wdf_data_o                      => dbg_app_wdf_data,
-    dbg_app_wdf_end_o                       => dbg_app_wdf_end,
-    dbg_app_wdf_wren_o                      => dbg_app_wdf_wren,
-    dbg_app_wdf_mask_o                      => dbg_app_wdf_mask,
-    dbg_app_rd_data_o                       => dbg_app_rd_data,
-    dbg_app_rd_data_end_o                   => dbg_app_rd_data_end,
-    dbg_app_rd_data_valid_o                 => dbg_app_rd_data_valid,
-    dbg_app_rdy_o                           => dbg_app_rdy,
-    dbg_app_wdf_rdy_o                       => dbg_app_wdf_rdy,
-    dbg_ddr_ui_clk_o                        => dbg_ddr_ui_clk,
-    dbg_ddr_ui_reset_o                      => dbg_ddr_ui_reset,
+    dbg_app_addr_o                            => dbg_app_addr,
+    dbg_app_cmd_o                             => dbg_app_cmd,
+    dbg_app_en_o                              => dbg_app_en,
+    dbg_app_wdf_data_o                        => dbg_app_wdf_data,
+    dbg_app_wdf_end_o                         => dbg_app_wdf_end,
+    dbg_app_wdf_wren_o                        => dbg_app_wdf_wren,
+    dbg_app_wdf_mask_o                        => dbg_app_wdf_mask,
+    dbg_app_rd_data_o                         => dbg_app_rd_data,
+    dbg_app_rd_data_end_o                     => dbg_app_rd_data_end,
+    dbg_app_rd_data_valid_o                   => dbg_app_rd_data_valid,
+    dbg_app_rdy_o                             => dbg_app_rdy,
+    dbg_app_wdf_rdy_o                         => dbg_app_wdf_rdy,
+    dbg_ddr_ui_clk_o                          => dbg_ddr_ui_clk,
+    dbg_ddr_ui_reset_o                        => dbg_ddr_ui_reset,
 
-    dbg_arb_req_o                           => dbg_arb_req,
-    dbg_arb_gnt_o                           => dbg_arb_gnt
+    dbg_arb_req_o                             => dbg_arb_req,
+    dbg_arb_gnt_o                             => dbg_arb_gnt
   );
 
-  wb_ma_pcie_rstn                           <= not(wb_ma_pcie_rst);
-
-  cmp_pcie_ma_iface_slave_adapter : wb_slave_adapter
-  generic map (
-    g_master_use_struct                     => true,
-    g_master_mode                           => PIPELINED,
-    g_master_granularity                    => WORD,
-    g_slave_use_struct                      => false,
-    g_slave_mode                            => CLASSIC,
-    g_slave_granularity                     => WORD
-  )
-  port map (
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-
-    sl_adr_i                                => wb_ma_sladp_pcie_addr_out,
-    sl_dat_i                                => wb_ma_sladp_pcie_dat_out,
-    sl_sel_i                                => wb_ma_sladp_pcie_sel_out,
-    sl_cyc_i                                => wb_ma_sladp_pcie_cyc_out,
-    sl_stb_i                                => wb_ma_sladp_pcie_stb_out,
-    sl_we_i                                 => wb_ma_sladp_pcie_we_out,
-    sl_dat_o                                => wb_ma_sladp_pcie_dat_in,
-    sl_ack_o                                => wb_ma_sladp_pcie_ack_in,
-    sl_stall_o                              => open,
-    sl_int_o                                => open,
-    sl_rty_o                                => open,
-    sl_err_o                                => open,
-
-    master_i                                => cbar_slave_o(0),
-    master_o                                => cbar_slave_i(0)
-  );
-
-  -- Connect PCIe to the Wishbone Crossbar
-  wb_ma_sladp_pcie_addr_out(wb_ma_sladp_pcie_addr_out'left downto wb_ma_pcie_addr_out'left+1)
-                                              <= (others => '0');
-  wb_ma_sladp_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0)
-                                              <= wb_ma_pcie_addr_out;
-  wb_ma_sladp_pcie_dat_out                    <= wb_ma_pcie_dat_out(wb_ma_sladp_pcie_dat_out'left downto 0);
-  wb_ma_sladp_pcie_sel_out                    <= wb_ma_pcie_sel_out & wb_ma_pcie_sel_out &
-                                                 wb_ma_pcie_sel_out & wb_ma_pcie_sel_out;
-  wb_ma_sladp_pcie_cyc_out                    <= wb_ma_pcie_cyc_out;
-  wb_ma_sladp_pcie_stb_out                    <= wb_ma_pcie_stb_out;
-  wb_ma_sladp_pcie_we_out                     <= wb_ma_pcie_we_out;
-  wb_ma_pcie_dat_in(wb_ma_pcie_dat_in'left downto wb_ma_sladp_pcie_dat_in'left+1)
-                                              <= (others => '0');
-  wb_ma_pcie_dat_in(wb_ma_sladp_pcie_dat_in'left downto 0)
-                                              <= wb_ma_sladp_pcie_dat_in;
-
-  wb_ma_pcie_ack_in                           <= wb_ma_sladp_pcie_ack_in;
+  wb_ma_pcie_rstn                             <= not wb_ma_pcie_rst;
 
   ----------------------------------
   --         RS232 Core            --
