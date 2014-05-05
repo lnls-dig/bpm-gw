@@ -204,7 +204,8 @@ package fmc_adc_pkg is
   subtype t_clk_use_bufio_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_bufr_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_map_clk_data_chain is t_integer_array(c_num_adc_channels-1 downto 0);
-  subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels-1;
+  -- The last channel is reserved for an external clock
+  subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels;
 
   -- Constant default values.
   constant default_adc_clk_period : real := 4.0; -- 250 MHz
@@ -474,6 +475,11 @@ package fmc_adc_pkg is
     adc_in_i                                  : in t_adc_in_array(c_num_adc_channels-1 downto 0);
     -- ADC clock + data single ended inputs (from the top module)
     adc_in_sdr_i                              : in t_adc_sdr_in_array(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- Optional external reference clock port
+    -----------------------------
+    adc_ext_glob_clk_i                        : in t_adc_clk_chain_glob;
 
     -----------------------------
     -- ADC Delay signals.
