@@ -233,7 +233,7 @@ architecture rtl of wb_fmc516 is
   -- Numbert of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
   constant c_periph_addr_size               : natural := 5+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
-  constant c_ref_clk                        : natural := g_ref_clk;
+  constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
   constant c_with_clk_single_ended          : boolean := false;
   constant c_with_data_single_ended         : boolean := false;
   constant c_with_data_sdr                  : boolean := false;
