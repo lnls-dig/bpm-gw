@@ -140,6 +140,13 @@ port
   fmc_led3_o                                : out std_logic;
 
   -----------------------------
+  -- Optional external reference clock ports
+  -----------------------------
+  fmc_ext_ref_clk_i                        : in std_logic := '0';
+  fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+  fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+  -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -304,6 +311,13 @@ begin
     fmc_led1_o                                => fmc_led1_o,
     fmc_led2_o                                => fmc_led2_o,
     fmc_led3_o                                => fmc_led3_o,
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        => fmc_ext_ref_clk_i,
+    fmc_ext_ref_clk2x_i                      => fmc_ext_ref_clk2x_i,
+    fmc_ext_ref_mmcm_locked_i                => fmc_ext_ref_mmcm_locked_i,
 
     -----------------------------
     -- ADC output signals. Continuous flow

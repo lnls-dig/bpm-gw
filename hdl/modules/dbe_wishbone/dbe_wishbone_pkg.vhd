@@ -448,6 +448,13 @@ package dbe_wishbone_pkg is
     fmc_prsnt_m2c_l_i                         : in  std_logic;
 
     -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                         : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                       : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                 : in std_logic := '0';
+
+    -----------------------------
     -- ADC output signals. Continuous flow
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -598,6 +605,13 @@ package dbe_wishbone_pkg is
     fmc_reset_adcs_n_o                        : out std_logic;
     --FMC Present status
     fmc_prsnt_m2c_l_i                         : in  std_logic;
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
 
     -----------------------------
     -- ADC output signals. Continuous flow
@@ -751,6 +765,13 @@ package dbe_wishbone_pkg is
     fmc_led3_o                                : out std_logic;
 
     -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+    -----------------------------
     -- ADC output signals. Continuous flow
     -----------------------------
     adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -900,6 +921,13 @@ package dbe_wishbone_pkg is
     fmc_led1_o                                : out std_logic;
     fmc_led2_o                                : out std_logic;
     fmc_led3_o                                : out std_logic;
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
 
     -----------------------------
     -- ADC output signals. Continuous flow

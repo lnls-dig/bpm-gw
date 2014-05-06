@@ -162,6 +162,13 @@ port
   fmc_led3_o                                : out std_logic;
 
   -----------------------------
+  -- Optional external reference clock ports
+  -----------------------------
+  fmc_ext_ref_clk_i                        : in std_logic := '0';
+  fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+  fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+  -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -330,6 +337,9 @@ architecture rtl of wb_fmc130m_4ch is
   signal fs_clk2x                           : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_valid                          : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_data                           : std_logic_vector(c_num_adc_bits*c_num_adc_channels-1 downto 0);
+
+  -- Optional reference clock
+  signal adc_ext_glob_clk_int               : t_adc_clk_chain_glob;
 
   -- ADC Reset signals
   signal adc_clk_div_rst_int                : std_logic;
@@ -967,6 +977,11 @@ begin
     adc_in_sdr_i                            => adc_in,
 
     -----------------------------
+    -- Optional External Global Clock ports
+    -----------------------------
+    adc_ext_glob_clk_i                      => adc_ext_glob_clk_int,
+
+    -----------------------------
     -- ADC Delay signals
     -----------------------------
 
@@ -996,6 +1011,11 @@ begin
   -- Clock and reset assignments
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
+
+  -- Optional reference clock
+  adc_ext_glob_clk_int.adc_clk_bufg         <= fmc_ext_ref_clk_i;
+  adc_ext_glob_clk_int.adc_clk2x_bufg       <= fmc_ext_ref_clk2x_i;
+  adc_ext_glob_clk_int.mmcm_adc_locked      <= fmc_ext_ref_mmcm_locked_i;
 
   -- ADC data for internal use
   gen_adc_data_int : for i in 0 to c_num_adc_channels-1 generate
