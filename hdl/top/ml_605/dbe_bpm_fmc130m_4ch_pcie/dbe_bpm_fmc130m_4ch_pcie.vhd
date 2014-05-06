@@ -42,6 +42,7 @@ use work.fmc_adc_pkg.all;
 use work.acq_core_pkg.all;
 -- PCIe Core
 use work.bpm_pcie_ml605_pkg.all;
+use work.bpm_pcie_ml605_priv_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
@@ -1284,6 +1285,13 @@ begin
     fmc_led1_o                              => fmc_led1_int,
     fmc_led2_o                              => fmc_led2_int,
     fmc_led3_o                              => fmc_led3_int,
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                       => '0', -- Unused
+    fmc_ext_ref_clk2x_i                     => '0', -- Unused
+    fmc_ext_ref_mmcm_locked_i               => '0', -- Unused
 
     -----------------------------
     -- ADC output signals. Continuous flow
