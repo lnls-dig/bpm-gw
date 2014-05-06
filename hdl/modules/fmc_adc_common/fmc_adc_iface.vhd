@@ -133,9 +133,7 @@ architecture rtl of fmc_adc_iface is
   -- Number of ADC input pins. This is different for SDR or DDR ADCs.
   constant c_num_in_adc_pins                : natural := f_num_adc_pins(g_with_data_sdr);
 
-  -- Temporary!
-  constant c_with_bufio                     : boolean := true;
-  constant c_with_bufr                      : boolean := true;
+  constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
 
   -- ADC input signals
   signal adc_in_t                           : t_adc_sdr_in_array(c_num_adc_channels-1 downto 0);
@@ -341,7 +339,7 @@ begin
   port map (
     sys_clk_i                               => sys_clk_i,
     --sys_rst_n_i                             => sys_rst_n_i,
-    sys_rst_n_i                             => adc_in_t(g_ref_clk).adc_rst_n,
+    sys_rst_n_i                             => adc_in_t(c_ref_clk).adc_rst_n,
 
     -----------------------------
     -- ADC Data Input signals. Each data chain is synchronous to its
