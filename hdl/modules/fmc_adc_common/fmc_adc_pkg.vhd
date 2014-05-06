@@ -265,6 +265,8 @@ package fmc_adc_pkg is
 
   function f_std_logic_to_bool(input : std_logic) return boolean;
 
+  function f_adc_ref_clk(ref_clk : t_ref_adc_clk) return natural;
+
   -----------------------------
   -- Components declaration
   ----------------------------
@@ -742,6 +744,18 @@ package body fmc_adc_pkg is
       return false;
     end if;
   end f_std_logic_to_bool;
+
+  function f_adc_ref_clk(ref_clk : t_ref_adc_clk)
+    return natural
+  is
+    constant c_ref_clk_any : natural := 1; -- Any clock from 0 to c_num_adc_channels-1
+  begin
+    if (ref_clk = c_num_adc_channels) then -- External reference clock
+      return c_ref_clk_any;
+    else
+      return ref_clk;
+    end if;
+  end f_adc_ref_clk;
 
   ---- revise function and make it generic? Does it worth it?
   --function f_mmcm_params(clk_in : real)
