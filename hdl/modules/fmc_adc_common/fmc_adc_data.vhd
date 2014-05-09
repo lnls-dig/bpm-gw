@@ -238,7 +238,7 @@ begin
       end generate;
     end generate;
 
-    gen_adc_data_virtex6_iodelay : if (g_fpga_device = "7SERIES") generate
+    gen_adc_data_7series_iodelay : if (g_fpga_device = "7SERIES") generate
       gen_adc_data_var_loadable_iodelay : if (g_delay_type = "VAR_LOAD") generate
 
         cmp_adc_data_iodelay : idelaye2

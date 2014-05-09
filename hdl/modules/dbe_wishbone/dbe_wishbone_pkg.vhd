@@ -333,6 +333,7 @@ package dbe_wishbone_pkg is
   (
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
@@ -501,6 +502,7 @@ package dbe_wishbone_pkg is
   (
     -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
@@ -652,6 +654,7 @@ package dbe_wishbone_pkg is
   (
     -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
@@ -819,6 +822,7 @@ package dbe_wishbone_pkg is
   (
     -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
