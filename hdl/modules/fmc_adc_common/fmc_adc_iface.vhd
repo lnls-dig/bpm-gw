@@ -276,6 +276,7 @@ begin
       --gen_implicitly_clk_data_map : if f_explicitly_clk_data_map(g_map_clk_data_chains) = false generate
         cmp_fmc_adc_data : fmc_adc_data
           generic map (
+            g_fpga_device                       => g_fpga_device,
             g_default_adc_data_delay            => g_data_default_dly(i),
             --g_delay_type                        => "VARIABLE",
             g_delay_type                        => g_delay_type,

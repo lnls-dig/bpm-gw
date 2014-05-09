@@ -376,6 +376,8 @@ package fmc_adc_pkg is
   component fmc_adc_data
   generic
   (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
     g_delay_type                              : string := "VARIABLE";
     g_default_adc_data_delay                  : natural := 0;
     g_with_data_sdr                           : boolean := false;
