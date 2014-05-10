@@ -59,6 +59,7 @@ generic
   g_data_default_dly                        : t_default_adc_dly := default_data_dly;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
+  g_mrcc_pin_chains                         : t_clk_mrcc_pin_chain := default_clk_mrcc_pin_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
   g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
   g_with_data_sdr                           : boolean := false;
@@ -209,6 +210,7 @@ begin
         g_with_ref_clk                      => f_with_ref_clk(i, g_ref_clk),
         g_mmcm_param                        => g_mmcm_param,
         g_with_fn_dly_select                => g_with_fn_dly_select,
+        g_mrcc_pin                          => f_std_logic_to_bool(g_mrcc_pin_chains(i)),
         g_with_bufio                        => f_std_logic_to_bool(g_with_bufio_clk_chains(i)),
         g_with_bufr                         => f_std_logic_to_bool(g_with_bufr_clk_chains(i)),
         g_sim                               => g_sim

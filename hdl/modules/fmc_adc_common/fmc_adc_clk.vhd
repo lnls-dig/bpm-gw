@@ -38,6 +38,7 @@ generic
   g_with_ref_clk                            : boolean := false;
   g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
   g_with_fn_dly_select                      : boolean := false;
+  g_mrcc_pin                                : boolean := false;
   g_with_bufio                              : boolean := true;
   g_with_bufr                               : boolean := true;
   g_sim                                     : integer := 0
@@ -273,7 +274,7 @@ begin
 
      -- We either have BUFIO + BUFR or just BUFR. We only
      -- have to check for BUFR, then.
-    gen_bufmr_7_series : if (g_with_bufr) generate
+    gen_bufmr_7_series : if (g_mrcc_pin) generate
 
       -- 1-bit output: Clock output (connect to BUFIOs/BUFRs)
       -- 1-bit input: Clock input (Connect to IBUFG)
@@ -288,7 +289,7 @@ begin
 
     end generate;
 
-    gen_not_bufmr_7_series : if (not g_with_bufr) generate
+    gen_not_bufmr_7_series : if (not g_mrcc_pin) generate
 
       adc_clk_bufio_in                        <= adc_clk_ibufgds_dly;
       adc_clk_bufr_in                         <= adc_clk_ibufgds_dly;

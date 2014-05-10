@@ -201,6 +201,7 @@ package fmc_adc_pkg is
   subtype t_clk_values_array is t_real_array(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_data_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
+  subtype t_clk_mrcc_pin_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_bufio_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_bufr_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_map_clk_data_chain is t_integer_array(c_num_adc_channels-1 downto 0);
@@ -217,6 +218,8 @@ package fmc_adc_pkg is
     ("0011");
   constant default_data_use_chain : t_data_use_chain :=
     ("1111");
+  constant default_clk_mrcc_pin_chain: t_clk_mrcc_pin_chain :=
+    ("0000");
   constant default_clk_use_bufio_chain : t_clk_use_bufio_chain :=
     ("1111");
   constant default_clk_use_bufr_chain : t_clk_use_bufr_chain :=
@@ -340,6 +343,7 @@ package fmc_adc_pkg is
     g_with_ref_clk                            : boolean := false;
     g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
     g_with_fn_dly_select                      : boolean := false;
+    g_mrcc_pin                                : boolean := false;
     g_with_bufio                              : boolean := true;
     g_with_bufr                               : boolean := true;
     g_sim                                     : integer := 0
@@ -455,6 +459,7 @@ package fmc_adc_pkg is
     g_data_default_dly                        : t_default_adc_dly := default_data_dly;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
     g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
+    g_mrcc_pin_chains                         : t_clk_mrcc_pin_chain := default_clk_mrcc_pin_chain;
     g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
     g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
     g_with_data_sdr                           : boolean := false;
