@@ -263,7 +263,7 @@ begin
 
       cmp_ibuf_adc_data_ch0 : ibuf
       generic map(
-        IOSTANDARD                            => "LVDS_25"
+        IOSTANDARD                            => "LVCMOS25"
       )
       port map(
         i                                     => adc_data_ch0_p_t(i),
@@ -272,7 +272,7 @@ begin
 
       cmp_ibuf_adc_data_ch1 : ibuf
       generic map(
-        IOSTANDARD                            => "LVDS_25"
+        IOSTANDARD                            => "LVCMOS25"
       )
       port map(
         i                                     => adc_data_ch1_p_t(i),
@@ -281,7 +281,7 @@ begin
 
       cmp_ibuf_adc_data_ch2 : ibuf
       generic map(
-        IOSTANDARD                            => "LVDS_25"
+        IOSTANDARD                            => "LVCMOS25"
       )
       port map(
         i                                     => adc_data_ch2_p_t(i),
@@ -290,7 +290,7 @@ begin
 
       cmp_ibuf_adc_data_ch3 : ibuf
       generic map(
-        IOSTANDARD                            => "LVDS_25"
+        IOSTANDARD                            => "LVCMOS25"
       )
       port map(
         i                                     => adc_data_ch3_p_t(i),
