@@ -1198,12 +1198,12 @@ begin
     g_clkin_period                          => 8.000,
     g_divclk_divide                         => 5,
     g_clkbout_mult_f                        => 32,
-                                         
-    -- 100 MHz output clock          
-    g_clk0_divide_f                         => 8.000,
-    -- 200 MHz output clock     
+
+    -- 100 MHz output clock
+    g_clk0_divide_f                         => 8,
+    -- 200 MHz output clock
     g_clk1_divide                           => 4
-  )    
+  )
   port map (
     rst_i                                   => '0',
     clk_i                                   => sys_clk_gen_bufg,
