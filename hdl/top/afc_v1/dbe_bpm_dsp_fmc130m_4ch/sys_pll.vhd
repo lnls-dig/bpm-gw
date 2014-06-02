@@ -27,6 +27,7 @@ entity sys_pll is
 generic(
   -- 200 MHz input clock
   g_clkin_period                            : real := 5.000;
+  g_divclk_divide                           : integer := 1;
   g_clkbout_mult_f                          : real := 5.000;
         
   -- 100 MHz output clock             
@@ -64,7 +65,7 @@ begin
     CLOCK_HOLD                              => FALSE,
     COMPENSATION                            => "ZHOLD",
     STARTUP_WAIT                            => FALSE,
-    DIVCLK_DIVIDE                           => 1,
+    DIVCLK_DIVIDE                           => g_divclk_divide,
     CLKFBOUT_MULT_F                         => g_clkbout_mult_f,
     CLKFBOUT_PHASE                          => 0.000,
     CLKFBOUT_USE_FINE_PS                    => FALSE,
@@ -146,4 +147,3 @@ begin
     );
 
 end syn;
-                
