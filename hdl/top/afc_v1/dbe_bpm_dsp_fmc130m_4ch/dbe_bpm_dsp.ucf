@@ -424,9 +424,13 @@ INST "*cmp_fmc_adc_iface_gen_clock_chains[3].*.*.*.cmp_ibufds_clk_iodelay" IDELA
 ##                          Clocks                                   ##
 #######################################################################
 
-# 200 MHz onboard input clock
+#### 200 MHz onboard input clock
+###NET "sys_clk_p_i" TNM_NET = "sys_clk_group";
+###TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 5 ns HIGH 50%;
+
+# 125 MHz AMC TCLKB input clock
 NET "sys_clk_p_i" TNM_NET = "sys_clk_group";
-TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 5 ns HIGH 50%;
+TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 8 ns HIGH 50%;
 
 # 100 MHz wihsbone clock
 NET "clk_sys" TNM_NET = "clk_sys_group";
