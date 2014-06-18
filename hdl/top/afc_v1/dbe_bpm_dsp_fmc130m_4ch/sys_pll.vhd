@@ -130,13 +130,13 @@ begin
         O                                   => s_mmcm_fbin,
         I                                   => s_mmcm_fbout
     );
-
+        
     cmp_clkout0_buf : BUFG
     port map(
         O                                   => clk0_o,
         I                                   => s_clk0
     );
-
+    
     cmp_clkout1_buf : BUFG
     port map(
         O                                   => clk1_o,
@@ -144,3 +144,4 @@ begin
     );
 
 end syn;
+                
