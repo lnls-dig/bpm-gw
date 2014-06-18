@@ -1036,6 +1036,17 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Xilinx PLL
   component sys_pll is
+  generic(
+    -- 200 MHz input clock
+    g_clkin_period                            : real := 5.000;
+    g_divclk_divide                           : integer := 1;
+    g_clkbout_mult_f                          : real := 5.000;
+  
+    -- 100 MHz output clock             
+    g_clk0_divide_f                           : real := 10.000;
+    -- 200 MHz output clock                 
+    g_clk1_divide                             : integer := 5
+  );
   port(
     rst_i                                   : in std_logic := '0';
     clk_i                                   : in std_logic := '0';
@@ -2970,3 +2981,4 @@ begin
   --);
 
 end ;
+
