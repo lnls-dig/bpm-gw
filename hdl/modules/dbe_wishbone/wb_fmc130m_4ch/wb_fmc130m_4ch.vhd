@@ -653,9 +653,9 @@ begin
   );
 
   -- Unused wishbone signals
-  wb_slv_adp_in.int                         <= '0';
-  wb_slv_adp_in.err                         <= '0';
-  wb_slv_adp_in.rty                         <= '0';
+  --wb_slv_adp_in.int                         <= '0';
+  --wb_slv_adp_in.err                         <= '0';
+  --wb_slv_adp_in.rty                         <= '0';
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
@@ -1068,8 +1068,8 @@ begin
   si571_i2c_sda_in <= si571_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(1).err                     <= '0';
-  cbar_master_in(1).rty                     <= '0';
+  --cbar_master_in(1).err                     <= '0';
+  --cbar_master_in(1).rty                     <= '0';
 
   -----------------------------
   -- AD9510 SPI Bus
@@ -1105,7 +1105,7 @@ begin
 
   -- Not used wishbone signals
   --cbar_master_in(2).err                     <= '0';
-  cbar_master_in(2).rty                     <= '0';
+  --cbar_master_in(2).rty                     <= '0';
 
   -----------------------------
   --  I2C EEPROM 24AA64T-I
@@ -1140,8 +1140,8 @@ begin
   eeprom_i2c_sda_in <= eeprom_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(3).err                     <= '0';
-  cbar_master_in(3).rty                     <= '0';
+  --cbar_master_in(3).err                     <= '0';
+  --cbar_master_in(3).rty                     <= '0';
 
   -----------------------------
   --  I2C LM75AIMM
@@ -1176,8 +1176,8 @@ begin
   lm75a_i2c_sda_in <= lm75_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(4).err                     <= '0';
-  cbar_master_in(4).rty                     <= '0';
+  --cbar_master_in(4).err                     <= '0';
+  --cbar_master_in(4).rty                     <= '0';
 
   -----------------------------
   -- Wishbone Streaming Interface
