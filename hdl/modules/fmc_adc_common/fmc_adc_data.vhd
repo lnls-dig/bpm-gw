@@ -112,10 +112,28 @@ architecture rtl of fmc_adc_data is
   signal adc_data_ff                        : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff_d1                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal adc_data_ff_d3                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
-  --attribute IOB : string;
-  --attribute IOB of adc_data_ff: signal is "TRUE";
+  -- Instruct XST that the pipeline signals adc_data_ff and its delayed versions
+  -- are not be removed nor become shift registers
+  attribute equivalent_register_removal                       : string;
+  attribute equivalent_register_removal of adc_data_ff        : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d1     : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d2     : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d3     : signal is "no";
+  attribute shreg_extract                                     : string;
+  attribute shreg_extract of adc_data_ff                      : signal is "no";
+  attribute shreg_extract of adc_data_ff_d1                   : signal is "no";
+  attribute shreg_extract of adc_data_ff_d2                   : signal is "no";
+  attribute shreg_extract of adc_data_ff_d3                   : signal is "no";
+  -- Also, as the XST attributes are not passed to MAP, we contraint it again
+  -- here, using MAP attributes
+  attribute keep 					      : string;
+  attribute keep of adc_data_ff 			      : signal is "true";
+  attribute keep of adc_data_ff_d1 			      : signal is "true";
+  attribute keep of adc_data_ff_d2 			      : signal is "true";
+  attribute keep of adc_data_ff_d3 			      : signal is "true";
 
   -- Fine delay signals
   signal iodelay_update                     : std_logic_vector(c_num_in_adc_pins-1 downto 0);
@@ -394,6 +412,7 @@ begin
       adc_data_ff <= adc_data_sdr;
       adc_data_ff_d1 <= adc_data_ff;
       adc_data_ff_d2 <= adc_data_ff_d1;
+      adc_data_ff_d3 <= adc_data_ff_d2;
     end if;
   end process;
 
@@ -410,8 +429,7 @@ begin
 
     -- write port
     clk_wr_i                              => adc_clk_bufr,
-    d_i                                   => adc_data_ff_d2,
-    --d_i                                   => adc_data_sdr,
+    d_i                                   => adc_data_ff_d3,
     we_i                                  => adc_fifo_wr,
     wr_full_o                             => adc_fifo_full,
 
