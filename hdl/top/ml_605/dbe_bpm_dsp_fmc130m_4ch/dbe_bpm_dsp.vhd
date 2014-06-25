@@ -1412,6 +1412,7 @@ begin
   cmp_xwb_fmc130m_4ch : xwb_fmc130m_4ch
   generic map(
     g_fpga_device                           => "VIRTEX6",
+    g_delay_type                            => "VAR_LOADABLE",
     g_interface_mode                        => PIPELINED,
     --g_address_granularity                   => WORD,
     g_address_granularity                   => BYTE,
