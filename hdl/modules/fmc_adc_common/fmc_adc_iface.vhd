@@ -64,6 +64,7 @@ generic
   g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
   g_with_data_sdr                           : boolean := false;
   g_with_fn_dly_select                      : boolean := false;
+  g_with_idelayctrl			    : boolean := true;
   g_sim                                     : integer := 0
 );
 port
@@ -188,12 +189,18 @@ begin
   end generate;
 
   -- idelay control for var_loadable iodelay mode
-  cmp_idelayctrl : idelayctrl
-  port map(
-    rst                                     => sys_rst,
-    refclk                                  => sys_clk_200Mhz_i,
-    rdy                                     => idelay_rdy_o
-  );
+  gen_idelayctrl : if (g_with_idelayctrl) generate
+    cmp_idelayctrl : idelayctrl
+    port map(
+      rst                                     => sys_rst,
+      refclk                                  => sys_clk_200Mhz_i,
+      rdy                                     => idelay_rdy_o
+    );
+  end generate;
+  
+  gen_not_idelayctrl : if (not g_with_idelayctrl) generate
+    idelay_rdy_o <= '1';
+  end generate;
 
   -- Generate clock chains
   gen_clock_chains : for i in 0 to chain_intercon'length-1 generate
