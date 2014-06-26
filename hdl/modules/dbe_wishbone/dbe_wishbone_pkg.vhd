@@ -342,6 +342,7 @@ package dbe_wishbone_pkg is
     g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
     g_packet_size                             : natural := 32;
+    g_with_idelayctrl                         : boolean := true;
     g_sim                                     : integer := 0
   );
   port
@@ -511,6 +512,7 @@ package dbe_wishbone_pkg is
     g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
     g_packet_size                             : natural := 32;
+    g_with_idelayctrl                         : boolean := true;
     g_sim                                     : integer := 0
   );
   port
@@ -661,6 +663,7 @@ package dbe_wishbone_pkg is
     g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
     g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
     g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_with_idelayctrl                         : boolean := true;
     g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
     g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
@@ -829,6 +832,7 @@ package dbe_wishbone_pkg is
     g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
     g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
     g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_with_idelayctrl                         : boolean := true;
     g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
     g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;

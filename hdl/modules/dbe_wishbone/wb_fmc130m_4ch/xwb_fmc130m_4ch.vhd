@@ -47,6 +47,7 @@ generic
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_packet_size                             : natural := 32;
+  g_with_idelayctrl                         : boolean := true;
   g_sim                                     : integer := 0
 );
 port
@@ -212,6 +213,7 @@ begin
     g_map_clk_data_chains                     => g_map_clk_data_chains,
     g_ref_clk                                 => g_ref_clk,
     g_packet_size                             => g_packet_size,
+    g_with_idelayctrl                         => g_with_idelayctrl,
     g_sim                                     => g_sim
   )
   port map

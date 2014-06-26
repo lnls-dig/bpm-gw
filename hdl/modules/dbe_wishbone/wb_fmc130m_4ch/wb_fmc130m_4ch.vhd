@@ -56,6 +56,7 @@ generic
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
   g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+  g_with_idelayctrl                         : boolean := true;
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
@@ -962,6 +963,7 @@ begin
     g_with_bufr_clk_chains                  => g_with_bufr_clk_chains,
     g_with_data_sdr                         => c_with_data_sdr,
     g_with_fn_dly_select                    => c_with_fn_dly_select,
+    g_with_idelayctrl                       => g_with_idelayctrl,
     g_sim                                   => g_sim
   )
   port map(
