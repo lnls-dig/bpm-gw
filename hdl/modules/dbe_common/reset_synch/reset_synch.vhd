@@ -19,6 +19,10 @@ end reset_synch;
 
 architecture rtl of reset_synch is
   signal s_ff                              : std_logic_vector(g_pipeline-1 downto 0) := (others => '0');
+  
+  -- Try to reduce fanout of reset signal
+  attribute MAX_FANOUT			   : string;
+  attribute MAX_FANOUT of s_ff             : signal is "REDUCE";
 begin
 
   assert (g_pipeline >= 1)
