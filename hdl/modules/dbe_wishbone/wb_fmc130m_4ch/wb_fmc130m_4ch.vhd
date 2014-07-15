@@ -52,6 +52,7 @@ generic
   g_delay_type                              : string := "VARIABLE";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
+  g_with_extra_wb_reg                       : boolean := false;
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
@@ -399,6 +400,10 @@ architecture rtl of wb_fmc130m_4ch is
   signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+  
+  -- Extra Wishbone registering stage
+  signal cbar_slave_in_reg0                 : t_wishbone_slave_in_array (c_masters-1 downto 0);
+  signal cbar_slave_out_reg0                : t_wishbone_slave_out_array(c_masters-1 downto 0);
 
   -----------------------------
   -- VCXO Si571 I2C Signals
@@ -544,6 +549,55 @@ begin
   fmc_pll_status_o                          <= fmc_pll_status_i;
 
   -----------------------------
+  -- Insert extra Wishbone registering stage for ease timing.
+  -- It effectively cuts the bandwodth in half!
+  -----------------------------
+  gen_with_extra_wb_reg : if g_with_extra_wb_reg generate
+
+    cmp_register_link : xwb_register_link -- puts a register of delay between crossbars
+    port map (
+      clk_sys_i 			    => sys_clk_i,
+      rst_n_i   			    => sys_rst_sync_n,
+      slave_i   			    => cbar_slave_in_reg0(0),
+      slave_o                               => cbar_slave_out_reg0(0),
+      master_i                              => cbar_slave_out(0),
+      master_o 		                    => cbar_slave_in(0)
+    );
+
+    cbar_slave_in_reg0(0).adr               <= wb_adr_i;
+    cbar_slave_in_reg0(0).dat               <= wb_dat_i;
+    cbar_slave_in_reg0(0).sel               <= wb_sel_i;
+    cbar_slave_in_reg0(0).we                <= wb_we_i;
+    cbar_slave_in_reg0(0).cyc               <= wb_cyc_i;
+    cbar_slave_in_reg0(0).stb               <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out_reg0(0).dat;
+    wb_ack_o                                <= cbar_slave_out_reg0(0).ack;
+    wb_err_o                                <= cbar_slave_out_reg0(0).err;
+    wb_rty_o                                <= cbar_slave_out_reg0(0).rty;
+    wb_stall_o                              <= cbar_slave_out_reg0(0).stall;
+
+  end generate;
+
+  gen_without_extra_wb_reg : if not g_with_extra_wb_reg generate
+
+    -- External master connection
+    cbar_slave_in(0).adr                    <= wb_adr_i;
+    cbar_slave_in(0).dat                    <= wb_dat_i;
+    cbar_slave_in(0).sel                    <= wb_sel_i;
+    cbar_slave_in(0).we                     <= wb_we_i;
+    cbar_slave_in(0).cyc                    <= wb_cyc_i;
+    cbar_slave_in(0).stb                    <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out(0).dat;
+    wb_ack_o                                <= cbar_slave_out(0).ack;
+    wb_err_o                                <= cbar_slave_out(0).err;
+    wb_rty_o                                <= cbar_slave_out(0).rty;
+    wb_stall_o                              <= cbar_slave_out(0).stall;
+
+  end generate;
+
+  -----------------------------
   -- FMC130M_4CH Address decoder for SPI/I2C Wishbone interfaces modules
   -----------------------------
   -- We need 5 outputs, as in the same wishbone addressing range, 5
@@ -558,37 +612,24 @@ begin
   -- The Internal Wishbone B.4 crossbar
   cmp_interconnect : xwb_sdb_crossbar
   generic map(
-    g_num_masters                             => c_masters,
-    g_num_slaves                              => c_slaves,
-    g_registered                              => true,
-    g_wraparound                              => true, -- Should be true for nested buses
-    g_layout                                  => c_layout,
-    g_sdb_addr                                => c_sdb_address
+    g_num_masters                           => c_masters,
+    g_num_slaves                            => c_slaves,
+    g_registered                            => true,
+    g_wraparound                            => true, -- Should be true for nested buses
+    g_layout                                => c_layout,
+    g_sdb_addr                              => c_sdb_address
   )
   port map(
-    clk_sys_i                                 => sys_clk_i,
-    rst_n_i                                   => sys_rst_sync_n,
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
     -- Master connections (INTERCON is a slave)
-    slave_i                                   => cbar_slave_in,
-    slave_o                                   => cbar_slave_out,
+    slave_i                                 => cbar_slave_in,
+    slave_o                                 => cbar_slave_out,
     -- Slave connections (INTERCON is a master)
-    master_i                                  => cbar_master_in,
-    master_o                                  => cbar_master_out
+    master_i                                => cbar_master_in,
+    master_o                                => cbar_master_out
   );
 
-  -- External master connection
-  cbar_slave_in(0).adr                        <= wb_adr_i;
-  cbar_slave_in(0).dat                        <= wb_dat_i;
-  cbar_slave_in(0).sel                        <= wb_sel_i;
-  cbar_slave_in(0).we                         <= wb_we_i;
-  cbar_slave_in(0).cyc                        <= wb_cyc_i;
-  cbar_slave_in(0).stb                        <= wb_stb_i;
-
-  wb_dat_o                                    <= cbar_slave_out(0).dat;
-  wb_ack_o                                    <= cbar_slave_out(0).ack;
-  wb_err_o                                    <= cbar_slave_out(0).err;
-  wb_rty_o                                    <= cbar_slave_out(0).rty;
-  wb_stall_o                                  <= cbar_slave_out(0).stall;
 
   -----------------------------
   -- Slave adapter for Wishbone Register Interface

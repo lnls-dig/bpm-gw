@@ -39,6 +39,7 @@ generic
   g_delay_type                              : string := "VARIABLE";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
+  g_with_extra_wb_reg                       : boolean := false;
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
@@ -205,6 +206,7 @@ begin
     g_delay_type                              => g_delay_type,
     g_interface_mode                          => g_interface_mode,
     g_address_granularity                     => g_address_granularity,
+    g_with_extra_wb_reg                       => g_with_extra_wb_reg,
     g_adc_clk_period_values                   => g_adc_clk_period_values,
     g_use_clk_chains                          => g_use_clk_chains,
     g_with_bufio_clk_chains                   => g_with_bufio_clk_chains,
