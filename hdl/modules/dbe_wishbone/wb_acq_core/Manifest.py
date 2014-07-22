@@ -9,6 +9,7 @@ files = ["wb_acq_core.vhd",
         "acq_ddr3_iface.vhd",
         "acq_ddr3_read.vhd",
         "acq_cnt.vhd",
+        "acq_sel_chan.vhd",
         "data_checker.vhd",
         "wbgen/acq_core_regs_pkg.vhd",
         "wbgen/acq_core_regs.vhd"

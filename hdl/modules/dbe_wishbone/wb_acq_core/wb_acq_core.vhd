@@ -236,7 +236,7 @@ architecture rtl of wb_acq_core is
   ----signal post_trig_value                    : std_logic_vector(31 downto 0);
   --signal post_trig_cnt                      : unsigned(31 downto 0);
   signal acq_post_trig_done                 : std_logic;
-  signal lmt_curr_chan_id                   : unsigned(4 downto 0);
+  signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
   ----signal shots_value                        : std_logic_vector(15 downto 0);
   signal shots_cnt                          : unsigned(15 downto 0);
@@ -441,6 +441,33 @@ begin
   regs_in.trig_pos_i                        <= (others => '0');
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
 
+  cmp_acq_sel_chan : acq_sel_chan
+  generic map 
+  (
+    g_acq_num_channels                      => g_acq_num_channels
+  )
+  port map
+  (
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+    
+    -----------------------------
+    -- Acquisiton Interface
+    -----------------------------
+    acq_val_low_i                           => acq_val_low_i,
+    acq_val_high_i                          => acq_val_high_i,
+    acq_dvalid_i                            => acq_dvalid_i,
+    acq_trig_i                              => acq_trig_i,
+    acq_curr_chan_id_i                      => lmt_curr_chan_id,
+    
+    -----------------------------
+    -- Output Interface. 
+    -----------------------------
+    acq_data_o                              => acq_data_marsh,
+    acq_dvalid_o                            => acq_dvalid_in,
+    acq_trig_o                              => acq_trig_in
+  );
+
   cmp_acq_fsm : acq_fsm
   --generic map
   --(
@@ -493,9 +520,6 @@ begin
     samples_wr_en_o                           => samples_wr_en
   );
 
-  acq_trig_in                                 <= acq_trig_i(to_integer(lmt_curr_chan_id));
-  acq_dvalid_in                               <= acq_dvalid_i(to_integer(lmt_curr_chan_id));
-
   ------------------------------------------------------------------------------
   -- Dual DPRAM buffers for multi-shots acquisition
   -----------------------------------------------------------------------------
@@ -531,10 +555,6 @@ begin
     dpram_dout_o                            => dpram_dout,
     dpram_valid_o                           => dpram_valid
   );
-
-  acq_data_marsh                            <=
-    f_acq_chan_conv_val(f_acq_chan_marshall_val(acq_val_high_i(to_integer(lmt_curr_chan_id)),
-      acq_val_low_i(to_integer(lmt_curr_chan_id))));
 
   dpram_dout_o                              <=  dpram_dout;
   dpram_valid_o                             <=  dpram_valid;

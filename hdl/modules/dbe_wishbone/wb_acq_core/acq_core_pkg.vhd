@@ -13,6 +13,7 @@ package acq_core_pkg is
   constant c_pkt_size_width                 : natural := 32;
   constant c_shots_size_width               : natural := 16;
   constant c_addr_width                     : natural := 32;
+  constant c_chan_id_width                  : natural := 5;
 
   constant c_data_oob_width                 : natural := 2; -- SOF and EOF
 
@@ -131,6 +132,34 @@ package acq_core_pkg is
 
   function f_gen_std_logic_vector(size : natural; value : std_logic)
     return std_logic_vector;
+  
+  component acq_sel_chan 
+  generic
+  (
+    g_acq_num_channels                        : natural := 1
+  );
+  port
+  (
+    clk_i                                     : in  std_logic;
+    rst_n_i                                   : in  std_logic;
+    
+    -----------------------------
+    -- Acquisiton Interface
+    -----------------------------
+    acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    
+    -----------------------------
+    -- Output Interface. 
+    -----------------------------
+    acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
+    acq_dvalid_o                              : out std_logic;
+    acq_trig_o                                : out std_logic
+  );
+  end component;
 
   component acq_fsm
   --generic
