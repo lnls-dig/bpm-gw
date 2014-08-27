@@ -338,32 +338,6 @@ begin
     end generate;
   end generate;
 
-  -- We have the possibility that some adc data chains are clocked with
-  -- different source-synchronous clocks. In this case, we need to synchronize
-  -- all data chains to a single clock domain. Need to evaluate its real
-  -- necessity
-
-  cmp_fmc_adc_sync_chains : fmc_adc_sync_chains
-  --generic map (
-  --)
-  port map (
-    sys_clk_i                               => sys_clk_i,
-    --sys_rst_n_i                             => sys_rst_n_i,
-    sys_rst_n_i                             => adc_in_t(c_ref_clk).adc_rst_n,
-
-    -----------------------------
-    -- ADC Data Input signals. Each data chain is synchronous to its
-    -- own clock.
-    -----------------------------
-    adc_out_i                              => adc_out_int,
-
-    -- Reference clock for synchronization with all data chains
-    adc_refclk_i                            => adc_clk_chain_glob_int,
-
-    -----------------------------
-    -- ADC output signals. Synchronous to a single clock
-    -----------------------------
-    adc_out_o                              => adc_out_o
-  );
+  adc_out_o <= adc_out_int;
 
 end rtl;
