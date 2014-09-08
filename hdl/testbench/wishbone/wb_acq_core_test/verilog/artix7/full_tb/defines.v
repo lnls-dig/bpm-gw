@@ -37,8 +37,9 @@
 `define CLK_ADC_PERIOD 8882.00 //ps
 
 // Reset Delay, in Clock Cycles
-`define RST_SYS_DELAY  500 // 5000//101000 // ??? > 500 us
-`define RST_ADC_DELAY  500 // 5000//101000 // ??? > 500 us
+`define RST_SYS_DELAY  		5000
+`define RST_ADC_DELAY  		5000
+`define RST_200MHZ_DELAY 	1000
 
 /*******************************
  * DDR3 definitions
@@ -52,3 +53,4 @@
 //`define DDR_CK_WIDTH        1
 //`define DDR_CKE_WIDTH       1
 //`define DDR_ODT_WIDTH       1
+

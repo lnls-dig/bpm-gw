@@ -91,7 +91,7 @@ module clk_rst(
     //repeat (`RST_ADC_DELAY) begin
     //  @(posedge clk_200mhz_o);
     //end
-    repeat (`RST_SYS_DELAY) begin
+    repeat (`RST_200MHZ_DELAY) begin
       @(posedge clk_sys_o);
     end
 
