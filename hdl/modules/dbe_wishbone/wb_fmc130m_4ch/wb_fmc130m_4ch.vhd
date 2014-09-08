@@ -243,9 +243,11 @@ architecture rtl of wb_fmc130m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := false;
 
-  -- 130 MHz parameters
+  -- 130 MHz parameters. FIXME: Not using 2x clock for now!
+  --constant c_mmcm_param                     : t_mmcm_param :=
+  --                                 (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
   constant c_mmcm_param                     : t_mmcm_param :=
-                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 8);
 
   -----------------------------
   -- Crossbar component constants
