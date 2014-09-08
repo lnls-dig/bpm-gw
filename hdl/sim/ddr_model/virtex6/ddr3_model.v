@@ -81,9 +81,6 @@
 // model flags
 // `define MODEL_PASR
 //Memory Details
-//`define x4Gb
-//`define sg125
-//`define x8
 
 `define x2Gb
 `define sg15E
