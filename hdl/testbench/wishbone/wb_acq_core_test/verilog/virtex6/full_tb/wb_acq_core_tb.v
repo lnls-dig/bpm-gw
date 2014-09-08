@@ -388,6 +388,8 @@ module wb_acq_core_tb;
   wb_acq_core_plain #(.g_ddr_addr_width(ADDR_WIDTH),
                     .g_acq_addr_width(ADDR_WIDTH),
                     .g_fifo_fc_size(ACQ_FIFO_SIZE),
+		    .g_ddr_payload_width(256),
+		    .g_ddr_dq_width(64),      
                     //.g_acq_num_channels(5),
                     //.g_acq_channels({c_n_width64, c_n_width128,
                     //                c_n_width128, c_n_width128, c_n_width128}),
