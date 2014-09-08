@@ -91,7 +91,19 @@ port
   fifo_fc_sof_o                             : out std_logic;
   fifo_fc_eof_o                             : out std_logic;
   fifo_fc_dreq_i                            : in std_logic;
-  fifo_fc_stall_i                           : in std_logic
+  fifo_fc_stall_i                           : in std_logic;
+
+  dbg_fifo_we_o		                	        : out std_logic;
+  dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+  dbg_fifo_re_o		                	        : out std_logic;
+  dbg_fifo_fc_rd_en_o	                	    : out std_logic;
+  dbg_fifo_rd_empty_o	                    	: out std_logic;
+  dbg_fifo_wr_full_o	                    	: out std_logic;
+  dbg_fifo_fc_valid_fwft_o			            : out std_logic;
+  dbg_source_pl_dreq_o	                	  : out std_logic;
+  dbg_source_pl_stall_o	                	  : out std_logic;
+  dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+  dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
 );
 end acq_fc_fifo;
 
@@ -292,6 +304,8 @@ begin
   generic map (
     g_data_width                            => g_data_width,
     g_size                                  => g_fifo_size,
+    --g_almost_empty_threshold                => 4,
+    --g_almost_full_threshold                 => 256,
     g_almost_empty_threshold                => 0,
     g_almost_full_threshold                 => 0,
     g_with_wr_count                         => true
@@ -313,6 +327,17 @@ begin
   );
 
   fifo_fc_full_o <= fifo_fc_wr_full;
+
+  -- Debug signals
+  dbg_fifo_we_o <= fifo_fc_we;
+  dbg_fifo_wr_count_o <= fifo_fc_wr_count;
+  dbg_fifo_re_o <= fifo_fc_rd;
+  dbg_fifo_fc_rd_en_o <= fifo_fc_rd_en;
+  dbg_fifo_rd_empty_o <= fifo_fc_rd_empty;
+  dbg_fifo_wr_full_o <= fifo_fc_wr_full;
+  dbg_fifo_fc_valid_fwft_o <= fifo_fc_valid_fwft;
+  dbg_source_pl_dreq_o <= pl_dreq;
+  dbg_source_pl_stall_o <= pl_stall;
 
   -- Valid flag
   --p_fifo_fc_valid : process (ext_clk_i) is
@@ -377,7 +402,7 @@ begin
     ppulse_o                                => open
   );
 
-  rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and 
+  rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and
 			fifo_fc_all_trans_done_lvl = '1' else '0';
 
   -- Delay Reset signal to Level logic. This will give a few cycles
@@ -456,10 +481,16 @@ begin
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            => lmt_shots_nb_i,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid_i
+    lmt_valid_i                               => lmt_valid_i,
+
+    dbg_pkt_ct_cnt_o                          => dbg_pkt_ct_cnt_o,
+    dbg_shots_cnt_o                           => dbg_shots_cnt_o
   );
 
+  -- TESTING ONly!!!!!!!!!!!!!!!!
+  -- FIXME FIXME
   acq_cnt_rst_n <= ext_rst_n_i and not(rst_trans_ext_sync); -- is this a good idea?
+  --------------------------acq_cnt_rst_n <= ext_rst_n_i; -- is this a good idea?
 
   -----------------------------------------------------------------------------
   -- End of transaction pulse

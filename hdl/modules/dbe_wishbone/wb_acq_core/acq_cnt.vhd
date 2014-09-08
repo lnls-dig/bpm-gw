@@ -46,7 +46,10 @@ port
   -- Number of shots in this acquisition
   lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
   -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-  lmt_valid_i                               : in std_logic
+  lmt_valid_i                               : in std_logic;
+
+  dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+  dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
 );
 end acq_cnt;
 
@@ -125,6 +128,9 @@ begin
 
   pkt_cnt_en <= cnt_en_i;
 
+  -- Debug outputs
+  dbg_pkt_ct_cnt_o <= std_logic_vector(pkt_ct_cnt);
+
   p_pkt_ct_cnt_reg : process (clk_i)
   begin
     if rising_edge(clk_i) then
@@ -181,6 +187,9 @@ begin
       end if;
     end if;
   end process;
+
+  -- Debug outputs
+  dbg_shots_cnt_o <= std_logic_vector(shots_cnt);
 
   p_shots_cnt_reg : process (clk_i)
   begin

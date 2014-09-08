@@ -54,7 +54,7 @@ package acq_core_pkg is
   end record;
 
   type t_acq_chan_param_array is array (natural range <>) of t_acq_chan_param;
-  
+
   type t_acq_chan_slice is record
     use_high_part : boolean;
   end record;
@@ -64,7 +64,7 @@ package acq_core_pkg is
   subtype t_acq_val_half is std_logic_vector(c_acq_chan_width-1 downto 0);
 
   type t_acq_val_half_array is array (natural range <>) of t_acq_val_half;
-  
+
   --subtype t_acq_val_full is std_logic_vector(c_acq_chan_max_w-1 downto 0);
   type t_acq_val_full is record
     val_low : t_acq_val_half;
@@ -72,18 +72,18 @@ package acq_core_pkg is
   end record;
 
   type t_acq_val_full_array is array (natural range <>) of t_acq_val_full;
-  
+
   -- Acquisition core channels. No VHDL-2008 support.
   -- We constrain the c_acq_chan_width to hold 128-bit tops (low + high). if we
   -- want to use only the "low" part we expect the synthetizer to optimize the
-  -- unused signals. 
+  -- unused signals.
   type t_acq_chan is record
     val_low : t_acq_val_half;
     val_high : t_acq_val_half;
     dvalid : std_logic;
     trig : std_logic;
   end record;
-  
+
   type t_acq_chan_array is array (natural range <>) of t_acq_chan;
 
   constant c_default_acq_num_channels : natural := 5;
@@ -98,8 +98,8 @@ package acq_core_pkg is
   constant c_default_acq_chan : t_acq_chan := (val_low => (others => '0'),
                                                  val_high => (others => '0'),
                                                  dvalid => '0',
-                                                 trig => '0'); 
-  
+                                                 trig => '0');
+
   -----------------------------
   -- Functions declaration
   ----------------------------
@@ -112,13 +112,13 @@ package acq_core_pkg is
 
   function f_ddr_fc_payload_ratio(ddr_payload_width : natural; acq_chan_slice_array : t_acq_chan_slice_array)
     return t_ddr_payld_ratio_array;
-     
+
   function f_acq_chan_marshall_val(acq_val_high : t_acq_val_half; acq_val_low : t_acq_val_half)
     return t_acq_val_full;
 
   function f_acq_chan_conv_val(acq_val : t_acq_val_full)
     return std_logic_vector;
-     
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half;
 
@@ -132,8 +132,8 @@ package acq_core_pkg is
 
   function f_gen_std_logic_vector(size : natural; value : std_logic)
     return std_logic_vector;
-  
-  component acq_sel_chan 
+
+  component acq_sel_chan
   generic
   (
     g_acq_num_channels                        : natural := 1
@@ -142,7 +142,7 @@ package acq_core_pkg is
   (
     clk_i                                     : in  std_logic;
     rst_n_i                                   : in  std_logic;
-    
+
     -----------------------------
     -- Acquisiton Interface
     -----------------------------
@@ -151,9 +151,9 @@ package acq_core_pkg is
     acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
     acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
     acq_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
-    
+
     -----------------------------
-    -- Output Interface. 
+    -- Output Interface.
     -----------------------------
     acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
     acq_dvalid_o                              : out std_logic;
@@ -301,7 +301,20 @@ package acq_core_pkg is
     fifo_fc_sof_o                             : out std_logic;
     fifo_fc_eof_o                             : out std_logic;
     fifo_fc_dreq_i                            : in std_logic;
-    fifo_fc_stall_i                           : in std_logic
+    fifo_fc_stall_i                           : in std_logic;
+
+    -- Debug signals
+    dbg_fifo_we_o		                	        : out std_logic;
+    dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+    dbg_fifo_re_o		                	        : out std_logic;
+    dbg_fifo_fc_rd_en_o	                	    : out std_logic;
+    dbg_fifo_rd_empty_o	                    	: out std_logic;
+    dbg_fifo_wr_full_o	                    	: out std_logic;
+    dbg_fifo_fc_valid_fwft_o			            : out std_logic;
+    dbg_source_pl_dreq_o	                	  : out std_logic;
+    dbg_source_pl_stall_o	                	  : out std_logic;
+    dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+    dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
   );
   end component;
 
@@ -364,7 +377,10 @@ package acq_core_pkg is
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               : in std_logic
+    lmt_valid_i                               : in std_logic;
+
+    dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+    dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
   );
   end component;
 
@@ -403,7 +419,7 @@ package acq_core_pkg is
 
 
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
+    lmt_curr_chan_id_i                        : in unsigned(4 downto 0);
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
@@ -468,7 +484,7 @@ package acq_core_pkg is
     lmt_rst_i                                 : in std_logic;
 
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
+    lmt_curr_chan_id_i                        : in unsigned(4 downto 0);
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
     -- Number of shots in this acquisition
@@ -557,13 +573,13 @@ package body acq_core_pkg is
     variable acq_chan_param : t_acq_chan_param;
   begin
     acq_chan_param := acq_chan_param_array(0);
-  
+
     for i in 1 to acq_chan_param_array'length-1 loop
       if acq_chan_param_array(i).width > acq_chan_param.width then
         acq_chan_param := acq_chan_param_array(i);
       end if;
     end loop;
-  
+
     return natural(to_integer(acq_chan_param.width));
   end;
 
@@ -573,7 +589,7 @@ package body acq_core_pkg is
   is
     variable acq_chan_slice : t_acq_chan_slice_array(acq_chan_param_array'length-1 downto 0);
   begin
-    
+
     for i in 0 to acq_chan_param_array'length-1 loop
       if acq_chan_param_array(i).width > c_acq_chan_width then -- use high part
         acq_chan_slice(i).use_high_part := true;
@@ -581,7 +597,7 @@ package body acq_core_pkg is
         acq_chan_slice(i).use_high_part := false;
       end if;
     end loop;
-  
+
     return acq_chan_slice;
   end;
 
@@ -597,7 +613,7 @@ package body acq_core_pkg is
         ddr_fc_payload_ratio(i) := ddr_payload_width/c_acq_chan_width;
       end if;
     end loop;
-  
+
     return ddr_fc_payload_ratio;
 
   end;
@@ -609,10 +625,10 @@ package body acq_core_pkg is
   begin
     ret.val_low := acq_val_low;
     ret.val_high := acq_val_high;
-    
+
     return ret;
   end;
-  
+
   function f_acq_chan_conv_val(acq_val : t_acq_val_full)
     return std_logic_vector
   is
@@ -621,16 +637,16 @@ package body acq_core_pkg is
     ret(acq_val.val_low'left downto 0) := acq_val.val_low;
     ret(acq_val.val_high'left + acq_val.val_low'left + 1 downto
                          acq_val.val_low'left + 1) := acq_val.val_high;
-    
+
     return ret;
   end;
-     
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half
   is
     variable ret : t_acq_val_half;
   begin
-    case acq_sel is 
+    case acq_sel is
       when 0 => -- low
         ret := acq_val.val_low;
       when 1 => -- high
