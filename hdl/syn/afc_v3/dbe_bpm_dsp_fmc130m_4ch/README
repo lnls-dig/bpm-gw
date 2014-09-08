@@ -1,0 +1,4 @@
+This coulld work without the register duplication MAp set to ON,
+as the violating NET is just a clock enable 2 NET. Even Though,
+the MAX FANOUT constraint does not seem to be working as
+the CE 2 NET is over 300 fanout
