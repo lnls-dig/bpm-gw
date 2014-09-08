@@ -462,7 +462,7 @@ begin
         g_with_almost_empty => false,
         g_with_almost_full => true,
         g_with_count => false,
-        g_almost_full_threshold => 125)
+        g_almost_full_threshold => 124)
       port map(
         rst_n_i => mbuf_reset_n,
         clk_i   => user_clk,
