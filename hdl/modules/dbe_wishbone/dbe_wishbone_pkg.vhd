@@ -1151,17 +1151,17 @@ package dbe_wishbone_pkg is
     fs_clk_i                                  : in std_logic;
     fs_ce_i                                   : in std_logic;
     fs_rst_n_i                                : in std_logic;
-  
+
     sys_clk_i                                 : in std_logic;
     sys_rst_n_i                               : in std_logic;
-  
+
     ext_clk_i                                 : in std_logic;
     ext_rst_n_i                               : in std_logic;
-  
+
     -----------------------------
     -- Wishbone Control Interface signals
     -----------------------------
-  
+
     wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
     wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
     wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
@@ -1173,7 +1173,7 @@ package dbe_wishbone_pkg is
     wb_err_o                                  : out std_logic;
     wb_rty_o                                  : out std_logic;
     wb_stall_o                                : out std_logic;
-  
+
     -----------------------------
     -- External Interface
     -----------------------------
@@ -1181,24 +1181,24 @@ package dbe_wishbone_pkg is
     acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
     acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
-  
+
     -----------------------------
     -- DRRAM Interface
     -----------------------------
     dpram_dout_o                              : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
     dpram_valid_o                             : out std_logic;
-  
+
     -----------------------------
     -- External Interface (w/ FLow Control)
     -----------------------------
-    ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    ext_dout_o                                : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ext_valid_o                               : out std_logic;
     ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
     ext_sof_o                                 : out std_logic;
     ext_eof_o                                 : out std_logic;
     ext_dreq_o                                : out std_logic; -- for debbuging purposes
     ext_stall_o                               : out std_logic; -- for debbuging purposes
-  
+
     -----------------------------
     -- DDR3 SDRAM Interface
     -----------------------------
@@ -1206,24 +1206,24 @@ package dbe_wishbone_pkg is
     ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
     ui_app_en_o                               : out std_logic;
     ui_app_rdy_i                              : in std_logic;
-  
+
     ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_wdf_end_o                          : out std_logic;
     ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     ui_app_wdf_wren_o                         : out std_logic;
     ui_app_wdf_rdy_i                          : in std_logic;
-  
+
     ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_rd_data_end_i                      : in std_logic;
     ui_app_rd_data_valid_i                    : in std_logic;
-  
+
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic;
-    
+
     -----------------------------
     -- Debug Interface
     -----------------------------
-    dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
     dbg_ddr_rb_valid_o                        : out std_logic
   );
@@ -1249,41 +1249,41 @@ package dbe_wishbone_pkg is
     fs_clk_i                                  : in std_logic;
     fs_ce_i                                   : in std_logic;
     fs_rst_n_i                                : in std_logic;
-  
+
     sys_clk_i                                 : in std_logic;
     sys_rst_n_i                               : in std_logic;
-  
+
     ext_clk_i                                 : in std_logic;
     ext_rst_n_i                               : in std_logic;
-  
+
     -----------------------------
     -- Wishbone Control Interface signals
     -----------------------------
     wb_slv_i                                  : in t_wishbone_slave_in;
     wb_slv_o                                  : out t_wishbone_slave_out;
-  
+
     -----------------------------
     -- External Interface
     -----------------------------
     acq_chan_array_i                          : in t_acq_chan_array(g_acq_num_channels-1 downto 0);
-  
+
     -----------------------------
     -- DRRAM Interface
     -----------------------------
     dpram_dout_o                              : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
     dpram_valid_o                             : out std_logic;
-  
+
     -----------------------------
     -- External Interface (w/ FLow Control)
     -----------------------------
-    ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    ext_dout_o                                : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ext_valid_o                               : out std_logic;
     ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
     ext_sof_o                                 : out std_logic;
     ext_eof_o                                 : out std_logic;
     ext_dreq_o                                : out std_logic; -- for debbuging purposes
     ext_stall_o                               : out std_logic; -- for debbuging purposes
-  
+
     -----------------------------
     -- DDR3 SDRAM Interface
     -----------------------------
@@ -1291,24 +1291,24 @@ package dbe_wishbone_pkg is
     ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
     ui_app_en_o                               : out std_logic;
     ui_app_rdy_i                              : in std_logic;
-  
+
     ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_wdf_end_o                          : out std_logic;
     ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     ui_app_wdf_wren_o                         : out std_logic;
     ui_app_wdf_rdy_i                          : in std_logic;
-  
+
     ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_rd_data_end_i                      : in std_logic;
     ui_app_rd_data_valid_i                    : in std_logic;
-  
+
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic;
-    
+
     -----------------------------
     -- Debug Interface
     -----------------------------
-    dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
     dbg_ddr_rb_valid_o                        : out std_logic
   );
