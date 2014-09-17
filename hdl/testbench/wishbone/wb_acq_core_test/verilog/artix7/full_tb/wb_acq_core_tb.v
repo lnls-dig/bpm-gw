@@ -414,6 +414,10 @@ module wb_acq_core_tb;
   localparam c_n_width128               = 16'd128;
   //localparam c_min_wait_gnt             = 32;
   //localparam c_max_wait_gnt             = 128;
+  localparam c_acq_num_channels         = 5;
+  localparam [16-1:0] c_acq_channels[0:c_acq_num_channels-1] =
+	  '{c_n_width64, c_n_width128, c_n_width128, 
+	  c_n_width128, c_n_width128};
 
   // bpm acquisition parameters
   // Must be at least the size of the biggest acquisition size
@@ -422,19 +426,16 @@ module wb_acq_core_tb;
   localparam DATA_CHECK_FIFO_SIZE   = 8192;
   localparam ACQ_FIFO_SIZE          = 4096;
 
+  localparam DDR3_PAYLOAD_WIDTH = (BURST_MODE_INTEGER)*PAYLOAD_WIDTH;
+  localparam DDR3_ADDR_INC = DDR3_PAYLOAD_WIDTH/DQ_WIDTH;
+
   // Tests paramaters
-  //reg [DATA_WIDTH-1:0] data_test;
-  //reg data_test_valid;
-  //reg data_test_valid_t;
-  //reg trigger_test;
   reg [ACQ_DATA_WIDTH-1:0] data_test_low [c_n_chan-1:0];
   reg [16-1:0] data_test_low_0;
   reg [ACQ_DATA_WIDTH-1:0] data_test_high [c_n_chan-1:0];
   reg data_test_dvalid [c_n_chan-1:0];
   reg data_test_dvalid_t [c_n_chan-1:0];
   reg data_test_trig [c_n_chan-1:0];
-  //wire ext_dreq;
-  //reg ext_stall;
   real data_ext_stall_threshold;
   real data_ext_rdy_threshold;
   real data_valid_threshold;
@@ -514,8 +515,8 @@ module wb_acq_core_tb;
   reg                                       clk_ref_i;
 
   // External interface signals
-  wire [(BURST_MODE_INTEGER/2)*DATA_WIDTH-1:0]                  ext_dout;
-  wire [(BURST_MODE_INTEGER/2)*DATA_WIDTH-1:0]                  ext_dout_conv;
+  wire [DDR3_PAYLOAD_WIDTH-1:0] ext_dout;
+  wire [DDR3_PAYLOAD_WIDTH-1:0] ext_dout_conv;
   wire [ADDR_WIDTH-1:0]                    ext_addr;
   wire [ADDR_WIDTH-1:0]                    ext_addr_conv;
   wire                                     ext_valid;
@@ -523,21 +524,19 @@ module wb_acq_core_tb;
   wire                                     ext_eof;
 
   // DDR3 Controller UI interface signals
-
+  
   wire                                      ui_app_wdf_wren;
-  wire [(BURST_MODE_INTEGER)*PAYLOAD_WIDTH-1:0]
+  wire [DDR3_PAYLOAD_WIDTH-1:0]
   					    ui_app_wdf_data;
-  wire [(BURST_MODE_INTEGER)*PAYLOAD_WIDTH/8-1:0]
+  wire [DDR3_PAYLOAD_WIDTH/8-1:0]
   					    ui_app_wdf_mask;
   wire                                      ui_app_wdf_end;
   wire [ADDR_WIDTH-1:0]                     ui_app_addr;
   wire [2:0]                                ui_app_cmd;
   wire                                      ui_app_en;
   wire                                      ui_app_rdy;
-  //reg                                       ui_app_rdy;
   wire                                      ui_app_wdf_rdy;
-  //reg                                       ui_app_wdf_rdy;
-  wire [(BURST_MODE_INTEGER)*PAYLOAD_WIDTH-1:0]
+  wire [DDR3_PAYLOAD_WIDTH-1:0]
   					    ui_app_rd_data;
   wire                                      ui_app_rd_data_end;
   wire                                      ui_app_rd_data_valid;
@@ -547,11 +546,10 @@ module wb_acq_core_tb;
   wire                                      ui_phy_init_done;
   wire                                      ui_app_req;
   reg                                       ui_app_gnt;
-  //wire                                       ui_app_gnt;
 
   // Debug/Readback signals
-  wire [(BURST_MODE_INTEGER/2)*DATA_WIDTH-1:0]                   dbg_ddr_rb_data;
-  wire [(BURST_MODE_INTEGER/2)*DATA_WIDTH-1:0]                   dbg_ddr_rb_data_conv;
+  wire [(BURST_MODE_INTEGER)*DATA_WIDTH-1:0] dbg_ddr_rb_data;
+  wire [(BURST_MODE_INTEGER)*DATA_WIDTH-1:0] dbg_ddr_rb_data_conv;
   wire [ADDR_WIDTH-1:0]                     dbg_ddr_rb_addr;
   wire                                      dbg_ddr_rb_valid;
 
@@ -595,28 +593,9 @@ module wb_acq_core_tb;
   assign ddr3_sys_clk = clk_200mhz;
   assign ddr3_sys_rstn = clk200mhz_rstn;
 
-   //**************************************************************************//
+  //**************************************************************************//
   // Clock generation and reset
   //**************************************************************************//
-
-  //initial begin
-  //  sys_clk   = 1'b0;
-  //  clk_ref   = 1'b1;
-  //  sys_rst_n = 1'b0;
-  //
-  //  #120000
-  //    sys_rst_n = 1'b1;
-  //end
-  //
-  // assign sys_rst = RST_ACT_LOW ? sys_rst_n : ~sys_rst_n;
-  //
-  //// Generate system clock = twice rate of CLK
-  //always
-  //  sys_clk = #(CLK_PERIOD/2.0) ~sys_clk; // 400 MHz
-  //
-  //// Generate IDELAYCTRL reference clock (200MHz)
-  //always
-  //  clk_ref = #REFCLK_HALF_PERIOD ~clk_ref;
 
   WB_TEST_MASTER WB(
     .wb_clk                                 (sys_clk)
@@ -627,13 +606,10 @@ module wb_acq_core_tb;
     .g_ddr_addr_width(ADDR_WIDTH),
     .g_acq_addr_width(ADDR_WIDTH),
     .g_fifo_fc_size(ACQ_FIFO_SIZE),
-    .g_ddr_payload_width((BURST_MODE_INTEGER)*PAYLOAD_WIDTH),
+    .g_ddr_payload_width(DDR3_PAYLOAD_WIDTH),
     .g_ddr_dq_width(PAYLOAD_WIDTH),
-    //.g_acq_num_channels(5),
-    //.g_acq_channels({c_n_width64, c_n_width128,
-    //                c_n_width128, c_n_width128, c_n_width128}),
-    //.g_acq_channels({16'd64, 16'd128,
-    //                16'd128, 16'd128, 16'd128}),
+    //.g_acq_num_channels(c_acq_num_channels),
+    //.g_acq_channels(c_acq_channels),
     .g_sim_readback(1)
   )
   dut (
@@ -645,8 +621,6 @@ module wb_acq_core_tb;
     .sys_clk_i                              (sys_clk),
     .sys_rst_n_i                            (sys_rstn),
 
-    //.ext_clk_i                              (adc_clk),
-    //.ext_rst_n_i                            (adc_rstn),
     .ext_clk_i                              (ui_clk),
     .ext_rst_n_i                            (ui_clk_sync_rst_n),
 
@@ -730,7 +704,7 @@ module wb_acq_core_tb;
   // Data readback checker instantiation
   //**************************************************************************//
   data_checker #(.g_addr_width(ADDR_WIDTH),
-                        .g_data_width((BURST_MODE_INTEGER/2)*DATA_WIDTH),
+                        .g_data_width(DDR3_PAYLOAD_WIDTH),
                         .g_fifo_size(DATA_CHECK_FIFO_SIZE)
                     )
   cmp_data_checker(
@@ -765,19 +739,14 @@ module wb_acq_core_tb;
     .chk_pass_o                             (chk_pass)
   );
 
-  assign dbg_ddr_rb_data_conv = (acq_chan == 16'd0) ? {64'h0, dbg_ddr_rb_data[63:0]} :
-                                             dbg_ddr_rb_data;
-  assign ext_dout_conv = (acq_chan == 16'd0) ? {64'h0, ext_dout[63:0]} :
-                                             ext_dout;
-  assign ext_addr_conv = (acq_chan == 16'd0) ? ext_addr :
-                                               2*ext_addr;
+  assign dbg_ddr_rb_data_conv = dbg_ddr_rb_data;
+  assign ext_dout_conv = ext_dout;
+  assign ext_addr_conv = ext_addr*DDR3_ADDR_INC;
 
   //**************************************************************************//
   // DDR3 ARTIX7 Controller instantiation
   //**************************************************************************//
   ddr_core_wrapper # (
-  //ddr_core #(
-  //ddr_core_1_8 #(
     .SIMULATION                (SIMULATION),
 
     .BANK_WIDTH                (BANK_WIDTH),
@@ -1179,7 +1148,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     stop_on_error = 1'b1;
@@ -1205,7 +1175,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 32;
@@ -1231,7 +1202,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 256;
@@ -1257,7 +1229,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 1024; // watch for errors here!
@@ -1283,7 +1256,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 64;
@@ -1309,7 +1283,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 64;
@@ -1335,7 +1310,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd0;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 128;
@@ -1361,7 +1337,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd1;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 64;
@@ -1387,7 +1364,8 @@ module wb_acq_core_tb;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     acq_chan = 16'd1;
-    lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    //lmt_pkt_size = pre_trig_samples + post_trig_samples;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
     wait_finish = 1'b1;
     min_wait_gnt_l = 128;

@@ -289,6 +289,7 @@ VHDL_SRC := ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_core_pkg.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_multishot_dpram.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fc_fifo.vhd \
+../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/fc_source.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_iface.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_read.vhd \
@@ -331,6 +332,7 @@ VHDL_SRC := ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/sim/cdce72010_init_mem_int.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd \
 ../../../../../../modules/dbe_common/reset_synch/reset_synch.vhd \
+../../../../../../modules/dbe_common/pulse2level/pulse2level.vhd \
 ../../../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd \
 ../../../../../../modules/rffe_top/bpm_gain_ctrl/utilities_package.vhd \
 ../../../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd \
@@ -563,6 +565,7 @@ work/acq_fsm/.acq_fsm_vhd \
 work/acq_core_pkg/.acq_core_pkg_vhd \
 work/acq_multishot_dpram/.acq_multishot_dpram_vhd \
 work/acq_fc_fifo/.acq_fc_fifo_vhd \
+work/acq_fwft_fifo/.acq_fwft_fifo_vhd \
 work/fc_source/.fc_source_vhd \
 work/acq_ddr3_iface/.acq_ddr3_iface_vhd \
 work/acq_ddr3_read/.acq_ddr3_read_vhd \
@@ -605,6 +608,7 @@ work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
 work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
 work/dac3283_init_mem/.dac3283_init_mem_vhd \
 work/reset_synch/.reset_synch_vhd \
+work/pulse2level/.pulse2level_vhd \
 work/rf_ch_swap/.rf_ch_swap_vhd \
 work/utilities_package/.utilities_package_vhd \
 work/mc_serial_ctrl/.mc_serial_ctrl_vhd \
@@ -1901,6 +1905,7 @@ work/genram_pkg/.genram_pkg_vhd \
 work/acq_core_pkg/.acq_core_pkg_vhd \
 work/acq_core_regs_pkg/.acq_core_regs_pkg_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
@@ -1974,6 +1979,17 @@ work/acq_fc_fifo/.acq_fc_fifo_vhd: ../../../../../../modules/dbe_wishbone/wb_acq
 
 work/acq_fc_fifo/.acq_fc_fifo: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
+work/genram_pkg/.genram_pkg_vhd \
+work/gencores_pkg/.gencores_pkg_vhd \
+work/acq_core_pkg/.acq_core_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/acq_fwft_fifo/.acq_fwft_fifo_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd work/acq_fwft_fifo/.acq_fwft_fifo
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/acq_fwft_fifo/.acq_fwft_fifo: \
 work/genram_pkg/.genram_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/acq_core_pkg/.acq_core_pkg_vhd
@@ -2368,6 +2384,14 @@ work/reset_synch/.reset_synch_vhd: ../../../../../../modules/dbe_common/reset_sy
 
 
 work/reset_synch/.reset_synch:
+		@mkdir -p $(dir $@) && touch $@
+
+work/pulse2level/.pulse2level_vhd: ../../../../../../modules/dbe_common/pulse2level/pulse2level.vhd work/pulse2level/.pulse2level
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/pulse2level/.pulse2level:
 		@mkdir -p $(dir $@) && touch $@
 
 work/rf_ch_swap/.rf_ch_swap_vhd: ../../../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd work/rf_ch_swap/.rf_ch_swap
