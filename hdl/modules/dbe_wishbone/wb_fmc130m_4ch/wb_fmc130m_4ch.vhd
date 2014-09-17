@@ -243,11 +243,11 @@ architecture rtl of wb_fmc130m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := false;
 
-  -- 130 MHz parameters. FIXME: Not using 2x clock for now!
-  --constant c_mmcm_param                     : t_mmcm_param :=
-  --                                 (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+  -- 130 MHz parameters. Generate 2x input clock
   constant c_mmcm_param                     : t_mmcm_param :=
-                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 8);
+                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+  --constant c_mmcm_param                     : t_mmcm_param :=
+  --                                 (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 8);
 
   -----------------------------
   -- Crossbar component constants
@@ -402,7 +402,7 @@ architecture rtl of wb_fmc130m_4ch is
   signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
-  
+
   -- Extra Wishbone registering stage
   signal cbar_slave_in_reg0                 : t_wishbone_slave_in_array (c_masters-1 downto 0);
   signal cbar_slave_out_reg0                : t_wishbone_slave_out_array(c_masters-1 downto 0);
@@ -529,7 +529,7 @@ begin
         --rst_n_o                                      => fs_rst_sync_n
         rst_n_o                                      => fs_rst_sync_n(i)
       );
-      
+
       cmp_reset_fs2x_synch : reset_synch
       port map(
         clk_i                                       => fs_clk2x(i),
