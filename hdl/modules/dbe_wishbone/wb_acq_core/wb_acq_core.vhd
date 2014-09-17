@@ -49,6 +49,8 @@ use work.acq_core_pkg.all;
 use work.acq_core_wbgen2_pkg.all;
 -- DBE wishbone cores
 use work.dbe_wishbone_pkg.all;
+-- DBE Common cores
+use work.dbe_common_pkg.all;
 
 entity wb_acq_core is
 generic
@@ -110,7 +112,7 @@ port
   -----------------------------
   -- External Interface (w/ FLow Control)
   -----------------------------
-  ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  ext_dout_o                                : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   ext_valid_o                               : out std_logic;
   ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
   ext_sof_o                                 : out std_logic;
@@ -142,7 +144,7 @@ port
   -----------------------------
   -- Debug Interface
   -----------------------------
-  dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
 );
@@ -160,7 +162,7 @@ architecture rtl of wb_acq_core is
   constant c_periph_addr_size               : natural := 3+3;
 
   constant c_acq_data_width                 : natural :=
-                                   f_acq_chan_find_widest(c_acq_channels);
+                                  f_acq_chan_find_widest(c_acq_channels);
 
   ------------------------------------------------------------------------------
   -- Types declaration
@@ -199,20 +201,14 @@ architecture rtl of wb_acq_core is
   signal trig_align                         : std_logic;
 
   ---- Acquisition FSM
-  --signal acq_fsm_current_state              : t_acq_fsm_state;
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
-  ----signal fsm_cmd                            : std_logic_vector(1 downto 0);
-  ----signal fsm_cmd_wr                         : std_logic;
   signal acq_start                          : std_logic;
   signal acq_start_sync_ext                 : std_logic;
   signal acq_start_sync_fs                  : std_logic;
   signal acq_now                            : std_logic;
   signal acq_stop                           : std_logic;
-  --signal acq_end_p                          : std_logic;
   signal acq_end                            : std_logic;
   signal acq_trig                           : std_logic;
-  --signal acq_end                            : std_logic;
-  --signal acq_end_d                          : std_logic;
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
@@ -220,8 +216,8 @@ architecture rtl of wb_acq_core is
   signal acq_trig_in                        : std_logic;
   signal acq_dvalid_in                      : std_logic;
   signal samples_wr_en                      : std_logic;
-  --
-  ---- Pre/Post trigger and shots counters
+
+  -- Pre/Post trigger and shots counters
   signal pre_trig_samples_c                 : unsigned(c_acq_samples_size-1 downto 0);
   signal post_trig_samples_c                : unsigned(c_acq_samples_size-1 downto 0);
   signal shots_nb_c                         : unsigned(15 downto 0);
@@ -230,20 +226,13 @@ architecture rtl of wb_acq_core is
   signal acq_ddr3_start_addr_full           : std_logic_vector(31 downto 0); -- full 32-bit address
   signal acq_ddr3_start_addr                : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
-  ----signal pre_trig_value                     : std_logic_vector(31 downto 0);
-  --signal pre_trig_cnt                       : unsigned(31 downto 0);
   signal acq_pre_trig_done                  : std_logic;
   signal acq_wait_trig_skip_done            : std_logic;
-  ----signal post_trig_value                    : std_logic_vector(31 downto 0);
-  --signal post_trig_cnt                      : unsigned(31 downto 0);
   signal acq_post_trig_done                 : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
-  ----signal shots_value                        : std_logic_vector(15 downto 0);
   signal shots_cnt                          : unsigned(15 downto 0);
-  --signal shots_done                         : std_logic;
   signal shots_decr                         : std_logic;
-  --signal single_shot                        : std_logic;
   signal multishot_buffer_sel               : std_logic;
 
   -- Packet size for ext interface
@@ -260,22 +249,19 @@ architecture rtl of wb_acq_core is
   signal dpram_valid                        : std_logic;
 
   -- FIFO Flow Control signals
-  --signal fifo_fc_trans_done_p               : std_logic;
   signal fifo_fc_req_rst_trans              : std_logic;
 
-  --signal fifo_fc_all_trans_end              : std_logic;
   signal fifo_fc_all_trans_done_p           : std_logic;
-  --signal fifo_fc_all_trans_done_p_sync      : std_logic;
   signal fifo_fc_all_trans_done_l           : std_logic;
   signal fifo_fc_full                       : std_logic;
   signal fifo_fc_full_l                     : std_logic;
 
   -- External memory interface signals
-  signal ext_dout                           : std_logic_vector(c_acq_data_width-1 downto 0);
+  signal ext_dout                           : std_logic_vector(g_ddr_payload_width-1 downto 0);
   signal ext_valid                          : std_logic;
   signal ext_sof                            : std_logic;
   signal ext_eof                            : std_logic;
-  signal ext_addr                           : std_logic_vector(g_acq_addr_width-1 downto 0);
+  signal ext_addr                           : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ext_dreq                           : std_logic;
   signal ext_stall                          : std_logic;
 
@@ -300,13 +286,11 @@ architecture rtl of wb_acq_core is
   signal ddr3_rb_lmt_rb_rst                 : std_logic;
   signal acq_ddr3_rst_n                     : std_logic;
 
-  signal dbg_ddr_rb_data                    : std_logic_vector(c_acq_data_width-1 downto 0);
+  signal dbg_ddr_rb_data                    : std_logic_vector(g_ddr_payload_width-1 downto 0);
   signal dbg_ddr_rb_addr                    : std_logic_vector(g_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
 
   signal ddr3_rb_all_trans_done_p           : std_logic;
-  --signal ddr3_rb_all_trans_done_p_sync      : std_logic;
-  --signal ddr3_rb_all_trans_done_l           : std_logic;
 
   signal ddr3_all_trans_done_l              : std_logic;
   signal ddr3_all_trans_done_p              : std_logic;
@@ -431,13 +415,11 @@ begin
 
   lmt_curr_chan_id                          <= unsigned(regs_out.acq_chan_ctl_which_o); -- 5-bit
 
-  --acq_ddr3_start_addr                       <= (others => '0');
   -- Synchronous to ext_clk_i
   acq_ddr3_start_addr_full                  <= regs_out.ddr3_start_addr_o;
 
   -- Truncate address to the actually width of external memory
   -- Synchronous to ext_clk_i
-  --acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto c_ddr_align_shift);
   acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto 0);
 
   acq_start                                 <= regs_out.ctl_fsm_start_acq_o; -- 1 fs_clk cycle pulse
@@ -446,20 +428,12 @@ begin
 
   regs_in.sta_fsm_state_i                   <= acq_fsm_state;
   regs_in.sta_fsm_acq_done_i                <= acq_end;
-  --regs_in.sta_reserved1_i                   <= (others => '0'); -- 4bits
-  --regs_in.sta_reserved1_i                   <= ext_dreq & ext_valid & ui_app_wdf_gnt & ui_app_wdf_req;
   regs_in.sta_reserved1_i                   <= dbg_fifo_rd_empty & dbg_fifo_fc_rd_en & dbg_fifo_re & dbg_fifo_we;
   regs_in.sta_fc_trans_done_i               <= fifo_fc_all_trans_done_l;
   regs_in.sta_fc_full_i                     <= fifo_fc_full_l;
-  --regs_in.sta_reserved2_i                   <= (others => '0'); -- 6 bits
-  --regs_in.sta_reserved2_i                   <= ui_app_rdy_i & ui_app_wdf_en & ui_app_wdf_cmd & ext_stall;
   regs_in.sta_reserved2_i                   <= "00" & dbg_source_pl_stall & dbg_source_pl_dreq &
                                                dbg_fifo_fc_valid_fwft & dbg_fifo_wr_full;
   regs_in.sta_ddr3_trans_done_i             <= ddr3_all_trans_done_l;
-  --regs_in.sta_ddr3_rb_trans_done_i          <= ddr3_all_trans_done_l;
-  --regs_in.sta_reserved3_i                   <= (others => '0'); -- 15 bits
-  --regs_in.sta_reserved3_i                   <= ui_app_wdf_rdy_i & ext_addr(13 downto 0);
-  --regs_in.sta_reserved3_i                   <= "000" & dbg_fifo_wr_count;
   regs_in.sta_reserved3_i                   <= dbg_pkt_ct_cnt(14 downto 0);
   regs_in.trig_pos_i                        <= (others => '0');
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
@@ -503,9 +477,6 @@ begin
     );
 
   cmp_acq_fsm : acq_fsm
-  --generic map
-  --(
-  --)
   port map
   (
     fs_clk_i                                  => fs_clk_i,
@@ -518,8 +489,6 @@ begin
     acq_start_i                               => acq_start_sync_fs,
     acq_now_i                                 => acq_now,
     acq_stop_i                                => acq_stop,
-    --acq_trig_i                                => '0',
-    --acq_dvalid_i                              => dvalid_i,
     acq_trig_i                                => acq_trig_in,
     acq_dvalid_i                              => acq_dvalid_in,
 
@@ -534,7 +503,6 @@ begin
     -----------------------------
     -- FSM Monitoring
     -----------------------------
-    --acq_end_p_o                               : out std_logic;
     acq_end_o                                 => acq_end,
     acq_single_shot_o                         => acq_single_shot,
     acq_in_pre_trig_o                         => acq_in_pre_trig,
@@ -569,8 +537,6 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n_i,
 
-    --data_i                                  => data_i,
-    --dvalid_i                                => dvalid_i,
     data_i                                  => acq_data_marsh(c_acq_data_width-1 downto 0),
     dvalid_i                                => acq_dvalid_in,
     wr_en_i                                 => samples_wr_en,
@@ -599,9 +565,11 @@ begin
 
   cmp_acq_fc_fifo : acq_fc_fifo
   generic map (
-    g_data_width                            => c_acq_data_width,
-    g_fifo_size                             => g_fifo_fc_size,
-    g_addr_width                            => g_acq_addr_width
+    g_data_out_width                        => g_ddr_payload_width,
+    g_addr_width                            => g_ddr_addr_width,
+    g_acq_num_channels                      => g_acq_num_channels,
+    g_acq_channels                          => g_acq_channels,
+    g_fifo_size                             => g_fifo_fc_size
   )
   port map
   (
@@ -629,6 +597,8 @@ begin
     -- Which buffer (0 or 1) to store data in. Valid only when passthrough_en_i = '0'
     buffer_sel_i                            => multishot_buffer_sel,
 
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
     -- Size of the transaction in g_size bytes
     lmt_pkt_size_i                          => lmt_acq_pkt_size,
     -- Number of shots in this acquisition
@@ -649,51 +619,40 @@ begin
     fifo_fc_dreq_i                          => ext_dreq,
     fifo_fc_stall_i                         => ext_stall,
 
-    dbg_fifo_we_o		                	=> dbg_fifo_we,
+    dbg_fifo_we_o		                	      => dbg_fifo_we,
     dbg_fifo_wr_count_o	                    => dbg_fifo_wr_count,
-    dbg_fifo_re_o		                	=> dbg_fifo_re,
+    dbg_fifo_re_o		                	      => dbg_fifo_re,
     dbg_fifo_fc_rd_en_o	                    => dbg_fifo_fc_rd_en,
     dbg_fifo_rd_empty_o	                    => dbg_fifo_rd_empty,
     dbg_fifo_wr_full_o	                    => dbg_fifo_wr_full,
-    dbg_fifo_fc_valid_fwft_o			    => dbg_fifo_fc_valid_fwft,
-    dbg_source_pl_dreq_o	                => dbg_source_pl_dreq,
-    dbg_source_pl_stall_o	                => dbg_source_pl_stall,
+    dbg_fifo_fc_valid_fwft_o			          => dbg_fifo_fc_valid_fwft,
+    dbg_source_pl_dreq_o	                  => dbg_source_pl_dreq,
+    dbg_source_pl_stall_o	                  => dbg_source_pl_stall,
     dbg_pkt_ct_cnt_o                        => dbg_pkt_ct_cnt,
     dbg_shots_cnt_o                         => dbg_shots_cnt
   );
 
-  -- Wait for all packtes of the last transaction to be comitted. Convert from
-  -- pulse to level signal
-  p_fifo_fc_all_trans : process (fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        fifo_fc_all_trans_done_l <= '0';
-      else
-        if fifo_fc_all_trans_done_p = '1' then
-          fifo_fc_all_trans_done_l <= '1';
-        elsif acq_start_sync_fs = '1'then
-          fifo_fc_all_trans_done_l <= '0';
-        end if;
-      end if;
-    end if;
-  end process;
+  cmp_fifo_fc_all_trans : pulse2level
+  port map
+  (
+    clk_i                                  => fs_clk_i,
+    rst_n_i                                => fs_rst_n_i,
 
-  -- Warn user that data might have been lost because the FIFO became full!
-  p_fifo_fc_full : process (fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        fifo_fc_full_l <= '0';
-      else
-        if fifo_fc_full = '1' then
-          fifo_fc_full_l <= '1';
-        elsif acq_start_sync_fs = '1'then
-          fifo_fc_full_l <= '0';
-        end if;
-      end if;
-    end if;
-  end process;
+    pulse_i                                => fifo_fc_all_trans_done_p,
+    clr_i                                  => acq_start_sync_fs,
+    level_o                                => fifo_fc_all_trans_done_l
+  );
+
+  cmp_fifo_fc_full : pulse2level
+  port map
+  (
+    clk_i                                  => fs_clk_i,
+    rst_n_i                                => fs_rst_n_i,
+
+    pulse_i                                => fifo_fc_full,
+    clr_i                                  => acq_start_sync_fs,
+    level_o                                => fifo_fc_full_l
+  );
 
   -- When FSM in IDLE, request reset
   fifo_fc_req_rst_trans <= '1' when acq_fsm_state = "001" else '0';
@@ -704,17 +663,11 @@ begin
       if fs_rst_n_i = '0' then
         lmt_acq_pkt_size <= to_unsigned(0, lmt_acq_pkt_size'length);
         lmt_shots_nb <= to_unsigned(0, lmt_shots_nb'length);
-        --lmt_valid <= '0';
       else
-        --if acq_start_sync_fs = '1' then
-          -- Be pessimist about overflow. Pick only the LSB of trig samples
-          lmt_acq_pkt_size <= unsigned('0' & pre_trig_samples_c(c_acq_samples_size-2 downto 0)) +
-                              unsigned('0' & post_trig_samples_c(c_acq_samples_size-2 downto 0));
-          lmt_shots_nb <= shots_nb_c;
-          --lmt_valid <= '1';
-        --elsif ddr3_all_trans_done_p = '1' then -- last *_done type of signal in the pipeline
-          --lmt_valid <= '0';
-        --end if;
+        -- Be pessimist about overflow. Pick only the LSB of trig samples
+        lmt_acq_pkt_size <= unsigned('0' & pre_trig_samples_c(c_acq_samples_size-2 downto 0)) +
+                            unsigned('0' & post_trig_samples_c(c_acq_samples_size-2 downto 0));
+        lmt_shots_nb <= shots_nb_c;
       end if;
     end if;
   end process;
@@ -736,7 +689,6 @@ begin
   cmp_acq_ddr3_iface : acq_ddr3_iface
   generic map
   (
-    g_acq_addr_width                          => g_acq_addr_width,
     g_acq_num_channels                        => g_acq_num_channels,
     g_acq_channels                            => g_acq_channels,
     -- Do not modify these! As they are dependent of the memory controller generated!
@@ -765,11 +717,8 @@ begin
     -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
     -- impose any metastability problem in this module
     wr_init_addr_i                            => acq_ddr3_start_addr,
-    --start_wr_i                                => acq_start_sync_ext,
-    --start_addr_i                              => acq_ddr3_start_addr,
 
     lmt_all_trans_done_p_o                    => ddr3_wr_all_trans_done_p,
-    --lmt_rst_i                                 => acq_start_sync_ext,
     lmt_rst_i                                 => '0', --remove this signal
 
     -- Current channel selection ID
@@ -779,20 +728,19 @@ begin
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
-    --lmt_valid_i                               => lmt_valid,
     lmt_valid_i                               => acq_start_sync_ext,
 
     -- Xilinx DDR3 UI Interface
-    ui_app_addr_o                             => ui_app_wdf_addr,   --: out std_logic_vector(g_ddr_addr_width-1 downto 0);
-    ui_app_cmd_o                              => ui_app_wdf_cmd,    --: out std_logic_vector(2 downto 0);
-    ui_app_en_o                               => ui_app_wdf_en,     --: out std_logic;
-    ui_app_rdy_i                              => ui_app_rdy_i,      --: in std_logic;
+    ui_app_addr_o                             => ui_app_wdf_addr,
+    ui_app_cmd_o                              => ui_app_wdf_cmd,
+    ui_app_en_o                               => ui_app_wdf_en,
+    ui_app_rdy_i                              => ui_app_rdy_i,
 
-    ui_app_wdf_data_o                         => ui_app_wdf_data_o, --: out std_logic_vector(g_ddr_payload_width-1 downto 0);
-    ui_app_wdf_end_o                          => ui_app_wdf_end_o,  --: out std_logic;
-    ui_app_wdf_mask_o                         => ui_app_wdf_mask_o, --: out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
-    ui_app_wdf_wren_o                         => ui_app_wdf_wren_o, --: out std_logic;
-    ui_app_wdf_rdy_i                          => ui_app_wdf_rdy_i,  --: in std_logic
+    ui_app_wdf_data_o                         => ui_app_wdf_data_o,
+    ui_app_wdf_end_o                          => ui_app_wdf_end_o,
+    ui_app_wdf_mask_o                         => ui_app_wdf_mask_o,
+    ui_app_wdf_wren_o                         => ui_app_wdf_wren_o,
+    ui_app_wdf_rdy_i                          => ui_app_wdf_rdy_i,
 
     ui_app_rd_data_i                          => ui_app_rd_data_i,
     ui_app_rd_data_end_i                      => ui_app_rd_data_end_i,
@@ -815,21 +763,16 @@ begin
   -- Only for simulation!
   gen_ddr3_readback : if (g_sim_readback) generate
 
-    -- Convert from pulse to level signal
-    p_ddr3_wr_all_trans_done : process (ext_clk_i)
-    begin
-      if rising_edge(ext_clk_i) then
-        if ext_rst_n_i = '0' then
-          ddr3_wr_all_trans_done_l <= '0';
-        else
-          if ddr3_wr_all_trans_done_p = '1' then
-            ddr3_wr_all_trans_done_l <= '1';
-          elsif acq_start_sync_ext = '1'then
-            ddr3_wr_all_trans_done_l <= '0';
-          end if;
-        end if;
-      end if;
-    end process;
+    cmp_ddr3_wr_all_trans_done : pulse2level
+    port map
+    (
+      clk_i                                => ext_clk_i,
+      rst_n_i                              => ext_rst_n_i,
+
+      pulse_i                              => ddr3_wr_all_trans_done_p,
+      clr_i                                => acq_start_sync_ext,
+      level_o                              => ddr3_wr_all_trans_done_l
+    );
 
     sim_in_rb <= ddr3_wr_all_trans_done_l;
     ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
@@ -873,11 +816,11 @@ begin
       -- Current channel selection ID
       lmt_curr_chan_id_i                    => lmt_curr_chan_id,
       -- Size of the transaction in g_fifo_size bytes
-      lmt_pkt_size_i                        => lmt_acq_pkt_size, --Should be lmt_acq_pkt_size/4 !!!
+      -- FIXME FIXME
+      lmt_pkt_size_i                        => lmt_acq_pkt_size,
       -- Number of shots in this acquisition
       lmt_shots_nb_i                        => lmt_shots_nb,
       -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
-      --lmt_valid_i                           => lmt_valid,
       lmt_valid_i                           => acq_start_sync_ext,
 
       -- Xilinx DDR3 UI Interface
@@ -894,23 +837,12 @@ begin
       ui_app_gnt_i                          => ui_app_rb_gnt
     );
 
-    acq_ddr3_rst_n                      <= ext_rst_n_i and ddr3_wr_all_trans_done_l;
+    acq_ddr3_rst_n                          <= ext_rst_n_i and ddr3_wr_all_trans_done_l;
     ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
 
     dbg_ddr_rb_data_o                       <= dbg_ddr_rb_data;
     dbg_ddr_rb_valid_o                      <= dbg_ddr_rb_valid;
     dbg_ddr_rb_addr_o                       <= dbg_ddr_rb_addr;
-
-    -- Sync
-    --cmp_sync_req_rst : gc_sync_ffs
-    --port map(
-    --  clk_i                                 => ext_clk_i,
-    --  rst_n_i                               => ext_rst_n_i,
-    --  data_i                                => fifo_fc_all_trans_done_p,
-    --  synced_o                              => fifo_fc_all_trans_done_p_sync,
-    --  npulse_o                              => open,
-    --  ppulse_o                              => open
-    --);
 
     -- Multiplex between write to DDR3 and readback from DDR3 (simulation only!)
     ui_app_addr_o <= ui_app_wdf_addr when sim_in_rb = '0' else ui_app_rb_addr;
@@ -946,36 +878,15 @@ begin
     q_p_o                                 => ddr3_all_trans_done_p_fs -- pulse output
   );
 
-  -- Convert from pulse to level signal
-  p_ddr3_all_trans_done_l : process (fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        ddr3_all_trans_done_l <= '0';
-      else
-        if ddr3_all_trans_done_p_fs = '1' then
-          ddr3_all_trans_done_l <= '1';
-        elsif acq_start_sync_fs = '1'then -- sync with fs_clk
-          ddr3_all_trans_done_l <= '0';
-        end if;
-      end if;
-    end if;
-  end process;
+  cmp_ddr3_all_trans_done_l : pulse2level
+  port map
+  (
+    clk_i                                  => fs_clk_i,
+    rst_n_i                                => fs_rst_n_i,
 
-  ------------------------------------------------------------------------------
-  -- Store trigger DDR address
-  ------------------------------------------------------------------------------
-  --p_trig_addr : process (ext_clk_i)
-  --begin
-  --  if rising_edge(ext_clk_i) then
-  --    if ext_rst_n_i = '0' then
-  --      trig_addr <= (others => '0');
-  --    else
-  --      if acq_trig = '1' and ext_valid = '1' then
-  --        trig_addr <= std_logic_vector(ext_addr);
-  --      end if;
-  --    end if;
-  --  end if;
-  --end process;
+    pulse_i                                => ddr3_all_trans_done_p_fs,
+    clr_i                                  => acq_start_sync_fs,
+    level_o                                => ddr3_all_trans_done_l
+  );
 
 end rtl;

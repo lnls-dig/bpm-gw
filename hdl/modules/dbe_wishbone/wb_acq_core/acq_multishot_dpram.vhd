@@ -29,6 +29,7 @@ use work.wishbone_pkg.all;
 use work.gencores_pkg.all;
 -- Genrams cores
 use work.genram_pkg.all;
+-- Acquisition cores
 use work.acq_core_pkg.all;
 
 entity acq_multishot_dpram is
@@ -156,7 +157,6 @@ begin
     clkb_i                                  => fs_clk_i,
     bweb_i                                  => open,
     ab_i                                    => dpram0_addrb,
-    --db_i                                    => (others => '0'),
     qb_o                                    => dpram0_doutb
   );
 
@@ -183,7 +183,6 @@ begin
     clkb_i                                  => fs_clk_i,
     bweb_i                                  => open,
     ab_i                                    => dpram1_addrb,
-    --db_i                                    => (others => '0'),
     qb_o                                    => dpram1_doutb
     );
 
@@ -196,7 +195,7 @@ begin
         dpram_valid_t   <= '0';
         dpram_valid     <= '0';
       else
-        if acq_post_trig_done_i = '1' then --or acq_wait_trig_skip_done_i = '1' then
+        if acq_post_trig_done_i = '1' then
           dpram_addrb_cnt <= dpram_addra_trig - pre_trig_samples_i(c_dpram_depth-1 downto 0);
           dpram_valid_t   <= '1';
         elsif (dpram_addrb_cnt = dpram_addra_post_done) then

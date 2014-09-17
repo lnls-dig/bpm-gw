@@ -93,9 +93,9 @@ port
   -----------------------------
   -- External Interface (w/ FLow Control)
   -----------------------------
-  ext_dout_o                                : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  ext_dout_o                                : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   ext_valid_o                               : out std_logic;
-  ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
+  ext_addr_o                                : out std_logic_vector(g_ddr_addr_width-1 downto 0);
   ext_sof_o                                 : out std_logic;
   ext_eof_o                                 : out std_logic;
   ext_dreq_o                                : out std_logic; -- for debbuging purposes
@@ -121,11 +121,11 @@ port
 
   ui_app_req_o                              : out std_logic;
   ui_app_gnt_i                              : in std_logic;
-  
+
   -----------------------------
   -- Debug Interface
   -----------------------------
-  dbg_ddr_rb_data_o                         : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
 );
@@ -147,7 +147,7 @@ begin
     g_address_granularity                     => g_address_granularity,
     g_acq_addr_width                          => g_acq_addr_width,
     g_acq_num_channels                        => g_acq_num_channels,
-    g_acq_channels                            => g_acq_channels,    
+    g_acq_channels                            => g_acq_channels,
     g_ddr_payload_width                       => g_ddr_payload_width,
     g_ddr_addr_width                          => g_ddr_addr_width,
     g_ddr_dq_width                            => g_ddr_dq_width,
@@ -171,16 +171,16 @@ begin
     -- Wishbone Control Interface signals
     -----------------------------
 
-    wb_adr_i                                  => wb_adr_i,  
-    wb_dat_i                                  => wb_dat_i,  
-    wb_dat_o                                  => wb_dat_o,  
-    wb_sel_i                                  => wb_sel_i,  
-    wb_we_i                                   => wb_we_i,   
-    wb_cyc_i                                  => wb_cyc_i,  
-    wb_stb_i                                  => wb_stb_i,  
-    wb_ack_o                                  => wb_ack_o,  
-    wb_err_o                                  => wb_err_o,  
-    wb_rty_o                                  => wb_rty_o,  
+    wb_adr_i                                  => wb_adr_i,
+    wb_dat_i                                  => wb_dat_i,
+    wb_dat_o                                  => wb_dat_o,
+    wb_sel_i                                  => wb_sel_i,
+    wb_we_i                                   => wb_we_i,
+    wb_cyc_i                                  => wb_cyc_i,
+    wb_stb_i                                  => wb_stb_i,
+    wb_ack_o                                  => wb_ack_o,
+    wb_err_o                                  => wb_err_o,
+    wb_rty_o                                  => wb_rty_o,
     wb_stall_o                                => wb_stall_o,
 
     -----------------------------
@@ -188,8 +188,8 @@ begin
     -----------------------------
     acq_val_low_i                             => acq_val_low_array,
     acq_val_high_i                            => acq_val_high_array,
-    acq_dvalid_i                              => acq_dvalid_array,  
-    acq_trig_i                                => acq_trig_array,    
+    acq_dvalid_i                              => acq_dvalid_array,
+    acq_trig_i                                => acq_trig_array,
 
     -----------------------------
     -- DRRAM Interface
