@@ -192,7 +192,6 @@ begin
   -- ADC data signal datapath
   -----------------------------
 
-  --gen_adc_data : for i in 0 to (c_num_adc_bits/2)-1 generate
   gen_adc_data : for i in 0 to c_num_in_adc_pins-1 generate
 
     gen_adc_data_virtex6_iodelay : if (g_fpga_device = "VIRTEX6") generate
@@ -207,7 +206,6 @@ begin
           DELAY_SRC                             => "I"
         )
         port map(
-          --idatain                                 => adc_data_ddr_ibufds(i),
           idatain                               => adc_data_i(i),
           dataout                               => adc_data_ddr_dly(i),
           c                                     => sys_clk_i,
@@ -236,11 +234,9 @@ begin
           DELAY_SRC                             => "I"
         )
         port map(
-          --idatain                                 => adc_data_ddr_ibufds(i),
           idatain                               => adc_data_i(i),
           dataout                               => adc_data_ddr_dly(i),
           c                                     => sys_clk_i,
-          --ce                                    => adc_data_dly_pulse_i,
           ce                                    => iodelay_update(i),
           inc                                   => adc_data_fn_dly_i.idelay.incdec,
           datain                                => '0',
@@ -274,7 +270,7 @@ begin
            cntvalueout                         => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
            dataout                             => adc_data_ddr_dly(i),
            c                                   => sys_clk_i,
-           ce                                  => '1',
+           ce                                  => '0',
            cinvctrl                            => '0',
            cntvaluein                          => adc_data_fn_dly_i.idelay.val,
            datain                              => '0',
@@ -351,7 +347,6 @@ begin
         q1                                    => adc_data_re(i),--adc_data_sdr(2*i+1),
         q2                                    => adc_data_fe(i),--adc_data_sdr(2*i),
         c                                     => adc_clk_bufio,
-        --c                                     => adc_clk_bufr_i,
         ce                                    => '1',
         d                                     => adc_data_ddr_dly(i),
         r                                     => '0',
@@ -362,13 +357,8 @@ begin
       p_delay_fe_delay : process(adc_clk_bufr)
       begin
         if rising_edge (adc_clk_bufr) then
-          --if sys_rst_n_i = '0' then
-          --  adc_data_fe_d1(i) <= '0';
-          --  adc_data_fe_d2(i) <= '0';
-          --else
-            adc_data_fe_d1(i) <= adc_data_fe(i);
-            adc_data_fe_d2(i) <= adc_data_fe_d1(i);
-          --end if;
+          adc_data_fe_d1(i) <= adc_data_fe(i);
+          adc_data_fe_d2(i) <= adc_data_fe_d1(i);
         end if;
       end process;
 
