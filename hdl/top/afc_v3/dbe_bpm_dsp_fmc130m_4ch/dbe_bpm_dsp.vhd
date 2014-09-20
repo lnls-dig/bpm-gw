@@ -342,31 +342,34 @@ architecture rtl of dbe_bpm_dsp is
   constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
 
   constant c_acq1_adc_id                     : natural := 0;
-  constant c_acq1_tbt_amp_id                 : natural := 1;
-  constant c_acq1_tbt_pos_id                 : natural := 2;
-  constant c_acq1_fofb_amp_id                : natural := 3;
-  constant c_acq1_fofb_pos_id                : natural := 4;
-  constant c_acq1_monit_amp_id               : natural := 5;
-  constant c_acq1_monit_pos_id               : natural := 6;
-  constant c_acq1_monit_1_pos_id             : natural := 7;
-  constant c_acq1_end_id                     : natural := 8;
+  constant c_acq1_mix_id                     : natural := 1;
+  constant c_acq1_tbt_amp_id                 : natural := 2;
+  constant c_acq1_tbt_pos_id                 : natural := 3;
+  constant c_acq1_fofb_amp_id                : natural := 4;
+  constant c_acq1_fofb_pos_id                : natural := 5;
+  constant c_acq1_monit_amp_id               : natural := 6;
+  constant c_acq1_monit_pos_id               : natural := 7;
+  constant c_acq1_monit_1_pos_id             : natural := 8;
+  constant c_acq1_end_id                     : natural := 9;
 
   constant c_acq2_adc_id                     : natural := c_acq1_end_id + 0;
-  constant c_acq2_tbt_amp_id                 : natural := c_acq1_end_id + 1;
-  constant c_acq2_tbt_pos_id                 : natural := c_acq1_end_id + 2;
-  constant c_acq2_fofb_amp_id                : natural := c_acq1_end_id + 3;
-  constant c_acq2_fofb_pos_id                : natural := c_acq1_end_id + 4;
-  constant c_acq2_monit_amp_id               : natural := c_acq1_end_id + 5;
-  constant c_acq2_monit_pos_id               : natural := c_acq1_end_id + 6;
-  constant c_acq2_monit_1_pos_id             : natural := c_acq1_end_id + 7;
+  constant c_acq2_mix_id                     : natural := c_acq1_end_id + 1;
+  constant c_acq2_tbt_amp_id                 : natural := c_acq1_end_id + 2;
+  constant c_acq2_tbt_pos_id                 : natural := c_acq1_end_id + 3;
+  constant c_acq2_fofb_amp_id                : natural := c_acq1_end_id + 4;
+  constant c_acq2_fofb_pos_id                : natural := c_acq1_end_id + 5;
+  constant c_acq2_monit_amp_id               : natural := c_acq1_end_id + 6;
+  constant c_acq2_monit_pos_id               : natural := c_acq1_end_id + 7;
+  constant c_acq2_monit_1_pos_id             : natural := c_acq1_end_id + 8;
 
 
   constant c_acq_pos_ddr3_width             : natural := 32;
-  constant c_acq_num_channels               : natural := 16; -- ADC + TBT AMP + TBT POS +
+  constant c_acq_num_channels               : natural := 18; -- ADC + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
                                                             -- for each FMC (x2)
   constant c_acq_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
     ( c_acq1_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
+      c_acq1_mix_id            => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq1_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq1_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq1_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
@@ -375,6 +378,7 @@ architecture rtl of dbe_bpm_dsp is
       c_acq1_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq1_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq2_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
+      c_acq2_mix_id            => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq2_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq2_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq2_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
@@ -545,7 +549,7 @@ architecture rtl of dbe_bpm_dsp is
   signal bpm_acq_dpram_dout                 : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
   signal bpm_acq_dpram_valid                : std_logic;
 
-  signal bpm_acq_ext_dout                   : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal bpm_acq_ext_dout                   : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal bpm_acq_ext_valid                  : std_logic;
   signal bpm_acq_ext_addr                   : std_logic_vector(c_acq_addr_width-1 downto 0);
   signal bpm_acq_ext_sof                    : std_logic;
@@ -569,7 +573,7 @@ architecture rtl of dbe_bpm_dsp is
   signal memc_rd_data                       : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal memc_rd_valid                      : std_logic;
 
-  signal dbg_ddr_rb_data                    : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal dbg_ddr_rb_data                    : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal dbg_ddr_rb_addr                    : std_logic_vector(c_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
 
@@ -717,74 +721,76 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
 
-  signal dsp1_bpf_ch0                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_bpf_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_bpf_valid                      : std_logic;
 
-  signal dsp1_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mix_ch1                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mix_ch3                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_mix_valid                      : std_logic;
 
-  signal dsp1_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_poly35_valid                   : std_logic;
 
-  signal dsp1_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_cic_fofb_valid                 : std_logic;
 
-  signal dsp1_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_amp_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_amp_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_amp_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_amp_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_tbt_amp_valid                  : std_logic;
 
-  signal dsp1_tbt_pha_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_pha_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_tbt_pha_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_pha_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_tbt_pha_valid                  : std_logic;
 
-  signal dsp1_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_amp_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_amp_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_amp_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_amp_ch3                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_fofb_amp_valid                 : std_logic;
 
-  signal dsp1_fofb_pha_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_pha_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_fofb_pha_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_pha_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_fofb_pha_valid                 : std_logic;
 
-  signal dsp1_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp1_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp1_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_monit_amp_valid                : std_logic;
 
-  signal dsp1_pos_x_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_y_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_q_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_sum_tbt                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp1_pos_x_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_y_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_q_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_sum_tbt                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp1_pos_tbt_valid                  : std_logic;
 
-  signal dsp1_pos_x_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_y_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_q_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_sum_fofb                   : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp1_pos_x_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_y_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_q_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_sum_fofb                   : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp1_pos_fofb_valid                 : std_logic;
 
-  signal dsp1_pos_x_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_y_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_q_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_sum_monit                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp1_pos_x_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_y_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_q_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_sum_monit                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp1_pos_monit_valid                : std_logic;
 
-  signal dsp1_pos_x_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_y_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_q_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp1_pos_sum_monit_1                : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp1_pos_x_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_y_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_q_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp1_pos_sum_monit_1                : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp1_pos_monit_1_valid              : std_logic;
 
   signal dsp1_clk_ce_1                       : std_logic;
@@ -820,74 +826,76 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
 
-  signal dsp2_bpf_ch0                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_bpf_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_bpf_valid                      : std_logic;
 
-  signal dsp2_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mix_ch1                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mix_ch3                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_mix_valid                      : std_logic;
 
-  signal dsp2_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_poly35_valid                   : std_logic;
 
-  signal dsp2_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_cic_fofb_valid                 : std_logic;
 
-  signal dsp2_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_amp_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_amp_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_amp_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_amp_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_tbt_amp_valid                  : std_logic;
 
-  signal dsp2_tbt_pha_ch0                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_pha_ch1                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_tbt_pha_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_pha_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_tbt_pha_valid                  : std_logic;
 
-  signal dsp2_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_amp_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_amp_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_amp_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_amp_ch3                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_fofb_amp_valid                 : std_logic;
 
-  signal dsp2_fofb_pha_ch0                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_pha_ch1                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_fofb_pha_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_pha_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_pha_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofb_pha_ch3                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_fofb_pha_valid                 : std_logic;
 
-  signal dsp2_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
-  signal dsp2_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits-1 downto 0);
+  signal dsp2_monit_amp_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_monit_amp_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_monit_amp_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_monit_amp_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_monit_amp_valid                : std_logic;
 
-  signal dsp2_pos_x_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_y_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_q_tbt                      : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_sum_tbt                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp2_pos_x_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_y_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_q_tbt                      : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_sum_tbt                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp2_pos_tbt_valid                  : std_logic;
 
-  signal dsp2_pos_x_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_y_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_q_fofb                     : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_sum_fofb                   : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp2_pos_x_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_y_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_q_fofb                     : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_sum_fofb                   : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp2_pos_fofb_valid                 : std_logic;
 
-  signal dsp2_pos_x_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_y_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_q_monit                    : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_sum_monit                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp2_pos_x_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_y_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_q_monit                    : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_sum_monit                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp2_pos_monit_valid                : std_logic;
 
-  signal dsp2_pos_x_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_y_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_q_monit_1                  : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
-  signal dsp2_pos_sum_monit_1                : std_logic_vector(c_dsp_pos_num_bits-1 downto 0);
+  signal dsp2_pos_x_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_y_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_q_monit_1                  : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
+  signal dsp2_pos_sum_monit_1                : std_logic_vector(c_dsp_pos_num_bits_ns-1 downto 0);
   signal dsp2_pos_monit_1_valid              : std_logic;
 
   signal dsp2_clk_ce_1                       : std_logic;
@@ -2003,7 +2011,7 @@ begin
   ----------------------------------------------------------------------
 
   -- Position calc core is slave 7
-  cmp1_xwb_position_calc_core : xwb_position_calc_core
+  cmp1_xwb_position_calc_core_ns : xwb_position_calc_core_ns
   generic map (
     g_interface_mode                        => PIPELINED,
     g_address_granularity                   => BYTE,
@@ -2048,11 +2056,11 @@ begin
 
     mix_ch0_i_o                             => dsp1_mix_ch0,
     --mix_ch0_q_o                             => out std_logic_vector(23 downto 0);
-    --mix_ch1_i_o                             => out std_logic_vector(23 downto 0);
+    mix_ch1_i_o                             => dsp1_mix_ch1,
     --mix_ch1_q_o                             => out std_logic_vector(23 downto 0);
     mix_ch2_i_o                             => dsp1_mix_ch2,
     --mix_ch2_q_o                             => out std_logic_vector(23 downto 0);
-    --mix_ch3_i_o                             => out std_logic_vector(23 downto 0);
+    mix_ch3_i_o                             => dsp1_mix_ch3,
     --mix_ch3_q_o                             => out std_logic_vector(23 downto 0);
     mix_valid_o                             => dsp1_mix_valid,
 
@@ -2179,7 +2187,7 @@ begin
   ----------------------------------------------------------------------
 
   -- Position calc core is slave 11
-  cmp2_xwb_position_calc_core : xwb_position_calc_core
+  cmp2_xwb_position_calc_core_ns : xwb_position_calc_core_ns
   generic map (
     g_interface_mode                        => PIPELINED,
     g_address_granularity                   => BYTE,
@@ -2224,11 +2232,11 @@ begin
 
     mix_ch0_i_o                             => dsp2_mix_ch0,
     --mix_ch0_q_o                             => out std_logic_vector(23 downto 0);
-    --mix_ch1_i_o                             => out std_logic_vector(23 downto 0);
+    mix_ch1_i_o                             => dsp2_mix_ch1,
     --mix_ch1_q_o                             => out std_logic_vector(23 downto 0);
     mix_ch2_i_o                             => dsp2_mix_ch2,
     --mix_ch2_q_o                             => out std_logic_vector(23 downto 0);
-    --mix_ch3_i_o                             => out std_logic_vector(23 downto 0);
+    mix_ch3_i_o                             => dsp2_mix_ch3,
     --mix_ch3_q_o                             => out std_logic_vector(23 downto 0);
     mix_valid_o                             => dsp2_mix_valid,
 
@@ -2410,6 +2418,18 @@ begin
   acq_chan_array(c_acq1_adc_id).trig          <= '0';
 
   --------------------
+  -- MIXER 1 data
+  --------------------
+  acq_chan_array(c_acq1_mix_id).val_low   <= std_logic_vector(resize(signed(dsp1_mix_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mix_ch0), 32));
+
+  acq_chan_array(c_acq1_mix_id).val_high  <= std_logic_vector(resize(signed(dsp1_mix_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mix_ch2), 32));
+
+  acq_chan_array(c_acq1_mix_id).dvalid    <= dsp1_mix_valid;
+  acq_chan_array(c_acq1_mix_id).trig      <= '0';
+
+  --------------------
   -- TBT AMP 1 data
   --------------------
   acq_chan_array(c_acq1_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
@@ -2503,6 +2523,18 @@ begin
   acq_chan_array(c_acq2_adc_id).val_high      <= (others => '0');
   acq_chan_array(c_acq2_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq2_adc_id).trig          <= '0';
+
+  --------------------
+  -- MIXER 2 data
+  --------------------
+  acq_chan_array(c_acq2_mix_id).val_low   <= std_logic_vector(resize(signed(dsp2_mix_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mix_ch0), 32));
+
+  acq_chan_array(c_acq2_mix_id).val_high  <= std_logic_vector(resize(signed(dsp2_mix_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mix_ch2), 32));
+
+  acq_chan_array(c_acq2_mix_id).dvalid    <= dsp2_mix_valid;
+  acq_chan_array(c_acq2_mix_id).trig      <= '0';
 
   --------------------
   -- TBT AMP 2 data
@@ -2679,18 +2711,7 @@ begin
 
   memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
                                memc_cmd_addr;
-  
-  ------------------------------- RMEOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  -----------------------------cbar_master_i(13).dat <= memc_cmd_instr & -- 3
-  -----------------------------      		   memc_cmd_en &    -- 1
-  -----------------------------      		   memc_wr_data(10 downto 0) & -- 11
-  -----------------------------      		   memc_wr_end & -- 1
-  -----------------------------      		   memc_wr_mask(3 downto 0) & -- 4
-  -----------------------------      		   memc_wr_en &	-- 5
-  -----------------------------      		   memc_cmd_addr(10 downto 0); -- 11
 
-  -----------------------------memc_cmd_rdy <= cbar_master_o(13).stb;
-  -----------------------------memc_wr_rdy <= cbar_master_o(13).cyc;
   ---- Chipscope Analysis
   --cmp_chipscope_icon_13 : chipscope_icon_13_port
   --port map (
