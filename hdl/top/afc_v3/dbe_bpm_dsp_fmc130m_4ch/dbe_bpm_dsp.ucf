@@ -4,9 +4,9 @@
 
 NET  "sys_clk_p_i" 			          LOC = AK7 | IOSTANDARD = "DIFF_SSTL15" | IN_TERM = "UNTUNED_SPLIT_50"; // FPGA_CLK1_P
 NET  "sys_clk_n_i" 			          LOC = AL7 | IOSTANDARD = "DIFF_SSTL15" | IN_TERM = "UNTUNED_SPLIT_50"; // FPGA_CLK1_N
-                                                
+
 NET  "rs232_txd_o"  			          LOC = AB11 | IOSTANDARD = "LVCMOS25";                                  // TXD	        IO_25_34
-NET  "rs232_rxd_i"  			          LOC = Y11  | IOSTANDARD = "LVCMOS25";                                  // VADJ1_RXD	IO_0_34	
+NET  "rs232_rxd_i"  			          LOC = Y11  | IOSTANDARD = "LVCMOS25";                                  // VADJ1_RXD	IO_0_34
 
 ###NET "sys_rst_button_i"                        LOC = H10 | IOSTANDARD = "SSTL15" | TIG;
 
@@ -89,94 +89,94 @@ NET "fmc1_trig_dir_o"                          LOC = T8   | IOSTANDARD = "LVCMOS
 NET "fmc1_trig_term_o"                         LOC = T2   | IOSTANDARD = "LVCMOS25";  // LA26_N
 NET "fmc1_trig_val_p_b"                        LOC = R1   | IOSTANDARD = "BLVDS_25";  // LA32_P
 NET "fmc1_trig_val_n_b"                        LOC = P1   | IOSTANDARD = "BLVDS_25";  // LA32_N
-                                                                                      
-// Si571 clock gen                                                                    
+
+// Si571 clock gen
 NET "fmc1_si571_scl_pad_b"                     LOC = G34  | IOSTANDARD = "LVCMOS25";  // HA12_N
 NET "fmc1_si571_sda_pad_b"                     LOC = K25  | IOSTANDARD = "LVCMOS25";  // HA13_P
 NET "fmc1_si571_oe_o"                          LOC = H33  | IOSTANDARD = "LVCMOS25";  // HA12_P
-                                                                                      
-// AD9510 clock distribution PLL                                                      
+
+// AD9510 clock distribution PLL
 NET "fmc1_spi_ad9510_cs_o"                     LOC = G9   | IOSTANDARD = "LVCMOS25";   // LA13_N
 NET "fmc1_spi_ad9510_sclk_o"                   LOC = G10  | IOSTANDARD = "LVCMOS25";  // LA13_P
 NET "fmc1_spi_ad9510_mosi_o"                   LOC = J3   | IOSTANDARD = "LVCMOS25";  // LA09_N
 NET "fmc1_spi_ad9510_miso_i"                   LOC = H9   | IOSTANDARD = "LVCMOS25";  // LA14_P
 NET "fmc1_pll_function_o"                      LOC = H8   | IOSTANDARD = "LVCMOS25";  // LA14_N
 NET "fmc1_pll_status_i"                        LOC = J4   | IOSTANDARD = "LVCMOS25";  // LA09_P
-                                                                                      
+
 ###NET "fmc1_fpga_clk_p_i"                        LOC = H7  | IOSTANDARD = "LVDS_25";  // CLK0_M2C_P
 ###NET "fmc1_fpga_clk_n_i"                        LOC = H6  | IOSTANDARD = "LVDS_25";  // CLK0_M2C_N
-                                                                                      
-// Clock reference selection (TS3USB221)                                              
+
+// Clock reference selection (TS3USB221)
 NET "fmc1_clk_sel_o"                           LOC = U7   | IOSTANDARD = "LVCMOS25";  // LA31_P
-                                                                                      
-// EEPROM (multiplexer PCA9548) (Connected to the CPU)                                
+
+// EEPROM (multiplexer PCA9548) (Connected to the CPU)
 ###NET "eeprom_scl_pad_b"                         LOC =  | IOSTANDARD ="LVCMOS25";   # FPGA I2C SCL
 ###NET "eeprom_sda_pad_b"                         LOC =  | IOSTANDARD ="LVCMOS25";   # FPGA I2C SDA
-                                                                                      
-// LM75 temperature monitor                                                           
+
+// LM75 temperature monitor
 NET "fmc1_lm75_scl_pad_b"                      LOC = R3   | IOSTANDARD = "LVCMOS25";  // LA27_P
 NET "fmc1_lm75_sda_pad_b"                      LOC = R2   | IOSTANDARD = "LVCMOS25";  // LA27_N
 NET "fmc1_lm75_temp_alarm_i"                   LOC = T7   | IOSTANDARD = "LVCMOS25";  // LA28_N
-                                                                                      
-// LTC ADC control pins                                                               
+
+// LTC ADC control pins
 NET "fmc1_adc_pga_o"                           LOC = L5   | IOSTANDARD = "LVCMOS25";  // LA06_P
 NET "fmc1_adc_shdn_o"                          LOC = G2   | IOSTANDARD = "LVCMOS25";  // LA10_N
 NET "fmc1_adc_dith_o"                          LOC = H2   | IOSTANDARD = "LVCMOS25";  // LA10_P
 NET "fmc1_adc_rand_o"                          LOC = K5   | IOSTANDARD = "LVCMOS25";  // LA06_N
-                                                                                      
-// LEDs                                                                               
+
+// LEDs
 NET "fmc1_led1_o"                              LOC = L9   | IOSTANDARD = "LVCMOS25";  // LA16_N
 NET "fmc1_led2_o"                              LOC = L10  | IOSTANDARD = "LVCMOS25";  // LA16_P
 NET "fmc1_led3_o"                              LOC = T3   | IOSTANDARD = "LVCMOS25";  // LA26_P
-                                                                                      
-#######################################################################               
-##                      FMC Connector HPC2                           ##               
-#######################################################################               
-                                                                                      
+
+#######################################################################
+##                      FMC Connector HPC2                           ##
+#######################################################################
+
 ###NET  "fmc2_prsnt_i"                            LOC =  | IOSTANDARD = "LVCMOS25";//  Connected to CPU
 ###NET  "fmc2_pg_m2c_i"                           LOC =  | IOSTANDARD = "LVCMOS25";//  Connected to CPU
-                                                                                      
-// Trigger                                                                            
+
+// Trigger
 NET "fmc2_trig_dir_o"                          LOC = W28  | IOSTANDARD = "LVCMOS25";  // LA28_P
 NET "fmc2_trig_term_o"                         LOC = AC32 | IOSTANDARD = "LVCMOS25";  // LA26_N
 NET "fmc2_trig_val_p_b"                        LOC = AA34 | IOSTANDARD = "BLVDS_25";  // LA32_P
 NET "fmc2_trig_val_n_b"                        LOC = AB34 | IOSTANDARD = "BLVDS_25";  // LA32_N
-                                                                                      
-// Si571 clock gen                                                                    
+
+// Si571 clock gen
 NET "fmc2_si571_scl_pad_b"                     LOC = AN29 | IOSTANDARD = "LVCMOS25";  // HA12_N
 NET "fmc2_si571_sda_pad_b"                     LOC = AN28 | IOSTANDARD = "LVCMOS25";  // HA13_P
 NET "fmc2_si571_oe_o"                          LOC = AM29 | IOSTANDARD = "LVCMOS25";  // HA12_P
-                                                                                      
-// AD9510 clock distribution PLL                                                      
+
+// AD9510 clock distribution PLL
 NET "fmc2_spi_ad9510_cs_o"                     LOC = AG34 | IOSTANDARD = "LVCMOS25";  // LA13_N
 NET "fmc2_spi_ad9510_sclk_o"                   LOC = AF34 | IOSTANDARD = "LVCMOS25";  // LA13_P
 NET "fmc2_spi_ad9510_mosi_o"                   LOC = AG25 | IOSTANDARD = "LVCMOS25";  // LA09_N
 NET "fmc2_spi_ad9510_miso_i"                   LOC = AE33 | IOSTANDARD = "LVCMOS25";  // LA14_P
 NET "fmc2_pll_function_o"                      LOC = AF33 | IOSTANDARD = "LVCMOS25";  // LA14_N
 NET "fmc2_pll_status_i"                        LOC = AF25 | IOSTANDARD = "LVCMOS25";  // LA09_P
-                                                                                      
+
 ###NET "fmc2_fpga_clk_p_i"                       LOC = AA30 | IOSTANDARD = "LVDS_25";  // CLK0_M2C_P
 ###NET "fmc2_fpga_clk_n_i"                       LOC = AB30 | IOSTANDARD = "LVDS_25";  // CLK0_M2C_N
-                                                                                      
-// Clock reference selection (TS3USB221)                                              
+
+// Clock reference selection (TS3USB221)
 NET "fmc2_clk_sel_o"                           LOC = V31  | IOSTANDARD = "LVCMOS25";  // LA31_P
-                                                                                      
-// EEPROM (multiplexer PCA9548) (Connected to the CPU)                                                      
+
+// EEPROM (multiplexer PCA9548) (Connected to the CPU)
 ###NET "eeprom_scl_pad_b"                        LOC =  | IOSTANDARD ="LVCMOS25"; #  SCL C30
 ###NET "eeprom_sda_pad_b"                        LOC =  | IOSTANDARD ="LVCMOS25"; #  SDA C31
-                                                                                      
-// LM75 temperature monitor                                                           
+
+// LM75 temperature monitor
 NET "fmc2_lm75_scl_pad_b"                      LOC = AA27 | IOSTANDARD = "LVCMOS25";  // LA27_P
 NET "fmc2_lm75_sda_pad_b"                      LOC = AA28 | IOSTANDARD = "LVCMOS25";  // LA27_N
 NET "fmc2_lm75_temp_alarm_i"                   LOC = W29  | IOSTANDARD = "LVCMOS25";  // LA28_N
-                                                                                      
-// LTC ADC control pins                                                               
+
+// LTC ADC control pins
 NET "fmc2_adc_pga_o"                           LOC = AE23 | IOSTANDARD = "LVCMOS25";  // LA06_P
 NET "fmc2_adc_shdn_o"                          LOC = AH32 | IOSTANDARD = "LVCMOS25";  // LA10_N
 NET "fmc2_adc_dith_o"                          LOC = AG32 | IOSTANDARD = "LVCMOS25";  // LA10_P
 NET "fmc2_adc_rand_o"                          LOC = AF23 | IOSTANDARD = "LVCMOS25";  // LA06_N
-                                                                                      
-// LEDs                                                                               
+
+// LEDs
 NET "fmc2_led1_o"                              LOC = AD34 | IOSTANDARD = "LVCMOS25";  // LA16_N
 NET "fmc2_led2_o"                              LOC = AD33 | IOSTANDARD = "LVCMOS25";  // LA16_P
 NET "fmc2_led3_o"                              LOC = AC31 | IOSTANDARD = "LVCMOS25";  // LA26_P
@@ -188,7 +188,7 @@ NET "fmc2_led3_o"                              LOC = AC31 | IOSTANDARD = "LVCMOS
 
 // ADC0
 NET "fmc1_adc0_clk_i"                          LOC = T5   | IOSTANDARD = "LVCMOS25"; // LA17_CC_P
-                                                     
+
 NET "fmc1_adc0_data_i[0]"                      LOC = M11   | IOSTANDARD = "LVCMOS25"; // LA24_P
 NET "fmc1_adc0_data_i[1]"                      LOC = M10   | IOSTANDARD = "LVCMOS25"; // LA24_N
 NET "fmc1_adc0_data_i[2]"                      LOC = N8    | IOSTANDARD = "LVCMOS25"; // LA25_P
@@ -209,7 +209,7 @@ NET "fmc1_adc0_of_i"                           LOC = P9    | IOSTANDARD = "LVCMO
 
 // ADC1
 NET "fmc1_adc1_clk_i"                          LOC = J28   | IOSTANDARD = "LVCMOS25"; // HA17_CC_P
-                                                     
+
 NET "fmc1_adc1_data_i[15]"                     LOC = H32   | IOSTANDARD = "LVCMOS25"; // HA10_P
 NET "fmc1_adc1_data_i[14]"                     LOC = M25   | IOSTANDARD = "LVCMOS25"; // HA11_P
 NET "fmc1_adc1_data_i[13]"                     LOC = G32   | IOSTANDARD = "LVCMOS25"; // HA10_N
@@ -230,7 +230,7 @@ NET "fmc1_adc1_of_i"                           LOC = J23   | IOSTANDARD = "LVCMO
 
 // ADC2
 NET "fmc1_adc2_clk_i"                          LOC = K7    | IOSTANDARD = "LVCMOS25"; // LA00_CC_P
-                                                     
+
 NET "fmc1_adc2_data_i[15]"                     LOC = J6    | IOSTANDARD = "LVCMOS25"; // LA01_CC_P
 NET "fmc1_adc2_data_i[14]"                     LOC = G7    | IOSTANDARD = "LVCMOS25"; // LA02_P
 NET "fmc1_adc2_data_i[13]"                     LOC = J5    | IOSTANDARD = "LVCMOS25"; // LA01_CC_N
@@ -251,7 +251,7 @@ NET "fmc1_adc2_of_i"                           LOC = M2    | IOSTANDARD = "LVCMO
 
 // ADC3
 NET "fmc1_adc3_clk_i"                          LOC = L28   | IOSTANDARD = "LVCMOS25"; // HA01_CC_P
-                                                     
+
 NET "fmc1_adc3_data_i[15]"                     LOC = H29   | IOSTANDARD = "LVCMOS25"; // HA00_CC_N
 NET "fmc1_adc3_data_i[14]"                     LOC = J29   | IOSTANDARD = "LVCMOS25"; // HA00_CC_P
 NET "fmc1_adc3_data_i[13]"                     LOC = H34   | IOSTANDARD = "LVCMOS25"; // HA05_N
@@ -277,7 +277,7 @@ NET "fmc1_adc3_of_i"                           LOC = K27   | IOSTANDARD = "LVCMO
 
 // ADC0
 NET "fmc2_adc0_clk_i"                          LOC = AB31  | IOSTANDARD = "LVCMOS25"; // LA17_CC_P
-                                                     
+
 NET "fmc2_adc0_data_i[0]"                      LOC = Y32   | IOSTANDARD = "LVCMOS25"; // LA24_P
 NET "fmc2_adc0_data_i[1]"                      LOC = Y33   | IOSTANDARD = "LVCMOS25"; // LA24_N
 NET "fmc2_adc0_data_i[2]"                      LOC = AA29  | IOSTANDARD = "LVCMOS25"; // LA25_P
@@ -298,7 +298,7 @@ NET "fmc2_adc0_of_i"                           LOC = AC33  | IOSTANDARD = "LVCMO
 
 // ADC1
 NET "fmc2_adc1_clk_i"                          LOC = AJ28  | IOSTANDARD = "LVCMOS25"; // HA17_CC_P
-                                                     
+
 NET "fmc2_adc1_data_i[15]"                     LOC = AP25  | IOSTANDARD = "LVCMOS25"; // HA10_P
 NET "fmc2_adc1_data_i[14]"                     LOC = AK33  | IOSTANDARD = "LVCMOS25"; // HA11_P
 NET "fmc2_adc1_data_i[13]"                     LOC = AP26  | IOSTANDARD = "LVCMOS25"; // HA10_N
@@ -319,7 +319,7 @@ NET "fmc2_adc1_of_i"                           LOC = AJ34  | IOSTANDARD = "LVCMO
 
 // ADC2
 NET "fmc2_adc2_clk_i"                          LOC = AE28  | IOSTANDARD = "LVCMOS25"; // LA00_CC_P
-                                                     
+
 NET "fmc2_adc2_data_i[15]"                     LOC = AF29  | IOSTANDARD = "LVCMOS25"; // LA01_CC_P
 NET "fmc2_adc2_data_i[14]"                     LOC = AG31  | IOSTANDARD = "LVCMOS25"; // LA02_P
 NET "fmc2_adc2_data_i[13]"                     LOC = AF30  | IOSTANDARD = "LVCMOS25"; // LA01_CC_N
@@ -340,7 +340,7 @@ NET "fmc2_adc2_of_i"                           LOC = AD30  | IOSTANDARD = "LVCMO
 
 // ADC3
 NET "fmc2_adc3_clk_i"                          LOC = AL28  | IOSTANDARD = "LVCMOS25"; // HA01_CC_P
-                                                     
+
 NET "fmc2_adc3_data_i[15]"                     LOC = AM30  | IOSTANDARD = "LVCMOS25"; // HA00_CC_N
 NET "fmc2_adc3_data_i[14]"                     LOC = AL30  | IOSTANDARD = "LVCMOS25"; // HA00_CC_P
 NET "fmc2_adc3_data_i[13]"                     LOC = AM25  | IOSTANDARD = "LVCMOS25"; // HA05_N
@@ -465,10 +465,10 @@ TIMESPEC "TS_fmc2_fpga_clk_p_i" = PERIOD "fmc2_fpga_clk_p_i" 8.88 ns HIGH 50% IN
 #######################################################################
 
 # Reset synchronization path
-NET "cmp_reset/master_rstn" 								TIG;	
-###NET "cmp_reset/Mshreg_shifters_0_0" TNM_NET = "TNM_reset_clk_0"; 	
-#### We relax the reset path here, as we have several FFs pipelined. 
-#### Here, we are using 2 (125MHz) free_clk clock cycles as the maximum 
+NET "cmp_reset/master_rstn" 								TIG;
+###NET "cmp_reset/Mshreg_shifters_0_0" TNM_NET = "TNM_reset_clk_0";
+#### We relax the reset path here, as we have several FFs pipelined.
+#### Here, we are using 2 (125MHz) free_clk clock cycles as the maximum
 #### allowed, which is large enough so as to not impose any difficulties by
 #### the synthesis tools and still small enough so as to not extrapolate
 #### the number of FFs pipelined.
@@ -536,7 +536,7 @@ NET "pcie_rst_n_i" 				                 IOSTANDARD = LVCMOS25 | PULLUP | NODELAY
 NET "pcie_rst_n_i" 				                 TIG;
 # Bank 16 VCCO - VADJ_FPGA - IO_25_16                                                                   //     NET                   PIN NAME
 NET "pcie_rst_n_i" 				                 LOC = AG26;                            // FPGA_RESET_DN        -> IO_L19P_T3_13
-#PCIe clock                                                                                               
+#PCIe clock
 NET "pcie_clk_n_i" 				                 LOC = G18;                             // MGT216_CLK1_N	-> MGTREFCLK0N_216
 NET "pcie_clk_p_i" 				                 LOC = H18;                             // MGT216_CLK1_P	-> MGTREFCLK0P_216
 #PCIe lane 0
@@ -549,12 +549,12 @@ NET "pci_exp_txp_o[1]" 				                 LOC = D22;                          
 NET "pci_exp_txn_o[1]" 				                 LOC = C22;                             // TX216_1_N            -> MGTPTXN1_216
 NET "pci_exp_rxp_i[1]" 				                 LOC = D20;                             // RX216_1_P            -> MGTPRXP1_216
 NET "pci_exp_rxn_i[1]" 				                 LOC = C20;                             // RX216_1_N            -> MGTPRXN1_216
-#PCIe lane 2                                                                          
+#PCIe lane 2
 NET "pci_exp_txp_o[2]" 				                 LOC = B21;                             // TX216_2_P            -> MGTPTXP2_216
 NET "pci_exp_txn_o[2]" 				                 LOC = A21;                             // TX216_2_N            -> MGTPTXN2_216
 NET "pci_exp_rxp_i[2]" 				                 LOC = F19;                             // RX216_2_P            -> MGTPRXP2_216
 NET "pci_exp_rxn_i[2]" 				                 LOC = E19;                             // RX216_2_N            -> MGTPRXN2_216
-#PCIe lane 3                                                                          
+#PCIe lane 3
 NET "pci_exp_txp_o[3]" 				                 LOC = B19;                             // TX216_3_P            -> MGTPTXP3_216
 NET "pci_exp_txn_o[3]" 				                 LOC = A19;                             // TX216_3_N            -> MGTPTXN3_216
 NET "pci_exp_rxp_i[3]" 				                 LOC = D18;                             // RX216_3_P            -> MGTPRXP3_216
@@ -567,9 +567,9 @@ NET "pci_exp_rxn_i[3]" 				                 LOC = C18;                          
 NET   "ddr3_dq_b[0]"                 		LOC = AD11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D0           -> IO_L22P_T3_33
 NET   "ddr3_dq_b[1]"                 		LOC = AE10 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D1           -> IO_L24N_T3_33
 NET   "ddr3_dq_b[2]"                 		LOC = AF12 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D2           -> IO_L23P_T3_33
-NET   "ddr3_dq_b[3]"                 		LOC = AG11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D3           -> IO_L22N_T3_33 
-NET   "ddr3_dq_b[4]"                 		LOC = AE11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D4           -> IO_L20P_T3_33 
-NET   "ddr3_dq_b[5]"                 		LOC = AH11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D5           -> IO_L20N_T3_33 
+NET   "ddr3_dq_b[3]"                 		LOC = AG11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D3           -> IO_L22N_T3_33
+NET   "ddr3_dq_b[4]"                 		LOC = AE11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D4           -> IO_L20P_T3_33
+NET   "ddr3_dq_b[5]"                 		LOC = AH11 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D5           -> IO_L20N_T3_33
 NET   "ddr3_dq_b[6]"                 		LOC = AG12 | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D6           -> IO_L23N_T3_33
 NET   "ddr3_dq_b[7]"                 		LOC = AH9  | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D7           -> IO_L19P_T3_33
 NET   "ddr3_dq_b[8]"                 		LOC = AD6  | IOSTANDARD = SSTL15      | SLEW = FAST | IN_TERM = UNTUNED_SPLIT_50   ; // D8           -> IO_L13P_T2_MRCC_33
@@ -751,7 +751,7 @@ NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/use
 
 TIMESPEC "TS_SYSCLK"                                                                                   = PERIOD "SYSCLK" 100 MHz HIGH 50 % ;
 TIMESPEC "TS_CLK_125"                                                                                  = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 1;
-#CLK_250 not used, we use Gen1 mode only                                                               
+#CLK_250 not used, we use Gen1 mode only
 #TIMESPEC "TS_CLK_250"                                                                                 = PERIOD "CLK_250" TS_SYSCLK*2.5 HIGH 50 % PRIORITY 2;
 TIMESPEC "TS_CLK_USERCLK"                                                                              = PERIOD "CLK_USERCLK" TS_SYSCLK*1.25 HIGH 50 %;
 TIMESPEC "TS_CLK_USERCLK2"                                                                             = PERIOD "CLK_USERCLK2" TS_SYSCLK*1.25 HIGH 50 %;
@@ -793,7 +793,7 @@ INST "*/mc0/mc_read_idle_r" TNM = "TNM_SOURCE_IDLE";
 INST "*/input_[?].iserdes_dq_.iserdesdq" TNM = "TNM_DEST_ISERDES";
 TIMESPEC "TS_ISERDES_CLOCK" = PERIOD "TNM_ISERDES_CLK" 2500 ps;
 TIMESPEC TS_MULTICYCLEPATH = FROM "TNM_SOURCE_IDLE" TO "TNM_DEST_ISERDES" TS_ISERDES_CLOCK*6;
-          
+
 INST "*/device_temp_sync_r1*" TNM="TNM_MULTICYCLEPATH_DEVICE_TEMP_SYNC";
 TIMESPEC "TS_MULTICYCLEPATH_DEVICE_TEMP_SYNC" = TO "TNM_MULTICYCLEPATH_DEVICE_TEMP_SYNC" 20 ns DATAPATHONLY;
 
@@ -817,12 +817,27 @@ AREA_GROUP "GRP_ddr_core" RANGE = CLOCKREGION_X1Y0:CLOCKREGION_X1Y1;
 #AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
 #INST "cmp2_xwb_fmc130m_4ch" AREA_GROUP = "GRP_fmc2";
 #AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
-INST "cmp1_xwb_position_calc_core/*" AREA_GROUP = "GRP_position_calc_core1";
+INST "cmp1_xwb_position_calc_core_ns/*" AREA_GROUP = "GRP_position_calc_core1";
 AREA_GROUP "GRP_position_calc_core1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
-INST "cmp2_xwb_position_calc_core/*" AREA_GROUP = "GRP_position_calc_core2";
+INST "cmp2_xwb_position_calc_core_ns/*" AREA_GROUP = "GRP_position_calc_core2";
 AREA_GROUP "GRP_position_calc_core2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
 
-## TESTING CONSTRAINT
-#NET "*ce_tbt*" TNM = "MC_TBT";
-#TIMESPEC TS_TBT = FROM "MC_TBT" TO "MC_TBT" 1.69 us;
+#######################################################################
+##                         CE Constraints                            ##
+#######################################################################
+#
+NET "*position_calc_nosysgen/ce_adc*" TNM = "MC_ADC";
+TIMESPEC TS_ADC = FROM "MC_ADC" TO "MC_ADC" 8.333 ns;
+
+NET "*position_calc_nosysgen/ce_tbt1*" TNM = "MC_TBT1";
+TIMESPEC TS_TBT1 = FROM "MC_TBT1" TO "MC_TBT1" 58.332 ns;       # ADC/7
+
+NET "*position_calc_nosysgen/ce_tbt2*" TNM = "MC_TBT2";
+TIMESPEC TS_TBT2 = FROM "MC_TBT2" TO "MC_TBT2" 1.691 us;        # TBT1/29
+
+NET "*position_calc_nosysgen/ce_fofb*" TNM = "MC_FOFB";
+TIMESPEC TS_FOFB = FROM "MC_FOFB" TO "MC_FOFB" 8.458 us;        # TBT2/5
+
+NET "*position_calc_nosysgen/ce_monit*" TNM = "MC_MONIT";
+TIMESPEC TS_MONIT = FROM "MC_MONIT" TO "MC_MONIT" 17.330 ms;     # FOFB/2049
 
