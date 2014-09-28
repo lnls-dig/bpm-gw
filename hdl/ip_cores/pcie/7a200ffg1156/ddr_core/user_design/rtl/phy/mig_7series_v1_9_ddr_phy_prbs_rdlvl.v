@@ -225,7 +225,7 @@ module mig_7series_v1_9_ddr_phy_prbs_rdlvl #
    // DQS count to hard PHY during write calibration using Phaser_OUT Stage2
    // coarse delay 
    //**************************************************************************
-//   assign pi_stg2_prbs_rdlvl_cnt = prbs_dqs_cnt_r; 
+  assign pi_stg2_prbs_rdlvl_cnt = prbs_dqs_cnt_r; 
 //   assign dbg_prbs_rdlvl = {prbs_tap_mod, prbs_2nd_edge_taps_r, prbs_1st_edge_taps_r, rdlvl_cpt_tap_cnt, prbs_dqs_cnt_r,
 //                            prbs_rdlvl_done, prbs_rdlvl_start, phy_if_empty, compare_err, prbs_found_2nd_edge_r, prbs_found_1st_edge_r, prbs_dqs_tap_cnt_r, pi_counter_read_val,
 //                            mux_rd_fall3_r2, mux_rd_rise3_r2, mux_rd_fall2_r2, mux_rd_rise2_r2, mux_rd_fall1_r2, mux_rd_rise1_r2, mux_rd_fall0_r2, mux_rd_rise0_r2,
