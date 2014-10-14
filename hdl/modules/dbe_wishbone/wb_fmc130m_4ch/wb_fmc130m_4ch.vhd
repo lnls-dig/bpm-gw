@@ -731,24 +731,24 @@ begin
   regs_in.data0_val_i(regs_in.data0_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data0_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(0).adc_data;
+                                            <= adc_data(c_num_adc_bits-1 downto 0);
   -- ADC RAW data channel 1
   regs_in.data1_val_i(regs_in.data1_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data1_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(1).adc_data;
+                                            <= adc_data(2*c_num_adc_bits-1 downto c_num_adc_bits);
 
   -- ADC RAW data channel 2
   regs_in.data2_val_i(regs_in.data2_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data2_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(2).adc_data;
+                                            <= adc_data(3*c_num_adc_bits-1 downto 2*c_num_adc_bits);
 
   -- ADC RAW data channel 3
   regs_in.data3_val_i(regs_in.data3_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data3_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(3).adc_data;
+                                            <= adc_data(4*c_num_adc_bits-1 downto 3*c_num_adc_bits);
 
   regs_in.dcm_adc_done_i                    <= '0'; -- Unused
   regs_in.dcm_adc_status0_i                 <= '0'; -- Unused
@@ -1068,9 +1068,12 @@ begin
     --adc_clk_int(i)                          <= adc_out(i).adc_clk;
     fs_clk(i)                               <= adc_out(i).adc_clk;
     fs_clk2x(i)                             <= adc_out(i).adc_clk2x;
-    adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i)
-                                            <= adc_out(i).adc_data;
-    adc_valid(i)                            <= adc_out(i).adc_data_valid;
+    adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i) <=
+      adc_out(i).adc_data when regs_out.fpga_ctrl_test_data_en_o = '0'
+                      else std_logic_vector(wbs_test_data(i));
+    adc_valid(i) <=
+      adc_out(i).adc_data_valid when regs_out.fpga_ctrl_test_data_en_o = '0'
+                      else '1';
   end generate;
 
   -- Output ADC signals to external FPGA
@@ -1236,7 +1239,6 @@ begin
         g_wbs_interface_width                   => NARROW2
       )
       port map(
-        --clk_i                                   => fs_clk,
         clk_i                                   => fs_clk(i),
         rst_n_i                                 => fs_rst_sync_n(i),
 
@@ -1274,7 +1276,6 @@ begin
 
       -- Generate test data
       p_gen_test_data : process(fs_clk(i))
-      --p_gen_test_data : process(fs_clk2x(c_ref_clk), fs_rst_sync_n(c_ref_clk))
       begin
         if rising_edge(fs_clk(i)) then
           if fs_rst_sync_n(i) = '0' then
