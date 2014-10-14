@@ -211,7 +211,7 @@ begin
          cntvalueout                         => adc_clk_fn_dly_o.idelay.val,
          dataout                             => adc_clk_ibufgds_dly,
          c                                   => sys_clk_i,
-         ce                                  => '1',
+         ce                                  => '0',
          cinvctrl                            => '0',
          cntvaluein                          => adc_clk_fn_dly_i.idelay.val,
          datain                              => '0',
