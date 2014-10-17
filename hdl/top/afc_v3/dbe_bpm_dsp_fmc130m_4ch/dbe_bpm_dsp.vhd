@@ -2409,10 +2409,10 @@ begin
   --------------------
   -- ADC 1 data
   --------------------
-  acq_chan_array(c_acq1_adc_id).val_low       <= dsp1_adc_ch3_data &
-                                                dsp1_adc_ch2_data &
-                                                dsp1_adc_ch1_data &
-                                                dsp1_adc_ch0_data;
+  acq_chan_array(c_acq1_adc_id).val_low       <= fmc1_adc_data_ch3 &
+                                                fmc1_adc_data_ch2 &
+                                                fmc1_adc_data_ch1 &
+                                                fmc1_adc_data_ch0;
   acq_chan_array(c_acq1_adc_id).val_high      <= (others => '0');
   acq_chan_array(c_acq1_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq1_adc_id).trig          <= '0';
@@ -2516,10 +2516,10 @@ begin
   --------------------
   -- ADC 2 data
   --------------------
-  acq_chan_array(c_acq2_adc_id).val_low       <= dsp2_adc_ch3_data &
-                                                dsp2_adc_ch2_data &
-                                                dsp2_adc_ch1_data &
-                                                dsp2_adc_ch0_data;
+  acq_chan_array(c_acq2_adc_id).val_low       <= fmc2_adc_data_ch3 &
+                                                fmc2_adc_data_ch2 &
+                                                fmc2_adc_data_ch1 &
+                                                fmc2_adc_data_ch0;
   acq_chan_array(c_acq2_adc_id).val_high      <= (others => '0');
   acq_chan_array(c_acq2_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq2_adc_id).trig          <= '0';
@@ -2527,7 +2527,7 @@ begin
   --------------------
   -- MIXER 2 data
   --------------------
-  acq_chan_array(c_acq2_mix_id).val_low   <= std_logic_vector(resize(signed(dsp2_mix_ch2), 32)) &
+  acq_chan_array(c_acq2_mix_id).val_low   <= std_logic_vector(resize(signed(dsp2_mix_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_mix_ch0), 32));
 
   acq_chan_array(c_acq2_mix_id).val_high  <= std_logic_vector(resize(signed(dsp2_mix_ch3), 32)) &
