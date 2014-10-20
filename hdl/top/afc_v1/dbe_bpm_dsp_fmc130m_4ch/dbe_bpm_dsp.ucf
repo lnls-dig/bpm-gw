@@ -373,6 +373,7 @@ NET "fmc2_adc3_data_i[1]"                      LOC = AM32  | IOSTANDARD = "LVCMO
 NET "fmc2_adc3_data_i[0]"                      LOC = AM31  | IOSTANDARD = "LVCMOS25"; // HA07_N
 NET "fmc2_adc3_of_i"                           LOC = AL32  | IOSTANDARD = "LVCMOS25"; // HA06_N
 
+
 #######################################################################
 ##               Pinout and Related I/O Constraints                  ##
 #######################################################################
@@ -409,36 +410,36 @@ NET "fmc2_fpga_clk_n_i" DIFF_TERM = TRUE;
 
 # Overrides default_delay hdl parameter for the VARIABLE mode.
 # For Artix7: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps ???
-INST "*cmp_fmc_adc_iface_gen_adc_data_chains[0].*.*_gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 29;
-INST "*cmp_fmc_adc_iface_gen_adc_data_chains[1].*.*_gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 31;
-INST "*cmp_fmc_adc_iface_gen_adc_data_chains[2].*.*_gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 17;
-INST "*cmp_fmc_adc_iface_gen_adc_data_chains[3].*.*_gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 26;
+INST "*cmp_fmc_adc_iface/gen_adc_data_chains[0].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 29;
+INST "*cmp_fmc_adc_iface/gen_adc_data_chains[1].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 31;
+INST "*cmp_fmc_adc_iface/gen_adc_data_chains[2].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 17;
+INST "*cmp_fmc_adc_iface/gen_adc_data_chains[3].*.*/gen_adc_data[?].*.cmp_adc_data_iodelay" IDELAY_VALUE = 26;
 
 # Overrides default_delay hdl parameter
-INST "*cmp_fmc_adc_iface_gen_clock_chains[0].*.*.*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-INST "*cmp_fmc_adc_iface_gen_clock_chains[1].*.*.*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-INST "*cmp_fmc_adc_iface_gen_clock_chains[2].*.*.*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
-INST "*cmp_fmc_adc_iface_gen_clock_chains[3].*.*.*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc_adc_iface/gen_clock_chains[0].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc_adc_iface/gen_clock_chains[1].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc_adc_iface/gen_clock_chains[2].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
+INST "*cmp_fmc_adc_iface/gen_clock_chains[3].*.*/*.cmp_ibufds_clk_iodelay" IDELAY_VALUE = 0;
 
 #######################################################################
 ##                          Clocks                                   ##
 #######################################################################
 
 #### 200 MHz onboard input clock
-###NET "sys_clk_p_i" TNM_NET = "sys_clk_group";
-###TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 5 ns HIGH 50%;
+###NET "sys_clk_p_i" TNM_NET = "TNM_clk125mhz";
+###TIMESPEC "TS_TNM_clk125mhz" = PERIOD "TNM_clk125mhz" 5 ns HIGH 50%;
 
 # 125 MHz AMC TCLKB input clock
-NET "sys_clk_p_i" TNM_NET = "sys_clk_group";
-TIMESPEC "TS_sys_clk_group" = PERIOD "sys_clk_group" 8 ns HIGH 50%;
+NET "sys_clk_p_i" TNM_NET = "TNM_clk_125mhz";
+TIMESPEC "TS_clk_125mhz" = PERIOD "TNM_clk_125mhz" 8 ns HIGH 50%;
 
 # 100 MHz wihsbone clock
-NET "clk_sys" TNM_NET = "clk_sys_group";
-TIMESPEC "TS_clk_sys_group" = PERIOD "clk_sys_group" 10 ns HIGH 50%;
+NET "clk_sys" TNM_NET = "TNM_clk_100mhz";
+TIMESPEC "TS_clk_100mhz" = PERIOD "TNM_clk_100mhz" 10 ns HIGH 50%;
 
 # 200 MHz DDR3 and IDELAY CONTROL clock
-NET "clk_200mhz" TNM_NET = TNM_200mhz_sys_clk;
-TIMESPEC "TS_200mhz_sys_clk" = PERIOD "TNM_200mhz_sys_clk" 5 ns HIGH 50%;
+NET "clk_200mhz" TNM_NET = "TNM_clk_200mhz";
+TIMESPEC "TS_clk_200mhz" = PERIOD "TNM_clk_200mhz" 5 ns HIGH 50%;
 
 # 200 MHz DDR3 UI Clock
 #NET "*/u_infrastructure/clk_pll" TNM_NET = "TNM_ddr_sys_clk";
@@ -446,11 +447,13 @@ TIMESPEC "TS_200mhz_sys_clk" = PERIOD "TNM_200mhz_sys_clk" 5 ns HIGH 50%;
 #NET "clk_sys" TNM_NET = "TNM_clk_sys_group_ffs";
 #TIMESPEC TS_clk_sys_to_ddr3_ui_clk = FROM "TNM_clk_sys_group_ffs" TO "TNM_ddr_sys_clk" 10 ns DATAPATHONLY;
 
-// real jitter is about 22ps peak-to-peak
+# real jitter is about 22ps peak-to-peak
 NET "fmc1_adc0_clk_i" TNM_NET = fmc1_adc0_clk_i;
 TIMESPEC "TS_fmc1_adc0_clk_i" = PERIOD "fmc1_adc0_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
 NET "fmc2_adc0_clk_i" TNM_NET = fmc2_adc0_clk_i;
 TIMESPEC "TS_fmc2_adc0_clk_i" = PERIOD "fmc2_adc0_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
+
+INST "cmp1_xwb_fmc130m_4ch/*/*/gen_clock_chains[0].*.*/gen_with_ref_clk.cmp_mmcm_adc_clk" LOC=MMCME2_ADV_X1Y3;
 
 NET "fmc1_adc1_clk_i" TNM_NET = fmc1_adc1_clk_i;
 TIMESPEC "TS_fmc1_adc1_clk_i" = PERIOD "fmc1_adc1_clk_i" 8.88 ns HIGH 50% INPUT_JITTER 50 ps;
@@ -473,6 +476,13 @@ NET "fmc2_fpga_clk_p_i" TNM_NET = fmc2_fpga_clk_p_i;
 TIMESPEC "TS_fmc2_fpga_clk_p_i" = PERIOD "fmc2_fpga_clk_p_i" 8.88 ns HIGH 50% INPUT_JITTER 40 ps;
 
 #######################################################################
+##                         Cross Clock Constraints             	     ##
+#######################################################################
+
+# Reset synchronization path, particularly
+TIMESPEC "TS_from_clk_125mhz_to_clk_100_mhz" = FROM "TNM_clk_125mhz" TO "TNM_clk_100mhz" 10 ns DATAPATHONLY;
+
+#######################################################################
 ##                                Data                               ##
 #######################################################################
 
@@ -482,14 +492,14 @@ TIMESPEC "TS_fmc2_fpga_clk_p_i" = PERIOD "fmc2_fpga_clk_p_i" 8.88 ns HIGH 50% IN
 #INST "fmc_adc_130m_4ch_i/ltcInterface_adc3_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y1; // same as ADC1
 #INST "cmp1_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" LOC = IDELAYCTRL_X0Y1;
 #INST "cmp2_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" LOC = IDELAYCTRL_X0Y2;
-INST "cmp1_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" IODELAY_GROUP = fmc1_iodelay_grp;
-INST "cmp2_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" IODELAY_GROUP = fmc2_iodelay_grp;
+INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/cmp_idelayctrl" IODELAY_GROUP = fmc1_iodelay_grp;
+INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/cmp_idelayctrl" IODELAY_GROUP = fmc2_iodelay_grp;
 
-INST "cmp1_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_gen_adc_data_chains[?].*.*_gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
-INST "cmp1_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_gen_clock_chains[?].*.*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
+INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
+INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_clock_chains[?].*.*/*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
 
-INST "cmp2_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_gen_adc_data_chains[?].*.*_gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
-INST "cmp2_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_gen_clock_chains[?].*.*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
+INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
+INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_clock_chains[?].*.*/*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
 
 // including 50ps jitter, for 130MHz clock
 // since design uses copy of input ADC clock
@@ -643,8 +653,8 @@ NET   "ddr3_ck_n_o[0]"               		LOC = "AM5"   | IOSTANDARD = DIFF_SSTL15 
 # Please refer to the Virtex-7 GT Transceiver User Guide
 # (UG) for guidelines regarding clock resource selection.
 #
-
-INST "*pcieclk_ibuf" LOC = IBUFDS_GTE2_X1Y0;
+# Already constrained by the pcie_clk_p_i and pcie_clk_n_i LOC constraints
+#INST "*pcieclk_ibuf" LOC = IBUFDS_GTE2_X1Y0;
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -653,139 +663,137 @@ INST "*pcieclk_ibuf" LOC = IBUFDS_GTE2_X1Y0;
 # Virtex-7 GT Transceiver User Guide (UG) for more information.
 #
 # PCIe Lane 0
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[0].gt_wrapper_i_gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y0;
+INST "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y0;
 # PCIe Lane 1
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[1].gt_wrapper_i_gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y1;
+INST "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y1;
 # PCIe Lane 2
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[2].gt_wrapper_i_gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y2;
+INST "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y2;
 # PCIe Lane 3
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[3].gt_wrapper_i_gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y3;
+INST "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i" LOC = GTPE2_CHANNEL_X1Y3;
 
 # GTP Common Placement
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[0].pipe_quad.pipe_common.qpll_wrapper_i_gtp_common.gtpe2_common_i" LOC = GTPE2_COMMON_X1Y0;
+INST "pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].pipe_quad.pipe_common.qpll_wrapper_i/gtp_common.gtpe2_common_i" LOC = GTPE2_COMMON_X1Y0;
 
 #
 # PCI Express Block placement. This constraint selects the PCI Express
 # Block to be used.
 #
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_block_i" LOC = PCIE_X0Y0;
+
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i" LOC = PCIE_X0Y0;
 
 #
 # BlockRAM placement
 #
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_rx_brams[3].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X2Y46 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_rx_brams[2].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y47 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_rx_brams[1].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y46 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_rx_brams[0].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y45 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_tx_brams[0].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y44 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_tx_brams[1].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y43 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_tx_brams[2].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y42 ;
-INST "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_bram_top_pcie_brams_tx_brams[3].ram_use_tdp.ramb36_bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y41 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[3].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X2Y46 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[2].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y47 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[1].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y46 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[0].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y45 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[0].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y44 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[1].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y43 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[2].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y42 ;
+INST "pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[3].ram/use_tdp.ramb36/bram36_tdp_bl.bram36_tdp_bl" LOC = RAMB36_X1Y41 ;
 
 #
 # DDR controller component placement
 # Check it after changing memory controller paramenters
 #
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_phaser_out" LOC=PHASER_OUT_PHY_X1Y3;
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_phaser_out" LOC=PHASER_OUT_PHY_X1Y2;
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_phaser_out" LOC=PHASER_OUT_PHY_X1Y1;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_phaser_out" LOC=PHASER_OUT_PHY_X1Y7;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_phaser_out" LOC=PHASER_OUT_PHY_X1Y6;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_phaser_out" LOC=PHASER_OUT_PHY_X1Y5;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_A.ddr_byte_lane_A_phaser_out" LOC=PHASER_OUT_PHY_X1Y4;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_out" LOC=PHASER_OUT_PHY_X1Y3;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/phaser_out" LOC=PHASER_OUT_PHY_X1Y2;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/phaser_out" LOC=PHASER_OUT_PHY_X1Y1;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_out" LOC=PHASER_OUT_PHY_X1Y7;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/phaser_out" LOC=PHASER_OUT_PHY_X1Y6;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/phaser_out" LOC=PHASER_OUT_PHY_X1Y5;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/phaser_out" LOC=PHASER_OUT_PHY_X1Y4;
 
-## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y3;
-## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y2;
-## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y1;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y7;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y6;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y5;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_A.ddr_byte_lane_A_phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y4;
+## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y3;
+## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y2;
+## INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y1;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y7;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y6;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y5;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/phaser_in_gen.phaser_in" LOC=PHASER_IN_PHY_X1Y4;
 
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_out_fifo" LOC=OUT_FIFO_X1Y3;
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_out_fifo" LOC=OUT_FIFO_X1Y2;
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_out_fifo" LOC=OUT_FIFO_X1Y1;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_out_fifo" LOC=OUT_FIFO_X1Y7;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_out_fifo" LOC=OUT_FIFO_X1Y6;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_out_fifo" LOC=OUT_FIFO_X1Y5;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_A.ddr_byte_lane_A_out_fifo" LOC=OUT_FIFO_X1Y4;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/out_fifo" LOC=OUT_FIFO_X1Y3;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/out_fifo" LOC=OUT_FIFO_X1Y2;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/out_fifo" LOC=OUT_FIFO_X1Y1;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/out_fifo" LOC=OUT_FIFO_X1Y7;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/out_fifo" LOC=OUT_FIFO_X1Y6;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/out_fifo" LOC=OUT_FIFO_X1Y5;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/out_fifo" LOC=OUT_FIFO_X1Y4;
 
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y7;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y6;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y5;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_A.ddr_byte_lane_A_in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y4;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y7;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y6;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y5;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/in_fifo_gen.in_fifo" LOC=IN_FIFO_X1Y4;
 
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_phy_control_i" LOC=PHY_CONTROL_X1Y0;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_phy_control_i" LOC=PHY_CONTROL_X1Y1;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/phy_control_i" LOC=PHY_CONTROL_X1Y0;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/phy_control_i" LOC=PHY_CONTROL_X1Y1;
 
-INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes_phaser_ref_i" LOC=PHASER_REF_X1Y0;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_phaser_ref_i" LOC=PHASER_REF_X1Y1;
+INST "*ddr_phy_4lanes_1.u_ddr_phy_4lanes/phaser_ref_i" LOC=PHASER_REF_X1Y0;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/phaser_ref_i" LOC=PHASER_REF_X1Y1;
 
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_D.ddr_byte_lane_D_ddr_byte_group_io_*slave_ts" LOC=OLOGIC_X1Y93;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_C.ddr_byte_lane_C_ddr_byte_group_io_*slave_ts" LOC=OLOGIC_X1Y81;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_B.ddr_byte_lane_B_ddr_byte_group_io_*slave_ts" LOC=OLOGIC_X1Y69;
-INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes_ddr_byte_lane_A.ddr_byte_lane_A_ddr_byte_group_io_*slave_ts" LOC=OLOGIC_X1Y57;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/ddr_byte_group_io/*slave_ts" LOC=OLOGIC_X1Y93;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/ddr_byte_group_io/*slave_ts" LOC=OLOGIC_X1Y81;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/ddr_byte_group_io/*slave_ts" LOC=OLOGIC_X1Y69;
+INST "*ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/ddr_byte_group_io/*slave_ts" LOC=OLOGIC_X1Y57;
 
-INST "*u_ddr3_infrastructure_plle2_i" LOC=PLLE2_ADV_X1Y0;
-INST "*u_ddr3_infrastructure_gen_mmcm.mmcm_i" LOC=MMCME2_ADV_X1Y0;
+INST "*u_ddr3_infrastructure/plle2_i" LOC=PLLE2_ADV_X1Y0;
+INST "*u_ddr3_infrastructure/gen_mmcm.mmcm_i" LOC=MMCME2_ADV_X1Y0;
 
 #######################################################################
 # Timing Constraints
 #######################################################################
 
 NET "*sys_clk_c" TNM_NET = "SYSCLK" ;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_clk_125mhz" TNM_NET = "CLK_125" ;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_clk_250mhz" TNM_NET = "CLK_250" ;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_userclk1" TNM_NET = "CLK_USERCLK" ;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_userclk2" TNM_NET = "CLK_USERCLK2" ;
+
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/clk_125mhz" TNM_NET = "CLK_125" ;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/clk_250mhz" TNM_NET = "CLK_250" ;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/userclk1" TNM_NET = "CLK_USERCLK" ;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/userclk2" TNM_NET = "CLK_USERCLK2" ;
 
 TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 % ;
-#CLK_250 not used, we use Gen1 mode only
-#TIMESPEC "TS_CLK_250" = PERIOD "CLK_250" TS_SYSCLK*2.5 HIGH 50 % PRIORITY 1;
-TIMESPEC "TS_CLK_125" = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 2;
+TIMESPEC "TS_CLK_125"  = PERIOD "CLK_125" TS_SYSCLK*1.25 HIGH 50 % PRIORITY 1;
+#TIMESPEC "TS_CLK_250" = PERIOD "CLK_250" TS_SYSCLK*2.5 HIGH 50 % PRIORITY 2;
 TIMESPEC "TS_CLK_USERCLK" = PERIOD "CLK_USERCLK" TS_SYSCLK*1.25 HIGH 50 %;
 TIMESPEC "TS_CLK_USERCLK2" = PERIOD "CLK_USERCLK2" TS_SYSCLK*1.25 HIGH 50 %;
 
+INST "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i"  LOC = MMCME2_ADV_X0Y2;
 
-INST "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_mmcm_i"  LOC = MMCME2_ADV_X0Y2;
+PIN "*pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i.PLPHYLNKUPN" TIG;
+PIN "*pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i.PLRECEIVEDHOTRST" TIG;
 
-PIN "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_block_i.PLPHYLNKUPN" TIG;
-PIN "*pcie_core_i_pcie_top_i_pcie_7x_i_pcie_block_i.PLRECEIVEDHOTRST" TIG;
-
-PIN "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_mmcm_i.RST" TIG ;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_user_resetdone*" TIG;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_clock_int.pipe_clock_i_pclk_sel" TIG;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[0].gtp_pipe_rate.gtp_pipe_rate_i*" TNM_NET = FFS "MC_PIPE";
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[1].gtp_pipe_rate.gtp_pipe_rate_i*" TNM_NET = FFS "MC_PIPE";
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[2].gtp_pipe_rate.gtp_pipe_rate_i*" TNM_NET = FFS "MC_PIPE";
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_pipe_lane[3].gtp_pipe_rate.gtp_pipe_rate_i*" TNM_NET = FFS "MC_PIPE";
+PIN "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i.RST" TIG ;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/user_resetdone*" TIG;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_sel" TIG;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gtp_pipe_rate.gtp_pipe_rate_i/*" TNM_NET = FFS "MC_PIPE";
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gtp_pipe_rate.gtp_pipe_rate_i/*" TNM_NET = FFS "MC_PIPE";
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gtp_pipe_rate.gtp_pipe_rate_i/*" TNM_NET = FFS "MC_PIPE";
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gtp_pipe_rate.gtp_pipe_rate_i/*" TNM_NET = FFS "MC_PIPE";
 
 TIMESPEC "TS_PIPE_RATE" = FROM "MC_PIPE" TS_CLK_USERCLK*0.5;
 
-# FIXME FIXME FIXME: find the correct name and uncomment!
-###NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_gtp_pipe_reset.gtp_pipe_reset_i_pllreset" TIG;
-NET "*pcie_core_i_gt_top.gt_top_i_pipe_wrapper_i_qpll_reset.qpll_reset_i*" TIG;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/gtp_pipe_reset.gtp_pipe_reset_i/pllreset" TIG;
+NET "*pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/qpll_reset.qpll_reset_i/*" TIG;
 
 ####### DDR ###########
 ###NET "ddr_sys_clk_p_i" TNM_NET = TNM_ddr_sys_clk;
 ###TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 8 ns;
-
+          
 # Note: the following CLOCK_DEDICATED_ROUTE constraint will cause a warning in place similar
 # to the following:
 #   WARNING:Place:1402 - A clock IOB / PLL clock component pair have been found that are not
 #   placed at an optimal clock IOB / PLL site pair.
 # This warning can be ignored.  See the Users Guide for more information.
-###NET "ddr_sys_clk_p_i" CLOCK_DEDICATED_ROUTE = BACKBONE;
-#PIN "*DDR_int_clk.*.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
-#PIN "*u_ddr3_infrastructure_plle2_i.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
+###NET "ddr_sys_clk_p" CLOCK_DEDICATED_ROUTE = BACKBONE;
+#PIN "DDR_int_clk.*.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
+#PIN "*/u_ddr3_infrastructure/plle2_i.CLKIN1" CLOCK_DEDICATED_ROUTE = BACKBONE;
 
-
-NET  "*iserdes_clk" TNM_NET = "TNM_ISERDES_CLK";
-INST "*mc0_mc_read_idle_r" TNM = "TNM_SOURCE_IDLE";
+NET "*iserdes_clk" TNM_NET = "TNM_ISERDES_CLK";
+INST "*mc0/mc_read_idle_r" TNM = "TNM_SOURCE_IDLE";
 INST "*input_[?].iserdes_dq_.iserdesdq" TNM = "TNM_DEST_ISERDES";
 TIMESPEC "TS_ISERDES_CLOCK" = PERIOD "TNM_ISERDES_CLK" 2500 ps;
 TIMESPEC TS_MULTICYCLEPATH = FROM "TNM_SOURCE_IDLE" TO "TNM_DEST_ISERDES" TS_ISERDES_CLOCK*6;
-
+          
 INST "*device_temp_sync_r1*" TNM="TNM_MULTICYCLEPATH_DEVICE_TEMP_SYNC";
 TIMESPEC "TS_MULTICYCLEPATH_DEVICE_TEMP_SYNC" = TO "TNM_MULTICYCLEPATH_DEVICE_TEMP_SYNC" 20 ns DATAPATHONLY;
 
@@ -798,7 +806,6 @@ TIMESPEC "TS_MULTICYCLEPATH_DEVICE_TEMP_SYNC" = TO "TNM_MULTICYCLEPATH_DEVICE_TE
 # Comment out because we use nonstandard GTP location
 #INST "pcie_core_i" AREA_GROUP = "GRP_PCIE_CORE";
 #AREA_GROUP "GRP_PCIE_CORE" RANGE = CLOCKREGION_X0Y4;
-# FIXME FIXME FIXME: find the correct name and uncomment!
-#####Place the DMA design not far from PCIe core, otherwise it also breaks timing
-####INST "*/theTlpControl" AREA_GROUP = "GRP_tlpControl";
-####AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
+##Place the DMA design not far from PCIe core, otherwise it also breaks timing
+#INST "*/theTlpControl" AREA_GROUP = "GRP_tlpControl";
+#AREA_GROUP "GRP_tlpControl" RANGE = CLOCKREGION_X0Y2:CLOCKREGION_X0Y4;
