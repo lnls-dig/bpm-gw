@@ -27,6 +27,7 @@ use work.wishbone_pkg.all;
 use work.genram_pkg.all;
 -- Genrams cores
 use work.gencores_pkg.all;
+-- Acquisition cores
 use work.acq_core_pkg.all;
 
 entity acq_cnt is
@@ -39,14 +40,16 @@ port
   cnt_all_pkts_ct_done_p_o                  : out std_logic; -- all current transaction packets done
   cnt_all_trans_done_p_o                    : out std_logic; -- all transactions done
   cnt_en_i                                  : in std_logic;
-  --cnt_rst_i                                 : in std_logic;
 
   -- Size of the transaction in g_fifo_size bytes
   lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
   -- Number of shots in this acquisition
   lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
   -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-  lmt_valid_i                               : in std_logic
+  lmt_valid_i                               : in std_logic;
+
+  dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+  dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
 );
 end acq_cnt;
 
@@ -89,21 +92,6 @@ begin
   -- Number of packets
   -----------------------------------------------------------------------------
 
-  --p_pkt_ct_cnt : process (clk_i)
-  --begin
-  --  if rising_edge(clk_i) then
-  --    if rst_n_i = '0' then
-  --      pkt_ct_cnt <= to_unsigned(0, pkt_ct_cnt'length);
-  --    else
-  --      if pkt_ct_cnt_all = '1' then
-  --        pkt_ct_cnt <= to_unsigned(0, pkt_ct_cnt'length);
-  --      elsif pkt_cnt_en = '1' then
-  --        pkt_ct_cnt <= pkt_ct_cnt + 1;
-  --      end if;
-  --    end if;
-  --  end if;
-  --end process;
-
   p_pkt_ct_cnt : process (clk_i)
   begin
     if rising_edge(clk_i) then
@@ -125,6 +113,9 @@ begin
 
   pkt_cnt_en <= cnt_en_i;
 
+  -- Debug outputs
+  dbg_pkt_ct_cnt_o <= std_logic_vector(pkt_ct_cnt);
+
   p_pkt_ct_cnt_reg : process (clk_i)
   begin
     if rising_edge(clk_i) then
@@ -140,28 +131,11 @@ begin
     end if;
   end process;
 
-  --pkt_ct_cnt_all <= '1' when pkt_ct_cnt = lmt_pkt_size_i and
-  --                                  lmt_valid_i = '1' else '0';
-
   cnt_all_pkts_ct_done_p_o <= pkt_ct_cnt_all; -- this is necessarilly a pulse
 
   -----------------------------------------------------------------------------
   -- Number of shots
   -----------------------------------------------------------------------------
-  --p_shots_cnt : process (clk_i)
-  --begin
-  --  if rising_edge(clk_i) then
-  --    if rst_n_i = '0' then
-  --      shots_cnt <= to_unsigned(0, shots_cnt'length);
-  --    else
-  --      if shots_cnt_all = '1' then
-  --        shots_cnt <= to_unsigned(0, shots_cnt'length);
-  --      elsif pkt_ct_cnt_all = '1' then
-  --        shots_cnt <= shots_cnt + 1;
-  --      end if;
-  --    end if;
-  --  end if;
-  --end process;
 
   p_shots_cnt : process (clk_i)
   begin
@@ -182,6 +156,9 @@ begin
     end if;
   end process;
 
+  -- Debug outputs
+  dbg_shots_cnt_o <= std_logic_vector(shots_cnt);
+
   p_shots_cnt_reg : process (clk_i)
   begin
     if rising_edge(clk_i) then
@@ -197,21 +174,6 @@ begin
     end if;
   end process;
 
-  --shots_cnt_all <= '1' when shots_cnt = lmt_shots_nb_i and lmt_valid_i = '1'
-  --                             else '0'; -- this is necessarilly a pulse
-
-  ---- Level to Pulse converter
-  --cmp_lmt_valid_ffs : gc_sync_ffs
-  --port map(
-  --  clk_i                                   => clk_i,
-  --  rst_n_i                                 => rst_n_i,
-  --  data_i                                  => shots_cnt_all,
-  --  synced_o                                => open,
-  --  npulse_o                                => open,
-  --  ppulse_o                                => shots_cnt_all_p
-  --);
-
-  --cnt_all_trans_done_p_o <= shots_cnt_all_p;
   cnt_all_trans_done_p_o <= shots_cnt_all;
 
 end rtl;

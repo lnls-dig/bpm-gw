@@ -34,12 +34,10 @@ use work.wishbone_pkg.all;
 use work.gencores_pkg.all;
 -- Genrams cores
 use work.genram_pkg.all;
+-- Acquisition cores
 use work.acq_core_pkg.all;
 
 entity acq_fsm is
---generic
---(
---);
 port
 (
   fs_clk_i                                  : in std_logic;
@@ -66,7 +64,6 @@ port
   -----------------------------
   -- FSM Monitoring
   -----------------------------
-  --acq_end_p_o                               : out std_logic;
   acq_end_o                                 : out std_logic;
   acq_single_shot_o                         : out std_logic;
   acq_in_pre_trig_o                         : out std_logic;
@@ -89,21 +86,16 @@ end acq_fsm;
 
 architecture rtl of acq_fsm is
 
-  --type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, POST_TRIG, DECR_SHOT);
   type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG,
                                  POST_TRIG_SKIP, DECR_SHOT);
 
   -- Acquisition FSM
-  --signal acq_fsm_current_state              : t_acq_fsm_state;
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
-  --signal fsm_cmd                            : std_logic_vector(1 downto 0);
-  --signal fsm_cmd_wr                         : std_logic;
   signal acq_start                          : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_trig                           : std_logic;
   signal acq_end                            : std_logic;
   signal acq_end_t                          : std_logic;
-  --signal acq_end_d                          : std_logic;
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
@@ -182,10 +174,6 @@ begin
   acq_pre_trig_done_o <= pre_trig_done;
 
   ------------------------------------------------------------------------------
-  -- Wait trigger timeout counter
-  ------------------------------------------------------------------------------
-
-  ------------------------------------------------------------------------------
   -- Wait trigger event skip
   ------------------------------------------------------------------------------
 
@@ -203,8 +191,6 @@ begin
     end if;
   end process;
 
-  --wait_trig_skip_done <= '1' when (wait_trig_skip = '1' and acq_dvalid_i = '1' and
-  --                                 acq_in_wait_trig = '1') else '0';
   wait_trig_skip_done <= '1' when (wait_trig_skip_r = '1' and acq_in_wait_trig = '1') else '0';
   acq_wait_trig_skip_done_o <= wait_trig_skip_done;
 
@@ -231,8 +217,6 @@ begin
     end if;
   end process;
 
-  --post_trig_done <= '1' when (post_trig_cnt = to_unsigned(0, post_trig_cnt'length) and
-  --                            acq_dvalid_i = '1' and acq_in_post_trig = '1') else '0';
   post_trig_done <= '1' when (post_trig_cnt = to_unsigned(0, post_trig_cnt'length) and
                               (acq_dvalid_i = '1' or wait_trig_skip_r = '1') and acq_in_post_trig = '1') else '0';
   acq_post_trig_done_o <= post_trig_done;
@@ -240,6 +224,7 @@ begin
   ------------------------------------------------------------------------------
   -- Samples counter
   ------------------------------------------------------------------------------
+
   p_samples_cnt : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
@@ -260,25 +245,6 @@ begin
   ------------------------------------------------------------------------------
   -- Aqcuisition FSM
   ------------------------------------------------------------------------------
-
-  -- Event pulses to time-tag
-  --trigger_p_o   <= acq_trig;
-  --acq_start_p_o <= acq_start;
-  --acq_stop_p_o  <= acq_stop;
-
-  -- End of acquisition pulse generation
-  --p_acq_end : process (fs_clk_i)
-  --begin
-  --  if rising_edge(fs_clk_i) then
-  --    if fs_rst_n_i = '0' then
-  --      acq_end_d <= '0';
-  --    else
-  --      acq_end_d <= acq_end;
-  --    end if;
-  --  end if;
-  --end process;
-
-  --acq_end_p_o <= acq_end and not(acq_end_d);
 
   -- End of acquisition pulse generation
   p_acq_end : process (fs_clk_i)
@@ -302,7 +268,6 @@ begin
   acq_start <= acq_start_i;
   acq_stop  <= acq_stop_i;
   acq_trig  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
-  --acq_end   <= shots_done and (post_trig_done or wait_trig_skip_done);
   acq_end_t   <= shots_done and post_trig_done;
 
   -- FSM transitions + outputs
@@ -311,7 +276,6 @@ begin
   begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
-        --acq_fsm_current_state <= IDLE;
         acq_fsm_current_state := IDLE;
 
         -- Outputs
@@ -323,42 +287,18 @@ begin
         acq_fsm_state    <= "001";
       else
 
-        -- Default Outputs
-        --shots_decr       <= '0';
-        --acq_in_pre_trig  <= '0';
-        --acq_in_wait_trig <= '0';
-        --acq_in_post_trig <= '0';
-        --samples_wr_en    <= '0';
-        --acq_fsm_state    <= "001";
-
         -- FSM transitions
         case acq_fsm_current_state is
 
           when IDLE =>
             if acq_start = '1' then
-              --acq_fsm_current_state <= PRE_TRIG;
               acq_fsm_current_state := PRE_TRIG;
-
-              -- Outputs
-              --acq_in_pre_trig  <= '1';
-              --samples_wr_en    <= '1';
-              --acq_fsm_state    <= "010";
             end if;
-
-            -- Outputs
-            --acq_fsm_state    <= "001";
 
           when PRE_TRIG =>
             if acq_stop = '1' then
-              --acq_fsm_current_state <= IDLE;
               acq_fsm_current_state := IDLE;
             elsif pre_trig_done = '1' then
-              --if wait_trig_skip = '1' then -- Don't wait for trigger
-              --  --acq_fsm_current_state <= IDLE;
-              --  --acq_fsm_current_state := IDLE;
-              --  acq_fsm_current_state := POST_TRIG;
-              --else
-                --acq_fsm_current_state <= WAIT_TRIG;
                 acq_fsm_current_state := WAIT_TRIG;
 
                 -- Hack to avoid writing samples in wait_trig_skip mode. FIXME!
@@ -366,19 +306,7 @@ begin
                   acq_fsm_current_state := WAIT_TRIG_SKIP;
                 end if;
 
-                -- Outputs
-                --acq_in_wait_trig <= '1';
-                ----samples_wr_en    <= '1'; -- Doesn't make sense for use to
-			          --                     -- store samples in this state
-                --samples_wr_en    <= '0';
-                --acq_fsm_state    <= "011";
-              --end if;
             end if;
-
-            -- Outputs
-            --acq_in_pre_trig  <= '1';
-            --samples_wr_en    <= '1';
-            --acq_fsm_state    <= "010";
 
           -- Dummy state to skip writing samples in wait_trig_skip mode
           when WAIT_TRIG_SKIP =>
@@ -390,91 +318,53 @@ begin
 
           when WAIT_TRIG =>
             if acq_stop = '1' then
-              --acq_fsm_current_state <= IDLE;
               acq_fsm_current_state := IDLE;
-            elsif acq_trig = '1' then --or wait_trig_skip_done = '1' then -- Don't wait for trigger
-              --acq_fsm_current_state <= POST_TRIG;
+            elsif acq_trig = '1' then
               acq_fsm_current_state := POST_TRIG;
-
-              -- Outputs
-              --acq_in_post_trig <= '1';
-              --samples_wr_en    <= '1';
-              --acq_fsm_state    <= "100";
             end if;
-
-            -- Outputs
-            --acq_in_wait_trig <= '1';
-            ----samples_wr_en    <= '1'; -- Doesn't make sense for use to
-			      --                     -- store samples in this state
-            --samples_wr_en    <= '0';
-            --acq_fsm_state    <= "011";
 
           -- Dummy state to skip writing samples in wait_trig_skip mode
           when POST_TRIG_SKIP =>
             if acq_stop = '1' then
               acq_fsm_current_state := IDLE;
             elsif post_trig_done = '1' then
+
               if single_shot = '1' then
-                --acq_fsm_current_state <= IDLE;
                 acq_fsm_current_state := IDLE;
               else
-                --acq_fsm_current_state <= DECR_SHOT;
                 acq_fsm_current_state := DECR_SHOT;
               end if;
+
             end if;
 
           when POST_TRIG =>
             if acq_stop = '1' then
-              --acq_fsm_current_state <= IDLE;
               acq_fsm_current_state := IDLE;
             elsif post_trig_done = '1' then
+
               if single_shot = '1' then
-                --acq_fsm_current_state <= IDLE;
                 acq_fsm_current_state := IDLE;
               else
-                --acq_fsm_current_state <= DECR_SHOT;
                 acq_fsm_current_state := DECR_SHOT;
-
-                -- Outputs
-                --shots_decr       <= '1';
-                --acq_fsm_state    <= "101";
               end if;
-            end if;
 
-            -- Outputs
-            --acq_in_post_trig <= '1';
-            --samples_wr_en    <= '1';
-            --acq_fsm_state    <= "100";
+            end if;
 
           when DECR_SHOT =>
             if acq_stop = '1' then
-              --acq_fsm_current_state <= IDLE;
               acq_fsm_current_state := IDLE;
             else
+
               if shots_done = '1' then
-                --acq_fsm_current_state <= IDLE;
                 acq_fsm_current_state := IDLE;
               else
-                --acq_fsm_current_state <= PRE_TRIG;
                 acq_fsm_current_state := PRE_TRIG;
 
-                -- Outputs
-                --acq_in_pre_trig  <= '1';
-                --samples_wr_en    <= '1';
-                --acq_fsm_state    <= "010";
               end if;
             end if;
 
-            -- Outputs
-            --shots_decr       <= '1';
-            --acq_fsm_state    <= "101";
-
           when others =>
-            --acq_fsm_current_state <= IDLE;
             acq_fsm_current_state := IDLE;
-
-            -- Outputs
-            --acq_fsm_state    <= "111";
 
         end case;
 

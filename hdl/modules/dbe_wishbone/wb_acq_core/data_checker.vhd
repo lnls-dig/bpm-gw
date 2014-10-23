@@ -274,20 +274,6 @@ begin
              "/" &
              integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
              severity note;
-          --elsif (fifo_act_dout(c_addr_fifo_msb downto c_addr_fifo_lsb) =
-          --         fifo_exp_dout(c_addr_fifo_msb downto c_addr_fifo_lsb)) then -- only addr match!
-          --  data_cmp_match <= '0'; -- stop on error
-          --  data_cmp_err <= '1';
-          --
-          --  report "[Data Checker]: actual data / addr " &
-          --   integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
-          --   " / "
-          --   integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
-          --   " DIFFERS expected data / addr " &
-          --   integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
-          --   " / "
-          --   integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
-          --   severity error;
           else -- only addr or neither match
             data_cmp_match <= '0'; -- stop on error
             data_cmp_err <= '1';

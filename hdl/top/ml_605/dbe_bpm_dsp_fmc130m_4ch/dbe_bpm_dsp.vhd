@@ -1412,6 +1412,7 @@ begin
   cmp_xwb_fmc130m_4ch : xwb_fmc130m_4ch
   generic map(
     g_fpga_device                           => "VIRTEX6",
+    g_delay_type                            => "VAR_LOADABLE",
     g_interface_mode                        => PIPELINED,
     --g_address_granularity                   => WORD,
     g_address_granularity                   => BYTE,
@@ -1518,6 +1519,13 @@ begin
     fmc_led1_o                              => fmc_led1_int,
     fmc_led2_o                              => fmc_led2_int,
     fmc_led3_o                              => fmc_led3_int,
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                       => '0', -- Unused
+    fmc_ext_ref_clk2x_i                     => '0', -- Unused
+    fmc_ext_ref_mmcm_locked_i               => '0', -- Unused
 
     -----------------------------
     -- ADC output signals. Continuous flow

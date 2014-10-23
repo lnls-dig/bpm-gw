@@ -922,6 +922,13 @@ begin
     fmc_led3_o                              => fmc_led3_int,
 
     -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                       => '0', -- Unused
+    fmc_ext_ref_clk2x_i                     => '0', -- Unused
+    fmc_ext_ref_mmcm_locked_i               => '0', -- Unused
+
+    -----------------------------
     -- ADC output signals. Continuous flow
     -----------------------------
     adc_clk_o                               => fmc_130m_4ch_clk,

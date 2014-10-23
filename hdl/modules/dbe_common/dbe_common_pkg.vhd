@@ -6,6 +6,7 @@ package dbe_common_pkg is
   --------------------------------------------------------------------
   -- Components
   --------------------------------------------------------------------
+
   component reset_synch
   generic
   (
@@ -18,6 +19,21 @@ package dbe_common_pkg is
     clk_i                                  : in  std_logic;
     arst_n_i                               : in  std_logic;
     rst_n_o                                : out std_logic
+  );
+  end component;
+
+  component pulse2level
+  port
+  (
+    clk_i                                  : in std_logic;
+    rst_n_i                                : in std_logic;
+
+    -- Pulse input
+    pulse_i                                : in std_logic;
+    -- Clear level
+    clr_i                                  : in std_logic;
+    -- Level output
+    level_o                                : out std_logic
   );
   end component;
 

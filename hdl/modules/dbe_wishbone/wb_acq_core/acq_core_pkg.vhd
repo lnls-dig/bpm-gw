@@ -13,6 +13,7 @@ package acq_core_pkg is
   constant c_pkt_size_width                 : natural := 32;
   constant c_shots_size_width               : natural := 16;
   constant c_addr_width                     : natural := 32;
+  constant c_chan_id_width                  : natural := 5;
 
   constant c_data_oob_width                 : natural := 2; -- SOF and EOF
 
@@ -22,30 +23,17 @@ package acq_core_pkg is
   constant c_acq_chan_width                 : natural := 64;
   constant c_acq_chan_max_w                 : natural := 2*c_acq_chan_width;
   constant c_acq_chan_max_w_log2            : natural := f_log2_size(c_acq_chan_max_w)+1;
-  --constant c_acq_chan_max_w_log2            : natural := 16;
 
   -- ADC + TBT + FOFB + MONIT + MONIT_1
   constant c_acq_num_channels               : natural := 5;
 
-  constant c_num_ddr_payload_ratios         : natural := 3;
-  constant c_max_ddr_payload_ratio          : natural := 8;
+  constant c_num_payload_ratios             : natural := 3;
+  constant c_max_payload_ratio              : natural := 8;
 
   -- Type declarations
-  --subtype t_fc_data is std_logic_vector(c_data_width-1 downto 0);
-  --type t_fc_data_array is array (natural range <>) of t_fc_data;
-  --
-  --type t_fc_dvalid_array is array (natural range <>) of std_logic;
-  --
-  --subtype t_fc_data_oob is std_logic_vector(c_data_oob_width -1 downto 0);
-  --type t_fc_data_oob_array is array (natural range <>) of t_fc_data_oob;
-  --
-  --subtype t_fc_pkt is unsigned(c_pkt_width-1 downto 0);
-  --subtype t_fc_addr is std_logic_vector(c_addr_width-1 downto 0);
 
-  subtype t_ddr_payld_ratio is integer range 0 to c_max_ddr_payload_ratio;
-  --subtype t_ddr_payld_ratio is integer(f_log2_size(c_max_ddr_payload_ratio) downto 0);
-  --subtype t_ddr_payld_ratio is unsigned(f_log2_size(c_max_ddr_payload_ratio) downto 0);
-  type t_ddr_payld_ratio_array is array (natural range <>) of t_ddr_payld_ratio;
+  subtype t_payld_ratio is integer range 0 to c_max_payload_ratio;
+  type t_payld_ratio_array is array (natural range <>) of t_payld_ratio;
 
   -- Parameters for acquisition core channels. Max of 128-bit in width
   type t_acq_chan_param is record
@@ -53,7 +41,7 @@ package acq_core_pkg is
   end record;
 
   type t_acq_chan_param_array is array (natural range <>) of t_acq_chan_param;
-  
+
   type t_acq_chan_slice is record
     use_high_part : boolean;
   end record;
@@ -63,26 +51,25 @@ package acq_core_pkg is
   subtype t_acq_val_half is std_logic_vector(c_acq_chan_width-1 downto 0);
 
   type t_acq_val_half_array is array (natural range <>) of t_acq_val_half;
-  
-  --subtype t_acq_val_full is std_logic_vector(c_acq_chan_max_w-1 downto 0);
+
   type t_acq_val_full is record
     val_low : t_acq_val_half;
     val_high : t_acq_val_half;
   end record;
 
   type t_acq_val_full_array is array (natural range <>) of t_acq_val_full;
-  
+
   -- Acquisition core channels. No VHDL-2008 support.
   -- We constrain the c_acq_chan_width to hold 128-bit tops (low + high). if we
   -- want to use only the "low" part we expect the synthetizer to optimize the
-  -- unused signals. 
+  -- unused signals.
   type t_acq_chan is record
     val_low : t_acq_val_half;
     val_high : t_acq_val_half;
     dvalid : std_logic;
     trig : std_logic;
   end record;
-  
+
   type t_acq_chan_array is array (natural range <>) of t_acq_chan;
 
   constant c_default_acq_num_channels : natural := 5;
@@ -97,33 +84,41 @@ package acq_core_pkg is
   constant c_default_acq_chan : t_acq_chan := (val_low => (others => '0'),
                                                  val_high => (others => '0'),
                                                  dvalid => '0',
-                                                 trig => '0'); 
-  
+                                                 trig => '0');
+
   -----------------------------
   -- Functions declaration
   ----------------------------
+  function f_acq_chan_find(acq_chan_param_array : t_acq_chan_param_array;
+                            find_widest : boolean)
+    return natural;
+
   --Find the widest channel
   function f_acq_chan_find_widest(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  --Find the narrowest channel
+  function f_acq_chan_find_narrowest(acq_chan_param_array : t_acq_chan_param_array)
     return natural;
 
   function f_acq_chan_det_slice(acq_chan_param_array : t_acq_chan_param_array)
     return t_acq_chan_slice_array;
 
-  function f_ddr_fc_payload_ratio(ddr_payload_width : natural; acq_chan_slice_array : t_acq_chan_slice_array)
-    return t_ddr_payld_ratio_array;
-     
+  function f_fc_payload_ratio(payload_width : natural; acq_chan_slice_array : t_acq_chan_slice_array)
+    return t_payld_ratio_array;
+
   function f_acq_chan_marshall_val(acq_val_high : t_acq_val_half; acq_val_low : t_acq_val_half)
     return t_acq_val_full;
 
   function f_acq_chan_conv_val(acq_val : t_acq_val_full)
     return std_logic_vector;
-     
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half;
 
   -- Move this function to appropriate package
-  function f_log2_size_array(ddr_payld_ratio_array : t_ddr_payld_ratio_array)
-    return t_ddr_payld_ratio_array;
+  function f_log2_size_array(payld_ratio_array : t_payld_ratio_array)
+    return t_payld_ratio_array;
 
   -----------------------------
   -- Components declaration
@@ -132,10 +127,35 @@ package acq_core_pkg is
   function f_gen_std_logic_vector(size : natural; value : std_logic)
     return std_logic_vector;
 
+  component acq_sel_chan
+  generic
+  (
+    g_acq_num_channels                        : natural := 1
+  );
+  port
+  (
+    clk_i                                     : in  std_logic;
+    rst_n_i                                   : in  std_logic;
+
+    -----------------------------
+    -- Acquisiton Interface
+    -----------------------------
+    acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+
+    -----------------------------
+    -- Output Interface.
+    -----------------------------
+    acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
+    acq_dvalid_o                              : out std_logic;
+    acq_trig_o                                : out std_logic
+  );
+  end component;
+
   component acq_fsm
-  --generic
-  --(
-  --);
   port
   (
     fs_clk_i                                  : in std_logic;
@@ -162,7 +182,6 @@ package acq_core_pkg is
     -----------------------------
     -- FSM Monitoring
     -----------------------------
-    --acq_end_p_o                               : out std_logic;
     acq_end_o                                 : out std_logic;
     acq_single_shot_o                         : out std_logic;
     acq_in_pre_trig_o                         : out std_logic;
@@ -218,8 +237,10 @@ package acq_core_pkg is
   component acq_fc_fifo
   generic
   (
-    g_data_width                              : natural := 64;
+    g_data_out_width                          : natural := 256;
     g_addr_width                              : natural := 32;
+    g_acq_num_channels                        : natural := 1;
+    g_acq_channels                            : t_acq_chan_param_array;
     g_fifo_size                               : natural := 64;
     g_fc_pipe_size                            : natural := 4
   );
@@ -234,11 +255,11 @@ package acq_core_pkg is
     ext_rst_n_i                               : in  std_logic;
 
     -- DPRAM data
-    dpram_data_i                              : in std_logic_vector(g_data_width-1 downto 0);
+    dpram_data_i                              : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
     dpram_dvalid_i                            : in std_logic;
 
     -- Passthough data
-    pt_data_i                                 : in std_logic_vector(g_data_width-1 downto 0);
+    pt_data_i                                 : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
     pt_dvalid_i                               : in std_logic;
     pt_wr_en_i                                : in std_logic;
 
@@ -251,8 +272,10 @@ package acq_core_pkg is
     -- which buffer (0 or 1) to store data in. valid only when passthrough_en_i = '0'
     buffer_sel_i                              : in std_logic;
 
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
+    lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            : in unsigned(15 downto 0);
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
@@ -266,25 +289,68 @@ package acq_core_pkg is
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_dout_o                            : out std_logic_vector(g_data_width-1 downto 0);
+    fifo_fc_dout_o                            : out std_logic_vector(g_data_out_width-1 downto 0);
     fifo_fc_valid_o                           : out std_logic;
     fifo_fc_addr_o                            : out std_logic_vector(g_addr_width-1 downto 0);
     fifo_fc_sof_o                             : out std_logic;
     fifo_fc_eof_o                             : out std_logic;
     fifo_fc_dreq_i                            : in std_logic;
-    fifo_fc_stall_i                           : in std_logic
+    fifo_fc_stall_i                           : in std_logic;
+
+    dbg_fifo_we_o		                	        : out std_logic;
+    dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+    dbg_fifo_re_o		                	        : out std_logic;
+    dbg_fifo_fc_rd_en_o	                	    : out std_logic;
+    dbg_fifo_rd_empty_o	                    	: out std_logic;
+    dbg_fifo_wr_full_o	                    	: out std_logic;
+    dbg_fifo_fc_valid_fwft_o			            : out std_logic;
+    dbg_source_pl_dreq_o	                	  : out std_logic;
+    dbg_source_pl_stall_o	                	  : out std_logic;
+    dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+    dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
+  );
+  end component;
+
+  component acq_fwft_fifo
+  generic
+  (
+    g_data_width                              : natural := 64;
+    g_size                                    : natural := 64;
+    g_with_wr_count                           : boolean := false;
+    g_with_rd_count                           : boolean := false;
+    g_almost_full_threshold                   : integer;
+    g_almost_empty_threshold                  : integer
+  );
+  port
+  (
+    -- Write clock
+    wr_clk_i                                  : in  std_logic;
+    wr_rst_n_i                                : in  std_logic;
+
+    wr_data_i                                 : in std_logic_vector(g_data_width-1 downto 0);
+    wr_en_i                                   : in std_logic;
+    wr_full_o                                 : out std_logic;
+    wr_count_o                                : out std_logic_vector(f_log2_size(g_size)-1 downto 0);
+
+    -- Read clock
+    rd_clk_i                                  : in  std_logic;
+    rd_rst_n_i                                : in  std_logic;
+
+    rd_data_o                                 : out std_logic_vector(g_data_width-1 downto 0);
+    rd_valid_o                                : out std_logic;
+    rd_en_i                                   : in std_logic;
+    rd_empty_o                                : out std_logic;
+    rd_count_o                                : out std_logic_vector(f_log2_size(g_size)-1 downto 0)
   );
   end component;
 
   component fc_source
   generic
   (
-    --g_hold_valid_on_stall                     : boolean := true;
     g_data_width                              : natural := 64;
     g_pkt_size_width                          : natural := 32;
     g_addr_width                              : natural := 32;
     g_pipe_size                               : natural := 4
-  --g_pipe_almost_full                        : natural := 3
   );
   port
   (
@@ -328,21 +394,22 @@ package acq_core_pkg is
     cnt_all_pkts_ct_done_p_o                  : out std_logic; -- all current transaction packets done
     cnt_all_trans_done_p_o                    : out std_logic; -- all transactions done
     cnt_en_i                                  : in std_logic;
-    --cnt_rst_i                                 : in std_logic;
 
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               : in std_logic
+    lmt_valid_i                               : in std_logic;
+
+    dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
+    dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
   );
   end component;
 
   component acq_ddr3_iface
   generic
   (
-    g_acq_addr_width                          : natural := 32;
     g_acq_num_channels                        : natural := 1;
     g_acq_channels                            : t_acq_chan_param_array;
     -- Do not modify these! As they are dependent of the memory controller generated!
@@ -358,9 +425,9 @@ package acq_core_pkg is
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_din_i                             : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    fifo_fc_din_i                             : in std_logic_vector(g_ddr_payload_width-1 downto 0);
     fifo_fc_valid_i                           : in std_logic;
-    fifo_fc_addr_i                            : in std_logic_vector(g_acq_addr_width-1 downto 0);
+    fifo_fc_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
     fifo_fc_sof_i                             : in std_logic;
     fifo_fc_eof_i                             : in std_logic;
     fifo_fc_dreq_o                            : out std_logic;
@@ -372,14 +439,13 @@ package acq_core_pkg is
     lmt_all_trans_done_p_o                    : out std_logic;
     lmt_rst_i                                 : in std_logic;
 
-
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
-    -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
+    -- Acquisition limits valid signal. Qu  alifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
     lmt_valid_i                               : in std_logic;
 
     -- Xilinx DDR3 UI Interface
@@ -409,8 +475,6 @@ package acq_core_pkg is
     g_acq_addr_width                          : natural := 32;
     g_acq_num_channels                        : natural := 1;
     g_acq_channels                            : t_acq_chan_param_array;
-    --g_data_width                              : natural := 64;
-    --g_addr_width                              : natural := 32;
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
     g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
@@ -424,7 +488,7 @@ package acq_core_pkg is
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_din_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    fifo_fc_din_o                             : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     fifo_fc_valid_o                           : out std_logic;
     fifo_fc_addr_o                            : out std_logic_vector(g_acq_addr_width-1 downto 0);
     fifo_fc_sof_o                             : out std_logic; -- ignored
@@ -439,7 +503,7 @@ package acq_core_pkg is
     lmt_rst_i                                 : in std_logic;
 
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        : in unsigned(4 downto 0); 
+    lmt_curr_chan_id_i                        : in unsigned(4 downto 0);
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
     -- Number of shots in this acquisition
@@ -521,21 +585,41 @@ end acq_core_pkg;
 
 package body acq_core_pkg is
 
-  --Find the widest channel
-  function f_acq_chan_find_widest(acq_chan_param_array : t_acq_chan_param_array)
+  --Find the widest (find_widest = true) or narrowest (find_widest = false) channel
+  function f_acq_chan_find(acq_chan_param_array : t_acq_chan_param_array;
+      find_widest : boolean)
     return natural
   is
     variable acq_chan_param : t_acq_chan_param;
   begin
     acq_chan_param := acq_chan_param_array(0);
-  
+
     for i in 1 to acq_chan_param_array'length-1 loop
-      if acq_chan_param_array(i).width > acq_chan_param.width then
+      -- Search for the widest
+      if (find_widest and acq_chan_param_array(i).width > acq_chan_param.width) or
+         -- Search for the narrowest
+         (not find_widest and acq_chan_param_array(i).width < acq_chan_param.width) then
         acq_chan_param := acq_chan_param_array(i);
       end if;
     end loop;
-  
+
     return natural(to_integer(acq_chan_param.width));
+  end;
+
+  function f_acq_chan_find_widest(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := true;
+  begin
+    return f_acq_chan_find(acq_chan_param_array, find_widest);
+  end;
+
+  function f_acq_chan_find_narrowest(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_narrowest : boolean := false;
+  begin
+    return f_acq_chan_find(acq_chan_param_array, find_narrowest);
   end;
 
   -- Determine which part of the vector is valid
@@ -544,7 +628,7 @@ package body acq_core_pkg is
   is
     variable acq_chan_slice : t_acq_chan_slice_array(acq_chan_param_array'length-1 downto 0);
   begin
-    
+
     for i in 0 to acq_chan_param_array'length-1 loop
       if acq_chan_param_array(i).width > c_acq_chan_width then -- use high part
         acq_chan_slice(i).use_high_part := true;
@@ -552,24 +636,24 @@ package body acq_core_pkg is
         acq_chan_slice(i).use_high_part := false;
       end if;
     end loop;
-  
+
     return acq_chan_slice;
   end;
 
-  function f_ddr_fc_payload_ratio(ddr_payload_width : natural; acq_chan_slice_array : t_acq_chan_slice_array)
-    return t_ddr_payld_ratio_array
+  function f_fc_payload_ratio(payload_width : natural; acq_chan_slice_array : t_acq_chan_slice_array)
+    return t_payld_ratio_array
   is
-    variable ddr_fc_payload_ratio : t_ddr_payld_ratio_array(acq_chan_slice_array'length-1 downto 0);
+    variable fc_payload_ratio : t_payld_ratio_array(acq_chan_slice_array'length-1 downto 0);
   begin
     for i in 0 to acq_chan_slice_array'length-1 loop
       if (acq_chan_slice_array(i).use_high_part) then -- c_acq_chan_max_w
-        ddr_fc_payload_ratio(i) := ddr_payload_width/c_acq_chan_max_w;
+        fc_payload_ratio(i) := payload_width/c_acq_chan_max_w;
       else
-        ddr_fc_payload_ratio(i) := ddr_payload_width/c_acq_chan_width;
+        fc_payload_ratio(i) := payload_width/c_acq_chan_width;
       end if;
     end loop;
-  
-    return ddr_fc_payload_ratio;
+
+    return fc_payload_ratio;
 
   end;
 
@@ -580,10 +664,10 @@ package body acq_core_pkg is
   begin
     ret.val_low := acq_val_low;
     ret.val_high := acq_val_high;
-    
+
     return ret;
   end;
-  
+
   function f_acq_chan_conv_val(acq_val : t_acq_val_full)
     return std_logic_vector
   is
@@ -592,16 +676,16 @@ package body acq_core_pkg is
     ret(acq_val.val_low'left downto 0) := acq_val.val_low;
     ret(acq_val.val_high'left + acq_val.val_low'left + 1 downto
                          acq_val.val_low'left + 1) := acq_val.val_high;
-    
+
     return ret;
   end;
-     
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half
   is
     variable ret : t_acq_val_half;
   begin
-    case acq_sel is 
+    case acq_sel is
       when 0 => -- low
         ret := acq_val.val_low;
       when 1 => -- high
@@ -625,14 +709,14 @@ package body acq_core_pkg is
     return ret;
   end;
 
-  function f_log2_size_array(ddr_payld_ratio_array : t_ddr_payld_ratio_array)
-    return t_ddr_payld_ratio_array
+  function f_log2_size_array(payld_ratio_array : t_payld_ratio_array)
+    return t_payld_ratio_array
   is
-    variable log2_size_array : t_ddr_payld_ratio_array(ddr_payld_ratio_array'length-1 downto 0);
+    variable log2_size_array : t_payld_ratio_array(payld_ratio_array'length-1 downto 0);
   begin
 
-    for i in 0 to ddr_payld_ratio_array'length-1 loop
-      log2_size_array(i) := f_log2_size(ddr_payld_ratio_array(i));
+    for i in 0 to payld_ratio_array'length-1 loop
+      log2_size_array(i) := f_log2_size(payld_ratio_array(i));
     end loop;
 
     return log2_size_array;

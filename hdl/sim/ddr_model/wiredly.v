@@ -49,7 +49,7 @@
 //   ____  ____
 //  /   /\/   /
 // /___/  \  /    Vendor             : Xilinx
-// \   \   \/     Version            : 1.8
+// \   \   \/     Version            : 1.9
 //  \   \         Application        : MIG
 //  /   /         Filename           : wiredly.v
 // /___/   /\     Date Last Modified : $Date: 2011/06/23 08:25:20 $

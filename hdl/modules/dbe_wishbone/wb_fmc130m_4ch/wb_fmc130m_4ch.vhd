@@ -49,12 +49,15 @@ generic
 (
     -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
+  g_delay_type                              : string := "VARIABLE";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
+  g_with_extra_wb_reg                       : boolean := false;
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
   g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+  g_with_idelayctrl                         : boolean := true;
   g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
@@ -162,6 +165,13 @@ port
   fmc_led3_o                                : out std_logic;
 
   -----------------------------
+  -- Optional external reference clock ports
+  -----------------------------
+  fmc_ext_ref_clk_i                        : in std_logic := '0';
+  fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+  fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+  -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -225,7 +235,7 @@ architecture rtl of wb_fmc130m_4ch is
   -- Numbert of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
   constant c_periph_addr_size               : natural := 4+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
-  constant c_ref_clk                        : natural := g_ref_clk;
+  constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
   constant c_with_clk_single_ended          : boolean := true;
   constant c_with_data_single_ended         : boolean := true;
   constant c_with_data_sdr                  : boolean := true;
@@ -233,9 +243,11 @@ architecture rtl of wb_fmc130m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := false;
 
-  -- 130 MHz parameters
+  -- 130 MHz parameters. Generate 2x input clock
   constant c_mmcm_param                     : t_mmcm_param :=
                                    (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+  --constant c_mmcm_param                     : t_mmcm_param :=
+  --                                 (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 8);
 
   -----------------------------
   -- Crossbar component constants
@@ -331,6 +343,9 @@ architecture rtl of wb_fmc130m_4ch is
   signal adc_valid                          : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_data                           : std_logic_vector(c_num_adc_bits*c_num_adc_channels-1 downto 0);
 
+  -- Optional reference clock
+  signal adc_ext_glob_clk_int               : t_adc_clk_chain_glob;
+
   -- ADC Reset signals
   signal adc_clk_div_rst_int                : std_logic;
   signal adc_clk_div_rst_int_p              : std_logic;
@@ -387,6 +402,10 @@ architecture rtl of wb_fmc130m_4ch is
   signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+
+  -- Extra Wishbone registering stage
+  signal cbar_slave_in_reg0                 : t_wishbone_slave_in_array (c_masters-1 downto 0);
+  signal cbar_slave_out_reg0                : t_wishbone_slave_out_array(c_masters-1 downto 0);
 
   -----------------------------
   -- VCXO Si571 I2C Signals
@@ -510,7 +529,7 @@ begin
         --rst_n_o                                      => fs_rst_sync_n
         rst_n_o                                      => fs_rst_sync_n(i)
       );
-      
+
       cmp_reset_fs2x_synch : reset_synch
       port map(
         clk_i                                       => fs_clk2x(i),
@@ -532,6 +551,55 @@ begin
   fmc_pll_status_o                          <= fmc_pll_status_i;
 
   -----------------------------
+  -- Insert extra Wishbone registering stage for ease timing.
+  -- It effectively cuts the bandwodth in half!
+  -----------------------------
+  gen_with_extra_wb_reg : if g_with_extra_wb_reg generate
+
+    cmp_register_link : xwb_register_link -- puts a register of delay between crossbars
+    port map (
+      clk_sys_i 			    => sys_clk_i,
+      rst_n_i   			    => sys_rst_sync_n,
+      slave_i   			    => cbar_slave_in_reg0(0),
+      slave_o                               => cbar_slave_out_reg0(0),
+      master_i                              => cbar_slave_out(0),
+      master_o 		                    => cbar_slave_in(0)
+    );
+
+    cbar_slave_in_reg0(0).adr               <= wb_adr_i;
+    cbar_slave_in_reg0(0).dat               <= wb_dat_i;
+    cbar_slave_in_reg0(0).sel               <= wb_sel_i;
+    cbar_slave_in_reg0(0).we                <= wb_we_i;
+    cbar_slave_in_reg0(0).cyc               <= wb_cyc_i;
+    cbar_slave_in_reg0(0).stb               <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out_reg0(0).dat;
+    wb_ack_o                                <= cbar_slave_out_reg0(0).ack;
+    wb_err_o                                <= cbar_slave_out_reg0(0).err;
+    wb_rty_o                                <= cbar_slave_out_reg0(0).rty;
+    wb_stall_o                              <= cbar_slave_out_reg0(0).stall;
+
+  end generate;
+
+  gen_without_extra_wb_reg : if not g_with_extra_wb_reg generate
+
+    -- External master connection
+    cbar_slave_in(0).adr                    <= wb_adr_i;
+    cbar_slave_in(0).dat                    <= wb_dat_i;
+    cbar_slave_in(0).sel                    <= wb_sel_i;
+    cbar_slave_in(0).we                     <= wb_we_i;
+    cbar_slave_in(0).cyc                    <= wb_cyc_i;
+    cbar_slave_in(0).stb                    <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out(0).dat;
+    wb_ack_o                                <= cbar_slave_out(0).ack;
+    wb_err_o                                <= cbar_slave_out(0).err;
+    wb_rty_o                                <= cbar_slave_out(0).rty;
+    wb_stall_o                              <= cbar_slave_out(0).stall;
+
+  end generate;
+
+  -----------------------------
   -- FMC130M_4CH Address decoder for SPI/I2C Wishbone interfaces modules
   -----------------------------
   -- We need 5 outputs, as in the same wishbone addressing range, 5
@@ -546,37 +614,24 @@ begin
   -- The Internal Wishbone B.4 crossbar
   cmp_interconnect : xwb_sdb_crossbar
   generic map(
-    g_num_masters                             => c_masters,
-    g_num_slaves                              => c_slaves,
-    g_registered                              => true,
-    g_wraparound                              => true, -- Should be true for nested buses
-    g_layout                                  => c_layout,
-    g_sdb_addr                                => c_sdb_address
+    g_num_masters                           => c_masters,
+    g_num_slaves                            => c_slaves,
+    g_registered                            => true,
+    g_wraparound                            => true, -- Should be true for nested buses
+    g_layout                                => c_layout,
+    g_sdb_addr                              => c_sdb_address
   )
   port map(
-    clk_sys_i                                 => sys_clk_i,
-    rst_n_i                                   => sys_rst_sync_n,
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
     -- Master connections (INTERCON is a slave)
-    slave_i                                   => cbar_slave_in,
-    slave_o                                   => cbar_slave_out,
+    slave_i                                 => cbar_slave_in,
+    slave_o                                 => cbar_slave_out,
     -- Slave connections (INTERCON is a master)
-    master_i                                  => cbar_master_in,
-    master_o                                  => cbar_master_out
+    master_i                                => cbar_master_in,
+    master_o                                => cbar_master_out
   );
 
-  -- External master connection
-  cbar_slave_in(0).adr                        <= wb_adr_i;
-  cbar_slave_in(0).dat                        <= wb_dat_i;
-  cbar_slave_in(0).sel                        <= wb_sel_i;
-  cbar_slave_in(0).we                         <= wb_we_i;
-  cbar_slave_in(0).cyc                        <= wb_cyc_i;
-  cbar_slave_in(0).stb                        <= wb_stb_i;
-
-  wb_dat_o                                    <= cbar_slave_out(0).dat;
-  wb_ack_o                                    <= cbar_slave_out(0).ack;
-  wb_err_o                                    <= cbar_slave_out(0).err;
-  wb_rty_o                                    <= cbar_slave_out(0).rty;
-  wb_stall_o                                  <= cbar_slave_out(0).stall;
 
   -----------------------------
   -- Slave adapter for Wishbone Register Interface
@@ -642,9 +697,9 @@ begin
   );
 
   -- Unused wishbone signals
-  wb_slv_adp_in.int                         <= '0';
-  wb_slv_adp_in.err                         <= '0';
-  wb_slv_adp_in.rty                         <= '0';
+  --wb_slv_adp_in.int                         <= '0';
+  --wb_slv_adp_in.err                         <= '0';
+  --wb_slv_adp_in.rty                         <= '0';
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
@@ -676,24 +731,24 @@ begin
   regs_in.data0_val_i(regs_in.data0_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data0_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(0).adc_data;
+                                            <= adc_data(c_num_adc_bits-1 downto 0);
   -- ADC RAW data channel 1
   regs_in.data1_val_i(regs_in.data1_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data1_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(1).adc_data;
+                                            <= adc_data(2*c_num_adc_bits-1 downto c_num_adc_bits);
 
   -- ADC RAW data channel 2
   regs_in.data2_val_i(regs_in.data2_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data2_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(2).adc_data;
+                                            <= adc_data(3*c_num_adc_bits-1 downto 2*c_num_adc_bits);
 
   -- ADC RAW data channel 3
   regs_in.data3_val_i(regs_in.data3_val_i'left downto c_num_adc_bits)
                                             <= (others => '0');
   regs_in.data3_val_i(c_num_adc_bits-1 downto 0)
-                                            <= adc_out(3).adc_data;
+                                            <= adc_data(4*c_num_adc_bits-1 downto 3*c_num_adc_bits);
 
   regs_in.dcm_adc_done_i                    <= '0'; -- Unused
   regs_in.dcm_adc_status0_i                 <= '0'; -- Unused
@@ -939,7 +994,7 @@ begin
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
-    g_delay_type                            => "VAR_LOADABLE",
+    g_delay_type                            => g_delay_type,
     --g_delay_type                            => "VARIABLE",
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
@@ -951,6 +1006,7 @@ begin
     g_with_bufr_clk_chains                  => g_with_bufr_clk_chains,
     g_with_data_sdr                         => c_with_data_sdr,
     g_with_fn_dly_select                    => c_with_fn_dly_select,
+    g_with_idelayctrl                       => g_with_idelayctrl,
     g_sim                                   => g_sim
   )
   port map(
@@ -965,6 +1021,11 @@ begin
     -----------------------------
     adc_in_i                                => adc_in_dummy,
     adc_in_sdr_i                            => adc_in,
+
+    -----------------------------
+    -- Optional External Global Clock ports
+    -----------------------------
+    adc_ext_glob_clk_i                      => adc_ext_glob_clk_int,
 
     -----------------------------
     -- ADC Delay signals
@@ -997,14 +1058,22 @@ begin
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
 
+  -- Optional reference clock
+  adc_ext_glob_clk_int.adc_clk_bufg         <= fmc_ext_ref_clk_i;
+  adc_ext_glob_clk_int.adc_clk2x_bufg       <= fmc_ext_ref_clk2x_i;
+  adc_ext_glob_clk_int.mmcm_adc_locked      <= fmc_ext_ref_mmcm_locked_i;
+
   -- ADC data for internal use
   gen_adc_data_int : for i in 0 to c_num_adc_channels-1 generate
     --adc_clk_int(i)                          <= adc_out(i).adc_clk;
     fs_clk(i)                               <= adc_out(i).adc_clk;
     fs_clk2x(i)                             <= adc_out(i).adc_clk2x;
-    adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i)
-                                            <= adc_out(i).adc_data;
-    adc_valid(i)                            <= adc_out(i).adc_data_valid;
+    adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i) <=
+      adc_out(i).adc_data when regs_out.fpga_ctrl_test_data_en_o = '0'
+                      else std_logic_vector(wbs_test_data(i));
+    adc_valid(i) <=
+      adc_out(i).adc_data_valid when regs_out.fpga_ctrl_test_data_en_o = '0'
+                      else '1';
   end generate;
 
   -- Output ADC signals to external FPGA
@@ -1047,8 +1116,8 @@ begin
   si571_i2c_sda_in <= si571_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(1).err                     <= '0';
-  cbar_master_in(1).rty                     <= '0';
+  --cbar_master_in(1).err                     <= '0';
+  --cbar_master_in(1).rty                     <= '0';
 
   -----------------------------
   -- AD9510 SPI Bus
@@ -1084,7 +1153,7 @@ begin
 
   -- Not used wishbone signals
   --cbar_master_in(2).err                     <= '0';
-  cbar_master_in(2).rty                     <= '0';
+  --cbar_master_in(2).rty                     <= '0';
 
   -----------------------------
   --  I2C EEPROM 24AA64T-I
@@ -1119,8 +1188,8 @@ begin
   eeprom_i2c_sda_in <= eeprom_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(3).err                     <= '0';
-  cbar_master_in(3).rty                     <= '0';
+  --cbar_master_in(3).err                     <= '0';
+  --cbar_master_in(3).rty                     <= '0';
 
   -----------------------------
   --  I2C LM75AIMM
@@ -1155,8 +1224,8 @@ begin
   lm75a_i2c_sda_in <= lm75_sda_pad_b;
 
   -- Not used wishbone signals
-  cbar_master_in(4).err                     <= '0';
-  cbar_master_in(4).rty                     <= '0';
+  --cbar_master_in(4).err                     <= '0';
+  --cbar_master_in(4).rty                     <= '0';
 
   -----------------------------
   -- Wishbone Streaming Interface
@@ -1170,7 +1239,6 @@ begin
         g_wbs_interface_width                   => NARROW2
       )
       port map(
-        --clk_i                                   => fs_clk,
         clk_i                                   => fs_clk(i),
         rst_n_i                                 => fs_rst_sync_n(i),
 
@@ -1208,7 +1276,6 @@ begin
 
       -- Generate test data
       p_gen_test_data : process(fs_clk(i))
-      --p_gen_test_data : process(fs_clk2x(c_ref_clk), fs_rst_sync_n(c_ref_clk))
       begin
         if rising_edge(fs_clk(i)) then
           if fs_rst_sync_n(i) = '0' then

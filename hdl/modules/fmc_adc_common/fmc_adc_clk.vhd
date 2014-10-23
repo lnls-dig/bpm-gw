@@ -38,6 +38,7 @@ generic
   g_with_ref_clk                            : boolean := false;
   g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
   g_with_fn_dly_select                      : boolean := false;
+  g_mrcc_pin                                : boolean := false;
   g_with_bufio                              : boolean := true;
   g_with_bufr                               : boolean := true;
   g_sim                                     : integer := 0
@@ -133,59 +134,125 @@ begin
   --
   -- HIGH_PERFORMANCE_MODE = TRUE reduces the output
   -- jitter in exchange of increase power dissipation
-  gen_adc_clk_var_loadable_iodelay : if (g_delay_type = "VAR_LOADABLE") generate
-    cmp_ibufds_clk_iodelay : iodelaye1
-    generic map(
-      IDELAY_TYPE                             => g_delay_type,
-      IDELAY_VALUE                            => g_default_adc_clk_delay,
-      SIGNAL_PATTERN                          => "CLOCK",
-      HIGH_PERFORMANCE_MODE                   => TRUE,
-      DELAY_SRC                               => "I"
-    )
-    port map(
-      idatain                                 => adc_clk_i,
-      dataout                                 => adc_clk_ibufgds_dly,
-      c                                       => sys_clk_i,
-      ce                                      => '0',
-      --inc                                     => adc_clk_dly_incdec_i,
-      inc                                     => '0',
-      datain                                  => '0',
-      odatain                                 => '0',
-      clkin                                   => '0',
-      --rst                                     => adc_clk_dly_pulse_i,
-      rst                                     => iodelay_update,
-      cntvaluein                              => adc_clk_fn_dly_i.idelay.val,
-      cntvalueout                             => adc_clk_fn_dly_o.idelay.val,
-      cinvctrl                                => '0',
-      t                                       => '1'
-    );
+  gen_adc_clk_virtex6_iodelay : if (g_fpga_device = "VIRTEX6") generate
+    gen_adc_clk_var_loadable_iodelay : if (g_delay_type = "VAR_LOADABLE") generate
+
+      cmp_ibufds_clk_iodelay : iodelaye1
+      generic map(
+        IDELAY_TYPE                             => g_delay_type,
+        IDELAY_VALUE                            => g_default_adc_clk_delay,
+        SIGNAL_PATTERN                          => "CLOCK",
+        HIGH_PERFORMANCE_MODE                   => TRUE,
+        DELAY_SRC                               => "I"
+      )
+      port map(
+        idatain                                 => adc_clk_i,
+        dataout                                 => adc_clk_ibufgds_dly,
+        c                                       => sys_clk_i,
+        ce                                      => '0',
+        --inc                                     => adc_clk_dly_incdec_i,
+        inc                                     => '0',
+        datain                                  => '0',
+        odatain                                 => '0',
+        clkin                                   => '0',
+        --rst                                     => adc_clk_dly_pulse_i,
+        rst                                     => iodelay_update,
+        cntvaluein                              => adc_clk_fn_dly_i.idelay.val,
+        cntvalueout                             => adc_clk_fn_dly_o.idelay.val,
+        cinvctrl                                => '0',
+        t                                       => '1'
+      );
+    end generate;
+
+    gen_adc_clk_variable_iodelay : if (g_delay_type = "VARIABLE") generate
+      cmp_ibufds_clk_iodelay : iodelaye1
+      generic map(
+        IDELAY_TYPE                             => g_delay_type,
+        IDELAY_VALUE                            => g_default_adc_clk_delay,
+        SIGNAL_PATTERN                          => "CLOCK",
+        HIGH_PERFORMANCE_MODE                   => TRUE,
+        DELAY_SRC                               => "I"
+      )
+      port map(
+        idatain                                 => adc_clk_i,
+        dataout                                 => adc_clk_ibufgds_dly,
+        c                                       => sys_clk_i,
+        --ce                                      => adc_clk_dly_pulse_i,
+        ce                                      => iodelay_update,
+        inc                                     => adc_clk_fn_dly_i.idelay.incdec,
+        datain                                  => '0',
+        odatain                                 => '0',
+        clkin                                   => '0',
+        rst                                     => '0',
+        cntvaluein                              => adc_clk_fn_dly_i.idelay.val,
+        cntvalueout                             => adc_clk_fn_dly_o.idelay.val,
+        cinvctrl                                => '0',
+        t                                       => '1'
+      );
+    end generate;
+
   end generate;
 
-  gen_adc_clk_variable_iodelay : if (g_delay_type = "VARIABLE") generate
-    cmp_ibufds_clk_iodelay : iodelaye1
-    generic map(
-      IDELAY_TYPE                             => g_delay_type,
-      IDELAY_VALUE                            => g_default_adc_clk_delay,
-      SIGNAL_PATTERN                          => "CLOCK",
-      HIGH_PERFORMANCE_MODE                   => TRUE,
-      DELAY_SRC                               => "I"
-    )
-    port map(
-      idatain                                 => adc_clk_i,
-      dataout                                 => adc_clk_ibufgds_dly,
-      c                                       => sys_clk_i,
-      --ce                                      => adc_clk_dly_pulse_i,
-      ce                                      => iodelay_update,
-      inc                                     => adc_clk_fn_dly_i.idelay.incdec,
-      datain                                  => '0',
-      odatain                                 => '0',
-      clkin                                   => '0',
-      rst                                     => '0',
-      cntvaluein                              => adc_clk_fn_dly_i.idelay.val,
-      cntvalueout                             => adc_clk_fn_dly_o.idelay.val,
-      cinvctrl                                => '0',
-      t                                       => '1'
-    );
+  gen_adc_clk_7series_iodelay : if (g_fpga_device = "7SERIES") generate
+    gen_adc_clk_var_load_iodelay : if (g_delay_type = "VAR_LOAD") generate
+
+      cmp_ibufds_clk_iodelay : idelaye2
+      generic map (
+         CINVCTRL_SEL                        => "FALSE",
+         DELAY_SRC                           => "IDATAIN",
+         HIGH_PERFORMANCE_MODE               => "TRUE",
+         IDELAY_TYPE                         => g_delay_type,
+         IDELAY_VALUE                        => g_default_adc_clk_delay,
+         PIPE_SEL                            => "FALSE",
+         REFCLK_FREQUENCY                    => 200.0,
+         SIGNAL_PATTERN                      => "CLOCK"
+      )
+      port map (
+         cntvalueout                         => adc_clk_fn_dly_o.idelay.val,
+         dataout                             => adc_clk_ibufgds_dly,
+         c                                   => sys_clk_i,
+         ce                                  => '0',
+         cinvctrl                            => '0',
+         cntvaluein                          => adc_clk_fn_dly_i.idelay.val,
+         datain                              => '0',
+         idatain                             => adc_clk_i,
+         inc                                 => '0',
+         ld                                  => iodelay_update,
+         ldpipeen                            => '0',
+         regrst                              => sys_rst_i
+      );
+
+    end generate;
+
+    gen_adc_clk_variable_iodelay : if (g_delay_type = "VARIABLE") generate
+
+      cmp_ibufds_clk_iodelay : idelaye2
+      generic map (
+         CINVCTRL_SEL                        => "FALSE",
+         DELAY_SRC                           => "IDATAIN",
+         HIGH_PERFORMANCE_MODE               => "TRUE",
+         IDELAY_TYPE                         => g_delay_type,
+         IDELAY_VALUE                        => g_default_adc_clk_delay,
+         PIPE_SEL                            => "FALSE",
+         REFCLK_FREQUENCY                    => 200.0,
+         SIGNAL_PATTERN                      => "CLOCK"
+      )
+      port map (
+         cntvalueout                         => adc_clk_fn_dly_o.idelay.val,
+         dataout                             => adc_clk_ibufgds_dly,
+         c                                   => sys_clk_i,
+         ce                                  => iodelay_update,
+         cinvctrl                            => '0',
+         cntvaluein                          => adc_clk_fn_dly_i.idelay.val,
+         datain                              => '0',
+         idatain                             => adc_clk_i,
+         inc                                 => adc_clk_fn_dly_i.idelay.incdec,
+         ld                                  => '0',
+         ldpipeen                            => '0',
+         regrst                              => sys_rst_i
+      );
+
+    end generate;
   end generate;
 
   gen_with_fn_dly_select : if (g_with_fn_dly_select) generate
@@ -207,7 +274,7 @@ begin
 
      -- We either have BUFIO + BUFR or just BUFR. We only
      -- have to check for BUFR, then.
-    gen_bufmr_7_series : if (g_with_bufr) generate
+    gen_bufmr_7_series : if (g_mrcc_pin) generate
 
       -- 1-bit output: Clock output (connect to BUFIOs/BUFRs)
       -- 1-bit input: Clock input (Connect to IBUFG)
@@ -222,7 +289,7 @@ begin
 
     end generate;
 
-    gen_not_bufmr_7_series : if (not g_with_bufr) generate
+    gen_not_bufmr_7_series : if (not g_mrcc_pin) generate
 
       adc_clk_bufio_in                        <= adc_clk_ibufgds_dly;
       adc_clk_bufr_in                         <= adc_clk_ibufgds_dly;

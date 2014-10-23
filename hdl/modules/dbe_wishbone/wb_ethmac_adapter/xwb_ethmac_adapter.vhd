@@ -38,6 +38,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.wishbone_pkg.all;
 use work.wr_fabric_pkg.all;
+use work.eb_internals_pkg.all;
 
 entity xwb_ethmac_adapter is
 port(
@@ -119,10 +120,16 @@ architecture behavioral of xwb_ethmac_adapter is
   signal rx_eb32_i                            : t_wishbone_master_in;
   signal rx_eb32_o                            : t_wishbone_master_out;
 
+  signal rx_eb16_i                            : t_wishbone_master_in;
+  signal rx_eb16_o                            : t_wishbone_master_out;
+
   --signal tx_eb32_i                            : t_wrf_sink32_in;
   --signal tx_eb32_o                            : t_wrf_sink32_out;
   signal tx_eb32_i                            : t_wishbone_slave_in;
   signal tx_eb32_o                            : t_wishbone_slave_out;
+
+  signal tx_eb16_i                            : t_wishbone_slave_in;
+  signal tx_eb16_o                            : t_wishbone_slave_out;
 
   -- word counter
   --signal transfer_counter                     : unsigned(c_ram_width/c_wrf_width-1 downto 0);
@@ -130,43 +137,6 @@ architecture behavioral of xwb_ethmac_adapter is
 
   signal rx_ram_dat_reg                       : std_logic_vector(31 downto 0);
 
-  -- From the etherbone repository
-  component WB_bus_adapter_streaming_sg
-  generic(g_adr_width_A : natural := 16; g_adr_width_B  : natural := 32;
-      g_dat_width_A : natural := 16; g_dat_width_B  : natural := 32;
-      g_pipeline : natural := 2
-  );
-      -- pipeline: 0 => A-x, 1 x-B, 2 A-B
-  port(
-    clk_i   : in std_logic;
-    nRst_i    : in std_logic;
-
-    A_CYC_i   : in std_logic;
-    A_STB_i   : in std_logic;
-    A_ADR_i   : in std_logic_vector(g_adr_width_A-1 downto 0);
-    A_SEL_i   : in std_logic_vector(g_dat_width_A/8-1 downto 0);
-    A_WE_i    : in std_logic;
-    A_DAT_i   : in std_logic_vector(g_dat_width_A-1 downto 0);
-    A_ACK_o   : out std_logic;
-    A_ERR_o   : out std_logic;
-    A_RTY_o   : out std_logic;
-    A_STALL_o : out std_logic;
-    A_DAT_o   : out std_logic_vector(g_dat_width_A-1 downto 0);
-
-
-    B_CYC_o   : out std_logic;
-    B_STB_o   : out std_logic;
-    B_ADR_o   : out std_logic_vector(g_adr_width_B-1 downto 0);
-    B_SEL_o   : out std_logic_vector(g_dat_width_B/8-1 downto 0);
-    B_WE_o    : out std_logic;
-    B_DAT_o   : out std_logic_vector(g_dat_width_B-1 downto 0);
-    B_ACK_i   : in std_logic;
-    B_ERR_i   : in std_logic;
-    B_RTY_i   : in std_logic;
-    B_STALL_i : in std_logic;
-    B_DAT_i   : in std_logic_vector(g_dat_width_B-1 downto 0)
-  );
-  end component;
 begin
 
   wb_adr <= wb_slave_i.adr;
@@ -234,42 +204,34 @@ begin
   bytes_tx <= std_logic_vector(tx_counter);
 
   -- convert streaming output from 16 to 32 bit data width
-  cmp_tx_adapter_16_to_32: WB_bus_adapter_streaming_sg
+  cmp_tx_adapter_16_to_32: eb_stream_widen
   generic map (
-    g_adr_width_A                           => 2,
-    g_adr_width_B                           => 32,
-    g_dat_width_A                           => 16,
-    g_dat_width_B                           => 32,
-    g_pipeline                              => 3
+    g_slave_width                           => 16,
+    g_master_width                          => 32
   )
   port map (
     clk_i                                   => clk_i,
-    nRst_i                                  => rstn_i,
-
-    A_CYC_i                                 => tx_eb_i.cyc,
-    A_STB_i                                 => tx_eb_i.stb,
-    A_ADR_i                                 => tx_eb_i.adr,
-    A_SEL_i                                 => tx_eb_i.sel,
-    A_WE_i                                  => tx_eb_i.we,
-    A_DAT_i                                 => tx_eb_i.dat,
-    A_ACK_o                                 => tx_eb_o.ack,
-    A_ERR_o                                 => tx_eb_o.err,
-    A_RTY_o                                 => tx_eb_o.rty,
-    A_STALL_o                               => tx_eb_o.stall,
-    A_DAT_o                                 => open,
-
-    B_CYC_o                                 => tx_eb32_i.cyc,
-    B_STB_o                                 => tx_eb32_i.stb,
-    B_ADR_o                                 => tx_eb32_i.adr,
-    B_SEL_o                                 => tx_eb32_i.sel,
-    B_WE_o                                  => tx_eb32_i.we,
-    B_DAT_o                                 => tx_eb32_i.dat,
-    B_ACK_i                                 => tx_eb32_o.ack,
-    B_ERR_i                                 => tx_eb32_o.err,
-    B_RTY_i                                 => tx_eb32_o.rty,
-    B_STALL_i                               => tx_eb32_o.stall,
-    B_DAT_i                                 => (others => '0')
+    rst_n_i                                 => rstn_i,
+    slave_i                                 => tx_eb16_i,
+    slave_o                                 => tx_eb16_o,
+    master_i                                => tx_eb32_o,
+    master_o                                => tx_eb32_i
   );
+
+  tx_eb16_i.cyc <= tx_eb_i.cyc;
+  tx_eb16_i.stb <= tx_eb_i.stb;
+  tx_eb16_i.adr(tx_eb_i.adr'left downto 0) <= tx_eb_i.adr;
+  tx_eb16_i.adr(c_wishbone_address_width-1 downto tx_eb_i.adr'left+1) <= (others => '0');
+  tx_eb16_i.sel(tx_eb_i.sel'left downto 0) <= tx_eb_i.sel;
+  tx_eb16_i.sel(c_wishbone_address_width/8-1 downto tx_eb_i.sel'left+1) <= (others =>'0');
+  tx_eb16_i.we  <= tx_eb_i.we;
+  tx_eb16_i.dat(tx_eb_i.dat'left downto 0) <= tx_eb_i.dat;
+  tx_eb16_i.dat(c_wishbone_data_width/8-1 downto tx_eb_i.dat'left+1) <= (others =>'0');
+
+  tx_eb_o.ack   <= tx_eb16_o.ack;
+  tx_eb_o.err   <= tx_eb16_o.err;
+  tx_eb_o.rty   <= tx_eb16_o.rty;
+  tx_eb_o.stall <= tx_eb16_o.stall;
 
   dma_tx  : process (clk_i)
   begin
@@ -332,42 +294,33 @@ begin
   bytes_rx <= std_logic_vector(resize(rx_counter, 32));
 
   -- convert streaming input from 16 to 32 bit data width
-  cmp_rx_adapter_32_to_16: WB_bus_adapter_streaming_sg
+  cmp_rx_adapter_32_to_16: eb_stream_narrow
   generic map (
-    g_adr_width_A                           => 32,
-    g_adr_width_B                           => 2,
-    g_dat_width_A                           => 32,
-    g_dat_width_B                           => 16,
-    g_pipeline                              => 3
+    g_slave_width                           => 32,
+    g_master_width                          => 16
   )
   port map (
     clk_i                                   => clk_i,
-    nRst_i                                  => rstn_i,
-
-    A_CYC_i                                 => rx_eb32_o.cyc,
-    A_STB_i                                 => rx_eb32_o.stb,
-    A_ADR_i                                 => rx_eb32_o.adr,
-    A_SEL_i                                 => rx_eb32_o.sel,
-    A_WE_i                                  => rx_eb32_o.we,
-    A_DAT_i                                 => rx_eb32_o.dat,
-    A_ACK_o                                 => rx_eb32_i.ack,
-    A_ERR_o                                 => rx_eb32_i.err,
-    A_RTY_o                                 => rx_eb32_i.rty,
-    A_STALL_o                               => rx_eb32_i.stall,
-    A_DAT_o                                 => open,
-
-    B_CYC_o                                 => rx_eb_o.cyc,
-    B_STB_o                                 => rx_eb_o.stb,
-    B_ADR_o                                 => rx_eb_o.adr,
-    B_SEL_o                                 => rx_eb_o.sel,
-    B_WE_o                                  => rx_eb_o.we,
-    B_DAT_o                                 => rx_eb_o.dat,
-    B_ACK_i                                 => rx_eb_i.ack,
-    B_ERR_i                                 => rx_eb_i.err,
-    B_RTY_i                                 => rx_eb_i.rty,
-    B_STALL_i                               => rx_eb_i.stall,
-    B_DAT_i                                 => (others => '0')
+    rst_n_i                                 => rstn_i,
+    slave_i                                 => rx_eb32_o,
+    slave_o                                 => rx_eb32_i,
+    master_i                                => rx_eb16_i,
+    master_o                                => rx_eb16_o
   );
+
+  rx_eb_o.cyc <= rx_eb16_o.cyc;
+  rx_eb_o.stb <= rx_eb16_o.stb;
+  rx_eb_o.adr <= rx_eb16_o.adr(rx_eb_o.adr'left downto 0);
+  rx_eb_o.sel <= rx_eb16_o.sel(rx_eb_o.sel'left downto 0);
+  rx_eb_o.we  <= rx_eb16_o.we;
+  rx_eb_o.dat <= rx_eb16_o.dat(rx_eb_o.dat'left downto 0);
+
+  rx_eb16_i.ack   <= rx_eb_i.ack;
+  rx_eb16_i.err   <= rx_eb_i.err;
+  rx_eb16_i.rty   <= rx_eb_i.rty;
+  rx_eb16_i.stall <= rx_eb_i.stall;
+  rx_eb16_i.dat   <= (others =>'0');
+  rx_eb16_i.int   <= '0';
 
   dma_rx : process (clk_i)
   begin

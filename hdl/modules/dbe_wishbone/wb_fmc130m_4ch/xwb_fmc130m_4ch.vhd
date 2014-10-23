@@ -36,8 +36,10 @@ generic
 (
   -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
+  g_delay_type                              : string := "VARIABLE";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
+  g_with_extra_wb_reg                       : boolean := false;
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
   g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
   g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
@@ -46,6 +48,7 @@ generic
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_packet_size                             : natural := 32;
+  g_with_idelayctrl                         : boolean := true;
   g_sim                                     : integer := 0
 );
 port
@@ -140,6 +143,13 @@ port
   fmc_led3_o                                : out std_logic;
 
   -----------------------------
+  -- Optional external reference clock ports
+  -----------------------------
+  fmc_ext_ref_clk_i                        : in std_logic := '0';
+  fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+  fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+  -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -193,8 +203,10 @@ begin
   generic map (
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                             => g_fpga_device,
+    g_delay_type                              => g_delay_type,
     g_interface_mode                          => g_interface_mode,
     g_address_granularity                     => g_address_granularity,
+    g_with_extra_wb_reg                       => g_with_extra_wb_reg,
     g_adc_clk_period_values                   => g_adc_clk_period_values,
     g_use_clk_chains                          => g_use_clk_chains,
     g_with_bufio_clk_chains                   => g_with_bufio_clk_chains,
@@ -203,6 +215,7 @@ begin
     g_map_clk_data_chains                     => g_map_clk_data_chains,
     g_ref_clk                                 => g_ref_clk,
     g_packet_size                             => g_packet_size,
+    g_with_idelayctrl                         => g_with_idelayctrl,
     g_sim                                     => g_sim
   )
   port map
@@ -304,6 +317,13 @@ begin
     fmc_led1_o                                => fmc_led1_o,
     fmc_led2_o                                => fmc_led2_o,
     fmc_led3_o                                => fmc_led3_o,
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        => fmc_ext_ref_clk_i,
+    fmc_ext_ref_clk2x_i                      => fmc_ext_ref_clk2x_i,
+    fmc_ext_ref_mmcm_locked_i                => fmc_ext_ref_mmcm_locked_i,
 
     -----------------------------
     -- ADC output signals. Continuous flow
