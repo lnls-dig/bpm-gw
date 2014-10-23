@@ -370,7 +370,7 @@ begin
         g_with_wr_almost_empty => false,
         g_with_wr_almost_full => true,
         g_with_wr_count => false,
-        g_almost_full_threshold => 30)
+        g_almost_full_threshold => 28)
       port map(
         rst_n_i => rst_rd_n_i,
 

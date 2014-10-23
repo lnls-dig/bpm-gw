@@ -29,6 +29,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.bpm_pcie_k7_const_pkg.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -38,7 +39,6 @@ use UNISIM.VComponents.all;
 entity bpm_pcie_k7 is
   generic (
     SIMULATION   : string := "FALSE";
-    INSTANTIATED : string := "FALSE";
     -- ****
     -- PCIe core parameters
     -- ****
@@ -135,7 +135,7 @@ end entity bpm_pcie_k7;
 
 architecture Behavioral of bpm_pcie_k7 is
 
-  constant DDR_ADDR_WIDTH : integer := 28;
+  constant DDR_ADDR_WIDTH : integer := c_ddr_addr_width;
 
   component pcie_core
     generic (

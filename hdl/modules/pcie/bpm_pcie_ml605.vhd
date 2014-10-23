@@ -29,6 +29,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
+use work.bpm_pcie_ml605_const_pkg.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -127,13 +128,32 @@ entity bpm_pcie_ml605 is
     CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
-    ext_rst_o : out std_logic
+    ext_rst_o : out std_logic;
+
+    -- Debug signals
+    dbg_app_addr_o           : out   std_logic_vector(31 downto 0);
+    dbg_app_cmd_o            : out   std_logic_vector(2 downto 0);
+    dbg_app_en_o             : out   std_logic;
+    dbg_app_wdf_data_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    dbg_app_wdf_end_o        : out   std_logic;
+    dbg_app_wdf_wren_o       : out   std_logic;
+    dbg_app_wdf_mask_o       : out   std_logic_vector(DDR_PAYLOAD_WIDTH/8-1 downto 0);
+    dbg_app_rd_data_o        : out   std_logic_vector(DDR_PAYLOAD_WIDTH-1 downto 0);
+    dbg_app_rd_data_end_o    : out   std_logic;
+    dbg_app_rd_data_valid_o  : out   std_logic;
+    dbg_app_rdy_o            : out   std_logic;
+    dbg_app_wdf_rdy_o        : out   std_logic;
+    dbg_ddr_ui_clk_o         : out   std_logic;
+    dbg_ddr_ui_reset_o       : out   std_logic;
+
+    dbg_arb_req_o            : out std_logic_vector(1 downto 0);
+    dbg_arb_gnt_o            : out std_logic_vector(1 downto 0)
     );
 end entity bpm_pcie_ml605;
 
 architecture Behavioral of bpm_pcie_ml605 is
 
-  constant DDR_ADDR_WIDTH : integer := 28;
+  constant DDR_ADDR_WIDTH : integer := c_ddr_addr_width;
 
   component pcie_core
     generic (
@@ -435,7 +455,10 @@ architecture Behavioral of bpm_pcie_ml605 is
 
       --clocking & reset
       user_clk      : in std_logic;
-      user_reset    : in std_logic
+      user_reset    : in std_logic;
+
+      dbg_arb_req_o : out std_logic_vector(1 downto 0);
+      dbg_arb_gnt_o : out std_logic_vector(1 downto 0)
       );
   end component;
 
@@ -1137,7 +1160,11 @@ begin
 
         --clocking & reset
         user_clk      => user_clk , --  IN    std_logic;
-        user_reset    => user_reset --  IN    std_logic
+        user_reset    => user_reset, --  IN    std_logic
+
+        dbg_arb_req_o => dbg_arb_req_o,
+        dbg_arb_gnt_o => dbg_arb_gnt_o
+
         );
 
   end generate;
@@ -1287,5 +1314,19 @@ begin
   ddr_sys_reset_i <= ddr_core_rst;
   memc_ui_rst     <= ddr_ui_reset;
 
+  dbg_app_addr_o           <= "0000" & app_addr;
+  dbg_app_cmd_o            <= app_cmd;
+  dbg_app_en_o             <= app_en;
+  dbg_app_wdf_data_o       <= app_wdf_data;
+  dbg_app_wdf_end_o        <= app_wdf_end;
+  dbg_app_wdf_wren_o       <= app_wdf_wren;
+  dbg_app_wdf_mask_o       <= app_wdf_mask;
+  dbg_app_rd_data_o        <= app_rd_data;
+  dbg_app_rd_data_end_o    <= app_rd_data_end;
+  dbg_app_rd_data_valid_o  <= app_rd_data_valid;
+  dbg_app_rdy_o            <= app_rdy;
+  dbg_app_wdf_rdy_o        <= app_wdf_rdy;
+  dbg_ddr_ui_clk_o         <= ddr_ui_clk;
+  dbg_ddr_ui_reset_o       <= ddr_ui_reset;
 
 end Behavioral;

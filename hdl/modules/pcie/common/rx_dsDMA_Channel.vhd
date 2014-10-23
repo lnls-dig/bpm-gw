@@ -659,7 +659,7 @@ begin
         g_with_almost_empty => true,
         g_with_almost_full => true,
         g_with_count => false,
-        g_almost_empty_threshold => 3,
+        g_almost_empty_threshold => 4,
         g_almost_full_threshold => 13)
       port map (
         rst_n_i => Local_Reset_n_i,

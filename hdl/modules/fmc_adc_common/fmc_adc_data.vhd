@@ -31,6 +31,8 @@ use work.fmc_adc_pkg.all;
 entity fmc_adc_data is
 generic
 (
+  -- The only supported values are VIRTEX6 and 7SERIES
+  g_fpga_device                             : string := "VIRTEX6";
   g_delay_type                              : string := "VARIABLE";
   g_default_adc_data_delay                  : natural := 0;
   g_with_data_sdr                           : boolean := false;
@@ -110,10 +112,28 @@ architecture rtl of fmc_adc_data is
   signal adc_data_ff                        : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff_d1                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_ff_d2                     : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal adc_data_ff_d3                     : std_logic_vector(c_num_adc_bits-1 downto 0);
   signal adc_data_bufg_sync                 : std_logic_vector(c_num_adc_bits-1 downto 0);
 
-  --attribute IOB : string;
-  --attribute IOB of adc_data_ff: signal is "TRUE";
+  -- Instruct XST that the pipeline signals adc_data_ff and its delayed versions
+  -- are not be removed nor become shift registers
+  attribute equivalent_register_removal                       : string;
+  attribute equivalent_register_removal of adc_data_ff        : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d1     : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d2     : signal is "no";
+  attribute equivalent_register_removal of adc_data_ff_d3     : signal is "no";
+  attribute shreg_extract                                     : string;
+  attribute shreg_extract of adc_data_ff                      : signal is "no";
+  attribute shreg_extract of adc_data_ff_d1                   : signal is "no";
+  attribute shreg_extract of adc_data_ff_d2                   : signal is "no";
+  attribute shreg_extract of adc_data_ff_d3                   : signal is "no";
+  -- Also, as the XST attributes are not passed to MAP, we contraint it again
+  -- here, using MAP attributes
+  attribute keep 					      : string;
+  attribute keep of adc_data_ff 			      : signal is "true";
+  attribute keep of adc_data_ff_d1 			      : signal is "true";
+  attribute keep of adc_data_ff_d2 			      : signal is "true";
+  attribute keep of adc_data_ff_d3 			      : signal is "true";
 
   -- Fine delay signals
   signal iodelay_update                     : std_logic_vector(c_num_in_adc_pins-1 downto 0);
@@ -162,7 +182,7 @@ architecture rtl of fmc_adc_data is
 
 begin
 
-  --sys_rst <= not sys_rst_n_i;
+  sys_rst <= not sys_rst_n_i;
   adc_clk_bufio <= adc_clk_chain_priv_i.adc_clk_bufio;
   adc_clk_bufr  <= adc_clk_chain_priv_i.adc_clk_bufr;
   adc_clk_bufg  <= adc_clk_chain_glob_i.adc_clk_bufg;
@@ -172,67 +192,128 @@ begin
   -- ADC data signal datapath
   -----------------------------
 
-  --gen_adc_data : for i in 0 to (c_num_adc_bits/2)-1 generate
   gen_adc_data : for i in 0 to c_num_in_adc_pins-1 generate
 
-    gen_adc_data_var_loadable_iodelay : if (g_delay_type = "VAR_LOADABLE") generate
+    gen_adc_data_virtex6_iodelay : if (g_fpga_device = "VIRTEX6") generate
+      gen_adc_data_var_loadable_iodelay : if (g_delay_type = "VAR_LOADABLE") generate
 
-      cmp_adc_data_iodelay : iodelaye1
-      generic map(
-        IDELAY_TYPE                           => g_delay_type,
-        IDELAY_VALUE                          => g_default_adc_data_delay,
-        SIGNAL_PATTERN                        => "DATA",
-        HIGH_PERFORMANCE_MODE                 => TRUE,
-        DELAY_SRC                             => "I"
-      )
-      port map(
-        --idatain                                 => adc_data_ddr_ibufds(i),
-        idatain                               => adc_data_i(i),
-        dataout                               => adc_data_ddr_dly(i),
-        c                                     => sys_clk_i,
-        ce                                    => '0',
-        inc                                   => '0',
-        datain                                => '0',
-        odatain                               => '0',
-        clkin                                 => '0',
-        rst                                   => iodelay_update(i),
-        cntvaluein                            => adc_data_fn_dly_i.idelay.val,
-        cntvalueout                           => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
-        cinvctrl                              => '0',
-        t                                     => '1'
-      );
+        cmp_adc_data_iodelay : iodelaye1
+        generic map(
+          IDELAY_TYPE                           => g_delay_type,
+          IDELAY_VALUE                          => g_default_adc_data_delay,
+          SIGNAL_PATTERN                        => "DATA",
+          HIGH_PERFORMANCE_MODE                 => TRUE,
+          DELAY_SRC                             => "I"
+        )
+        port map(
+          idatain                               => adc_data_i(i),
+          dataout                               => adc_data_ddr_dly(i),
+          c                                     => sys_clk_i,
+          ce                                    => '0',
+          inc                                   => '0',
+          datain                                => '0',
+          odatain                               => '0',
+          clkin                                 => '0',
+          rst                                   => iodelay_update(i),
+          cntvaluein                            => adc_data_fn_dly_i.idelay.val,
+          cntvalueout                           => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
+          cinvctrl                              => '0',
+          t                                     => '1'
+        );
 
+      end generate;
+
+      gen_adc_data_variable_iodelay : if (g_delay_type = "VARIABLE") generate
+
+        cmp_adc_data_iodelay : iodelaye1
+        generic map(
+          IDELAY_TYPE                           => g_delay_type,
+          IDELAY_VALUE                          => g_default_adc_data_delay,
+          SIGNAL_PATTERN                        => "DATA",
+          HIGH_PERFORMANCE_MODE                 => TRUE,
+          DELAY_SRC                             => "I"
+        )
+        port map(
+          idatain                               => adc_data_i(i),
+          dataout                               => adc_data_ddr_dly(i),
+          c                                     => sys_clk_i,
+          ce                                    => iodelay_update(i),
+          inc                                   => adc_data_fn_dly_i.idelay.incdec,
+          datain                                => '0',
+          odatain                               => '0',
+          clkin                                 => '0',
+          rst                                   => '0',
+          cntvaluein                            => adc_data_fn_dly_i.idelay.val,
+          cntvalueout                           => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
+          cinvctrl                              => '0',
+          t                                     => '1'
+        );
+
+      end generate;
     end generate;
 
-    gen_adc_data_variable_iodelay : if (g_delay_type = "VARIABLE") generate
+    gen_adc_data_7series_iodelay : if (g_fpga_device = "7SERIES") generate
+      gen_adc_data_var_loadable_iodelay : if (g_delay_type = "VAR_LOAD") generate
 
-      cmp_adc_data_iodelay : iodelaye1
-      generic map(
-        IDELAY_TYPE                           => g_delay_type,
-        IDELAY_VALUE                          => g_default_adc_data_delay,
-        SIGNAL_PATTERN                        => "DATA",
-        HIGH_PERFORMANCE_MODE                 => TRUE,
-        DELAY_SRC                             => "I"
-      )
-      port map(
-        --idatain                                 => adc_data_ddr_ibufds(i),
-        idatain                               => adc_data_i(i),
-        dataout                               => adc_data_ddr_dly(i),
-        c                                     => sys_clk_i,
-        --ce                                    => adc_data_dly_pulse_i,
-        ce                                    => iodelay_update(i),
-        inc                                   => adc_data_fn_dly_i.idelay.incdec,
-        datain                                => '0',
-        odatain                               => '0',
-        clkin                                 => '0',
-        rst                                   => '0',
-        cntvaluein                            => adc_data_fn_dly_i.idelay.val,
-        cntvalueout                           => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
-        cinvctrl                              => '0',
-        t                                     => '1'
-      );
+        cmp_adc_data_iodelay : idelaye2
+        generic map (
+           CINVCTRL_SEL                        => "FALSE",
+           DELAY_SRC                           => "IDATAIN",
+           HIGH_PERFORMANCE_MODE               => "TRUE",
+           IDELAY_TYPE                         => g_delay_type,
+           IDELAY_VALUE                        => g_default_adc_data_delay,
+           PIPE_SEL                            => "FALSE",
+           REFCLK_FREQUENCY                    => 200.0,
+           SIGNAL_PATTERN                      => "DATA"
+        )
+        port map (
+           cntvalueout                         => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
+           dataout                             => adc_data_ddr_dly(i),
+           c                                   => sys_clk_i,
+           ce                                  => '0',
+           cinvctrl                            => '0',
+           cntvaluein                          => adc_data_fn_dly_i.idelay.val,
+           datain                              => '0',
+           idatain                             => adc_data_i(i),
+           inc                                 => '0',
+           ld                                  => iodelay_update(i),
+           ldpipeen                            => '0',
+           regrst                              => sys_rst
+        );
 
+      end generate;
+
+      gen_adc_data_variable_iodelay : if (g_delay_type = "VARIABLE") generate
+
+        cmp_adc_data_iodelay : idelaye2
+        generic map (
+           CINVCTRL_SEL                        => "FALSE",
+           DELAY_SRC                           => "IDATAIN",
+           HIGH_PERFORMANCE_MODE               => "TRUE",
+           IDELAY_TYPE                         => g_delay_type,
+           IDELAY_VALUE                        => g_default_adc_data_delay,
+           PIPE_SEL                            => "FALSE",
+           REFCLK_FREQUENCY                    => 200.0,
+           SIGNAL_PATTERN                      => "DATA"
+        )
+        port map (
+           cntvalueout                         => adc_data_dly_val_int(5*(i+1)-1 downto 5*i),
+           dataout                             => adc_data_ddr_dly(i),
+           c                                   => sys_clk_i,
+           ce                                  => iodelay_update(i),
+           cinvctrl                            => '0',
+           cntvaluein                          => adc_data_fn_dly_i.idelay.val,
+           datain                              => '0',
+           idatain                             => adc_data_i(i),
+           inc                                 => adc_data_fn_dly_i.idelay.incdec,
+           ld                                  => '0',
+           ldpipeen                            => '0',
+           regrst                              => sys_rst
+        );
+
+      end generate;
     end generate;
+
 
     gen_with_fn_dly_select : if (g_with_fn_dly_select) generate
       iodelay_update(i) <= '1' when adc_data_fn_dly_i.idelay.pulse = '1' and
@@ -266,7 +347,6 @@ begin
         q1                                    => adc_data_re(i),--adc_data_sdr(2*i+1),
         q2                                    => adc_data_fe(i),--adc_data_sdr(2*i),
         c                                     => adc_clk_bufio,
-        --c                                     => adc_clk_bufr_i,
         ce                                    => '1',
         d                                     => adc_data_ddr_dly(i),
         r                                     => '0',
@@ -277,13 +357,8 @@ begin
       p_delay_fe_delay : process(adc_clk_bufr)
       begin
         if rising_edge (adc_clk_bufr) then
-          --if sys_rst_n_i = '0' then
-          --  adc_data_fe_d1(i) <= '0';
-          --  adc_data_fe_d2(i) <= '0';
-          --else
-            adc_data_fe_d1(i) <= adc_data_fe(i);
-            adc_data_fe_d2(i) <= adc_data_fe_d1(i);
-          --end if;
+          adc_data_fe_d1(i) <= adc_data_fe(i);
+          adc_data_fe_d2(i) <= adc_data_fe_d1(i);
         end if;
       end process;
 
@@ -327,6 +402,7 @@ begin
       adc_data_ff <= adc_data_sdr;
       adc_data_ff_d1 <= adc_data_ff;
       adc_data_ff_d2 <= adc_data_ff_d1;
+      adc_data_ff_d3 <= adc_data_ff_d2;
     end if;
   end process;
 
@@ -339,14 +415,11 @@ begin
     g_size                                => async_fifo_size
   )
   port map(
-    --rst_n_i                               => sys_rst_n_i,
-    -- We don't need this reset as this FIFO is used for CDC only
-    rst_n_i                               => '1',
+    rst_n_i                               => sys_rst_n_i,
 
     -- write port
     clk_wr_i                              => adc_clk_bufr,
-    d_i                                   => adc_data_ff_d2,
-    --d_i                                   => adc_data_sdr,
+    d_i                                   => adc_data_ff_d3,
     we_i                                  => adc_fifo_wr,
     wr_full_o                             => adc_fifo_full,
 

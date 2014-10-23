@@ -8,5 +8,7 @@ modules = { "local" : [
                         "wb_ethmac_adapter",
                         "wb_ethmac",
                         "wb_dbe_periph",
-                        "wb_rs232_syscon"
+                        "wb_rs232_syscon",
+                        "wb_acq_core",
+                        "wb_pcie"
                       ] };

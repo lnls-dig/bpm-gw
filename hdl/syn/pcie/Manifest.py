@@ -14,6 +14,7 @@ syn_top = "top"
 #syn_project = "bpm_pcie_k7.xise"
 #syn_project = "bpm_pcie_a7.xise"
 syn_project = "bpm_pcie_ml605.xise"
+syn_tool = "ise"
 
 if (syn_device == "xc7k325t"):
     modules = {"local" : ["../../top/pcie",

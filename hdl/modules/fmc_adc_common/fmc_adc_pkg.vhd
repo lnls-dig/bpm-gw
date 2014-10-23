@@ -201,10 +201,12 @@ package fmc_adc_pkg is
   subtype t_clk_values_array is t_real_array(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_data_use_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
+  subtype t_clk_mrcc_pin_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_bufio_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_clk_use_bufr_chain is std_logic_vector(c_num_adc_channels-1 downto 0);
   subtype t_map_clk_data_chain is t_integer_array(c_num_adc_channels-1 downto 0);
-  subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels-1;
+  -- The last channel is reserved for an external clock
+  subtype t_ref_adc_clk is natural range 0 to c_num_adc_channels;
 
   -- Constant default values.
   constant default_adc_clk_period : real := 4.0; -- 250 MHz
@@ -216,6 +218,8 @@ package fmc_adc_pkg is
     ("0011");
   constant default_data_use_chain : t_data_use_chain :=
     ("1111");
+  constant default_clk_mrcc_pin_chain: t_clk_mrcc_pin_chain :=
+    ("0000");
   constant default_clk_use_bufio_chain : t_clk_use_bufio_chain :=
     ("1111");
   constant default_clk_use_bufr_chain : t_clk_use_bufr_chain :=
@@ -245,7 +249,7 @@ package fmc_adc_pkg is
     return t_chain_intercon;
 
   function f_first_used_clk(use_clk_chain : std_logic_vector)
-    return natural;
+    return integer;
 
   function f_explicitly_clk_data_map(map_chain : t_map_clk_data_chain)
     return boolean;
@@ -260,9 +264,11 @@ package fmc_adc_pkg is
   function f_with_ref_clk(clk_chain : natural; ref_clk : natural)
     return boolean;
 
-  function f_num_adc_pins(ddr_data : boolean) return natural;
+  function f_num_adc_pins(sdr_data : boolean) return natural;
 
   function f_std_logic_to_bool(input : std_logic) return boolean;
+
+  function f_adc_ref_clk(ref_clk : t_ref_adc_clk) return natural;
 
   -----------------------------
   -- Components declaration
@@ -337,6 +343,7 @@ package fmc_adc_pkg is
     g_with_ref_clk                            : boolean := false;
     g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
     g_with_fn_dly_select                      : boolean := false;
+    g_mrcc_pin                                : boolean := false;
     g_with_bufio                              : boolean := true;
     g_with_bufr                               : boolean := true;
     g_sim                                     : integer := 0
@@ -373,6 +380,8 @@ package fmc_adc_pkg is
   component fmc_adc_data
   generic
   (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
     g_delay_type                              : string := "VARIABLE";
     g_default_adc_data_delay                  : natural := 0;
     g_with_data_sdr                           : boolean := false;
@@ -450,10 +459,12 @@ package fmc_adc_pkg is
     g_data_default_dly                        : t_default_adc_dly := default_data_dly;
     g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
     g_mmcm_param                              : t_mmcm_param := default_mmcm_param;
+    g_mrcc_pin_chains                         : t_clk_mrcc_pin_chain := default_clk_mrcc_pin_chain;
     g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
     g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
     g_with_data_sdr                           : boolean := false;
     g_with_fn_dly_select                      : boolean := false;
+    g_with_idelayctrl                         : boolean := true;
     g_sim                                     : integer := 0
   );
   port
@@ -474,6 +485,11 @@ package fmc_adc_pkg is
     adc_in_i                                  : in t_adc_in_array(c_num_adc_channels-1 downto 0);
     -- ADC clock + data single ended inputs (from the top module)
     adc_in_sdr_i                              : in t_adc_sdr_in_array(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- Optional external reference clock port
+    -----------------------------
+    adc_ext_glob_clk_i                        : in t_adc_clk_chain_glob;
 
     -----------------------------
     -- ADC Delay signals.
@@ -630,7 +646,7 @@ package body fmc_adc_pkg is
 
   -- Determine first used clock
   function f_first_used_clk(use_clk_chain : std_logic_vector)
-    return natural
+    return integer
   is
   begin
     for i in 0 to c_num_adc_channels-1 loop
@@ -736,6 +752,18 @@ package body fmc_adc_pkg is
       return false;
     end if;
   end f_std_logic_to_bool;
+
+  function f_adc_ref_clk(ref_clk : t_ref_adc_clk)
+    return natural
+  is
+    constant c_ref_clk_any : natural := 1; -- Any clock from 0 to c_num_adc_channels-1
+  begin
+    if (ref_clk = c_num_adc_channels) then -- External reference clock
+      return c_ref_clk_any;
+    else
+      return ref_clk;
+    end if;
+  end f_adc_ref_clk;
 
   ---- revise function and make it generic? Does it worth it?
   --function f_mmcm_params(clk_in : real)

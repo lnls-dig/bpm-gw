@@ -100,7 +100,10 @@ entity DDR_Transact is
 
     --clocking & reset
     user_clk      : in std_logic;
-    user_reset    : in std_logic
+    user_reset    : in std_logic;
+
+    dbg_arb_req_o : out std_logic_vector(1 downto 0);
+    dbg_arb_gnt_o : out std_logic_vector(1 downto 0)
     );
 end entity DDR_Transact;
 
@@ -170,7 +173,30 @@ architecture Behavioral of DDR_Transact is
   -- ----------------------------------------------------------------------------
 
   type ddr_switch_t is (EXT, PCIE);
-  signal ddr_switch : ddr_switch_t := PCIE;
+
+  attribute equivalent_register_removal : string;
+  attribute keep : string;
+
+  signal ddr_switch0 : ddr_switch_t := PCIE;
+  attribute equivalent_register_removal of ddr_switch0 : signal is "no";
+  attribute keep of ddr_switch0 : signal is "true";
+
+  signal ddr_switch1 : ddr_switch_t := PCIE;
+  attribute equivalent_register_removal of ddr_switch1 : signal is "no";
+  attribute keep of ddr_switch1 : signal is "true";
+
+  signal ddr_switch2 : ddr_switch_t := PCIE;
+  attribute equivalent_register_removal of ddr_switch2 : signal is "no";
+  attribute keep of ddr_switch2 : signal is "true";
+
+  signal ddr_switch3 : ddr_switch_t := PCIE;
+  attribute equivalent_register_removal of ddr_switch3 : signal is "no";
+  attribute keep of ddr_switch3 : signal is "true";
+
+  signal ddr_switch4 : ddr_switch_t := PCIE;
+  attribute equivalent_register_removal of ddr_switch4 : signal is "no";
+  attribute keep of ddr_switch4 : signal is "true";
+
   signal arb_req    : std_logic_vector(1 downto 0);
 
   signal pcie_cmd_rdy   : std_logic;
@@ -216,88 +242,277 @@ begin
     if user_reset = '1' then
       ext_arb_gnt  <= '0';
       pcie_arb_gnt <= '0';
-      ddr_switch   <= PCIE;
+      ddr_switch0   <= PCIE;
+      ddr_switch1   <= PCIE;
+      ddr_switch2   <= PCIE;
+      ddr_switch3   <= PCIE;
+      ddr_switch4   <= PCIE;
     elsif rising_edge(ui_clk) then
       case arb_req is
         when "00" =>
           pcie_arb_gnt <= '0';
           ext_arb_gnt  <= '0';
-          ddr_switch   <= ddr_switch;
+          ddr_switch0   <= ddr_switch0;
+          ddr_switch1   <= ddr_switch1;
+          ddr_switch2   <= ddr_switch2;
+          ddr_switch3   <= ddr_switch2;
+          ddr_switch4   <= ddr_switch2;
 
         when "01" => --PCIE
           pcie_arb_gnt <= '1';
           ext_arb_gnt  <= '0';
-          ddr_switch   <= PCIE;
+          ddr_switch0   <= PCIE;
+          ddr_switch1   <= PCIE;
+          ddr_switch2   <= PCIE;
+          ddr_switch3   <= PCIE;
+          ddr_switch4   <= PCIE;
 
         when "10" => --EXT
           pcie_arb_gnt <= '0';
           ext_arb_gnt  <= '1';
-          ddr_switch   <= EXT;
+          ddr_switch0   <= EXT;
+          ddr_switch1   <= EXT;
+          ddr_switch2   <= EXT;
+          ddr_switch3   <= EXT;
+          ddr_switch4   <= EXT;
 
         when "11" =>
           if (pcie_arb_gnt or ext_arb_gnt) = '1' then
             --we have already granted access, so wait until one of interested modules releases/gives up
             pcie_arb_gnt <= pcie_arb_gnt;
             ext_arb_gnt  <= ext_arb_gnt;
-            ddr_switch   <= ddr_switch;
+            ddr_switch0   <= ddr_switch0;
+            ddr_switch1   <= ddr_switch1;
+            ddr_switch2   <= ddr_switch2;
+            ddr_switch3   <= ddr_switch3;
+            ddr_switch4   <= ddr_switch4;
           else
             --simultaneous access request, favor PCIE
             pcie_arb_gnt <= '1';
             ext_arb_gnt  <= '0';
-            ddr_switch   <= PCIE;
+            ddr_switch0   <= PCIE;
+            ddr_switch1   <= PCIE;
+            ddr_switch2   <= PCIE;
+            ddr_switch3   <= PCIE;
+            ddr_switch4   <= PCIE;
           end if;
 
         when others =>
           pcie_arb_gnt <= '0';
           ext_arb_gnt  <= '0';
-          ddr_switch   <= ddr_switch;
+          ddr_switch0   <= ddr_switch0;
+          ddr_switch1   <= ddr_switch1;
+          ddr_switch2   <= ddr_switch2;
+          ddr_switch3   <= ddr_switch3;
+          ddr_switch4   <= ddr_switch4;
 
       end case;
     end if;
   end process;
 
   arb_req <= ext_arb_req & pcie_arb_req;
+  dbg_arb_req_o <= arb_req;
+  dbg_arb_gnt_o <= ext_arb_gnt & pcie_arb_gnt; -- for debug
 
   ddr_core_arb_mux :
-  process (ddr_switch, pcie_cmd_addr, pcie_cmd_instr, pcie_cmd_en, pcie_wr_data, pcie_wr_en, pcie_wr_end, pcie_wr_mask,
+  process (ddr_switch0, ddr_switch1, ddr_switch2, ddr_switch3, ddr_switch4, pcie_cmd_addr, pcie_cmd_instr, pcie_cmd_en, pcie_wr_data, pcie_wr_en, pcie_wr_end, pcie_wr_mask,
            ext_cmd_addr, ext_cmd_instr, ext_cmd_en, ext_wr_data, ext_wr_en, ext_wr_end, ext_wr_mask, app_rdy,
            app_wdf_rdy, app_rd_data, app_rd_data_valid)
   begin
-    case ddr_switch is
+    case ddr_switch0 is
+      when PCIE =>
+        --app_addr      <= pcie_cmd_addr;
+        --app_cmd       <= pcie_cmd_instr;
+        --app_en        <= pcie_cmd_en;
+        app_wdf_data(DDR_UI_DATAWIDTH/2-1 downto 0)  <=
+                                    pcie_wr_data(DDR_UI_DATAWIDTH/2-1 downto 0);
+        --app_wdf_end   <= pcie_wr_end;
+        --app_wdf_mask  <= pcie_wr_mask;
+        --app_wdf_wren  <= pcie_wr_en;
+        --pcie_cmd_rdy  <= app_rdy;
+        --pcie_wr_rdy   <= app_wdf_rdy;
+        --pcie_rd_data  <= app_rd_data;
+        --pcie_rd_valid <= app_rd_data_valid;
+        --ext_cmd_rdy   <= '0';
+        --ext_wr_rdy    <= '0';
+        --ext_rd_data   <= (others => '0');
+        --ext_rd_valid  <= '0';
+
+      when EXT =>
+        --app_addr      <= ext_cmd_addr;
+        --app_cmd       <= ext_cmd_instr;
+        --app_en        <= ext_cmd_en;
+        app_wdf_data(DDR_UI_DATAWIDTH/2-1 downto 0) <=
+                                     ext_wr_data(DDR_UI_DATAWIDTH/2-1 downto 0);
+        --app_wdf_end   <= ext_wr_end;
+        --app_wdf_mask  <= ext_wr_mask;
+        --app_wdf_wren  <= ext_wr_en;
+        --pcie_cmd_rdy  <= '0';
+        --pcie_wr_rdy   <= '0';
+        --pcie_rd_data  <= (others => '0');
+        --pcie_rd_valid <= '0';
+        --ext_cmd_rdy   <= app_rdy;
+        --ext_wr_rdy    <= app_wdf_rdy;
+        --ext_rd_data   <= app_rd_data;
+        --ext_rd_valid  <= app_rd_data_valid;
+    end case;
+
+    case ddr_switch1 is
+      when PCIE =>
+        --app_addr      <= pcie_cmd_addr;
+        --app_cmd       <= pcie_cmd_instr;
+        --app_en        <= pcie_cmd_en;
+        app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+                                    pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
+        --app_wdf_end   <= pcie_wr_end;
+        --app_wdf_mask  <= pcie_wr_mask;
+        --app_wdf_wren  <= pcie_wr_en;
+        --pcie_cmd_rdy  <= app_rdy;
+        --pcie_wr_rdy   <= app_wdf_rdy;
+        --pcie_rd_data  <= app_rd_data;
+        --pcie_rd_valid <= app_rd_data_valid;
+        --ext_cmd_rdy   <= '0';
+        --ext_wr_rdy    <= '0';
+        --ext_rd_data   <= (others => '0');
+        --ext_rd_valid  <= '0';
+
+      when EXT =>
+        --app_addr      <= ext_cmd_addr;
+        --app_cmd       <= ext_cmd_instr;
+        --app_en        <= ext_cmd_en;
+        app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+                                     ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
+        --app_wdf_end   <= ext_wr_end;
+        --app_wdf_mask  <= ext_wr_mask;
+        --app_wdf_wren  <= ext_wr_en;
+        --pcie_cmd_rdy  <= '0';
+        --pcie_wr_rdy   <= '0';
+        --pcie_rd_data  <= (others => '0');
+        --pcie_rd_valid <= '0';
+        --ext_cmd_rdy   <= app_rdy;
+        --ext_wr_rdy    <= app_wdf_rdy;
+        --ext_rd_data   <= app_rd_data;
+        --ext_rd_valid  <= app_rd_data_valid;
+    end case;
+
+    case ddr_switch2 is
+      when PCIE =>
+        --app_addr      <= pcie_cmd_addr;
+        --app_cmd       <= pcie_cmd_instr;
+        --app_en        <= pcie_cmd_en;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
+        --app_wdf_end   <= pcie_wr_end;
+        --app_wdf_mask  <= pcie_wr_mask;
+        --app_wdf_wren  <= pcie_wr_en;
+        --pcie_cmd_rdy  <= app_rdy;
+        --pcie_wr_rdy   <= app_wdf_rdy;
+        pcie_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <=
+                                     app_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0);
+        --pcie_rd_valid <= app_rd_data_valid;
+        --ext_cmd_rdy   <= '0';
+        --ext_wr_rdy    <= '0';
+        ext_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <= (others => '0');
+        --ext_rd_valid  <= '0';
+
+      when EXT =>
+        --app_addr      <= ext_cmd_addr;
+        --app_cmd       <= ext_cmd_instr;
+        --app_en        <= ext_cmd_en;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
+        --app_wdf_end   <= ext_wr_end;
+        --app_wdf_mask  <= ext_wr_mask;
+        --app_wdf_wren  <= ext_wr_en;
+        --pcie_cmd_rdy  <= '0';
+        --pcie_wr_rdy   <= '0';
+        pcie_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <= (others => '0');
+        --pcie_rd_valid <= '0';
+        --ext_cmd_rdy   <= app_rdy;
+        --ext_wr_rdy    <= app_wdf_rdy;
+        ext_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0)
+                                  <= app_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0);
+        --ext_rd_valid  <= app_rd_data_valid;
+    end case;
+
+    case ddr_switch3 is
+      when PCIE =>
+        --app_addr      <= pcie_cmd_addr;
+        --app_cmd       <= pcie_cmd_instr;
+        --app_en        <= pcie_cmd_en;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
+        --app_wdf_end   <= pcie_wr_end;
+        --app_wdf_mask  <= pcie_wr_mask;
+        --app_wdf_wren  <= pcie_wr_en;
+        --pcie_cmd_rdy  <= app_rdy;
+        --pcie_wr_rdy   <= app_wdf_rdy;
+        pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+                                     app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
+        --pcie_rd_valid <= app_rd_data_valid;
+        --ext_cmd_rdy   <= '0';
+        --ext_wr_rdy    <= '0';
+        ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <= (others => '0');
+        --ext_rd_valid  <= '0';
+
+      when EXT =>
+        --app_addr      <= ext_cmd_addr;
+        --app_cmd       <= ext_cmd_instr;
+        --app_en        <= ext_cmd_en;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
+        --app_wdf_end   <= ext_wr_end;
+        --app_wdf_mask  <= ext_wr_mask;
+        --app_wdf_wren  <= ext_wr_en;
+        --pcie_cmd_rdy  <= '0';
+        --pcie_wr_rdy   <= '0';
+        pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <= (others => '0');
+        --pcie_rd_valid <= '0';
+        --ext_cmd_rdy   <= app_rdy;
+        --ext_wr_rdy    <= app_wdf_rdy;
+        ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2)
+                                  <= app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
+        --ext_rd_valid  <= app_rd_data_valid;
+    end case;
+
+    case ddr_switch4 is
       when PCIE =>
         app_addr      <= pcie_cmd_addr;
         app_cmd       <= pcie_cmd_instr;
         app_en        <= pcie_cmd_en;
-        app_wdf_data  <= pcie_wr_data;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
         app_wdf_end   <= pcie_wr_end;
         app_wdf_mask  <= pcie_wr_mask;
         app_wdf_wren  <= pcie_wr_en;
         pcie_cmd_rdy  <= app_rdy;
         pcie_wr_rdy   <= app_wdf_rdy;
-        pcie_rd_data  <= app_rd_data;
+        --pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                             app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
         pcie_rd_valid <= app_rd_data_valid;
         ext_cmd_rdy   <= '0';
         ext_wr_rdy    <= '0';
-        ext_rd_data   <= (others => '0');
+        --ext_rd_data   <= (others => '0');
         ext_rd_valid  <= '0';
 
       when EXT =>
         app_addr      <= ext_cmd_addr;
         app_cmd       <= ext_cmd_instr;
         app_en        <= ext_cmd_en;
-        app_wdf_data  <= ext_wr_data;
+        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
+        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
         app_wdf_end   <= ext_wr_end;
         app_wdf_mask  <= ext_wr_mask;
         app_wdf_wren  <= ext_wr_en;
         pcie_cmd_rdy  <= '0';
         pcie_wr_rdy   <= '0';
-        pcie_rd_data  <= (others => '0');
+        --pcie_rd_data  <= (others => '0');
         pcie_rd_valid <= '0';
         ext_cmd_rdy   <= app_rdy;
         ext_wr_rdy    <= app_wdf_rdy;
-        ext_rd_data   <= app_rd_data;
+        --ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2)
+        --                          <= app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
         ext_rd_valid  <= app_rd_data_valid;
-
     end case;
   end process;
 

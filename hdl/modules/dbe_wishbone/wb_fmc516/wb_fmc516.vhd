@@ -49,6 +49,7 @@ generic
 (
     -- The only supported values are VIRTEX6 and 7SERIES
   g_fpga_device                             : string := "VIRTEX6";
+  g_delay_type                              : string := "VARIABLE";
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
   g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
@@ -57,6 +58,7 @@ generic
   g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
   g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
   g_packet_size                             : natural := 32;
+  g_with_idelayctrl                         : boolean := true;
   g_sim                                     : integer := 0
 );
 port
@@ -164,6 +166,13 @@ port
   fmc_prsnt_m2c_l_i                         : in  std_logic := '0';
 
   -----------------------------
+  -- Optional external reference clock ports
+  -----------------------------
+  fmc_ext_ref_clk_i                        : in std_logic := '0';
+  fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+  fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+  -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
   adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -226,7 +235,7 @@ architecture rtl of wb_fmc516 is
   -- Numbert of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
   constant c_periph_addr_size               : natural := 5+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
-  constant c_ref_clk                        : natural := g_ref_clk;
+  constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
   constant c_with_clk_single_ended          : boolean := false;
   constant c_with_data_single_ended         : boolean := false;
   constant c_with_data_sdr                  : boolean := false;
@@ -271,8 +280,8 @@ architecture rtl of wb_fmc516 is
     2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
     3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- LMK SPI
     4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO Si571 I2C
-    5 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000500"),   -- One-wire DS2431
-    6 => f_sdb_embed_device(c_xwb_1_wire_master_sdb,    x"00000600")    -- One-wire DS2432
+    5 => f_sdb_embed_device(c_xwb_onewire_master_sdb,    x"00000500"),   -- One-wire DS2431
+    6 => f_sdb_embed_device(c_xwb_onewire_master_sdb,    x"00000600")    -- One-wire DS2432
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
@@ -340,6 +349,9 @@ architecture rtl of wb_fmc516 is
   signal fs_clk2x                           : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_valid                          : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_data                           : std_logic_vector(c_num_adc_bits*c_num_adc_channels-1 downto 0);
+
+  -- Optional reference clock
+  signal adc_ext_glob_clk_int               : t_adc_clk_chain_glob;
 
   -- ADC Reset signals
   signal adc_clk_div_rst_int                : std_logic;
@@ -1003,8 +1015,7 @@ begin
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
-    g_delay_type                            => "VAR_LOADABLE",
-    --g_delay_type                            => "VARIABLE",
+    g_delay_type                            => g_delay_type,
     g_adc_clk_period_values                 => g_adc_clk_period_values,
     g_use_clk_chains                        => g_use_clk_chains,
     g_use_data_chains                       => g_use_data_chains,
@@ -1012,6 +1023,7 @@ begin
     g_ref_clk                               => g_ref_clk,
     g_with_data_sdr                         => c_with_data_sdr,
     g_with_fn_dly_select                    => c_with_fn_dly_select,
+    g_with_idelayctrl                       => g_with_idelayctrl,
     g_sim                                   => g_sim
   )
   port map(
@@ -1026,6 +1038,11 @@ begin
     -----------------------------
     adc_in_i                                => adc_in,
     adc_in_sdr_i                            => adc_in_sdr_dummy,
+
+    -----------------------------
+    -- Optional External Global Clock ports
+    -----------------------------
+    adc_ext_glob_clk_i                      => adc_ext_glob_clk_int,
 
     -----------------------------
     -- ADC Delay signals
@@ -1056,6 +1073,11 @@ begin
   -- Clock and reset assignments
   -- General status board pins
   fmc_mmcm_lock_o                           <= mmcm_adc_locked;
+
+  -- Optional reference clock
+  adc_ext_glob_clk_int.adc_clk_bufg         <= fmc_ext_ref_clk_i;
+  adc_ext_glob_clk_int.adc_clk2x_bufg       <= fmc_ext_ref_clk2x_i;
+  adc_ext_glob_clk_int.mmcm_adc_locked      <= fmc_ext_ref_mmcm_locked_i;
 
   -- ADC data for internal use
   gen_adc_data_int : for i in 0 to c_num_adc_channels-1 generate
