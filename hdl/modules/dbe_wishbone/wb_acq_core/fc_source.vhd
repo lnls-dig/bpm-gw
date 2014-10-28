@@ -34,6 +34,7 @@ generic
   g_data_width                              : natural := 64;
   g_pkt_size_width                          : natural := 32;
   g_addr_width                              : natural := 32;
+  g_with_fifo_inferred                      : boolean := false;
   g_pipe_size                               : natural := 4
 );
 port
@@ -77,55 +78,62 @@ architecture rtl of fc_source is
   subtype t_fc_addr is std_logic_vector(g_addr_width-1 downto 0);
   type t_fc_addr_array is array (natural range <>) of t_fc_addr;
 
-  type t_fc_dvalid_array is array (natural range <>) of std_logic;
+  subtype t_fc_dvalid is std_logic;
+  type t_fc_dvalid_array is array (natural range <>) of t_fc_dvalid;
 
-  subtype t_fc_data_oob is std_logic_vector(c_data_oob_width -1 downto 0);
+  subtype t_fc_data_oob is std_logic_vector(c_data_oob_width-1 downto 0);
   type t_fc_data_oob_array is array (natural range <>) of t_fc_data_oob;
 
   subtype t_fc_pkt is unsigned(g_pkt_size_width-1 downto 0);
 
   -- Constants
-  constant c_pipe_almost_full               : natural := g_pipe_size/2 + g_pipe_size/4; -- 75%
-  constant c_pipe_almost_empty              : natural := g_pipe_size/4; -- 25%
+  constant c_pipe_almost_full_thres        : natural := g_pipe_size-2;
+  constant c_pipe_almost_empty_thres       : natural := 2;
+  constant c_pre_out_fifo_width            : natural := g_data_width + g_addr_width +
+                                                          c_data_oob_width;
+  constant c_pre_out_fifo_data_lsb         : natural := 0;
+  constant c_pre_out_fifo_data_msb         : natural := c_pre_out_fifo_data_lsb + g_data_width - 1;
+  constant c_pre_out_fifo_addr_lsb         : natural := c_pre_out_fifo_data_msb + 1;
+  constant c_pre_out_fifo_addr_msb         : natural := c_pre_out_fifo_addr_lsb + g_addr_width - 1;
+  constant c_pre_out_fifo_oob_lsb          : natural := c_pre_out_fifo_addr_msb + 1;
+  constant c_pre_out_fifo_oob_msb          : natural := c_pre_out_fifo_oob_lsb + c_data_oob_width - 1;
 
   -- Signals
   signal fc_first_data                      : std_logic;
   signal fc_last_data                       : std_logic;
-  signal fc_last_data_r                     : std_logic;
   signal fc_stall_s                         : std_logic;
   signal fc_valid_s                         : std_logic;
   signal fc_in_data_pending                 : std_logic;
 
-  signal fc_data_out                        : t_fc_data_array(g_pipe_size-1 downto 0);
-  signal fc_addr_out                        : t_fc_addr_array(g_pipe_size-1 downto 0);
-  -- SOF and EOF for now
-  signal fc_data_oob_out                    : t_fc_data_oob_array(g_pipe_size-1 downto 0);
-  signal fc_dvalid_out                      : t_fc_dvalid_array(g_pipe_size-1 downto 0);
   signal fc_read_next_pkt                   : std_logic;
-
-  signal pre_output_counter_wr              : unsigned(f_log2_size(g_pipe_size)-1 downto 0);
-  signal output_counter_rd                  : unsigned(f_log2_size(g_pipe_size)-1 downto 0);
-  signal pl_stall_s                       : std_logic;
-  signal pl_stall_r                       : std_logic;
-  signal pl_dreq_s                        : std_logic;
-  signal pl_dreq_r                        : std_logic;
+  signal pl_stall_r                         : std_logic;
+  signal pl_dreq_r                          : std_logic;
 
   -- signals that a packet was actually transfered
   signal pkt_sent                           : std_logic;
   signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
 
+  -- Pre output FIFO signals
+  signal pre_out_fifo_we                    : std_logic;
+  signal pre_out_fifo_din                   : std_logic_vector(c_pre_out_fifo_width-1 downto 0);
+  signal pre_out_fifo_marsh                 : std_logic_vector(c_pre_out_fifo_width-1 downto 0);
+  signal pre_out_almost_empty               : std_logic;
+  signal pre_out_almost_full                : std_logic;
+  signal pre_out_empty                      : std_logic;
+  signal pre_out_full                       : std_logic;
+
+  signal pre_out_fifo_rd_en                 : std_logic;
+  signal pre_out_fifo_valid_out             : std_logic;
+  signal pre_out_fifo_dout                  : std_logic_vector(c_pre_out_fifo_width-1 downto 0);
+
   -- Output signals
   signal fc_data_out_int                    : t_fc_data;
   signal fc_addr_out_int                    : t_fc_addr;
-  signal fc_valid_out_int                   : std_logic;
-  --signal fc_valid_out_int_r                 : std_logic;
+  signal fc_valid_out_int                   : t_fc_dvalid;
   signal fc_oob_out_int                     : t_fc_data_oob;
 
   -- Counters
-  -- counts the completed tranfered words to ext mem
   signal fc_in_pend_cnt                  : t_fc_pkt;
-  -- measures the difference difference between the write and read output pointers
-  signal fifo_diff_pnt_cnt                  : unsigned(f_log2_size(g_pipe_size)-1 downto 0);
 
   signal output_pipe_full                   : std_logic;
   signal output_pipe_almost_full            : std_logic;
@@ -172,51 +180,58 @@ begin
 
   fc_in_data_pending <= fc_valid_s;
 
-  -- We have a 2 output delay for FIFO. That being said, if we have a not(fc_stall_i)
-  -- signal it will take 2 clock cycles in order to read the pl_data_i from FIFO.
-  --
-  -- By this time, fc_stall_i might be set and we have to wait for it. To
-  -- solve this 2 delay read cycle it is employed a small 4 position "buffer" to
-  -- hold the values read from fifo but not yet passed to the external memory.
-  --
-  -- Also not that that difference between pre_output_counter_wr and output_counter_rd
-  -- is at most (at any given point in time) not greater than 2. Thus, with a 2
-  -- bit counter, we will not overflow
-  gen_fifo_pre_output : for i in 0 to g_pipe_size-1 generate
-    p_fifo_pre_output : process(clk_i)
-    begin
-      if rising_edge(clk_i) then
-        if rst_n_i = '0' then
-          fc_data_out(i) <= (others => '0');
-          fc_addr_out(i) <= (others => '0');
-          fc_data_oob_out(i) <= (others => '0');
-          fc_dvalid_out(i) <= '0';
-        else
-          -- Fifo output is valid by now as fifo_fc_rd was enabled and it was not empty!
-          --
-          -- Store output from FIFO in the correct fc_data_out(X) if
-          -- fc_valid_s is valid.
-          --
-          -- On the next fc_valid_s operation (next clock cycle if
-          -- fc_valid_s remains 1), clear the past fc_dvalid_out(X)
-          -- if ext memory has read from it (read pointer is in the past write position).
+  cmp_pre_out_fwft_fifo : acq_fwft_fifo
+  generic map
+  (
+    g_data_width                            => c_pre_out_fifo_width,
+    g_size                                  => g_pipe_size,
+    g_with_rd_almost_empty                  => true,
+    g_with_wr_almost_empty                  => true,
+    g_with_rd_almost_full                   => true,
+    g_with_wr_almost_full                   => true,
+    g_almost_empty_threshold                => c_pipe_almost_empty_thres,
+    g_almost_full_threshold                 => c_pipe_almost_full_thres,
+    g_with_wr_count                         => false,
+    g_with_rd_count                         => false,
+    g_with_fifo_inferred                    => g_with_fifo_inferred,
+    g_async                                 => false
+  )
+  port map
+  (
+    -- Write clock
+    wr_clk_i                                => clk_i,
+    wr_rst_n_i                              => rst_n_i,
 
-          if pre_output_counter_wr = i and fc_valid_s = '1' then
-            fc_data_out(i) <= pl_data_i;
-            fc_addr_out(i) <= pl_addr_i;
-            fc_data_oob_out(i) <= fc_first_data & fc_last_data; -- c_data_oob_sof_ofs & c_data_oob_eof_ofs
-            fc_dvalid_out(i) <= '1';
-          elsif output_counter_rd = i and fc_stall_s = '0' then
-            fc_data_out(i) <= (others => '0');
-            fc_addr_out(i) <= (others => '0');
-            fc_data_oob_out(i) <= (others => '0');
-            fc_dvalid_out(i) <= '0';
-          end if;
+    wr_data_i                               => pre_out_fifo_din,
+    wr_en_i                                 => pre_out_fifo_we,
+    wr_full_o                               => pre_out_full,
+    wr_count_o                              => open,
+    wr_almost_empty_o                       => pre_out_almost_empty,
+    wr_almost_full_o                        => pre_out_almost_full,
 
-        end if;
-      end if;
-    end process;
-  end generate;
+    -- Read clock
+    rd_clk_i                                => clk_i,
+    rd_rst_n_i                              => rst_n_i,
+
+    rd_data_o                               => pre_out_fifo_dout,
+    rd_valid_o                              => pre_out_fifo_valid_out,
+    rd_en_i                                 => pre_out_fifo_rd_en,
+    rd_empty_o                              => pre_out_empty,
+    rd_count_o                              => open
+  );
+
+  pre_out_fifo_we <= fc_valid_s;
+  -- FIFO inputs marshall
+  pre_out_fifo_marsh <= fc_first_data & fc_last_data & pl_addr_i & pl_data_i;
+  pre_out_fifo_din <= pre_out_fifo_marsh;
+
+  pre_out_fifo_rd_en <= '1' when pkt_sent = '1' else '0';
+
+  -- FIFO output unmarshall
+  fc_data_out_int <= pre_out_fifo_dout(c_pre_out_fifo_data_msb downto c_pre_out_fifo_data_lsb);
+  fc_addr_out_int <= pre_out_fifo_dout(c_pre_out_fifo_addr_msb downto c_pre_out_fifo_addr_lsb);
+  fc_valid_out_int <= pre_out_fifo_valid_out;
+  fc_oob_out_int <= pre_out_fifo_dout(c_pre_out_fifo_oob_msb downto c_pre_out_fifo_oob_lsb);
 
   fc_stall_s <= '0' when fc_stall_i = '0' else fc_valid_out_int;
   fc_valid_s <= '1' when pl_valid_i = '1' and pl_stall_r = '0' else '0';
@@ -250,63 +265,14 @@ begin
     end if;
   end process;
 
-  p_fifo_pre_output_counter : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if rst_n_i = '0' then
-        pre_output_counter_wr <= to_unsigned(0, pre_output_counter_wr'length);
-      else
-        if fc_valid_s = '1' then
-          pre_output_counter_wr <= pre_output_counter_wr + 1;
-        end if;
-      end if;
-    end if;
-  end process;
-
   -- signals that a packet was actually transfered
   pkt_sent <= '1' when fc_valid_out_int = '1' and fc_stall_i = '0' else '0';
 
-  -- Measures the difference between read and write output pointers.
-  -- As the write pointer increments, this counter increments and as
-  -- the read pointer increments, this counter decrements.
-  -- The output pipeline is full when the counter reaches the maximum count.
-  --
-  -- There is a special case when both pointers increment in the same clock
-  -- cycle. In this case, we do nothing
-
-  p_fifo_diff_counter : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if rst_n_i = '0' then
-        fifo_diff_pnt_cnt <= to_unsigned(0, fifo_diff_pnt_cnt'length);
-      else
-        -- read pointer increment (diff decrement)
-        if fc_stall_s = '0' and fc_read_next_pkt = '1' then
-          if fc_valid_s = '0' then
-            fifo_diff_pnt_cnt <= fifo_diff_pnt_cnt - 1;
-          --else --both pointer increments simultaneouslly. Do nothing in this case
-          end if;
-        elsif fc_valid_s = '1' then
-          -- write pointer increment (diff increment)
-          fifo_diff_pnt_cnt <= fifo_diff_pnt_cnt + 1;
-        end if;
-      end if;
-    end if;
-  end process;
-
-  -- Monitor output pipeline. FIXME!
-  output_pipe_full <= '1' when fifo_diff_pnt_cnt = c_pipe_almost_full else '0';
-  -- Pipeline almost full. We have room for 1 (or more if c_pipe_almost_full if changed)
-  -- more word efore starting to lose data. With this signal we can stall the previous
-  -- pipeline component, but still receive the current data (if valid).
-  --
-  -- Without this signal, we could loose data if the pl_stall_o signal was asserted in the
-  -- same cycle as pl_valid_i. This happens for some components that have one (or more) delay
-  -- cycles between reading from some FIFO, for instance.
-  output_pipe_almost_full <= '1' when fifo_diff_pnt_cnt = c_pipe_almost_full-1 else '0';
-  output_pipe_empty <= '1' when fifo_diff_pnt_cnt = to_unsigned(0, fifo_diff_pnt_cnt'length) else '0';
-  -- FIXME: only works with the current pipe_size settings!
-  output_pipe_almost_empty <= '1' when fifo_diff_pnt_cnt = c_pipe_almost_empty else '0';
+  -- Monitor output pipeline.
+  output_pipe_full <= pre_out_full;
+  output_pipe_almost_full <= pre_out_almost_full;
+  output_pipe_empty <= pre_out_empty;
+  output_pipe_almost_empty <= pre_out_almost_empty;
 
   p_reg_stall_dreq_out : process(clk_i)
   begin
@@ -322,51 +288,20 @@ begin
           pl_stall_r <= '0';
         end if;
 
-        -- FIXME!
         pl_dreq_r <=  output_pipe_empty or output_pipe_almost_empty;
       end if;
     end if;
   end process;
 
-  pl_stall_o <= pl_stall_r;
-  pl_dreq_o <= pl_dreq_r;
+  pl_stall_o                            <= pl_stall_r;
+  pl_dreq_o                             <= pl_dreq_r;
 
-  p_ext_mux_output : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if rst_n_i = '0' then
-        fc_data_out_int <= (others => '0');
-        fc_oob_out_int <= (others => '0');
-        fc_addr_out_int <= (others => '0');
-        fc_valid_out_int <= '0';
-        output_counter_rd <= to_unsigned(0, output_counter_rd'length);
-      else
-        if fc_stall_s = '0' then
-          fc_data_out_int <= fc_data_out(to_integer(output_counter_rd));
-          fc_addr_out_int <= fc_addr_out(to_integer(output_counter_rd));
-          fc_oob_out_int <= fc_data_oob_out(to_integer(output_counter_rd));
-          fc_valid_out_int <= fc_dvalid_out(to_integer(output_counter_rd));
+  fc_dout_o                             <= fc_data_out_int;
+  fc_valid_o                            <= fc_valid_out_int;
+  fc_addr_o                             <= fc_addr_out_int;
+  fc_sof_o                              <= fc_oob_out_int(c_data_oob_sof_ofs);
+  fc_eof_o                              <= fc_oob_out_int(c_data_oob_eof_ofs);
 
-          -- Only increment output_counter_rd if it is different from
-          -- pre_output_counter_wr to prevent overflow!
-          if fc_read_next_pkt = '1' then
-            output_counter_rd <= output_counter_rd + 1;
-          end if;
-        end if;
-
-      end if;
-    end if;
-  end process;
-
-  fc_read_next_pkt <= '1' when output_counter_rd /= pre_output_counter_wr and fc_dreq_i = '1'
-                            else '0';
-
-  fc_dout_o                            <= fc_data_out_int;
-  fc_valid_o                           <= fc_valid_out_int;
-  fc_addr_o                            <= fc_addr_out_int;
-  fc_sof_o                             <= fc_oob_out_int(c_data_oob_sof_ofs);
-  fc_eof_o                             <= fc_oob_out_int(c_data_oob_eof_ofs);
-
-  pl_pkt_sent_o                        <= pkt_sent;
+  pl_pkt_sent_o                         <= pkt_sent;
 
 end rtl;

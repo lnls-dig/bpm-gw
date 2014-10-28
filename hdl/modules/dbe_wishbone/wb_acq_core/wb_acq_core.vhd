@@ -164,6 +164,8 @@ architecture rtl of wb_acq_core is
   constant c_acq_data_width                 : natural :=
                                   f_acq_chan_find_widest(c_acq_channels);
 
+  constant c_fc_pipe_size                   : natural := 8;
+
   ------------------------------------------------------------------------------
   -- Types declaration
   ------------------------------------------------------------------------------
@@ -569,7 +571,8 @@ begin
     g_addr_width                            => g_ddr_addr_width,
     g_acq_num_channels                      => g_acq_num_channels,
     g_acq_channels                          => g_acq_channels,
-    g_fifo_size                             => g_fifo_fc_size
+    g_fifo_size                             => g_fifo_fc_size,
+    g_fc_pipe_size                          => c_fc_pipe_size
   )
   port map
   (
@@ -691,6 +694,7 @@ begin
   (
     g_acq_num_channels                        => g_acq_num_channels,
     g_acq_channels                            => g_acq_channels,
+    g_fc_pipe_size                            => c_fc_pipe_size,
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                       => g_ddr_payload_width,
     g_ddr_dq_width                            => g_ddr_dq_width,

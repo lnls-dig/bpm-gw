@@ -45,6 +45,7 @@ generic
 (
   g_acq_num_channels                        : natural := 1;
   g_acq_channels                            : t_acq_chan_param_array;
+  g_fc_pipe_size                            : natural := 4;
   -- Do not modify these! As they are dependent of the memory controller generated!
   g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
   g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
@@ -126,7 +127,7 @@ architecture rtl of acq_ddr3_iface is
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
-  constant c_pipe_size                      : natural := 4;
+  ---------constant c_pipe_size                      : natural := 4;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
 
   -- UI Commands
@@ -398,10 +399,11 @@ begin
   -----------------------------------------------------------------------------
   cmp_fc_source_app : fc_source
   generic map (
-    g_data_width                           => 1,
+    g_data_width                           => 1, -- Dummy value
     g_pkt_size_width                       => c_pkt_size_width,
     g_addr_width                           => g_ddr_addr_width,
-    g_pipe_size                            => c_pipe_size
+    g_with_fifo_inferred                   => true,
+    g_pipe_size                            => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
@@ -441,7 +443,8 @@ begin
     g_data_width                           => g_ddr_payload_width + c_ddr_mask_width,
     g_pkt_size_width                       => c_pkt_size_width,
     g_addr_width                           => 1, -- Dummy value
-    g_pipe_size                            => c_pipe_size
+    g_with_fifo_inferred                   => true,
+    g_pipe_size                            => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
