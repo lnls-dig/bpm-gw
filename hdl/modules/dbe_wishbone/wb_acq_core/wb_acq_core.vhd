@@ -754,15 +754,15 @@ begin
     ui_app_gnt_i                              => ui_app_wdf_gnt
   );
 
-  cmp_sync_req_rst : gc_sync_ffs
-    port map(
-      clk_i                                   => ext_clk_i,
-      rst_n_i                                 => ext_rst_n_i,
-      data_i                                  => acq_start,
-      synced_o                                => acq_start_sync_ext,
-      npulse_o                                => open,
-      ppulse_o                                => open
-    );
+  cmp_sync_req_rst : gc_pulse_synchronizer
+  port map (
+    clk_in_i                                  => fs_clk_i,
+    clk_out_i                                 => ext_clk_i,
+    rst_n_i                                   => fs_rst_n_i,
+    d_ready_o                                 => open,
+    d_p_i                                     => acq_start, -- pulse input
+    q_p_o                                     => acq_start_sync_ext -- pulse output
+  );
 
   -- Only for simulation!
   gen_ddr3_readback : if (g_sim_readback) generate
