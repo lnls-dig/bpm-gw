@@ -25,6 +25,8 @@ package acq_core_pkg is
   constant c_acq_chan_max_w                 : natural := 2*c_acq_chan_width;
   constant c_acq_chan_max_w_log2            : natural := f_log2_size(c_acq_chan_max_w)+1;
 
+  constant c_ddr3_ui_diff_threshold         : natural := 3;
+
   -- ADC + TBT + FOFB + MONIT + MONIT_1
   constant c_acq_num_channels               : natural := 5;
 
@@ -424,6 +426,26 @@ package acq_core_pkg is
 
     dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
     dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
+  );
+  end component;
+
+  component acq_2_diff_cnt
+  generic
+  (
+    -- Threshold in which the counters can differ
+    g_threshold_max                           : natural := 2
+  );
+  port
+  (
+    -- DDR3 external clock
+    clk_i                                     : in  std_logic;
+    rst_n_i                                   : in  std_logic;
+
+    cnt0_en_i                                 : in std_logic;
+    cnt0_thres_hit_o                          : out std_logic;
+
+    cnt1_en_i                                 : in std_logic;
+    cnt1_thres_hit_o                          : out std_logic
   );
   end component;
 
