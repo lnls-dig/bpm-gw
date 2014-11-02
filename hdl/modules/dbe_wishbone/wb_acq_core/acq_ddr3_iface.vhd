@@ -563,8 +563,8 @@ begin
   -- DDR3 Controller datasheet tells something like 2 clock cycles distance from
   -- data word (wdf interface) and the corresponding command (app interface)
 
-  fc_stall_app <= not(ddr_rdy_app and ui_app_gnt_i);
-  fc_stall_app_wdf <= not(ddr_rdy_app_wdf and ui_app_gnt_i);
+  fc_stall_app <= not ddr_rdy_app;
+  fc_stall_app_wdf <= not ddr_rdy_app_wdf;
 
   fc_dreq_app <= '1'; -- always request new data, even when the next module
                       -- in the pipeline cannot receive (ddr is not ready).
