@@ -244,7 +244,7 @@ begin
         ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
       else
         if rb_start_i = '1' then
-            ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
+            ddr_addr_cnt_out <= unsigned(rb_init_addr_i);
         elsif valid_trans_out = '1' then -- successfull request
           ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_ddr_inc;
         end if;
@@ -294,7 +294,8 @@ begin
 
   ui_app_req_o <= ddr_req;
 
-  valid_trans_in <= '1' when ui_app_rd_data_valid_i = '1' and ui_app_rd_data_end_i = '1' else '0';
+  valid_trans_in <= '1' when ui_app_rd_data_valid_i = '1' and
+                    ui_app_rd_data_end_i = '1' and ddr_req = '1' else '0';
 
   p_ddr_data_reg : process(ext_clk_i)
   begin
