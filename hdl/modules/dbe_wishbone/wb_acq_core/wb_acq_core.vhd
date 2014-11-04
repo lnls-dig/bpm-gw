@@ -144,6 +144,8 @@ port
   -----------------------------
   -- Debug Interface
   -----------------------------
+  dbg_ddr_rb_start_p_i                      : in std_logic;
+  dbg_ddr_rb_rdy_o                          : out std_logic;
   dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
@@ -292,6 +294,7 @@ architecture rtl of wb_acq_core is
   signal dbg_ddr_rb_addr                    : std_logic_vector(g_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
 
+  signal ddr3_rb_start                      : std_logic;
   signal ddr3_rb_all_trans_done_p           : std_logic;
 
   signal ddr3_all_trans_done_l              : std_logic;
@@ -808,7 +811,9 @@ begin
       fifo_fc_dreq_i                        => '0',
       fifo_fc_stall_i                       => '0',
 
-      rb_start_i                            => ddr3_wr_all_trans_done_p,
+      -- Only start the readbak test when we have done writing and an external signal
+      -- tells us to
+      rb_start_i                            => ddr3_rb_start,
       -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
       -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
       -- impose any metastability problem in this module
@@ -841,6 +846,7 @@ begin
       ui_app_gnt_i                          => ui_app_rb_gnt
     );
 
+    ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
     acq_ddr3_rst_n                          <= ext_rst_n_i and ddr3_wr_all_trans_done_l;
     ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
 
@@ -858,6 +864,8 @@ begin
     ui_app_wdf_gnt <= ui_app_gnt_i when sim_in_rb = '0' else '0';
     ui_app_rb_gnt <= ui_app_gnt_i when sim_in_rb = '1' else '0';
 
+    dbg_ddr_rb_rdy_o <= sim_in_rb;
+
   end generate;
 
   gen_ddr3_non_readback : if (not g_sim_readback) generate
@@ -869,6 +877,8 @@ begin
 
     ui_app_req_o <= ui_app_wdf_req;
     ui_app_wdf_gnt <= ui_app_gnt_i;
+
+    dbg_ddr_rb_rdy_o <= '0';
   end generate;
 
   -- Generate level signal to indicate DDR3 tranfer is complete
