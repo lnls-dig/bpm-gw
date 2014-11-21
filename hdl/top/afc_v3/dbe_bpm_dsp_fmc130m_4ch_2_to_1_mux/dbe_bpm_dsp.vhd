@@ -167,6 +167,8 @@ port(
   -- EEPROM (Connected to the CPU)
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
+  fmc1_eeprom_scl_pad_b                     : inout std_logic;
+  fmc1_eeprom_sda_pad_b                     : inout std_logic;
 
   -- Temperature monitor (LM75AIMM)
   fmc1_lm75_scl_pad_b                       : inout std_logic;
@@ -1759,8 +1761,8 @@ begin
     -- EEPROM (Connected to the CPU)
     --eeprom_scl_pad_b                        => eeprom_scl_pad_b,
     --eeprom_sda_pad_b                        => eeprom_sda_pad_b,
-    eeprom_scl_pad_b                        => open,
-    eeprom_sda_pad_b                        => open,
+    eeprom_scl_pad_b                       => fmc1_eeprom_scl_pad_b,
+    eeprom_sda_pad_b                       => fmc1_eeprom_sda_pad_b,
 
     -- Temperature monitor
     -- LM75AIMM

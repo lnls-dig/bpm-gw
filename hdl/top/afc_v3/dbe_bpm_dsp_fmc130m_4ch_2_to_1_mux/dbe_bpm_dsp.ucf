@@ -110,8 +110,8 @@ NET "fmc1_pll_status_i"                        LOC = J4   | IOSTANDARD = "LVCMOS
 NET "fmc1_clk_sel_o"                           LOC = U7   | IOSTANDARD = "LVCMOS25";  // LA31_P
 
 // EEPROM (multiplexer PCA9548) (Connected to the CPU)
-###NET "eeprom_scl_pad_b"                         LOC =  | IOSTANDARD ="LVCMOS25";   # FPGA I2C SCL
-###NET "eeprom_sda_pad_b"                         LOC =  | IOSTANDARD ="LVCMOS25";   # FPGA I2C SDA
+NET "fmc1_eeprom_scl_pad_b"                    LOC = P6   | IOSTANDARD = "LVCMOS25";   # FPGA I2C SCL
+NET "fmc1_eeprom_sda_pad_b"                    LOC = R11  | IOSTANDARD = "LVCMOS25";   # FPGA I2C SDA
 
 // LM75 temperature monitor
 NET "fmc1_lm75_scl_pad_b"                      LOC = R3   | IOSTANDARD = "LVCMOS25";  // LA27_P
