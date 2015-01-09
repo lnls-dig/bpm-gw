@@ -1798,7 +1798,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    trig_hw_i                               => '0',
+    trig_hw_i                               => dsp1_clk_rffe_swap,  -- To FMC1 Trigger Front Panel
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc1_mmcm_lock_int,
@@ -1992,7 +1992,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => open,
-    trig_hw_i                               => '0',
+    trig_hw_i                               => dsp2_clk_rffe_swap,  -- To FMC2 Trigger Front Panel
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc2_mmcm_lock_int,
