@@ -59,13 +59,13 @@ port(
   -----------------------------------------
   -- Clocking pins
   -----------------------------------------
-  sys_clk_p_i                               : in std_logic;
-  sys_clk_n_i                               : in std_logic;
+  sys_clk_p_i                                : in std_logic;
+  sys_clk_n_i                                : in std_logic;
 
   -----------------------------------------
   -- Reset Button
   -----------------------------------------
-  ------------------sys_rst_button_i                          : in std_logic;
+  sys_rst_button_n_i                         : in std_logic;
 
   -----------------------------------------
   -- UART pins
@@ -302,7 +302,6 @@ port(
   pci_exp_txn_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
 
   -- PCI clock and reset signals
-  pcie_rst_n_i                              : in std_logic;
   pcie_clk_p_i                              : in std_logic;
   pcie_clk_n_i                              : in std_logic
 
@@ -964,62 +963,42 @@ architecture rtl of dbe_bpm_dsp is
   signal gpio_slave_button_o                : t_wishbone_slave_out;
   signal gpio_slave_button_i                : t_wishbone_slave_in;
 
-  ---- Chipscope control signals
-  --signal CONTROL0                           : std_logic_vector(35 downto 0);
-  --signal CONTROL1                           : std_logic_vector(35 downto 0);
-  --signal CONTROL2                           : std_logic_vector(35 downto 0);
-  --signal CONTROL3                           : std_logic_vector(35 downto 0);
-  --signal CONTROL4                           : std_logic_vector(35 downto 0);
-  --signal CONTROL5                           : std_logic_vector(35 downto 0);
-  --signal CONTROL6                           : std_logic_vector(35 downto 0);
-  --signal CONTROL7                           : std_logic_vector(35 downto 0);
-  --signal CONTROL8                           : std_logic_vector(35 downto 0);
-  --signal CONTROL9                           : std_logic_vector(35 downto 0);
-  --signal CONTROL10                          : std_logic_vector(35 downto 0);
-  --signal CONTROL11                          : std_logic_vector(35 downto 0);
-  --signal CONTROL12                          : std_logic_vector(35 downto 0);
+  -- Chipscope control signals
+  signal CONTROL0                           : std_logic_vector(35 downto 0);
+  signal CONTROL1                           : std_logic_vector(35 downto 0);
+  signal CONTROL2                           : std_logic_vector(35 downto 0);
+  signal CONTROL3                           : std_logic_vector(35 downto 0);
+  signal CONTROL4                           : std_logic_vector(35 downto 0);
 
-  ---- Chipscope ILA 0 signals
-  --signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA0_4                        : std_logic_vector(31 downto 0);
+  -- Chipscope ILA 0 signals
+  signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
 
-  ---- Chipscope ILA 1 signals
-  --signal TRIG_ILA1_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA1_4                        : std_logic_vector(31 downto 0);
+  -- Chipscope ILA 1 signals
+  signal TRIG_ILA1_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
 
-  ---- Chipscope ILA 2 signals
-  --signal TRIG_ILA2_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA2_4                        : std_logic_vector(31 downto 0);
+  -- Chipscope ILA 2 signals
+  signal TRIG_ILA2_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
 
-  ---- Chipscope ILA 3 signals
-  --signal TRIG_ILA3_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA3_4                        : std_logic_vector(31 downto 0);
+  -- Chipscope ILA 3 signals
+  signal TRIG_ILA3_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
 
-  ---- Chipscope ILA 4 signals
-  --signal TRIG_ILA4_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA4_4                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 5 signals
-  --signal TRIG_ILA5_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA5_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA5_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA5_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA5_4                        : std_logic_vector(31 downto 0);
+  -- Chipscope ILA 4 signals
+  signal TRIG_ILA4_0                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
+  signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
 
   ---- Chipscope ILA 6 signals
   --signal TRIG_ILA6_0                        : std_logic_vector(7 downto 0);
@@ -1120,21 +1099,12 @@ architecture rtl of dbe_bpm_dsp is
   );
   end component;
 
-  component chipscope_icon_13_port
+  component chipscope_icon_4_port
   port (
     CONTROL0                                : inout std_logic_vector(35 downto 0);
     CONTROL1                                : inout std_logic_vector(35 downto 0);
     CONTROL2                                : inout std_logic_vector(35 downto 0);
-    CONTROL3                                : inout std_logic_vector(35 downto 0);
-    CONTROL4                                : inout std_logic_vector(35 downto 0);
-    CONTROL5                                : inout std_logic_vector(35 downto 0);
-    CONTROL6                                : inout std_logic_vector(35 downto 0);
-    CONTROL7                                : inout std_logic_vector(35 downto 0);
-    CONTROL8                                : inout std_logic_vector(35 downto 0);
-    CONTROL9                                : inout std_logic_vector(35 downto 0);
-    CONTROL10                               : inout std_logic_vector(35 downto 0);
-    CONTROL11                               : inout std_logic_vector(35 downto 0);
-    CONTROL12                               : inout std_logic_vector(35 downto 0)
+    CONTROL3                                : inout std_logic_vector(35 downto 0)
   );
   end component;
 
@@ -1150,79 +1120,6 @@ architecture rtl of dbe_bpm_dsp is
   end component;
 
   -- Xilinx Chipscope Logic Analyser
-  component chipscope_ila_1024_5_port
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(31 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0);
-    trig4                                   : in std_logic_vector(31 downto 0));
-  end component;
-
-  component chipscope_ila_8192_5_port
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(31 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0);
-    trig4                                   : in std_logic_vector(31 downto 0));
-  end component;
-
-  component chipscope_ila_1024
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(7 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0);
-    trig4                                   : in std_logic_vector(31 downto 0));
-  end component;
-
-  component chipscope_ila_4096
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(7 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0);
-    trig4                                   : in std_logic_vector(31 downto 0));
-  end component;
-
-  component chipscope_ila_65536
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(7 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0);
-    trig4                                   : in std_logic_vector(31 downto 0));
-  end component;
-
-  component chipscope_ila_131072
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(7 downto 0);
-    trig1                                   : in std_logic_vector(15 downto 0);
-    trig2                                   : in std_logic_vector(15 downto 0);
-    trig3                                   : in std_logic_vector(15 downto 0);
-    trig4                                   : in std_logic_vector(15 downto 0));
-  end component;
-
-  component chipscope_vio_256 is
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    async_out                               : out std_logic_vector(255 downto 0)
-  );
-  end component;
-
   -- Functions
   -- Generate dummy (0) values
   function f_zeros(size : integer)
@@ -1279,7 +1176,6 @@ begin
 
   reset_clks(c_clk_sys_id)                  <= clk_sys;
   reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
-  --clk_sys_rstn                              <= reset_rstn(0) and rst_button_sys_n;
   clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
                                                   rs232_rstn;-- and wb_ma_pcie_rstn;
   clk_sys_rst                               <= not clk_sys_rstn;
@@ -1293,12 +1189,12 @@ begin
   port map (
     clk_i                                   => clk_sys,
     rst_n_i                                 => '1',
-    data_i                                  => '0',
-    ppulse_o                                => rst_button_sys_pp
+    data_i                                  => sys_rst_button_n_i,
+    npulse_o                                => rst_button_sys_pp
   );
 
   -- Generate the reset signal based on positive edge
-  -- of synched sys_rst_button_i
+  -- of synched gc
   cmp_button_sys_rst : gc_extend_pulse
   generic map (
     g_width                                 => c_button_rst_width
@@ -1368,6 +1264,7 @@ begin
   generic map (
     g_ma_interface_mode                       => PIPELINED,
     g_ma_address_granularity                  => BYTE,
+    g_ext_rst_pin                             => false,
     g_sim_bypass_init_cal                     => "OFF"
   )
   port map (
@@ -1397,9 +1294,9 @@ begin
     -- Necessity signals
     ddr_clk_p_i                               => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
     ddr_clk_n_i                               => '0',          --200 MHz DDR core clock (connect through BUFG or PLL)
-    pcie_clk_p_i                              => pcie_clk_p_i,  --100 MHz PCIe Clock (connect directly to input pin)
-    pcie_clk_n_i                              => pcie_clk_n_i,  --100 MHz PCIe Clock
-    pcie_rst_n_i                              => pcie_rst_n_i, -- PCIe core reset
+    pcie_clk_p_i                              => pcie_clk_p_i, --100 MHz PCIe Clock (connect directly to input pin)
+    pcie_clk_n_i                              => pcie_clk_n_i, --100 MHz PCIe Clock
+    pcie_rst_n_i                              => clk_sys_rstn, -- PCIe core reset
 
     -- DDR memory controller interface --
     ddr_core_rst_i                            => clk_sys_rst,
@@ -3077,5 +2974,191 @@ begin
   --  CONTROL                                 => CONTROL12,
   --  ASYNC_OUT                               => vio_out_dsp_config
   --);
+
+  -- Xilinx Chipscope
+  cmp_chipscope_icon_0 : chipscope_icon_4_port
+  port map (
+    CONTROL0                                => CONTROL0,
+    CONTROL1                                => CONTROL1,
+    CONTROL2                                => CONTROL2,
+    CONTROL3                                => CONTROL3
+  );
+
+  cmp_chipscope_ila_0_fmc130m_4ch_clk0 : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL0,
+    CLK                                     => fs1_clk,
+    TRIG0                                   => TRIG_ILA0_0,
+    TRIG1                                   => TRIG_ILA0_1,
+    TRIG2                                   => TRIG_ILA0_2,
+    TRIG3                                   => TRIG_ILA0_3
+  );
+
+  -- fmc130m_4ch WBS master output data
+  --TRIG_ILA0_0                               <= wbs_fmc130m_4ch_out_array(3).dat &
+  --                                               wbs_fmc130m_4ch_out_array(2).dat;
+  TRIG_ILA0_0                               <= fmc1_data(31 downto 16) &
+                                                 fmc1_data(47 downto 32);
+
+  -- fmc130m_4ch WBS master output data
+  TRIG_ILA0_1(11 downto 0)                   <= fmc1_adc_dly_debug_int(1).clk_chain.idelay.pulse &
+                                                fmc1_adc_dly_debug_int(1).data_chain.idelay.pulse &
+                                                fmc1_adc_dly_debug_int(1).clk_chain.idelay.val &
+                                                fmc1_adc_dly_debug_int(1).data_chain.idelay.val;
+  TRIG_ILA0_1(31 downto 12)                  <= (others => '0');
+
+  -- fmc130m_4ch WBS master output control signals
+  TRIG_ILA0_2(17 downto 0)                   <=  wbs_fmc1_out_array(1).cyc &
+                                                 wbs_fmc1_out_array(1).stb &
+                                                 wbs_fmc1_out_array(1).adr &
+                                                 wbs_fmc1_out_array(1).sel &
+                                                 wbs_fmc1_out_array(1).we &
+                                                 wbs_fmc1_out_array(2).cyc &
+                                                 wbs_fmc1_out_array(2).stb &
+                                                 wbs_fmc1_out_array(2).adr &
+                                                 wbs_fmc1_out_array(2).sel &
+                                                 wbs_fmc1_out_array(2).we;
+  TRIG_ILA0_2(18)                            <= '0';
+  TRIG_ILA0_2(22 downto 19)                  <= fmc1_data_valid;
+  TRIG_ILA0_2(23)                            <= fmc1_mmcm_lock_int;
+  TRIG_ILA0_2(24)                            <= fmc1_pll_status_int;
+  TRIG_ILA0_2(25)                            <= fmc1_debug_valid_int(1);
+  TRIG_ILA0_2(26)                            <= fmc1_debug_full_int(1);
+  TRIG_ILA0_2(27)                            <= fmc1_debug_empty_int(1);
+  TRIG_ILA0_2(31 downto 28)                  <= (others => '0');
+
+  TRIG_ILA0_3                                <= (others => '0');
+
+  cmp_chipscope_ila_1_ddr_acq : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL1,
+    CLK                                     => memc_ui_clk,
+    TRIG0                                   => TRIG_ILA1_0,
+    TRIG1                                   => TRIG_ILA1_1,
+    TRIG2                                   => TRIG_ILA1_2,
+    TRIG3                                   => TRIG_ILA1_3
+  );
+
+  TRIG_ILA1_0                               <= memc_wr_data(207 downto 192) &
+                                                 memc_wr_data(143 downto 128);
+  TRIG_ILA1_1                               <= memc_wr_data(79 downto 64) &
+                                                 memc_wr_data(15 downto 0);
+
+  TRIG_ILA1_2                               <= memc_cmd_addr_resized;
+  TRIG_ILA1_3(31 downto 30)                 <= (others => '0');
+  TRIG_ILA1_3(27 downto 0)                  <= memc_ui_rst &
+                                                 clk_200mhz_rstn &
+                                                 memc_cmd_instr & -- std_logic_vector(2 downto 0);
+                                                 memc_cmd_en &
+                                                 memc_cmd_rdy &
+                                                 memc_wr_end &
+                                                 memc_wr_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
+                                                 memc_wr_en &
+                                                 memc_wr_rdy &
+                                                 memarb_acc_req &
+                                                 memarb_acc_gnt;
+
+  cmp_chipscope_ila_2_generic : chipscope_ila
+  port map (
+    CONTROL                                 => CONTROL2,
+    CLK                                     => clk_sys,
+    TRIG0                                   => TRIG_ILA2_0,
+    TRIG1                                   => TRIG_ILA2_1,
+    TRIG2                                   => TRIG_ILA2_2,
+    TRIG3                                   => TRIG_ILA2_3
+  );
+
+  TRIG_ILA2_0(5 downto 0)                   <= clk_sys_rst &
+                                                clk_sys_rstn &
+                                                rst_button_sys_n &
+                                                rst_button_sys &
+                                                rst_button_sys_pp &
+                                                sys_rst_button_n_i;
+
+  TRIG_ILA2_0(31 downto 6)                  <= (others => '0');
+  TRIG_ILA2_1                               <= (others => '0');
+  TRIG_ILA2_2                               <= (others => '0');
+  TRIG_ILA2_3                               <= (others => '0');
+
+  ---- The clocks to/from peripherals are derived from the bus clock.
+  ---- Therefore we don't have to worry about synchronization here, just
+  ---- keep in mind that the data/ss lines will appear longer than normal
+  --cmp_chipscope_ila_3_pcie : chipscope_ila
+  --port map (
+  --  CONTROL                                 => CONTROL3,
+  --  CLK                                     => clk_sys, -- Wishbone clock
+  --  TRIG0                                   => TRIG_ILA3_0,
+  --  TRIG1                                   => TRIG_ILA3_1,
+  --  TRIG2                                   => TRIG_ILA3_2,
+  --  TRIG3                                   => TRIG_ILA3_3
+  --);
+
+  --TRIG_ILA3_0                               <= wb_ma_pcie_dat_in(31 downto 0);
+  --TRIG_ILA3_1                               <= wb_ma_pcie_dat_out(31 downto 0);
+  --TRIG_ILA3_2(31 downto wb_ma_pcie_addr_out'left + 1) <= (others => '0');
+  --TRIG_ILA3_2(wb_ma_pcie_addr_out'left downto 0)
+  --                                          <= wb_ma_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0);
+  --TRIG_ILA3_3(31 downto 5)                  <= (others => '0');
+  --TRIG_ILA3_3(4 downto 0)                   <= wb_ma_pcie_ack_in &
+  --                                              wb_ma_pcie_we_out &
+  --                                              wb_ma_pcie_stb_out &
+  --                                              wb_ma_pcie_sel_out &
+  --                                              wb_ma_pcie_cyc_out;
+
+  cmp_chipscope_ila_3_pcie_ddr_read : chipscope_ila
+  port map (
+    --CONTROL                                 => CONTROL4,
+    CONTROL                                 => CONTROL3,
+    CLK                                     => memc_ui_clk, -- DDR3 controller clk
+    TRIG0                                   => TRIG_ILA3_0,
+    TRIG1                                   => TRIG_ILA3_1,
+    TRIG2                                   => TRIG_ILA3_2,
+    TRIG3                                   => TRIG_ILA3_3
+  );
+
+  TRIG_ILA3_0                               <= dbg_app_rd_data(207 downto 192) &
+                                                dbg_app_rd_data(143 downto 128);
+  TRIG_ILA3_1                               <= dbg_app_rd_data(79 downto 64) &
+                                                dbg_app_rd_data(15 downto 0);
+
+  TRIG_ILA3_2                               <= dbg_app_addr;
+
+  TRIG_ILA3_3(31 downto 11)                 <= (others => '0');
+  TRIG_ILA3_3(10 downto 0)                  <=  dbg_app_rd_data_end &
+                                                 dbg_app_rd_data_valid &
+                                                 dbg_app_cmd & -- std_logic_vector(2 downto 0);
+                                                 dbg_app_en &
+                                                 dbg_app_rdy &
+                                                 dbg_arb_req &
+                                                 dbg_arb_gnt;
+
+  --cmp_chipscope_ila_5_pcie_ddr_write : chipscope_ila
+  --port map (
+  --  CONTROL                                 => CONTROL5,
+  --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
+  --  TRIG0                                   => TRIG_ILA5_0,
+  --  TRIG1                                   => TRIG_ILA5_1,
+  --  TRIG2                                   => TRIG_ILA5_2,
+  --  TRIG3                                   => TRIG_ILA5_3
+  --);
+
+  --TRIG_ILA5_0                               <= dbg_app_wdf_data(207 downto 192) &
+  --                                               dbg_app_wdf_data(143 downto 128);
+  --TRIG_ILA5_1                               <= dbg_app_wdf_data(79 downto 64) &
+  --                                               dbg_app_wdf_data(15 downto 0);
+
+  --TRIG_ILA5_2                               <= dbg_app_addr;
+  --TRIG_ILA5_3(31 downto 30)                 <= (others => '0');
+  --TRIG_ILA5_3(29 downto 0)                  <= memc_ui_rst &
+  --                                               clk_200mhz_rstn &
+  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
+  --                                               dbg_app_en &
+  --                                               dbg_app_rdy &
+  --                                               dbg_app_wdf_end &
+  --                                               dbg_app_wdf_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
+  --                                               dbg_app_wdf_wren &
+  --                                               dbg_app_wdf_rdy &
+  --                                               dbg_arb_req &
+  --                                               dbg_arb_gnt;
 
 end ;
