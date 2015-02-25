@@ -29,6 +29,7 @@ entity wb_bpm_pcie_a7 is
 generic (
   g_ma_interface_mode                       : t_wishbone_interface_mode := PIPELINED;
   g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
+  g_ext_rst_pin                             : boolean := true;
   g_sim_bypass_init_cal                     : string  := "FAST"
 );
 port (
@@ -150,7 +151,8 @@ begin
   ----------------------------------
   cmp_bpm_pcie_a7 : bpm_pcie_a7
   generic map (
-    SIM_BYPASS_INIT_CAL                     => g_sim_bypass_init_cal
+    SIM_BYPASS_INIT_CAL                     => g_sim_bypass_init_cal,
+    EXT_RST_PIN                             => g_ext_rst_pin
   )
   port map (
     --DDR3 memory pins
@@ -212,27 +214,27 @@ begin
     sel_o                                   => wb_ma_pcie_sel_out,
     cyc_o                                   => wb_ma_pcie_cyc_out,
     -- Additional exported signals for instantiation
-    ext_rst_o                               => wb_ma_pcie_rst_o
+    ext_rst_o                               => wb_ma_pcie_rst_o,
+
+    -- Debug signals
+    dbg_app_addr_o                          => dbg_app_addr_o,
+    dbg_app_cmd_o                           => dbg_app_cmd_o,
+    dbg_app_en_o                            => dbg_app_en_o,
+    dbg_app_wdf_data_o                      => dbg_app_wdf_data_o,
+    dbg_app_wdf_end_o                       => dbg_app_wdf_end_o,
+    dbg_app_wdf_wren_o                      => dbg_app_wdf_wren_o,
+    dbg_app_wdf_mask_o                      => dbg_app_wdf_mask_o,
+    dbg_app_rd_data_o                       => dbg_app_rd_data_o,
+    dbg_app_rd_data_end_o                   => dbg_app_rd_data_end_o,
+    dbg_app_rd_data_valid_o                 => dbg_app_rd_data_valid_o,
+    dbg_app_rdy_o                           => dbg_app_rdy_o,
+    dbg_app_wdf_rdy_o                       => dbg_app_wdf_rdy_o,
+    dbg_ddr_ui_clk_o                        => dbg_ddr_ui_clk_o,
+    dbg_ddr_ui_reset_o                      => dbg_ddr_ui_reset_o,
+
+    dbg_arb_req_o                           => dbg_arb_req_o,
+    dbg_arb_gnt_o                           => dbg_arb_gnt_o
   );
-
-  -- BPM A7 does not have debug signals
-  dbg_app_addr_o                            <= (others => '0');
-  dbg_app_cmd_o                             <= (others => '0');
-  dbg_app_en_o                              <= '0';
-  dbg_app_wdf_data_o                        <= (others => '0');
-  dbg_app_wdf_end_o                         <= '0';
-  dbg_app_wdf_wren_o                        <= '0';
-  dbg_app_wdf_mask_o                        <= (others => '0');
-  dbg_app_rd_data_o                         <= (others => '0');
-  dbg_app_rd_data_end_o                     <= '0';
-  dbg_app_rd_data_valid_o                   <= '0';
-  dbg_app_rdy_o                             <= '0';
-  dbg_app_wdf_rdy_o                         <= '0';
-  dbg_ddr_ui_clk_o                          <= '0';
-  dbg_ddr_ui_reset_o                        <= '0';
-
-  dbg_arb_req_o                             <= (others => '0');
-  dbg_arb_gnt_o                             <= (others => '0');
 
   -- Connect PCIe to the Wishbone Crossbar
   wb_ma_sladp_pcie_addr_out(wb_ma_sladp_pcie_addr_out'left downto wb_ma_pcie_addr_out'left+1)
