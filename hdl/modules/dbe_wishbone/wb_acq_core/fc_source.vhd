@@ -284,7 +284,7 @@ begin
 
         if output_pipe_almost_full = '1' and fc_valid_s = '1' then
           pl_stall_r <= '1';
-        elsif output_pipe_full = '0' then
+        elsif output_pipe_almost_full = '0' then
           pl_stall_r <= '0';
         end if;
 
