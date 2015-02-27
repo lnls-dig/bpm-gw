@@ -142,15 +142,15 @@ set_property LOC RAMB36_X1Y41 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i
 # Timing requirements and related constraints.
 #
 
-create_clock -name pcie_clk -period 10 [get_nets */*/*/sys_clk_c]
+create_clock -name pcie_clk -period 10 [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1]
 
-create_generated_clock -name clk_125mhz -source [get_ports pcie_clk_p_i] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT0]
+create_generated_clock -name clk_125mhz -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT0]
 
 
 
-create_generated_clock -name clk_userclk -source [get_ports pcie_clk_p_i] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT2]
+create_generated_clock -name clk_userclk -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT2]
 
-create_generated_clock -name clk_userclk2 -source [get_ports pcie_clk_p_i] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT3]
+create_generated_clock -name clk_userclk2 -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT3]
 
 
 set_false_path -through [get_pins {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i/PLPHYLNKUPN*}]
@@ -162,7 +162,7 @@ set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrappe
 set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gtp_pipe_rate.gtp_pipe_rate_i/*}]
 set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gtp_pipe_rate.gtp_pipe_rate_i/*}]
 
-set_false_path -through [get_nets {*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_sel*}]
+set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_sel*}]
 
 set_case_analysis 1 [get_pins {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S0}] 
 set_case_analysis 0 [get_pins {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S1}] 
