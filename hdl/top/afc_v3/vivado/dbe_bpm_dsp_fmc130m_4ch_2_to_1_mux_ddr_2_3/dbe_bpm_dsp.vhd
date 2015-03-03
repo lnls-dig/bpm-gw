@@ -50,6 +50,8 @@ use work.acq_core_pkg.all;
 use work.bpm_pcie_a7_pkg.all;
 -- PCIe Core Constants
 use work.bpm_pcie_a7_const_pkg.all;
+-- Meta Package
+use work.sdb_meta_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
@@ -321,9 +323,10 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 14;
+  constant c_slaves                         : natural := 17;
   -- General Dual-port memory, Buffer Single-port memory, DMA control port, MAC,
-  --Etherbone, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2, Position_calc_1, Posiotion_calc_2, Peripherals
+  -- Etherbone, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2, Position_calc_1, Posiotion_calc_2, Peripherals
+  -- Repo URL, SDB synthesis, SDB integration
 
   -- Slaves indexes
   constant c_slv_dpram_sys_port0_id        : natural := 0;
@@ -340,6 +343,9 @@ architecture rtl of dbe_bpm_dsp is
   constant c_slv_fmc130m_4ch_2_id          : natural := 11;
   constant c_slv_acq_core_2_id             : natural := 12;
   constant c_slv_periph_id                 : natural := 13;
+  constant c_slv_sdb_repo_url_id           : natural := 14;
+  constant c_slv_sdb_synthesis_id          : natural := 15;
+  constant c_slv_sdb_integration_id        : natural := 16;
 
   -- Number of masters
   --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone, RS232-Syscon
@@ -487,20 +493,23 @@ architecture rtl of dbe_bpm_dsp is
     (c_slv_dpram_sys_port0_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 90KB RAM
      c_slv_dpram_sys_port1_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00100000"),   -- Second port to the same memory
      c_slv_dpram_ethbuf_id     => f_sdb_embed_device(f_xwb_dpram(c_dpram_ethbuf_size),
-                                                                                  x"00200000"),   -- 64KB RAM
+                                                                                 x"00200000"),   -- 64KB RAM
      c_slv_dma_id              => f_sdb_embed_device(c_xwb_dma_sdb,              x"00304000"),   -- DMA control port
      c_slv_ethmac_id           => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"00305000"),   -- Ethernet MAC control port
      c_slv_ethmac_adapt_id     => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"00306000"),   -- Ethernet Adapter control port
      c_slv_etherbone_id        => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"00307000"),   -- Etherbone control port
      c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
-                                                                                  x"00308000"),   -- Position Calc Core 1 control port
+                                                                                 x"00308000"),   -- Position Calc Core 1 control port
      c_slv_fmc130m_4ch_1_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00310000"),   -- FMC130m_4ch control 1 port
      c_slv_acq_core_1_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
      c_slv_pos_calc_2_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
-                                                                                  x"00340000"),   -- Position Calc Core 2 control port
+                                                                                 x"00340000"),   -- Position Calc Core 2 control port
      c_slv_fmc130m_4ch_2_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00350000"),   -- FMC130m_4ch control 2 port
      c_slv_acq_core_2_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
-     c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000")    -- General peripherals control port
+     c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
+     c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
+     c_slv_sdb_synthesis_id    => f_sdb_embed_synthesis(c_sdb_synthesis),
+     c_slv_sdb_integration_id  => f_sdb_embed_integration(c_sdb_integration)
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
