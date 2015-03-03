@@ -1698,21 +1698,30 @@ resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCK
 #######################################################################
 #
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:38250
-set_max_delay 8.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
+#set_max_delay 8.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
+set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
+set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
 
 # ADC/7
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:38254
-set_max_delay 58.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
+#set_max_delay 58.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
+set_multicycle_path 14 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
+set_multicycle_path 13 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
 
 # TBT1/29
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:38258
-set_max_delay 1000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
+#set_max_delay 1000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
+set_multicycle_path 250 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
+set_multicycle_path 249 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
 
 # TBT2/5
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:38262
-set_max_delay 8000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
+#set_max_delay 8000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
+set_multicycle_path 2000 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
+set_multicycle_path 1999 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
 
 # FOFB/2049
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:38266
-set_max_delay 17000000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
-
+#set_max_delay 17000000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
+set_multicycle_path 4250000 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
+set_multicycle_path 4249999 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
