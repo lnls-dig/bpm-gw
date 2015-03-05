@@ -132,7 +132,8 @@ set_property PACKAGE_PIN T8 [get_ports fmc1_trig_dir_o]
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc1_trig_dir_o' has been applied to the port object 'fmc1_trig_dir_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_trig_dir_o]
 #// LA26_N
-set_property PACKAGE_PIN T2 [get_ports fmc1_trig_term_o]
+############set_property PACKAGE_PIN T2 [get_ports fmc1_trig_term_o]
+set_property PACKAGE_PIN T3 [get_ports fmc1_trig_term_o]
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:109
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc1_trig_term_o' has been applied to the port object 'fmc1_trig_term_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_trig_term_o]
@@ -268,7 +269,8 @@ set_property PACKAGE_PIN L10 [get_ports fmc1_led2_o]
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc1_led2_o' has been applied to the port object 'fmc1_led2_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_led2_o]
 #// LA26_P
-set_property PACKAGE_PIN T3 [get_ports fmc1_led3_o]
+###############set_property PACKAGE_PIN T3 [get_ports fmc1_led3_o]
+set_property PACKAGE_PIN T2 [get_ports fmc1_led3_o]
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:198
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc1_led3_o' has been applied to the port object 'fmc1_led3_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_led3_o]
@@ -287,7 +289,8 @@ set_property PACKAGE_PIN W28 [get_ports fmc2_trig_dir_o]
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc2_trig_dir_o' has been applied to the port object 'fmc2_trig_dir_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_trig_dir_o]
 #// LA26_N
-set_property PACKAGE_PIN AC32 [get_ports fmc2_trig_term_o]
+##############set_property PACKAGE_PIN AC32 [get_ports fmc2_trig_term_o]
+set_property PACKAGE_PIN AC31 [get_ports fmc2_trig_term_o]
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:213
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc2_trig_term_o' has been applied to the port object 'fmc2_trig_term_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_trig_term_o]
@@ -415,7 +418,8 @@ set_property PACKAGE_PIN AD33 [get_ports fmc2_led2_o]
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc2_led2_o' has been applied to the port object 'fmc2_led2_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led2_o]
 #// LA26_P
-set_property PACKAGE_PIN AC31 [get_ports fmc2_led3_o]
+##############set_property PACKAGE_PIN AC31 [get_ports fmc2_led3_o]
+set_property PACKAGE_PIN AC32 [get_ports fmc2_led3_o]
 # /home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_attempt_fix_2/project_2/project_2.runs/impl_1/.constrs/dbe_bpm_dsp.ucf:298
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'fmc2_led3_o' has been applied to the port object 'fmc2_led3_o'.
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led3_o]
