@@ -375,14 +375,15 @@ architecture rtl of dbe_bpm_dsp is
   constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
 
   constant c_acq_adc_id                     : natural := 0;
-  constant c_acq_mix_id                     : natural := 1;
-  constant c_acq_tbt_amp_id                 : natural := 2;
-  constant c_acq_tbt_pos_id                 : natural := 3;
-  constant c_acq_fofb_amp_id                : natural := 4;
-  constant c_acq_fofb_pos_id                : natural := 5;
-  constant c_acq_monit_amp_id               : natural := 6;
-  constant c_acq_monit_pos_id               : natural := 7;
-  constant c_acq_monit_1_pos_id             : natural := 8;
+  constant c_acq_adc_swap_id                : natural := 1;
+  constant c_acq_mix_id                     : natural := 2;
+  constant c_acq_tbt_amp_id                 : natural := 3;
+  constant c_acq_tbt_pos_id                 : natural := 4;
+  constant c_acq_fofb_amp_id                : natural := 5;
+  constant c_acq_fofb_pos_id                : natural := 6;
+  constant c_acq_monit_amp_id               : natural := 7;
+  constant c_acq_monit_pos_id               : natural := 8;
+  constant c_acq_monit_1_pos_id             : natural := 9;
 
   --constant c_acq2_adc_id                     : natural := 0;
   --constant c_acq2_mix_id                     : natural := 1;
@@ -395,11 +396,12 @@ architecture rtl of dbe_bpm_dsp is
   --constant c_acq2_monit_1_pos_id             : natural := 8;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
-  constant c_acq_num_channels               : natural := 9; -- ADC + MIXER + TBT AMP + TBT POS +
+  constant c_acq_num_channels               : natural := 10; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
                                                             -- for each FMC
   constant c_acq_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
     ( c_acq_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
+      c_acq_adc_swap_id       => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
       c_acq_mix_id            => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
@@ -2354,6 +2356,17 @@ begin
   acq1_chan_array(c_acq_adc_id).trig          <= '0';
 
   --------------------
+  -- ADC SWAP 1 data
+  --------------------
+  acq1_chan_array(c_acq_adc_swap_id).val_low       <= dsp1_adc_ch3_data &
+                                                     dsp1_adc_ch2_data &
+                                                     dsp1_adc_ch1_data &
+                                                     dsp1_adc_ch0_data;
+  acq1_chan_array(c_acq_adc_swap_id).val_high      <= (others => '0');
+  acq1_chan_array(c_acq_adc_swap_id).dvalid        <= '1';
+  acq1_chan_array(c_acq_adc_swap_id).trig          <= '0';
+
+  --------------------
   -- MIXER 1 data
   --------------------
   acq1_chan_array(c_acq_mix_id).val_low   <= std_logic_vector(resize(signed(dsp1_mix_ch1), 32)) &
@@ -2459,6 +2472,17 @@ begin
   acq2_chan_array(c_acq_adc_id).val_high      <= (others => '0');
   acq2_chan_array(c_acq_adc_id).dvalid        <= '1';
   acq2_chan_array(c_acq_adc_id).trig          <= '0';
+
+  --------------------
+  -- ADC SWAP 1 data
+  --------------------
+  acq2_chan_array(c_acq_adc_swap_id).val_low       <= dsp2_adc_ch3_data &
+                                                     dsp2_adc_ch2_data &
+                                                     dsp2_adc_ch1_data &
+                                                     dsp2_adc_ch0_data;
+  acq2_chan_array(c_acq_adc_swap_id).val_high      <= (others => '0');
+  acq2_chan_array(c_acq_adc_swap_id).dvalid        <= '1';
+  acq2_chan_array(c_acq_adc_swap_id).trig          <= '0';
 
   --------------------
   -- MIXER 2 data
