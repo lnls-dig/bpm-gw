@@ -32,12 +32,6 @@ use work.dbe_wishbone_pkg.all;
 use work.dbe_common_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
--- Ethernet MAC Modules and SDB structure
-use work.ethmac_pkg.all;
--- Wishbone Fabric interface
-use work.wr_fabric_pkg.all;
--- Etherbone slave core
-use work.etherbone_pkg.all;
 -- FMC516 definitions
 use work.fmc_adc_pkg.all;
 -- DSP definitions
@@ -75,34 +69,6 @@ port(
 
   rs232_txd_o                                : out std_logic;
   rs232_rxd_i                                : in std_logic;
-  --uart_txd_o                                : out std_logic;
-  --uart_rxd_i                                : in std_logic;
-
-  -----------------------------------------
-  -- PHY pins
-  -----------------------------------------
-
-  ------ Clock and resets to PHY (GMII). Not used in MII mode (10/100)
-  ----mgtx_clk_o                                : out std_logic;
-  ----mrstn_o                                   : out std_logic;
-
-  ------ PHY TX
-  ----mtx_clk_pad_i                             : in std_logic;
-  ----mtxd_pad_o                                : out std_logic_vector(3 downto 0);
-  ----mtxen_pad_o                               : out std_logic;
-  ----mtxerr_pad_o                              : out std_logic;
-
-  ------ PHY RX
-  ----mrx_clk_pad_i                             : in std_logic;
-  ----mrxd_pad_i                                : in std_logic_vector(3 downto 0);
-  ----mrxdv_pad_i                               : in std_logic;
-  ----mrxerr_pad_i                              : in std_logic;
-  ----mcoll_pad_i                               : in std_logic;
-  ----mcrs_pad_i                                : in std_logic;
-
-  ------ MII
-  ----mdc_pad_o                                 : out std_logic;
-  ----md_pad_b                                  : inout std_logic;
 
   -----------------------------
   -- FMC1_130m_4ch ports
@@ -264,17 +230,17 @@ port(
   -- Position Calc signals
   -----------------------------------------
 
-   -- Uncross signals
-  -----clk_swap_o                                 : out std_logic;
-  -----clk_swap2x_o                               : out std_logic;
-  -----flag1_o                                    : out std_logic;
-  -----flag2_o                                    : out std_logic;
+  -- Uncross signals
+  --clk_swap_o                                 : out std_logic;
+  --clk_swap2x_o                               : out std_logic;
+  --flag1_o                                    : out std_logic;
+  --flag2_o                                    : out std_logic;
 
   -----------------------------------------
   -- General board status
   -----------------------------------------
-  ------------fmc_mmcm_lock_led_o                       : out std_logic;
-  ------------fmc_pll_status_led_o                      : out std_logic
+  --fmc_mmcm_lock_led_o                       : out std_logic;
+  --fmc_pll_status_led_o                      : out std_logic
 
   -----------------------------------------
   -- PCIe pins
@@ -323,51 +289,33 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 17;
-  -- General Dual-port memory, Buffer Single-port memory, DMA control port, MAC,
-  -- Etherbone, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2, Position_calc_1, Posiotion_calc_2, Peripherals
-  -- Repo URL, SDB synthesis, SDB integration
+  constant c_slaves                         : natural := 12;
+  -- General Dual-port memory, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2,
+  -- Position_calc_1, Posiotion_calc_2, Peripherals, Repo URL, SDB synthesis,
+  --SDB integration
 
   -- Slaves indexes
   constant c_slv_dpram_sys_port0_id        : natural := 0;
   constant c_slv_dpram_sys_port1_id        : natural := 1;
-  constant c_slv_dpram_ethbuf_id           : natural := 2;
-  constant c_slv_dma_id                    : natural := 3;
-  constant c_slv_ethmac_id                 : natural := 4;
-  constant c_slv_ethmac_adapt_id           : natural := 5;
-  constant c_slv_etherbone_id              : natural := 6;
-  constant c_slv_pos_calc_1_id             : natural := 7;
-  constant c_slv_fmc130m_4ch_1_id          : natural := 8;
-  constant c_slv_acq_core_1_id             : natural := 9;
-  constant c_slv_pos_calc_2_id             : natural := 10;
-  constant c_slv_fmc130m_4ch_2_id          : natural := 11;
-  constant c_slv_acq_core_2_id             : natural := 12;
-  constant c_slv_periph_id                 : natural := 13;
-  constant c_slv_sdb_repo_url_id           : natural := 14;
-  constant c_slv_sdb_synthesis_id          : natural := 15;
-  constant c_slv_sdb_integration_id        : natural := 16;
+  constant c_slv_pos_calc_1_id             : natural := 2;
+  constant c_slv_fmc130m_4ch_1_id          : natural := 3;
+  constant c_slv_acq_core_1_id             : natural := 4;
+  constant c_slv_pos_calc_2_id             : natural := 5;
+  constant c_slv_fmc130m_4ch_2_id          : natural := 6;
+  constant c_slv_acq_core_2_id             : natural := 7;
+  constant c_slv_periph_id                 : natural := 8;
+  constant c_slv_sdb_repo_url_id           : natural := 9;
+  constant c_slv_sdb_synthesis_id          : natural := 10;
+  constant c_slv_sdb_integration_id        : natural := 11;
 
   -- Number of masters
-  --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone, RS232-Syscon
-  constant c_masters                        : natural := 8;            -- RS232-Syscon, PCIe
-  --DMA read+write master, Ethernet MAC, Ethernet MAC adapter read+write master, Etherbone
+  constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
 
   -- Master indexes
   constant c_ma_pcie_id                    : natural := 0;
   constant c_ma_rs232_syscon_id            : natural := 1;
-  constant c_ma_dma_read_id                : natural := 2;
-  constant c_ma_dma_write_id               : natural := 3;
-  constant c_ma_ethmac_id                  : natural := 4;
-  constant c_ma_ethmac_adapt_read_id       : natural := 5;
-  constant c_ma_ethmac_adapt_write_id      : natural := 6;
-  constant c_ma_etherbone_id               : natural := 7;
 
-  --constant c_dpram_size                     : natural := 131072/4; -- in 32-bit words (128KB)
-  --constant c_dpram_size                     : natural := 90112/4; -- in 32-bit words (90KB)
   constant c_dpram_size                     : natural := 16384/4; -- in 32-bit words (16KB)
-  --constant c_dpram_ethbuf_size              : natural := 32768/4; -- in 32-bit words (32KB)
-  constant c_dpram_ethbuf_size              : natural := 65536/4; -- in 32-bit words (64KB)
-
   constant c_acq_fifo_size                  : natural := 256;
 
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
@@ -385,16 +333,6 @@ architecture rtl of dbe_bpm_dsp is
   constant c_acq_monit_pos_id               : natural := 8;
   constant c_acq_monit_1_pos_id             : natural := 9;
 
-  --constant c_acq2_adc_id                     : natural := 0;
-  --constant c_acq2_mix_id                     : natural := 1;
-  --constant c_acq2_tbt_amp_id                 : natural := 2;
-  --constant c_acq2_tbt_pos_id                 : natural := 3;
-  --constant c_acq2_fofb_amp_id                : natural := 4;
-  --constant c_acq2_fofb_pos_id                : natural := 5;
-  --constant c_acq2_monit_amp_id               : natural := 6;
-  --constant c_acq2_monit_pos_id               : natural := 7;
-  --constant c_acq2_monit_1_pos_id             : natural := 8;
-
   constant c_acq_pos_ddr3_width             : natural := 32;
   constant c_acq_num_channels               : natural := 10; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
@@ -411,18 +349,6 @@ architecture rtl of dbe_bpm_dsp is
       c_acq_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2))
     );
-
-  --constant c_acq2_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
-  --  ( c_acq2_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
-  --    c_acq2_mix_id            => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_fofb_pos_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_monit_amp_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-  --    c_acq2_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2))
-  --  );
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -446,42 +372,8 @@ architecture rtl of dbe_bpm_dsp is
   constant c_clk_sys_id                     : natural := 0; -- CLK_SYS and CLK_200 MHz
   constant c_clk_200mhz_id                  : natural := 1; -- CLK_SYS and CLK_200 MHz
 
-  constant c_xwb_etherbone_sdb : t_sdb_device := (
-    abi_class     => x"0000", -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"01",
-    wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"4", --32-bit port granularity
-    sdb_component => (
-    addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000ff",
-    product => (
-    vendor_id     => x"0000000000000651", -- GSI
-    device_id     => x"68202b22",
-    version       => x"00000001",
-    date          => x"20120912",
-    name          => "GSI_ETHERBONE_CFG  ")));
-
-  constant c_xwb_ethmac_adapter_sdb : t_sdb_device := (
-    abi_class     => x"0000", -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"01",
-    wbd_endian    => c_sdb_endian_big,
-    wbd_width     => x"4", --32-bit port granularity
-    sdb_component => (
-    addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000ff",
-    product => (
-    vendor_id     => x"1000000000001215", -- LNLS
-    device_id     => x"2ff9a28e",
-    version       => x"00000001",
-    date          => x"20130701",
-    name          => "ETHMAC_ADAPTER     ")));
-
   -- FMC130m_4ch layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
-  --constant c_fmc516_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000800");
-  -- FMC130m_4ch
   constant c_fmc130m_4ch_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000800");
 
   -- Position CAlC. layout. Regs, SWAP
@@ -492,14 +384,8 @@ architecture rtl of dbe_bpm_dsp is
 
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-    (c_slv_dpram_sys_port0_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 90KB RAM
+    (c_slv_dpram_sys_port0_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 16KB RAM
      c_slv_dpram_sys_port1_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00100000"),   -- Second port to the same memory
-     c_slv_dpram_ethbuf_id     => f_sdb_embed_device(f_xwb_dpram(c_dpram_ethbuf_size),
-                                                                                 x"00200000"),   -- 64KB RAM
-     c_slv_dma_id              => f_sdb_embed_device(c_xwb_dma_sdb,              x"00304000"),   -- DMA control port
-     c_slv_ethmac_id           => f_sdb_embed_device(c_xwb_ethmac_sdb,           x"00305000"),   -- Ethernet MAC control port
-     c_slv_ethmac_adapt_id     => f_sdb_embed_device(c_xwb_ethmac_adapter_sdb,   x"00306000"),   -- Ethernet Adapter control port
-     c_slv_etherbone_id        => f_sdb_embed_device(c_xwb_etherbone_sdb,        x"00307000"),   -- Etherbone control port
      c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00308000"),   -- Position Calc Core 1 control port
      c_slv_fmc130m_4ch_1_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00310000"),   -- FMC130m_4ch control 1 port
@@ -659,33 +545,6 @@ architecture rtl of dbe_bpm_dsp is
    -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
   signal sys_clk_gen_bufg                   : std_logic;
-
-  -- Ethernet MAC signals
-  signal ethmac_int                         : std_logic;
-  signal ethmac_md_in                       : std_logic;
-  signal ethmac_md_out                      : std_logic;
-  signal ethmac_md_oe                       : std_logic;
-
-  signal mtxd_pad_int                       : std_logic_vector(3 downto 0);
-  signal mtxen_pad_int                      : std_logic;
-  signal mtxerr_pad_int                     : std_logic;
-  signal mdc_pad_int                        : std_logic;
-
-  -- Ethrnet MAC adapter signals
-  signal irq_rx_done                        : std_logic;
-  signal irq_tx_done                        : std_logic;
-
-  -- Etherbone signals
-  signal wb_ebone_out                       : t_wishbone_master_out;
-  signal wb_ebone_in                        : t_wishbone_master_in;
-
-  signal eb_src_i                           : t_wrf_source_in;
-  signal eb_src_o                           : t_wrf_source_out;
-  signal eb_snk_i                           : t_wrf_sink_in;
-  signal eb_snk_o                           : t_wrf_sink_out;
-
-  -- DMA signals
-  signal dma_int                            : std_logic;
 
   -- FMC130m_4ch 1 Signals
   signal wbs_fmc1_in_array                  : t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
@@ -1240,7 +1099,7 @@ begin
   );
 
   -- The LM32 is master 0+1
-  lm32_rstn                                 <= clk_sys_rstn;
+  --lm32_rstn                                 <= clk_sys_rstn;
 
   --cmp_lm32 : xwb_lm32
   --generic map(
@@ -1256,15 +1115,10 @@ begin
   --  iwb_i                                   => cbar_slave_o(1)
   --);
 
-  -- Interrupt '0' is Ethmac.
-  -- Interrupt '1' is DMA completion.
-  -- Interrupt '2' is Button(0).
-  -- Interrupt '3' is Ethernet Adapter RX completion.
-  -- Interrupt '4' is Ethernet Adapter TX completion.
-  -- Interrupts 31 downto 5 are disabled
+  -- Interrupt '0' is Button(0).
+  -- Interrupts 31 downto 1 are disabled
 
-  --lm32_interrupt <= (0 => ethmac_int, 1 => dma_int, 2 => not buttons_i(0), 3 => irq_rx_done,
-  --                    4 => irq_tx_done, others => '0');
+  --lm32_interrupt <= (0 => not buttons_i(0), others => '0');
 
   ----------------------------------
   --         PCIe Core            --
@@ -1382,27 +1236,13 @@ begin
     wb_master_o                               => cbar_slave_i(c_ma_rs232_syscon_id)
   );
 
-  -- A DMA controller is master 2+3, slave 3, and interrupt 1
-  cmp_dma : xwb_dma
-  port map(
-    clk_i                                   => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-    slave_i                                 => cbar_master_o(c_slv_dma_id),
-    slave_o                                 => cbar_master_i(c_slv_dma_id),
-    r_master_i                              => cbar_slave_o(c_ma_dma_read_id),
-    r_master_o                              => cbar_slave_i(c_ma_dma_read_id),
-    w_master_i                              => cbar_slave_o(c_ma_dma_write_id),
-    w_master_o                              => cbar_slave_i(c_ma_dma_write_id),
-    interrupt_o                             => dma_int
-  );
-
-  -- Slave 0+1 is the RAM. Load a input file containing the embedded software
+  ----------------------------------------------------------------------
+  --                            SYS DPRAM                             --
+  ----------------------------------------------------------------------
+  -- Generic System DPRAM
   cmp_ram : xwb_dpram
   generic map(
-    g_size                                  => c_dpram_size, -- must agree with sw/target/lm32/ram.ld:LENGTH / 4
-    --g_init_file                             => "../../../embedded-sw/dbe.ram",
-    --"../../top/ml_605/dbe_bpm_simple/sw/main.ram",
-    --g_must_have_init_file                   => true,
+    g_size                                  => c_dpram_size,
     g_must_have_init_file                   => false,
     g_slave1_interface_mode                 => PIPELINED,
     g_slave2_interface_mode                 => PIPELINED,
@@ -1420,152 +1260,10 @@ begin
     slave2_o                                => cbar_master_i(c_slv_dpram_sys_port1_id)
   );
 
-  -- Slave 2 is the RAM Buffer for Ethernet MAC.
-  cmp_ethmac_buf_ram : xwb_dpram
-  generic map(
-    g_size                                  => c_dpram_ethbuf_size,
-    g_init_file                             => "",
-    g_must_have_init_file                   => false,
-    g_slave1_interface_mode                 => CLASSIC,
-    --g_slave2_interface_mode                 => PIPELINED,
-    g_slave1_granularity                    => BYTE
-    --g_slave2_granularity                    => BYTE
-  )
-  port map(
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-    -- First port connected to the crossbar
-    slave1_i                                => cbar_master_o(c_slv_dpram_ethbuf_id),
-    slave1_o                                => cbar_master_i(c_slv_dpram_ethbuf_id),
-    -- Second port connected to the crossbar
-    slave2_i                                => cc_dummy_slave_in, -- CYC always low
-    slave2_o                                => open
-  );
-
-  ------- The Ethernet MAC is master 4, slave 4
-  -----cmp_xwb_ethmac : xwb_ethmac
-  -----generic map (
-  -----  --g_ma_interface_mode                     => PIPELINED,
-  -----  g_ma_interface_mode                     => CLASSIC, -- NOT used for now
-  -----  --g_ma_address_granularity                => WORD,
-  -----  g_ma_address_granularity                => BYTE,    -- NOT used for now
-  -----  g_sl_interface_mode                     => PIPELINED,
-  ----  --g_sl_interface_mode                     => CLASSIC,
-  -----  --g_sl_address_granularity                => WORD
-  -----  g_sl_address_granularity                => BYTE
-  -----)
-  -----port map(
-  -----  -- WISHBONE common
-  -----  wb_clk_i                                => clk_sys,
-  -----  wb_rst_i                                => clk_sys_rst,
-
-  -----  -- WISHBONE slave
-  -----  wb_slave_in                             => cbar_master_o(c_slv_ethmac_id),
-  -----  wb_slave_out                            => cbar_master_i(c_slv_ethmac_id),
-
-  -----  -- WISHBONE master
-  -----  wb_master_in                            => cbar_slave_o(c_ma_ethmac_id),
-  -----  wb_master_out                           => cbar_slave_i(c_ma_ethmac_id),
-
-  -----  -- PHY TX
-  -----  mtx_clk_pad_i                           => mtx_clk_pad_i,
-  -----  --mtxd_pad_o                              => mtxd_pad_o,
-  -----  mtxd_pad_o                              => mtxd_pad_int,
-  -----  --mtxen_pad_o                             => mtxen_pad_o,
-  -----  mtxen_pad_o                             => mtxen_pad_int,
-  -----  --mtxerr_pad_o                            => mtxerr_pad_o,
-  -----  mtxerr_pad_o                            => mtxerr_pad_int,
-
-  -----  -- PHY RX
-  -----  mrx_clk_pad_i                           => mrx_clk_pad_i,
-  -----  mrxd_pad_i                              => mrxd_pad_i,
-  -----  mrxdv_pad_i                             => mrxdv_pad_i,
-  -----  mrxerr_pad_i                            => mrxerr_pad_i,
-  -----  mcoll_pad_i                             => mcoll_pad_i,
-  -----  mcrs_pad_i                              => mcrs_pad_i,
-
-  -----  -- MII
-  -----  --mdc_pad_o                               => mdc_pad_o,
-  -----  mdc_pad_o                               => mdc_pad_int,
-  -----  md_pad_i                                => ethmac_md_in,
-  -----  md_pad_o                                => ethmac_md_out,
-  -----  md_padoe_o                              => ethmac_md_oe,
-
-  -----  -- Interrupt
-  -----  int_o                                   => ethmac_int
-  -----);
-
-  --------- Tri-state buffer for MII config
-  -----md_pad_b <= ethmac_md_out when ethmac_md_oe = '1' else 'Z';
-  -----ethmac_md_in <= md_pad_b;
-
-  -----mtxd_pad_o                                <=  mtxd_pad_int;
-  -----mtxen_pad_o                               <=  mtxen_pad_int;
-  -----mtxerr_pad_o                              <=  mtxerr_pad_int;
-  -----mdc_pad_o                                 <=  mdc_pad_int;
-  cbar_master_i(c_slv_ethmac_id) <= cc_dummy_slave_out;
-  cbar_slave_i(c_ma_ethmac_id) <= cc_dummy_slave_in;
-
-  --The Ethernet MAC Adapter is master 5+6, slave 5
-  cmp_xwb_ethmac_adapter : xwb_ethmac_adapter
-  port map(
-    clk_i                                   => clk_sys,
-    rstn_i                                  => clk_sys_rstn,
-
-    wb_slave_o                              => cbar_master_i(c_slv_ethmac_adapt_id),
-    wb_slave_i                              => cbar_master_o(c_slv_ethmac_adapt_id),
-
-    tx_ram_o                                => cbar_slave_i(c_ma_ethmac_adapt_read_id),
-    tx_ram_i                                => cbar_slave_o(c_ma_ethmac_adapt_read_id),
-
-    rx_ram_o                                => cbar_slave_i(c_ma_ethmac_adapt_write_id),
-    rx_ram_i                                => cbar_slave_o(c_ma_ethmac_adapt_write_id),
-
-    rx_eb_o                                 => eb_snk_i,
-    rx_eb_i                                 => eb_snk_o,
-
-    tx_eb_o                                 => eb_src_i,
-    tx_eb_i                                 => eb_src_o,
-
-    irq_tx_done_o                           => irq_tx_done,
-    irq_rx_done_o                           => irq_rx_done
-  );
-
-  -- The Etherbone is slave 6
-  cmp_eb_slave_core : eb_slave_core
-  generic map(
-    g_sdb_address                           => x"00000000" & c_sdb_address
-  )
-  port map
-  (
-    clk_i                                   => clk_sys,
-    nRst_i                                  => clk_sys_rstn,
-
-    -- EB streaming sink
-    snk_i                                   => eb_snk_i,
-    snk_o                                   => eb_snk_o,
-
-    -- EB streaming source
-    src_i                                   => eb_src_i,
-    src_o                                   => eb_src_o,
-
-    -- WB slave - Cfg IF
-    cfg_slave_o                             => cbar_master_i(c_slv_etherbone_id),
-    cfg_slave_i                             => cbar_master_o(c_slv_etherbone_id),
-
-    -- WB master - Bus IF
-    master_o                                => wb_ebone_out,
-    master_i                                => wb_ebone_in
-  );
-
-  cbar_slave_i(c_ma_etherbone_id)          <= wb_ebone_out;
-  wb_ebone_in                               <= cbar_slave_o(c_ma_etherbone_id);
-
   ----------------------------------------------------------------------
   --                      FMC 130M_4CH 1 Core                         --
   ----------------------------------------------------------------------
 
-  -- The FMC130M_4CH is slave 8
   cmp1_xwb_fmc130m_4ch : xwb_fmc130m_4ch
   generic map(
     g_fpga_device                           => "7SERIES",
@@ -1730,8 +1428,6 @@ begin
 
   --fmc1_mmcm_lock_led_o                       <= fmc1_mmcm_lock_int;
   --fmc1_pll_status_led_o                      <= fmc1_pll_status_int;
-  ----------------------fmc_mmcm_lock_led_o                       <= fmc1_mmcm_lock_int;
-  ----------------------fmc_pll_status_led_o                      <= fmc1_pll_status_int;
 
   fmc1_led1_o                                <= fmc1_led1_int;
   fmc1_led2_o                                <= fmc1_led2_int;
@@ -1759,7 +1455,6 @@ begin
   --                      FMC 130M_4CH 2 Core                         --
   ----------------------------------------------------------------------
 
-  -- The FMC130M_4CH 2 is slave 11
   cmp2_xwb_fmc130m_4ch : xwb_fmc130m_4ch
   generic map(
     g_fpga_device                           => "7SERIES",
@@ -1948,7 +1643,6 @@ begin
   --                      DSP Chain 1 Core                            --
   ----------------------------------------------------------------------
 
-  -- Position calc core is slave 7
   cmp1_xwb_position_calc_core_ns : xwb_position_calc_core_ns
   generic map (
     g_interface_mode                        => PIPELINED,
@@ -2114,17 +1808,16 @@ begin
     dbg_adc_ch3_cond_o                      => dsp1_dbg_adc_ch3_cond
   );
 
-  ------flag1_o                                   <= dsp1_flag1_int;
-  ------flag2_o                                   <= dsp1_flag2_int;
-  -------- There is no clk_swap2x_o, so we just output the same as clk_swap_o
-  ------clk_swap_o                                <= dsp1_clk_rffe_swap;
-  ------clk_swap2x_o                              <= dsp1_clk_rffe_swap;
+  --flag1_o                                   <= dsp1_flag1_int;
+  --flag2_o                                   <= dsp1_flag2_int;
+  ---- There is no clk_swap2x_o, so we just output the same as clk_swap_o
+  --clk_swap_o                                <= dsp1_clk_rffe_swap;
+  --clk_swap2x_o                              <= dsp1_clk_rffe_swap;
 
   ----------------------------------------------------------------------
   --                      DSP Chain 2 Core                            --
   ----------------------------------------------------------------------
 
-  -- Position calc core is slave 10
   cmp2_xwb_position_calc_core_ns : xwb_position_calc_core_ns
   generic map (
     g_interface_mode                        => PIPELINED,
@@ -2301,7 +1994,6 @@ begin
   --                      Peripherals Core                            --
   ----------------------------------------------------------------------
 
-  -- The board peripherals components is slave 13
   cmp_xwb_dbe_periph : xwb_dbe_periph
   generic map(
     -- NOT used!
@@ -2580,7 +2272,6 @@ begin
   acq2_chan_array(c_acq_monit_1_pos_id).dvalid    <= dsp2_pos_monit_1_valid;
   acq2_chan_array(c_acq_monit_1_pos_id).trig      <= '0';
 
-  -- The xwb_acq_core is slave 9
   cmp_xwb_acq_core_2_to_1_mux : xwb_acq_core_2_to_1_mux
   generic map
   (
