@@ -513,149 +513,149 @@ architecture rtl of ddr_core_wrapper is
 
   component ddr_core
     generic(
-      BANK_WIDTH            : integer;
-      CK_WIDTH              : integer;
-      COL_WIDTH             : integer;
-      CS_WIDTH              : integer;
-      nCS_PER_RANK          : integer;
-      CKE_WIDTH             : integer;
-      DATA_BUF_ADDR_WIDTH   : integer;
-      DQ_CNT_WIDTH          : integer;
-      DQ_PER_DM             : integer;
-      DM_WIDTH              : integer;
-      DQ_WIDTH              : integer;
-      DQS_WIDTH             : integer;
-      DQS_CNT_WIDTH         : integer;
-      DRAM_WIDTH            : integer;
-      ECC                   : string;
-      DATA_WIDTH            : integer;
-      ECC_TEST              : string;
-      PAYLOAD_WIDTH         : integer;
-      ECC_WIDTH             : integer;
-      MC_ERR_ADDR_WIDTH     : integer;
-      nBANK_MACHS           : integer;
-      RANKS                 : integer;
-      ODT_WIDTH             : integer;
-      ROW_WIDTH             : integer;
-      ADDR_WIDTH            : integer;
-      USE_CS_PORT           : integer;
-      USE_DM_PORT           : integer;
-      USE_ODT_PORT          : integer;
-      PHY_CONTROL_MASTER_BANK : integer;
-      AL                    : string;
-      nAL                   : integer;
-      BURST_MODE            : string;
-      BURST_TYPE            : string;
-      CL                    : integer;
-      CWL                   : integer;
-      OUTPUT_DRV            : string;
-      RTT_NOM               : string;
-      RTT_WR                : string;
-      ADDR_CMD_MODE         : string;
-      REG_CTRL              : string;
-      CA_MIRROR             : string;
-      CLKIN_PERIOD          : integer;
-      CLKFBOUT_MULT         : integer;
-      DIVCLK_DIVIDE         : integer;
-      CLKOUT0_PHASE         : real;
-      CLKOUT0_DIVIDE        : integer;
-      CLKOUT1_DIVIDE        : integer;
-      CLKOUT2_DIVIDE        : integer;
-      CLKOUT3_DIVIDE        : integer;
-      tCKE                  : integer;
-      tFAW                  : integer;
-      tRAS                  : integer;
-      tRCD                  : integer;
-      tREFI                 : integer;
-      tRFC                  : integer;
-      tRP                   : integer;
-      tRRD                  : integer;
-      tRTP                  : integer;
-      tWTR                  : integer;
-      tZQI                  : integer;
-      tZQCS                 : integer;
-      tPRDI                 : integer;
+    --  BANK_WIDTH            : integer;
+    --  CK_WIDTH              : integer;
+    --  COL_WIDTH             : integer;
+    --  CS_WIDTH              : integer;
+    --  nCS_PER_RANK          : integer;
+    --  CKE_WIDTH             : integer;
+    --  DATA_BUF_ADDR_WIDTH   : integer;
+    --  DQ_CNT_WIDTH          : integer;
+    --  DQ_PER_DM             : integer;
+    --  DM_WIDTH              : integer;
+    --  DQ_WIDTH              : integer;
+    --  DQS_WIDTH             : integer;
+    --  DQS_CNT_WIDTH         : integer;
+    --  DRAM_WIDTH            : integer;
+    --  ECC                   : string;
+    --  DATA_WIDTH            : integer;
+    --  ECC_TEST              : string;
+    --  PAYLOAD_WIDTH         : integer;
+    --  ECC_WIDTH             : integer;
+    --  MC_ERR_ADDR_WIDTH     : integer;
+    --  nBANK_MACHS           : integer;
+    --  RANKS                 : integer;
+    --  ODT_WIDTH             : integer;
+    --  ROW_WIDTH             : integer;
+    --  ADDR_WIDTH            : integer;
+    --  USE_CS_PORT           : integer;
+    --  USE_DM_PORT           : integer;
+    --  USE_ODT_PORT          : integer;
+    --  PHY_CONTROL_MASTER_BANK : integer;
+    --  AL                    : string;
+    --  nAL                   : integer;
+    --  BURST_MODE            : string;
+    --  BURST_TYPE            : string;
+    --  CL                    : integer;
+    --  CWL                   : integer;
+    --  OUTPUT_DRV            : string;
+    --  RTT_NOM               : string;
+    --  RTT_WR                : string;
+    --  ADDR_CMD_MODE         : string;
+    --  REG_CTRL              : string;
+    --  CA_MIRROR             : string;
+    --  CLKIN_PERIOD          : integer;
+    --  CLKFBOUT_MULT         : integer;
+    --  DIVCLK_DIVIDE         : integer;
+    --  CLKOUT0_PHASE         : real;
+    --  CLKOUT0_DIVIDE        : integer;
+    --  CLKOUT1_DIVIDE        : integer;
+    --  CLKOUT2_DIVIDE        : integer;
+    --  CLKOUT3_DIVIDE        : integer;
+    --  tCKE                  : integer;
+    --  tFAW                  : integer;
+    --  tRAS                  : integer;
+    --  tRCD                  : integer;
+    --  tREFI                 : integer;
+    --  tRFC                  : integer;
+    --  tRP                   : integer;
+    --  tRRD                  : integer;
+    --  tRTP                  : integer;
+    --  tWTR                  : integer;
+    --  tZQI                  : integer;
+    --  tZQCS                 : integer;
+    --  tPRDI                 : integer;
       SIM_BYPASS_INIT_CAL   : string;
       SIMULATION            : string;
-      BYTE_LANES_B0         : std_logic_vector(3 downto 0);
-      BYTE_LANES_B1         : std_logic_vector(3 downto 0);
-      BYTE_LANES_B2         : std_logic_vector(3 downto 0);
-      BYTE_LANES_B3         : std_logic_vector(3 downto 0);
-      BYTE_LANES_B4         : std_logic_vector(3 downto 0);
-      DATA_CTL_B0           : std_logic_vector(3 downto 0);
-      DATA_CTL_B1           : std_logic_vector(3 downto 0);
-      DATA_CTL_B2           : std_logic_vector(3 downto 0);
-      DATA_CTL_B3           : std_logic_vector(3 downto 0);
-      DATA_CTL_B4           : std_logic_vector(3 downto 0);
-      PHY_0_BITLANES        : std_logic_vector(47 downto 0);
-      PHY_1_BITLANES        : std_logic_vector(47 downto 0);
-      PHY_2_BITLANES        : std_logic_vector(47 downto 0);
-      CK_BYTE_MAP           : std_logic_vector(143 downto 0);
-      ADDR_MAP              : std_logic_vector(191 downto 0);
-      BANK_MAP              : std_logic_vector(35 downto 0);
-      CAS_MAP               : std_logic_vector(11 downto 0);
-      CKE_ODT_BYTE_MAP      : std_logic_vector(7 downto 0);
-      CKE_MAP               : std_logic_vector(95 downto 0);
-      ODT_MAP               : std_logic_vector(95 downto 0);
-      CS_MAP                : std_logic_vector(119 downto 0);
-      PARITY_MAP            : std_logic_vector(11 downto 0);
-      RAS_MAP               : std_logic_vector(11 downto 0);
-      WE_MAP                : std_logic_vector(11 downto 0);
-      DQS_BYTE_MAP          : std_logic_vector(143 downto 0);
-      DATA0_MAP             : std_logic_vector(95 downto 0);
-      DATA1_MAP             : std_logic_vector(95 downto 0);
-      DATA2_MAP             : std_logic_vector(95 downto 0);
-      DATA3_MAP             : std_logic_vector(95 downto 0);
-      DATA4_MAP             : std_logic_vector(95 downto 0);
-      DATA5_MAP             : std_logic_vector(95 downto 0);
-      DATA6_MAP             : std_logic_vector(95 downto 0);
-      DATA7_MAP             : std_logic_vector(95 downto 0);
-      DATA8_MAP             : std_logic_vector(95 downto 0);
-      DATA9_MAP             : std_logic_vector(95 downto 0);
-      DATA10_MAP            : std_logic_vector(95 downto 0);
-      DATA11_MAP            : std_logic_vector(95 downto 0);
-      DATA12_MAP            : std_logic_vector(95 downto 0);
-      DATA13_MAP            : std_logic_vector(95 downto 0);
-      DATA14_MAP            : std_logic_vector(95 downto 0);
-      DATA15_MAP            : std_logic_vector(95 downto 0);
-      DATA16_MAP            : std_logic_vector(95 downto 0);
-      DATA17_MAP            : std_logic_vector(95 downto 0);
-      MASK0_MAP             : std_logic_vector(107 downto 0);
-      MASK1_MAP             : std_logic_vector(107 downto 0);
-      SLOT_0_CONFIG         : std_logic_vector(7 downto 0);
-      SLOT_1_CONFIG         : std_logic_vector(7 downto 0);
-      MEM_ADDR_ORDER        : string;
-      IODELAY_HP_MODE       : string;
-      IBUF_LPWR_MODE        : string;
-      DATA_IO_IDLE_PWRDWN   : string;
-      BANK_TYPE             : string;
-      DATA_IO_PRIM_TYPE     : string;
-      CKE_ODT_AUX           : string;
-      USER_REFRESH          : string;
-      WRLVL                 : string;
-      ORDERING              : string;
-      CALIB_ROW_ADD         : std_logic_vector(15 downto 0);
-      CALIB_COL_ADD         : std_logic_vector(11 downto 0);
-      CALIB_BA_ADD          : std_logic_vector(2 downto 0);
-      TCQ                   : integer;
-      CMD_PIPE_PLUS1        : string;
-      tCK                   : integer;
-      nCK_PER_CLK           : integer;
-      DIFF_TERM_SYSCLK      : string;
-      DEBUG_PORT            : string;
-      TEMP_MON_CONTROL      : string;
+    --  BYTE_LANES_B0         : std_logic_vector(3 downto 0);
+    --  BYTE_LANES_B1         : std_logic_vector(3 downto 0);
+    --  BYTE_LANES_B2         : std_logic_vector(3 downto 0);
+    --  BYTE_LANES_B3         : std_logic_vector(3 downto 0);
+    --  BYTE_LANES_B4         : std_logic_vector(3 downto 0);
+    --  DATA_CTL_B0           : std_logic_vector(3 downto 0);
+    --  DATA_CTL_B1           : std_logic_vector(3 downto 0);
+    --  DATA_CTL_B2           : std_logic_vector(3 downto 0);
+    --  DATA_CTL_B3           : std_logic_vector(3 downto 0);
+    --  DATA_CTL_B4           : std_logic_vector(3 downto 0);
+    --  PHY_0_BITLANES        : std_logic_vector(47 downto 0);
+    --  PHY_1_BITLANES        : std_logic_vector(47 downto 0);
+    --  PHY_2_BITLANES        : std_logic_vector(47 downto 0);
+    --  CK_BYTE_MAP           : std_logic_vector(143 downto 0);
+    --  ADDR_MAP              : std_logic_vector(191 downto 0);
+    --  BANK_MAP              : std_logic_vector(35 downto 0);
+    --  CAS_MAP               : std_logic_vector(11 downto 0);
+    --  CKE_ODT_BYTE_MAP      : std_logic_vector(7 downto 0);
+    --  CKE_MAP               : std_logic_vector(95 downto 0);
+    --  ODT_MAP               : std_logic_vector(95 downto 0);
+    --  CS_MAP                : std_logic_vector(119 downto 0);
+    --  PARITY_MAP            : std_logic_vector(11 downto 0);
+    --  RAS_MAP               : std_logic_vector(11 downto 0);
+    --  WE_MAP                : std_logic_vector(11 downto 0);
+    --  DQS_BYTE_MAP          : std_logic_vector(143 downto 0);
+    --  DATA0_MAP             : std_logic_vector(95 downto 0);
+    --  DATA1_MAP             : std_logic_vector(95 downto 0);
+    --  DATA2_MAP             : std_logic_vector(95 downto 0);
+    --  DATA3_MAP             : std_logic_vector(95 downto 0);
+    --  DATA4_MAP             : std_logic_vector(95 downto 0);
+    --  DATA5_MAP             : std_logic_vector(95 downto 0);
+    --  DATA6_MAP             : std_logic_vector(95 downto 0);
+    --  DATA7_MAP             : std_logic_vector(95 downto 0);
+    --  DATA8_MAP             : std_logic_vector(95 downto 0);
+    --  DATA9_MAP             : std_logic_vector(95 downto 0);
+    --  DATA10_MAP            : std_logic_vector(95 downto 0);
+    --  DATA11_MAP            : std_logic_vector(95 downto 0);
+    --  DATA12_MAP            : std_logic_vector(95 downto 0);
+    --  DATA13_MAP            : std_logic_vector(95 downto 0);
+    --  DATA14_MAP            : std_logic_vector(95 downto 0);
+    --  DATA15_MAP            : std_logic_vector(95 downto 0);
+    --  DATA16_MAP            : std_logic_vector(95 downto 0);
+    --  DATA17_MAP            : std_logic_vector(95 downto 0);
+    --  MASK0_MAP             : std_logic_vector(107 downto 0);
+    --  MASK1_MAP             : std_logic_vector(107 downto 0);
+    --  SLOT_0_CONFIG         : std_logic_vector(7 downto 0);
+    --  SLOT_1_CONFIG         : std_logic_vector(7 downto 0);
+    --  MEM_ADDR_ORDER        : string;
+    --  IODELAY_HP_MODE       : string;
+    --  IBUF_LPWR_MODE        : string;
+    --  DATA_IO_IDLE_PWRDWN   : string;
+    --  BANK_TYPE             : string;
+    --  DATA_IO_PRIM_TYPE     : string;
+    --  CKE_ODT_AUX           : string;
+    --  USER_REFRESH          : string;
+    --  WRLVL                 : string;
+    --  ORDERING              : string;
+    --  CALIB_ROW_ADD         : std_logic_vector(15 downto 0);
+    --  CALIB_COL_ADD         : std_logic_vector(11 downto 0);
+    --  CALIB_BA_ADD          : std_logic_vector(2 downto 0);
+    --  TCQ                   : integer;
+    --  CMD_PIPE_PLUS1        : string;
+    --  tCK                   : integer;
+    --  nCK_PER_CLK           : integer;
+    --  DIFF_TERM_SYSCLK      : string;
+    --  DEBUG_PORT            : string;
+    --  TEMP_MON_CONTROL      : string;
 
 
-      IODELAY_GRP           : string;
-      SYSCLK_TYPE           : string;
-      REFCLK_TYPE           : string;
-      SYS_RST_PORT          : string;
-      REFCLK_FREQ           : real;
-      DIFF_TERM_REFCLK      : string;
+    --  IODELAY_GRP           : string;
+    --  SYSCLK_TYPE           : string;
+    --  REFCLK_TYPE           : string;
+    --  SYS_RST_PORT          : string;
+    --  REFCLK_FREQ           : real;
+    --  DIFF_TERM_REFCLK      : string;
 
-      DRAM_TYPE             : string;
-      CAL_WIDTH             : string;
-      STARVE_LIMIT          : integer;
+    --  DRAM_TYPE             : string;
+    --  CAL_WIDTH             : string;
+    --  STARVE_LIMIT          : integer;
 
 
       RST_ACT_LOW           : integer
@@ -715,150 +715,150 @@ begin
 
   u_ddr_core : ddr_core
   generic map (
-    TCQ                              => TCQ,
-    ADDR_CMD_MODE                    => ADDR_CMD_MODE,
-    AL                               => AL,
-    PAYLOAD_WIDTH                    => PAYLOAD_WIDTH,
-    BANK_WIDTH                       => BANK_WIDTH,
-    BURST_MODE                       => BURST_MODE,
-    BURST_TYPE                       => BURST_TYPE,
-    CA_MIRROR                        => CA_MIRROR,
-    CK_WIDTH                         => CK_WIDTH,
-    COL_WIDTH                        => COL_WIDTH,
-    CMD_PIPE_PLUS1                   => CMD_PIPE_PLUS1,
-    CS_WIDTH                         => CS_WIDTH,
-    nCS_PER_RANK                     => nCS_PER_RANK,
-    CKE_WIDTH                        => CKE_WIDTH,
-    DATA_WIDTH                       => DATA_WIDTH,
-    DATA_BUF_ADDR_WIDTH              => DATA_BUF_ADDR_WIDTH,
-    DQ_CNT_WIDTH                     => DQ_CNT_WIDTH,
-    DQ_PER_DM                        => DQ_PER_DM,
-    DQ_WIDTH                         => DQ_WIDTH,
-    DQS_CNT_WIDTH                    => DQS_CNT_WIDTH,
-    DQS_WIDTH                        => DQS_WIDTH,
-    DRAM_WIDTH                       => DRAM_WIDTH,
-    ECC                              => ECC,
-    ECC_WIDTH                        => ECC_WIDTH,
-    ECC_TEST                         => ECC_TEST,
-    MC_ERR_ADDR_WIDTH                => MC_ERR_ADDR_WIDTH,
-    nAL                              => nAL,
-    nBANK_MACHS                      => nBANK_MACHS,
-    CKE_ODT_AUX                      => CKE_ODT_AUX,
-    ORDERING                         => ORDERING,
-    OUTPUT_DRV                       => OUTPUT_DRV,
-    IBUF_LPWR_MODE                   => IBUF_LPWR_MODE,
-    IODELAY_HP_MODE                  => IODELAY_HP_MODE,
-    DATA_IO_IDLE_PWRDWN              => DATA_IO_IDLE_PWRDWN,
-    BANK_TYPE                        => BANK_TYPE,
-    DATA_IO_PRIM_TYPE                => DATA_IO_PRIM_TYPE,
-    REG_CTRL                         => REG_CTRL,
-    RTT_NOM                          => RTT_NOM,
-    RTT_WR                           => RTT_WR,
-    CL                               => CL,
-    CWL                              => CWL,
-    tCKE                             => tCKE,
-    tFAW                             => tFAW,
-    tPRDI                            => tPRDI,
-    tRAS                             => tRAS,
-    tRCD                             => tRCD,
-    tREFI                            => tREFI,
-    tRFC                             => tRFC,
-    tRP                              => tRP,
-    tRRD                             => tRRD,
-    tRTP                             => tRTP,
-    tWTR                             => tWTR,
-    tZQI                             => tZQI,
-    tZQCS                            => tZQCS,
-    USER_REFRESH                     => USER_REFRESH,
-    WRLVL                            => WRLVL,
-    DEBUG_PORT                       => DEBUG_PORT,
-    RANKS                            => RANKS,
-    ODT_WIDTH                        => ODT_WIDTH,
-    ROW_WIDTH                        => ROW_WIDTH,
-    ADDR_WIDTH                       => ADDR_WIDTH,
+    --TCQ                              => TCQ,
+    --ADDR_CMD_MODE                    => ADDR_CMD_MODE,
+    --AL                               => AL,
+    --PAYLOAD_WIDTH                    => PAYLOAD_WIDTH,
+    --BANK_WIDTH                       => BANK_WIDTH,
+    --BURST_MODE                       => BURST_MODE,
+    --BURST_TYPE                       => BURST_TYPE,
+    --CA_MIRROR                        => CA_MIRROR,
+    --CK_WIDTH                         => CK_WIDTH,
+    --COL_WIDTH                        => COL_WIDTH,
+    --CMD_PIPE_PLUS1                   => CMD_PIPE_PLUS1,
+    --CS_WIDTH                         => CS_WIDTH,
+    --nCS_PER_RANK                     => nCS_PER_RANK,
+    --CKE_WIDTH                        => CKE_WIDTH,
+    --DATA_WIDTH                       => DATA_WIDTH,
+    --DATA_BUF_ADDR_WIDTH              => DATA_BUF_ADDR_WIDTH,
+    --DQ_CNT_WIDTH                     => DQ_CNT_WIDTH,
+    --DQ_PER_DM                        => DQ_PER_DM,
+    --DQ_WIDTH                         => DQ_WIDTH,
+    --DQS_CNT_WIDTH                    => DQS_CNT_WIDTH,
+    --DQS_WIDTH                        => DQS_WIDTH,
+    --DRAM_WIDTH                       => DRAM_WIDTH,
+    --ECC                              => ECC,
+    --ECC_WIDTH                        => ECC_WIDTH,
+    --ECC_TEST                         => ECC_TEST,
+    --MC_ERR_ADDR_WIDTH                => MC_ERR_ADDR_WIDTH,
+    --nAL                              => nAL,
+    --nBANK_MACHS                      => nBANK_MACHS,
+    --CKE_ODT_AUX                      => CKE_ODT_AUX,
+    --ORDERING                         => ORDERING,
+    --OUTPUT_DRV                       => OUTPUT_DRV,
+    --IBUF_LPWR_MODE                   => IBUF_LPWR_MODE,
+    --IODELAY_HP_MODE                  => IODELAY_HP_MODE,
+    --DATA_IO_IDLE_PWRDWN              => DATA_IO_IDLE_PWRDWN,
+    --BANK_TYPE                        => BANK_TYPE,
+    --DATA_IO_PRIM_TYPE                => DATA_IO_PRIM_TYPE,
+    --REG_CTRL                         => REG_CTRL,
+    --RTT_NOM                          => RTT_NOM,
+    --RTT_WR                           => RTT_WR,
+    --CL                               => CL,
+    --CWL                              => CWL,
+    --tCKE                             => tCKE,
+    --tFAW                             => tFAW,
+    --tPRDI                            => tPRDI,
+    --tRAS                             => tRAS,
+    --tRCD                             => tRCD,
+    --tREFI                            => tREFI,
+    --tRFC                             => tRFC,
+    --tRP                              => tRP,
+    --tRRD                             => tRRD,
+    --tRTP                             => tRTP,
+    --tWTR                             => tWTR,
+    --tZQI                             => tZQI,
+    --tZQCS                            => tZQCS,
+    --USER_REFRESH                     => USER_REFRESH,
+    --WRLVL                            => WRLVL,
+    --DEBUG_PORT                       => DEBUG_PORT,
+    --RANKS                            => RANKS,
+    --ODT_WIDTH                        => ODT_WIDTH,
+    --ROW_WIDTH                        => ROW_WIDTH,
+    --ADDR_WIDTH                       => ADDR_WIDTH,
     SIM_BYPASS_INIT_CAL              => SIM_BYPASS_INIT_CAL,
     SIMULATION                       => SIMULATION,
-    BYTE_LANES_B0                    => BYTE_LANES_B0,
-    BYTE_LANES_B1                    => BYTE_LANES_B1,
-    BYTE_LANES_B2                    => BYTE_LANES_B2,
-    BYTE_LANES_B3                    => BYTE_LANES_B3,
-    BYTE_LANES_B4                    => BYTE_LANES_B4,
-    DATA_CTL_B0                      => DATA_CTL_B0,
-    DATA_CTL_B1                      => DATA_CTL_B1,
-    DATA_CTL_B2                      => DATA_CTL_B2,
-    DATA_CTL_B3                      => DATA_CTL_B3,
-    DATA_CTL_B4                      => DATA_CTL_B4,
-    PHY_0_BITLANES                   => PHY_0_BITLANES,
-    PHY_1_BITLANES                   => PHY_1_BITLANES,
-    PHY_2_BITLANES                   => PHY_2_BITLANES,
-    CK_BYTE_MAP                      => CK_BYTE_MAP,
-    ADDR_MAP                         => ADDR_MAP,
-    BANK_MAP                         => BANK_MAP,
-    CAS_MAP                          => CAS_MAP,
-    CKE_ODT_BYTE_MAP                 => CKE_ODT_BYTE_MAP,
-    CKE_MAP                          => CKE_MAP,
-    ODT_MAP                          => ODT_MAP,
-    CS_MAP                           => CS_MAP,
-    PARITY_MAP                       => PARITY_MAP,
-    RAS_MAP                          => RAS_MAP,
-    WE_MAP                           => WE_MAP,
-    DQS_BYTE_MAP                     => DQS_BYTE_MAP,
-    DATA0_MAP                        => DATA0_MAP,
-    DATA1_MAP                        => DATA1_MAP,
-    DATA2_MAP                        => DATA2_MAP,
-    DATA3_MAP                        => DATA3_MAP,
-    DATA4_MAP                        => DATA4_MAP,
-    DATA5_MAP                        => DATA5_MAP,
-    DATA6_MAP                        => DATA6_MAP,
-    DATA7_MAP                        => DATA7_MAP,
-    DATA8_MAP                        => DATA8_MAP,
-    DATA9_MAP                        => DATA9_MAP,
-    DATA10_MAP                       => DATA10_MAP,
-    DATA11_MAP                       => DATA11_MAP,
-    DATA12_MAP                       => DATA12_MAP,
-    DATA13_MAP                       => DATA13_MAP,
-    DATA14_MAP                       => DATA14_MAP,
-    DATA15_MAP                       => DATA15_MAP,
-    DATA16_MAP                       => DATA16_MAP,
-    DATA17_MAP                       => DATA17_MAP,
-    MASK0_MAP                        => MASK0_MAP,
-    MASK1_MAP                        => MASK1_MAP,
-    CALIB_ROW_ADD                    => CALIB_ROW_ADD,
-    CALIB_COL_ADD                    => CALIB_COL_ADD,
-    CALIB_BA_ADD                     => CALIB_BA_ADD,
-    SLOT_0_CONFIG                    => SLOT_0_CONFIG,
-    SLOT_1_CONFIG                    => SLOT_1_CONFIG,
-    MEM_ADDR_ORDER                   => MEM_ADDR_ORDER,
-    USE_CS_PORT                      => USE_CS_PORT,
-    USE_DM_PORT                      => USE_DM_PORT,
-    USE_ODT_PORT                     => USE_ODT_PORT,
-    PHY_CONTROL_MASTER_BANK          => PHY_CONTROL_MASTER_BANK,
-    TEMP_MON_CONTROL                 => TEMP_MON_CONTROL,
+    --BYTE_LANES_B0                    => BYTE_LANES_B0,
+    --BYTE_LANES_B1                    => BYTE_LANES_B1,
+    --BYTE_LANES_B2                    => BYTE_LANES_B2,
+    --BYTE_LANES_B3                    => BYTE_LANES_B3,
+    --BYTE_LANES_B4                    => BYTE_LANES_B4,
+    --DATA_CTL_B0                      => DATA_CTL_B0,
+    --DATA_CTL_B1                      => DATA_CTL_B1,
+    --DATA_CTL_B2                      => DATA_CTL_B2,
+    --DATA_CTL_B3                      => DATA_CTL_B3,
+    --DATA_CTL_B4                      => DATA_CTL_B4,
+    --PHY_0_BITLANES                   => PHY_0_BITLANES,
+    --PHY_1_BITLANES                   => PHY_1_BITLANES,
+    --PHY_2_BITLANES                   => PHY_2_BITLANES,
+    --CK_BYTE_MAP                      => CK_BYTE_MAP,
+    --ADDR_MAP                         => ADDR_MAP,
+    --BANK_MAP                         => BANK_MAP,
+    --CAS_MAP                          => CAS_MAP,
+    --CKE_ODT_BYTE_MAP                 => CKE_ODT_BYTE_MAP,
+    --CKE_MAP                          => CKE_MAP,
+    --ODT_MAP                          => ODT_MAP,
+    --CS_MAP                           => CS_MAP,
+    --PARITY_MAP                       => PARITY_MAP,
+    --RAS_MAP                          => RAS_MAP,
+    --WE_MAP                           => WE_MAP,
+    --DQS_BYTE_MAP                     => DQS_BYTE_MAP,
+    --DATA0_MAP                        => DATA0_MAP,
+    --DATA1_MAP                        => DATA1_MAP,
+    --DATA2_MAP                        => DATA2_MAP,
+    --DATA3_MAP                        => DATA3_MAP,
+    --DATA4_MAP                        => DATA4_MAP,
+    --DATA5_MAP                        => DATA5_MAP,
+    --DATA6_MAP                        => DATA6_MAP,
+    --DATA7_MAP                        => DATA7_MAP,
+    --DATA8_MAP                        => DATA8_MAP,
+    --DATA9_MAP                        => DATA9_MAP,
+    --DATA10_MAP                       => DATA10_MAP,
+    --DATA11_MAP                       => DATA11_MAP,
+    --DATA12_MAP                       => DATA12_MAP,
+    --DATA13_MAP                       => DATA13_MAP,
+    --DATA14_MAP                       => DATA14_MAP,
+    --DATA15_MAP                       => DATA15_MAP,
+    --DATA16_MAP                       => DATA16_MAP,
+    --DATA17_MAP                       => DATA17_MAP,
+    --MASK0_MAP                        => MASK0_MAP,
+    --MASK1_MAP                        => MASK1_MAP,
+    --CALIB_ROW_ADD                    => CALIB_ROW_ADD,
+    --CALIB_COL_ADD                    => CALIB_COL_ADD,
+    --CALIB_BA_ADD                     => CALIB_BA_ADD,
+    --SLOT_0_CONFIG                    => SLOT_0_CONFIG,
+    --SLOT_1_CONFIG                    => SLOT_1_CONFIG,
+    --MEM_ADDR_ORDER                   => MEM_ADDR_ORDER,
+    --USE_CS_PORT                      => USE_CS_PORT,
+    --USE_DM_PORT                      => USE_DM_PORT,
+    --USE_ODT_PORT                     => USE_ODT_PORT,
+    --PHY_CONTROL_MASTER_BANK          => PHY_CONTROL_MASTER_BANK,
+    --TEMP_MON_CONTROL                 => TEMP_MON_CONTROL,
 
-    DM_WIDTH                         => DM_WIDTH,
+    --DM_WIDTH                         => DM_WIDTH,
 
-    nCK_PER_CLK                      => nCK_PER_CLK,
-    tCK                              => tCK,
-    DIFF_TERM_SYSCLK                 => DIFF_TERM_SYSCLK,
-    CLKIN_PERIOD                     => CLKIN_PERIOD,
-    CLKFBOUT_MULT                    => CLKFBOUT_MULT,
-    DIVCLK_DIVIDE                    => DIVCLK_DIVIDE,
-    CLKOUT0_PHASE                    => CLKOUT0_PHASE,
-    CLKOUT0_DIVIDE                   => CLKOUT0_DIVIDE,
-    CLKOUT1_DIVIDE                   => CLKOUT1_DIVIDE,
-    CLKOUT2_DIVIDE                   => CLKOUT2_DIVIDE,
-    CLKOUT3_DIVIDE                   => CLKOUT3_DIVIDE,
+    --nCK_PER_CLK                      => nCK_PER_CLK,
+    --tCK                              => tCK,
+    --DIFF_TERM_SYSCLK                 => DIFF_TERM_SYSCLK,
+    --CLKIN_PERIOD                     => CLKIN_PERIOD,
+    --CLKFBOUT_MULT                    => CLKFBOUT_MULT,
+    --DIVCLK_DIVIDE                    => DIVCLK_DIVIDE,
+    --CLKOUT0_PHASE                    => CLKOUT0_PHASE,
+    --CLKOUT0_DIVIDE                   => CLKOUT0_DIVIDE,
+    --CLKOUT1_DIVIDE                   => CLKOUT1_DIVIDE,
+    --CLKOUT2_DIVIDE                   => CLKOUT2_DIVIDE,
+    --CLKOUT3_DIVIDE                   => CLKOUT3_DIVIDE,
 
-    SYSCLK_TYPE                      => SYSCLK_TYPE,
-    REFCLK_TYPE                      => REFCLK_TYPE,
-    SYS_RST_PORT                     => SYS_RST_PORT,
-    REFCLK_FREQ                      => REFCLK_FREQ,
-    DIFF_TERM_REFCLK                 => DIFF_TERM_REFCLK,
-    IODELAY_GRP                      => IODELAY_GRP,
+    --SYSCLK_TYPE                      => SYSCLK_TYPE,
+    --REFCLK_TYPE                      => REFCLK_TYPE,
+    --SYS_RST_PORT                     => SYS_RST_PORT,
+    --REFCLK_FREQ                      => REFCLK_FREQ,
+    --DIFF_TERM_REFCLK                 => DIFF_TERM_REFCLK,
+    --IODELAY_GRP                      => IODELAY_GRP,
 
-    CAL_WIDTH                        => CAL_WIDTH,
-    STARVE_LIMIT                     => STARVE_LIMIT,
-    DRAM_TYPE                        => DRAM_TYPE,
+    --CAL_WIDTH                        => CAL_WIDTH,
+    --STARVE_LIMIT                     => STARVE_LIMIT,
+    --DRAM_TYPE                        => DRAM_TYPE,
 
     RST_ACT_LOW                      => RST_ACT_LOW
   )
