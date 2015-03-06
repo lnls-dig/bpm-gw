@@ -1236,27 +1236,28 @@ resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCK
 #######################################################################
 ##                         CE Constraints                            ##
 #######################################################################
-#
-#set_max_delay 8.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
-set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
-set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_adc*}]]
 
-# ADC/7
-#set_max_delay 58.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
-set_multicycle_path 14 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
-set_multicycle_path 13 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt1*}]]
+# Mixer CE (CE_ADC) = 2
+set_multicycle_path 2 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_mixer/*}]]
+set_multicycle_path 1 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_mixer/*}]]
 
-# TBT1/29
-#set_max_delay 1000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
-set_multicycle_path 250 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
-set_multicycle_path 249 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_tbt2*}]]
+# CIC 1 TBT CE (CE_ADC) = 2
+set_multicycle_path 2 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cic1/*}]]
+set_multicycle_path 1 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cic1/*}]]
 
-# TBT2/5
-#set_max_delay 8000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
-set_multicycle_path 2000 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
-set_multicycle_path 1999 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_fofb*}]]
+# CIC 2 TBT CE (CE_TBT1) = CE_ADC * 7
+set_multicycle_path 14 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cic2/*}]]
+set_multicycle_path 13 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cic2/*}]]
 
-# FOFB/2049
-#set_max_delay 17000000.000 -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
-set_multicycle_path 4250000 -setup -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
-set_multicycle_path 4249999 -hold -from [all_fanout -endpoints_only -only_cells -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]] -to [all_fanout -endpoints_only -flat -from [get_nets * -hierarchical -filter {NAME =~ *position_calc_nosysgen/ce_monit*}]]
+# TBT CORDIC CE (CE_TBT2) = CE_TBT1 * 29
+set_multicycle_path 406 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cordic/*}]]
+set_multicycle_path 405 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_tbt_cordic/*}]]
+
+# CIC FOFB CE (CE_TBT2) = CE_TBT1 * 29
+set_multicycle_path 406 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_fofb_cic/*}]]
+set_multicycle_path 405 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_fofb_cic/*}]]
+
+# CIC MONIT CE (CE_FOFB) = CE_TBT2 * 5
+set_multicycle_path 2030 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_monit_cic/*}]]
+set_multicycle_path 2029 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_monit_cic/*}]]
+
