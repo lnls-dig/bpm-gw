@@ -1,4 +1,4 @@
-files = [ "dbe_wishbone_pkg.vhd", "image_pkg.vhd" ];
+files = [ "dbe_wishbone_pkg.vhd" ];
 
 modules = { "local" : [
                         "wb_stream",
