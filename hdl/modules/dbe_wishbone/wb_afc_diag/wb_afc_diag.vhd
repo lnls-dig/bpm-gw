@@ -87,6 +87,28 @@ architecture rtl of wb_afc_diag is
 
   signal sys_rst                            : std_logic;
 
+  component spi2wb
+    port (
+    wb_clk_i    : in std_logic;
+    spi_clk_i   : in std_logic;
+    wb_rst_i    : in std_logic;
+
+    SPI_CS    : in std_logic;
+    SPI_SI    : in std_logic;
+    SPI_SO    : out std_logic;
+    SPI_CLK   : in std_logic;
+
+    wb_addr_i  : in  std_logic_vector(15 downto 0);
+    wb_data_i  : in  std_logic_vector(31 downto 0);
+    wb_data_o  : out std_logic_vector(31 downto 0);
+    wb_cyc_i   : in  std_logic;
+    wb_sel_i   : in  std_logic_vector(3 downto 0);
+    wb_stb_i   : in  std_logic;
+    wb_we_i    : in  std_logic;
+    wb_ack_o   : out std_logic
+  );
+  end component;
+
 begin
 
   sys_rst <= not sys_rst_n_i;
