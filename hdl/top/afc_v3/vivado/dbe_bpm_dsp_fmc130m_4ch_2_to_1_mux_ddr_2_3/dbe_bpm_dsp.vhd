@@ -71,6 +71,15 @@ port(
   rs232_rxd_i                                : in std_logic;
 
   -----------------------------
+  -- AFC Diagnostics
+  -----------------------------
+
+  diag_spi_cs_i                             : in std_logic;
+  diag_spi_si_i                             : in std_logic;
+  diag_spi_so_o                             : out std_logic;
+  diag_spi_clk_i                            : in std_logic;
+
+  -----------------------------
   -- FMC1_130m_4ch ports
   -----------------------------
 
@@ -289,10 +298,10 @@ architecture rtl of dbe_bpm_dsp is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 12;
+  constant c_slaves                         : natural := 13;
   -- General Dual-port memory, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2,
-  -- Position_calc_1, Posiotion_calc_2, Peripherals, Repo URL, SDB synthesis,
-  --SDB integration
+  -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, Repo URL,
+  -- SDB synthesis, SDB integration
 
   -- Slaves indexes
   constant c_slv_dpram_sys_port0_id        : natural := 0;
@@ -304,9 +313,10 @@ architecture rtl of dbe_bpm_dsp is
   constant c_slv_fmc130m_4ch_2_id          : natural := 6;
   constant c_slv_acq_core_2_id             : natural := 7;
   constant c_slv_periph_id                 : natural := 8;
-  constant c_slv_sdb_repo_url_id           : natural := 9;
-  constant c_slv_sdb_synthesis_id          : natural := 10;
-  constant c_slv_sdb_integration_id        : natural := 11;
+  constant c_slv_afc_diag_id               : natural := 9;
+  constant c_slv_sdb_repo_url_id           : natural := 10;
+  constant c_slv_sdb_synthesis_id          : natural := 11;
+  constant c_slv_sdb_integration_id        : natural := 12;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -395,6 +405,7 @@ architecture rtl of dbe_bpm_dsp is
      c_slv_fmc130m_4ch_2_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00350000"),   -- FMC130m_4ch control 2 port
      c_slv_acq_core_2_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
      c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
+     c_slv_afc_diag_id         => f_sdb_embed_device(c_xwb_afc_diag_sdb,         x"00380000"),   -- AFC Diagnostics control port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_synthesis_id    => f_sdb_embed_synthesis(c_sdb_synthesis),
      c_slv_sdb_integration_id  => f_sdb_embed_integration(c_sdb_integration)
@@ -2031,6 +2042,38 @@ begin
   );
 
   --leds_o <= gpio_leds_int;
+
+  ----------------------------------------------------------------------
+  --                      AFC Diagnostics                             --
+  ----------------------------------------------------------------------
+
+  cmp_xwb_afc_diag : xwb_afc_diag
+  generic map(
+    g_interface_mode                          => PIPELINED,
+    g_address_granularity                     => BYTE
+  )
+  port map(
+    sys_clk_i                                 => clk_sys,
+    sys_rst_n_i                               => clk_sys_rstn,
+
+    -- Fast SPI clock. Same as Wishbone clock.
+    spi_clk_i                                 => clk_sys,
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+    wb_slv_i                                  => cbar_master_o(c_slv_afc_diag_id),
+    wb_slv_o                                  => cbar_master_i(c_slv_afc_diag_id),
+
+    -----------------------------
+    -- SPI interface
+    -----------------------------
+
+    spi_cs                                    => diag_spi_cs_i,
+    spi_si                                    => diag_spi_si_i,
+    spi_so                                    => diag_spi_so_o,
+    spi_clk                                   => diag_spi_clk_i
+  );
 
   ----------------------------------------------------------------------
   --                      Acquisition Core                            --
