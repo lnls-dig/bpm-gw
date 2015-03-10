@@ -324,26 +324,40 @@ architecture rtl of dbe_bpm_dsp is
 
   constant c_acq_adc_id                     : natural := 0;
   constant c_acq_adc_swap_id                : natural := 1;
-  constant c_acq_mix_id                     : natural := 2;
-  constant c_acq_tbt_amp_id                 : natural := 3;
-  constant c_acq_tbt_pos_id                 : natural := 4;
-  constant c_acq_fofb_amp_id                : natural := 5;
-  constant c_acq_fofb_pos_id                : natural := 6;
-  constant c_acq_monit_amp_id               : natural := 7;
-  constant c_acq_monit_pos_id               : natural := 8;
-  constant c_acq_monit_1_pos_id             : natural := 9;
+  constant c_acq_mixiq12_id                 : natural := 2;
+  constant c_acq_mixiq34_id                 : natural := 3;
+  constant c_acq_tbtdecimiq12_id            : natural := 4;
+  constant c_acq_tbtdecimiq34_id            : natural := 5;
+  constant c_acq_tbt_amp_id                 : natural := 6;
+  constant c_acq_tbt_phase_id               : natural := 7;
+  constant c_acq_tbt_pos_id                 : natural := 8;
+  constant c_acq_fofbdecimiq12_id           : natural := 9;
+  constant c_acq_fofbdecimiq34_id           : natural := 10;
+  constant c_acq_fofb_amp_id                : natural := 11;
+  constant c_acq_fofb_phase_id              : natural := 12;
+  constant c_acq_fofb_pos_id                : natural := 13;
+  constant c_acq_monit_amp_id               : natural := 14;
+  constant c_acq_monit_pos_id               : natural := 15;
+  constant c_acq_monit_1_pos_id             : natural := 16;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
-  constant c_acq_num_channels               : natural := 10; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
+  constant c_acq_num_channels               : natural := 17; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
                                                             -- for each FMC
   constant c_acq_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
     ( c_acq_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
       c_acq_adc_swap_id       => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
-      c_acq_mix_id            => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_mixiq12_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_mixiq34_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_tbtdecimiq12_id   => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_tbtdecimiq34_id   => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_tbt_phase_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_fofbdecimiq12_id  => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_fofbdecimiq34_id  => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
+      c_acq_fofb_phase_id     => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_fofb_pos_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_monit_amp_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
       c_acq_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
@@ -625,19 +639,27 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp1_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_bpf_valid                      : std_logic;
 
-  signal dsp1_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_mix_ch1                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_mix_ch3                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixi_ch0                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixi_ch1                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixi_ch2                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixi_ch3                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_mix_valid                      : std_logic;
 
-  signal dsp1_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_poly35_valid                   : std_logic;
+  signal dsp1_mixq_ch0                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixq_ch1                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixq_ch2                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_mixq_ch3                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
-  signal dsp1_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp1_cic_fofb_valid                 : std_logic;
+  signal dsp1_tbtdecimi_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimi_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimi_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimi_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecim_valid                 : std_logic;
+
+  signal dsp1_tbtdecimq_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimq_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimq_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_tbtdecimq_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
   signal dsp1_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
@@ -650,6 +672,17 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp1_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_tbt_pha_valid                  : std_logic;
+
+  signal dsp1_fofbdecimi_ch0                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimi_ch1                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimi_ch2                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimi_ch3                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecim_valid                : std_logic;
+
+  signal dsp1_fofbdecimq_ch0                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimq_ch1                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimq_ch2                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp1_fofbdecimq_ch3                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
   signal dsp1_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp1_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
@@ -730,19 +763,27 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp2_bpf_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_bpf_valid                      : std_logic;
 
-  signal dsp2_mix_ch0                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_mix_ch1                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_mix_ch2                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_mix_ch3                        : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixi_ch0                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixi_ch1                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixi_ch2                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixi_ch3                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_mix_valid                      : std_logic;
 
-  signal dsp2_poly35_ch0                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_poly35_ch2                     : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_poly35_valid                   : std_logic;
+  signal dsp2_mixq_ch0                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixq_ch1                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixq_ch2                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_mixq_ch3                       : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
-  signal dsp2_cic_fofb_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_cic_fofb_ch2                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
-  signal dsp2_cic_fofb_valid                 : std_logic;
+  signal dsp2_tbtdecimi_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimi_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimi_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimi_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecim_valid                 : std_logic;
+
+  signal dsp2_tbtdecimq_ch0                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimq_ch1                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimq_ch2                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_tbtdecimq_ch3                  : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
   signal dsp2_tbt_amp_ch0                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_tbt_amp_ch1                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
@@ -755,6 +796,17 @@ architecture rtl of dbe_bpm_dsp is
   signal dsp2_tbt_pha_ch2                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_tbt_pha_ch3                    : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_tbt_pha_valid                  : std_logic;
+
+  signal dsp2_fofbdecimi_ch0                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimi_ch1                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimi_ch2                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimi_ch3                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecim_valid                : std_logic;
+
+  signal dsp2_fofbdecimq_ch0                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimq_ch1                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimq_ch2                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
+  signal dsp2_fofbdecimq_ch3                 : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
 
   signal dsp2_fofb_amp_ch0                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
   signal dsp2_fofb_amp_ch1                   : std_logic_vector(c_dsp_ref_num_bits_ns-1 downto 0);
@@ -1686,27 +1738,25 @@ begin
     --bpf_ch3_o                               => out std_logic_vector(23 downto 0);
     bpf_valid_o                             => dsp1_bpf_valid,
 
-    mix_ch0_i_o                             => dsp1_mix_ch0,
-    --mix_ch0_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch1_i_o                             => dsp1_mix_ch1,
-    --mix_ch1_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch2_i_o                             => dsp1_mix_ch2,
-    --mix_ch2_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch3_i_o                             => dsp1_mix_ch3,
-    --mix_ch3_q_o                             => out std_logic_vector(23 downto 0);
+    mix_ch0_i_o                             => dsp1_mixi_ch0,
+    mix_ch0_q_o                             => dsp1_mixq_ch0,
+    mix_ch1_i_o                             => dsp1_mixi_ch1,
+    mix_ch1_q_o                             => dsp1_mixq_ch1,
+    mix_ch2_i_o                             => dsp1_mixi_ch2,
+    mix_ch2_q_o                             => dsp1_mixq_ch2,
+    mix_ch3_i_o                             => dsp1_mixi_ch3,
+    mix_ch3_q_o                             => dsp1_mixq_ch3,
     mix_valid_o                             => dsp1_mix_valid,
 
-    tbt_decim_ch0_i_o                       => dsp1_poly35_ch0,
-    --tbt_decim_ch0_i_o                       => open,
-    --poly35_ch0_q_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch1_i_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch1_q_o                          => out std_logic_vector(23 downto 0);
-    tbt_decim_ch2_i_o                       => dsp1_poly35_ch2,
-    --tbt_decim_ch2_i_o                       => open,
-    --poly35_ch2_q_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch3_i_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch3_q_o                          => out std_logic_vector(23 downto 0);
-    tbt_decim_valid_o                       => dsp1_poly35_valid,
+    tbt_decim_ch0_i_o                       => dsp1_tbtdecimi_ch0,
+    tbt_decim_ch0_q_o                       => dsp1_tbtdecimq_ch0,
+    tbt_decim_ch1_i_o                       => dsp1_tbtdecimi_ch1,
+    tbt_decim_ch1_q_o                       => dsp1_tbtdecimq_ch1,
+    tbt_decim_ch2_i_o                       => dsp1_tbtdecimi_ch2,
+    tbt_decim_ch2_q_o                       => dsp1_tbtdecimq_ch2,
+    tbt_decim_ch3_i_o                       => dsp1_tbtdecimi_ch3,
+    tbt_decim_ch3_q_o                       => dsp1_tbtdecimq_ch3,
+    tbt_decim_valid_o                       => dsp1_tbtdecim_valid,
 
     --tbt_decim_q_ch01_incorrect_o            => dsp1_tbt_decim_q_ch01_incorrect,
     --tbt_decim_q_ch23_incorrect_o            => dsp1_tbt_decim_q_ch23_incorrect,
@@ -1723,15 +1773,15 @@ begin
     tbt_pha_ch3_o                           => dsp1_tbt_pha_ch3,
     tbt_pha_valid_o                         => dsp1_tbt_pha_valid,
 
-    fofb_decim_ch0_i_o                      => dsp1_cic_fofb_ch0, --out std_logic_vector(23 downto 0);
-    --cic_fofb_ch0_q_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch1_i_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch1_q_o                        => out std_logic_vector(24 downto 0);
-    fofb_decim_ch2_i_o                      => dsp1_cic_fofb_ch2, --out std_logic_vector(23 downto 0);
-    --cic_fofb_ch2_q_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch3_i_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch3_q_o                        => out std_logic_vector(24 downto 0);
-    fofb_decim_valid_o                     => dsp1_cic_fofb_valid,
+    fofb_decim_ch0_i_o                      => dsp1_fofbdecimi_ch0,
+    fofb_decim_ch0_q_o                      => dsp1_fofbdecimq_ch0,
+    fofb_decim_ch1_i_o                      => dsp1_fofbdecimi_ch1,
+    fofb_decim_ch1_q_o                      => dsp1_fofbdecimq_ch1,
+    fofb_decim_ch2_i_o                      => dsp1_fofbdecimi_ch2,
+    fofb_decim_ch2_q_o                      => dsp1_fofbdecimq_ch2,
+    fofb_decim_ch3_i_o                      => dsp1_fofbdecimi_ch3,
+    fofb_decim_ch3_q_o                      => dsp1_fofbdecimq_ch3,
+    fofb_decim_valid_o                      => dsp1_fofbdecim_valid,
 
     fofb_amp_ch0_o                          => dsp1_fofb_amp_ch0,
     fofb_amp_ch1_o                          => dsp1_fofb_amp_ch1,
@@ -1861,27 +1911,25 @@ begin
     --bpf_ch3_o                               => out std_logic_vector(23 downto 0);
     bpf_valid_o                             => dsp2_bpf_valid,
 
-    mix_ch0_i_o                             => dsp2_mix_ch0,
-    --mix_ch0_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch1_i_o                             => dsp2_mix_ch1,
-    --mix_ch1_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch2_i_o                             => dsp2_mix_ch2,
-    --mix_ch2_q_o                             => out std_logic_vector(23 downto 0);
-    mix_ch3_i_o                             => dsp2_mix_ch3,
-    --mix_ch3_q_o                             => out std_logic_vector(23 downto 0);
+    mix_ch0_i_o                             => dsp2_mixi_ch0,
+    mix_ch0_q_o                             => dsp2_mixq_ch0,
+    mix_ch1_i_o                             => dsp2_mixi_ch1,
+    mix_ch1_q_o                             => dsp2_mixq_ch1,
+    mix_ch2_i_o                             => dsp2_mixi_ch2,
+    mix_ch2_q_o                             => dsp2_mixq_ch2,
+    mix_ch3_i_o                             => dsp2_mixi_ch3,
+    mix_ch3_q_o                             => dsp2_mixq_ch3,
     mix_valid_o                             => dsp2_mix_valid,
 
-    tbt_decim_ch0_i_o                       => dsp2_poly35_ch0,
-    --tbt_decim_ch0_i_o                       => open,
-    --poly35_ch0_q_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch1_i_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch1_q_o                          => out std_logic_vector(23 downto 0);
-    tbt_decim_ch2_i_o                       => dsp2_poly35_ch2,
-    --tbt_decim_ch2_i_o                       => open,
-    --poly35_ch2_q_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch3_i_o                          => out std_logic_vector(23 downto 0);
-    --poly35_ch3_q_o                          => out std_logic_vector(23 downto 0);
-    tbt_decim_valid_o                       => dsp2_poly35_valid,
+    tbt_decim_ch0_i_o                       => dsp2_tbtdecimi_ch0,
+    tbt_decim_ch0_q_o                       => dsp2_tbtdecimq_ch0,
+    tbt_decim_ch1_i_o                       => dsp2_tbtdecimi_ch1,
+    tbt_decim_ch1_q_o                       => dsp2_tbtdecimq_ch1,
+    tbt_decim_ch2_i_o                       => dsp2_tbtdecimi_ch2,
+    tbt_decim_ch2_q_o                       => dsp2_tbtdecimq_ch2,
+    tbt_decim_ch3_i_o                       => dsp2_tbtdecimi_ch3,
+    tbt_decim_ch3_q_o                       => dsp2_tbtdecimq_ch3,
+    tbt_decim_valid_o                       => dsp2_tbtdecim_valid,
 
     --tbt_decim_q_ch01_incorrect_o            => dsp2_tbt_decim_q_ch01_incorrect,
     --tbt_decim_q_ch23_incorrect_o            => dsp2_tbt_decim_q_ch23_incorrect,
@@ -1898,15 +1946,15 @@ begin
     tbt_pha_ch3_o                           => dsp2_tbt_pha_ch3,
     tbt_pha_valid_o                         => dsp2_tbt_pha_valid,
 
-    fofb_decim_ch0_i_o                      => dsp2_cic_fofb_ch0, --out std_logic_vector(23 downto 0);
-    --cic_fofb_ch0_q_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch1_i_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch1_q_o                        => out std_logic_vector(24 downto 0);
-    fofb_decim_ch2_i_o                      => dsp2_cic_fofb_ch2, --out std_logic_vector(23 downto 0);
-    --cic_fofb_ch2_q_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch3_i_o                        => out std_logic_vector(24 downto 0);
-    --cic_fofb_ch3_q_o                        => out std_logic_vector(24 downto 0);
-    fofb_decim_valid_o                     => dsp2_cic_fofb_valid,
+    fofb_decim_ch0_i_o                      => dsp2_fofbdecimi_ch0,
+    fofb_decim_ch0_q_o                      => dsp2_fofbdecimq_ch0,
+    fofb_decim_ch1_i_o                      => dsp2_fofbdecimi_ch1,
+    fofb_decim_ch1_q_o                      => dsp2_fofbdecimq_ch1,
+    fofb_decim_ch2_i_o                      => dsp2_fofbdecimi_ch2,
+    fofb_decim_ch2_q_o                      => dsp2_fofbdecimq_ch2,
+    fofb_decim_ch3_i_o                      => dsp2_fofbdecimi_ch3,
+    fofb_decim_ch3_q_o                      => dsp2_fofbdecimq_ch3,
+    fofb_decim_valid_o                      => dsp2_fofbdecim_valid,
 
     fofb_amp_ch0_o                          => dsp2_fofb_amp_ch0,
     fofb_amp_ch1_o                          => dsp2_fofb_amp_ch1,
@@ -2059,16 +2107,52 @@ begin
   acq1_chan_array(c_acq_adc_swap_id).trig          <= '0';
 
   --------------------
-  -- MIXER 1 data
+  -- MIXER I/Q 1/2 1 data
   --------------------
-  acq1_chan_array(c_acq_mix_id).val_low   <= std_logic_vector(resize(signed(dsp1_mix_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_mix_ch0), 32));
+  acq1_chan_array(c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mixi_ch0), 32));
 
-  acq1_chan_array(c_acq_mix_id).val_high  <= std_logic_vector(resize(signed(dsp1_mix_ch3), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_mix_ch2), 32));
+  acq1_chan_array(c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mixi_ch1), 32));
 
-  acq1_chan_array(c_acq_mix_id).dvalid    <= dsp1_mix_valid;
-  acq1_chan_array(c_acq_mix_id).trig      <= '0';
+  acq1_chan_array(c_acq_mixiq12_id).dvalid    <= dsp1_mix_valid;
+  acq1_chan_array(c_acq_mixiq12_id).trig      <= '0';
+
+  --------------------
+  -- MIXER I/Q 3/4 1 data
+  --------------------
+  acq1_chan_array(c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mixi_ch2), 32));
+
+  acq1_chan_array(c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_mixi_ch3), 32));
+
+  acq1_chan_array(c_acq_mixiq34_id).dvalid    <= dsp1_mix_valid;
+  acq1_chan_array(c_acq_mixiq34_id).trig      <= '0';
+
+  --------------------
+  -- TBT I/Q 1/2 1 data
+  --------------------
+  acq1_chan_array(c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
+
+  acq1_chan_array(c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch1), 32));
+
+  acq1_chan_array(c_acq_tbtdecimiq12_id).dvalid    <= dsp1_tbtdecim_valid;
+  acq1_chan_array(c_acq_tbtdecimiq12_id).trig      <= '0';
+
+  --------------------
+  -- TBT I/Q 3/4 1 data
+  --------------------
+  acq1_chan_array(c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32));
+
+  acq1_chan_array(c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch3), 32));
+
+  acq1_chan_array(c_acq_tbtdecimiq34_id).dvalid    <= dsp1_tbtdecim_valid;
+  acq1_chan_array(c_acq_tbtdecimiq34_id).trig      <= '0';
 
   --------------------
   -- TBT AMP 1 data
@@ -2083,6 +2167,18 @@ begin
   acq1_chan_array(c_acq_tbt_amp_id).trig      <= '0';
 
   --------------------
+  -- TBT PHASE 1 data
+  --------------------
+  acq1_chan_array(c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq1_chan_array(c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq1_chan_array(c_acq_tbt_phase_id).dvalid    <= dsp1_tbt_pha_valid;
+  acq1_chan_array(c_acq_tbt_phase_id).trig      <= '0';
+
+  --------------------
   -- TBT POS 1 data
   --------------------
   acq1_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_pos_y_tbt), 32)) &
@@ -2095,6 +2191,30 @@ begin
   acq1_chan_array(c_acq_tbt_pos_id).trig      <= '0';
 
   --------------------
+  -- FOFB I/Q 1/2 1 data
+  --------------------
+  acq1_chan_array(c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
+
+  acq1_chan_array(c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch1), 32));
+
+  acq1_chan_array(c_acq_fofbdecimiq12_id).dvalid    <= dsp1_fofbdecim_valid;
+  acq1_chan_array(c_acq_fofbdecimiq12_id).trig      <= '0';
+
+  --------------------
+  -- FOFB I/Q 3/4 1 data
+  --------------------
+  acq1_chan_array(c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32));
+
+  acq1_chan_array(c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch3), 32));
+
+  acq1_chan_array(c_acq_fofbdecimiq34_id).dvalid    <= dsp1_fofbdecim_valid;
+  acq1_chan_array(c_acq_fofbdecimiq34_id).trig      <= '0';
+
+  --------------------
   -- FOFB AMP 1 data
   --------------------
   acq1_chan_array(c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
@@ -2105,6 +2225,18 @@ begin
 
   acq1_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp1_fofb_amp_valid;
   acq1_chan_array(c_acq_fofb_amp_id).trig      <= '0';
+
+  --------------------
+  -- FOFB PHASE 1 data
+  --------------------
+  acq1_chan_array(c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq1_chan_array(c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq1_chan_array(c_acq_fofb_phase_id).dvalid    <= dsp1_fofb_pha_valid;
+  acq1_chan_array(c_acq_fofb_phase_id).trig      <= '0';
 
   --------------------
   -- FOFB POS 1 data
@@ -2177,16 +2309,52 @@ begin
   acq2_chan_array(c_acq_adc_swap_id).trig          <= '0';
 
   --------------------
-  -- MIXER 2 data
+  -- MIXER I/Q 1/2 2 data
   --------------------
-  acq2_chan_array(c_acq_mix_id).val_low   <= std_logic_vector(resize(signed(dsp2_mix_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_mix_ch0), 32));
+  acq2_chan_array(c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mixi_ch0), 32));
 
-  acq2_chan_array(c_acq_mix_id).val_high  <= std_logic_vector(resize(signed(dsp2_mix_ch3), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_mix_ch2), 32));
+  acq2_chan_array(c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mixi_ch1), 32));
 
-  acq2_chan_array(c_acq_mix_id).dvalid    <= dsp2_mix_valid;
-  acq2_chan_array(c_acq_mix_id).trig      <= '0';
+  acq2_chan_array(c_acq_mixiq12_id).dvalid    <= dsp2_mix_valid;
+  acq2_chan_array(c_acq_mixiq12_id).trig      <= '0';
+
+  --------------------
+  -- MIXER I/Q 3/4 2 data
+  --------------------
+  acq2_chan_array(c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mixi_ch2), 32));
+
+  acq2_chan_array(c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_mixi_ch3), 32));
+
+  acq2_chan_array(c_acq_mixiq34_id).dvalid    <= dsp2_mix_valid;
+  acq2_chan_array(c_acq_mixiq34_id).trig      <= '0';
+
+  --------------------
+  -- TBT I/Q 1/2 2 data
+  --------------------
+  acq2_chan_array(c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
+
+  acq2_chan_array(c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch1), 32));
+
+  acq2_chan_array(c_acq_tbtdecimiq12_id).dvalid    <= dsp2_tbtdecim_valid;
+  acq2_chan_array(c_acq_tbtdecimiq12_id).trig      <= '0';
+
+  --------------------
+  -- TBT I/Q 3/4 2 data
+  --------------------
+  acq2_chan_array(c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32));
+
+  acq2_chan_array(c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch3), 32));
+
+  acq2_chan_array(c_acq_tbtdecimiq34_id).dvalid    <= dsp2_tbtdecim_valid;
+  acq2_chan_array(c_acq_tbtdecimiq34_id).trig      <= '0';
 
   --------------------
   -- TBT AMP 2 data
@@ -2201,6 +2369,18 @@ begin
   acq2_chan_array(c_acq_tbt_amp_id).trig      <= '0';
 
   --------------------
+  -- TBT PHASE 2 data
+  --------------------
+  acq2_chan_array(c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq2_chan_array(c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq2_chan_array(c_acq_tbt_phase_id).dvalid    <= dsp2_tbt_pha_valid;
+  acq2_chan_array(c_acq_tbt_phase_id).trig      <= '0';
+
+  --------------------
   -- TBT POS 2 data
   --------------------
   acq2_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_pos_y_tbt), 32)) &
@@ -2213,6 +2393,30 @@ begin
   acq2_chan_array(c_acq_tbt_pos_id).trig      <= '0';
 
   --------------------
+  -- FOFB I/Q 1/2 2 data
+  --------------------
+  acq2_chan_array(c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
+
+  acq2_chan_array(c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch1), 32));
+
+  acq2_chan_array(c_acq_fofbdecimiq12_id).dvalid    <= dsp2_fofbdecim_valid;
+  acq2_chan_array(c_acq_fofbdecimiq12_id).trig      <= '0';
+
+  --------------------
+  -- FOFB I/Q 3/4 2 data
+  --------------------
+  acq2_chan_array(c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32));
+
+  acq2_chan_array(c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch3), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch3), 32));
+
+  acq2_chan_array(c_acq_fofbdecimiq34_id).dvalid    <= dsp2_fofbdecim_valid;
+  acq2_chan_array(c_acq_fofbdecimiq34_id).trig      <= '0';
+
+  --------------------
   -- FOFB AMP 2 data
   --------------------
   acq2_chan_array(c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
@@ -2223,6 +2427,18 @@ begin
 
   acq2_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp2_fofb_amp_valid;
   acq2_chan_array(c_acq_fofb_amp_id).trig      <= '0';
+
+  --------------------
+  -- FOFB PHASE 2 data
+  --------------------
+  acq2_chan_array(c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq2_chan_array(c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                  std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+
+  acq2_chan_array(c_acq_fofb_phase_id).dvalid    <= dsp2_fofb_pha_valid;
+  acq2_chan_array(c_acq_fofb_phase_id).trig      <= '0';
 
   --------------------
   -- FOFB POS 2 data
