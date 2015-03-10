@@ -61,6 +61,22 @@ set_property PULLUP true [get_ports sys_rst_button_n_i]
 ###NET "leds_o[7]"                               LOC = AD24 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
 
 #######################################################################
+##                      AFC Diagnostics Contraints                   ##
+#######################################################################
+
+set_property PACKAGE_PIN J9 [get_ports diag_spi_cs_i]
+set_property IOSTANDARD LVCMOS25 [get_ports diag_spi_cs_i]
+
+set_property PACKAGE_PIN V28 [get_ports diag_spi_si_i]
+set_property IOSTANDARD LVCMOS25 [get_ports diag_spi_si_i]
+
+set_property PACKAGE_PIN V29 [get_ports diag_spi_so_o]
+set_property IOSTANDARD LVCMOS25 [get_ports diag_spi_so_o]
+
+set_property PACKAGE_PIN J8 [get_ports diag_spi_clk_i]
+set_property IOSTANDARD LVCMOS25 [get_ports diag_spi_clk_i]
+
+#######################################################################
 ##                      FMC Connector HPC1                           ##
 #######################################################################
 
