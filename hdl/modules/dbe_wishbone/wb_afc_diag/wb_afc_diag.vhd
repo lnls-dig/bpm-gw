@@ -57,6 +57,13 @@ port
   wb_rty_o                                  : out std_logic;
   wb_stall_o                                : out std_logic;
 
+  dbg_spi_clk_o                             : out std_logic;
+  dbg_spi_valid_o                           : out std_logic;
+  dbg_en_o                                  : out std_logic;
+  dbg_addr_o                                : out std_logic_vector(7 downto 0);
+  dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+  dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
+
   -----------------------------
   -- SPI interface
   -----------------------------
@@ -74,7 +81,7 @@ architecture rtl of wb_afc_diag is
   -- General Constants
   -----------------------------
 
-  constant c_periph_addr_size               : natural := 8;
+  constant c_periph_addr_size               : natural := 8+2;
 
   ------------------------------------------------------------------------------
   -- Wishbone Adapater Signals
@@ -97,6 +104,13 @@ architecture rtl of wb_afc_diag is
     SPI_SI    : in std_logic;
     SPI_SO    : out std_logic;
     SPI_CLK   : in std_logic;
+
+    dbg_spi_clk       : out std_logic;
+    dbg_SERIAL_valid  : out std_logic;
+    dbg_en            : out std_logic;
+    dbg_SERIAL_addr   : out std_logic_vector(7 downto 0);
+    dbg_SERIAL_data   : out std_logic_vector(31 downto 0);
+    dbg_SPI_data      : out std_logic_vector(31 downto 0);
 
     wb_addr_i  : in  std_logic_vector(15 downto 0);
     wb_data_i  : in  std_logic_vector(31 downto 0);
@@ -162,6 +176,13 @@ begin
     SPI_SO                                  => spi_so,
     SPI_CLK                                 => spi_clk,
 
+    dbg_spi_clk                             => dbg_spi_clk_o,
+    dbg_en                                  => dbg_en_o,
+    dbg_SERIAL_valid                        => dbg_spi_valid_o,
+    dbg_SERIAL_addr                         => dbg_addr_o,
+    dbg_SERIAL_data                         => dbg_serial_data_o,
+    dbg_SPI_data                            => dbg_spi_data_o,
+
     -- Wishbone bus
     wb_addr_i                               => wb_slv_adp_out.adr(15 downto 0),
     wb_data_i                               => wb_slv_adp_out.dat,
@@ -172,5 +193,11 @@ begin
     wb_we_i                                 => wb_slv_adp_out.we,
     wb_ack_o                                => wb_slv_adp_in.ack
   );
+
+  -- Unused wishbone signals
+  wb_slv_adp_in.int                         <= '0';
+  wb_slv_adp_in.err                         <= '0';
+  wb_slv_adp_in.rty                         <= '0';
+  wb_slv_adp_in.stall                       <= '0';
 
 end rtl;

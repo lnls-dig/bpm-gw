@@ -83,7 +83,7 @@ begin
       byte_sel    => spi_byte_sel,
        addr_sel   => spi_addr_sel,
         addr_complete => open,
-       testout    => open ); --SPI_testout );
+       testout    => SPI_testout );
 
 --SPI_data_i <= x"12345677";
 --  SPI_data_i <= intbus;

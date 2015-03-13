@@ -1591,6 +1591,13 @@ package dbe_wishbone_pkg is
     wb_rty_o                                  : out std_logic;
     wb_stall_o                                : out std_logic;
 
+    dbg_spi_clk_o                             : out std_logic;
+    dbg_spi_valid_o                           : out std_logic;
+    dbg_en_o                                  : out std_logic;
+    dbg_addr_o                                : out std_logic_vector(7 downto 0);
+    dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+    dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
+
     -----------------------------
     -- SPI interface
     -----------------------------
@@ -1621,6 +1628,13 @@ package dbe_wishbone_pkg is
     -----------------------------
     wb_slv_i                                  : in t_wishbone_slave_in;
     wb_slv_o                                  : out t_wishbone_slave_out;
+
+    dbg_spi_clk_o                             : out std_logic;
+    dbg_spi_valid_o                           : out std_logic;
+    dbg_en_o                                  : out std_logic;
+    dbg_addr_o                                : out std_logic_vector(7 downto 0);
+    dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+    dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
 
     -----------------------------
     -- SPI interface

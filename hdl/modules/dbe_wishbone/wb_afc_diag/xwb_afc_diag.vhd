@@ -47,6 +47,13 @@ port
   wb_slv_i                                  : in t_wishbone_slave_in;
   wb_slv_o                                  : out t_wishbone_slave_out;
 
+  dbg_spi_clk_o                             : out std_logic;
+  dbg_spi_valid_o                           : out std_logic;
+  dbg_en_o                                  : out std_logic;
+  dbg_addr_o                                : out std_logic_vector(7 downto 0);
+  dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+  dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
+
   -----------------------------
   -- SPI interface
   -----------------------------
@@ -91,6 +98,13 @@ begin
     wb_err_o                                  => wb_slv_o.err,
     wb_rty_o                                  => wb_slv_o.rty,
     wb_stall_o                                => wb_slv_o.stall,
+
+    dbg_spi_clk_o                             => dbg_spi_clk_o,
+    dbg_spi_valid_o                           => dbg_spi_valid_o,
+    dbg_en_o                                  => dbg_en_o,
+    dbg_addr_o                                => dbg_addr_o,
+    dbg_serial_data_o                         => dbg_serial_data_o,
+    dbg_spi_data_o                            => dbg_spi_data_o,
 
     -----------------------------
     -- SPI interface
