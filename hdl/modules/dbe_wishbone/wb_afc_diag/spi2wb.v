@@ -13,6 +13,13 @@ module spi2wb(
     output SPI_SO,
     input SPI_CLK,
 
+    output dbg_spi_clk,
+    output dbg_SERIAL_valid,
+    output dbg_en,
+    output [7:0] dbg_SERIAL_addr,
+    output [31:0]dbg_SERIAL_data,
+    output [31:0]dbg_SPI_data,
+
     // Wishbone bus
     input [15:0]wb_addr_i,
     input [31:0]wb_data_i,
@@ -29,6 +36,11 @@ wire [31:0]SERIAL_data;
 wire [31:0]SPI_data_i;
 wire [15:0]SERIAL_addr;
 wire [31:0]dpram_data_a;
+
+localparam T_IDLE = 3'b001;
+localparam T_DATA_OUT = 3'b010;
+localparam T_ACK_CLEAR = 3'b100;
+reg [2:0] state; 
 
 spi_link_top spi_link_top_i(
 
@@ -69,26 +81,50 @@ spi2wb_dpram spi2wb_dpram_i (
   .doutb(SPI_data_i[31:0]) // output [31 : 0] doutb
 );
 
+// debug signals
+assign dbg_spi_clk = spi_clk_i;
+assign dbg_SERIAL_valid = SERIAL_valid;
+assign dbg_en = !SPI_CS;
+assign dbg_SERIAL_addr = SERIAL_addr[7:0];
+assign dbg_SERIAL_data = SERIAL_data[31:0];
+assign dbg_SPI_data = SPI_data_i[31:0];
+
 // Wishbone data access (read only)
 // Wb data out
   always @(posedge wb_clk_i or posedge wb_rst_i)
   begin
-    if (wb_rst_i)
+    if (wb_rst_i) begin
+      state <= T_IDLE;
       wb_data_o <= 32'b0;
-    else
-        if (wb_cyc_i & wb_stb_i)
-            wb_data_o <= dpram_data_a[31:0]; // output from memory block
-        else
-            wb_data_o <= wb_data_o;
-  end
-
-  // Wb acknowledge
-  always @(posedge wb_clk_i or posedge wb_rst_i)
-  begin
-    if (wb_rst_i)
       wb_ack_o <= 1'b0;
-    else
-      wb_ack_o <= wb_cyc_i & wb_stb_i & ~wb_ack_o;
+    end
+    else begin
+        case (state)
+	        T_IDLE: if (wb_cyc_i & wb_stb_i) begin
+	           wb_data_o <= wb_data_o;
+	           wb_ack_o <= 1'b0;
+	           state <= T_DATA_OUT;
+	        end
+	        
+	        T_DATA_OUT: begin
+	           wb_data_o <= dpram_data_a[31:0];
+	           wb_ack_o <= 1'b1;
+	           state <= T_ACK_CLEAR;
+	        end
+	        
+		T_ACK_CLEAR: begin
+	           wb_data_o <= wb_data_o;
+	           wb_ack_o <= 1'b0;
+	           state <= T_IDLE;
+	        end
+
+	        default: begin
+	           wb_data_o <= wb_data_o;
+	           wb_ack_o <= 1'b0;
+	           state <= T_IDLE;
+	        end
+	    endcase
+	 end
   end
 
 endmodule
