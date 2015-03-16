@@ -2444,6 +2444,10 @@ begin
   memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
                                memc_cmd_addr;
 
+  ----------------------------------------------------------------------
+  --                      DSP Chipscope                               --
+  ----------------------------------------------------------------------
+
   ---- Chipscope Analysis
   --cmp_chipscope_icon_13 : chipscope_icon_13_port
   --port map (
@@ -2961,7 +2965,6 @@ begin
 
   --cmp_chipscope_ila_3_pcie_ddr_read : chipscope_ila
   --port map (
-  --  --CONTROL                                 => CONTROL4,
   --  CONTROL                                 => CONTROL3,
   --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
   --  TRIG0                                   => TRIG_ILA3_0,
@@ -2988,22 +2991,22 @@ begin
 
   --cmp_chipscope_ila_5_pcie_ddr_write : chipscope_ila
   --port map (
-  --  CONTROL                                 => CONTROL5,
+  --  CONTROL                                 => CONTROL4,
   --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
-  --  TRIG0                                   => TRIG_ILA5_0,
-  --  TRIG1                                   => TRIG_ILA5_1,
-  --  TRIG2                                   => TRIG_ILA5_2,
-  --  TRIG3                                   => TRIG_ILA5_3
+  --  TRIG0                                   => TRIG_ILA4_0,
+  --  TRIG1                                   => TRIG_ILA4_1,
+  --  TRIG2                                   => TRIG_ILA4_2,
+  --  TRIG3                                   => TRIG_ILA4_3
   --);
 
-  --TRIG_ILA5_0                               <= dbg_app_wdf_data(207 downto 192) &
+  --TRIG_ILA4_0                               <= dbg_app_wdf_data(207 downto 192) &
   --                                               dbg_app_wdf_data(143 downto 128);
-  --TRIG_ILA5_1                               <= dbg_app_wdf_data(79 downto 64) &
+  --TRIG_ILA4_1                               <= dbg_app_wdf_data(79 downto 64) &
   --                                               dbg_app_wdf_data(15 downto 0);
 
-  --TRIG_ILA5_2                               <= dbg_app_addr;
-  --TRIG_ILA5_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA5_3(29 downto 0)                  <= memc_ui_rst &
+  --TRIG_ILA4_2                               <= dbg_app_addr;
+  --TRIG_ILA4_3(31 downto 30)                 <= (others => '0');
+  --TRIG_ILA4_3(29 downto 0)                  <= memc_ui_rst &
   --                                               clk_200mhz_rstn &
   --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
   --                                               dbg_app_en &
