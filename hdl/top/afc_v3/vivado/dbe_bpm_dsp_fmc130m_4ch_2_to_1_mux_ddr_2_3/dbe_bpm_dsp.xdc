@@ -1280,3 +1280,9 @@ resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCK
 #set_multicycle_path 2030 -setup -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_monit_cic/*}]]
 #set_multicycle_path 2029 -hold -from [get_clocks adc_clk2x_mmcm_out] -to [all_fanout -endpoints_only -only_cells -flat -from [get_pins * -hierarchical -filter {NAME =~ *position_calc_nosysgen/gen_ddc[?].cmp_monit_cic/*}]]
 
+#######################################################################
+##                         Bitstream Settings                        ##
+#######################################################################
+
+set_property BITSTREAM.Config.SPI_BUSWIDTH 1    [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 50     [current_design]
