@@ -843,6 +843,14 @@ architecture rtl of dbe_bpm_dsp is
   signal gpio_slave_button_o                : t_wishbone_slave_out;
   signal gpio_slave_button_i                : t_wishbone_slave_in;
 
+  -- AFC diagnostics signals
+  signal dbg_spi_clk                        : std_logic;
+  signal dbg_spi_valid                      : std_logic;
+  signal dbg_en                             : std_logic;
+  signal dbg_addr                           : std_logic_vector(7 downto 0);
+  signal dbg_serial_data                    : std_logic_vector(31 downto 0);
+  signal dbg_spi_data                       : std_logic_vector(31 downto 0);
+
   -- Chipscope control signals
   signal CONTROL0                           : std_logic_vector(35 downto 0);
   signal CONTROL1                           : std_logic_vector(35 downto 0);
@@ -2065,6 +2073,13 @@ begin
     wb_slv_i                                  => cbar_master_o(c_slv_afc_diag_id),
     wb_slv_o                                  => cbar_master_i(c_slv_afc_diag_id),
 
+    dbg_spi_clk_o                             => dbg_spi_clk,
+    dbg_spi_valid_o                           => dbg_spi_valid,
+    dbg_en_o                                  => dbg_en,
+    dbg_addr_o                                => dbg_addr,
+    dbg_serial_data_o                         => dbg_serial_data,
+    dbg_spi_data_o                            => dbg_spi_data,
+
     -----------------------------
     -- SPI interface
     -----------------------------
@@ -2741,6 +2756,10 @@ begin
   --  ASYNC_OUT                               => vio_out_dsp_config
   --);
 
+  ----------------------------------------------------------------------
+  --                AFC Diagnostics Chipscope                         --
+  ----------------------------------------------------------------------
+
   -- Xilinx Chipscope
   --cmp_chipscope_icon_0 : chipscope_icon_4_port
   --port map (
@@ -2749,6 +2768,75 @@ begin
   --  CONTROL2                                => CONTROL2,
   --  CONTROL3                                => CONTROL3
   --);
+
+  cmp_chipscope_ila_0 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL0,
+  --  CLK                                    => clk_sys,
+  --  TRIG0                                  => TRIG_ILA0_0,
+  --  TRIG1                                  => TRIG_ILA0_1,
+  --  TRIG2                                  => TRIG_ILA0_2,
+  --  TRIG3                                  => TRIG_ILA0_3
+  --);
+
+  --TRIG_ILA0_0(31 downto 4)                  <= (others => '0');
+  --TRIG_ILA0_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
+  --TRIG_ILA0_1(31 downto 11)                 <= (others => '0');
+  --TRIG_ILA0_1(10 downto 0)                  <= dbg_addr & dbg_en & dbg_spi_valid & dbg_spi_clk;
+  --TRIG_ILA0_2                               <= dbg_serial_data;
+  --TRIG_ILA0_3                               <= dbg_spi_data;
+
+  --cmp_chipscope_ila_1 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL1,
+  --  CLK                                    => clk_sys,
+  --  TRIG0                                  => TRIG_ILA1_0,
+  --  TRIG1                                  => TRIG_ILA1_1,
+  --  TRIG2                                  => TRIG_ILA1_2,
+  --  TRIG3                                  => TRIG_ILA1_3
+  --);
+
+  --TRIG_ILA1_0                               <= cbar_master_o(c_slv_afc_diag_id).dat;
+  --TRIG_ILA1_1                               <= cbar_master_i(c_slv_afc_diag_id).dat;
+  --TRIG_ILA1_2                               <= cbar_master_o(c_slv_afc_diag_id).adr;
+  --TRIG_ILA1_3(31 downto 8)                  <= (others => '0');
+  --TRIG_ILA1_3(7 downto 0)                   <= cbar_master_i(c_slv_afc_diag_id).ack &
+  --                                              cbar_master_o(c_slv_afc_diag_id).we &
+  --                                              cbar_master_o(c_slv_afc_diag_id).stb &
+  --                                              cbar_master_o(c_slv_afc_diag_id).sel &
+  --                                              cbar_master_o(c_slv_afc_diag_id).cyc;
+
+  --cmp_chipscope_ila_2 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL2,
+  --  CLK                                    => clk_sys,
+  --  TRIG0                                  => TRIG_ILA2_0,
+  --  TRIG1                                  => TRIG_ILA2_1,
+  --  TRIG2                                  => TRIG_ILA2_2,
+  --  TRIG3                                  => TRIG_ILA2_3
+  --);
+
+  --TRIG_ILA2_0(31 downto 4)                  <= (others => '0');
+  --TRIG_ILA2_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
+  --TRIG_ILA2_1                               <= (others => '0');
+  --TRIG_ILA2_2                               <= (others => '0');
+  --TRIG_ILA2_3                               <= (others => '0');
+
+  --cmp_chipscope_ila_3 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL3,
+  --  CLK                                    => clk_sys,
+  --  TRIG0                                  => TRIG_ILA3_0,
+  --  TRIG1                                  => TRIG_ILA3_1,
+  --  TRIG2                                  => TRIG_ILA3_2,
+  --  TRIG3                                  => TRIG_ILA3_3
+  --);
+
+  --TRIG_ILA3_0(31 downto 4)                  <= (others => '0');
+  --TRIG_ILA3_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
+  --TRIG_ILA3_1                               <= (others => '0');
+  --TRIG_ILA3_2                               <= (others => '0');
+  --TRIG_ILA3_3                               <= (others => '0');
 
   --cmp_chipscope_ila_0_fmc130m_4ch_clk0 : chipscope_ila
   --port map (
