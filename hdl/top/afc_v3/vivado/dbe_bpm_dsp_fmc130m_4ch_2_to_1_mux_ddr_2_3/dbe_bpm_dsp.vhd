@@ -2989,7 +2989,7 @@ begin
   --  CONTROL3                                => CONTROL3
   --);
 
-  cmp_chipscope_ila_0 : chipscope_ila
+  --cmp_chipscope_ila_0 : chipscope_ila
   --port map (
   --  CONTROL                                => CONTROL0,
   --  CLK                                    => clk_sys,
@@ -3234,4 +3234,4 @@ begin
   --                                               dbg_arb_req &
   --                                               dbg_arb_gnt;
 
-end ;
+end rtl;
