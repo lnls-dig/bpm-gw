@@ -295,9 +295,12 @@ VHDL_SRC := ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_read.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_cnt.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd \
+../../../../../../modules/dbe_wishbone/wb_acq_core/acq_2_diff_cnt.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/data_checker.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/wbgen/acq_core_regs_pkg.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/wbgen/acq_core_regs.vhd \
+../../../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux.vhd \
+../../../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux_plain.vhd \
 ../../../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_a7.vhd \
 ../../../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie_a7.vhd \
 ../../../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_k7.vhd \
@@ -571,9 +574,12 @@ work/acq_ddr3_iface/.acq_ddr3_iface_vhd \
 work/acq_ddr3_read/.acq_ddr3_read_vhd \
 work/acq_cnt/.acq_cnt_vhd \
 work/acq_sel_chan/.acq_sel_chan_vhd \
+work/acq_2_diff_cnt/.acq_2_diff_cnt_vhd \
 work/data_checker/.data_checker_vhd \
 work/acq_core_regs_pkg/.acq_core_regs_pkg_vhd \
 work/acq_core_regs/.acq_core_regs_vhd \
+work/wb_acq_core_2_to_1_mux/.wb_acq_core_2_to_1_mux_vhd \
+work/wb_acq_core_2_to_1_mux_plain/.wb_acq_core_2_to_1_mux_plain_vhd \
 work/wb_bpm_pcie_a7/.wb_bpm_pcie_a7_vhd \
 work/xwb_bpm_pcie_a7/.xwb_bpm_pcie_a7_vhd \
 work/wb_bpm_pcie_k7/.wb_bpm_pcie_k7_vhd \
@@ -1981,6 +1987,7 @@ work/acq_fc_fifo/.acq_fc_fifo: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
@@ -2027,6 +2034,7 @@ work/acq_ddr3_read/.acq_ddr3_read: \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
@@ -2049,6 +2057,15 @@ work/acq_sel_chan/.acq_sel_chan_vhd: ../../../../../../modules/dbe_wishbone/wb_a
 
 work/acq_sel_chan/.acq_sel_chan: \
 work/acq_core_pkg/.acq_core_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/acq_2_diff_cnt/.acq_2_diff_cnt_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_2_diff_cnt.vhd work/acq_2_diff_cnt/.acq_2_diff_cnt
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/acq_2_diff_cnt/.acq_2_diff_cnt: \
+work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/data_checker/.data_checker_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/data_checker.vhd work/data_checker/.data_checker
@@ -2078,6 +2095,33 @@ work/acq_core_regs/.acq_core_regs_vhd: ../../../../../../modules/dbe_wishbone/wb
 
 work/acq_core_regs/.acq_core_regs: \
 work/acq_core_regs_pkg/.acq_core_regs_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_acq_core_2_to_1_mux/.wb_acq_core_2_to_1_mux_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux.vhd work/wb_acq_core_2_to_1_mux/.wb_acq_core_2_to_1_mux
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_acq_core_2_to_1_mux/.wb_acq_core_2_to_1_mux: \
+work/genram_pkg/.genram_pkg_vhd \
+work/acq_core_pkg/.acq_core_pkg_vhd \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/dbe_common_pkg/.dbe_common_pkg_vhd \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
+work/gencores_pkg/.gencores_pkg_vhd
+		@mkdir -p $(dir $@) && touch $@
+
+work/wb_acq_core_2_to_1_mux_plain/.wb_acq_core_2_to_1_mux_plain_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux_plain.vhd work/wb_acq_core_2_to_1_mux_plain/.wb_acq_core_2_to_1_mux_plain
+		vcom $(VCOM_FLAGS)  -work work $< 
+		@mkdir -p $(dir $@) && touch $@
+
+
+work/wb_acq_core_2_to_1_mux_plain/.wb_acq_core_2_to_1_mux_plain: \
+work/wishbone_pkg/.wishbone_pkg_vhd \
+work/genram_pkg/.genram_pkg_vhd \
+work/gencores_pkg/.gencores_pkg_vhd \
+work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
+work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 work/wb_bpm_pcie_a7/.wb_bpm_pcie_a7_vhd: ../../../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_a7.vhd work/wb_bpm_pcie_a7/.wb_bpm_pcie_a7

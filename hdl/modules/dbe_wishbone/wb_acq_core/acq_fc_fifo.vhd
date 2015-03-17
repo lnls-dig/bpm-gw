@@ -135,8 +135,6 @@ architecture rtl of acq_fc_fifo is
   subtype t_fc_addr is std_logic_vector(g_addr_width-1 downto 0);
 
   -- Constants
-  constant c_pipe_size                      : natural := 4;
-
   constant c_narrowest_channel_width        : natural := f_acq_chan_find_narrowest(g_acq_channels);
   constant c_widest_channel_width           : natural := f_acq_chan_find_widest(g_acq_channels);
 
@@ -690,7 +688,7 @@ begin
     g_data_width                            => g_data_out_width,
     g_pkt_size_width                        => c_pkt_size_width,
     g_addr_width                            => g_addr_width,
-    g_pipe_size                             => c_pipe_size
+    g_pipe_size                             => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,

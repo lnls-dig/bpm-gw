@@ -59,10 +59,10 @@ architecture rtl of acq_cnt is
   signal pkt_cnt_en                          : std_logic;
 
   signal pkt_ct_cnt_all                      : std_logic;
+  signal pkt_ct_cnt_will_finish              : std_logic;
 
   signal shots_cnt                           : unsigned(c_shots_size_width-1 downto 0);
   signal shots_cnt_all                       : std_logic;
-  --signal shots_cnt_all_p                     : std_logic;
 
   signal lmt_pkt_size                        : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                        : unsigned(c_shots_size_width-1 downto 0);
@@ -131,7 +131,10 @@ begin
     end if;
   end process;
 
-  cnt_all_pkts_ct_done_p_o <= pkt_ct_cnt_all; -- this is necessarilly a pulse
+  pkt_ct_cnt_will_finish    <= '1' when pkt_ct_cnt = lmt_pkt_size-1 and pkt_cnt_en = '1'
+                                  else '0';
+
+  cnt_all_pkts_ct_done_p_o  <= pkt_ct_cnt_all; -- this is necessarilly a pulse
 
   -----------------------------------------------------------------------------
   -- Number of shots
@@ -144,12 +147,12 @@ begin
         shots_cnt <= to_unsigned(0, shots_cnt'length);
       else
         if shots_cnt_all = '1' then
-          if pkt_ct_cnt_all = '1' then -- This case won't happen. Should we keep it?
+          if pkt_ct_cnt_will_finish = '1' then -- This case won't happen. Should we keep it?
             shots_cnt <= to_unsigned(1, shots_cnt'length);
           else
             shots_cnt <= to_unsigned(0, shots_cnt'length);
           end if;
-        elsif pkt_ct_cnt_all = '1' then
+        elsif pkt_ct_cnt_will_finish = '1' then
           shots_cnt <= shots_cnt + 1;
         end if;
       end if;
@@ -165,7 +168,7 @@ begin
       if rst_n_i = '0' then
         shots_cnt_all <= '0';
       else
-        if shots_cnt = lmt_shots_nb-1 and pkt_ct_cnt_all = '1' then
+        if shots_cnt = lmt_shots_nb-1 and pkt_ct_cnt_will_finish = '1' then
           shots_cnt_all <= '1';
         else
           shots_cnt_all <= '0';

@@ -15,6 +15,7 @@ package acq_core_pkg is
   constant c_addr_width                     : natural := 32;
   constant c_chan_id_width                  : natural := 5;
 
+  constant c_data_valid_width               : natural := 1;
   constant c_data_oob_width                 : natural := 2; -- SOF and EOF
 
   constant c_data_oob_sof_ofs               : natural := 1; -- SOF offset
@@ -23,6 +24,8 @@ package acq_core_pkg is
   constant c_acq_chan_width                 : natural := 64;
   constant c_acq_chan_max_w                 : natural := 2*c_acq_chan_width;
   constant c_acq_chan_max_w_log2            : natural := f_log2_size(c_acq_chan_max_w)+1;
+
+  constant c_ddr3_ui_diff_threshold         : natural := 3;
 
   -- ADC + TBT + FOFB + MONIT + MONIT_1
   constant c_acq_num_channels               : natural := 5;
@@ -316,10 +319,24 @@ package acq_core_pkg is
   (
     g_data_width                              : natural := 64;
     g_size                                    : natural := 64;
-    g_with_wr_count                           : boolean := false;
+
+    g_with_rd_empty                           : boolean := true;
+    g_with_rd_full                            : boolean := false;
+    g_with_rd_almost_empty                    : boolean := false;
+    g_with_rd_almost_full                     : boolean := false;
     g_with_rd_count                           : boolean := false;
+
+    g_with_wr_empty                           : boolean := false;
+    g_with_wr_full                            : boolean := true;
+    g_with_wr_almost_empty                    : boolean := false;
+    g_with_wr_almost_full                     : boolean := false;
+    g_with_wr_count                           : boolean := false;
+
+    g_with_fifo_inferred                      : boolean := false;
+
+    g_almost_empty_threshold                  : integer;
     g_almost_full_threshold                   : integer;
-    g_almost_empty_threshold                  : integer
+    g_async                                   : boolean := true
   );
   port
   (
@@ -331,6 +348,8 @@ package acq_core_pkg is
     wr_en_i                                   : in std_logic;
     wr_full_o                                 : out std_logic;
     wr_count_o                                : out std_logic_vector(f_log2_size(g_size)-1 downto 0);
+    wr_almost_empty_o                         : out std_logic;
+    wr_almost_full_o                          : out std_logic;
 
     -- Read clock
     rd_clk_i                                  : in  std_logic;
@@ -338,9 +357,11 @@ package acq_core_pkg is
 
     rd_data_o                                 : out std_logic_vector(g_data_width-1 downto 0);
     rd_valid_o                                : out std_logic;
-    rd_en_i                                   : in std_logic;
+    rd_en_i                                   : in  std_logic;
     rd_empty_o                                : out std_logic;
-    rd_count_o                                : out std_logic_vector(f_log2_size(g_size)-1 downto 0)
+    rd_count_o                                : out std_logic_vector(f_log2_size(g_size)-1 downto 0);
+    rd_almost_empty_o                         : out std_logic;
+    rd_almost_full_o                          : out std_logic
   );
   end component;
 
@@ -350,6 +371,7 @@ package acq_core_pkg is
     g_data_width                              : natural := 64;
     g_pkt_size_width                          : natural := 32;
     g_addr_width                              : natural := 32;
+    g_with_fifo_inferred                      : boolean := false;
     g_pipe_size                               : natural := 4
   );
   port
@@ -407,11 +429,32 @@ package acq_core_pkg is
   );
   end component;
 
+  component acq_2_diff_cnt
+  generic
+  (
+    -- Threshold in which the counters can differ
+    g_threshold_max                           : natural := 2
+  );
+  port
+  (
+    -- DDR3 external clock
+    clk_i                                     : in  std_logic;
+    rst_n_i                                   : in  std_logic;
+
+    cnt0_en_i                                 : in std_logic;
+    cnt0_thres_hit_o                          : out std_logic;
+
+    cnt1_en_i                                 : in std_logic;
+    cnt1_thres_hit_o                          : out std_logic
+  );
+  end component;
+
   component acq_ddr3_iface
   generic
   (
     g_acq_num_channels                        : natural := 1;
     g_acq_channels                            : t_acq_chan_param_array;
+    g_fc_pipe_size                            : natural := 4;
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
     g_ddr_dq_width                            : natural := 64;      -- be careful changing these!

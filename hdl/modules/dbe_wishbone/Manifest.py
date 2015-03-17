@@ -10,5 +10,6 @@ modules = { "local" : [
                         "wb_dbe_periph",
                         "wb_rs232_syscon",
                         "wb_acq_core",
+                        "wb_acq_core_2_to_1_mux",
                         "wb_pcie"
                       ] };

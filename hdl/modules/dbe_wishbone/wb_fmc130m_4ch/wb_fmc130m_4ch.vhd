@@ -1336,16 +1336,16 @@ begin
   --Trigger data output (if in output mode)
   cmp_trigger_iobufds : iobufds
   generic map (
-    diff_term                               => false,   -- Differential Termination ("TRUE"/"FALSE")
+    diff_term                               => true,   -- Differential Termination ("TRUE"/"FALSE")
     ibuf_low_pwr                            => false,   -- Low Power - "TRUE", High Performance = "FALSE"
     iostandard                              => "BLVDS_25" -- Specify the I/O standard
   )
   port map (
-    o                                       => fmc_trig_val_in,       -- Buffer output for further use!!!
-    io                                      => fmc_trig_val_p_b,     -- Diff_p inout (connect directly to top-level port)
-    iob                                     => fmc_trig_val_n_b,     -- Diff_n inout (connect directly to top-level port)
-    i                                       => fmc_trig_val_int, -- Buffer input
-    t                                       => fmc_trig_dir_int      -- 3-state enable input, high=input, low=output
+    o                                       => fmc_trig_val_in,     -- Buffer output for further use
+    io                                      => fmc_trig_val_p_b,    -- Diff_p inout (connect directly to top-level port)
+    iob                                     => fmc_trig_val_n_b,    -- Diff_n inout (connect directly to top-level port)
+    i                                       => fmc_trig_val_int,    -- Buffer input
+    t                                       => fmc_trig_dir_int     -- 3-state enable input, high=input, low=output
   );
 
   fmc_trig_dir_o                            <= fmc_trig_dir_int;

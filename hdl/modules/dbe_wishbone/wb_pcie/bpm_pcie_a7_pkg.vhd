@@ -14,6 +14,7 @@ package bpm_pcie_a7_pkg is
   generic (
     g_ma_interface_mode                       : t_wishbone_interface_mode := PIPELINED;
     g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
+    g_ext_rst_pin                             : boolean := true;
     g_sim_bypass_init_cal                     : string  := "FAST"
   );
   port (
@@ -109,6 +110,7 @@ package bpm_pcie_a7_pkg is
   generic (
     g_ma_interface_mode                       : t_wishbone_interface_mode := PIPELINED;
     g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
+    g_ext_rst_pin                             : boolean := true;
     g_sim_bypass_init_cal                     : string  := "FAST"
   );
   port (

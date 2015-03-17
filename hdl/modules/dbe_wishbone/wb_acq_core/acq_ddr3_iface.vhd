@@ -45,6 +45,7 @@ generic
 (
   g_acq_num_channels                        : natural := 1;
   g_acq_channels                            : t_acq_chan_param_array;
+  g_fc_pipe_size                            : natural := 4;
   -- Do not modify these! As they are dependent of the memory controller generated!
   g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
   g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
@@ -126,7 +127,7 @@ architecture rtl of acq_ddr3_iface is
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
-  constant c_pipe_size                      : natural := 4;
+  ---------constant c_pipe_size                      : natural := 4;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
 
   -- UI Commands
@@ -168,6 +169,10 @@ architecture rtl of acq_ddr3_iface is
   signal valid_trans_app                    : std_logic;
   signal valid_trans_app_d0                 : std_logic;
   signal valid_trans_app_wdf                : std_logic;
+  signal cnt_all_trans_done_app_p           : std_logic;
+  signal cnt_all_trans_done_wdf_p           : std_logic;
+  signal cnt_all_trans_done_app_l           : std_logic;
+  signal cnt_all_trans_done_wdf_l           : std_logic;
   signal cnt_all_trans_done_p               : std_logic;
   signal wr_init_addr_alig                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
@@ -183,11 +188,15 @@ architecture rtl of acq_ddr3_iface is
   signal pl_pkt_sent_app_wdf                : std_logic;
   signal pl_rst_trans                       : std_logic;
 
+  signal pl_pkt_thres_hit_app               : std_logic;
+  signal pl_pkt_thres_hit_wdf               : std_logic;
+
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt                       : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_in                        : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_valid_in                       : std_logic;
+  signal ddr_valid_in_t                     : std_logic;
 
   signal ddr_mask_in                        : std_logic_vector(c_ddr_mask_width-1 downto 0);
   signal ddr_data_mask_in                   : std_logic_vector(g_ddr_payload_width+c_ddr_mask_width-1 downto 0);
@@ -197,8 +206,6 @@ architecture rtl of acq_ddr3_iface is
 
   -- DDR3 Arbitrer Signals
   signal ddr_req                            : std_logic;
-
-  signal acq_cnt_rst_n                      : std_logic;
 
 begin
 
@@ -265,22 +272,23 @@ begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
         ddr_data_in <= (others => '0');
-        ddr_valid_in <= '0';
+        ddr_valid_in_t <= '0';
       else
-        if fc_ack = '1' or ddr_valid_in = '0' then
+        if fc_ack = '1' or ddr_valid_in_t = '0' then
           ddr_data_in <= fifo_fc_din_i;
         end if;
 
         if fifo_fc_valid_i = '1' and pl_stall = '0' then
-          ddr_valid_in <= '1';
+          ddr_valid_in_t <= '1';
         elsif fc_ack = '1' then
-          ddr_valid_in <= '0';
+          ddr_valid_in_t <= '0';
         end if;
       end if;
     end if;
   end process;
 
-  fc_ack <= '1' when ddr_valid_in = '1' and pl_stall = '0' else '0';
+  fc_ack <= '1' when ddr_valid_in_t = '1' and pl_stall = '0' else '0';
+  ddr_valid_in <= ddr_valid_in_t and not pl_stall;
 
   -- WARNING: FIXME?
   -- We might have problems with this if other device, previously granted access
@@ -351,15 +359,34 @@ begin
   -- Counters
   -----------------------------------------------------------------------------
 
-  cmp_acq_cnt : acq_cnt
+  cmp_acq_cnt_app : acq_cnt
   port map
   (
     -- DDR3 external clock
     clk_i                                     => ext_clk_i,
-    rst_n_i                                   => acq_cnt_rst_n,
+    rst_n_i                                   => ext_rst_n_i,
 
     cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => cnt_all_trans_done_p,
+    cnt_all_trans_done_p_o                    => cnt_all_trans_done_app_p,
+    cnt_en_i                                  => pl_pkt_sent_app,
+
+    -- Size of the transaction in g_fifo_size bytes
+    lmt_pkt_size_i                            => lmt_pkt_size,
+    -- Number of shots in this acquisition
+    lmt_shots_nb_i                            => lmt_shots_nb,
+    -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
+    lmt_valid_i                               => lmt_valid
+  );
+
+  cmp_acq_cnt_wdf : acq_cnt
+  port map
+  (
+    -- DDR3 external clock
+    clk_i                                     => ext_clk_i,
+    rst_n_i                                   => ext_rst_n_i,
+
+    cnt_all_pkts_ct_done_p_o                  => open,
+    cnt_all_trans_done_p_o                    => cnt_all_trans_done_wdf_p,
     cnt_en_i                                  => pl_pkt_sent_app_wdf,
 
     -- Size of the transaction in g_fifo_size bytes
@@ -370,9 +397,33 @@ begin
     lmt_valid_i                               => lmt_valid
   );
 
-  lmt_all_trans_done_p_o <= cnt_all_trans_done_p;
+  -- Wait for the last pulse
+  p_cnt_wait_last_done : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        cnt_all_trans_done_app_l <= '0';
+        cnt_all_trans_done_wdf_l <= '0';
+      else
+        if cnt_all_trans_done_app_p = '1' then
+          cnt_all_trans_done_app_l <= '1';
+        elsif cnt_all_trans_done_p = '1' then
+          cnt_all_trans_done_app_l <= '0';
+        end if;
 
-  acq_cnt_rst_n <= ext_rst_n_i and not(lmt_rst_i);
+        if cnt_all_trans_done_wdf_p = '1' then
+          cnt_all_trans_done_wdf_l <= '1';
+        elsif cnt_all_trans_done_p = '1' then
+          cnt_all_trans_done_wdf_l <= '0';
+        end if;
+
+      end if;
+    end if;
+  end process;
+
+  cnt_all_trans_done_p <= cnt_all_trans_done_app_l and cnt_all_trans_done_wdf_l;
+
+  lmt_all_trans_done_p_o <= cnt_all_trans_done_p;
 
   p_ddr_mask_in : process(ext_clk_i)
   begin
@@ -398,10 +449,11 @@ begin
   -----------------------------------------------------------------------------
   cmp_fc_source_app : fc_source
   generic map (
-    g_data_width                           => 1,
+    g_data_width                           => 1, -- Dummy value
     g_pkt_size_width                       => c_pkt_size_width,
     g_addr_width                           => g_ddr_addr_width,
-    g_pipe_size                            => c_pipe_size
+    g_with_fifo_inferred                   => true,
+    g_pipe_size                            => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
@@ -441,7 +493,8 @@ begin
     g_data_width                           => g_ddr_payload_width + c_ddr_mask_width,
     g_pkt_size_width                       => c_pkt_size_width,
     g_addr_width                           => 1, -- Dummy value
-    g_pipe_size                            => c_pipe_size
+    g_with_fifo_inferred                   => true,
+    g_pipe_size                            => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
@@ -475,6 +528,31 @@ begin
   ddr_rdy_app <= ui_app_rdy_i;
   ddr_rdy_app_wdf <= ui_app_wdf_rdy_i;
 
+  -----------------------------------------------------------------------------
+  -- DDR3 UI Difference Control
+  -----------------------------------------------------------------------------
+  -- Stall the other interface if the difference between them becomes greater
+  -- than 2
+  --cmp_acq_2_diff_cnt : acq_2_diff_cnt
+  --generic map
+  --(
+  --  -- Threshold in which the counters can differ
+  --  g_threshold_max                           => c_ddr3_ui_diff_threshold
+  --)
+  --port map
+  --(
+  --  clk_i                                     => ext_clk_i,
+  --  rst_n_i                                   => ext_rst_n_i,
+
+  --  -- Counter 0 is APP interface
+  --  cnt0_en_i                                 => pl_pkt_sent_app,
+  --  cnt0_thres_hit_o                          => pl_pkt_thres_hit_app,
+
+  --  -- Counter 1 is WDF interface
+  --  cnt1_en_i                                 => pl_pkt_sent_app_wdf,
+  --  cnt1_thres_hit_o                          => pl_pkt_thres_hit_wdf
+  --);
+
   -- From next flow control module (DDR3 Controller)
 
   -- Only request new data when the other interface is not stalled. This gives
@@ -485,8 +563,8 @@ begin
   -- DDR3 Controller datasheet tells something like 2 clock cycles distance from
   -- data word (wdf interface) and the corresponding command (app interface)
 
-  fc_stall_app <= not(ddr_rdy_app and ddr_rdy_app_wdf and ui_app_gnt_i);
-  fc_stall_app_wdf <= not(ddr_rdy_app and ddr_rdy_app_wdf and ui_app_gnt_i);
+  fc_stall_app <= not ddr_rdy_app;
+  fc_stall_app_wdf <= not ddr_rdy_app_wdf;
 
   fc_dreq_app <= '1'; -- always request new data, even when the next module
                       -- in the pipeline cannot receive (ddr is not ready).
@@ -501,14 +579,12 @@ begin
   ui_app_addr_o <= fc_addr;
   ui_app_cmd_o <= c_ui_cmd_write;
 
-  -- Note that we AND the output with "ddr_rdy_app_wdf" and not with ddr_rdy_app
-  ui_app_en_o <= fc_valid_app and ddr_rdy_app_wdf; -- FIXME! BAD! Combinatorial outputs
+  ui_app_en_o <= fc_valid_app;
 
   ui_app_wdf_data_o <= fc_dout(c_data_high downto c_data_low);
   ui_app_wdf_end_o <= fc_valid_app_wdf;
   ui_app_wdf_mask_o <= fc_dout(c_mask_high downto c_mask_low);
 
-  -- Note that we AND the output with "ddr_rdy_app" and not with ddr_rdy_app_wdf
-  ui_app_wdf_wren_o <= fc_valid_app_wdf and ddr_rdy_app; -- FIXME! BAD! Combinatorial outputs
+  ui_app_wdf_wren_o <= fc_valid_app_wdf;
 
 end rtl;

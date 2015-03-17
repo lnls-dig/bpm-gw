@@ -29,6 +29,7 @@ entity xwb_bpm_pcie_a7 is
 generic (
   g_ma_interface_mode                       : t_wishbone_interface_mode := PIPELINED;
   g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
+  g_ext_rst_pin                             : boolean := true;
   g_sim_bypass_init_cal                     : string  := "FAST"
 );
 port (
@@ -119,6 +120,7 @@ begin
   generic map (
     g_ma_interface_mode                      => g_ma_interface_mode,
     g_ma_address_granularity                 => g_ma_address_granularity,
+    g_ext_rst_pin                            => g_ext_rst_pin,
     g_sim_bypass_init_cal                    => g_sim_bypass_init_cal
   )
   port map (
