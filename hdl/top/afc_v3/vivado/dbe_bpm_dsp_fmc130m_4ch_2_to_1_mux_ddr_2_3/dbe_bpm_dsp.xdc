@@ -1284,5 +1284,5 @@ resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCK
 ##                         Bitstream Settings                        ##
 #######################################################################
 
-set_property BITSTREAM.Config.SPI_BUSWIDTH 1    [current_design]
-set_property BITSTREAM.CONFIG.CONFIGRATE 50     [current_design]
+#set_property BITSTREAM.Config.SPI_BUSWIDTH 1    [current_design]
+#set_property BITSTREAM.CONFIG.CONFIGRATE 50     [current_design]
