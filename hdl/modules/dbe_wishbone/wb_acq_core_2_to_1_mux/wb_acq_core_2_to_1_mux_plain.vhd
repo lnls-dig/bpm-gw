@@ -49,13 +49,21 @@ generic
 );
 port
 (
-  fs_clk_i                                  : in std_logic;
-  fs_ce_i                                   : in std_logic;
-  fs_rst_n_i                                : in std_logic;
+  -- Clock signals for acquisition core 1
+  fs1_clk_i                                 : in std_logic;
+  fs1_ce_i                                  : in std_logic;
+  fs1_rst_n_i                               : in std_logic;
 
+  -- Clock signals for acquisition core 2
+  fs2_clk_i                                 : in std_logic;
+  fs2_ce_i                                  : in std_logic;
+  fs2_rst_n_i                               : in std_logic;
+
+  -- Clock signals for Wishbone
   sys_clk_i                                 : in std_logic;
   sys_rst_n_i                               : in std_logic;
 
+  -- Clock signals for External Memory
   ext_clk_i                                 : in std_logic;
   ext_rst_n_i                               : in std_logic;
 
@@ -197,13 +205,21 @@ begin
   )
   port map
   (
-    fs_clk_i                                 => fs_clk_i,
-    fs_ce_i                                  => fs_ce_i,
-    fs_rst_n_i                               => fs_rst_n_i,
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                => fs1_clk_i,
+    fs1_ce_i                                 => fs1_ce_i,
+    fs1_rst_n_i                              => fs1_rst_n_i,
 
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                => fs2_clk_i,
+    fs2_ce_i                                 => fs2_ce_i,
+    fs2_rst_n_i                              => fs2_rst_n_i,
+
+    -- Clock signals for Wishbone
     sys_clk_i                                => sys_clk_i,
     sys_rst_n_i                              => sys_rst_n_i,
 
+    -- Clock signals for External Memory
     ext_clk_i                                => ext_clk_i,
     ext_rst_n_i                              => ext_rst_n_i,
 

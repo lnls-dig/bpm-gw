@@ -1335,13 +1335,21 @@ package dbe_wishbone_pkg is
   );
   port
   (
-    fs_clk_i                                  : in std_logic;
-    fs_ce_i                                   : in std_logic;
-    fs_rst_n_i                                : in std_logic;
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                 : in std_logic;
+    fs1_ce_i                                  : in std_logic;
+    fs1_rst_n_i                               : in std_logic;
 
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                 : in std_logic;
+    fs2_ce_i                                  : in std_logic;
+    fs2_rst_n_i                               : in std_logic;
+
+    -- Clock signals for Wishbone
     sys_clk_i                                 : in std_logic;
     sys_rst_n_i                               : in std_logic;
 
+    -- Clock signals for External Memory
     ext_clk_i                                 : in std_logic;
     ext_rst_n_i                               : in std_logic;
 
@@ -1469,13 +1477,21 @@ package dbe_wishbone_pkg is
   );
   port
   (
-    fs_clk_i                                  : in std_logic;
-    fs_ce_i                                   : in std_logic;
-    fs_rst_n_i                                : in std_logic;
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                 : in std_logic;
+    fs1_ce_i                                  : in std_logic;
+    fs1_rst_n_i                               : in std_logic;
 
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                 : in std_logic;
+    fs2_ce_i                                  : in std_logic;
+    fs2_rst_n_i                               : in std_logic;
+
+    -- Clock signals for Wishbone
     sys_clk_i                                 : in std_logic;
     sys_rst_n_i                               : in std_logic;
 
+    -- Clock signals for External Memory
     ext_clk_i                                 : in std_logic;
     ext_rst_n_i                               : in std_logic;
 
