@@ -549,8 +549,8 @@ architecture rtl of dbe_bpm_dsp is
   signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
 
   signal rs232_rstn                         : std_logic;
-  signal fs_rstn                            : std_logic;
-  signal fs_rst2xn                          : std_logic;
+  signal fs_rstn_dbg                        : std_logic;
+  signal fs_rst2xn_dbg                      : std_logic;
   signal fs1_rstn                           : std_logic;
   signal fs1_rst2xn                         : std_logic;
   signal fs2_rstn                           : std_logic;
@@ -560,8 +560,8 @@ architecture rtl of dbe_bpm_dsp is
   signal clk_200mhz                         : std_logic;
 
   -- ADC clock
-  signal fs_clk                             : std_logic;
-  signal fs_clk2x                           : std_logic;
+  signal fs_clk_dbg                         : std_logic;
+  signal fs_clk2x_dbg                       : std_logic;
   signal fs1_clk                            : std_logic;
   signal fs1_clk2x                          : std_logic;
   signal fs2_clk                            : std_logic;
@@ -1514,13 +1514,11 @@ begin
   fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
   fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
 
-  --led_south_o                               <= fmc1_led1_int;
-  --led_east_o                                <= fmc1_led2_int;
-  --led_north_o                               <= fmc1_led3_int;
-  fs_clk                                     <= fs1_clk;
-  fs_rstn                                    <= fs1_rstn;
-  fs_clk2x                                   <= fs1_clk2x;
-  fs_rst2xn                                  <= fs1_rst2xn;
+  -- Debug clock for chipscope
+  fs_clk_dbg                                 <= fs1_clk;
+  fs_rstn_dbg                                <= fs1_rstn;
+  fs_clk2x_dbg                               <= fs1_clk2x;
+  fs_rst2xn_dbg                              <= fs1_rst2xn;
 
   ----------------------------------------------------------------------
   --                      FMC 130M_4CH 2 Core                         --
@@ -1547,7 +1545,7 @@ begin
     g_use_data_chains                       => "1111",
     --g_map_clk_data_chains                   => (-1,-1,-1,-1),
     -- Clock 1 is the adc reference clock
-    g_ref_clk                               => c_num_adc_channels, -- External reference clock
+    g_ref_clk                               => c_adc_ref_clk,
     g_packet_size                           => 32,
     g_sim                                   => 0
   )
@@ -1646,9 +1644,9 @@ begin
     -----------------------------
     -- Optional external reference clock ports
     -----------------------------
-    fmc_ext_ref_clk_i                       => fs_clk,
-    fmc_ext_ref_clk2x_i                     => fs_clk2x,
-    fmc_ext_ref_mmcm_locked_i               => fmc1_mmcm_lock_int,
+    fmc_ext_ref_clk_i                       => '0',
+    fmc_ext_ref_clk2x_i                     => '0',
+    fmc_ext_ref_mmcm_locked_i               => '0',
 
     -----------------------------
     -- ADC output signals. Continuous flow
@@ -1706,10 +1704,6 @@ begin
   fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
   fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
 
-  --led_south_o                               <= fmc2_led1_int;
-  --led_east_o                                <= fmc2_led2_int;
-  --led_north_o                               <= fmc2_led3_int;
-
   ----------------------------------------------------------------------
   --                      DSP Chain 1 Core                            --
   ----------------------------------------------------------------------
@@ -1724,10 +1718,10 @@ begin
   port map (
     rst_n_i                                 => clk_sys_rstn,
     clk_i                                   => clk_sys,  -- Wishbone clock
-    fs_rst_n_i                              => fs_rstn,
-    fs_rst2x_n_i                            => fs_rst2xn,
-    fs_clk_i                                => fs_clk,
-    fs_clk2x_i                              => fs_clk2x,
+    fs_rst_n_i                              => fs1_rstn,
+    fs_rst2x_n_i                            => fs1_rst2xn,
+    fs_clk_i                                => fs1_clk,
+    fs_clk2x_i                              => fs1_clk2x,
 
     -----------------------------
     -- Wishbone signals
@@ -1897,10 +1891,10 @@ begin
   port map (
     rst_n_i                                 => clk_sys_rstn,
     clk_i                                   => clk_sys,  -- Wishbone clock
-    fs_rst_n_i                              => fs_rstn,
-    fs_rst2x_n_i                            => fs_rst2xn,
-    fs_clk_i                                => fs_clk,
-    fs_clk2x_i                              => fs_clk2x,
+    fs_rst_n_i                              => fs2_rstn,
+    fs_rst2x_n_i                            => fs2_rst2xn,
+    fs_clk_i                                => fs2_clk,
+    fs_clk2x_i                              => fs2_clk2x,
 
     -----------------------------
     -- Wishbone signals
@@ -2563,10 +2557,17 @@ begin
   )
   port map
   (
-    fs_clk_i                                  => fs_clk,
-    fs_ce_i                                   => '1',
-    fs_rst_n_i                                => fs_rstn,
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                 => fs1_clk,
+    fs1_ce_i                                  => '1',
+    fs1_rst_n_i                               => fs1_rstn,
 
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                 => fs2_clk,
+    fs2_ce_i                                  => '1',
+    fs2_rst_n_i                               => fs2_rstn,
+
+    -- Clock signals for Wishbone
     sys_clk_i                                 => clk_sys,
     sys_rst_n_i                               => clk_sys_rstn,
 
