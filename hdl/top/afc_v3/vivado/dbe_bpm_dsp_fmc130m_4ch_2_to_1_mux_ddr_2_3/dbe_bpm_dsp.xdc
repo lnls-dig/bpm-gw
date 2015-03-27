@@ -1198,20 +1198,28 @@ set_false_path -from [get_clocks [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cm
 # To/From Wishbone To/From ADC/ADC2x. These are just for slow control and don't need to be analyzed
 #set_false_path -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out]
 set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out] 16.000
+set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out_1] 16.000
 #set_false_path -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out]
 set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
 
 #set_false_path -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_sys]
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_sys] 20.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks clk_sys] 20.000
 #set_false_path -from [get_clocks adc_clk2x_mmcm_out] -to [get_clocks clk_sys]
 set_max_delay -datapath_only -from [get_clocks adc_clk2x_mmcm_out] -to [get_clocks clk_sys] 10.000
+set_max_delay -datapath_only -from [get_clocks adc_clk2x_mmcm_out_1] -to [get_clocks clk_sys] 10.000
 
 # This path happens only in the control path for setting control parameters
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks adc_clk2x_mmcm_out] 8.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
 
 # FIFO CDC timimng. Using faster clock period / 2
 set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out] 4.000
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
+
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out_1] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
