@@ -1050,10 +1050,10 @@ resize_pblock [get_pblocks GRP_tlpControl] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0
 #INST "cmp2_xwb_fmc130m_4ch" AREA_GROUP = "GRP_fmc2";
 #AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
 create_pblock GRP_position_calc_core1
-add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -quiet [list cmp1_xwb_position_calc_core_ns]]
+add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -quiet [list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
 resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
 create_pblock GRP_position_calc_core2
-add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -quiet [list cmp2_xwb_position_calc_core_ns]]
+add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -quiet [list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
 resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 
 #######################################################################
