@@ -28,38 +28,6 @@ set_property PACKAGE_PIN AG26 [get_ports sys_rst_button_n_i]
 set_property IOSTANDARD LVCMOS25 [get_ports sys_rst_button_n_i]
 set_property PULLUP true [get_ports sys_rst_button_n_i]
 
-# MMCM Status
-#NET "fmc_mmcm_lock_led_o"                     LOC = "AP24"  |  IOSTANDARD = "LVCMOS25"; # GPIO_LED_C, DS16
-
-# LMK clock distribution Status
-#NET "fmc_pll_status_led_o"                    LOC = "AD21"  |  IOSTANDARD = "LVCMOS25"; # GPIO_LED_W, DS17
-
-#NET "led_south_o"                             LOC = "AH28"  |  IOSTANDARD = "LVCMOS25"; # GPIO_LED_S, DS18
-#NET "led_east_o"                              LOC = "AE21"  |  IOSTANDARD = "LVCMOS25"; # GPIO_LED_E, DS19
-#NET "led_north_o"                             LOC = "AH27"  |  IOSTANDARD = "LVCMOS25"; # GPIO_LED_N, DS20
-
-#NET "board_led1_o"                            LOC = AC22 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW; // User led 0
-#NET "board_led2_o"                            LOC = AC24 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW; // User led 1
-#NET "board_led3_o"                            LOC = AE22 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW; // User led 2
-
-#NET "clk_swap_o"                              LOC = V34  | IOSTANDARD = LVCMOS25; # USER_SMA_GPIO_P
-#NET "clk_swap2x_o"                            LOC = L23  | IOSTANDARD = LVCMOS25; # USER_SMA_CLK_P
-#NET "flag1_o"                                 LOC = W34  | IOSTANDARD = LVCMOS25; # USER_SMA_GPIO_N
-#NET "flag2_o"                                 LOC = M22  | IOSTANDARD = LVCMOS25; # USER_SMA_CLK_N
-
-#######################################################################
-##                      Button/LEDs Contraints                       ##
-#######################################################################
-
-###NET "leds_o[0]"                               LOC = AC22 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[1]"                               LOC = AC24 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[2]"                               LOC = AE22 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[3]"                               LOC = AE23 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[4]"                               LOC = AB23 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[5]"                               LOC = AG23 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[6]"                               LOC = AE24 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-###NET "leds_o[7]"                               LOC = AD24 | IOSTANDARD = LVCMOS25 | DRIVE = 12 | SLEW = SLOW;
-
 #######################################################################
 ##                      AFC Diagnostics Contraints                   ##
 #######################################################################
@@ -761,9 +729,6 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc3_of_i]
 ##                         DIFF TERM                                 ##
 #######################################################################
 
-###set_property DIFF_TERM TRUE [get_ports sys_clk_p_i]
-###set_property DIFF_TERM TRUE [get_ports sys_clk_n_i]
-
 set_property DIFF_TERM TRUE [get_ports fmc1_trig_val_p_b]
 set_property DIFF_TERM TRUE [get_ports fmc1_trig_val_n_b]
 
@@ -877,10 +842,6 @@ set_property IDELAY_VALUE 26 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch
 ##                          Clocks                                   ##
 #######################################################################
 
-#### 200 MHz onboard input clock
-###NET "sys_clk_p_i" TNM_NET = "TNM_clk125mhz";
-###TIMESPEC "TS_TNM_clk125mhz" = PERIOD "TNM_clk125mhz" 5 ns HIGH 50%;
-
 # 125 MHz AMC TCLKB input clock
 create_clock -period 8.000 -name sys_clk_p_i [get_ports sys_clk_p_i]
 
@@ -892,19 +853,11 @@ create_clock -name clk_sys -period 10.000 [get_pins cmp_sys_pll_inst/cmp_clkout0
 # A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
 create_clock -name clk_200mhz -period 5.000 [get_pins cmp_sys_pll_inst/cmp_clkout1_buf/O]
 
-# 200 MHz DDR3 UI Clock
-#NET "*/u_infrastructure/clk_pll" TNM_NET = "TNM_ddr_sys_clk";
-#TIMESPEC "TS_ddr_sys_clk" = PERIOD "TNM_ddr_sys_clk" 5 ns HIGH 50%;
-#NET "clk_sys" TNM_NET = "TNM_clk_sys_group_ffs";
-#TIMESPEC TS_clk_sys_to_ddr3_ui_clk = FROM "TNM_clk_sys_group_ffs" TO "TNM_ddr_sys_clk" 10 ns DATAPATHONLY;
-
 # real jitter is about 22ps peak-to-peak
 create_clock -period 8.000 -name fmc1_adc0_clk_i [get_ports fmc1_adc0_clk_i]
 set_input_jitter fmc1_adc0_clk_i 0.050
 create_clock -period 8.000 -name fmc2_adc0_clk_i [get_ports fmc2_adc0_clk_i]
 set_input_jitter fmc2_adc0_clk_i 0.050
-
-#INST "cmp1_xwb_fmc130m_4ch/*/*/gen_clock_chains[0].*.*/gen_with_ref_clk.cmp_mmcm_adc_clk" LOC=MMCME2_ADV_X1Y3;
 
 create_clock -period 8.000 -name fmc1_adc1_clk_i [get_ports fmc1_adc1_clk_i]
 set_input_jitter fmc1_adc1_clk_i 0.050
@@ -928,178 +881,23 @@ set_input_jitter fmc2_adc3_clk_i 0.050
 
 # Reset synchronization path
 set_false_path -through [get_nets cmp_reset/master_rstn]
-#NET "cmp_reset/Mshreg_shifters_0_0" TNM_NET = "TNM_reset_clk_0";
-## We relax the reset path here, as we have several FFs pipelined.
-## Here, we are using 2 (125MHz) free_clk clock cycles as the maximum
-## allowed, which is large enough so as to not impose any difficulties by
-## the synthesis tools and still small enough so as to not extrapolate
-## the number of FFs pipelined.
-#TIMESPEC "TS_from_reset_free_clk_to_reset_clk_0" = FROM "TNM_reset_free_clk" TO "TNM_reset_clk_0" 16 ns DATAPATHONLY;
+# DDR 3 temperature monitor reset path
 set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
 #######################################################################
 ##                                Data                               ##
 #######################################################################
 
-#INST "fmc_adc_130m_4ch_i/ltcInterface_adc0_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y1;
-#INST "fmc_adc_130m_4ch_i/ltcInterface_adc1_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y2;
-#INST "fmc_adc_130m_4ch_i/ltcInterface_adc2_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y0;
-#INST "fmc_adc_130m_4ch_i/ltcInterface_adc3_i/IDELAYCTRL_adc0_inst" LOC = IDELAYCTRL_X0Y1; // same as ADC1
-#INST "cmp1_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" LOC = IDELAYCTRL_X0Y1;
-#INST "cmp2_xwb_fmc130m_4ch_cmp_wb_fmc130m_4ch_cmp_fmc_adc_iface_cmp_idelayctrl" LOC = IDELAYCTRL_X0Y2;
+# Constraint all IDELAY blocks to the same IDELAY control as the DDR 3, so the tool will replicate it as needed
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
-###INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_idelayctrl.cmp_idelayctrl" IODELAY_GROUP = fmc1_iodelay_grp;
-###INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_idelayctrl.cmp_idelayctrl" IODELAY_GROUP = fmc2_iodelay_grp;
-###
-###INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
-###INST "cmp1_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_clock_chains[?].*.*/*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc1_iodelay_grp;
-###
-###INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_adc_data_chains[?].*.*/gen_adc_data[?].*.*.cmp_adc_data_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
-###INST "cmp2_xwb_fmc130m_4ch/*/cmp_fmc_adc_iface/gen_clock_chains[?].*.*/*.*.cmp_ibufds_clk_iodelay" IODELAY_GROUP = fmc2_iodelay_grp;
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
-# The above constraints does not wor with PCIe and DDR cores...
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[0].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[1].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[2].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[3].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[4].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[5].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[6].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[7].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[8].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[9].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[10].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[11].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[12].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[13].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[14].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[15].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc130m_4ch/cmp_wb_fmc130m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-
-#// including 50ps jitter, for 130MHz clock
-#// since design uses copy of input ADC clock
-#// there is additional delay for clock/ data (tC)
-
+# including 50ps jitter, for 130MHz clock
+# since design uses copy of input ADC clock
+# there is additional delay for clock/ data (tC)
 
 set_input_delay -clock [get_clocks fmc1_adc0_clk_i] -max -add_delay -1.000 [get_ports {fmc1_adc0_data_i[*]}]
 set_input_delay -clock [get_clocks fmc1_adc0_clk_i] -min -add_delay 7.000  [get_ports {fmc1_adc0_data_i[*]}]
@@ -1109,7 +907,6 @@ set_input_delay -clock [get_clocks fmc1_adc2_clk_i] -max -add_delay -1.000 [get_
 set_input_delay -clock [get_clocks fmc1_adc2_clk_i] -min -add_delay 7.000  [get_ports {fmc1_adc2_data_i[*]}]
 set_input_delay -clock [get_clocks fmc1_adc3_clk_i] -max -add_delay -1.000 [get_ports {fmc1_adc3_data_i[*]}]
 set_input_delay -clock [get_clocks fmc1_adc3_clk_i] -min -add_delay 7.000  [get_ports {fmc1_adc3_data_i[*]}]
-
 
 set_input_delay -clock [get_clocks fmc2_adc0_clk_i] -max -add_delay -1.000 [get_ports {fmc2_adc0_data_i[*]}]
 set_input_delay -clock [get_clocks fmc2_adc0_clk_i] -min -add_delay 7.000  [get_ports {fmc2_adc0_data_i[*]}]
@@ -1126,7 +923,6 @@ set_property IOB TRUE [get_ports {fmc1_adc0_data_i[*] fmc1_adc1_data_i[*] fmc1_a
 #######################################################################
 ##                          PCIe constraints                        ##
 #######################################################################
-#
 
 #PCIe clock
 #// MGT216_CLK1_N	-> MGTREFCLK0N_216
