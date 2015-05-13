@@ -8,5 +8,7 @@ syn_top = "dbe_bpm_dsp"
 syn_project = "dbe_bpm_dsp.xise"
 syn_tool = "ise"
 
+machine_pkg = "uvx_130M"
+
 modules = { "local" : [ "../../../top/afc_v3/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux" ] };
 
