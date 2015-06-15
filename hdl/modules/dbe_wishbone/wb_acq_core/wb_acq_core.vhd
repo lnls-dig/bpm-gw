@@ -144,6 +144,8 @@ port
   -----------------------------
   -- Debug Interface
   -----------------------------
+  dbg_ddr_rb_start_p_i                      : in std_logic;
+  dbg_ddr_rb_rdy_o                          : out std_logic;
   dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
@@ -163,6 +165,8 @@ architecture rtl of wb_acq_core is
 
   constant c_acq_data_width                 : natural :=
                                   f_acq_chan_find_widest(c_acq_channels);
+
+  constant c_fc_pipe_size                   : natural := 8;
 
   ------------------------------------------------------------------------------
   -- Types declaration
@@ -290,6 +294,7 @@ architecture rtl of wb_acq_core is
   signal dbg_ddr_rb_addr                    : std_logic_vector(g_acq_addr_width-1 downto 0);
   signal dbg_ddr_rb_valid                   : std_logic;
 
+  signal ddr3_rb_start                      : std_logic;
   signal ddr3_rb_all_trans_done_p           : std_logic;
 
   signal ddr3_all_trans_done_l              : std_logic;
@@ -569,7 +574,8 @@ begin
     g_addr_width                            => g_ddr_addr_width,
     g_acq_num_channels                      => g_acq_num_channels,
     g_acq_channels                          => g_acq_channels,
-    g_fifo_size                             => g_fifo_fc_size
+    g_fifo_size                             => g_fifo_fc_size,
+    g_fc_pipe_size                          => c_fc_pipe_size
   )
   port map
   (
@@ -691,6 +697,7 @@ begin
   (
     g_acq_num_channels                        => g_acq_num_channels,
     g_acq_channels                            => g_acq_channels,
+    g_fc_pipe_size                            => c_fc_pipe_size,
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                       => g_ddr_payload_width,
     g_ddr_dq_width                            => g_ddr_dq_width,
@@ -750,15 +757,15 @@ begin
     ui_app_gnt_i                              => ui_app_wdf_gnt
   );
 
-  cmp_sync_req_rst : gc_sync_ffs
-    port map(
-      clk_i                                   => ext_clk_i,
-      rst_n_i                                 => ext_rst_n_i,
-      data_i                                  => acq_start,
-      synced_o                                => acq_start_sync_ext,
-      npulse_o                                => open,
-      ppulse_o                                => open
-    );
+  cmp_sync_req_rst : gc_pulse_synchronizer
+  port map (
+    clk_in_i                                  => fs_clk_i,
+    clk_out_i                                 => ext_clk_i,
+    rst_n_i                                   => fs_rst_n_i,
+    d_ready_o                                 => open,
+    d_p_i                                     => acq_start, -- pulse input
+    q_p_o                                     => acq_start_sync_ext -- pulse output
+  );
 
   -- Only for simulation!
   gen_ddr3_readback : if (g_sim_readback) generate
@@ -804,7 +811,9 @@ begin
       fifo_fc_dreq_i                        => '0',
       fifo_fc_stall_i                       => '0',
 
-      rb_start_i                            => ddr3_wr_all_trans_done_p,
+      -- Only start the readbak test when we have done writing and an external signal
+      -- tells us to
+      rb_start_i                            => ddr3_rb_start,
       -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
       -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
       -- impose any metastability problem in this module
@@ -837,6 +846,7 @@ begin
       ui_app_gnt_i                          => ui_app_rb_gnt
     );
 
+    ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
     acq_ddr3_rst_n                          <= ext_rst_n_i and ddr3_wr_all_trans_done_l;
     ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
 
@@ -854,6 +864,8 @@ begin
     ui_app_wdf_gnt <= ui_app_gnt_i when sim_in_rb = '0' else '0';
     ui_app_rb_gnt <= ui_app_gnt_i when sim_in_rb = '1' else '0';
 
+    dbg_ddr_rb_rdy_o <= sim_in_rb;
+
   end generate;
 
   gen_ddr3_non_readback : if (not g_sim_readback) generate
@@ -865,6 +877,8 @@ begin
 
     ui_app_req_o <= ui_app_wdf_req;
     ui_app_wdf_gnt <= ui_app_gnt_i;
+
+    dbg_ddr_rb_rdy_o <= '0';
   end generate;
 
   -- Generate level signal to indicate DDR3 tranfer is complete

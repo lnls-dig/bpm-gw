@@ -15,4 +15,5 @@ else:
              "sfifo_15x128.vhd"]
 
 modules = {"local" : ["pcie_core/source",
-                      "ddr_core/user_design"]}
+                      "ddr_core_2_3/user_design"]}
+                      #"ddr_core/user_design"]}

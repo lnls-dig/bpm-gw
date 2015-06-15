@@ -668,10 +668,79 @@ begin
             wpipe_f2m_rd   <= '1';
             wpipe_fill_eof <= wpipe_fill_eof;
             if wpipe_f2m_valid = '1' then
-              ddram_wr_data(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH) <=
-                wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
-              ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <=
-                wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+              --ddram_wr_data(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH) <=
+              --  wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+              --ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <=
+              --  wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+              case(to_integer(wpipe_f2m_cnt)) is
+                when 0 =>
+                  ddram_wr_data(C_DBUS_WIDTH - 1 downto   0) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                  ddram_wr_mask(C_DBUS_WIDTH/8 - 1 downto 0) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                when 1 =>
+                  ddram_wr_data(2*C_DBUS_WIDTH - 1 downto   C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                  ddram_wr_mask(2*C_DBUS_WIDTH/8 - 1 downto C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                when 2 =>
+                  ddram_wr_data(3*C_DBUS_WIDTH - 1 downto   2*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                  ddram_wr_mask(3*C_DBUS_WIDTH/8 - 1 downto 2*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                when 3 =>
+                  ddram_wr_data(4*C_DBUS_WIDTH - 1 downto   3*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                  ddram_wr_mask(4*C_DBUS_WIDTH/8 - 1 downto 3*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                -- FIXME: Not used for 256-bit data bus!
+                --when 4 =>
+                --  ddram_wr_data(5*C_DBUS_WIDTH - 1 downto   4*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(5*C_DBUS_WIDTH/8 - 1 downto 4*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 5 =>
+                --  ddram_wr_data(6*C_DBUS_WIDTH - 1 downto   5*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(6*C_DBUS_WIDTH/8 - 1 downto 5*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 6 =>
+                --  ddram_wr_data(7*C_DBUS_WIDTH - 1 downto   6*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(7*C_DBUS_WIDTH/8 - 1 downto 6*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 7 =>
+                --  ddram_wr_data(8*C_DBUS_WIDTH - 1 downto   7*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(8*C_DBUS_WIDTH/8 - 1 downto 7*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 8 =>
+                --  ddram_wr_data(9*C_DBUS_WIDTH - 1 downto   8*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(9*C_DBUS_WIDTH/8 - 1 downto 8*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 9 =>
+                --  ddram_wr_data(10*C_DBUS_WIDTH - 1 downto   9*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(10*C_DBUS_WIDTH/8 - 1 downto 9*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 10 =>
+                --  ddram_wr_data(11*C_DBUS_WIDTH - 1 downto   10*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(11*C_DBUS_WIDTH/8 - 1 downto 10*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 11 =>
+                --  ddram_wr_data(12*C_DBUS_WIDTH - 1 downto   11*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(12*C_DBUS_WIDTH/8 - 1 downto 11*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 12 =>
+                --  ddram_wr_data(13*C_DBUS_WIDTH - 1 downto   12*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(13*C_DBUS_WIDTH/8 - 1 downto 12*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 13 =>
+                --  ddram_wr_data(14*C_DBUS_WIDTH - 1 downto   13*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(14*C_DBUS_WIDTH/8 - 1 downto 13*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 14 =>
+                --  ddram_wr_data(15*C_DBUS_WIDTH - 1 downto   14*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(15*C_DBUS_WIDTH/8 - 1 downto 14*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                --when 15 =>
+                --  ddram_wr_data(16*C_DBUS_WIDTH - 1 downto   15*C_DBUS_WIDTH) <= wpipe_f2m_qout(DATA_WIDTH-1 downto 0);
+                --  ddram_wr_mask(16*C_DBUS_WIDTH/8 - 1 downto 15*C_DBUS_WIDTH/8) <= wpipe_f2m_qout(DATA_WIDTH+8-1 downto DATA_WIDTH);
+
+                when others =>
+                  null;
+              end case;
               if wpipe_f2m_qout(73) = '1' then --wpipe_wr_eof
                 wpipe_fill_eof <= '1';
                 wpipe_f2m_rd   <= '0';
@@ -700,7 +769,61 @@ begin
             end if;
           else
             ddram_wr_data <= ddram_wr_data;
-            ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <= x"FF";
+            --ddram_wr_mask(to_integer(wpipe_f2m_cnt+1)*C_DBUS_WIDTH/8 - 1 downto to_integer(wpipe_f2m_cnt)*C_DBUS_WIDTH/8) <= x"FF";
+
+            case(to_integer(wpipe_f2m_cnt)) is
+              when 0 =>
+                ddram_wr_mask(C_DBUS_WIDTH/8 - 1 downto 0) <= x"FF";
+
+              when 1 =>
+                ddram_wr_mask(2*C_DBUS_WIDTH/8 - 1 downto C_DBUS_WIDTH/8) <= x"FF";
+
+              when 2 =>
+                ddram_wr_mask(3*C_DBUS_WIDTH/8 - 1 downto 2*C_DBUS_WIDTH/8) <= x"FF";
+
+              when 3 =>
+                ddram_wr_mask(4*C_DBUS_WIDTH/8 - 1 downto 3*C_DBUS_WIDTH/8) <= x"FF";
+
+              ---- FIXME: Not used for 256-bit data bus!
+              --when 4 =>
+              --  ddram_wr_mask(5*C_DBUS_WIDTH/8 - 1 downto 4*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 5 =>
+              --  ddram_wr_mask(6*C_DBUS_WIDTH/8 - 1 downto 5*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 6 =>
+              --  ddram_wr_mask(7*C_DBUS_WIDTH/8 - 1 downto 6*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 7 =>
+              --  ddram_wr_mask(8*C_DBUS_WIDTH/8 - 1 downto 7*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 8 =>
+              --  ddram_wr_mask(9*C_DBUS_WIDTH/8 - 1 downto 8*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 9 =>
+              --  ddram_wr_mask(10*C_DBUS_WIDTH/8 - 1 downto 9*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 10 =>
+              --  ddram_wr_mask(11*C_DBUS_WIDTH/8 - 1 downto 10*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 11 =>
+              --  ddram_wr_mask(12*C_DBUS_WIDTH/8 - 1 downto 11*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 12 =>
+              --  ddram_wr_mask(13*C_DBUS_WIDTH/8 - 1 downto 12*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 13 =>
+              --  ddram_wr_mask(14*C_DBUS_WIDTH/8 - 1 downto 13*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 14 =>
+              --  ddram_wr_mask(15*C_DBUS_WIDTH/8 - 1 downto 14*C_DBUS_WIDTH/8) <= x"FF";
+
+              --when 15 =>
+              --  ddram_wr_mask(16*C_DBUS_WIDTH/8 - 1 downto 15*C_DBUS_WIDTH/8) <= x"FF";
+
+              when others =>
+                null;
+            end case;
             wpipe_f2m_cnt <= wpipe_f2m_cnt + 1;
             wpipe_f2m_rd  <= '0';
             if wpipe_f2m_cnt = (DDR_PAYLOAD_WIDTH/C_DBUS_WIDTH - 1) then

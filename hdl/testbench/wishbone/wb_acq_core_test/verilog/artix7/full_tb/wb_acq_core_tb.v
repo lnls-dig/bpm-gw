@@ -536,6 +536,8 @@ module wb_acq_core_tb;
   wire                                      ui_app_en;
   wire                                      ui_app_rdy;
   wire                                      ui_app_wdf_rdy;
+  wire                                      ui_app_rdy_ddr;
+  wire                                      ui_app_wdf_rdy_ddr;
   wire [DDR3_PAYLOAD_WIDTH-1:0]
   					    ui_app_rd_data;
   wire                                      ui_app_rd_data_end;
@@ -699,6 +701,12 @@ module wb_acq_core_tb;
       end
     end
   end
+  
+  // In our use case, the lines ui_app_rdy and ui_app_wdf_rdy are only high
+  // if the DDR core drives it high AND if the PCIe arbiter grants us. So,
+  // we emulate this behavior here
+  assign ui_app_rdy = ui_app_rdy_ddr & ui_app_gnt;
+  assign ui_app_wdf_rdy = ui_app_wdf_rdy_ddr & ui_app_gnt;
 
   //**************************************************************************//
   // Data readback checker instantiation
@@ -929,8 +937,8 @@ module wb_acq_core_tb;
     // Only accept transaction if access to the DDR3 controller was granted
     // before
     .app_en                                 (ui_app_en & ui_app_gnt),
-    .app_rdy                                (ui_app_rdy),
-    .app_wdf_rdy                            (ui_app_wdf_rdy),
+    .app_rdy                                (ui_app_rdy_ddr),
+    .app_wdf_rdy                            (ui_app_wdf_rdy_ddr),
     .app_rd_data                            (ui_app_rd_data),
     .app_rd_data_end                        (ui_app_rd_data_end),
     .app_rd_data_valid                      (ui_app_rd_data_valid),

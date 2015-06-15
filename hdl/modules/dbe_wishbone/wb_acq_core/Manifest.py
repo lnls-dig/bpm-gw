@@ -11,6 +11,7 @@ files = ["wb_acq_core.vhd",
         "acq_ddr3_read.vhd",
         "acq_cnt.vhd",
         "acq_sel_chan.vhd",
+        "acq_2_diff_cnt.vhd",
         "data_checker.vhd",
         "wbgen/acq_core_regs_pkg.vhd",
         "wbgen/acq_core_regs.vhd"

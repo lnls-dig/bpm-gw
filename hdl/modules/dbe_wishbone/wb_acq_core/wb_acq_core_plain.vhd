@@ -125,6 +125,8 @@ port
   -----------------------------
   -- Debug Interface
   -----------------------------
+  dbg_ddr_rb_start_p_i                      : in std_logic;
+  dbg_ddr_rb_rdy_o                          : out std_logic;
   dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb_valid_o                        : out std_logic
@@ -228,9 +230,12 @@ begin
 
     ui_app_req_o                              => ui_app_req_o,
     ui_app_gnt_i                              => ui_app_gnt_i,
+
     -----------------------------
     -- Debug Interface
     -----------------------------
+    dbg_ddr_rb_start_p_i                      => dbg_ddr_rb_start_p_i,
+    dbg_ddr_rb_rdy_o                          => dbg_ddr_rb_rdy_o,
     dbg_ddr_rb_data_o                         => dbg_ddr_rb_data_o,
     dbg_ddr_rb_addr_o                         => dbg_ddr_rb_addr_o,
     dbg_ddr_rb_valid_o                        => dbg_ddr_rb_valid_o

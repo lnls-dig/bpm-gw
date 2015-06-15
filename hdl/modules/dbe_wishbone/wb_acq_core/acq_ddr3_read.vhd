@@ -244,7 +244,7 @@ begin
         ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
       else
         if rb_start_i = '1' then
-            ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
+            ddr_addr_cnt_out <= unsigned(rb_init_addr_i);
         elsif valid_trans_out = '1' then -- successfull request
           ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_ddr_inc;
         end if;
@@ -294,7 +294,8 @@ begin
 
   ui_app_req_o <= ddr_req;
 
-  valid_trans_in <= '1' when ui_app_rd_data_valid_i = '1' and ui_app_rd_data_end_i = '1' else '0';
+  valid_trans_in <= '1' when ui_app_rd_data_valid_i = '1' and
+                    ui_app_rd_data_end_i = '1' and ddr_req = '1' else '0';
 
   p_ddr_data_reg : process(ext_clk_i)
   begin
@@ -303,7 +304,7 @@ begin
         ddr_data_in <= (others => '0');
         ddr_valid_out <= '0';
       else
-        ddr_valid_out <= valid_trans_in;
+          ddr_valid_out <= valid_trans_in;
 
         if valid_trans_in = '1' then
           ddr_data_in <= ui_app_rd_data_i;
@@ -318,7 +319,7 @@ begin
 
   ddr_addr_out <= std_logic_vector(ddr_addr_cnt_in_d0);
 
-  valid_trans_out <= ddr_read_en;
+  valid_trans_out <= ddr_read_en and ddr_ui_rdy_t;
 
   -----------------------------------------------------------------------------
   -- Count the number of read requests
@@ -332,7 +333,7 @@ begin
 
     cnt_all_pkts_ct_done_p_o                  => open,
     cnt_all_trans_done_p_o                    => cnt_all_req_trans_done_p,
-    cnt_en_i                                  => ddr_read_en,
+    cnt_en_i                                  => valid_trans_out,
 
     -- Size of the transaction in g_fifo_size bytes
     lmt_pkt_size_i                            => lmt_pkt_size,
@@ -389,7 +390,7 @@ begin
   lmt_all_trans_done_p_o <= cnt_all_recv_trans_done_p;
 
   -- For simulation only. Not for synthesis!
-  ddr_read_en <= ddr_ui_rdy_t when cnt_all_req_trans_done_p = '0' and
+  ddr_read_en <= '1' when cnt_all_req_trans_done_p = '0' and
                        cnt_all_req_trans_done_l = '0' and issue_rb = '1' and
                        ui_app_gnt_i = '1' else '0';
   -- For simulation only. Not for synthesis!

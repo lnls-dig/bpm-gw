@@ -1223,6 +1223,8 @@ package dbe_wishbone_pkg is
     -----------------------------
     -- Debug Interface
     -----------------------------
+    dbg_ddr_rb_start_p_i                      : in std_logic;
+    dbg_ddr_rb_rdy_o                          : out std_logic;
     dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
     dbg_ddr_rb_valid_o                        : out std_logic
@@ -1308,9 +1310,356 @@ package dbe_wishbone_pkg is
     -----------------------------
     -- Debug Interface
     -----------------------------
+    dbg_ddr_rb_start_p_i                      : in std_logic;
+    dbg_ddr_rb_rdy_o                          : out std_logic;
     dbg_ddr_rb_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     dbg_ddr_rb_addr_o                         : out std_logic_vector(g_acq_addr_width-1 downto 0);
     dbg_ddr_rb_valid_o                        : out std_logic
+  );
+  end component;
+
+  component wb_acq_core_2_to_1_mux
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_acq_addr_width                          : natural := 32;
+    g_acq_num_channels                        : natural := c_default_acq_num_channels;
+    g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array;
+    g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+    g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+    g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
+    g_multishot_ram_size                      : natural := 2048;
+    g_fifo_fc_size                            : natural := 64;
+    g_sim_readback                            : boolean := false
+  );
+  port
+  (
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                 : in std_logic;
+    fs1_ce_i                                  : in std_logic;
+    fs1_rst_n_i                               : in std_logic;
+
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                 : in std_logic;
+    fs2_ce_i                                  : in std_logic;
+    fs2_rst_n_i                               : in std_logic;
+
+    -- Clock signals for Wishbone
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -- Clock signals for External Memory
+    ext_clk_i                                 : in std_logic;
+    ext_rst_n_i                               : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb0_adr_i                                 : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb0_dat_i                                 : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb0_dat_o                                 : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb0_sel_i                                 : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb0_we_i                                  : in  std_logic := '0';
+    wb0_cyc_i                                 : in  std_logic := '0';
+    wb0_stb_i                                 : in  std_logic := '0';
+    wb0_ack_o                                 : out std_logic;
+    wb0_err_o                                 : out std_logic;
+    wb0_rty_o                                 : out std_logic;
+    wb0_stall_o                               : out std_logic;
+
+    wb1_adr_i                                 : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb1_dat_i                                 : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb1_dat_o                                 : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb1_sel_i                                 : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb1_we_i                                  : in  std_logic := '0';
+    wb1_cyc_i                                 : in  std_logic := '0';
+    wb1_stb_i                                 : in  std_logic := '0';
+    wb1_ack_o                                 : out std_logic;
+    wb1_err_o                                 : out std_logic;
+    wb1_rty_o                                 : out std_logic;
+    wb1_stall_o                               : out std_logic;
+
+    -----------------------------
+    -- External Interface
+    -----------------------------
+    acq0_val_low_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq0_val_high_i                           : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq0_dvalid_i                             : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq0_trig_i                               : in std_logic_vector(g_acq_num_channels-1 downto 0);
+
+    acq1_val_low_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq1_val_high_i                           : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+    acq1_dvalid_i                             : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq1_trig_i                               : in std_logic_vector(g_acq_num_channels-1 downto 0);
+
+    -----------------------------
+    -- DRRAM Interface
+    -----------------------------
+    dpram0_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dpram0_valid_o                            : out std_logic;
+
+    dpram1_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dpram1_valid_o                            : out std_logic;
+
+    -----------------------------
+    -- External Interface (w/ FLow Control)
+    -----------------------------
+    ext0_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ext0_valid_o                              : out std_logic;
+    ext0_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    ext0_sof_o                                : out std_logic;
+    ext0_eof_o                                : out std_logic;
+    ext0_dreq_o                               : out std_logic; -- for debbuging purposes
+    ext0_stall_o                              : out std_logic; -- for debbuging purposes
+
+    ext1_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ext1_valid_o                              : out std_logic;
+    ext1_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    ext1_sof_o                                : out std_logic;
+    ext1_eof_o                                : out std_logic;
+    ext1_dreq_o                               : out std_logic; -- for debbuging purposes
+    ext1_stall_o                              : out std_logic; -- for debbuging purposes
+
+    -----------------------------
+    -- DDR3 SDRAM Interface
+    -----------------------------
+    ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
+    ui_app_en_o                               : out std_logic;
+    ui_app_rdy_i                              : in std_logic;
+
+    ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ui_app_wdf_end_o                          : out std_logic;
+    ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+    ui_app_wdf_wren_o                         : out std_logic;
+    ui_app_wdf_rdy_i                          : in std_logic;
+
+    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ui_app_rd_data_end_i                      : in std_logic;
+    ui_app_rd_data_valid_i                    : in std_logic;
+
+    ui_app_req_o                              : out std_logic;
+    ui_app_gnt_i                              : in std_logic;
+
+    -----------------------------
+    -- Debug Interface
+    -----------------------------
+    dbg_ddr_rb0_start_p_i                     : in std_logic;
+    dbg_ddr_rb0_rdy_o                         : out std_logic;
+    dbg_ddr_rb0_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    dbg_ddr_rb0_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    dbg_ddr_rb0_valid_o                       : out std_logic;
+
+    dbg_ddr_rb1_start_p_i                     : in std_logic;
+    dbg_ddr_rb1_rdy_o                         : out std_logic;
+    dbg_ddr_rb1_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    dbg_ddr_rb1_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    dbg_ddr_rb1_valid_o                       : out std_logic
+  );
+  end component;
+
+  component xwb_acq_core_2_to_1_mux
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_acq_addr_width                          : natural := 32;
+    g_acq_num_channels                        : natural := c_default_acq_num_channels;
+    g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array;
+    g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+    g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+    g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
+    g_multishot_ram_size                      : natural := 2048;
+    g_fifo_fc_size                            : natural := 64;
+    g_sim_readback                            : boolean := false
+  );
+  port
+  (
+    -- Clock signals for acquisition core 1
+    fs1_clk_i                                 : in std_logic;
+    fs1_ce_i                                  : in std_logic;
+    fs1_rst_n_i                               : in std_logic;
+
+    -- Clock signals for acquisition core 2
+    fs2_clk_i                                 : in std_logic;
+    fs2_ce_i                                  : in std_logic;
+    fs2_rst_n_i                               : in std_logic;
+
+    -- Clock signals for Wishbone
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -- Clock signals for External Memory
+    ext_clk_i                                 : in std_logic;
+    ext_rst_n_i                               : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+    wb0_slv_i                                 : in t_wishbone_slave_in;
+    wb0_slv_o                                 : out t_wishbone_slave_out;
+
+    wb1_slv_i                                 : in t_wishbone_slave_in;
+    wb1_slv_o                                 : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- External Interface
+    -----------------------------
+    acq0_chan_array_i                         : in t_acq_chan_array(g_acq_num_channels-1 downto 0);
+
+    acq1_chan_array_i                         : in t_acq_chan_array(g_acq_num_channels-1 downto 0);
+
+    -----------------------------
+    -- DRRAM Interface
+    -----------------------------
+    dpram0_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dpram0_valid_o                            : out std_logic;
+
+    dpram1_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dpram1_valid_o                            : out std_logic;
+
+    -----------------------------
+    -- External Interface (w/ FLow Control)
+    -----------------------------
+    ext0_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ext0_valid_o                              : out std_logic;
+    ext0_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    ext0_sof_o                                : out std_logic;
+    ext0_eof_o                                : out std_logic;
+    ext0_dreq_o                               : out std_logic; -- for debbuging purposes
+    ext0_stall_o                              : out std_logic; -- for debbuging purposes
+
+    ext1_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ext1_valid_o                              : out std_logic;
+    ext1_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    ext1_sof_o                                : out std_logic;
+    ext1_eof_o                                : out std_logic;
+    ext1_dreq_o                               : out std_logic; -- for debbuging purposes
+    ext1_stall_o                              : out std_logic; -- for debbuging purposes
+
+    -----------------------------
+    -- DDR3 SDRAM Interface
+    -----------------------------
+    ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
+    ui_app_en_o                               : out std_logic;
+    ui_app_rdy_i                              : in std_logic;
+
+    ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ui_app_wdf_end_o                          : out std_logic;
+    ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+    ui_app_wdf_wren_o                         : out std_logic;
+    ui_app_wdf_rdy_i                          : in std_logic;
+
+    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
+    ui_app_rd_data_end_i                      : in std_logic;
+    ui_app_rd_data_valid_i                    : in std_logic;
+
+    ui_app_req_o                              : out std_logic;
+    ui_app_gnt_i                              : in std_logic;
+
+    -----------------------------
+    -- Debug Interface
+    -----------------------------
+    dbg_ddr_rb0_start_p_i                     : in std_logic;
+    dbg_ddr_rb0_rdy_o                         : out std_logic;
+    dbg_ddr_rb0_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    dbg_ddr_rb0_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    dbg_ddr_rb0_valid_o                       : out std_logic;
+
+    dbg_ddr_rb1_start_p_i                     : in std_logic;
+    dbg_ddr_rb1_rdy_o                         : out std_logic;
+    dbg_ddr_rb1_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    dbg_ddr_rb1_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    dbg_ddr_rb1_valid_o                       : out std_logic
+  );
+  end component;
+
+  component wb_afc_diag
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -- Fast SPI clock
+    spi_clk_i                                 : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    dbg_spi_clk_o                             : out std_logic;
+    dbg_spi_valid_o                           : out std_logic;
+    dbg_en_o                                  : out std_logic;
+    dbg_addr_o                                : out std_logic_vector(7 downto 0);
+    dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+    dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
+
+    -----------------------------
+    -- SPI interface
+    -----------------------------
+
+    spi_cs                                    : in  std_logic;
+    spi_si                                    : in  std_logic;
+    spi_so                                    : out std_logic;
+    spi_clk                                   : in  std_logic
+  );
+  end component;
+
+  component xwb_afc_diag
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -- Fast SPI clock
+    spi_clk_i                                 : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+    wb_slv_i                                  : in t_wishbone_slave_in;
+    wb_slv_o                                  : out t_wishbone_slave_out;
+
+    dbg_spi_clk_o                             : out std_logic;
+    dbg_spi_valid_o                           : out std_logic;
+    dbg_en_o                                  : out std_logic;
+    dbg_addr_o                                : out std_logic_vector(7 downto 0);
+    dbg_serial_data_o                         : out std_logic_vector(31 downto 0);
+    dbg_spi_data_o                            : out std_logic_vector(31 downto 0);
+
+    -----------------------------
+    -- SPI interface
+    -----------------------------
+
+    spi_cs                                    : in  std_logic;
+    spi_si                                    : in  std_logic;
+    spi_so                                    : out std_logic;
+    spi_clk                                   : in  std_logic
   );
   end component;
 
@@ -1436,5 +1785,22 @@ package dbe_wishbone_pkg is
     version       => x"00000001",
     date          => x"20130225",
     name          => "CERN_TICS_COUNTER  ")));
+
+  -- AFC Diagnostics interface device
+  constant c_xwb_afc_diag_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"51954750",
+    version       => x"00000001",
+    date          => x"20150309",
+    name          => "LNLS_AFCDIAG       ")));
 
 end dbe_wishbone_pkg;
