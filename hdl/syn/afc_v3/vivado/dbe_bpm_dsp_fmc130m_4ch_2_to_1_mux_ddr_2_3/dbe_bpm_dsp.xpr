@@ -39,14 +39,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/cordicg.v">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_ethmac/eth_clockgen.v">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -475,13 +467,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/cordic.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/data_checker.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -748,13 +733,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/platform/artix7/multiplier_16x10_DSP.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_simple_pwm/simple_pwm_wb.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -770,13 +748,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/spi_master.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/ip_cores/concordic/hdl/modules/unc_mult/unc_mult.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1225,13 +1196,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../platform/artix7/chipscope/ila/chipscope_ila.ngc">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/platform/artix7/multiplier_16x10_DSP.ngc">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1829,12 +1793,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/platform/artix7/multiplier_u16x16_DSP.ngc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_core_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1852,12 +1810,6 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/platform/artix7/multiplier_u16x16_DSP.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -2127,12 +2079,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/ip_cores/concordic/hdl/modules/cordic_core/addsub.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2184,12 +2130,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/delay_inv_ch.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/ip_cores/concordic/hdl/modules/cordic_core/cordic_core.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2301,12 +2241,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/ip_cores/concordic/hdl/modules/cordic_core/inversion_stage.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2447,19 +2381,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/position_calc_counters_single.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_fsm.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/ip_cores/concordic/hdl/modules/cordic_vectoring/cordic_vectoring_slv.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2580,12 +2502,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/wbgen/wb_pos_calc_regs_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_rs232_syscon/rs232_syscon.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2665,12 +2581,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/position_calc_core_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2719,12 +2629,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/position_nosysgen/position_nosysgen.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_common/reset_synch/reset_synch.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2768,12 +2672,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_stream_widen.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/position_calc_counters.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2846,12 +2744,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/position_calc_cdc_fifo.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_fmc130m_4ch/wbgen/fmc_130m_4ch_regs.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2889,12 +2781,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/wbgen/wb_pos_calc_regs.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2948,12 +2834,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/wb_position_calc_core.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_dbe_periph/wb_dbe_periph.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2990,12 +2870,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc_nosysgen/xwb_position_calc_core.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_rs232_syscon/xwb_rs232_syscon.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -3024,16 +2898,6 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/ddr_core_2_3_new/mig_a.prj">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/mig_7series_0/mig_a.prj">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/sys_pll.vhd">
@@ -3173,24 +3037,165 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/ip/sin_lut_uvx_35_148/sin_lut_uvx_35_148.xci">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/position_calc/position_calc.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/ip/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/position_calc/position_calc_uvx_const_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/ip/cos_lut_uvx_35_148/cos_lut_uvx_35_148.xci">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.mif">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_cos_lut.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.mif">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/machine_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.mif">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_sin_lut.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_core_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_cdc_fifo.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/xwb_position_calc_core.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/wb_pos_calc_regs.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/wb_pos_calc_regs_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/pos_calc_regs.h">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/wb_position_calc_core.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_counters_single.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_counters.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/inversion_stage.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/cordic_vectoring_slv.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/cordic_core.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cordic/addsub.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap.h">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_defs.h">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs.h">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -3226,12 +3231,6 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/divider/divider_impl_test_top.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="dbe_bpm_dsp"/>
@@ -3239,6 +3238,45 @@
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="SimMode" Val="post-implementation"/>
         <Option Name="SrcSet" Val="sources_1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="sin_lut_uvx_35_148" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sin_lut_uvx_35_148">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="sin_lut_uvx_35_148"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cos_lut_uvx_35_148" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cos_lut_uvx_35_148">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="cos_lut_uvx_35_148"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="sw_windowing_n_251_tukey_0_2" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sw_windowing_n_251_tukey_0_2">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="sw_windowing_n_251_tukey_0_2"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
   </FileSets>
@@ -3265,6 +3303,27 @@
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
           <Option Id="FlattenHierarchy">1</Option>
         </Step>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="sin_lut_uvx_35_148_synth_1" Type="Ft3:Synth" SrcSet="sin_lut_uvx_35_148" Part="xc7a200tffg1156-1" ConstrsSet="sin_lut_uvx_35_148" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/sin_lut_uvx_35_148_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2014"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="cos_lut_uvx_35_148_synth_1" Type="Ft3:Synth" SrcSet="cos_lut_uvx_35_148" Part="xc7a200tffg1156-1" ConstrsSet="cos_lut_uvx_35_148" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/cos_lut_uvx_35_148_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2014"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="sw_windowing_n_251_tukey_0_2_synth_1" Type="Ft3:Synth" SrcSet="sw_windowing_n_251_tukey_0_2" Part="xc7a200tffg1156-1" ConstrsSet="sw_windowing_n_251_tukey_0_2" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/sw_windowing_n_251_tukey_0_2_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2014"/>
+        <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
     </Run>
@@ -3299,6 +3358,48 @@
         </Step>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="sin_lut_uvx_35_148_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="sin_lut_uvx_35_148" Description="Vivado Implementation Defaults" SynthRun="sin_lut_uvx_35_148_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2014"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="cos_lut_uvx_35_148_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="cos_lut_uvx_35_148" Description="Vivado Implementation Defaults" SynthRun="cos_lut_uvx_35_148_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2014"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="sw_windowing_n_251_tukey_0_2_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="sw_windowing_n_251_tukey_0_2" Description="Vivado Implementation Defaults" SynthRun="sw_windowing_n_251_tukey_0_2_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2014"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
     </Run>
   </Runs>
   <HWSession Dir="hw_1" File="hw.xml"/>
