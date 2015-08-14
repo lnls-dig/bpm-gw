@@ -94,7 +94,8 @@
 # (UG) for guidelines regarding clock resource selection.
 #
 
-set_property LOC IBUFDS_GTE2_X0Y3 [get_cells *refclk_ibuf]
+# FIXME: This constraint commented because Vivado can't find the converted nets from ISE
+# set_property LOC IBUFDS_GTE2_X0Y3 [get_cells *refclk_ibuf]
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -156,7 +157,9 @@ create_generated_clock -name clk_userclk2 -source [get_pins */*/*/pcie_core_i/gt
 set_false_path -through [get_pins {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i/PLPHYLNKUPN*}]
 set_false_path -through [get_pins {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i/PLRECEIVEDHOTRST*}]
 
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/user_resetdone*}]
+# FIXME: This constraint commented because Vivado can't find the converted nets from ISE
+#set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/user_resetdone*}]
+
 set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gtp_pipe_rate.gtp_pipe_rate_i/*}]
 set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gtp_pipe_rate.gtp_pipe_rate_i/*}]
 set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gtp_pipe_rate.gtp_pipe_rate_i/*}]

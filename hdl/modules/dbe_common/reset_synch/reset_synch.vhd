@@ -21,8 +21,10 @@ architecture rtl of reset_synch is
   signal s_ff                              : std_logic_vector(g_pipeline-1 downto 0) := (others => '0');
   
   -- Try to reduce fanout of reset signal
-  attribute MAX_FANOUT			   : string;
-  attribute MAX_FANOUT of s_ff             : signal is "REDUCE";
+ -- FIXME:  In vivado, MAX_FANOUT is a integer and "REDUCE" was removed. To soft-limit the fanout, 
+ -- this property should be set outside the VHDL. Check issue #47 on github.
+  -- attribute MAX_FANOUT			   : string;
+  -- attribute MAX_FANOUT of s_ff             : signal is "REDUCE";
 begin
 
   assert (g_pipeline >= 1)
