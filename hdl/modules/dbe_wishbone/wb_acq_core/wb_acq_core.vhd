@@ -168,6 +168,18 @@ architecture rtl of wb_acq_core is
 
   constant c_fc_pipe_size                   : natural := 8;
 
+  constant c_p2l_num_inputs                 : natural := 6;
+  constant c_p2l_all_trans_done_idx         : natural := 0;
+  constant c_p2l_fifo_fc_full_idx           : natural := 1;
+  constant c_p2l_acq_start_idx              : natural := 2;
+  constant c_p2l_ddr3_wr_all_trans_done_idx : natural := 3;
+  constant c_p2l_ddr3_all_trans_done_idx    : natural := 4;
+  constant c_p2l_acq_start_sync_ext_idx     : natural := 5;
+  constant c_p2l_with_pulse_sync            : t_acq_bool_array(c_p2l_num_inputs-1 downto 0) :=
+                                                (true, true, false, true, false, false);
+  constant c_p2l_with_pulse2level           : t_acq_bool_array(c_p2l_num_inputs-1 downto 0) :=
+                                                (false, true, true, false, true, true);
+
   ------------------------------------------------------------------------------
   -- Types declaration
   ------------------------------------------------------------------------------
@@ -180,6 +192,18 @@ architecture rtl of wb_acq_core is
   signal wb_slv_adp_out                     : t_wishbone_master_out;
   signal wb_slv_adp_in                      : t_wishbone_master_in;
   signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
+
+  -- Pulse/level converter signals
+  signal p2l_clk_in                         : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+  signal p2l_rst_in_n                       : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+  signal p2l_clk_out                        : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+  signal p2l_rst_out_n                      : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+
+  signal p2l_pulse                          : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+  signal p2l_clr                            : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+
+  signal p2l_pulse_synched                  : std_logic_vector(c_p2l_num_inputs-1 downto 0);
+  signal p2l_level_synched                  : std_logic_vector(c_p2l_num_inputs-1 downto 0);
 
   -- Trigger
   signal ext_trig_a                         : std_logic;
@@ -408,12 +432,6 @@ begin
   wb_slv_adp_in.err                         <= '0';
   wb_slv_adp_in.rty                         <= '0';
 
-  -- Input register assignments
-  --regs_in.sta_fsm_i                         <= acq_fsm_state;
-  --regs_in.sta_reserved_i                    <= (others => '0');
-  --regs_in.trig_pos_i                        <= (others => '0');
-  --regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
-
   pre_trig_samples_c                        <= unsigned(regs_out.pre_samples_o);
   post_trig_samples_c                       <= unsigned(regs_out.post_samples_o);
   shots_nb_c                                <= unsigned(regs_out.shots_nb_o);
@@ -469,17 +487,6 @@ begin
     acq_dvalid_o                            => acq_dvalid_in,
     acq_trig_o                              => acq_trig_in
   );
-
-  -- Wait acknowledge signal from ext clk domain to initiaite the acquisition
-  cmp_sync_acq_start : gc_pulse_synchronizer
-    port map(
-      clk_in_i                                => ext_clk_i,
-      clk_out_i                               => fs_clk_i,
-      rst_n_i                                 => ext_rst_n_i,
-      d_ready_o                               => open,
-      d_p_i                                   => acq_start_sync_ext,
-      q_p_o                                   => acq_start_sync_fs
-    );
 
   cmp_acq_fsm : acq_fsm
   port map
@@ -638,27 +645,101 @@ begin
     dbg_shots_cnt_o                         => dbg_shots_cnt
   );
 
-  cmp_fifo_fc_all_trans : pulse2level
+  ------------------------------------------------------------------------------
+  -- Pulse to Level and Synchronizer circuits
+  ------------------------------------------------------------------------------
+
+  cmp_pulse_level_sync : acq_pulse_level_sync
+  generic map (
+    g_num_inputs                            => c_p2l_num_inputs,
+    g_with_pulse_sync                       => c_p2l_with_pulse_sync,
+    g_with_pulse2level                      => c_p2l_with_pulse2level
+  )
   port map
   (
-    clk_i                                  => fs_clk_i,
-    rst_n_i                                => fs_rst_n_i,
+    clk_in_i                                => p2l_clk_in,
+    rst_in_n_i                              => p2l_rst_in_n,
+    clk_out_i                               => p2l_clk_out,
+    rst_out_n_i                             => p2l_rst_out_n,
 
-    pulse_i                                => fifo_fc_all_trans_done_p,
-    clr_i                                  => acq_start_sync_fs,
-    level_o                                => fifo_fc_all_trans_done_l
+    pulse_i                                 => p2l_pulse,
+    clr_i                                   => p2l_clr,
+
+    pulse_synched_o                         => p2l_pulse_synched,
+    level_synched_o                         => p2l_level_synched
   );
 
-  cmp_fifo_fc_full : pulse2level
-  port map
-  (
-    clk_i                                  => fs_clk_i,
-    rst_n_i                                => fs_rst_n_i,
+  -- fifo_fc_all_trans_done_p signal conversion
+  p2l_clk_in(c_p2l_all_trans_done_idx) <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_all_trans_done_idx) <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_all_trans_done_idx) <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_all_trans_done_idx) <= fs_rst_n_i;
 
-    pulse_i                                => fifo_fc_full,
-    clr_i                                  => acq_start_sync_fs,
-    level_o                                => fifo_fc_full_l
-  );
+  p2l_pulse(c_p2l_all_trans_done_idx) <= fifo_fc_all_trans_done_p;
+  p2l_clr(c_p2l_all_trans_done_idx) <= acq_start_sync_fs;
+
+  fifo_fc_all_trans_done_l <= p2l_level_synched(c_p2l_all_trans_done_idx);
+
+  -- fifo_fc_full signal conversion
+  p2l_clk_in(c_p2l_fifo_fc_full_idx) <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_fifo_fc_full_idx) <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_fifo_fc_full_idx) <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_fifo_fc_full_idx) <= fs_rst_n_i;
+
+  p2l_pulse(c_p2l_fifo_fc_full_idx) <= fifo_fc_full;
+  p2l_clr(c_p2l_fifo_fc_full_idx) <= acq_start_sync_fs;
+
+  fifo_fc_full_l <= p2l_level_synched(c_p2l_fifo_fc_full_idx);
+
+  -- acq_start signal conversion
+  p2l_clk_in(c_p2l_acq_start_idx) <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_acq_start_idx) <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_acq_start_idx) <= ext_clk_i;
+  p2l_rst_out_n(c_p2l_acq_start_idx) <= ext_rst_n_i;
+
+  p2l_pulse(c_p2l_acq_start_idx) <= acq_start;
+  p2l_clr(c_p2l_acq_start_idx) <= '0'; -- not used
+
+  acq_start_sync_ext <= p2l_pulse_synched(c_p2l_acq_start_idx);
+
+  -- ddr3_wr_all_trans_done_p signal conversion
+  p2l_clk_in(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_clk_i;
+  p2l_rst_out_n(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_rst_n_i;
+
+  p2l_pulse(c_p2l_ddr3_wr_all_trans_done_idx) <= ddr3_wr_all_trans_done_p;
+  p2l_clr(c_p2l_ddr3_wr_all_trans_done_idx) <= acq_start_sync_ext;
+
+  ddr3_wr_all_trans_done_l <= p2l_level_synched(c_p2l_ddr3_wr_all_trans_done_idx);
+
+  -- ddr3_all_trans_done signal conversion
+  p2l_clk_in(c_p2l_ddr3_all_trans_done_idx) <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_ddr3_all_trans_done_idx) <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_ddr3_all_trans_done_idx) <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_ddr3_all_trans_done_idx) <= fs_rst_n_i;
+
+  p2l_pulse(c_p2l_ddr3_all_trans_done_idx) <= ddr3_all_trans_done_p;
+  p2l_clr(c_p2l_ddr3_all_trans_done_idx) <= acq_start_sync_fs;
+
+  ddr3_all_trans_done_l <= p2l_level_synched(c_p2l_ddr3_all_trans_done_idx);
+
+  -- FIXME: We use the additional latency introduced by the conversion circuits
+  -- acq_start -> acq_start_sync_ext -> acq_start_sync_fs to give time to modules
+  -- downstream (acq_ddr_iface and the ones clocked by ext_clk_i) to configure
+  -- themselves before starting the actual acquisition. Without this, the modules
+  -- can misbehave as the number of samples would not be correctly set, for
+  -- instance.
+  -- acq_start_sync_ext signal conversion
+  p2l_clk_in(c_p2l_acq_start_sync_ext_idx) <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_acq_start_sync_ext_idx) <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_acq_start_sync_ext_idx) <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_acq_start_sync_ext_idx) <= fs_rst_n_i;
+
+  p2l_pulse(c_p2l_acq_start_sync_ext_idx) <= acq_start_sync_ext;
+  p2l_clr(c_p2l_acq_start_sync_ext_idx) <= '0'; -- not used
+
+  acq_start_sync_fs <= p2l_level_synched(c_p2l_acq_start_sync_ext_idx);
 
   -- When FSM in IDLE, request reset
   fifo_fc_req_rst_trans <= '1' when acq_fsm_state = "001" else '0';
@@ -757,29 +838,8 @@ begin
     ui_app_gnt_i                              => ui_app_wdf_gnt
   );
 
-  cmp_sync_req_rst : gc_pulse_synchronizer
-  port map (
-    clk_in_i                                  => fs_clk_i,
-    clk_out_i                                 => ext_clk_i,
-    rst_n_i                                   => fs_rst_n_i,
-    d_ready_o                                 => open,
-    d_p_i                                     => acq_start, -- pulse input
-    q_p_o                                     => acq_start_sync_ext -- pulse output
-  );
-
   -- Only for simulation!
   gen_ddr3_readback : if (g_sim_readback) generate
-
-    cmp_ddr3_wr_all_trans_done : pulse2level
-    port map
-    (
-      clk_i                                => ext_clk_i,
-      rst_n_i                              => ext_rst_n_i,
-
-      pulse_i                              => ddr3_wr_all_trans_done_p,
-      clr_i                                => acq_start_sync_ext,
-      level_o                              => ddr3_wr_all_trans_done_l
-    );
 
     sim_in_rb <= ddr3_wr_all_trans_done_l;
     ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
@@ -880,27 +940,5 @@ begin
 
     dbg_ddr_rb_rdy_o <= '0';
   end generate;
-
-  -- Generate level signal to indicate DDR3 tranfer is complete
-  cmp_gc_pulse_synchronizer : gc_pulse_synchronizer
-  port map (
-    clk_in_i                              => ext_clk_i,
-    clk_out_i                             => fs_clk_i,
-    rst_n_i                               => ext_rst_n_i,
-    d_ready_o                             => open,
-    d_p_i                                 => ddr3_all_trans_done_p, -- pulse input
-    q_p_o                                 => ddr3_all_trans_done_p_fs -- pulse output
-  );
-
-  cmp_ddr3_all_trans_done_l : pulse2level
-  port map
-  (
-    clk_i                                  => fs_clk_i,
-    rst_n_i                                => fs_rst_n_i,
-
-    pulse_i                                => ddr3_all_trans_done_p_fs,
-    clr_i                                  => acq_start_sync_fs,
-    level_o                                => ddr3_all_trans_done_l
-  );
 
 end rtl;
