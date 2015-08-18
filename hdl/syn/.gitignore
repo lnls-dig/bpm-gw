@@ -61,3 +61,10 @@ run.tcl
 *.debug
 pa.*.tcl
 planAhead_run_*/
+# Vivado stuff
+*.cache/
+*.runs/
+*.hw/
+*.srcs/
+*.jou
+*.log
