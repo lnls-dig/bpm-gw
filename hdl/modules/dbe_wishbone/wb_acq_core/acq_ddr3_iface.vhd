@@ -127,7 +127,6 @@ architecture rtl of acq_ddr3_iface is
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
-  ---------constant c_pipe_size                      : natural := 4;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
 
   -- UI Commands
