@@ -294,15 +294,15 @@ architecture rtl of wb_acq_core is
   signal ext_stall                          : std_logic;
 
   -- External memory interface debug signals
-  signal dbg_fifo_we		                    : std_logic;
-  signal dbg_fifo_wr_count	                : std_logic_vector(f_log2_size(g_fifo_fc_size)-1 downto 0);
-  signal dbg_fifo_re		                    : std_logic;
-  signal dbg_fifo_fc_rd_en	                : std_logic;
-  signal dbg_fifo_rd_empty	                : std_logic;
-  signal dbg_fifo_wr_full	                  : std_logic;
-  signal dbg_fifo_fc_valid_fwft			        : std_logic;
-  signal dbg_source_pl_dreq	                : std_logic;
-  signal dbg_source_pl_stall	              : std_logic;
+  signal dbg_fifo_we                        : std_logic;
+  signal dbg_fifo_wr_count                  : std_logic_vector(f_log2_size(g_fifo_fc_size)-1 downto 0);
+  signal dbg_fifo_re                        : std_logic;
+  signal dbg_fifo_fc_rd_en                  : std_logic;
+  signal dbg_fifo_rd_empty                  : std_logic;
+  signal dbg_fifo_wr_full                   : std_logic;
+  signal dbg_fifo_fc_valid_fwft             : std_logic;
+  signal dbg_source_pl_dreq                 : std_logic;
+  signal dbg_source_pl_stall                : std_logic;
 
   signal dbg_pkt_ct_cnt                     : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal dbg_shots_cnt                      : std_logic_vector(c_shots_size_width-1 downto 0);
@@ -348,21 +348,21 @@ architecture rtl of wb_acq_core is
 
   component acq_core_regs
   port (
-    rst_n_i                                  : in     std_logic;
-    clk_sys_i                                : in     std_logic;
-    wb_adr_i                                 : in     std_logic_vector(3 downto 0);
-    wb_dat_i                                 : in     std_logic_vector(31 downto 0);
-    wb_dat_o                                 : out    std_logic_vector(31 downto 0);
-    wb_cyc_i                                 : in     std_logic;
-    wb_sel_i                                 : in     std_logic_vector(3 downto 0);
-    wb_stb_i                                 : in     std_logic;
-    wb_we_i                                  : in     std_logic;
-    wb_ack_o                                 : out    std_logic;
-    wb_stall_o                               : out    std_logic;
-    fs_clk_i                                 : in     std_logic;
-    ext_clk_i                                : in     std_logic;
-    regs_i                                   : in     t_acq_core_in_registers;
-    regs_o                                   : out    t_acq_core_out_registers
+    rst_n_i                                 : in     std_logic;
+    clk_sys_i                               : in     std_logic;
+    wb_adr_i                                : in     std_logic_vector(3 downto 0);
+    wb_dat_i                                : in     std_logic_vector(31 downto 0);
+    wb_dat_o                                : out    std_logic_vector(31 downto 0);
+    wb_cyc_i                                : in     std_logic;
+    wb_sel_i                                : in     std_logic_vector(3 downto 0);
+    wb_stb_i                                : in     std_logic;
+    wb_we_i                                 : in     std_logic;
+    wb_ack_o                                : out    std_logic;
+    wb_stall_o                              : out    std_logic;
+    fs_clk_i                                : in     std_logic;
+    ext_clk_i                               : in     std_logic;
+    regs_i                                  : in     t_acq_core_in_registers;
+    regs_o                                  : out    t_acq_core_out_registers
   );
   end component;
 
@@ -491,47 +491,47 @@ begin
   cmp_acq_fsm : acq_fsm
   port map
   (
-    fs_clk_i                                  => fs_clk_i,
-    fs_ce_i                                   => fs_ce_i,
-    fs_rst_n_i                                => fs_rst_n_i,
+    fs_clk_i                                => fs_clk_i,
+    fs_ce_i                                 => fs_ce_i,
+    fs_rst_n_i                              => fs_rst_n_i,
 
     -----------------------------
     -- FSM Commands (Inputs)
     -----------------------------
-    acq_start_i                               => acq_start_sync_fs,
-    acq_now_i                                 => acq_now,
-    acq_stop_i                                => acq_stop,
-    acq_trig_i                                => acq_trig_in,
-    acq_dvalid_i                              => acq_dvalid_in,
+    acq_start_i                             => acq_start_sync_fs,
+    acq_now_i                               => acq_now,
+    acq_stop_i                              => acq_stop,
+    acq_trig_i                              => acq_trig_in,
+    acq_dvalid_i                            => acq_dvalid_in,
 
     -----------------------------
     -- FSM Number of Samples
     -----------------------------
-    pre_trig_samples_i                        => pre_trig_samples_c,
-    post_trig_samples_i                       => post_trig_samples_c,
-    shots_nb_i                                => shots_nb_c,
-    samples_cnt_o                             => samples_cnt,
+    pre_trig_samples_i                      => pre_trig_samples_c,
+    post_trig_samples_i                     => post_trig_samples_c,
+    shots_nb_i                              => shots_nb_c,
+    samples_cnt_o                           => samples_cnt,
 
     -----------------------------
     -- FSM Monitoring
     -----------------------------
-    acq_end_o                                 => acq_end,
-    acq_single_shot_o                         => acq_single_shot,
-    acq_in_pre_trig_o                         => acq_in_pre_trig,
-    acq_in_wait_trig_o                        => acq_in_wait_trig,
-    acq_in_post_trig_o                        => acq_in_post_trig,
-    acq_pre_trig_done_o                       => acq_pre_trig_done,
-    acq_wait_trig_skip_done_o                 => acq_wait_trig_skip_done,
-    acq_post_trig_done_o                      => acq_post_trig_done,
-    acq_fsm_state_o                           => acq_fsm_state,
+    acq_end_o                               => acq_end,
+    acq_single_shot_o                       => acq_single_shot,
+    acq_in_pre_trig_o                       => acq_in_pre_trig,
+    acq_in_wait_trig_o                      => acq_in_wait_trig,
+    acq_in_post_trig_o                      => acq_in_post_trig,
+    acq_pre_trig_done_o                     => acq_pre_trig_done,
+    acq_wait_trig_skip_done_o               => acq_wait_trig_skip_done,
+    acq_post_trig_done_o                    => acq_post_trig_done,
+    acq_fsm_state_o                         => acq_fsm_state,
 
     -----------------------------
     -- FSM Outputs
     -----------------------------
-    shots_decr_o                              => shots_decr,
-    acq_trig_o                                => acq_trig,
-    multishot_buffer_sel_o                    => multishot_buffer_sel,
-    samples_wr_en_o                           => samples_wr_en
+    shots_decr_o                            => shots_decr,
+    acq_trig_o                              => acq_trig,
+    multishot_buffer_sel_o                  => multishot_buffer_sel,
+    samples_wr_en_o                         => samples_wr_en
   );
 
   ------------------------------------------------------------------------------
@@ -632,15 +632,15 @@ begin
     fifo_fc_dreq_i                          => ext_dreq,
     fifo_fc_stall_i                         => ext_stall,
 
-    dbg_fifo_we_o		                	      => dbg_fifo_we,
-    dbg_fifo_wr_count_o	                    => dbg_fifo_wr_count,
-    dbg_fifo_re_o		                	      => dbg_fifo_re,
-    dbg_fifo_fc_rd_en_o	                    => dbg_fifo_fc_rd_en,
-    dbg_fifo_rd_empty_o	                    => dbg_fifo_rd_empty,
-    dbg_fifo_wr_full_o	                    => dbg_fifo_wr_full,
-    dbg_fifo_fc_valid_fwft_o			          => dbg_fifo_fc_valid_fwft,
-    dbg_source_pl_dreq_o	                  => dbg_source_pl_dreq,
-    dbg_source_pl_stall_o	                  => dbg_source_pl_stall,
+    dbg_fifo_we_o                           => dbg_fifo_we,
+    dbg_fifo_wr_count_o                     => dbg_fifo_wr_count,
+    dbg_fifo_re_o                           => dbg_fifo_re,
+    dbg_fifo_fc_rd_en_o                     => dbg_fifo_fc_rd_en,
+    dbg_fifo_rd_empty_o                     => dbg_fifo_rd_empty,
+    dbg_fifo_wr_full_o                      => dbg_fifo_wr_full,
+    dbg_fifo_fc_valid_fwft_o                => dbg_fifo_fc_valid_fwft,
+    dbg_source_pl_dreq_o                    => dbg_source_pl_dreq,
+    dbg_source_pl_stall_o                   => dbg_source_pl_stall,
     dbg_pkt_ct_cnt_o                        => dbg_pkt_ct_cnt,
     dbg_shots_cnt_o                         => dbg_shots_cnt
   );
@@ -670,57 +670,57 @@ begin
   );
 
   -- fifo_fc_all_trans_done_p signal conversion
-  p2l_clk_in(c_p2l_all_trans_done_idx) <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_all_trans_done_idx) <= fs_rst_n_i;
-  p2l_clk_out(c_p2l_all_trans_done_idx) <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_all_trans_done_idx) <= fs_rst_n_i;
+  p2l_clk_in(c_p2l_all_trans_done_idx)      <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_all_trans_done_idx)    <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_all_trans_done_idx)     <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_all_trans_done_idx)   <= fs_rst_n_i;
 
-  p2l_pulse(c_p2l_all_trans_done_idx) <= fifo_fc_all_trans_done_p;
-  p2l_clr(c_p2l_all_trans_done_idx) <= acq_start_sync_fs;
+  p2l_pulse(c_p2l_all_trans_done_idx)       <= fifo_fc_all_trans_done_p;
+  p2l_clr(c_p2l_all_trans_done_idx)         <= acq_start_sync_fs;
 
-  fifo_fc_all_trans_done_l <= p2l_level_synched(c_p2l_all_trans_done_idx);
+  fifo_fc_all_trans_done_l                  <= p2l_level_synched(c_p2l_all_trans_done_idx);
 
   -- fifo_fc_full signal conversion
-  p2l_clk_in(c_p2l_fifo_fc_full_idx) <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_fifo_fc_full_idx) <= fs_rst_n_i;
-  p2l_clk_out(c_p2l_fifo_fc_full_idx) <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_fifo_fc_full_idx) <= fs_rst_n_i;
+  p2l_clk_in(c_p2l_fifo_fc_full_idx)        <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_fifo_fc_full_idx)      <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_fifo_fc_full_idx)       <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_fifo_fc_full_idx)     <= fs_rst_n_i;
 
-  p2l_pulse(c_p2l_fifo_fc_full_idx) <= fifo_fc_full;
-  p2l_clr(c_p2l_fifo_fc_full_idx) <= acq_start_sync_fs;
+  p2l_pulse(c_p2l_fifo_fc_full_idx)         <= fifo_fc_full;
+  p2l_clr(c_p2l_fifo_fc_full_idx)           <= acq_start_sync_fs;
 
-  fifo_fc_full_l <= p2l_level_synched(c_p2l_fifo_fc_full_idx);
+  fifo_fc_full_l                            <= p2l_level_synched(c_p2l_fifo_fc_full_idx);
 
   -- acq_start signal conversion
-  p2l_clk_in(c_p2l_acq_start_idx) <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_acq_start_idx) <= fs_rst_n_i;
-  p2l_clk_out(c_p2l_acq_start_idx) <= ext_clk_i;
-  p2l_rst_out_n(c_p2l_acq_start_idx) <= ext_rst_n_i;
+  p2l_clk_in(c_p2l_acq_start_idx)           <= fs_clk_i;
+  p2l_rst_in_n(c_p2l_acq_start_idx)         <= fs_rst_n_i;
+  p2l_clk_out(c_p2l_acq_start_idx)          <= ext_clk_i;
+  p2l_rst_out_n(c_p2l_acq_start_idx)        <= ext_rst_n_i;
 
-  p2l_pulse(c_p2l_acq_start_idx) <= acq_start;
-  p2l_clr(c_p2l_acq_start_idx) <= '0'; -- not used
+  p2l_pulse(c_p2l_acq_start_idx)            <= acq_start;
+  p2l_clr(c_p2l_acq_start_idx)              <= '0'; -- not used
 
-  acq_start_sync_ext <= p2l_pulse_synched(c_p2l_acq_start_idx);
+  acq_start_sync_ext                        <= p2l_pulse_synched(c_p2l_acq_start_idx);
 
   -- ddr3_wr_all_trans_done_p signal conversion
-  p2l_clk_in(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_rst_n_i;
-  p2l_clk_out(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_clk_i;
-  p2l_rst_out_n(c_p2l_ddr3_wr_all_trans_done_idx) <= ext_rst_n_i;
+  p2l_clk_in(c_p2l_ddr3_wr_all_trans_done_idx)     <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_ddr3_wr_all_trans_done_idx)   <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_ddr3_wr_all_trans_done_idx)    <= ext_clk_i;
+  p2l_rst_out_n(c_p2l_ddr3_wr_all_trans_done_idx)  <= ext_rst_n_i;
 
-  p2l_pulse(c_p2l_ddr3_wr_all_trans_done_idx) <= ddr3_wr_all_trans_done_p;
-  p2l_clr(c_p2l_ddr3_wr_all_trans_done_idx) <= acq_start_sync_ext;
+  p2l_pulse(c_p2l_ddr3_wr_all_trans_done_idx)      <= ddr3_wr_all_trans_done_p;
+  p2l_clr(c_p2l_ddr3_wr_all_trans_done_idx)        <= acq_start_sync_ext;
 
-  ddr3_wr_all_trans_done_l <= p2l_level_synched(c_p2l_ddr3_wr_all_trans_done_idx);
+  ddr3_wr_all_trans_done_l                         <= p2l_level_synched(c_p2l_ddr3_wr_all_trans_done_idx);
 
   -- ddr3_all_trans_done signal conversion
-  p2l_clk_in(c_p2l_ddr3_all_trans_done_idx) <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_ddr3_all_trans_done_idx) <= ext_rst_n_i;
-  p2l_clk_out(c_p2l_ddr3_all_trans_done_idx) <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_ddr3_all_trans_done_idx) <= fs_rst_n_i;
+  p2l_clk_in(c_p2l_ddr3_all_trans_done_idx)     <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_ddr3_all_trans_done_idx)   <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_ddr3_all_trans_done_idx)    <= fs_clk_i;
+  p2l_rst_out_n(c_p2l_ddr3_all_trans_done_idx)  <= fs_rst_n_i;
 
-  p2l_pulse(c_p2l_ddr3_all_trans_done_idx) <= ddr3_all_trans_done_p;
-  p2l_clr(c_p2l_ddr3_all_trans_done_idx) <= acq_start_sync_fs;
+  p2l_pulse(c_p2l_ddr3_all_trans_done_idx)      <= ddr3_all_trans_done_p;
+  p2l_clr(c_p2l_ddr3_all_trans_done_idx)        <= acq_start_sync_fs;
 
   ddr3_all_trans_done_l <= p2l_level_synched(c_p2l_ddr3_all_trans_done_idx);
 
@@ -731,15 +731,15 @@ begin
   -- can misbehave as the number of samples would not be correctly set, for
   -- instance.
   -- acq_start_sync_ext signal conversion
-  p2l_clk_in(c_p2l_acq_start_sync_ext_idx) <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_acq_start_sync_ext_idx) <= ext_rst_n_i;
-  p2l_clk_out(c_p2l_acq_start_sync_ext_idx) <= fs_clk_i;
+  p2l_clk_in(c_p2l_acq_start_sync_ext_idx)    <= ext_clk_i;
+  p2l_rst_in_n(c_p2l_acq_start_sync_ext_idx)  <= ext_rst_n_i;
+  p2l_clk_out(c_p2l_acq_start_sync_ext_idx)   <= fs_clk_i;
   p2l_rst_out_n(c_p2l_acq_start_sync_ext_idx) <= fs_rst_n_i;
 
-  p2l_pulse(c_p2l_acq_start_sync_ext_idx) <= acq_start_sync_ext;
-  p2l_clr(c_p2l_acq_start_sync_ext_idx) <= '0'; -- not used
+  p2l_pulse(c_p2l_acq_start_sync_ext_idx)     <= acq_start_sync_ext;
+  p2l_clr(c_p2l_acq_start_sync_ext_idx)       <= '0'; -- not used
 
-  acq_start_sync_fs <= p2l_level_synched(c_p2l_acq_start_sync_ext_idx);
+  acq_start_sync_fs                           <= p2l_level_synched(c_p2l_acq_start_sync_ext_idx);
 
   -- When FSM in IDLE, request reset
   fifo_fc_req_rst_trans <= '1' when acq_fsm_state = "001" else '0';
@@ -776,66 +776,66 @@ begin
   cmp_acq_ddr3_iface : acq_ddr3_iface
   generic map
   (
-    g_acq_num_channels                        => g_acq_num_channels,
-    g_acq_channels                            => g_acq_channels,
-    g_fc_pipe_size                            => c_fc_pipe_size,
+    g_acq_num_channels                      => g_acq_num_channels,
+    g_acq_channels                          => g_acq_channels,
+    g_fc_pipe_size                          => c_fc_pipe_size,
     -- Do not modify these! As they are dependent of the memory controller generated!
-    g_ddr_payload_width                       => g_ddr_payload_width,
-    g_ddr_dq_width                            => g_ddr_dq_width,
-    g_ddr_addr_width                          => g_ddr_addr_width
+    g_ddr_payload_width                     => g_ddr_payload_width,
+    g_ddr_dq_width                          => g_ddr_dq_width,
+    g_ddr_addr_width                        => g_ddr_addr_width
   )
   port map
   (
     -- DDR3 external clock
-    ext_clk_i                                 => ext_clk_i,
-    ext_rst_n_i                               => ext_rst_n_i,
+    ext_clk_i                               => ext_clk_i,
+    ext_rst_n_i                             => ext_rst_n_i,
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_din_i                             => ext_dout,
-    fifo_fc_valid_i                           => ext_valid,
-    fifo_fc_addr_i                            => ext_addr,
-    fifo_fc_sof_i                             => ext_sof,
-    fifo_fc_eof_i                             => ext_eof,
-    fifo_fc_dreq_o                            => ext_dreq,
-    fifo_fc_stall_o                           => ext_stall,
+    fifo_fc_din_i                           => ext_dout,
+    fifo_fc_valid_i                         => ext_valid,
+    fifo_fc_addr_i                          => ext_addr,
+    fifo_fc_sof_i                           => ext_sof,
+    fifo_fc_eof_i                           => ext_eof,
+    fifo_fc_dreq_o                          => ext_dreq,
+    fifo_fc_stall_o                         => ext_stall,
 
-    wr_start_i                                => acq_start_sync_ext,
+    wr_start_i                              => acq_start_sync_ext,
     -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
     -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
     -- impose any metastability problem in this module
-    wr_init_addr_i                            => acq_ddr3_start_addr,
+    wr_init_addr_i                          => acq_ddr3_start_addr,
 
-    lmt_all_trans_done_p_o                    => ddr3_wr_all_trans_done_p,
-    lmt_rst_i                                 => '0', --remove this signal
+    lmt_all_trans_done_p_o                  => ddr3_wr_all_trans_done_p,
+    lmt_rst_i                               => '0', --remove this signal
 
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        => lmt_curr_chan_id,
+    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_acq_pkt_size,
+    lmt_pkt_size_i                          => lmt_acq_pkt_size,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => acq_start_sync_ext,
+    lmt_valid_i                             => acq_start_sync_ext,
 
     -- Xilinx DDR3 UI Interface
-    ui_app_addr_o                             => ui_app_wdf_addr,
-    ui_app_cmd_o                              => ui_app_wdf_cmd,
-    ui_app_en_o                               => ui_app_wdf_en,
-    ui_app_rdy_i                              => ui_app_rdy_i,
+    ui_app_addr_o                           => ui_app_wdf_addr,
+    ui_app_cmd_o                            => ui_app_wdf_cmd,
+    ui_app_en_o                             => ui_app_wdf_en,
+    ui_app_rdy_i                            => ui_app_rdy_i,
 
-    ui_app_wdf_data_o                         => ui_app_wdf_data_o,
-    ui_app_wdf_end_o                          => ui_app_wdf_end_o,
-    ui_app_wdf_mask_o                         => ui_app_wdf_mask_o,
-    ui_app_wdf_wren_o                         => ui_app_wdf_wren_o,
-    ui_app_wdf_rdy_i                          => ui_app_wdf_rdy_i,
+    ui_app_wdf_data_o                       => ui_app_wdf_data_o,
+    ui_app_wdf_end_o                        => ui_app_wdf_end_o,
+    ui_app_wdf_mask_o                       => ui_app_wdf_mask_o,
+    ui_app_wdf_wren_o                       => ui_app_wdf_wren_o,
+    ui_app_wdf_rdy_i                        => ui_app_wdf_rdy_i,
 
-    ui_app_rd_data_i                          => ui_app_rd_data_i,
-    ui_app_rd_data_end_i                      => ui_app_rd_data_end_i,
-    ui_app_rd_data_valid_i                    => ui_app_rd_data_valid_i,
+    ui_app_rd_data_i                        => ui_app_rd_data_i,
+    ui_app_rd_data_end_i                    => ui_app_rd_data_end_i,
+    ui_app_rd_data_valid_i                  => ui_app_rd_data_valid_i,
 
-    ui_app_req_o                              => ui_app_wdf_req,
-    ui_app_gnt_i                              => ui_app_wdf_gnt
+    ui_app_req_o                            => ui_app_wdf_req,
+    ui_app_gnt_i                            => ui_app_wdf_gnt
   );
 
   -- Only for simulation!
