@@ -585,7 +585,9 @@ begin
   ------------------------------------------------------------------------------
 
   cmp_acq_fc_fifo : acq_fc_fifo
-  generic map (
+  generic map
+  (
+    g_data_in_width                         => c_acq_data_width,
     g_data_out_width                        => g_ddr_payload_width,
     g_addr_width                            => g_ddr_addr_width,
     g_acq_num_channels                      => g_acq_num_channels,

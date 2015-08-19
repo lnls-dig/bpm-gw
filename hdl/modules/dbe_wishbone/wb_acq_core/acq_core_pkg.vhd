@@ -250,6 +250,7 @@ package acq_core_pkg is
   component acq_fc_fifo
   generic
   (
+    g_data_in_width                           : natural := 128;
     g_data_out_width                          : natural := 256;
     g_addr_width                              : natural := 32;
     g_acq_num_channels                        : natural := 1;
@@ -268,11 +269,11 @@ package acq_core_pkg is
     ext_rst_n_i                               : in  std_logic;
 
     -- DPRAM data
-    dpram_data_i                              : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    dpram_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
     dpram_dvalid_i                            : in std_logic;
 
     -- Passthough data
-    pt_data_i                                 : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+    pt_data_i                                 : in std_logic_vector(g_data_in_width-1 downto 0);
     pt_dvalid_i                               : in std_logic;
     pt_wr_en_i                                : in std_logic;
 

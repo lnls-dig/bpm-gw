@@ -39,6 +39,7 @@ use work.dbe_common_pkg.all;
 entity acq_fc_fifo is
 generic
 (
+  g_data_in_width                           : natural := 128;
   g_data_out_width                          : natural := 256;
   g_addr_width                              : natural := 32;
   g_acq_num_channels                        : natural := 1;
@@ -57,11 +58,11 @@ port
   ext_rst_n_i                               : in  std_logic;
 
   -- DPRAM data
-  dpram_data_i                              : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dpram_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
   dpram_dvalid_i                            : in std_logic;
 
   -- Passthough data
-  pt_data_i                                 : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  pt_data_i                                 : in std_logic_vector(g_data_in_width-1 downto 0);
   pt_dvalid_i                               : in std_logic;
   pt_wr_en_i                                : in std_logic;
 
@@ -116,7 +117,7 @@ end acq_fc_fifo;
 architecture rtl of acq_fc_fifo is
 
   -- Type declarations
-  subtype t_fc_data is std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  subtype t_fc_data is std_logic_vector(g_data_in_width-1 downto 0);
   type t_fc_data_array is array (natural range <>) of t_fc_data;
 
   subtype t_fc_data_marsh is std_logic_vector(g_data_out_width-1 downto 0);
@@ -136,7 +137,7 @@ architecture rtl of acq_fc_fifo is
 
   -- Constants
   constant c_narrowest_channel_width        : natural := f_acq_chan_find_narrowest(g_acq_channels);
-  constant c_widest_channel_width           : natural := f_acq_chan_find_widest(g_acq_channels);
+  constant c_widest_channel_width           : natural := g_data_in_width;
 
   -- Number of FIFOs to store incoming data. We do this, as the ext_clk_i may be
   -- as low as 100 MHz (for Artix7 DDR3 controllers), whereas the fs_clk_i may
