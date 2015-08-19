@@ -230,6 +230,7 @@ architecture rtl of wb_acq_core is
 
   ---- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
+  signal acq_fsm_req_rst                    : std_logic;
   signal acq_start                          : std_logic;
   signal acq_start_sync_ext                 : std_logic;
   signal acq_start_sync_fs                  : std_logic;
@@ -523,7 +524,15 @@ begin
     acq_pre_trig_done_o                     => acq_pre_trig_done,
     acq_wait_trig_skip_done_o               => acq_wait_trig_skip_done,
     acq_post_trig_done_o                    => acq_post_trig_done,
+    acq_fsm_req_rst_o                       => acq_fsm_req_rst,
     acq_fsm_state_o                         => acq_fsm_state,
+
+    -----------------------------
+    -- Acquistion limits
+    -----------------------------
+    lmt_acq_pkt_size_o                      => lmt_acq_pkt_size,
+    lmt_shots_nb_o                          => lmt_shots_nb,
+    lmt_valid_o                             => lmt_valid,
 
     -----------------------------
     -- FSM Outputs
@@ -603,7 +612,7 @@ begin
 
     -- Request transaction reset as soon as possible (when all outstanding
     -- transactions have been commited)
-    req_rst_trans_i                         => fifo_fc_req_rst_trans, -- FIXME: Could this be acq_start = '1'???
+    req_rst_trans_i                         => acq_fsm_req_rst, -- FIXME: Could this be acq_start = '1'???
     -- Select between multi-buffer mode and pass-through mode (data directly
     -- through external module interface)
     passthrough_en_i                        => acq_single_shot,
@@ -741,25 +750,7 @@ begin
 
   acq_start_sync_fs                           <= p2l_level_synched(c_p2l_acq_start_sync_ext_idx);
 
-  -- When FSM in IDLE, request reset
-  fifo_fc_req_rst_trans <= '1' when acq_fsm_state = "001" else '0';
-
-  p_total_acq_sample : process (fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        lmt_acq_pkt_size <= to_unsigned(0, lmt_acq_pkt_size'length);
-        lmt_shots_nb <= to_unsigned(0, lmt_shots_nb'length);
-      else
-        -- Be pessimist about overflow. Pick only the LSB of trig samples
-        lmt_acq_pkt_size <= unsigned('0' & pre_trig_samples_c(c_acq_samples_size-2 downto 0)) +
-                            unsigned('0' & post_trig_samples_c(c_acq_samples_size-2 downto 0));
-        lmt_shots_nb <= shots_nb_c;
-      end if;
-    end if;
-  end process;
-
-  lmt_valid <= acq_start_sync_fs;
+  -- Output debugs
 
   ext_dout_o                                <= ext_dout;
   ext_valid_o                               <= ext_valid;

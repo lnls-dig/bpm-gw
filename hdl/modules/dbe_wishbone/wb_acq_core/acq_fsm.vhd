@@ -72,7 +72,15 @@ port
   acq_pre_trig_done_o                       : out std_logic;
   acq_wait_trig_skip_done_o                 : out std_logic;
   acq_post_trig_done_o                      : out std_logic;
+  acq_fsm_req_rst_o                         : out std_logic;
   acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
+
+  -----------------------------
+  -- Acquistion limits
+  -----------------------------
+  lmt_acq_pkt_size_o                        : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_shots_nb_o                            : out unsigned(15 downto 0);
+  lmt_valid_o                               : out std_logic;
 
   -----------------------------
   -- FSM Outputs
@@ -99,6 +107,7 @@ architecture rtl of acq_fsm is
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
+  signal acq_fsm_req_rst                    : std_logic;
   signal samples_wr_en                      : std_logic;
 
   -- Pre/Post trigger and shots counters
@@ -113,6 +122,11 @@ architecture rtl of acq_fsm is
   signal shots_done                         : std_logic;
   signal shots_decr                         : std_logic;
   signal single_shot                        : std_logic;
+
+  -- Packet size for ext interface
+  signal lmt_acq_pkt_size                   : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_shots_nb                       : unsigned(15 downto 0);
+  signal lmt_valid                          : std_logic;
 
 begin
 
@@ -243,6 +257,32 @@ begin
   samples_cnt_o <= samples_cnt;
 
   ------------------------------------------------------------------------------
+  -- Packet samples generation
+  ------------------------------------------------------------------------------
+
+  p_total_acq_sample : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        lmt_acq_pkt_size <= to_unsigned(0, lmt_acq_pkt_size'length);
+        lmt_shots_nb <= to_unsigned(0, lmt_shots_nb'length);
+      else
+        -- Be pessimist about overflow. Pick only the LSB of trig samples
+        lmt_acq_pkt_size <= unsigned('0' & pre_trig_samples_i(pre_trig_samples_i'left-1 downto 0)) +
+                            unsigned('0' & post_trig_samples_i(post_trig_samples_i'left-1 downto 0));
+        lmt_shots_nb <= shots_nb_i;
+      end if;
+    end if;
+  end process;
+
+  lmt_valid <= acq_start_i;
+
+  -- Output assignments
+  lmt_acq_pkt_size_o <= lmt_acq_pkt_size;
+  lmt_shots_nb_o <= lmt_shots_nb;
+  lmt_valid_o <= lmt_valid;
+
+  ------------------------------------------------------------------------------
   -- Aqcuisition FSM
   ------------------------------------------------------------------------------
 
@@ -269,6 +309,9 @@ begin
   acq_stop  <= acq_stop_i;
   acq_trig  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
   acq_end_t   <= shots_done and post_trig_done;
+
+  -- When FSM in IDLE, request reset
+  acq_fsm_req_rst <= '1' when acq_fsm_state = "001" else '0';
 
   -- FSM transitions + outputs
   p_acq_fsm : process(fs_clk_i)
@@ -454,5 +497,6 @@ begin
   acq_in_post_trig_o <= acq_in_post_trig;
   samples_wr_en_o    <= samples_wr_en;
   acq_fsm_state_o    <= acq_fsm_state;
+  acq_fsm_req_rst_o  <= acq_fsm_req_rst;
 
 end rtl;

@@ -195,7 +195,15 @@ package acq_core_pkg is
     acq_pre_trig_done_o                       : out std_logic;
     acq_wait_trig_skip_done_o                 : out std_logic;
     acq_post_trig_done_o                      : out std_logic;
+    acq_fsm_req_rst_o                         : out std_logic;
     acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
+
+    -----------------------------
+    -- Acquistion limits
+    -----------------------------
+    lmt_acq_pkt_size_o                        : out unsigned(c_acq_samples_size-1 downto 0);
+    lmt_shots_nb_o                            : out unsigned(15 downto 0);
+    lmt_valid_o                               : out std_logic;
 
     -----------------------------
     -- FSM Outputs
@@ -510,6 +518,7 @@ package acq_core_pkg is
 
     wr_start_i                                : in std_logic;
     wr_init_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+    wr_end_addr_i                             : in std_logic_vector(g_ddr_addr_width-1 downto 0);
 
     lmt_all_trans_done_p_o                    : out std_logic;
     lmt_rst_i                                 : in std_logic;
