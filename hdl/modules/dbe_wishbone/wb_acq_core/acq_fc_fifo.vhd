@@ -108,15 +108,15 @@ port
   fifo_fc_dreq_i                            : in std_logic;
   fifo_fc_stall_i                           : in std_logic;
 
-  dbg_fifo_we_o		                	        : out std_logic;
-  dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
-  dbg_fifo_re_o		                	        : out std_logic;
-  dbg_fifo_fc_rd_en_o	                	    : out std_logic;
-  dbg_fifo_rd_empty_o	                    	: out std_logic;
-  dbg_fifo_wr_full_o	                    	: out std_logic;
-  dbg_fifo_fc_valid_fwft_o			            : out std_logic;
-  dbg_source_pl_dreq_o	                	  : out std_logic;
-  dbg_source_pl_stall_o	                	  : out std_logic;
+  dbg_fifo_we_o                             : out std_logic;
+  dbg_fifo_wr_count_o                       : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+  dbg_fifo_re_o                             : out std_logic;
+  dbg_fifo_fc_rd_en_o                       : out std_logic;
+  dbg_fifo_rd_empty_o                       : out std_logic;
+  dbg_fifo_wr_full_o                        : out std_logic;
+  dbg_fifo_fc_valid_fwft_o                  : out std_logic;
+  dbg_source_pl_dreq_o                      : out std_logic;
+  dbg_source_pl_stall_o                     : out std_logic;
   dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
   dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
 );
@@ -489,24 +489,24 @@ begin
   port map
   (
     -- Write clock
-    wr_clk_i                                 => fs_clk_i,
-    wr_rst_n_i                               => fs_rst_n_i,
+    wr_clk_i                                => fs_clk_i,
+    wr_rst_n_i                              => fs_rst_n_i,
 
-    wr_data_i                                => fifo_fc_id_din,
-    wr_en_i                                  => fifo_fc_id_we,
+    wr_data_i                               => fifo_fc_id_din,
+    wr_en_i                                 => fifo_fc_id_we,
     -- Ignored, as we rely on the data FIFOs wr_full signal
-    wr_full_o                                => open,
-    wr_count_o                               => open,
+    wr_full_o                               => open,
+    wr_count_o                              => open,
 
     -- Read clock
-    rd_clk_i                                 => ext_clk_i,
-    rd_rst_n_i                               => ext_rst_n_i,
+    rd_clk_i                                => ext_clk_i,
+    rd_rst_n_i                              => ext_rst_n_i,
 
-    rd_data_o                                => fifo_fc_id_dout,
-    rd_valid_o                               => fifo_fc_id_valid_out,
-    rd_en_i                                  => fifo_fc_id_rd_en,
-    rd_empty_o                               => open,
-    rd_count_o                               => open
+    rd_data_o                               => fifo_fc_id_dout,
+    rd_valid_o                              => fifo_fc_id_valid_out,
+    rd_en_i                                 => fifo_fc_id_rd_en,
+    rd_empty_o                              => open,
+    rd_count_o                              => open
   );
 
   fifo_fc_id_rd_en <= fifo_fc_rd_en;
@@ -518,33 +518,33 @@ begin
     generic map
     (
       -- For simplicity take the widest channel
-      g_data_width                            => c_widest_channel_width,
-      g_size                                  => g_fifo_size,
-      g_almost_empty_threshold                => 0,
-      g_almost_full_threshold                 => 0,
-      g_with_wr_count                         => true,
-      g_with_rd_count                         => false
+      g_data_width                          => c_widest_channel_width,
+      g_size                                => g_fifo_size,
+      g_almost_empty_threshold              => 0,
+      g_almost_full_threshold               => 0,
+      g_with_wr_count                       => true,
+      g_with_rd_count                       => false
     )
     port map
     (
       -- Write clock
-      wr_clk_i                                 => fs_clk_i,
-      wr_rst_n_i                               => fs_rst_n_i,
+      wr_clk_i                              => fs_clk_i,
+      wr_rst_n_i                            => fs_rst_n_i,
 
-      wr_data_i                                => fifo_fc_din(i),
-      wr_en_i                                  => fifo_fc_we(i),
-      wr_full_o                                => fifo_fc_wr_full(i),
-      wr_count_o                               => fifo_fc_wr_count(i),
+      wr_data_i                             => fifo_fc_din(i),
+      wr_en_i                               => fifo_fc_we(i),
+      wr_full_o                             => fifo_fc_wr_full(i),
+      wr_count_o                            => fifo_fc_wr_count(i),
 
       -- Read clock
-      rd_clk_i                                 => ext_clk_i,
-      rd_rst_n_i                               => ext_rst_n_i,
+      rd_clk_i                              => ext_clk_i,
+      rd_rst_n_i                            => ext_rst_n_i,
 
-      rd_data_o                                => fifo_fc_dout(i),
-      rd_valid_o                               => fifo_fc_valid_out(i),
-      rd_en_i                                  => fifo_fc_rd_en,
-      rd_empty_o                               => fifo_fc_rd_empty(i),
-      rd_count_o                               => open
+      rd_data_o                             => fifo_fc_dout(i),
+      rd_valid_o                            => fifo_fc_valid_out(i),
+      rd_en_i                               => fifo_fc_rd_en,
+      rd_empty_o                            => fifo_fc_rd_empty(i),
+      rd_count_o                            => open
     );
 
     -- Extract fifo trigger from fifo_fc_dout
@@ -650,7 +650,7 @@ begin
   );
 
   rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and
-			fifo_fc_all_trans_done_lvl = '1' else '0';
+            fifo_fc_all_trans_done_lvl = '1' else '0';
 
   -- Delay Reset signal to Level logic. This will give a few cycles
   -- for all modules to safely reset
@@ -719,22 +719,22 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => acq_cnt_rst_n,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => acq_cnt_rst_n,
 
-    cnt_all_pkts_ct_done_p_o                  => fifo_pkt_sent_ct_all,
-    cnt_all_trans_done_p_o                    => shots_sent_all,
-    cnt_en_i                                  => acq_cnt_en,
+    cnt_all_pkts_ct_done_p_o                => fifo_pkt_sent_ct_all,
+    cnt_all_trans_done_p_o                  => shots_sent_all,
+    cnt_en_i                                => acq_cnt_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid_ext,
+    lmt_valid_i                             => lmt_valid_ext,
 
-    dbg_pkt_ct_cnt_o                          => dbg_pkt_ct_cnt,
-    dbg_shots_cnt_o                           => dbg_shots_cnt
+    dbg_pkt_ct_cnt_o                        => dbg_pkt_ct_cnt,
+    dbg_shots_cnt_o                         => dbg_shots_cnt
   );
 
   dbg_pkt_ct_cnt_o <= dbg_pkt_ct_cnt;
@@ -764,12 +764,12 @@ begin
   cmp_conv_fifo_fc_all_trans_done : pulse2level
   port map
   (
-    clk_i                                  => ext_clk_i,
-    rst_n_i                                => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    pulse_i                                => fifo_fc_all_trans_done,
-    clr_i                                  => rst_trans_ext_sync_d,
-    level_o                                => fifo_fc_all_trans_done_lvl
+    pulse_i                                 => fifo_fc_all_trans_done,
+    clr_i                                   => rst_trans_ext_sync_d,
+    level_o                                 => fifo_fc_all_trans_done_lvl
   );
 
   -----------------------------------------------------------------------------

@@ -382,30 +382,30 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => cnt_all_req_trans_done_p,
-    cnt_en_i                                  => valid_trans_out,
+    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_trans_done_p_o                  => cnt_all_req_trans_done_p,
+    cnt_en_i                                => valid_trans_out,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size and lmt_shots_nb
-    lmt_valid_i                               => lmt_valid
+    lmt_valid_i                             => lmt_valid
   );
 
   cmp_cnt_all_req_trans_done : pulse2level
   port map
   (
-    clk_i                                  => ext_clk_i,
-    rst_n_i                                => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    pulse_i                                => cnt_all_req_trans_done_p,
-    clr_i                                  => rb_start_i,
-    level_o                                => cnt_all_req_trans_done_l
+    pulse_i                                 => cnt_all_req_trans_done_p,
+    clr_i                                   => rb_start_i,
+    level_o                                 => cnt_all_req_trans_done_l
   );
 
   -----------------------------------------------------------------------------
@@ -415,30 +415,30 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => cnt_all_recv_trans_done_p,
-    cnt_en_i                                  => ddr_recv_en,
+    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_trans_done_p_o                  => cnt_all_recv_trans_done_p,
+    cnt_en_i                                => ddr_recv_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb
-    lmt_valid_i                               => lmt_valid
+    lmt_valid_i                             => lmt_valid
   );
 
   cmp_cnt_all_recv_trans_done : pulse2level
   port map
   (
-    clk_i                                  => ext_clk_i,
-    rst_n_i                                => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    pulse_i                                => cnt_all_recv_trans_done_p,
-    clr_i                                  => rb_start_i,
-    level_o                                => cnt_all_recv_trans_done_l
+    pulse_i                                 => cnt_all_recv_trans_done_p,
+    clr_i                                   => rb_start_i,
+    level_o                                 => cnt_all_recv_trans_done_l
   );
 
   lmt_all_trans_done_p_o <= cnt_all_recv_trans_done_p;

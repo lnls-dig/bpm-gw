@@ -421,16 +421,16 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => data_chk_done_p,
-    cnt_en_i                                  => data_chk_en,
+    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_trans_done_p_o                  => data_chk_done_p,
+    cnt_en_i                                => data_chk_en,
 
-    lmt_pkt_size_i                            => lmt_pkt_size,
-    lmt_shots_nb_i                            => lmt_shots_nb,
-    lmt_valid_i                               => lmt_valid
+    lmt_pkt_size_i                          => lmt_pkt_size,
+    lmt_shots_nb_i                          => lmt_shots_nb,
+    lmt_valid_i                             => lmt_valid
   );
 
   -- Convert from pulse to level signal

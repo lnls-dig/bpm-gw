@@ -352,15 +352,15 @@ package acq_core_pkg is
     fifo_fc_dreq_i                            : in std_logic;
     fifo_fc_stall_i                           : in std_logic;
 
-    dbg_fifo_we_o		                	        : out std_logic;
-    dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
-    dbg_fifo_re_o		                	        : out std_logic;
-    dbg_fifo_fc_rd_en_o	                	    : out std_logic;
-    dbg_fifo_rd_empty_o	                    	: out std_logic;
-    dbg_fifo_wr_full_o	                    	: out std_logic;
-    dbg_fifo_fc_valid_fwft_o			            : out std_logic;
-    dbg_source_pl_dreq_o	                	  : out std_logic;
-    dbg_source_pl_stall_o	                	  : out std_logic;
+    dbg_fifo_we_o                             : out std_logic;
+    dbg_fifo_wr_count_o                       : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+    dbg_fifo_re_o                             : out std_logic;
+    dbg_fifo_fc_rd_en_o                       : out std_logic;
+    dbg_fifo_rd_empty_o                       : out std_logic;
+    dbg_fifo_wr_full_o                        : out std_logic;
+    dbg_fifo_fc_valid_fwft_o                  : out std_logic;
+    dbg_source_pl_dreq_o                      : out std_logic;
+    dbg_source_pl_stall_o                     : out std_logic;
     dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
     dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
   );

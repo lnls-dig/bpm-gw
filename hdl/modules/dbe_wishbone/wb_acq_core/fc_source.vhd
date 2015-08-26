@@ -90,19 +90,19 @@ architecture rtl of fc_source is
   subtype t_fc_pkt is unsigned(g_pkt_size_width-1 downto 0);
 
   -- Constants
-  constant c_pipe_almost_full_thres        : natural := g_pipe_size-2;
-  constant c_pipe_almost_empty_thres       : natural := 2;
-  constant c_pre_out_fifo_width            : natural := g_header_in_width + g_data_width + g_addr_width +
-                                                          c_data_oob_width;
-  constant c_pre_out_fifo_data_lsb         : natural := 0;
-  constant c_pre_out_fifo_data_msb         : natural := c_pre_out_fifo_data_lsb + g_header_in_width + g_data_width - 1;
-  constant c_pre_out_fifo_addr_lsb         : natural := c_pre_out_fifo_data_msb + 1;
-  constant c_pre_out_fifo_addr_msb         : natural := c_pre_out_fifo_addr_lsb + g_addr_width - 1;
-  constant c_pre_out_fifo_oob_lsb          : natural := c_pre_out_fifo_addr_msb + 1;
-  constant c_pre_out_fifo_oob_msb          : natural := c_pre_out_fifo_oob_lsb + c_data_oob_width - 1;
+  constant c_pipe_almost_full_thres         : natural := g_pipe_size-2;
+  constant c_pipe_almost_empty_thres        : natural := 2;
+  constant c_pre_out_fifo_width             : natural := g_header_in_width + g_data_width + g_addr_width +
+                                                           c_data_oob_width;
+  constant c_pre_out_fifo_data_lsb          : natural := 0;
+  constant c_pre_out_fifo_data_msb          : natural := c_pre_out_fifo_data_lsb + g_header_in_width + g_data_width - 1;
+  constant c_pre_out_fifo_addr_lsb          : natural := c_pre_out_fifo_data_msb + 1;
+  constant c_pre_out_fifo_addr_msb          : natural := c_pre_out_fifo_addr_lsb + g_addr_width - 1;
+  constant c_pre_out_fifo_oob_lsb           : natural := c_pre_out_fifo_addr_msb + 1;
+  constant c_pre_out_fifo_oob_msb           : natural := c_pre_out_fifo_oob_lsb + c_data_oob_width - 1;
 
-  constant c_fc_in_header_top_idx          : natural := g_header_in_width+g_data_width-1;
-  constant c_fc_in_header_bot_idx          : natural := g_data_width;
+  constant c_fc_in_header_top_idx           : natural := g_header_in_width+g_data_width-1;
+  constant c_fc_in_header_bot_idx           : natural := g_data_width;
 
   -- Signals
   signal fc_first_data                      : std_logic;
@@ -144,7 +144,7 @@ architecture rtl of fc_source is
   signal fc_oob_out_int                     : t_fc_data_oob;
 
   -- Counters
-  signal fc_in_pend_cnt                  : t_fc_pkt;
+  signal fc_in_pend_cnt                     : t_fc_pkt;
 
   signal output_pipe_full                   : std_logic;
   signal output_pipe_almost_full            : std_logic;
@@ -323,15 +323,15 @@ begin
     end if;
   end process;
 
-  pl_stall_o                            <= pl_stall_r;
-  pl_dreq_o                             <= pl_dreq_r;
+  pl_stall_o                                <= pl_stall_r;
+  pl_dreq_o                                 <= pl_dreq_r;
 
-  fc_dout_o                             <= fc_data_out_int;
-  fc_valid_o                            <= fc_valid_out_int;
-  fc_addr_o                             <= fc_addr_out_int;
-  fc_sof_o                              <= fc_oob_out_int(c_data_oob_sof_ofs);
-  fc_eof_o                              <= fc_oob_out_int(c_data_oob_eof_ofs);
+  fc_dout_o                                 <= fc_data_out_int;
+  fc_valid_o                                <= fc_valid_out_int;
+  fc_addr_o                                 <= fc_addr_out_int;
+  fc_sof_o                                  <= fc_oob_out_int(c_data_oob_sof_ofs);
+  fc_eof_o                                  <= fc_oob_out_int(c_data_oob_eof_ofs);
 
-  pl_pkt_sent_o                         <= pkt_sent;
+  pl_pkt_sent_o                             <= pkt_sent;
 
 end rtl;

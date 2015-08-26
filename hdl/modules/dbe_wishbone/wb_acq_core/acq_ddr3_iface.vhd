@@ -498,44 +498,44 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => cnt_all_trans_done_app_p,
-    cnt_en_i                                  => acq_app_cnt_en,
+    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_trans_done_p_o                  => cnt_all_trans_done_app_p,
+    cnt_en_i                                => acq_app_cnt_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid,
+    lmt_valid_i                             => lmt_valid,
 
-    dbg_pkt_ct_cnt_o                          => dbg_app_pkt_ct_cnt,
-    dbg_shots_cnt_o                           => dbg_app_shots_cnt
+    dbg_pkt_ct_cnt_o                        => dbg_app_pkt_ct_cnt,
+    dbg_shots_cnt_o                         => dbg_app_shots_cnt
   );
 
   cmp_acq_cnt_wdf : acq_cnt
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                  => open,
-    cnt_all_trans_done_p_o                    => cnt_all_trans_done_wdf_p,
-    cnt_en_i                                  => acq_wdf_cnt_en,
+    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_trans_done_p_o                  => cnt_all_trans_done_wdf_p,
+    cnt_en_i                                => acq_wdf_cnt_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid,
+    lmt_valid_i                             => lmt_valid,
 
-    dbg_pkt_ct_cnt_o                          => dbg_wdf_pkt_ct_cnt,
-    dbg_shots_cnt_o                           => dbg_wdf_shots_cnt
+    dbg_pkt_ct_cnt_o                        => dbg_wdf_pkt_ct_cnt,
+    dbg_shots_cnt_o                         => dbg_wdf_shots_cnt
   );
 
   -- Wait for the last pulse
@@ -590,12 +590,12 @@ begin
   -----------------------------------------------------------------------------
   cmp_fc_source_app : fc_source
   generic map (
-    g_header_in_width                      => g_ddr_header_width,
-    g_data_width                           => 0, -- Dummy value
-    g_pkt_size_width                       => c_pkt_size_width,
-    g_addr_width                           => g_ddr_addr_width,
-    g_with_fifo_inferred                   => true,
-    g_pipe_size                            => g_fc_pipe_size
+    g_header_in_width                       => g_ddr_header_width,
+    g_data_width                            => 0, -- Dummy value
+    g_pkt_size_width                        => c_pkt_size_width,
+    g_addr_width                            => g_ddr_addr_width,
+    g_with_fifo_inferred                    => true,
+    g_pipe_size                             => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
@@ -644,12 +644,12 @@ begin
   -----------------------------------------------------------------------------
   cmp_fc_source_app_wdf : fc_source
   generic map (
-    g_header_in_width                      => g_ddr_header_width,
-    g_data_width                           => g_ddr_payload_width + c_ddr_mask_width,
-    g_pkt_size_width                       => c_pkt_size_width,
-    g_addr_width                           => 1, -- Dummy value
-    g_with_fifo_inferred                   => true,
-    g_pipe_size                            => g_fc_pipe_size
+    g_header_in_width                       => g_ddr_header_width,
+    g_data_width                            => g_ddr_payload_width + c_ddr_mask_width,
+    g_pkt_size_width                        => c_pkt_size_width,
+    g_addr_width                            => 1, -- Dummy value
+    g_with_fifo_inferred                    => true,
+    g_pipe_size                             => g_fc_pipe_size
   )
   port map (
     clk_i                                   => ext_clk_i,
