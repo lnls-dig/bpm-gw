@@ -183,7 +183,7 @@ package acq_core_pkg is
     acq_trig_i                                : in std_logic;
 
     -- Acquisition data with data + metadata
-    acq_data_o                                : out std_logic_vector(c_acq_header_width+g_data_in_width-1 downto 0);
+    acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_o                               : out std_logic;
     acq_trig_o                                : out std_logic
   );
@@ -275,7 +275,7 @@ package acq_core_pkg is
     acq_wait_trig_skip_done_i                 : in std_logic;
     acq_post_trig_done_i                      : in std_logic;
 
-    dpram_dout_o                              : out std_logic_vector(g_data_width-1 downto 0);
+    dpram_dout_o                              : out std_logic_vector(g_header_out_width+g_data_width-1 downto 0);
     dpram_valid_o                             : out std_logic
   );
   end component;
@@ -304,7 +304,7 @@ package acq_core_pkg is
     ext_rst_n_i                               : in  std_logic;
 
     -- DPRAM data
-    dpram_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
+    dpram_data_i                              : in std_logic_vector(g_header_in_width+g_data_in_width-1 downto 0);
     dpram_dvalid_i                            : in std_logic;
 
     -- Passthough data
@@ -317,7 +317,7 @@ package acq_core_pkg is
     -- Request transaction reset as soon as possible (when all outstanding
     -- transactions have been commited)
     req_rst_trans_i                           : in std_logic;
-    -- select between multi-buffer mode and pass-through mode (data directly
+    -- Select between multi-buffer mode and pass-through mode (data directly
     -- through external module interface)
     passthrough_en_i                          : in std_logic;
     -- which buffer (0 or 1) to store data in. valid only when passthrough_en_i = '0'
@@ -327,7 +327,7 @@ package acq_core_pkg is
     lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
     -- Size of the pre trigger transaction in g_fifo_size bytes
     lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
-    -- Size of the pos trigger transaction in g_fifo_size bytes
+    -- Size of the post trigger transaction in g_fifo_size bytes
     lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
     -- Size of the full transaction in g_fifo_size bytes
     lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
@@ -344,7 +344,7 @@ package acq_core_pkg is
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_dout_o                            : out std_logic_vector(g_data_out_width-1 downto 0);
+    fifo_fc_dout_o                            : out std_logic_vector(g_header_out_width+g_data_out_width-1 downto 0);
     fifo_fc_valid_o                           : out std_logic;
     fifo_fc_addr_o                            : out std_logic_vector(g_addr_width-1 downto 0);
     fifo_fc_sof_o                             : out std_logic;
@@ -433,7 +433,7 @@ package acq_core_pkg is
     rst_n_i                                   : in std_logic;
 
     -- Plain Interface
-    pl_data_i                                 : in std_logic_vector(g_data_width-1 downto 0);
+    pl_data_i                                 : in std_logic_vector(g_header_in_width+g_data_width-1 downto 0);
     pl_addr_i                                 : in std_logic_vector(g_addr_width-1 downto 0);
     pl_valid_i                                : in std_logic;
 
@@ -450,7 +450,7 @@ package acq_core_pkg is
     lmt_valid_i                               : in std_logic;
 
     -- Flow Control Interface
-    fc_dout_o                                 : out std_logic_vector(g_data_width-1 downto 0);
+    fc_dout_o                                 : out std_logic_vector(g_header_in_width+g_data_width-1 downto 0);
     fc_valid_o                                : out std_logic;
     fc_addr_o                                 : out std_logic_vector(g_addr_width-1 downto 0);
     fc_sof_o                                  : out std_logic;
@@ -554,7 +554,7 @@ package acq_core_pkg is
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
-    fifo_fc_din_i                             : in std_logic_vector(g_ddr_payload_width-1 downto 0);
+    fifo_fc_din_i                             : in std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
     fifo_fc_valid_i                           : in std_logic;
     fifo_fc_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
     fifo_fc_sof_i                             : in std_logic;
