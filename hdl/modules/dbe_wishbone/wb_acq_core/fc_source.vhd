@@ -255,7 +255,8 @@ begin
           fc_first_data <= '1';
         end if;
 
-        if fc_in_pend_cnt = lmt_pkt_size-2 and fc_valid_s = '1'then -- will increment
+        if lmt_pkt_size = to_unsigned(1, lmt_pkt_size'length) or -- base case of lmt_pkt_size = 1
+            (fc_in_pend_cnt = lmt_pkt_size-2 and fc_valid_s = '1') then -- will increment
           fc_last_data <= '1';
         elsif fc_valid_s = '1' then
           fc_last_data <= '0';
