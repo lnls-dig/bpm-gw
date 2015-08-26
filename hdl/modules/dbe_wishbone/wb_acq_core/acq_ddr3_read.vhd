@@ -63,17 +63,22 @@ port
 
   rb_start_i                                : in std_logic;
   rb_init_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+  rb_ddr_trig_addr_i                        : in std_logic_vector(g_ddr_addr_width-1 downto 0);
 
   lmt_all_trans_done_p_o                    : out std_logic;
   lmt_rst_i                                 : in std_logic;
 
   -- Current channel selection ID
-  lmt_curr_chan_id_i                        : in unsigned(4 downto 0);
-  -- Size of the transaction in g_fifo_size bytes
-  lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
+  lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+  -- Size of the pre trigger transaction in g_fifo_size bytes
+  lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+  -- Size of the post trigger transaction in g_fifo_size bytes
+  lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+  -- Size of the full transaction in g_fifo_size bytes
+  lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
   -- Number of shots in this acquisition
-  lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
-  -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
+  lmt_shots_nb_i                            : in unsigned(15 downto 0);
+  -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
   lmt_valid_i                               : in std_logic;
 
   -- Xilinx DDR3 UI Interface
@@ -133,13 +138,26 @@ architecture rtl of acq_ddr3_read is
   signal issue_rb                           : std_logic;
   signal ddr_req                            : std_logic;
 
-  signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_s                     : std_logic_vector(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_alig_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size                  : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_alig_s           : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_aggd             : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   signal lmt_valid                          : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_chan_curr_width                : unsigned(c_acq_chan_max_w_log2-1 downto 0);
+  signal rb_ddr_trig_addr                   : unsigned(g_ddr_addr_width-1 downto 0);
+  -- For intermediate multiplication result
+  signal lmt_pre_pkt_addr                   : unsigned(63 downto 0);
+  signal lmt_pre_full_addr                  : unsigned(63 downto 0);
 
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(c_ddr_payload_width-1 downto 0);
@@ -162,38 +180,62 @@ begin
   -----------------------------------------------------------------------------
   -- Register transaction limits
   -----------------------------------------------------------------------------
-  lmt_pkt_size_s <= std_logic_vector(lmt_pkt_size_i);
+  lmt_pre_pkt_size_s <= std_logic_vector(lmt_pre_pkt_size_i);
+  lmt_pos_pkt_size_s <= std_logic_vector(lmt_pos_pkt_size_i);
+  lmt_full_pkt_size_s <= std_logic_vector(lmt_full_pkt_size_i);
 
   p_in_reg : process (ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
-        lmt_pkt_size_alig_s <= (others => '0');
-        --Avoid detection of *_done pulses by setting them to 1
+        lmt_valid <= '0';
+        --avoid detection of *_done pulses by setting them to 1
+        lmt_pre_pkt_size_alig_s <= (others => '0');
+        lmt_pos_pkt_size_alig_s <= (others => '0');
+        lmt_full_pkt_size_alig_s <= (others => '0');
         lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
         lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
-        lmt_valid <= '0';
       else
         lmt_valid <= lmt_valid_i;
 
         if lmt_valid_i = '1' then
-          -- The packet size here is constrained by the relation log2(<DDR payload width>/<current channel width>),
-          -- receive packed data from the DDR3 controller
+          lmt_pre_pkt_size <= lmt_pre_pkt_size_i;
+          lmt_pos_pkt_size <= lmt_pos_pkt_size_i;
+          lmt_full_pkt_size <= lmt_full_pkt_size_i;
 
+          -- Aggregated packet size. The packet size here is constrained by the
+          -- relation f_log2(<output data width>/<input channel data width>),
+          -- as we aggregate data by that amount to send it to the ddr3
+          -- controller. Some modules need this packet size to function properly
           case c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i)) is
             when 1 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 1);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 1);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 1);
             when 2 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 2);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 2);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 2);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 2);
             when 3 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 3);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 3);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 3);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 3);
             when others =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
-
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 1);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 1);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 1);
           end case;
 
           lmt_shots_nb <= lmt_shots_nb_i;
@@ -203,7 +245,10 @@ begin
     end if;
   end process;
 
-  lmt_pkt_size <= unsigned(lmt_pkt_size_alig_s);
+  -- Aggregated pakcet size
+  lmt_pre_pkt_size_aggd <= unsigned(lmt_pre_pkt_size_alig_s);
+  lmt_pos_pkt_size_aggd <= unsigned(lmt_pos_pkt_size_alig_s);
+  lmt_full_pkt_size_aggd <= unsigned(lmt_full_pkt_size_alig_s);
 
     ----------------------------------------------------------------------------
   -- Determine the DDR payload / Data Input ratio
@@ -215,6 +260,8 @@ begin
   -- Determine the DDR read address
   -----------------------------------------------------------------------------
 
+  rb_ddr_trig_addr <= unsigned(rb_ddr_trig_addr_i);
+
   -- Generate address to FIFO interface.
   -- FIXME: Word for the application point of view might not be the same
   -- as the word for the DDR3 point of view (ddr_dq_width parameter)
@@ -225,7 +272,9 @@ begin
         ddr_addr_cnt_in <= to_unsigned(0, ddr_addr_cnt_in'length);
       else
         if rb_start_i = '1' then
-            ddr_addr_cnt_in <= unsigned(rb_init_addr_i);
+          -- We start reading from the number of pre samples specified prior
+          -- to trigger address.
+          ddr_addr_cnt_in <= rb_ddr_trig_addr - lmt_pre_full_addr(rb_ddr_trig_addr'left downto 0);
         elsif valid_trans_in = '1' then -- successfull acquisition
           ddr_addr_cnt_in_d0 <= ddr_addr_cnt_in;
           ddr_addr_cnt_in <= ddr_addr_cnt_in + c_addr_ddr_inc; -- word by word
@@ -244,13 +293,18 @@ begin
         ddr_addr_cnt_out <= to_unsigned(0, ddr_addr_cnt_out'length);
       else
         if rb_start_i = '1' then
-            ddr_addr_cnt_out <= unsigned(rb_init_addr_i);
+          -- We start reading from the number of pre samples specified prior
+          -- to trigger address.
+          ddr_addr_cnt_out <= rb_ddr_trig_addr - lmt_pre_full_addr(rb_ddr_trig_addr'left downto 0);
         elsif valid_trans_out = '1' then -- successfull request
           ddr_addr_cnt_out <= ddr_addr_cnt_out + c_addr_ddr_inc;
         end if;
       end if;
     end if;
   end process;
+
+  lmt_pre_pkt_addr <= lmt_pre_pkt_size*c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i));
+  lmt_pre_full_addr <= lmt_pre_pkt_addr(lmt_pre_pkt_addr'left-lmt_shots_nb'length downto 0)*lmt_shots_nb;
 
   ----------------------------------------------------------------------------
   -- Start reading
@@ -336,7 +390,7 @@ begin
     cnt_en_i                                  => valid_trans_out,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_pkt_size,
+    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size and lmt_shots_nb
@@ -369,7 +423,7 @@ begin
     cnt_en_i                                  => ddr_recv_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_pkt_size,
+    lmt_pkt_size_i                            => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb

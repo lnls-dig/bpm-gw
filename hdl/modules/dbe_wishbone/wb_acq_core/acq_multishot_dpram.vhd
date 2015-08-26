@@ -35,6 +35,7 @@ use work.acq_core_pkg.all;
 entity acq_multishot_dpram is
 generic
 (
+  g_header_out_width                        : natural := 1;
   g_data_width                              : natural := 64;
   g_multishot_ram_size                      : natural := 2048
 );
@@ -45,6 +46,7 @@ port
   fs_rst_n_i                                : in std_logic;
 
   data_i                                    : in std_logic_vector(g_data_width-1 downto 0);
+  data_id_i                                 : in std_logic_vector(2 downto 0);
   dvalid_i                                  : in std_logic;
   wr_en_i                                   : in std_logic;
   addr_rst_i                                : in std_logic;
@@ -59,7 +61,7 @@ port
   acq_wait_trig_skip_done_i                 : in std_logic;
   acq_post_trig_done_i                      : in std_logic;
 
-  dpram_dout_o                              : out std_logic_vector(g_data_width-1 downto 0);
+  dpram_dout_o                              : out std_logic_vector(g_header_out_width+g_data_width-1 downto 0);
   dpram_valid_o                             : out std_logic
 );
 end acq_multishot_dpram;
@@ -67,6 +69,9 @@ end acq_multishot_dpram;
 architecture rtl of acq_multishot_dpram is
 
   constant c_dpram_depth                    : integer := f_log2_size(g_multishot_ram_size);
+  constant c_dpram_width                    : integer := g_header_out_width+g_data_width;
+
+  signal dpram_trig                         : std_logic;
 
   signal dpram_addra_cnt                    : unsigned(c_dpram_depth-1 downto 0);
   signal dpram_addra_trig                   : unsigned(c_dpram_depth-1 downto 0);
@@ -75,17 +80,17 @@ architecture rtl of acq_multishot_dpram is
   signal dpram_valid                        : std_logic;
   signal dpram_valid_t                      : std_logic;
 
-  signal dpram0_dina                        : std_logic_vector(g_data_width-1 downto 0);
+  signal dpram0_dina                        : std_logic_vector(c_dpram_width-1 downto 0);
   signal dpram0_addra                       : std_logic_vector(c_dpram_depth-1 downto 0);
   signal dpram0_wea                         : std_logic;
   signal dpram0_addrb                       : std_logic_vector(c_dpram_depth-1 downto 0);
-  signal dpram0_doutb                       : std_logic_vector(g_data_width-1 downto 0);
+  signal dpram0_doutb                       : std_logic_vector(c_dpram_width-1 downto 0);
 
-  signal dpram1_dina                        : std_logic_vector(g_data_width-1 downto 0);
+  signal dpram1_dina                        : std_logic_vector(c_dpram_width-1 downto 0);
   signal dpram1_addra                       : std_logic_vector(c_dpram_depth-1 downto 0);
   signal dpram1_wea                         : std_logic;
   signal dpram1_addrb                       : std_logic_vector(c_dpram_depth-1 downto 0);
-  signal dpram1_doutb                       : std_logic_vector(g_data_width-1 downto 0);
+  signal dpram1_doutb                       : std_logic_vector(c_dpram_width-1 downto 0);
 
 begin
 
@@ -126,8 +131,8 @@ begin
   -- DPRAM inputs
   dpram0_addra <= std_logic_vector(dpram_addra_cnt);
   dpram1_addra <= std_logic_vector(dpram_addra_cnt);
-  dpram0_dina  <= data_i;
-  dpram1_dina  <= data_i;
+  dpram0_dina  <= data_id_i & acq_trig_i & data_i; -- data_id + trigger + data
+  dpram1_dina  <= data_id_i & acq_trig_i & data_i; -- data_id + trigger + data
   dpram0_wea   <= (wr_en_i and dvalid_i) when buffer_sel_i = '0' else '0';
   dpram1_wea   <= (wr_en_i and dvalid_i) when buffer_sel_i = '1' else '0';
 
@@ -135,7 +140,7 @@ begin
   cmp_multishot_dpram0 : generic_dpram
   generic map
   (
-    g_data_width                            => g_data_width,
+    g_data_width                            => c_dpram_width,
     g_size                                  => g_multishot_ram_size,
     g_with_byte_enable                      => false,
     g_addr_conflict_resolution              => "read_first",
@@ -163,7 +168,7 @@ begin
   cmp_multishot_dpram1 : generic_dpram
   generic map
   (
-    g_data_width                            => g_data_width,
+    g_data_width                            => c_dpram_width,
     g_size                                  => g_multishot_ram_size,
     g_with_byte_enable                      => false,
     g_addr_conflict_resolution              => "read_first",

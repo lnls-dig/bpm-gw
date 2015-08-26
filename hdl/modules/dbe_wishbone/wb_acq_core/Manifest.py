@@ -14,6 +14,7 @@ files = ["wb_acq_core.vhd",
         "acq_2_diff_cnt.vhd",
         "data_checker.vhd",
         "acq_pulse_level_sync.vhd",
+        "acq_trigger.vhd",
         "wbgen/acq_core_regs_pkg.vhd",
         "wbgen/acq_core_regs.vhd"
        ];

@@ -166,6 +166,10 @@ architecture rtl of wb_acq_core is
   constant c_acq_data_width                 : natural :=
                                   f_acq_chan_find_widest(c_acq_channels);
 
+  -- Number of header bits after marshalling
+  --constant c_header_marsh_width             : natural := c_acq_header_width*
+  --                                              (g_ddr_payload_width/f_acq_chan_find_narrowest(g_acq_channels));
+
   constant c_fc_pipe_size                   : natural := 8;
 
   constant c_p2l_num_inputs                 : natural := 6;
@@ -237,13 +241,18 @@ architecture rtl of wb_acq_core is
   signal acq_now                            : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_end                            : std_logic;
-  signal acq_trig                           : std_logic;
+  signal acq_trig_sw                        : std_logic;
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
   signal acq_data_marsh                     : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_trig_in                        : std_logic;
+  signal acq_trig                           : std_logic;
+  signal acq_trig_det                       : std_logic;
+  signal acq_trig_in_or                     : std_logic;
   signal acq_dvalid_in                      : std_logic;
+  signal acq_valid                          : std_logic;
   signal samples_wr_en                      : std_logic;
 
   -- Pre/Post trigger and shots counters
@@ -254,6 +263,8 @@ architecture rtl of wb_acq_core is
   signal acq_single_shot                    : std_logic;
   signal acq_ddr3_start_addr_full           : std_logic_vector(31 downto 0); -- full 32-bit address
   signal acq_ddr3_start_addr                : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal acq_ddr3_end_addr_full             : std_logic_vector(31 downto 0); -- full 32-bit address
+  signal acq_ddr3_end_addr                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
   signal acq_pre_trig_done                  : std_logic;
   signal acq_wait_trig_skip_done            : std_logic;
@@ -265,7 +276,9 @@ architecture rtl of wb_acq_core is
   signal multishot_buffer_sel               : std_logic;
 
   -- Packet size for ext interface
-  signal lmt_acq_pkt_size                   : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_pre_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_pos_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_full_pkt_size              : unsigned(c_acq_samples_size-1 downto 0);
   signal lmt_shots_nb                       : unsigned(15 downto 0);
   signal lmt_valid                          : std_logic;
 
@@ -274,7 +287,7 @@ architecture rtl of wb_acq_core is
   signal dpram_addra_trig                   : unsigned(c_dpram_depth-1 downto 0);
   signal dpram_addra_post_done              : unsigned(c_dpram_depth-1 downto 0);
   signal dpram_addrb_cnt                    : unsigned(c_dpram_depth-1 downto 0);
-  signal dpram_dout                         : std_logic_vector(c_acq_data_width-1 downto 0);
+  signal dpram_dout                         : std_logic_vector(c_acq_header_width+c_acq_data_width-1 downto 0);
   signal dpram_valid                        : std_logic;
 
   -- FIFO Flow Control signals
@@ -286,7 +299,7 @@ architecture rtl of wb_acq_core is
   signal fifo_fc_full_l                     : std_logic;
 
   -- External memory interface signals
-  signal ext_dout                           : std_logic_vector(g_ddr_payload_width-1 downto 0);
+  signal ext_dout                           : std_logic_vector(c_acq_header_width+g_ddr_payload_width-1 downto 0);
   signal ext_valid                          : std_logic;
   signal ext_sof                            : std_logic;
   signal ext_eof                            : std_logic;
@@ -341,7 +354,7 @@ architecture rtl of wb_acq_core is
 
   -- RAM address counter
   signal test_data_en                       : std_logic;
-  signal trig_addr                          : std_logic_vector(31 downto 0);
+  signal ddr_trig_addr                      : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
   ------------------------------------------------------------------------------
   -- Components
@@ -441,14 +454,21 @@ begin
 
   -- Synchronous to ext_clk_i
   acq_ddr3_start_addr_full                  <= regs_out.ddr3_start_addr_o;
-
   -- Truncate address to the actually width of external memory
   -- Synchronous to ext_clk_i
   acq_ddr3_start_addr                       <= acq_ddr3_start_addr_full(acq_ddr3_start_addr'left downto 0);
 
+  -- Synchronous to ext_clk_i
+  acq_ddr3_end_addr_full                    <= regs_out.ddr3_end_addr_o;
+  -- Truncate address to the actually width of external memory
+  -- Synchronous to ext_clk_i
+  acq_ddr3_end_addr                         <= acq_ddr3_end_addr_full(acq_ddr3_end_addr'left downto 0);
+
   acq_start                                 <= regs_out.ctl_fsm_start_acq_o; -- 1 fs_clk cycle pulse
   acq_stop                                  <= regs_out.ctl_fsm_stop_acq_o; -- 1 fs_clk cycle pulse
   acq_now                                   <= regs_out.ctl_fsm_acq_now_o;
+
+  acq_trig_sw                               <= regs_out.sw_trig_wr_o;
 
   regs_in.sta_fsm_state_i                   <= acq_fsm_state;
   regs_in.sta_fsm_acq_done_i                <= acq_end;
@@ -459,9 +479,13 @@ begin
                                                dbg_fifo_fc_valid_fwft & dbg_fifo_wr_full;
   regs_in.sta_ddr3_trans_done_i             <= ddr3_all_trans_done_l;
   regs_in.sta_reserved3_i                   <= dbg_pkt_ct_cnt(14 downto 0);
-  regs_in.trig_pos_i                        <= (others => '0');
+  regs_in.trig_pos_i                        <= f_gen_std_logic_vector(regs_in.trig_pos_i'length-
+                                                    ddr_trig_addr'length, '0') & ddr_trig_addr;
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
 
+  ------------------------------------------------------------------------------
+  -- Acquisiton Channel Selection
+  -----------------------------------------------------------------------------
   cmp_acq_sel_chan : acq_sel_chan
   generic map
   (
@@ -489,6 +513,34 @@ begin
     acq_trig_o                              => acq_trig_in
   );
 
+  acq_trig_in_or <= acq_trig_in or acq_trig_sw;
+
+  -----------------------------------------------------------------------------
+  -- Acquisition Trigger Logic and Tagging
+  -----------------------------------------------------------------------------
+  cmp_acq_trig : acq_trigger
+  generic map
+  (
+    g_data_in_width                         => c_acq_data_width
+  )
+  port map
+  (
+    fs_clk_i                                => fs_clk_i,
+    fs_ce_i                                 => fs_ce_i,
+    fs_rst_n_i                              => fs_rst_n_i,
+
+    acq_data_i                              => acq_data_marsh(c_acq_data_width-1 downto 0),
+    acq_valid_i                             => acq_dvalid_in,
+    acq_trig_i                              => acq_trig_in_or,
+
+    acq_data_o                              => acq_data,
+    acq_valid_o                             => acq_valid,
+    acq_trig_o                              => acq_trig
+  );
+
+  -----------------------------------------------------------------------------
+  -- Acquisiton FSM
+  -----------------------------------------------------------------------------
   cmp_acq_fsm : acq_fsm
   port map
   (
@@ -502,8 +554,8 @@ begin
     acq_start_i                             => acq_start_sync_fs,
     acq_now_i                               => acq_now,
     acq_stop_i                              => acq_stop,
-    acq_trig_i                              => acq_trig_in,
-    acq_dvalid_i                            => acq_dvalid_in,
+    acq_trig_i                              => acq_trig,
+    acq_dvalid_i                            => acq_valid,
 
     -----------------------------
     -- FSM Number of Samples
@@ -530,7 +582,9 @@ begin
     -----------------------------
     -- Acquistion limits
     -----------------------------
-    lmt_acq_pkt_size_o                      => lmt_acq_pkt_size,
+    lmt_acq_pre_pkt_size_o                  => lmt_acq_pre_pkt_size,
+    lmt_acq_pos_pkt_size_o                  => lmt_acq_pos_pkt_size,
+    lmt_acq_full_pkt_size_o                 => lmt_acq_full_pkt_size,
     lmt_shots_nb_o                          => lmt_shots_nb,
     lmt_valid_o                             => lmt_valid,
 
@@ -538,7 +592,7 @@ begin
     -- FSM Outputs
     -----------------------------
     shots_decr_o                            => shots_decr,
-    acq_trig_o                              => acq_trig,
+    acq_trig_o                              => acq_trig_det,
     multishot_buffer_sel_o                  => multishot_buffer_sel,
     samples_wr_en_o                         => samples_wr_en
   );
@@ -549,6 +603,7 @@ begin
   cmp_acq_multishot_dpram : acq_multishot_dpram
   generic map
   (
+    g_header_out_width                      => c_acq_header_width,
     g_data_width                            => c_acq_data_width,
     g_multishot_ram_size                    => g_multishot_ram_size
   )
@@ -558,13 +613,14 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n_i,
 
-    data_i                                  => acq_data_marsh(c_acq_data_width-1 downto 0),
-    dvalid_i                                => acq_dvalid_in,
+    data_i                                  => acq_data,
+    data_id_i                               => acq_fsm_state,
+    dvalid_i                                => acq_valid,
     wr_en_i                                 => samples_wr_en,
     addr_rst_i                              => shots_decr,
 
     buffer_sel_i                            => multishot_buffer_sel,
-    acq_trig_i                              => acq_trig,
+    acq_trig_i                              => acq_trig_det,
 
     pre_trig_samples_i                      => pre_trig_samples_c,
     post_trig_samples_i                     => post_trig_samples_c,
@@ -577,7 +633,8 @@ begin
     dpram_valid_o                           => dpram_valid
   );
 
-  dpram_dout_o                              <=  dpram_dout;
+  -- Do not output the header. Only the payload
+  dpram_dout_o                              <=  dpram_dout(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
   dpram_valid_o                             <=  dpram_valid;
 
   ------------------------------------------------------------------------------
@@ -587,7 +644,9 @@ begin
   cmp_acq_fc_fifo : acq_fc_fifo
   generic map
   (
+    g_header_in_width                       => c_acq_header_width,
     g_data_in_width                         => c_acq_data_width,
+    g_header_out_width                      => c_acq_header_width,
     g_data_out_width                        => g_ddr_payload_width,
     g_addr_width                            => g_ddr_addr_width,
     g_acq_num_channels                      => g_acq_num_channels,
@@ -605,11 +664,15 @@ begin
     ext_clk_i                               => ext_clk_i,
     ext_rst_n_i                             => ext_rst_n_i,
 
+    -- DPRAM data
     dpram_data_i                            => dpram_dout,
     dpram_dvalid_i                          => dpram_valid,
 
-    pt_data_i                               => acq_data_marsh(c_acq_data_width-1 downto 0),
-    pt_dvalid_i                             => acq_dvalid_in,
+    -- Passthrough data
+    pt_data_i                               => acq_data,
+    pt_data_id_i                            => acq_fsm_state,
+    pt_trig_i                               => acq_trig_det,
+    pt_dvalid_i                             => acq_valid,
     pt_wr_en_i                              => samples_wr_en,
 
     -- Request transaction reset as soon as possible (when all outstanding
@@ -623,8 +686,12 @@ begin
 
     -- Current channel selection ID
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    -- Size of the transaction in g_size bytes
-    lmt_pkt_size_i                          => lmt_acq_pkt_size,
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+    -- Size of the pos trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
     -- Number of shots in this acquisition
     lmt_shots_nb_i                          => lmt_shots_nb,
     --lmt_valid_i                             => lmt_valid,
@@ -754,7 +821,8 @@ begin
 
   -- Output debugs
 
-  ext_dout_o                                <= ext_dout;
+  -- Only output payload bits, not header.
+  ext_dout_o                                <= ext_dout(g_ddr_payload_width-1 downto 0);
   ext_valid_o                               <= ext_valid;
   ext_addr_o                                <= ext_addr;
   ext_sof_o                                 <= ext_sof;
@@ -772,6 +840,8 @@ begin
     g_acq_num_channels                      => g_acq_num_channels,
     g_acq_channels                          => g_acq_channels,
     g_fc_pipe_size                          => c_fc_pipe_size,
+    -- This is the number of header bits interleaved after marshalling
+    g_ddr_header_width                      => c_acq_header_width,
     -- Do not modify these! As they are dependent of the memory controller generated!
     g_ddr_payload_width                     => g_ddr_payload_width,
     g_ddr_dq_width                          => g_ddr_dq_width,
@@ -798,17 +868,23 @@ begin
     -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
     -- impose any metastability problem in this module
     wr_init_addr_i                          => acq_ddr3_start_addr,
+    wr_end_addr_i                           => acq_ddr3_end_addr,
 
     lmt_all_trans_done_p_o                  => ddr3_wr_all_trans_done_p,
+    lmt_ddr_trig_addr_o                     => ddr_trig_addr,
     lmt_rst_i                               => '0', --remove this signal
 
     -- Current channel selection ID
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                          => lmt_acq_pkt_size,
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+    -- Size of the pos trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
     -- Number of shots in this acquisition
     lmt_shots_nb_i                          => lmt_shots_nb,
-    -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
+    --lmt_valid_i                             => lmt_valid,
     lmt_valid_i                             => acq_start_sync_ext,
 
     -- Xilinx DDR3 UI Interface
@@ -871,19 +947,23 @@ begin
       -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
       -- impose any metastability problem in this module
       rb_init_addr_i                        => acq_ddr3_start_addr,
+      rb_ddr_trig_addr_i                    => ddr_trig_addr,
 
       lmt_all_trans_done_p_o                => ddr3_rb_all_trans_done_p,
       lmt_rst_i                             => '0', -- remove this signal!
 
       -- Current channel selection ID
-      lmt_curr_chan_id_i                    => lmt_curr_chan_id,
-      -- Size of the transaction in g_fifo_size bytes
-      -- FIXME FIXME
-      lmt_pkt_size_i                        => lmt_acq_pkt_size,
+      lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+      -- Size of the pre trigger transaction in g_fifo_size bytes
+      lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+      -- Size of the pos trigger transaction in g_fifo_size bytes
+      lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+      -- Size of the full transaction in g_fifo_size bytes
+      lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
       -- Number of shots in this acquisition
-      lmt_shots_nb_i                        => lmt_shots_nb,
-      -- Acquisition limits valid signal. Qualifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
-      lmt_valid_i                           => acq_start_sync_ext,
+      lmt_shots_nb_i                          => lmt_shots_nb,
+      --lmt_valid_i                             => lmt_valid,
+      lmt_valid_i                             => acq_start_sync_ext,
 
       -- Xilinx DDR3 UI Interface
       ui_app_addr_o                         => ui_app_rb_addr,

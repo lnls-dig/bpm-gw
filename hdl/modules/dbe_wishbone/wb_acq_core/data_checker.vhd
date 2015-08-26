@@ -39,6 +39,7 @@ generic
 (
   g_data_width                              : natural := 64;
   g_addr_width                              : natural := 32;
+  g_addr_inc                                : natural := 8;
   g_fifo_size                               : natural := 64
 );
 port
@@ -76,11 +77,20 @@ end data_checker;
 
 architecture rtl of data_checker is
 
+  type t_data_checker_fsm_state is (IDLE, READ_FIFO, WAIT_VALID_FIFO,
+                                    CHECK_ADDR_EQUAL, ALIGN_ADDR, CMP_DATA_ADDR,
+                                    FINISH);
+
+  -- Data Checker FSM
+  signal data_checker_fsm_state             : t_data_checker_fsm_state;
+
   -- Constants
   constant c_addr_lsb                       : natural := 0;
   constant c_addr_msb                       : natural := g_addr_width + c_addr_lsb - 1;
   constant c_data_lsb                       : natural := c_addr_msb + 1;
   constant c_data_msb                       : natural := g_data_width + c_data_lsb - 1;
+  constant c_addr_inc                       : unsigned(g_addr_width-1 downto 0) :=
+                                                to_unsigned(g_addr_inc, g_addr_width);
 
   signal fifo_exp_din                       : std_logic_vector(g_data_width+g_addr_width-1 downto 0);
   signal fifo_exp_we                        : std_logic;
@@ -98,7 +108,7 @@ architecture rtl of data_checker is
   signal fifo_act_full                      : std_logic;
   signal fifo_act_valid                     : std_logic;
 
-  signal data_cmp_in_progress               : std_logic;
+  signal data_cmp_valid                     : std_logic;
 
   signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
@@ -170,7 +180,13 @@ begin
     full_o                                  => fifo_exp_full
   );
 
-  fifo_exp_rd <= '1' when fifo_exp_empty = '0' and fifo_act_empty = '0'
+  fifo_exp_rd <= '1' when (fifo_exp_empty = '0' and fifo_act_empty = '0' and
+                           data_checker_fsm_state = CMP_DATA_ADDR) or
+                           -- Dummy state to read a single value from FIFO
+                           data_checker_fsm_state = READ_FIFO or
+                           -- keep reading FIFO until we align addresses with
+                           -- the "actual" FIFO
+                           data_checker_fsm_state = ALIGN_ADDR
                            else '0';
 
   -- Valid flag
@@ -213,7 +229,11 @@ begin
     full_o                                  => fifo_act_full
   );
 
-  fifo_act_rd <= '1' when fifo_act_empty = '0' and fifo_exp_empty = '0'
+  fifo_act_rd <= '1' when (fifo_act_empty = '0' and fifo_exp_empty = '0' and
+                           -- Compare Data/Addr state
+                           data_checker_fsm_state = CMP_DATA_ADDR) or
+                           -- Dummy state to read a single value from FIFO
+                           data_checker_fsm_state = READ_FIFO
                            else '0';
   -- Valid flag
   p_act_valid : process (ext_clk_i) is
@@ -231,6 +251,8 @@ begin
   -- Compare actual data with expected data
   -----------------------------------------------------------------------------
 
+  data_cmp_valid <= fifo_act_valid and fifo_exp_valid;
+
   p_compare_exp_act : process (ext_clk_i) is
     variable s : line;
   begin
@@ -239,67 +261,112 @@ begin
         data_cmp_match <= '0';
         data_cmp_err <= '0';
         addr_cmp_err <= '0';
-        data_cmp_in_progress <= '0';
+        data_checker_fsm_state <= IDLE;
       else
-        if (fifo_act_valid = '1' and fifo_exp_valid = '1') then
 
-          data_cmp_in_progress <= '1';
+        case data_checker_fsm_state is
 
-          if (fifo_act_dout = fifo_exp_dout) then -- both data and address match!
-            data_cmp_match <= '1'; -- continue
-            data_cmp_err <= '0';
-            addr_cmp_err <= '0';
+          when IDLE =>
+            if (fifo_act_we = '1') then
+              data_checker_fsm_state <= READ_FIFO;
+            else
+              data_cmp_match <= '0';
+              data_cmp_err <= '0';
+              addr_cmp_err <= '0';
+            end if;
 
-            report "[Data Checker]: actual data/addr " &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
-             " MATCHES expected data/addr " &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
-             severity note;
-          elsif (fifo_act_dout(c_data_msb downto c_data_lsb) =
-                   fifo_exp_dout(c_data_msb downto c_data_lsb)) then -- only data match!
-            data_cmp_match <= '1'; -- continue
-            data_cmp_err <= '0';
-            addr_cmp_err <= '1';
+          -- Read one single WORD from FIFO
+          when READ_FIFO =>
+            data_checker_fsm_state <= WAIT_VALID_FIFO;
 
-            report "[Data Checker]: actual data/addr " &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
-             " DIFFERS from expected data/addr " &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
-             severity note;
-          else -- only addr or neither match
-            data_cmp_match <= '0'; -- stop on error
-            data_cmp_err <= '1';
-            addr_cmp_err <= '1';
+          -- Wait for FIFO output to become valid
+          when WAIT_VALID_FIFO =>
+            data_checker_fsm_state <= CHECK_ADDR_EQUAL;
 
-            report "[Data Checker]: actual data/addr " &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
-             " DIFFERS from expected data/addr " &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
-             "/" &
-             integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
+          when CHECK_ADDR_EQUAL =>
+            -- Check if data is equal already (in the case we did not wait for
+            -- a trigger and both addresses are 0, for instance)
+            if unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb)) =
+               unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)) then
+              data_checker_fsm_state <= CMP_DATA_ADDR;
+            else
+              data_checker_fsm_state <= ALIGN_ADDR;
+            end if;
+
+          -- Keep reading from the "expected" FIFO until we align its address with
+          -- the address coming from the "actual" FIFO
+          when ALIGN_ADDR =>
+            if unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb)) >=
+               unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)) - c_addr_inc then
+              data_checker_fsm_state <= CMP_DATA_ADDR;
+            end if;
+
+          when CMP_DATA_ADDR =>
+            -- We are comparing data/addr now
+
+            if data_chk_done_p = '1' then
+              data_checker_fsm_state <= FINISH;
+            elsif data_cmp_valid = '1' then -- comparison is ready to be made
+              if (fifo_act_dout = fifo_exp_dout) then -- both data and address match!
+                data_cmp_match <= '1'; -- continue
+                data_cmp_err <= '0';
+                addr_cmp_err <= '0';
+
+                report "[Data Checker]: actual data/addr " &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
+                 " MATCHES expected data/addr " &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
+                 severity note;
+              elsif (fifo_act_dout(c_data_msb downto c_data_lsb) =
+                       fifo_exp_dout(c_data_msb downto c_data_lsb)) then -- only data match!
+                data_cmp_match <= '1'; -- continue
+                data_cmp_err <= '0';
+                addr_cmp_err <= '1';
+
+                report "[Data Checker]: actual data/addr " &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
+                 " DIFFERS from expected data/addr " &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
+                 severity note;
+              else -- only addr or neither match
+                data_cmp_match <= '0'; -- stop on error
+                data_cmp_err <= '1';
+                addr_cmp_err <= '1';
+
+                report "[Data Checker]: actual data/addr " &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_act_dout(c_addr_msb downto c_addr_lsb)))) &
+                 " DIFFERS from expected data/addr " &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_data_msb downto c_data_lsb)))) &
+                 "/" &
+                 integer'image(to_integer(unsigned(fifo_exp_dout(c_addr_msb downto c_addr_lsb))))
+                 severity error;
+              end if;
+            end if;
+
+          when FINISH =>
+            -- Trap FSM here until a reset comes
+
+          when others =>
+            report "[Data Checker]: Invalid State Detected!"
              severity error;
-          end if;
-        else
-          data_cmp_in_progress <= '0';
-          data_cmp_match <= '0';
-          data_cmp_err <= '0';
-          addr_cmp_err <= '0';
-        end if;
+            null;
+
+          end case;
        end if;
     end if;
   end process;
 
-  data_chk_en <= data_cmp_in_progress;
+  data_chk_en <= data_cmp_valid;
 
   -----------------------------------------------------------------------------
   -- Count the errors

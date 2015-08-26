@@ -78,7 +78,9 @@ port
   -----------------------------
   -- Acquistion limits
   -----------------------------
-  lmt_acq_pkt_size_o                        : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_acq_pre_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_acq_pos_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_acq_full_pkt_size_o                   : out unsigned(c_acq_samples_size-1 downto 0);
   lmt_shots_nb_o                            : out unsigned(15 downto 0);
   lmt_valid_o                               : out std_logic;
 
@@ -124,7 +126,9 @@ architecture rtl of acq_fsm is
   signal single_shot                        : std_logic;
 
   -- Packet size for ext interface
-  signal lmt_acq_pkt_size                   : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_pre_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_pos_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_full_pkt_size              : unsigned(c_acq_samples_size-1 downto 0);
   signal lmt_shots_nb                       : unsigned(15 downto 0);
   signal lmt_valid                          : std_logic;
 
@@ -264,12 +268,14 @@ begin
   begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
-        lmt_acq_pkt_size <= to_unsigned(0, lmt_acq_pkt_size'length);
-        lmt_shots_nb <= to_unsigned(0, lmt_shots_nb'length);
+        lmt_acq_pre_pkt_size <= to_unsigned(0, lmt_acq_pre_pkt_size'length);
+        lmt_acq_pos_pkt_size <= to_unsigned(0, lmt_acq_pos_pkt_size'length);
+        lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
       else
-        -- Be pessimist about overflow. Pick only the LSB of trig samples
-        lmt_acq_pkt_size <= unsigned('0' & pre_trig_samples_i(pre_trig_samples_i'left-1 downto 0)) +
-                            unsigned('0' & post_trig_samples_i(post_trig_samples_i'left-1 downto 0));
+        lmt_acq_pre_pkt_size <= unsigned(pre_trig_samples_i(lmt_acq_pre_pkt_size'left downto 0));
+        lmt_acq_pos_pkt_size <= unsigned(post_trig_samples_i(lmt_acq_pos_pkt_size'left downto 0));
+        lmt_acq_full_pkt_size <= unsigned(pre_trig_samples_i(pre_trig_samples_i'left downto 0)) +
+                            unsigned(post_trig_samples_i(post_trig_samples_i'left downto 0));
         lmt_shots_nb <= shots_nb_i;
       end if;
     end if;
@@ -278,7 +284,9 @@ begin
   lmt_valid <= acq_start_i;
 
   -- Output assignments
-  lmt_acq_pkt_size_o <= lmt_acq_pkt_size;
+  lmt_acq_pre_pkt_size_o <= lmt_acq_pre_pkt_size;
+  lmt_acq_pos_pkt_size_o <= lmt_acq_pos_pkt_size;
+  lmt_acq_full_pkt_size_o <= lmt_acq_full_pkt_size;
   lmt_shots_nb_o <= lmt_shots_nb;
   lmt_valid_o <= lmt_valid;
 
@@ -308,7 +316,7 @@ begin
   acq_start <= acq_start_i;
   acq_stop  <= acq_stop_i;
   acq_trig  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
-  acq_end_t   <= shots_done and post_trig_done;
+  acq_end_t <= shots_done and post_trig_done;
 
   -- When FSM in IDLE, request reset
   acq_fsm_req_rst <= '1' when acq_fsm_state = "001" else '0';

@@ -33,6 +33,12 @@ package acq_core_pkg is
   constant c_num_payload_ratios             : natural := 3;
   constant c_max_payload_ratio              : natural := 8;
 
+  -- Acquisition data fields
+  constant c_acq_header_width               : natural := 4; -- trigger + data_id
+  constant c_acq_header_trigger_idx         : natural := 0; -- trigger bit position
+  constant c_acq_header_id_bot_idx          : natural := 1; -- id bit bottom position
+  constant c_acq_header_id_top_idx          : natural := 3; -- id bit top position
+
   -- Type declarations
 
   type t_acq_bool_array is array (natural range <>) of boolean;
@@ -160,6 +166,29 @@ package acq_core_pkg is
   );
   end component;
 
+  component acq_trigger
+  generic
+  (
+    g_data_in_width                           : natural := 128
+  );
+  port
+  (
+    fs_clk_i                                  : in std_logic;
+    fs_ce_i                                   : in std_logic;
+    fs_rst_n_i                                : in std_logic;
+
+    -- Acquisition input
+    acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
+    acq_valid_i                               : in std_logic;
+    acq_trig_i                                : in std_logic;
+
+    -- Acquisition data with data + metadata
+    acq_data_o                                : out std_logic_vector(c_acq_header_width+g_data_in_width-1 downto 0);
+    acq_valid_o                               : out std_logic;
+    acq_trig_o                                : out std_logic
+  );
+  end component;
+
   component acq_fsm
   port
   (
@@ -201,7 +230,9 @@ package acq_core_pkg is
     -----------------------------
     -- Acquistion limits
     -----------------------------
-    lmt_acq_pkt_size_o                        : out unsigned(c_acq_samples_size-1 downto 0);
+    lmt_acq_pre_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+    lmt_acq_pos_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+    lmt_acq_full_pkt_size_o                   : out unsigned(c_acq_samples_size-1 downto 0);
     lmt_shots_nb_o                            : out unsigned(15 downto 0);
     lmt_valid_o                               : out std_logic;
 
@@ -218,6 +249,7 @@ package acq_core_pkg is
   component acq_multishot_dpram
   generic
   (
+    g_header_out_width                        : natural := 1;
     g_data_width                              : natural := 64;
     g_multishot_ram_size                      : natural := 2048
   );
@@ -228,6 +260,7 @@ package acq_core_pkg is
     fs_rst_n_i                                : in std_logic;
 
     data_i                                    : in std_logic_vector(g_data_width-1 downto 0);
+    data_id_i                                 : in std_logic_vector(2 downto 0);
     dvalid_i                                  : in std_logic;
     wr_en_i                                   : in std_logic;
     addr_rst_i                                : in std_logic;
@@ -250,7 +283,9 @@ package acq_core_pkg is
   component acq_fc_fifo
   generic
   (
+    g_header_in_width                         : natural := 1;
     g_data_in_width                           : natural := 128;
+    g_header_out_width                        : natural := 2;
     g_data_out_width                          : natural := 256;
     g_addr_width                              : natural := 32;
     g_acq_num_channels                        : natural := 1;
@@ -274,6 +309,8 @@ package acq_core_pkg is
 
     -- Passthough data
     pt_data_i                                 : in std_logic_vector(g_data_in_width-1 downto 0);
+    pt_data_id_i                              : in std_logic_vector(2 downto 0);
+    pt_trig_i                                 : in std_logic;
     pt_dvalid_i                               : in std_logic;
     pt_wr_en_i                                : in std_logic;
 
@@ -288,8 +325,12 @@ package acq_core_pkg is
 
     -- Current channel selection ID
     lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
-    -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the pos trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
     lmt_shots_nb_i                            : in unsigned(15 downto 0);
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
@@ -379,6 +420,7 @@ package acq_core_pkg is
   component fc_source
   generic
   (
+    g_header_in_width                         : natural := 4;
     g_data_width                              : natural := 64;
     g_pkt_size_width                          : natural := 32;
     g_addr_width                              : natural := 32;
@@ -402,7 +444,9 @@ package acq_core_pkg is
     pl_rst_trans_i                            : in std_logic;
 
     -- Limits
-    lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
     lmt_valid_i                               : in std_logic;
 
     -- Flow Control Interface
@@ -497,6 +541,7 @@ package acq_core_pkg is
     g_acq_channels                            : t_acq_chan_param_array;
     g_fc_pipe_size                            : natural := 4;
     -- Do not modify these! As they are dependent of the memory controller generated!
+    g_ddr_header_width                        : natural := 4;
     g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
     g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
     g_ddr_addr_width                          : natural := 32       -- be careful changing these!
@@ -522,15 +567,20 @@ package acq_core_pkg is
     wr_end_addr_i                             : in std_logic_vector(g_ddr_addr_width-1 downto 0);
 
     lmt_all_trans_done_p_o                    : out std_logic;
+    lmt_ddr_trig_addr_o                       : out std_logic_vector(g_ddr_addr_width-1 downto 0);
     lmt_rst_i                                 : in std_logic;
 
     -- Current channel selection ID
     lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
-    -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the post trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
-    -- Acquisition limits valid signal. Qu  alifies lmt_fifo_pkt_size_i and lmt_shots_nb_i
+    lmt_shots_nb_i                            : in unsigned(15 downto 0);
+    -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
     lmt_valid_i                               : in std_logic;
 
     -- Xilinx DDR3 UI Interface
@@ -583,16 +633,21 @@ package acq_core_pkg is
 
     rb_start_i                                : in std_logic;
     rb_init_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+    rb_ddr_trig_addr_i                        : in std_logic_vector(g_ddr_addr_width-1 downto 0);
 
     lmt_all_trans_done_p_o                    : out std_logic;
     lmt_rst_i                                 : in std_logic;
 
     -- Current channel selection ID
-    lmt_curr_chan_id_i                        : in unsigned(4 downto 0);
-    -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0); -- t_fc_pkt
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the post trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            : in unsigned(c_shots_size_width-1 downto 0);
+    lmt_shots_nb_i                            : in unsigned(15 downto 0);
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
     lmt_valid_i                               : in std_logic;
 
