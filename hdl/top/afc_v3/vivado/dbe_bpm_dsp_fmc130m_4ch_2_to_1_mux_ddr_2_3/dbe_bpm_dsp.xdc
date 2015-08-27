@@ -1026,6 +1026,9 @@ set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_cloc
 set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks clk_userclk2] 8.000
 set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 8.000
 
+# Wishbone Acqsuisition registers
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/cmp_acq_fc_fifo/lmt_*_pkt*/C}] -to [get_pins {*/*/*/cmp_acq_fc_fifo/cmp_acq_cnt/pkt_ct_cnt_reg*/CE}] 8.000
+
 #######################################################################
 ##                      Placement Constraints                        ##
 #######################################################################
