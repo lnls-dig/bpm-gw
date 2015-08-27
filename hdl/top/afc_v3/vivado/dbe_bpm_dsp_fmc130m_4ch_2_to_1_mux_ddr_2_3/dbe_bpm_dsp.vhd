@@ -463,6 +463,7 @@ architecture rtl of dbe_bpm_dsp is
 
   signal wb_ma_pcie_rst                     : std_logic;
   signal wb_ma_pcie_rstn                    : std_logic;
+  signal wb_ma_pcie_rstn_sync               : std_logic;
 
   signal wb_ma_sladp_pcie_ack_in            : std_logic;
   signal wb_ma_sladp_pcie_dat_in            : std_logic_vector(31 downto 0);
@@ -1078,7 +1079,7 @@ begin
   clk_sys_pcie_rst                          <= not clk_sys_pcie_rstn;
   -- Reset for all other modules
   clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
-                                                  rs232_rstn and wb_ma_pcie_rstn;
+                                                  rs232_rstn and wb_ma_pcie_rstn_sync;
   clk_sys_rst                               <= not clk_sys_rstn;
   -- Reset synchronous to clk200mhz
   clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
@@ -1244,6 +1245,14 @@ begin
   );
 
   wb_ma_pcie_rstn                             <= not wb_ma_pcie_rst;
+
+  cmp_pcie_reset_synch : reset_synch
+  port map
+  (
+    clk_i                                    => clk_sys,
+    arst_n_i                                 => wb_ma_pcie_rstn,
+    rst_n_o                                  => wb_ma_pcie_rstn_sync
+  );
 
   ----------------------------------
   --         RS232 Core            --
