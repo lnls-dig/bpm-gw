@@ -695,7 +695,7 @@ begin
     -- Number of shots in this acquisition
     lmt_shots_nb_i                          => lmt_shots_nb,
     --lmt_valid_i                             => lmt_valid,
-    lmt_valid_i                             => acq_start_sync_ext,
+    lmt_valid_i                             => acq_start_sync_fs,
 
     fifo_fc_all_trans_done_p_o              => fifo_fc_all_trans_done_p,
     -- Asserted when the Acquisition FIFO is full. Data is lost when this signal is
