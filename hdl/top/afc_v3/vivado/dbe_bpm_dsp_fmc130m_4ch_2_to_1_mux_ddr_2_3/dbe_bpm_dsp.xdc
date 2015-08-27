@@ -881,6 +881,10 @@ set_input_jitter fmc2_adc3_clk_i 0.050
 
 # Reset synchronization path
 set_false_path -through [get_nets cmp_reset/master_rstn]
+# This reset is synched with PCIe user_clk but we decouple it with a 
+# chain of FFs synched with clk_sys. We use asynchronous assertion and
+# synchronous deassertion
+set_false_path -through [get_nets cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/Memory_Space/wb_FIFO_Rst_i0]
 # DDR 3 temperature monitor reset path
 set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
