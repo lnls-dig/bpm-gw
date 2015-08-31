@@ -503,7 +503,9 @@ begin
     acq_val_high_i                          => acq_val_high_i,
     acq_dvalid_i                            => acq_dvalid_i,
     acq_trig_i                              => acq_trig_i,
-    acq_curr_chan_id_i                      => lmt_curr_chan_id,
+
+    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+    lmt_valid_i                             => acq_start_sync_fs,
 
     -----------------------------
     -- Output Interface.

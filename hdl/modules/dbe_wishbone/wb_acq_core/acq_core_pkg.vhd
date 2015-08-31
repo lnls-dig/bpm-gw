@@ -155,7 +155,11 @@ package acq_core_pkg is
     acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
     acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
-    acq_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Acquisition limits valid signal
+    lmt_valid_i                               : in std_logic;
 
     -----------------------------
     -- Output Interface.
