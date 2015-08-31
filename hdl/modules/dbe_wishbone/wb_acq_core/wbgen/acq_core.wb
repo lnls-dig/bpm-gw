@@ -234,6 +234,32 @@ peripheral {
   };
 
   reg {
+    name = "Trigger data config threshold";
+    prefix = "trig_data_cfg";
+
+    field {
+      name = "Internal trigger threshold glitch filter";
+      description = "Configures the internal trigger threshold glitch filter length.";
+      prefix = "thres_filt";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 24;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
     name = "Trigger data threshold";
     prefix = "trig_data_thres";
 
