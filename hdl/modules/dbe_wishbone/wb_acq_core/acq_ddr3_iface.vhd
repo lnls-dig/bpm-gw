@@ -456,7 +456,7 @@ begin
           ddr_trig_addr <= unsigned(wr_init_addr_alig);
           ddr_trig_captured <= '0';
         -- Store DDR address if there was a trigger occurrence
-        elsif ddr_trigger_in = '1' or
+        elsif (ddr_trigger_in = '1' and ddr_valid_in = '1') or
             -- We have transfered all samples, but no trigger occurred
             (cnt_all_trans_done_p = '1' and ddr_trig_captured = '0') then
           ddr_trig_addr <= ddr_addr_cnt;
