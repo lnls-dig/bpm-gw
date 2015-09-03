@@ -505,7 +505,7 @@ begin
     acq_trig_i                              => acq_trig_i,
 
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    lmt_valid_i                             => acq_start_sync_fs,
+    lmt_valid_i                             => acq_start,
 
     -----------------------------
     -- Output Interface.
@@ -697,7 +697,7 @@ begin
     -- Number of shots in this acquisition
     lmt_shots_nb_i                          => lmt_shots_nb,
     --lmt_valid_i                             => lmt_valid,
-    lmt_valid_i                             => acq_start_sync_fs,
+    lmt_valid_i                             => acq_start,
 
     fifo_fc_all_trans_done_p_o              => fifo_fc_all_trans_done_p,
     -- Asserted when the Acquisition FIFO is full. Data is lost when this signal is
