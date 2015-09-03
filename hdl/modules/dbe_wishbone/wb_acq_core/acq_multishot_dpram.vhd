@@ -117,11 +117,7 @@ begin
         end if;
 
         if acq_post_trig_done_i = '1' then
-          if post_trig_samples_i = to_unsigned(0, post_trig_samples_i'length) then
-            dpram_addra_post_done <= dpram_addra_cnt - 1;
-          else
-            dpram_addra_post_done <= dpram_addra_cnt;
-          end if;
+          dpram_addra_post_done <= dpram_addra_cnt - 1;
         end if;
 
       end if;
