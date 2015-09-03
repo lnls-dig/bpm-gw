@@ -209,29 +209,6 @@ architecture rtl of wb_acq_core is
   signal p2l_pulse_synched                  : std_logic_vector(c_p2l_num_inputs-1 downto 0);
   signal p2l_level_synched                  : std_logic_vector(c_p2l_num_inputs-1 downto 0);
 
-  -- Trigger
-  signal ext_trig_a                         : std_logic;
-  signal ext_trig                           : std_logic;
-  signal int_trig                           : std_logic;
-  signal int_trig_over_thres                : std_logic;
-  signal int_trig_over_thres_d              : std_logic;
-  signal int_trig_sel                       : std_logic_vector(1 downto 0);
-  signal int_trig_data                      : std_logic_vector(15 downto 0);
-  signal int_trig_thres                     : std_logic_vector(15 downto 0);
-  signal hw_trig_pol                        : std_logic;
-  signal hw_trig                            : std_logic;
-  signal hw_trig_t                          : std_logic;
-  signal hw_trig_sel                        : std_logic;
-  signal hw_trig_en                         : std_logic;
-  signal sw_trig                            : std_logic;
-  signal sw_trig_t                          : std_logic;
-  signal sw_trig_en                         : std_logic;
-  signal trig                               : std_logic;
-  signal trig_delay                         : std_logic_vector(31 downto 0);
-  signal trig_delay_cnt                     : unsigned(31 downto 0);
-  signal trig_d                             : std_logic;
-  signal trig_align                         : std_logic;
-
   ---- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
   signal acq_fsm_req_rst                    : std_logic;
@@ -241,7 +218,6 @@ architecture rtl of wb_acq_core is
   signal acq_now                            : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_end                            : std_logic;
-  signal acq_trig_sw                        : std_logic;
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
@@ -250,10 +226,20 @@ architecture rtl of wb_acq_core is
   signal acq_trig_in                        : std_logic;
   signal acq_trig                           : std_logic;
   signal acq_trig_det                       : std_logic;
-  signal acq_trig_in_or                     : std_logic;
   signal acq_dvalid_in                      : std_logic;
   signal acq_valid                          : std_logic;
   signal samples_wr_en                      : std_logic;
+
+  -- ACQ trigger registers
+  signal acq_trig_hw_sel                    : std_logic;
+  signal acq_trig_hw_pol                    : std_logic;
+  signal acq_trig_hw_en                     : std_logic;
+  signal acq_trig_sw                        : std_logic;
+  signal acq_trig_sw_en                     : std_logic;
+  signal acq_trig_dly                       : std_logic_vector(31 downto 0);
+  signal acq_trig_int_sw_sel                : std_logic_vector(1 downto 0);
+  signal acq_trig_int_thres                 : std_logic_vector(31 downto 0);
+  signal acq_trig_int_thres_filt            : std_logic_vector(7 downto 0);
 
   -- Pre/Post trigger and shots counters
   signal pre_trig_samples_c                 : unsigned(c_acq_samples_size-1 downto 0);
@@ -468,7 +454,15 @@ begin
   acq_stop                                  <= regs_out.ctl_fsm_stop_acq_o; -- 1 fs_clk cycle pulse
   acq_now                                   <= regs_out.ctl_fsm_acq_now_o;
 
+  acq_trig_hw_sel                           <= regs_out.trig_cfg_hw_trig_sel_o;
+  acq_trig_hw_pol                           <= regs_out.trig_cfg_hw_trig_pol_o;
+  acq_trig_hw_en                            <= regs_out.trig_cfg_hw_trig_en_o;
   acq_trig_sw                               <= regs_out.sw_trig_wr_o;
+  acq_trig_sw_en                            <= regs_out.trig_cfg_sw_trig_en_o;
+  acq_trig_int_sw_sel                       <= regs_out.trig_cfg_int_trig_sel_o;
+  acq_trig_dly                              <= regs_out.trig_dly_o;
+  acq_trig_int_thres                        <= regs_out.trig_data_thres_o;
+  acq_trig_int_thres_filt                   <= regs_out.trig_data_cfg_thres_filt_o;
 
   regs_in.sta_fsm_state_i                   <= acq_fsm_state;
   regs_in.sta_fsm_acq_done_i                <= acq_end;
@@ -515,15 +509,14 @@ begin
     acq_trig_o                              => acq_trig_in
   );
 
-  acq_trig_in_or <= acq_trig_in or acq_trig_sw;
-
   -----------------------------------------------------------------------------
   -- Acquisition Trigger Logic and Tagging
   -----------------------------------------------------------------------------
   cmp_acq_trig : acq_trigger
   generic map
   (
-    g_data_in_width                         => c_acq_data_width
+    g_data_in_width                         => c_acq_data_width,
+    g_acq_channels                          => g_acq_channels
   )
   port map
   (
@@ -531,9 +524,22 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n_i,
 
+    cfg_hw_trig_sel_i                       => acq_trig_hw_sel,
+    cfg_hw_trig_pol_i                       => acq_trig_hw_pol,
+    cfg_hw_trig_en_i                        => acq_trig_hw_en,
+    cfg_sw_trig_t_i                         => acq_trig_sw,
+    cfg_sw_trig_en_i                        => acq_trig_sw_en,
+    cfg_trig_dly_i                          => acq_trig_dly,
+    cfg_int_trig_sel_i                      => acq_trig_int_sw_sel,
+    cfg_int_trig_thres_i                    => acq_trig_int_thres,
+    cfg_int_trig_thres_filt_i               => acq_trig_int_thres_filt,
+
     acq_data_i                              => acq_data_marsh(c_acq_data_width-1 downto 0),
     acq_valid_i                             => acq_dvalid_in,
-    acq_trig_i                              => acq_trig_in_or,
+    acq_trig_i                              => acq_trig_in,
+
+    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+    lmt_valid_i                             => acq_start,
 
     acq_data_o                              => acq_data,
     acq_valid_o                             => acq_valid,

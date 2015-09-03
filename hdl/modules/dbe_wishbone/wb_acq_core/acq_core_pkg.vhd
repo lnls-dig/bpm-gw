@@ -25,6 +25,12 @@ package acq_core_pkg is
   constant c_acq_chan_max_w                 : natural := 2*c_acq_chan_width;
   constant c_acq_chan_max_w_log2            : natural := f_log2_size(c_acq_chan_max_w)+1;
 
+  constant c_acq_num_atoms_width            : natural := 32;
+  constant c_acq_num_atoms_width_log2       : natural := f_log2_size(c_acq_num_atoms_width)+1;
+
+  constant c_acq_atom_width                 : natural := c_acq_chan_max_w;
+  constant c_acq_atom_width_log2            : natural := f_log2_size(c_acq_atom_width)+1;
+
   constant c_ddr3_ui_diff_threshold         : natural := 3;
 
   -- ADC + TBT + FOFB + MONIT + MONIT_1
@@ -46,9 +52,25 @@ package acq_core_pkg is
   subtype t_payld_ratio is integer range 0 to c_max_payload_ratio;
   type t_payld_ratio_array is array (natural range <>) of t_payld_ratio;
 
+  subtype t_acq_width is unsigned(c_acq_chan_max_w_log2-1 downto 0);
+  type t_acq_width_array is array (natural range <>) of t_acq_width;
+
+  subtype t_acq_num_atoms is unsigned(c_acq_num_atoms_width_log2-1 downto 0);
+  type t_acq_num_atoms_array is array (natural range <>) of t_acq_num_atoms;
+
+  subtype t_acq_atom_width is unsigned(c_acq_atom_width_log2-1 downto 0);
+  type t_acq_atom_width_array is array (natural range <>) of t_acq_atom_width;
+
+  subtype t_property_value is natural;
+  type t_property_value_array is array (natural range <>) of t_property_value;
+
+  type t_acq_chan_property is (WIDTH, NUM_ATOMS, ATOM_WIDTH);
+
   -- Parameters for acquisition core channels. Max of 128-bit in width
   type t_acq_chan_param is record
-    width : unsigned(c_acq_chan_max_w_log2-1 downto 0);
+    width : t_acq_width;
+    num_atoms : t_acq_num_atoms;
+    atom_width : t_acq_atom_width;
   end record;
 
   type t_acq_chan_param_array is array (natural range <>) of t_acq_chan_param;
@@ -84,13 +106,24 @@ package acq_core_pkg is
   type t_acq_chan_array is array (natural range <>) of t_acq_chan;
 
   constant c_default_acq_num_channels : natural := 5;
-  constant c_default_acq_chan_param : t_acq_chan_param := (width => to_unsigned(64, c_acq_chan_max_w_log2));
+  constant c_default_acq_chan_param64 : t_acq_chan_param := (
+                                                width => to_unsigned(64, c_acq_chan_max_w_log2),
+                                                num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                                                atom_width => to_unsigned(4, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                                                );
+  constant c_default_acq_chan_param128 : t_acq_chan_param := (
+                                                width => to_unsigned(128, c_acq_chan_max_w_log2),
+                                                num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                                                atom_width => to_unsigned(5, c_acq_atom_width_log2) -- 2^5 = 32-bit
+                                                );
+  constant c_default_acq_chan_param: t_acq_chan_param := c_default_acq_chan_param64;
   constant c_default_acq_chan_param_array : t_acq_chan_param_array(c_default_acq_num_channels-1 downto 0) :=
-                                              ( 0 => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
-                                                1 => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-                                                2 => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-                                                3 => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-                                                4 => (width => to_unsigned(128, c_acq_chan_max_w_log2))
+                                              (
+                                                0 => c_default_acq_chan_param64,
+                                                1 => c_default_acq_chan_param128,
+                                                2 => c_default_acq_chan_param128,
+                                                3 => c_default_acq_chan_param128,
+                                                4 => c_default_acq_chan_param128
                                               );
   constant c_default_acq_chan : t_acq_chan := (val_low => (others => '0'),
                                                  val_high => (others => '0'),
@@ -100,8 +133,12 @@ package acq_core_pkg is
   -----------------------------
   -- Functions declaration
   ----------------------------
+  function f_extract_property_array(acq_chan_param_array : t_acq_chan_param_array;
+      property : t_acq_chan_property)
+    return t_property_value_array;
+
   function f_acq_chan_find(acq_chan_param_array : t_acq_chan_param_array;
-                            find_widest : boolean)
+      find_widest : boolean; property : t_acq_chan_property)
     return natural;
 
   --Find the widest channel
@@ -110,6 +147,18 @@ package acq_core_pkg is
 
   --Find the narrowest channel
   function f_acq_chan_find_narrowest(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  function f_acq_chan_find_widest_atom(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  function f_acq_chan_find_narrowest_atom(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  function f_acq_chan_find_widest_num_atoms(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  function f_acq_chan_find_narrowest_num_atoms(acq_chan_param_array : t_acq_chan_param_array)
     return natural;
 
   function f_acq_chan_det_slice(acq_chan_param_array : t_acq_chan_param_array)
@@ -173,7 +222,9 @@ package acq_core_pkg is
   component acq_trigger
   generic
   (
-    g_data_in_width                           : natural := 128
+    g_data_in_width                           : natural := 128;
+    g_acq_num_channels                        : natural := 1;
+    g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
   );
   port
   (
@@ -181,10 +232,26 @@ package acq_core_pkg is
     fs_ce_i                                   : in std_logic;
     fs_rst_n_i                                : in std_logic;
 
+    -- Configuration trigger inputs
+    cfg_hw_trig_sel_i                         : in std_logic;
+    cfg_hw_trig_pol_i                         : in std_logic;
+    cfg_hw_trig_en_i                          : in std_logic;
+    cfg_sw_trig_t_i                           : in std_logic;
+    cfg_sw_trig_en_i                          : in std_logic;
+    cfg_trig_dly_i                            : in std_logic_vector(31 downto 0);
+    cfg_int_trig_sel_i                        : in std_logic_vector(1 downto 0);
+    cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
+    cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
+
     -- Acquisition input
     acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_i                               : in std_logic;
     acq_trig_i                                : in std_logic;
+
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Acquisition limits valid signal
+    lmt_valid_i                               : in std_logic;
 
     -- Acquisition data with data + metadata
     acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
@@ -729,41 +796,119 @@ end acq_core_pkg;
 
 package body acq_core_pkg is
 
+  function f_extract_property_array(acq_chan_param_array : t_acq_chan_param_array;
+      property : t_acq_chan_property)
+    return t_property_value_array
+  is
+    variable property_value_array : t_property_value_array(acq_chan_param_array'length-1 downto 0) :=
+        (others => 0);
+  begin
+    -- Generate arrays depending on the selected property
+    loop_property_array : for i in 0 to property_value_array'length-1 loop
+
+      case property is
+          when WIDTH =>
+              property_value_array(i) := to_integer(acq_chan_param_array(i).width);
+          when NUM_ATOMS =>
+              property_value_array(i) := to_integer(acq_chan_param_array(i).num_atoms);
+          when ATOM_WIDTH =>
+              property_value_array(i) := to_integer(acq_chan_param_array(i).atom_width);
+          when others =>
+            null;
+      end case;
+
+    end loop;
+
+    return property_value_array;
+
+  end;
+
   --Find the widest (find_widest = true) or narrowest (find_widest = false) channel
   function f_acq_chan_find(acq_chan_param_array : t_acq_chan_param_array;
-      find_widest : boolean)
+      find_widest : boolean; property : t_acq_chan_property)
     return natural
   is
-    variable acq_chan_param : t_acq_chan_param;
+    variable property_current_best : natural;
+    variable property_array : t_property_value_array(acq_chan_param_array'length-1 downto 0);
   begin
-    acq_chan_param := acq_chan_param_array(0);
 
-    for i in 1 to acq_chan_param_array'length-1 loop
+    -- Fill array with property values
+    property_array := f_extract_property_array(acq_chan_param_array, property);
+
+    -- Initialize current_best with the first element in the array
+    property_current_best := property_array(0);
+
+    -- Compare generated array to the current best and return the best overall
+    for i in 1 to property_array'length-1 loop
       -- Search for the widest
-      if (find_widest and acq_chan_param_array(i).width > acq_chan_param.width) or
+      if (find_widest and property_array(i) > property_current_best) or
          -- Search for the narrowest
-         (not find_widest and acq_chan_param_array(i).width < acq_chan_param.width) then
-        acq_chan_param := acq_chan_param_array(i);
+         (not find_widest and property_array(i) < property_current_best) then
+        property_current_best := property_array(i);
       end if;
     end loop;
 
-    return natural(to_integer(acq_chan_param.width));
+    return property_current_best;
   end;
 
   function f_acq_chan_find_widest(acq_chan_param_array : t_acq_chan_param_array)
     return natural
   is
     variable find_widest : boolean := true;
+    variable property_type : t_acq_chan_property;
   begin
-    return f_acq_chan_find(acq_chan_param_array, find_widest);
+    property_type := WIDTH;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
   end;
 
   function f_acq_chan_find_narrowest(acq_chan_param_array : t_acq_chan_param_array)
     return natural
   is
     variable find_narrowest : boolean := false;
+    variable property_type : t_acq_chan_property;
   begin
-    return f_acq_chan_find(acq_chan_param_array, find_narrowest);
+    property_type := WIDTH;
+    return f_acq_chan_find(acq_chan_param_array, find_narrowest, property_type);
+  end;
+
+  function f_acq_chan_find_widest_atom(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := true;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := ATOM_WIDTH;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
+  end;
+
+  function f_acq_chan_find_narrowest_atom(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := false;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := ATOM_WIDTH;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
+  end;
+
+  function f_acq_chan_find_widest_num_atoms(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := true;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := NUM_ATOMS;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
+  end;
+
+  function f_acq_chan_find_narrowest_num_atoms(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := false;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := NUM_ATOMS;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
   end;
 
   -- Determine which part of the vector is valid
