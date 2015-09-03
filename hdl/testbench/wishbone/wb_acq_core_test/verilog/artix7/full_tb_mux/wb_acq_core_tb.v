@@ -455,6 +455,12 @@ module wb_acq_core_tb;
   reg [c_n_shots_width-1:0] n_shots;
   reg [c_n_pre_samples_width-1:0] pre_trig_samples;
   reg [c_n_post_samples_width-1:0] post_trig_samples;
+  reg [1:0] hw_trig_sel;
+  reg hw_trig_en;
+  reg [32-1:0] hw_trig_dly;
+  reg [32-1:0] hw_int_trig_thres;
+  reg [7:0] hw_int_trig_thres_filt;
+  reg sw_trig_en;
   reg [32-1:0] ddr3_start_addr;
   reg [32-1:0] ddr3_end_addr;
   reg [16-1:0] acq_chan;
@@ -801,7 +807,8 @@ module wb_acq_core_tb;
     if (~adc_rstn) begin
       data_trig <= 1'b0;
     end else begin
-      if (test_in_progress_p) begin
+      // allow for retrigger in the same acquistion
+      if (test_in_progress) begin
         if (~data_trig) begin
           repeat(f_gen_lmt(min_wait_trig, max_wait_trig)) // waits between c_min_wait_trig and c_max_wait_trig
             @(posedge adc_clk);
@@ -812,7 +819,7 @@ module wb_acq_core_tb;
         end
       end
       else begin
-          data_trig <= 1'b0;
+        data_trig <= 1'b0;
       end
     end
   end
@@ -863,19 +870,19 @@ module wb_acq_core_tb;
   assign ui_app_rdy = ui_app_rdy_ddr & ui_app_gnt;
   assign ui_app_wdf_rdy = ui_app_wdf_rdy_ddr & ui_app_gnt;
 
-  // Test in progress pulse
-  always @(posedge adc_clk) begin
-    if (~adc_rstn) begin
-      test_in_progress_d0 <= 1'b0;
-      test_in_progress_d1 <= 1'b0;
-    end else begin
-      test_in_progress_d0 <= test_in_progress;
-      test_in_progress_d1 <= test_in_progress_d0;
-    end
-  end
+  //// Test in progress pulse
+  //always @(posedge adc_clk) begin
+  //  if (~adc_rstn) begin
+  //    test_in_progress_d0 <= 1'b0;
+  //    test_in_progress_d1 <= 1'b0;
+  //  end else begin
+  //    test_in_progress_d0 <= test_in_progress;
+  //    test_in_progress_d1 <= test_in_progress_d0;
+  //  end
+  //end
 
-  // Detect level and generate pulse
-  assign test_in_progress_p = test_in_progress_d0 & ~test_in_progress_d1;
+  //// Detect level and generate pulse
+  //assign test_in_progress_p = test_in_progress_d0 & ~test_in_progress_d1;
 
   //**************************************************************************//
   // Data readback checker instantiation
@@ -1387,9 +1394,17 @@ module wb_acq_core_tb;
     data_valid_prob = 1.0;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1416,9 +1431,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.7;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1446,9 +1469,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.7;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1476,9 +1507,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.5;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1506,9 +1545,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.7;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1536,9 +1583,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.6;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1566,9 +1621,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.6;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1596,9 +1659,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.6;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1626,9 +1697,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.6;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1656,9 +1735,17 @@ module wb_acq_core_tb;
     data_valid_prob = 1.0;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1691,9 +1778,17 @@ module wb_acq_core_tb;
     data_valid_prob = 1.0;
     min_wait_trig_l = 1000;
     max_wait_trig_l = 1200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1722,9 +1817,17 @@ module wb_acq_core_tb;
     data_valid_prob = 1.0;
     min_wait_trig_l = 1000;
     max_wait_trig_l = 1200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1753,9 +1856,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.6;
     min_wait_trig_l = 1000;
     max_wait_trig_l = 1200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1784,9 +1895,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.8;
     min_wait_trig_l = 1000;
     max_wait_trig_l = 1500;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -1794,7 +1913,7 @@ module wb_acq_core_tb;
 
     ////////////////////////
     // TEST #15
-    // Number of shots = 1
+    // Number of shots = 16
     // Pre trigger samples
     // Post trigger samples
     // With trigger
@@ -1815,9 +1934,17 @@ module wb_acq_core_tb;
     data_valid_prob = 0.7;
     min_wait_trig_l = 1000;
     max_wait_trig_l = 2000;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
                 pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
                 ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
                 wait_finish, stop_on_error, min_wait_gnt_l,
                 max_wait_gnt_l, min_wait_trig_l,
@@ -2007,6 +2134,12 @@ module wb_acq_core_tb;
     input [15:0] n_shots;
     input [31:0] pre_trig_samples;
     input [31:0] post_trig_samples;
+    input hw_trig_sel; // 0 is Data-driven trigger, 1 is External trigger
+    input hw_trig_en; // Data-driven trigger enable
+    input [31:0] hw_trig_dly;
+    input [31:0] hw_int_trig_thres;
+    input [7:0] hw_int_trig_thres_filt;
+    input sw_trig_en; // Software trigger enable
     input [31:0] ddr3_start_addr;
     input [31:0] ddr3_end_addr;
     input [15:0] acq_chan;
@@ -2021,6 +2154,8 @@ module wb_acq_core_tb;
     input real data_valid_prob;
 
     reg [31:0] acq_core_fsm_ctl_reg;
+    reg [31:0] acq_core_trig_cfg_reg;
+    reg [31:0] acq_core_trig_data_cfg;
   begin
     $display("#############################");
     $display("######## TEST #%03d ######", test_id);
@@ -2071,6 +2206,49 @@ module wb_acq_core_tb;
     WB0.write32(`ADDR_ACQ_CORE_POST_SAMPLES >> `WB_WORD_ACC, (post_trig_samples));
     WB1.write32(`ADDR_ACQ_CORE_POST_SAMPLES >> `WB_WORD_ACC, (post_trig_samples));
 
+    // Prepare CFG trigger register
+    acq_core_trig_cfg_reg = (hw_trig_sel) << `ACQ_CORE_TRIG_CFG_HW_TRIG_SEL_OFFSET;
+
+    $display("Selecting external HW trigger: %d", hw_trig_sel);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+
+    acq_core_trig_cfg_reg = (acq_core_trig_cfg_reg) | ((hw_trig_en) << `ACQ_CORE_TRIG_CFG_HW_TRIG_EN_OFFSET);
+
+    $display("Enabling HW trigger: %d", hw_trig_en);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+
+    // Prepare CFG trigger register
+    acq_core_trig_cfg_reg = (acq_core_trig_cfg_reg) | ((sw_trig_en) << `ACQ_CORE_TRIG_CFG_SW_TRIG_EN_OFFSET);
+
+    $display("Enabling SW trigger: %d", sw_trig_en);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_CFG >> `WB_WORD_ACC, acq_core_trig_cfg_reg);
+
+    // Prepare trigger delay register
+    $display("Setting trigger delay to %d", hw_trig_dly);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_DLY >> `WB_WORD_ACC, hw_trig_dly);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_DLY >> `WB_WORD_ACC, hw_trig_dly);
+
+    // Prepare HW trigger threshold
+    $display("Setting HW data threshold to %d", hw_int_trig_thres);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_DATA_THRES >> `WB_WORD_ACC, hw_int_trig_thres);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_DATA_THRES >> `WB_WORD_ACC, hw_int_trig_thres);
+
+    // Prepare HW trigger filter
+    acq_core_trig_data_cfg = (hw_int_trig_thres_filt << `ACQ_CORE_TRIG_DATA_CFG_THRES_FILT_OFFSET);
+
+    $display("Setting HW data filter to %d", hw_int_trig_thres_filt);
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ACQ_CORE_TRIG_DATA_CFG >> `WB_WORD_ACC, acq_core_trig_data_cfg);
+    WB1.write32(`ADDR_ACQ_CORE_TRIG_DATA_CFG >> `WB_WORD_ACC, acq_core_trig_data_cfg);
+
     // Prepare core_ctl register
     acq_core_fsm_ctl_reg = (skip_trig) << `ACQ_CORE_CTL_FSM_ACQ_NOW_OFFSET;
 
@@ -2079,12 +2257,16 @@ module wb_acq_core_tb;
     WB0.write32(`ADDR_ACQ_CORE_CTL >> `WB_WORD_ACC, acq_core_fsm_ctl_reg);
     WB1.write32(`ADDR_ACQ_CORE_CTL >> `WB_WORD_ACC, acq_core_fsm_ctl_reg);
 
-    $display("Setting DDR3 start address for the next acquistion %d", test_id);
+    $display("Setting DDR3 start address for the next acquistion \
+        WB0:0x%08X,WB1:0x%08X", ddr3_start_addr,
+        ddr3_start_addr + c_ddr3_acq1_addr_offset);
     @(posedge sys_clk);
     WB0.write32(`ADDR_ACQ_CORE_DDR3_START_ADDR >> `WB_WORD_ACC, ddr3_start_addr);
     WB1.write32(`ADDR_ACQ_CORE_DDR3_START_ADDR >> `WB_WORD_ACC, ddr3_start_addr + c_ddr3_acq1_addr_offset);
 
-    $display("Setting DDR3 end address for the next acquistion %d", test_id);
+    $display("Setting DDR3 end address for the next acquistion \
+        WB0:0x%08X,WB1:0x%08X", ddr3_end_addr,
+        ddr3_end_addr + c_ddr3_acq1_addr_offset);
     @(posedge sys_clk);
     WB0.write32(`ADDR_ACQ_CORE_DDR3_END_ADDR >> `WB_WORD_ACC, ddr3_end_addr);
     WB1.write32(`ADDR_ACQ_CORE_DDR3_END_ADDR >> `WB_WORD_ACC, ddr3_end_addr + c_ddr3_acq1_addr_offset);
@@ -2096,9 +2278,8 @@ module wb_acq_core_tb;
     WB1.write32(`ADDR_ACQ_CORE_ACQ_CHAN_CTL >> `WB_WORD_ACC,
               (acq_chan << `ACQ_CORE_ACQ_CHAN_CTL_WHICH_OFFSET) & `ACQ_CORE_ACQ_CHAN_CTL_WHICH);
 
-   // Prepare core_ctl register
-    acq_core_fsm_ctl_reg = acq_core_fsm_ctl_reg |
-                          (32'h00000001) << `ACQ_CORE_CTL_FSM_START_ACQ_OFFSET;
+    // Prepare core_ctl register
+    acq_core_fsm_ctl_reg = (acq_core_fsm_ctl_reg) | (`ACQ_CORE_CTL_FSM_START_ACQ);
 
     $display("Starting acquisition... ");
     @(posedge sys_clk);
@@ -2109,8 +2290,6 @@ module wb_acq_core_tb;
     if (wait_finish) begin
       $display("Waiting until all data have been acquired...\n");
       @(posedge sys_clk);
-      //wb_busy_wait(`ADDR_ACQ_CORE_STA >> `WB_WORD_ACC, `ACQ_CORE_STA_FC_TRANS_DONE,
-      //                `ACQ_CORE_STA_FC_TRANS_DONE_OFFSET, 1'b1);
       wb_busy_wait0(`ADDR_ACQ_CORE_STA >> `WB_WORD_ACC, `ACQ_CORE_STA_DDR3_TRANS_DONE,
                       `ACQ_CORE_STA_DDR3_TRANS_DONE_OFFSET, 1'b1);
     end
