@@ -1015,16 +1015,16 @@ set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
 
 # FIFO CDC timimng. Using faster clock period / 2
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks adc_clk_mmcm_out] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 4.000
 
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out_1] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks adc_clk_mmcm_out_1] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 4.000
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks clk_userclk2] 8.000
-set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 8.000
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks clk_userclk2] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 8.000
 
 # Wishbone Acqsuisition registers
 set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/cmp_acq_fc_fifo/lmt_*_pkt*/C}] -to [get_pins {*/*/*/cmp_acq_fc_fifo/cmp_acq_cnt/pkt_ct_cnt_reg*/CE}] 8.000
