@@ -436,7 +436,7 @@ peripheral {
       prefix = "which";
       type = SLV;
       size = 5;
-      clock = "ext_clk_i";
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
