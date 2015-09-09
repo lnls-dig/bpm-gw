@@ -1028,8 +1028,6 @@ set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of
 
 # Wishbone Acqsuisition registers
 set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*/lmt_*_pkt*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 8.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*/regs_o_reg[acq_chan_ctl_which_o]*/C}] -to [get_clocks adc_clk_mmcm_out] 8.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*/regs_o_reg[acq_chan_ctl_which_o]*/C}] -to [get_clocks adc_clk_mmcm_out_1] 8.000
 
 #######################################################################
 ##                      Placement Constraints                        ##
