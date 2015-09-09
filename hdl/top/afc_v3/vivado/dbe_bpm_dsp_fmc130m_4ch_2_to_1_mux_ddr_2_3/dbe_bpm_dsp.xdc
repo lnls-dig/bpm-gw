@@ -1027,7 +1027,10 @@ set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filt
 set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 8.000
 
 # Wishbone Acqsuisition registers
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*/lmt_*_pkt*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 8.000
+
+# This path is only valid after a synchronized start pulse.
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
 
 #######################################################################
 ##                      Placement Constraints                        ##
