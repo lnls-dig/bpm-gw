@@ -35,10 +35,10 @@ module wb_acq_core_tb;
   //localparam c_data_ext_stall_threshold = 0.3;
   localparam c_wait_acquisition_done = 128;
   localparam c_ddr3_acq1_addr_offset      = 'h01000000;
-  localparam c_ddr3_acq1_data_offset      = 'h00008000;
+  localparam c_ddr3_acq1_data_offset      = 'h00006000;
 
   //// DDR3 Parameters
-  parameter SIMULATION 	          = "TRUE";
+  parameter SIMULATION                    = "TRUE";
   //***************************************************************************
   // The following parameters refer to width of various ports
   //***************************************************************************
@@ -418,8 +418,8 @@ module wb_acq_core_tb;
   //localparam c_max_wait_gnt             = 128;
   localparam c_acq_num_channels         = 5;
   localparam [16-1:0] c_acq_channels[0:c_acq_num_channels-1] =
-	  '{c_n_width64, c_n_width128, c_n_width128,
-	  c_n_width128, c_n_width128};
+      '{c_n_width64, c_n_width128, c_n_width128,
+      c_n_width128, c_n_width128};
 
   // bpm acquisition parameters
   // Must be at least the size of the biggest acquisition size
@@ -525,7 +525,7 @@ module wb_acq_core_tb;
   reg                                       clk_ref_i;
 
   // External interface signals
-  wire [DDR3_PAYLOAD_WIDTH-1:0] 	   ext0_dout;
+  wire [DDR3_PAYLOAD_WIDTH-1:0]            ext0_dout;
   wire [ADDR_WIDTH-1:0]                    ext0_addr;
   wire                                     ext0_valid;
   wire                                     ext0_sof;
@@ -535,7 +535,7 @@ module wb_acq_core_tb;
   wire [ADDR_WIDTH-1:0]                    ext0_addr_conv;
   wire                                     ext0_valid_conv;
 
-  wire [DDR3_PAYLOAD_WIDTH-1:0] 	   ext1_dout;
+  wire [DDR3_PAYLOAD_WIDTH-1:0]            ext1_dout;
   wire [ADDR_WIDTH-1:0]                    ext1_addr;
   wire                                     ext1_valid;
   wire                                     ext1_sof;
@@ -553,9 +553,9 @@ module wb_acq_core_tb;
 
   wire                                      ui_app_wdf_wren;
   wire [DDR3_PAYLOAD_WIDTH-1:0]
-  					    ui_app_wdf_data;
+                        ui_app_wdf_data;
   wire [DDR3_PAYLOAD_WIDTH/8-1:0]
-  					    ui_app_wdf_mask;
+                        ui_app_wdf_mask;
   wire                                      ui_app_wdf_end;
   wire [ADDR_WIDTH-1:0]                     ui_app_addr;
   wire [2:0]                                ui_app_cmd;
@@ -565,7 +565,7 @@ module wb_acq_core_tb;
   wire                                      ui_app_rdy_ddr;
   wire                                      ui_app_wdf_rdy_ddr;
   wire [DDR3_PAYLOAD_WIDTH-1:0]
-  					    ui_app_rd_data;
+                        ui_app_rd_data;
   wire                                      ui_app_rd_data_end;
   wire                                      ui_app_rd_data_valid;
   wire                                      ui_clk_sync_rst;
@@ -583,7 +583,7 @@ module wb_acq_core_tb;
   wire                                      dbg_ddr_rb0_rdy;
   reg                                       dbg_ddr_rb0_rdy_d0;
   reg                                       dbg_ddr_rb0_rdy_d1;
-  reg 					    dbg_ddr_rb0_in_progress;
+  reg                       dbg_ddr_rb0_in_progress;
 
   wire [(BURST_MODE_INTEGER)*DATA_WIDTH-1:0] dbg_ddr_rb1_data;
   wire [ADDR_WIDTH-1:0]                     dbg_ddr_rb1_addr;
@@ -592,7 +592,7 @@ module wb_acq_core_tb;
   wire                                      dbg_ddr_rb1_rdy;
   reg                                       dbg_ddr_rb1_rdy_d0;
   reg                                       dbg_ddr_rb1_rdy_d1;
-  reg 					    dbg_ddr_rb1_in_progress;
+  reg                                       dbg_ddr_rb1_in_progress;
 
   wire                                      chk0_data_err;
   wire [16-1:0]                             chk0_data_err_cnt;
@@ -714,11 +714,11 @@ module wb_acq_core_tb;
                                              data_test_trig[1], data_test_trig[0]}),
 
     .acq1_val_low_i                         ({data_test_low[4] + c_ddr3_acq1_data_offset, data_test_low[3] + c_ddr3_acq1_data_offset,
-    						data_test_low[2] + c_ddr3_acq1_data_offset, data_test_low[1] + c_ddr3_acq1_data_offset,
-						data_test_low[0] + c_ddr3_acq1_data_offset}),
+                                                data_test_low[2] + c_ddr3_acq1_data_offset, data_test_low[1] + c_ddr3_acq1_data_offset,
+                                                data_test_low[0] + c_ddr3_acq1_data_offset}),
     .acq1_val_high_i                        ({data_test_high[4] + c_ddr3_acq1_data_offset, data_test_high[3] + c_ddr3_acq1_data_offset,
-    						data_test_high[2] + c_ddr3_acq1_data_offset, data_test_high[1] + c_ddr3_acq1_data_offset,
-						data_test_high[0] + c_ddr3_acq1_data_offset}),
+                                                data_test_high[2] + c_ddr3_acq1_data_offset, data_test_high[1] + c_ddr3_acq1_data_offset,
+                                                data_test_high[0] + c_ddr3_acq1_data_offset}),
     .acq1_dvalid_i                          ({data_test_dvalid[4], data_test_dvalid[3], data_test_dvalid[2],
                                              data_test_dvalid[1], data_test_dvalid[0]}),
     .acq1_trig_i                            ({data_test_trig[4], data_test_trig[3], data_test_trig[2],
@@ -1166,12 +1166,12 @@ module wb_acq_core_tb;
     .app_rd_data                            (ui_app_rd_data),
     .app_rd_data_end                        (ui_app_rd_data_end),
     .app_rd_data_valid                      (ui_app_rd_data_valid),
-    .app_sr_req           		    (1'b0),
-    .app_ref_req        		    (1'b0),
-    .app_zq_req         		    (1'b0),
+    .app_sr_req                             (1'b0),
+    .app_ref_req                            (1'b0),
+    .app_zq_req                             (1'b0),
     .ui_clk_sync_rst                        (ui_clk_sync_rst),
     .ui_clk                                 (ui_clk),
-    .init_calib_complete		    (ui_phy_init_done)
+    .init_calib_complete                    (ui_phy_init_done)
   );
 
   assign ui_clk_sync_rst_n = ~ui_clk_sync_rst;
