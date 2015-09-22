@@ -1950,6 +1950,44 @@ module wb_acq_core_tb;
                 max_wait_gnt_l, min_wait_trig_l,
                 max_wait_trig_l, data_valid_prob);
 
+    ////////////////////////
+    // TEST #16
+    // Number of shots = 1
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+
+    test_id = 16;
+    n_shots = 16'h0001;
+    pre_trig_samples = 32'h00000040;
+    post_trig_samples = 32'h00000040;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    ddr3_end_addr = 32'h00010000;
+    acq_chan = 16'd0;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
+    skip_trig = 1'b0;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 256;
+    max_wait_gnt_l = 512;
+    data_valid_prob = 0.7;
+    min_wait_trig_l = 100;
+    max_wait_trig_l = 200;
+    hw_trig_sel = 1'b0; // Data-driven trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h00000010;
+    hw_int_trig_thres_filt = 8'b00000001;
+    sw_trig_en = 1'b0;
+
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
+                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, min_wait_trig_l,
+                max_wait_trig_l, data_valid_prob);
+
     $display("Simulation Done!");
     $display("All Tests Passed!");
     $display("---------------------------------------------");
