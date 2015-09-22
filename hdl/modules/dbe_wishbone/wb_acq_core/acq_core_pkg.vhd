@@ -109,12 +109,12 @@ package acq_core_pkg is
   constant c_default_acq_chan_param64 : t_acq_chan_param := (
                                                 width => to_unsigned(64, c_acq_chan_max_w_log2),
                                                 num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
-                                                atom_width => to_unsigned(4, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                                                atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
                                                 );
   constant c_default_acq_chan_param128 : t_acq_chan_param := (
                                                 width => to_unsigned(128, c_acq_chan_max_w_log2),
                                                 num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
-                                                atom_width => to_unsigned(5, c_acq_atom_width_log2) -- 2^5 = 32-bit
+                                                atom_width => to_unsigned(32, c_acq_atom_width_log2) -- 2^5 = 32-bit
                                                 );
   constant c_default_acq_chan_param: t_acq_chan_param := c_default_acq_chan_param64;
   constant c_default_acq_chan_param_array : t_acq_chan_param_array(c_default_acq_num_channels-1 downto 0) :=
