@@ -472,7 +472,8 @@ begin
   regs_in.sta_reserved2_i                   <= "00" & dbg_source_pl_stall & dbg_source_pl_dreq &
                                                dbg_fifo_fc_valid_fwft & dbg_fifo_wr_full;
   regs_in.sta_ddr3_trans_done_i             <= ddr3_all_trans_done_l;
-  regs_in.sta_reserved3_i                   <= dbg_pkt_ct_cnt(14 downto 0);
+  regs_in.sta_reserved3_i                   <= f_gen_std_logic_vector(regs_in.sta_reserved3_i'length-
+                                                dbg_fifo_wr_count'length, '0') & dbg_fifo_wr_count;
   regs_in.trig_pos_i                        <= f_gen_std_logic_vector(regs_in.trig_pos_i'length-
                                                     ddr_trig_addr'length, '0') & ddr_trig_addr;
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
