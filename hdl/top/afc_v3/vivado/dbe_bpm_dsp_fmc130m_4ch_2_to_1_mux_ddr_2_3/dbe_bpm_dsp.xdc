@@ -1037,39 +1037,43 @@ set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_
 set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
 set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
 
+# Use Distributed RAM, as these FIFOs are small and sparse through the module
+set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/cmp_position_calc_cdc_fifo/mem_reg*}]
+
 #######################################################################
 ##                      Placement Constraints                        ##
 #######################################################################
 
-# Constrain the PCIe core elements placement, so that it won't fail
-# timing analysis.
-# Comment out because we use nonstandard GTP location
+### Constrain the PCIe core elements placement, so that it won't fail
+### timing analysis.
 create_pblock GRP_pcie_core
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i/*]
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i]
-resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
+resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y3:CLOCKREGION_X0Y4}
 ### Place the DMA design not far from PCIe core, otherwise it also breaks timing
-create_pblock GRP_tlpControl
-add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/*]
-add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl]
-resize_pblock [get_pblocks GRP_tlpControl] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y4}
+#create_pblock GRP_tlpControl
+#add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/*]
+#add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl]
+#resize_pblock [get_pblocks GRP_tlpControl] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y4}
+### Constraint DDR core
 #create_pblock GRP_ddr_core
 #add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/*]]
 #resize_pblock [get_pblocks GRP_ddr_core] -add {CLOCKREGION_X1Y0:CLOCKREGION_X1Y1}
 #create_pblock GRP_ddr_core_temp_mon
 #add_cells_to_pblock [get_pblocks GRP_ddr_core_temp_mon] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/temp_mon_enabled.u_tempmon/*]]
 #resize_pblock [get_pblocks GRP_ddr_core_temp_mon] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y3}
-## The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
+### The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
 #INST "cmp1_xwb_fmc130m_4ch/*" AREA_GROUP = "GRP_fmc1";
 #AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
 #INST "cmp2_xwb_fmc130m_4ch" AREA_GROUP = "GRP_fmc2";
 #AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
-create_pblock GRP_position_calc_core1
-add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -quiet [list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
-resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
-create_pblock GRP_position_calc_core2
-add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -quiet [list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
-resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+### Constraint Position Calc Cores 
+#create_pblock GRP_position_calc_core1
+#add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo1] [get_cells -quiet {list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
+#resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
+create_pblock GRP_position_calc_core_cdc_fifo2
+add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] [get_cells -quiet {list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
+resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y1:CLOCKREGION_X1Y1}
 
 #######################################################################
 ##                         CE Constraints                            ##
