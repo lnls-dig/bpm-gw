@@ -16,5 +16,8 @@ tmp/
 */implement/
 */simulation/
 */docs/
-ddr_core/user_design/constraints/
+axi_datamover_0/
+axi_interconnect/
+ddr_core/
+pcie_core/
 
