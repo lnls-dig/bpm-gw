@@ -1,18 +1,7 @@
-if (action == "synthesis"):
+files = ["ipcores_pkg.vhd"]
 
-    files = ["bram_x64.ngc",
-             "eb_fifo_counted_resized.ngc",
-             "mbuf_128x72.ngc",
-             "prime_FIFO_plain.ngc",
-             "sfifo_15x128.ngc"]
+modules = {"local" : ["pcie_core",
+                    "ddr_core",
+                    "axi_datamover_0",
+                    "axi_interconnect"]}
 
-else:
-
-    files = ["bram_x64.vhd",
-             "eb_fifo_counted_resized.vhd",
-             "mbuf_128x72.vhd",
-             "prime_FIFO_plain.vhd",
-             "sfifo_15x128.vhd"]
-
-modules = {"local" : ["pcie_core/source",
-                      "ddr_core/user_design"]}
