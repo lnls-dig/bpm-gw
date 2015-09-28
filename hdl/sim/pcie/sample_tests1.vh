@@ -103,7 +103,7 @@ join
 
   if (test_vars[0] == 1) begin
     $display("[%t] : TEST PASSED --- Finished transmission of PCI-Express TLPs", $realtime);
-    $display("Test Completed Successfully");
+    $display ("Test Completed Successfully");
   end
   else begin
     $display("[%t] : TEST FAILED --- Haven't Received All Expected TLPs", $realtime);
@@ -235,9 +235,10 @@ begin
                              begin
                                $display("[%t] : Test FAILED --- Data Error Mismatch, Write Data %x != Read Data %x",
                                     $realtime, {board.RP.tx_usrapp.DATA_STORE[3],board.RP.tx_usrapp.DATA_STORE[2],
-                                    board.RP.tx_usrapp.DATA_STORE[1],board.RP.tx_usrapp.DATA_STORE[0]},
-                                    board.RP.tx_usrapp.P_READ_DATA);
+                                     board.RP.tx_usrapp.DATA_STORE[1],board.RP.tx_usrapp.DATA_STORE[0]},
+                                     board.RP.tx_usrapp.P_READ_DATA);
                                test_failed_flag = 1;
+
                              end
                           else
                              begin
@@ -298,7 +299,6 @@ begin
                                    board.RP.tx_usrapp.DATA_STORE[2], board.RP.tx_usrapp.DATA_STORE[1],
                                    board.RP.tx_usrapp.DATA_STORE[0]}, board.RP.tx_usrapp.P_READ_DATA);
                                test_failed_flag = 1;
-
                              end
                           else
                              begin
@@ -321,6 +321,6 @@ begin
     $display("[%t] : Finished transmission of PCI-Express TLPs", $realtime);
     if (!test_failed_flag) begin 
        $display ("Test Completed Successfully");
-    end
+    end 
     $finish;
 end

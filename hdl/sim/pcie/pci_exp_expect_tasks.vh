@@ -48,8 +48,8 @@
 //
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
-// File       : pci_exp_expect_tasks.v
-// Version    : 1.8
+// File       : pci_exp_expect_tasks.vh
+// Version    : 3.1
 //--------------------------------------------------------------------------------
 
 `define EXPECT_CPLD_PAYLOAD board.RP.tx_usrapp.expect_cpld_payload

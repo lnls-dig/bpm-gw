@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pci_exp_usrapp_rx.v
-// Version    : 1.8
+// Version    : 3.1
 //--
 //--------------------------------------------------------------------------------
 
-`include "board_common.v"
+`include "board_common.vh"
 
 `define EXPECT_FINISH_CHECK board.RP.tx_usrapp.expect_finish_check
 module pci_exp_usrapp_rx #(
@@ -90,7 +90,7 @@ input                                      trn_reof_n;
 input                                      trn_rsrc_rdy_n;
 input                                      trn_rsrc_dsc_n;
 input                                      trn_rerrfwd_n;
-input  [6 : 0]                             trn_rbar_hit_n;
+input  [(7 - 1):0]                         trn_rbar_hit_n;
 
 input                                      trn_clk;
 input                                      trn_reset_n;

@@ -48,8 +48,8 @@
 //
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
-// File       : board_common.v
-// Version    : 1.8
+// File       : board_common.vh
+// Version    : 3.1
 //--
 //--------------------------------------------------------------------------------
 
@@ -83,5 +83,4 @@
 `define  PCI_EXP_MEM_WRITE64         7'b1100000
 `define  PCI_EXP_MSG_DATA            7'b1110xxx
 
-`define  TRN_RX_TIMEOUT              5000
-
+`define  TRN_RX_TIMEOUT              8000

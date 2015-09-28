@@ -49,19 +49,19 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : xilinx_pcie_2_1_rport_7x.v
-// Version    : 1.8
+// Version    : 3.1
 //
 //--------------------------------------------------------------------------------
 
 `timescale 1ns / 1ps
 
-`include "board_common.v"
+`include "board_common.vh"
 
 module xilinx_pcie_2_1_rport_7x # (
 
 
   parameter                       REF_CLK_FREQ = 0,                                   // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
-  parameter                       PCIE_EXT_CLK = "TRUE", // Use External Clocking Module
+  parameter                       PCIE_EXT_CLK = "FALSE", // Use External Clocking Module	//postsynthsim changes
   parameter                       PL_FAST_TRAIN = "FALSE",
   parameter                       ALLOW_X8_GEN2 = "FALSE",
   parameter                       C_DATA_WIDTH = 64,
@@ -69,7 +69,7 @@ module xilinx_pcie_2_1_rport_7x # (
   parameter                       KEEP_WIDTH = C_DATA_WIDTH / 8,
   parameter                       LINK_CAP_MAX_LINK_WIDTH = 6'h08,
   parameter                       DEVICE_ID = 16'h506F,
-  parameter                       LINK_CAP_MAX_LINK_SPEED = 4'h1,
+  parameter                       LINK_CAP_MAX_LINK_SPEED = 4'h2,
   parameter                       LINK_CTRL2_TARGET_LINK_SPEED = 4'h1,
   parameter                       DEV_CAP_MAX_PAYLOAD_SUPPORTED = 1,
   parameter                       USER_CLK_FREQ = 3,
@@ -192,66 +192,21 @@ module xilinx_pcie_2_1_rport_7x # (
   wire             [21:0]         m_axis_rx_tuser;
 
   // Wires used for external clocking connectivity
-  wire                                        PIPE_PCLK_IN;
-  wire                                        PIPE_RXUSRCLK_IN;
-  wire  [3:0]    PIPE_RXOUTCLK_IN;
-  wire                                        PIPE_DCLK_IN;
-  wire                                        PIPE_USERCLK1_IN;
-  wire                                        PIPE_USERCLK2_IN;
-  wire                                        PIPE_MMCM_LOCK_IN;
+  wire                                        pipe_pclk_in;
+  wire                                        pipe_rxusrclk_in;
+  wire  [3:0]    pipe_rxoutclk_in;
+  wire                                        pipe_dclk_in;
+  wire                                        pipe_userclk1_in;
+  wire                                        pipe_userclk2_in;
+  wire                                        pipe_mmcm_lock_in;
 
-  wire                                        PIPE_TXOUTCLK_OUT;
-  wire [3:0]     PIPE_RXOUTCLK_OUT;
-  wire [3:0]     PIPE_PCLK_SEL_OUT;
-  wire                                        PIPE_GEN3_OUT;
-  wire                                        PIPE_OOBCLK_IN;
+  wire                                        pipe_txoutclk_out;
+  wire [3:0]     pipe_rxoutclk_out;
+  wire [3:0]     pipe_pclk_sel_out;
+  wire                                        pipe_gen3_out;
+  wire                                        pipe_oobclk_in;
 
   assign trn_reset_n = !user_reset_out;
-
-  // Generate External Clock Module if External Clocking is selected
-  generate
-    if (PCIE_EXT_CLK == "TRUE") begin : ext_clk
-      localparam USER_CLK_FREQ = USER_CLK_FREQ;
-      localparam USER_CLK2_DIV2 = USER_CLK2_DIV2;
-      localparam USERCLK2_FREQ = (USER_CLK2_DIV2 == "TRUE") ? (USER_CLK_FREQ == 4) ? 3 : (USER_CLK_FREQ == 3) ? 2 : USER_CLK_FREQ
-                                                                                  : USER_CLK_FREQ;
-      //---------- PIPE Clock Module -------------------------------------------------
-      pcie_core_pipe_clock #
-      (
-        .PCIE_ASYNC_EN                   ("FALSE"),              // PCIe async enable
-        .PCIE_TXBUF_EN                   ("FALSE"),              // PCIe TX buffer enable for Gen1/Gen2 only
-        .PCIE_LANE                       (6'h04),     // PCIe number of lanes
-        .PCIE_LINK_SPEED               ( 2 ),
-        .PCIE_REFCLK_FREQ                (0),     // PCIe reference clock frequency
-        .PCIE_USERCLK1_FREQ              (USER_CLK_FREQ +1),     // PCIe user clock 1 frequency
-        .PCIE_USERCLK2_FREQ              (USERCLK2_FREQ +1),     // PCIe user clock 2 frequency
-        .PCIE_DEBUG_MODE                 ( 0 )
-      )
-      pipe_clock_i
-      (
-
-        //---------- Input -------------------------------------
-        .CLK_CLK                        ( sys_clk) ,
-        .CLK_TXOUTCLK                   ( PIPE_TXOUTCLK_OUT ),       // Reference clock from lane 0
-        .CLK_RXOUTCLK_IN                ( PIPE_RXOUTCLK_OUT ),
-        .CLK_RST_N                      ( 1'b1 ),
-        .CLK_PCLK_SEL                   ( PIPE_PCLK_SEL_OUT ),
-        .CLK_GEN3                       ( PIPE_GEN3_OUT ),
-
-        //---------- Output ------------------------------------
-        .CLK_PCLK                       ( PIPE_PCLK_IN ),
-        .CLK_RXUSRCLK                   ( PIPE_RXUSRCLK_IN ),
-        .CLK_RXOUTCLK_OUT               ( PIPE_RXOUTCLK_IN ),
-        .CLK_DCLK                       ( PIPE_DCLK_IN ),
-        .CLK_USERCLK1                   ( PIPE_USERCLK1_IN ),
-        .CLK_USERCLK2                   ( PIPE_USERCLK2_IN ),
-        .CLK_OOBCLK                     ( PIPE_OOBCLK_IN ),
-        .CLK_MMCM_LOCK                  ( PIPE_MMCM_LOCK_IN )
-
-      );
-    end
-  endgenerate
-
 
   // PCI-Express FPGA Endpoint Instance
 
@@ -290,19 +245,19 @@ module xilinx_pcie_2_1_rport_7x # (
     //----------------------------------------------------------------------------------------------------------------//
     // 2. Clocking Interface - For Partial Reconfig Support                                                           //
     //----------------------------------------------------------------------------------------------------------------//
-    .PIPE_PCLK_IN                              ( PIPE_PCLK_IN ),
-    .PIPE_RXUSRCLK_IN                          ( PIPE_RXUSRCLK_IN ),
-    .PIPE_RXOUTCLK_IN                          ( PIPE_RXOUTCLK_IN ),
-    .PIPE_DCLK_IN                              ( PIPE_DCLK_IN ),
-    .PIPE_USERCLK1_IN                          ( PIPE_USERCLK1_IN ),
-    .PIPE_USERCLK2_IN                          ( PIPE_USERCLK2_IN ),
-    .PIPE_OOBCLK_IN                            ( PIPE_OOBCLK_IN ),
-    .PIPE_MMCM_LOCK_IN                         ( PIPE_MMCM_LOCK_IN ),
+    .pipe_pclk_in                              ( pipe_pclk_in ),
+    .pipe_rxusrclk_in                          ( pipe_rxusrclk_in ),
+    .pipe_rxoutclk_in                          ( pipe_rxoutclk_in ),
+    .pipe_dclk_in                              ( pipe_dclk_in ),
+    .pipe_userclk1_in                          ( pipe_userclk1_in ),
+    .pipe_userclk2_in                          ( pipe_userclk2_in ),
+    .pipe_oobclk_in                            ( pipe_oobclk_in ),
+    .pipe_mmcm_lock_in                         ( pipe_mmcm_lock_in ),
 
-    .PIPE_TXOUTCLK_OUT                         ( PIPE_TXOUTCLK_OUT ),
-    .PIPE_RXOUTCLK_OUT                         ( PIPE_RXOUTCLK_OUT ),
-    .PIPE_PCLK_SEL_OUT                         ( PIPE_PCLK_SEL_OUT ),
-    .PIPE_GEN3_OUT                             ( PIPE_GEN3_OUT ),
+    .pipe_txoutclk_out                         ( pipe_txoutclk_out ),
+    .pipe_rxoutclk_out                         ( pipe_rxoutclk_out ),
+    .pipe_pclk_sel_out                         ( pipe_pclk_sel_out ),
+    .pipe_gen3_out                             ( pipe_gen3_out ),
 
     //----------------------------------------------------------------------------------------------------------------//
     // 3. AXI-S Interface                                                                                             //
@@ -333,8 +288,8 @@ module xilinx_pcie_2_1_rport_7x # (
     .m_axis_rx_tkeep                           ( m_axis_rx_tkeep ),
     .m_axis_rx_tlast                           ( m_axis_rx_tlast ),
     .m_axis_rx_tuser                           ( m_axis_rx_tuser ),
-    .rx_np_ok                                  ( ~trn_rnp_ok_n ),
-    .rx_np_req                                 ( 1'b0 ),
+    .rx_np_ok                                  ( 1'b1 ),
+    .rx_np_req                                 ( 1'b1 ),
 
     .fc_cpld                                   ( ),
     .fc_cplh                                   ( ),
@@ -506,6 +461,30 @@ module xilinx_pcie_2_1_rport_7x # (
 
     .cfg_vc_tcvc_map                           ( ),
 
+    //----------------------------------------------------------------------------------------------------------------//
+    // 8. System  (SYS) Interface                                                                                     //
+    //----------------------------------------------------------------------------------------------------------------//
+    .common_commands_in           (  4'b0 ), 
+    .pipe_rx_0_sigs               ( 25'b0 ), 
+    .pipe_rx_1_sigs               ( 25'b0 ), 
+    .pipe_rx_2_sigs               ( 25'b0 ), 
+    .pipe_rx_3_sigs               ( 25'b0 ), 
+    .pipe_rx_4_sigs               ( 25'b0 ), 
+    .pipe_rx_5_sigs               ( 25'b0 ), 
+    .pipe_rx_6_sigs               ( 25'b0 ), 
+    .pipe_rx_7_sigs               ( 25'b0 ), 
+                                                       
+    .common_commands_out          (  ), 
+    .pipe_tx_0_sigs               (  ), 
+    .pipe_tx_1_sigs               (  ), 
+    .pipe_tx_2_sigs               (  ), 
+    .pipe_tx_3_sigs               (  ), 
+    .pipe_tx_4_sigs               (  ), 
+    .pipe_tx_5_sigs               (  ), 
+    .pipe_tx_6_sigs               (  ), 
+    .pipe_tx_7_sigs               (  ), 
+
+    .pipe_mmcm_rst_n                           ( 1'b1 ),        // Async      | Async
     .sys_clk                                   ( sys_clk ),
     .sys_rst_n                                 ( sys_rst_n )
 
