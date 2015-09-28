@@ -881,7 +881,7 @@ set_input_jitter fmc2_adc3_clk_i 0.050
 
 # Reset synchronization path
 set_false_path -through [get_nets cmp_reset/master_rstn]
-# This reset is synched with PCIe user_clk but we decouple it with a 
+# This reset is synched with PCIe user_clk but we decouple it with a
 # chain of FFs synched with clk_sys. We use asynchronous assertion and
 # synchronous deassertion
 set_false_path -through [get_nets cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/Memory_Space/wb_FIFO_Rst_i0]
@@ -1015,27 +1015,27 @@ set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
 
 # FIFO CDC timimng. Using faster clock period / 2
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks adc_clk_mmcm_out] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 4.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_pll_i] 4.000
 
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks adc_clk_mmcm_out_1] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 4.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out_1] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks clk_pll_i] 4.000
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] -to [get_clocks clk_userclk2] 8.000
-set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks clk_userclk2] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks clk_pll_i] 8.000
 
 # Wishbone Acqsuisition registers
 
 # This path is only valid after a synchronized start pulse.
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
 
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
-set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks -of_objects [get_pins -hier -filter {NAME =~ */u_ddr_core/ui_clk}]] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
 
 #######################################################################
 ##                      Placement Constraints                        ##
