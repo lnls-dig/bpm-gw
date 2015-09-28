@@ -25,6 +25,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
+use IEEE.STD_LOGIC_MISC.all;
 
 library work;
 use work.abb64Package.all;
@@ -123,7 +124,23 @@ entity Regs_Group is
 
     -- Tx module reset
     Tx_Reset : out std_logic;
-
+    
+    -- DDR AXI resets & status
+    ddr_reset : out std_logic;
+    ddr_axi_reset : out std_logic;
+    ddr_s2mm_err : in std_logic;
+    ddr_mm2s_err : in std_logic;
+    ddr_s2mm_sts_tvalid : in STD_LOGIC;
+    ddr_s2mm_sts_tready : out STD_LOGIC := '1';
+    ddr_s2mm_sts_tdata : in STD_LOGIC_VECTOR(7 DOWNTO 0);
+    ddr_s2mm_sts_tkeep : in STD_LOGIC_VECTOR(0 DOWNTO 0);
+    ddr_s2mm_sts_tlast : in STD_LOGIC;
+    ddr_mm2s_sts_tvalid : in STD_LOGIC;
+    ddr_mm2s_sts_tready : out STD_LOGIC := '1';
+    ddr_mm2s_sts_tdata : in STD_LOGIC_VECTOR(7 DOWNTO 0);
+    ddr_mm2s_sts_tkeep : in STD_LOGIC_VECTOR(0 DOWNTO 0);
+    ddr_mm2s_sts_tlast : in STD_LOGIC;
+    
     -- to Interrupts Module
     Sys_IRQ : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -206,12 +223,8 @@ architecture Behavioral of Regs_Group is
   signal Reg_RdMuxer_Lo : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
 
   -- Event Buffer
-  signal wb_FIFO_Rst_i         : std_logic;
-  signal wb_FIFO_Rst_b1        : std_logic;
-  signal wb_FIFO_Rst_b2        : std_logic;
-  signal wb_FIFO_Rst_b3        : std_logic;
-  signal wb_FIFO_Rst_b4        : std_logic;
-  signal wb_FIFO_Rst_b5        : std_logic;
+  signal wb_FIFO_Rst_i   : std_logic;
+  signal wb_FIFO_Rst_dly : std_logic_vector(6 downto 0);
 
   -- Downstream DMA registers
   signal DMA_ds_PA_o_Hi           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -373,6 +386,7 @@ architecture Behavioral of Regs_Group is
 
   -- Tx module reset
   signal Tx_Reset_i : std_logic;
+  signal tx_reset_dly : std_logic_vector(5 downto 0);
 
 begin
 
@@ -444,8 +458,11 @@ begin
   Msg_Routing <= General_Control_i(C_GCR_MSG_ROUT_BIT_TOP downto C_GCR_MSG_ROUT_BIT_BOT);
 
   -- us_MWr_TLP_Param
-  us_MWr_Param_Vec <= General_Control_i(13 downto 8);
+  us_MWr_Param_Vec <= General_Control_i(C_GCR_MWR_PAR_BIT_TOP downto C_GCR_MWR_PAR_BIT_BOT);
 
+  --DDR resets
+  ddr_reset <= General_Control_i(C_GCR_DDR_RST_BIT);
+  ddr_axi_reset <= General_Control_i(C_GCR_DDR_AXIRST_BIT);
 
   -- -------------   Interrupt generator generation    ----------------------
   Gen_IG : if IMP_INT_GENERATOR generate
@@ -460,33 +477,32 @@ begin
 -- -----------------------------------------------
 -- Synchronous Registered: IG_Control_i
     SysReg_IntGen_Control :
-    process (user_clk, user_lnk_up)
+    process (user_clk)
     begin
-      if user_lnk_up = '0' then
-        IG_Control_i    <= (others => '0');
-        IG_Reset_i      <= '1';
-        IG_Host_Clear_i <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if Regs_WrEn_r2 = '1'
-          and Reg_WrMuxer_Hi(CINT_ADDR_IG_CONTROL) = '1'
-        then
-          IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-          IG_Reset_i                  <= Command_is_Reset_Hi;
-          IG_Host_Clear_i             <= Command_is_Host_iClr_Hi;
-        elsif Regs_WrEn_r2 = '1'
-          and Reg_WrMuxer_Lo(CINT_ADDR_IG_CONTROL) = '1'
-        then
-          IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-          IG_Reset_i                  <= Command_is_Reset_Lo;
-          IG_Host_Clear_i             <= Command_is_Host_iClr_Lo;
-        else
-          IG_Control_i    <= IG_Control_i;
-          IG_Reset_i      <= '0';
+      if rising_edge(user_clk) then
+        if user_lnk_up = '0' then
+          IG_Control_i    <= (others => '0');
+          IG_Reset_i      <= '1';
           IG_Host_Clear_i <= '0';
+        else
+          if Regs_WrEn_r2 = '1'
+            and Reg_WrMuxer_Hi(CINT_ADDR_IG_CONTROL) = '1'
+          then
+            IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+            IG_Reset_i                  <= Command_is_Reset_Hi;
+            IG_Host_Clear_i             <= Command_is_Host_iClr_Hi;
+          elsif Regs_WrEn_r2 = '1'
+            and Reg_WrMuxer_Lo(CINT_ADDR_IG_CONTROL) = '1'
+          then
+            IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+            IG_Reset_i                  <= Command_is_Reset_Lo;
+            IG_Host_Clear_i             <= Command_is_Host_iClr_Lo;
+          else
+            IG_Control_i    <= IG_Control_i;
+            IG_Reset_i      <= '0';
+            IG_Host_Clear_i <= '0';
+          end if;
         end if;
-
       end if;
     end process;
 
@@ -498,7 +514,7 @@ begin
       if user_lnk_up = '0' then
         IG_Latency_i <= (others => '0');
 
-      elsif user_clk'event and user_clk = '1' then
+      elsif rising_edge(user_clk) then
 
         if IG_Reset_i = '1' then
           IG_Latency_i <= (others => '0');
@@ -543,7 +559,7 @@ begin
     if user_lnk_up = '0' then
       Sys_IRQ_i <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       Sys_IRQ_i(C_NUM_OF_INTERRUPTS-1 downto 0)
  <= Sys_Int_Enable_i(C_NUM_OF_INTERRUPTS-1 downto 0)
         and Sys_Int_Status_i(C_NUM_OF_INTERRUPTS-1 downto 0);
@@ -571,7 +587,7 @@ begin
   Synch_Delay_Regs_WrEn :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       Regs_WrEn_r1 <= Regs_WrEnA or Regs_WrEnB;
       Regs_WrEn_r2 <= Regs_WrEn_r1;
 
@@ -590,7 +606,7 @@ begin
   Synch_Delay_Regs_WrAddr :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       Regs_WrAddr_r1 <= Regs_WrAddr_i;
       Regs_WrMask_r1 <= Regs_WrMask_i;
     end if;
@@ -604,7 +620,7 @@ begin
   Synch_Delay_DMA_Start2 :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       dsDMA_Start2_r1 <= dsDMA_Start2_i and not dsDMA_Cmd_Ack;
       usDMA_Start2_r1 <= usDMA_Start2_i and not usDMA_Cmd_Ack;
     end if;
@@ -617,7 +633,7 @@ begin
   Synch_Delay_Regs_WrDin :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       Regs_WrDin_r1 <= Regs_WrDin_i;
       Regs_WrDin_r2 <= Regs_WrDin_r1;
 
@@ -684,7 +700,7 @@ begin
   Synch_Delay_dmaCmd_Wr_Valid_and_End :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       Regs_Wr_dma_V_hi_r2 <= Regs_WrEn_r1
                              and Regs_WrDin_r1(CINT_BIT_DMA_CTRL_VALID+32);
       Regs_Wr_dma_nV_hi_r2 <= Regs_WrEn_r1
@@ -710,7 +726,7 @@ begin
   Synch_Delay_Regs_WrDin_Hi19b_and_Lo7b_True :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
 
       if Regs_WrDin_r1(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1+32)
          = C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1+32)
@@ -756,7 +772,7 @@ begin
       Reg_WrMuxer_Hi <= (others => '0');
       Reg_WrMuxer_Lo <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
         -- and
@@ -806,7 +822,7 @@ begin
   begin
     if user_lnk_up = '0' then
       Sys_Int_Enable_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEn_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_IRQ_EN) = '1'
@@ -833,7 +849,7 @@ begin
   begin
     if user_lnk_up = '0' then
       sdram_pg_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEn_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
@@ -860,7 +876,7 @@ begin
   begin
     if user_lnk_up = '0' then
       wb_pg_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEn_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_WB_PG) = '1'
@@ -887,10 +903,10 @@ begin
     if user_lnk_up = '0' then
       General_Control_i <= (others => '0');
       General_Control_i(C_GCR_MSG_ROUT_BIT_TOP downto C_GCR_MSG_ROUT_BIT_BOT)
- <= C_TYPE_OF_MSG(C_TLP_TYPE_BIT_BOT+C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT
+        <= C_TYPE_OF_MSG(C_TLP_TYPE_BIT_BOT+C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT
                          downto C_TLP_TYPE_BIT_BOT);
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEn_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_CONTROL) = '1'
@@ -917,7 +933,7 @@ begin
       IG_Reset_i      <= '1';
       IG_Host_Clear_i <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEn_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_IG_CONTROL) = '1'
@@ -948,7 +964,7 @@ begin
     if user_lnk_up = '0' then
       IG_Latency_i <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if IG_Reset_i = '1' then
         IG_Latency_i <= (others => '0');
@@ -978,7 +994,7 @@ begin
   begin
     if user_lnk_up = '0' then
       DMA_us_PA_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         DMA_us_PA_i <= (others => '0');
@@ -1014,7 +1030,7 @@ begin
       DMA_us_HA_i   <= (others => '1');
       usHA_is_64b_i <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         DMA_us_HA_i   <= (others => '1');
@@ -1053,7 +1069,7 @@ begin
     if user_lnk_up = '0' then
       DMA_us_BDA_i   <= (others => '0');
       usBDA_is_64b_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         DMA_us_BDA_i   <= (others => '0');
@@ -1093,7 +1109,7 @@ begin
       DMA_us_Length_i     <= (others => '0');
       usLeng_Hi19b_True_i <= '0';
       usLeng_Lo7b_True_i  <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         DMA_us_Length_i     <= (others => '0');
@@ -1126,7 +1142,7 @@ begin
     if user_lnk_up = '0' then
       us_Param_Modified <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1'
         or usDMA_Start_i = '1'
@@ -1165,7 +1181,7 @@ begin
   begin
     if user_lnk_up = '0' then
       DMA_us_Control_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_Wr_dma_V_nE_Hi_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
@@ -1207,7 +1223,7 @@ begin
   begin
     if user_lnk_up = '0' then
       Last_Ctrl_Word_us <= C_DEF_DMA_CTRL_WORD;
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         Last_Ctrl_Word_us <= C_DEF_DMA_CTRL_WORD;
@@ -1258,7 +1274,7 @@ begin
     if user_lnk_up = '0' then
       usDMA_Start_i <= '0';
       usDMA_Stop_i  <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEnA_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
@@ -1314,7 +1330,7 @@ begin
     if user_lnk_up = '0' then
       usDMA_Start2_i <= '0';
       usDMA_Stop2_i  <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         usDMA_Start2_i <= '0';
@@ -1365,7 +1381,7 @@ begin
   begin
     if user_lnk_up = '0' then
       DMA_ds_PA_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         DMA_ds_PA_i <= (others => '0');
@@ -1400,7 +1416,7 @@ begin
     if user_lnk_up = '0' then
       DMA_ds_HA_i   <= (others => '1');
       dsHA_is_64b_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         DMA_ds_HA_i   <= (others => '1');
@@ -1439,7 +1455,7 @@ begin
     if user_lnk_up = '0' then
       DMA_ds_BDA_i   <= (others => '0');
       dsBDA_is_64b_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         DMA_ds_BDA_i   <= (others => '0');
@@ -1477,7 +1493,7 @@ begin
       DMA_ds_Length_i     <= (others => '0');
       dsLeng_Hi19b_True_i <= '0';
       dsLeng_Lo7b_True_i  <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         DMA_ds_Length_i     <= (others => '0');
@@ -1510,7 +1526,7 @@ begin
     if user_lnk_up = '0' then
       ds_Param_Modified <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1'
         or dsDMA_Start_i = '1'
@@ -1552,7 +1568,7 @@ begin
     if user_lnk_up = '0' then
       DMA_ds_Control_i <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_Wr_dma_V_nE_Hi_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
@@ -1589,7 +1605,7 @@ begin
   begin
     if user_lnk_up = '0' then
       Last_Ctrl_Word_ds <= C_DEF_DMA_CTRL_WORD;
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         Last_Ctrl_Word_ds <= C_DEF_DMA_CTRL_WORD;
@@ -1625,7 +1641,7 @@ begin
       dsDMA_Start_i <= '0';
       dsDMA_Stop_i  <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Regs_WrEnA_r2 = '1'
         and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
@@ -1675,7 +1691,7 @@ begin
       dsDMA_Start2_i <= '0';
       dsDMA_Stop2_i  <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         dsDMA_Start2_i <= '0';
@@ -1729,7 +1745,7 @@ begin
       Command_is_Reset_Hi <= '0';
       Command_is_Reset_Lo <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_CHANNEL_RST_BITS then
         Command_is_Reset_Hi <= '1';
       else
@@ -1754,7 +1770,7 @@ begin
       Command_is_Host_iClr_Hi <= '0';
       Command_is_Host_iClr_Lo <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_HOST_ICLR_BITS then
         Command_is_Host_iClr_Hi <= '1';
       else
@@ -1777,7 +1793,7 @@ begin
   begin
     if user_lnk_up = '0' then
       usDMA_Channel_Rst_i <= '1';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       usDMA_Channel_Rst_i <= (Regs_Wr_dma_V_Hi_r2
                               and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL)
@@ -1800,7 +1816,7 @@ begin
   begin
     if user_lnk_up = '0' then
       dsDMA_Channel_Rst_i <= '1';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       dsDMA_Channel_Rst_i <= (Regs_Wr_dma_V_Hi_r2
                               and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL)
@@ -1824,7 +1840,7 @@ begin
   begin
     if user_lnk_up = '0' then
       MRd_Channel_Rst_i <= '1';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       MRd_Channel_Rst_i <= Regs_WrEn_r2
                            and (
@@ -1845,13 +1861,13 @@ begin
   begin
     if user_lnk_up = '0' then
       Tx_Reset_i <= '1';
-    elsif user_clk'event and user_clk = '1' then
+      tx_reset_dly <= (others => '1');
+    elsif rising_edge(user_clk) then
 
-      Tx_Reset_i <= Regs_WrEn_r2
-                    and ((Reg_WrMuxer_Hi(CINT_ADDR_TX_CTRL)
-                          and Command_is_Reset_Hi)
-                         or (Reg_WrMuxer_Lo(CINT_ADDR_TX_CTRL)
-                             and Command_is_Reset_Lo));
+      Tx_Reset_i <= or_reduce(tx_reset_dly);
+      tx_reset_dly(5 downto 0) <= tx_reset_dly(4 downto 0) & (Regs_WrEn_r2
+                              and ((Reg_WrMuxer_Hi(CINT_ADDR_TX_CTRL) and Command_is_Reset_Hi)
+                              or (Reg_WrMuxer_Lo(CINT_ADDR_TX_CTRL) and Command_is_Reset_Lo)));
     end if;
   end process;
 
@@ -1863,23 +1879,13 @@ begin
   begin
     if user_lnk_up = '0' then
       wb_FIFO_Rst_i  <= '1';
-      wb_FIFO_Rst_b5 <= '1';
-      wb_FIFO_Rst_b4 <= '1';
-      wb_FIFO_Rst_b3 <= '1';
-      wb_FIFO_Rst_b2 <= '1';
-      wb_FIFO_Rst_b1 <= '1';
-    elsif user_clk'event and user_clk = '1' then
+      wb_FIFO_Rst_dly <= (others => '1');
+    elsif rising_edge(user_clk) then
 
-      wb_FIFO_Rst_i  <= wb_FIFO_Rst_b1 or wb_FIFO_Rst_b2 or wb_FIFO_Rst_b3 or wb_FIFO_Rst_b4 or wb_FIFO_Rst_b5;
-      wb_FIFO_Rst_b5 <= wb_FIFO_Rst_b4;
-      wb_FIFO_Rst_b4 <= wb_FIFO_Rst_b3;
-      wb_FIFO_Rst_b3 <= wb_FIFO_Rst_b2;
-      wb_FIFO_Rst_b2 <= wb_FIFO_Rst_b1;
-      wb_FIFO_Rst_b1 <= Regs_WrEn_r2
-                        and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON)
-                              and Command_is_Reset_Hi)
-                             or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON)
-                                 and Command_is_Reset_Lo));
+      wb_FIFO_Rst_i  <= or_reduce(wb_FIFO_Rst_dly);
+      wb_FIFO_Rst_dly <= wb_FIFO_Rst_dly(5 downto 0) & (Regs_WrEn_r2
+                        and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON) and Command_is_Reset_Hi)
+                             or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON) and Command_is_Reset_Lo)));
     end if;
   end process;
 
@@ -1891,7 +1897,7 @@ begin
   begin
     if user_lnk_up = '0' then
       DMA_us_Transf_Bytes_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if usDMA_Channel_Rst_i = '1' then
         DMA_us_Transf_Bytes_i <= (others => '0');
@@ -1911,7 +1917,7 @@ begin
   begin
     if user_lnk_up = '0' then
       DMA_ds_Transf_Bytes_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if dsDMA_Channel_Rst_i = '1' then
         DMA_ds_Transf_Bytes_i <= (others => '0');
@@ -1937,7 +1943,7 @@ begin
       Reg_RdMuxer_Hi <= (others => '0');
       Reg_RdMuxer_Lo <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       for k in 0 to C_NUM_OF_ADDRESSES-1 loop
         if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
@@ -2256,7 +2262,9 @@ begin
   begin
     if user_lnk_up = '0' then
       Sys_Error_i         <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
+      Sys_Error_i(CINT_BIT_DDR_S2MM_SER) <= ddr_s2mm_err;
+      Sys_Error_i(CINT_BIT_DDR_MM2S_SER) <= ddr_mm2s_err;
       Sys_Error_i(CINT_BIT_TX_TOUT_IN_SER) <= Tx_TimeOut;
       Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_wb_TimeOut;
     end if;
@@ -2270,8 +2278,8 @@ begin
   begin
     if user_lnk_up = '0' then
       General_Status_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-      General_Status_i(32-1 downto 32-16)                                            <= cfg_dcommand;
+    elsif rising_edge(user_clk) then
+      General_Status_i(CINT_BIT_DCOMM_IN_GSR_TOP downto CINT_BIT_DCOMM_IN_GSR_BOT)   <= cfg_dcommand;
       General_Status_i(CINT_BIT_LWIDTH_IN_GSR_TOP downto CINT_BIT_LWIDTH_IN_GSR_BOT) <= pcie_link_width;
       General_Status_i(CINT_BIT_DDR_RDY_GSR)                                         <= ddr_sdram_ready;
     end if;
@@ -2337,7 +2345,7 @@ begin
     if user_lnk_up = '0' then
       Regs_RdQout_i <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       Regs_RdQout_i(64-1 downto 32) <=
         HW_Version_o_Hi (32-1 downto 0)

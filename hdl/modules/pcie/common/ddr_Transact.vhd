@@ -23,565 +23,448 @@ use IEEE.NUMERIC_STD.all;
 
 library work;
 use work.abb64Package.all;
+use work.ipcores_pkg.all;
 
----- Uncomment the following library declaration if instantiating
----- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity DDR_Transact is
-  generic (
-    SIMULATION       : string;
-    DATA_WIDTH       : integer;
-    ADDR_WIDTH       : integer;
-    DDR_UI_DATAWIDTH : integer;
-    DDR_DQ_WIDTH     : integer;
-    DEVICE_TYPE      : string  -- "VIRTEX6"
-                                -- "KINTEX7"
-                                -- "ARTIX7"
-    );
+  generic(
+    G_USE_BRAM_STUB : boolean := true
+  );
   port (
-    --ext logic interface to memory core
-    -- memory controller interface --
-    memc_ui_clk    : out std_logic;
-    memc_cmd_rdy   : out std_logic;
-    memc_cmd_en    : in  std_logic;
-    memc_cmd_instr : in  std_logic_vector(2 downto 0);
-    memc_cmd_addr  : in  std_logic_vector(31 downto 0);
-    memc_wr_en     : in  std_logic;
-    memc_wr_end    : in  std_logic;
-    memc_wr_mask   : in  std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
-    memc_wr_data   : in  std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-    memc_wr_rdy    : out std_logic;
-    memc_rd_data   : out std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-    memc_rd_valid  : out std_logic;
-    -- memory arbiter interface
-    memarb_acc_req : in  std_logic;
-    memarb_acc_gnt : out std_logic;
-    --/ext logic interface
-
-    -- PCIE interface
-    DDR_wr_eof   : in  std_logic;
-    DDR_wr_v     : in  std_logic;
-    DDR_wr_Shift : in  std_logic;
-    DDR_wr_Mask  : in  std_logic_vector(2-1 downto 0);
-    DDR_wr_din   : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    DDR_wr_full  : out std_logic;
-
-    DDR_rdc_v     : in  std_logic;
-    DDR_rdc_Shift : in  std_logic;
-    DDR_rdc_din   : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    DDR_rdc_full  : out std_logic;
-
-    -- DDR payload FIFO Read Port
-    DDR_FIFO_RdEn   : in  std_logic;
-    DDR_FIFO_Empty  : out std_logic;
-    DDR_FIFO_RdQout : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    --/PCIE interface
-
-    -- Common interface
-    DDR_Ready : out std_logic;
-
-    app_addr            : out std_logic_vector(ADDR_WIDTH-1 downto 0);
-    app_cmd             : out std_logic_vector(2 downto 0);
-    app_en              : out std_logic;
-    app_wdf_data        : out std_logic_vector((DDR_UI_DATAWIDTH)-1 downto 0);
-    app_wdf_end         : out std_logic;
-    app_wdf_mask        : out std_logic_vector((DDR_UI_DATAWIDTH)/8-1 downto 0);
-    app_wdf_wren        : out std_logic;
-    app_rd_data         : in  std_logic_vector((DDR_UI_DATAWIDTH)-1 downto 0);
-    app_rd_data_end     : in  std_logic;
-    app_rd_data_valid   : in  std_logic;
-    app_rdy             : in  std_logic;
-    app_wdf_rdy         : in  std_logic;
-    ui_clk              : in  std_logic;
-    ui_clk_sync_rst     : in  std_logic;
-    init_calib_complete : in  std_logic;
+    ddr3_dq      : inout std_logic_vector(C_DDR_DQ_WIDTH-1 downto 0);
+    ddr3_dqs_p   : inout std_logic_vector(C_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_dqs_n   : inout std_logic_vector(C_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_addr    : out   std_logic_vector(C_DDR_ROW_WIDTH-1 downto 0);
+    ddr3_ba      : out   std_logic_vector(C_DDR_BANK_WIDTH-1 downto 0);
+    ddr3_ras_n   : out   std_logic;
+    ddr3_cas_n   : out   std_logic;
+    ddr3_we_n    : out   std_logic;
+    ddr3_reset_n : out   std_logic;
+    ddr3_ck_p    : out   std_logic_vector(C_DDR_CK_WIDTH-1 downto 0);
+    ddr3_ck_n    : out   std_logic_vector(C_DDR_CK_WIDTH-1 downto 0);
+    ddr3_cke     : out   std_logic_vector(C_DDR_CKE_WIDTH-1 downto 0);
+    ddr3_cs_n    : out   std_logic_vector(0 downto 0);
+    ddr3_dm      : out   std_logic_vector(C_DDR_DM_WIDTH-1 downto 0);
+    ddr3_odt     : out   std_logic_vector(C_DDR_ODT_WIDTH-1 downto 0);
+    ddr_sys_clk_p : in std_logic;
+    ddr_sys_clk_n : in std_logic;
+    --AXI4 stream command/data
+    axis_mm2s_cmd_tvalid : IN STD_LOGIC;
+    axis_mm2s_cmd_tready : OUT STD_LOGIC;
+    axis_mm2s_cmd_tdata : IN STD_LOGIC_VECTOR(71 DOWNTO 0);
+    axis_mm2s_sts_tvalid : OUT STD_LOGIC;
+    axis_mm2s_sts_tready : IN STD_LOGIC;
+    axis_mm2s_sts_tdata : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    axis_mm2s_sts_tkeep : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    axis_mm2s_sts_tlast : OUT STD_LOGIC;
+    axis_mm2s_tdata : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
+    axis_mm2s_tkeep : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    axis_mm2s_tlast : OUT STD_LOGIC;
+    axis_mm2s_tvalid : OUT STD_LOGIC;
+    axis_mm2s_tready : IN STD_LOGIC;
+    axis_s2mm_cmd_tvalid : IN STD_LOGIC;
+    axis_s2mm_cmd_tready : OUT STD_LOGIC;
+    axis_s2mm_cmd_tdata : IN STD_LOGIC_VECTOR(71 DOWNTO 0);
+    axis_s2mm_sts_tvalid : OUT STD_LOGIC;
+    axis_s2mm_sts_tready : IN STD_LOGIC;
+    axis_s2mm_sts_tdata : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    axis_s2mm_sts_tkeep : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    axis_s2mm_sts_tlast : OUT STD_LOGIC;
+    axis_s2mm_tdata : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
+    axis_s2mm_tkeep : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    axis_s2mm_tlast : IN STD_LOGIC;
+    axis_s2mm_tvalid : IN STD_LOGIC;
+    axis_s2mm_tready : OUT STD_LOGIC;
+    mm2s_err : out std_logic;
+    s2mm_err : out std_logic;
+    --AXI4 interface
+    s_axi_aclk_out : out std_logic;
+    s_axi_aresetn_out : out std_logic;
+    s_axi_awid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    s_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    s_axi_awburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
+    s_axi_awlock : in STD_LOGIC;
+    s_axi_awcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    s_axi_awprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    s_axi_awqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    s_axi_awvalid : in STD_LOGIC;
+    s_axi_awready : out STD_LOGIC;
+    s_axi_wdata : in STD_LOGIC_VECTOR ( c_ddr_payload_width-1 downto 0 );
+    s_axi_wstrb : in STD_LOGIC_VECTOR ( c_ddr_payload_width/8-1 downto 0 );
+    s_axi_wlast : in STD_LOGIC;
+    s_axi_wvalid : in STD_LOGIC;
+    s_axi_wready : out STD_LOGIC;
+    s_axi_bready : in STD_LOGIC;
+    s_axi_bid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    s_axi_bvalid : out STD_LOGIC;
+    s_axi_arid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    s_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    s_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    s_axi_arburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
+    s_axi_arlock : in STD_LOGIC;
+    s_axi_arcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    s_axi_arprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    s_axi_arqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    s_axi_arvalid : in STD_LOGIC;
+    s_axi_arready : out STD_LOGIC;
+    s_axi_rready : in STD_LOGIC;
+    s_axi_rid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_rdata : out STD_LOGIC_VECTOR ( c_ddr_payload_width-1 downto 0 );
+    s_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    s_axi_rlast : out STD_LOGIC;
+    s_axi_rvalid : out STD_LOGIC;
+    -- ctrl&status
+    ddr_ready : out std_logic;
+    ddr_reset : in std_logic;
+    axi_reset : in std_logic;
 
     --clocking & reset
-    user_clk      : in std_logic;
-    user_reset    : in std_logic;
-
-    dbg_arb_req_o : out std_logic_vector(1 downto 0);
-    dbg_arb_gnt_o : out std_logic_vector(1 downto 0)
-    );
+    pcie_clk : in std_logic;
+    pcie_reset : in std_logic
+  );
 end entity DDR_Transact;
 
 architecture Behavioral of DDR_Transact is
-  -- ----------------------------------------------------------------------------
-  -- Component declarations
-  -- ----------------------------------------------------------------------------
-  component DDRs_Control
-    generic (
-      C_ASYNFIFO_WIDTH  : integer := 72;
-      DATA_WIDTH        : integer := 64;
-      ADDR_WIDTH        : integer;
-      DDR_DQ_WIDTH      : integer;
-      DDR_PAYLOAD_WIDTH : integer;
-      P_SIMULATION      : string  := "FALSE";
-      DEVICE_TYPE       : string  -- "VIRTEX6"
-                                  -- "KINTEX7"
-                                  -- "ARTIX7"
-      );
-    port (
-      -- FPGA interface --
-      wr_clk   : in  std_logic;
-      wr_eof   : in  std_logic;
-      wr_v     : in  std_logic;
-      wr_shift : in  std_logic;
-      wr_mask  : in  std_logic_vector(2-1 downto 0);
-      wr_din   : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      wr_full  : out std_logic;
-
-      rd_clk    : in  std_logic;
-      rdc_v     : in  std_logic;
-      rdc_shift : in  std_logic;
-      rdc_din   : in  std_logic_vector(c_dbus_width-1 downto 0);
-      rdc_full  : out std_logic;
-
-      -- ddr payload fifo read port
-      rdd_fifo_rden  : in  std_logic;
-      rdd_fifo_empty : out std_logic;
-      rdd_fifo_dout  : out std_logic_vector(c_dbus_width-1 downto 0);
-
-      -- memory controller interface --
-      memc_cmd_rdy   : in   std_logic;
-      memc_cmd_en    : out  std_logic;
-      memc_cmd_instr : out  std_logic_vector(2 downto 0);
-      memc_cmd_addr  : out  std_logic_vector(ADDR_WIDTH-1 downto 0);
-      memc_wr_en     : out  std_logic;
-      memc_wr_end    : out  std_logic;
-      memc_wr_mask   : out  std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
-      memc_wr_data   : out  std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-      memc_wr_rdy    : in   std_logic;
-      memc_rd_en     : out  std_logic;
-      memc_rd_data   : in   std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-      memc_rd_valid  : in   std_logic;
-
-      -- memory arbiter interface
-      memarb_acc_req : out std_logic;
-      memarb_acc_gnt : in  std_logic;
-
-      memc_ui_clk : in std_logic;
-      ddr_rdy     : in std_logic;
-      reset       : in std_logic
-      );
-  end component;
-
-  -- ----------------------------------------------------------------------------
-  -- Signal & type declarations
-  -- ----------------------------------------------------------------------------
-
-  type ddr_switch_t is (EXT, PCIE);
-
-  attribute equivalent_register_removal : string;
-  attribute keep : string;
-
-  signal ddr_switch0 : ddr_switch_t := PCIE;
-  attribute equivalent_register_removal of ddr_switch0 : signal is "no";
-  attribute keep of ddr_switch0 : signal is "true";
-
-  signal ddr_switch1 : ddr_switch_t := PCIE;
-  attribute equivalent_register_removal of ddr_switch1 : signal is "no";
-  attribute keep of ddr_switch1 : signal is "true";
-
-  signal ddr_switch2 : ddr_switch_t := PCIE;
-  attribute equivalent_register_removal of ddr_switch2 : signal is "no";
-  attribute keep of ddr_switch2 : signal is "true";
-
-  signal ddr_switch3 : ddr_switch_t := PCIE;
-  attribute equivalent_register_removal of ddr_switch3 : signal is "no";
-  attribute keep of ddr_switch3 : signal is "true";
-
-  signal ddr_switch4 : ddr_switch_t := PCIE;
-  attribute equivalent_register_removal of ddr_switch4 : signal is "no";
-  attribute keep of ddr_switch4 : signal is "true";
-
-  signal arb_req    : std_logic_vector(1 downto 0);
-
-  signal pcie_cmd_rdy   : std_logic;
-  signal pcie_cmd_en    : std_logic;
-  signal pcie_cmd_instr : std_logic_vector(2 downto 0);
-  signal pcie_cmd_addr  : std_logic_vector(ADDR_WIDTH-1 downto 0);
-  signal pcie_wr_en     : std_logic;
-  signal pcie_wr_end    : std_logic;
-  signal pcie_wr_mask   : std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
-  signal pcie_wr_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-  signal pcie_wr_rdy    : std_logic;
-  signal pcie_rd_en     : std_logic;
-  signal pcie_rd_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-  signal pcie_rd_valid  : std_logic;
-  signal pcie_arb_gnt   : std_logic;
-  signal pcie_arb_req   : std_logic;
-
-  signal ext_cmd_rdy   : std_logic;
-  signal ext_cmd_en    : std_logic;
-  signal ext_cmd_instr : std_logic_vector(2 downto 0);
-  signal ext_cmd_addr  : std_logic_vector(ADDR_WIDTH-1 downto 0);
-  signal ext_wr_en     : std_logic;
-  signal ext_wr_end    : std_logic;
-  signal ext_wr_mask   : std_logic_vector(DDR_UI_DATAWIDTH/8-1 downto 0);
-  signal ext_wr_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-  signal ext_wr_rdy    : std_logic;
-  signal ext_rd_en     : std_logic;
-  signal ext_rd_data   : std_logic_vector(DDR_UI_DATAWIDTH-1 downto 0);
-  signal ext_rd_valid  : std_logic;
-  signal ext_arb_gnt   : std_logic;
-  signal ext_arb_req   : std_logic;
-
-  signal ddr_reset_n : std_logic;
+-- ----------------------------------------------------------------------------
+-- Signal & type declarations
+-- ----------------------------------------------------------------------------
+signal ddr_ui_clk, ddr_mmcm_locked : std_logic;
+signal ddr_ui_rst, irconnect_arstn, ddr_axi_aresetn, pcie_axi_aresetn, pcie_resetn : std_logic;
+signal ddr_axi_awid, ddr_axi_arid, ddr_axi_bid, ddr_axi_rid : std_logic_vector(3 downto 0);
+signal pcie_axi_awaddr, ddr_axi_awaddr : std_logic_vector(31 downto 0);
+signal pcie_axi_awlen, ddr_axi_awlen : std_logic_vector(7 downto 0);
+signal pcie_axi_awsize, ddr_axi_awsize : std_logic_vector(2 downto 0);
+signal pcie_axi_awburst, ddr_axi_awburst : std_logic_vector(1 downto 0);
+signal pcie_axi_awlock, ddr_axi_awlock : std_logic := '0';
+signal pcie_axi_awcache, ddr_axi_awcache : std_logic_vector(3 downto 0);
+signal pcie_axi_awprot, ddr_axi_awprot : std_logic_vector(2 downto 0);
+signal pcie_axi_awqos, ddr_axi_awqos : std_logic_vector(3 downto 0) := "0000";
+signal pcie_axi_awvalid, pcie_axi_awready, ddr_axi_awvalid, ddr_axi_awready : std_logic;
+signal pcie_axi_wdata, ddr_axi_wdata : std_logic_vector(c_ddr_payload_width-1 downto 0);
+signal pcie_axi_wstrb, ddr_axi_wstrb : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
+signal pcie_axi_wvalid, pcie_axi_wready, ddr_axi_wvalid, ddr_axi_wready : std_logic;
+signal pcie_axi_wlast, ddr_axi_wlast : std_logic;
+signal pcie_axi_bresp, ddr_axi_bresp : std_logic_vector(1 downto 0);
+signal pcie_axi_bvalid, pcie_axi_bready, ddr_axi_bvalid, ddr_axi_bready : std_logic;
+signal pcie_axi_araddr, ddr_axi_araddr : std_logic_vector(31 downto 0);
+signal pcie_axi_arlen, ddr_axi_arlen : std_logic_vector(7 downto 0);
+signal pcie_axi_arsize, ddr_axi_arsize : std_logic_vector(2 downto 0);
+signal pcie_axi_arburst, ddr_axi_arburst : std_logic_vector(1 downto 0);
+signal pcie_axi_arlock, ddr_axi_arlock : std_logic := '0';
+signal pcie_axi_arcache, ddr_axi_arcache : std_logic_vector(3 downto 0);
+signal pcie_axi_arprot, ddr_axi_arprot : std_logic_vector(2 downto 0);
+signal pcie_axi_arqos, ddr_axi_arqos : std_logic_vector(3 downto 0) := "0000";
+signal pcie_axi_arvalid, pcie_axi_arready, ddr_axi_arvalid, ddr_axi_arready : std_logic;
+signal pcie_axi_rdata, ddr_axi_rdata : std_logic_vector(c_ddr_payload_width-1 downto 0);
+signal pcie_axi_rresp, ddr_axi_rresp : std_logic_vector(1 downto 0);
+signal pcie_axi_rvalid, pcie_axi_rready, ddr_axi_rvalid, ddr_axi_rready : std_logic;
+signal pcie_axi_rlast, ddr_axi_rlast : std_logic;
 
 begin
 
-  memc_ui_clk <= ui_clk;
-  ddr_reset_n <= not(ui_clk_sync_rst);
+pcie_resetn <= not(pcie_reset);
 
-  access_arb :
-  process (ui_clk, user_reset)
-  begin
-    if user_reset = '1' then
-      ext_arb_gnt  <= '0';
-      pcie_arb_gnt <= '0';
-      ddr_switch0   <= PCIE;
-      ddr_switch1   <= PCIE;
-      ddr_switch2   <= PCIE;
-      ddr_switch3   <= PCIE;
-      ddr_switch4   <= PCIE;
-    elsif rising_edge(ui_clk) then
-      case arb_req is
-        when "00" =>
-          pcie_arb_gnt <= '0';
-          ext_arb_gnt  <= '0';
-          ddr_switch0   <= ddr_switch0;
-          ddr_switch1   <= ddr_switch1;
-          ddr_switch2   <= ddr_switch2;
-          ddr_switch3   <= ddr_switch2;
-          ddr_switch4   <= ddr_switch2;
+axi_interconnect_i : axi_interconnect
+PORT MAP (
+  INTERCONNECT_ACLK => ddr_ui_clk,
+  INTERCONNECT_ARESETN => irconnect_arstn,
+  S00_AXI_ARESET_OUT_N => pcie_axi_aresetn,
+  S00_AXI_ACLK => pcie_clk,
+  S00_AXI_AWID => "0",
+  S00_AXI_AWADDR => pcie_axi_awaddr,
+  S00_AXI_AWLEN => pcie_axi_awlen,
+  S00_AXI_AWSIZE => pcie_axi_awsize,
+  S00_AXI_AWBURST => pcie_axi_awburst,
+  S00_AXI_AWLOCK => pcie_axi_awlock,
+  S00_AXI_AWCACHE => pcie_axi_awcache,
+  S00_AXI_AWPROT => pcie_axi_awprot,
+  S00_AXI_AWQOS => pcie_axi_awqos,
+  S00_AXI_AWVALID => pcie_axi_awvalid,
+  S00_AXI_AWREADY => pcie_axi_awready,
+  S00_AXI_WDATA => pcie_axi_wdata,
+  S00_AXI_WSTRB => pcie_axi_wstrb,
+  S00_AXI_WLAST => pcie_axi_wlast,
+  S00_AXI_WVALID => pcie_axi_wvalid,
+  S00_AXI_WREADY => pcie_axi_wready,
+  S00_AXI_BID => open,
+  S00_AXI_BRESP => pcie_axi_bresp,
+  S00_AXI_BVALID => pcie_axi_bvalid,
+  S00_AXI_BREADY => pcie_axi_bready,
+  S00_AXI_ARID => "0",
+  S00_AXI_ARADDR => pcie_axi_araddr,
+  S00_AXI_ARLEN => pcie_axi_arlen,
+  S00_AXI_ARSIZE => pcie_axi_arsize,
+  S00_AXI_ARBURST => pcie_axi_arburst,
+  S00_AXI_ARLOCK => pcie_axi_arlock,
+  S00_AXI_ARCACHE => pcie_axi_arcache,
+  S00_AXI_ARPROT => pcie_axi_arprot,
+  S00_AXI_ARQOS => pcie_axi_arqos,
+  S00_AXI_ARVALID => pcie_axi_arvalid,
+  S00_AXI_ARREADY => pcie_axi_arready,
+  S00_AXI_RID => open,
+  S00_AXI_RDATA => pcie_axi_rdata,
+  S00_AXI_RRESP => pcie_axi_rresp,
+  S00_AXI_RLAST => pcie_axi_rlast,
+  S00_AXI_RVALID => pcie_axi_rvalid,
+  S00_AXI_RREADY => pcie_axi_rready,
+  S01_AXI_ARESET_OUT_N => s_axi_aresetn_out,
+  S01_AXI_ACLK => ddr_ui_clk,
+  S01_AXI_AWID => s_axi_awid,
+  S01_AXI_AWADDR => s_axi_awaddr,
+  S01_AXI_AWLEN => s_axi_awlen,
+  S01_AXI_AWSIZE => s_axi_awsize,
+  S01_AXI_AWBURST => s_axi_awburst,
+  S01_AXI_AWLOCK => s_axi_awlock,
+  S01_AXI_AWCACHE => s_axi_awcache,
+  S01_AXI_AWPROT => s_axi_awprot,
+  S01_AXI_AWQOS => s_axi_awqos,
+  S01_AXI_AWVALID => s_axi_awvalid,
+  S01_AXI_AWREADY => s_axi_awready,
+  S01_AXI_WDATA => s_axi_wdata,
+  S01_AXI_WSTRB => s_axi_wstrb,
+  S01_AXI_WLAST => s_axi_wlast,
+  S01_AXI_WVALID => s_axi_wvalid,
+  S01_AXI_WREADY => s_axi_wready,
+  S01_AXI_BID => s_axi_bid,
+  S01_AXI_BRESP => s_axi_bresp,
+  S01_AXI_BVALID => s_axi_bvalid,
+  S01_AXI_BREADY => s_axi_bready,
+  S01_AXI_ARID => s_axi_arid,
+  S01_AXI_ARADDR => s_axi_araddr,
+  S01_AXI_ARLEN => s_axi_arlen,
+  S01_AXI_ARSIZE => s_axi_arsize,
+  S01_AXI_ARBURST => s_axi_arburst,
+  S01_AXI_ARLOCK => s_axi_arlock,
+  S01_AXI_ARCACHE => s_axi_arcache,
+  S01_AXI_ARPROT => s_axi_arprot,
+  S01_AXI_ARQOS => s_axi_arqos,
+  S01_AXI_ARVALID => s_axi_arvalid,
+  S01_AXI_ARREADY => s_axi_arready,
+  S01_AXI_RID => s_axi_rid,
+  S01_AXI_RDATA => s_axi_rdata,
+  S01_AXI_RRESP => s_axi_rresp,
+  S01_AXI_RLAST => s_axi_rlast,
+  S01_AXI_RVALID => s_axi_rvalid,
+  S01_AXI_RREADY => s_axi_rready,
+  M00_AXI_ARESET_OUT_N => ddr_axi_aresetn,
+  M00_AXI_ACLK => ddr_ui_clk,
+  M00_AXI_AWID => ddr_axi_awid,
+  M00_AXI_AWADDR => ddr_axi_awaddr,
+  M00_AXI_AWLEN => ddr_axi_awlen,
+  M00_AXI_AWSIZE => ddr_axi_awsize,
+  M00_AXI_AWBURST => ddr_axi_awburst,
+  M00_AXI_AWLOCK => ddr_axi_awlock,
+  M00_AXI_AWCACHE => ddr_axi_awcache,
+  M00_AXI_AWPROT => ddr_axi_awprot,
+  M00_AXI_AWQOS => ddr_axi_awqos,
+  M00_AXI_AWVALID => ddr_axi_awvalid,
+  M00_AXI_AWREADY => ddr_axi_awready,
+  M00_AXI_WDATA => ddr_axi_wdata,
+  M00_AXI_WSTRB => ddr_axi_wstrb,
+  M00_AXI_WLAST => ddr_axi_wlast,
+  M00_AXI_WVALID => ddr_axi_wvalid,
+  M00_AXI_WREADY => ddr_axi_wready,
+  M00_AXI_BID => ddr_axi_bid,
+  M00_AXI_BRESP => ddr_axi_bresp,
+  M00_AXI_BVALID => ddr_axi_bvalid,
+  M00_AXI_BREADY => ddr_axi_bready,
+  M00_AXI_ARID => ddr_axi_arid,
+  M00_AXI_ARADDR => ddr_axi_araddr,
+  M00_AXI_ARLEN => ddr_axi_arlen,
+  M00_AXI_ARSIZE => ddr_axi_arsize,
+  M00_AXI_ARBURST => ddr_axi_arburst,
+  M00_AXI_ARLOCK => ddr_axi_arlock,
+  M00_AXI_ARCACHE => ddr_axi_arcache,
+  M00_AXI_ARPROT => ddr_axi_arprot,
+  M00_AXI_ARQOS => ddr_axi_arqos,
+  M00_AXI_ARVALID => ddr_axi_arvalid,
+  M00_AXI_ARREADY => ddr_axi_arready,
+  M00_AXI_RID => ddr_axi_rid,
+  M00_AXI_RDATA => ddr_axi_rdata,
+  M00_AXI_RRESP => ddr_axi_rresp,
+  M00_AXI_RLAST => ddr_axi_rlast,
+  M00_AXI_RVALID => ddr_axi_rvalid,
+  M00_AXI_RREADY => ddr_axi_rready
+);
 
-        when "01" => --PCIE
-          pcie_arb_gnt <= '1';
-          ext_arb_gnt  <= '0';
-          ddr_switch0   <= PCIE;
-          ddr_switch1   <= PCIE;
-          ddr_switch2   <= PCIE;
-          ddr_switch3   <= PCIE;
-          ddr_switch4   <= PCIE;
+axi_s2mm_bridge : axi_datamover_0
+PORT MAP (
+  m_axi_mm2s_aclk => pcie_clk,
+  m_axi_mm2s_aresetn => pcie_axi_aresetn,
+  mm2s_err => mm2s_err,
+  m_axis_mm2s_cmdsts_aclk => pcie_clk,
+  m_axis_mm2s_cmdsts_aresetn => pcie_resetn,
+  s_axis_mm2s_cmd_tvalid => axis_mm2s_cmd_tvalid,
+  s_axis_mm2s_cmd_tready => axis_mm2s_cmd_tready,
+  s_axis_mm2s_cmd_tdata => axis_mm2s_cmd_tdata,
+  m_axis_mm2s_sts_tvalid => axis_mm2s_sts_tvalid,
+  m_axis_mm2s_sts_tready => axis_mm2s_sts_tready,
+  m_axis_mm2s_sts_tdata => axis_mm2s_sts_tdata,
+  m_axis_mm2s_sts_tkeep => axis_mm2s_sts_tkeep,
+  m_axis_mm2s_sts_tlast => axis_mm2s_sts_tlast,
+  m_axi_mm2s_araddr => pcie_axi_araddr,
+  m_axi_mm2s_arlen => pcie_axi_arlen,
+  m_axi_mm2s_arsize => pcie_axi_arsize,
+  m_axi_mm2s_arburst => pcie_axi_arburst,
+  m_axi_mm2s_arprot => pcie_axi_arprot,
+  m_axi_mm2s_arcache => pcie_axi_arcache,
+  m_axi_mm2s_aruser => open,
+  m_axi_mm2s_arvalid => pcie_axi_arvalid,
+  m_axi_mm2s_arready => pcie_axi_arready,
+  m_axi_mm2s_rdata => pcie_axi_rdata,
+  m_axi_mm2s_rresp => pcie_axi_rresp,
+  m_axi_mm2s_rlast => pcie_axi_rlast,
+  m_axi_mm2s_rvalid => pcie_axi_rvalid,
+  m_axi_mm2s_rready => pcie_axi_rready,
+  m_axis_mm2s_tdata => axis_mm2s_tdata,
+  m_axis_mm2s_tkeep => axis_mm2s_tkeep,
+  m_axis_mm2s_tlast => axis_mm2s_tlast,
+  m_axis_mm2s_tvalid => axis_mm2s_tvalid,
+  m_axis_mm2s_tready => axis_mm2s_tready,
+  m_axi_s2mm_aclk => pcie_clk,
+  m_axi_s2mm_aresetn => pcie_axi_aresetn,
+  s2mm_err => s2mm_err,
+  m_axis_s2mm_cmdsts_awclk => pcie_clk,
+  m_axis_s2mm_cmdsts_aresetn => pcie_resetn,
+  s_axis_s2mm_cmd_tvalid => axis_s2mm_cmd_tvalid,
+  s_axis_s2mm_cmd_tready => axis_s2mm_cmd_tready,
+  s_axis_s2mm_cmd_tdata => axis_s2mm_cmd_tdata,
+  m_axis_s2mm_sts_tvalid => axis_s2mm_sts_tvalid,
+  m_axis_s2mm_sts_tready => axis_s2mm_sts_tready,
+  m_axis_s2mm_sts_tdata => axis_s2mm_sts_tdata,
+  m_axis_s2mm_sts_tkeep => axis_s2mm_sts_tkeep,
+  m_axis_s2mm_sts_tlast => axis_s2mm_sts_tlast,
+  m_axi_s2mm_awaddr => pcie_axi_awaddr,
+  m_axi_s2mm_awlen => pcie_axi_awlen,
+  m_axi_s2mm_awsize => pcie_axi_awsize,
+  m_axi_s2mm_awburst => pcie_axi_awburst,
+  m_axi_s2mm_awprot => pcie_axi_awprot,
+  m_axi_s2mm_awcache => pcie_axi_awcache,
+  m_axi_s2mm_awuser => open,
+  m_axi_s2mm_awvalid => pcie_axi_awvalid,
+  m_axi_s2mm_awready => pcie_axi_awready,
+  m_axi_s2mm_wdata => pcie_axi_wdata,
+  m_axi_s2mm_wstrb => pcie_axi_wstrb,
+  m_axi_s2mm_wlast => pcie_axi_wlast,
+  m_axi_s2mm_wvalid => pcie_axi_wvalid,
+  m_axi_s2mm_wready => pcie_axi_wready,
+  m_axi_s2mm_bresp => pcie_axi_bresp,
+  m_axi_s2mm_bvalid => pcie_axi_bvalid,
+  m_axi_s2mm_bready => pcie_axi_bready,
+  s_axis_s2mm_tdata => axis_s2mm_tdata,
+  s_axis_s2mm_tkeep => axis_s2mm_tkeep,
+  s_axis_s2mm_tlast => axis_s2mm_tlast,
+  s_axis_s2mm_tvalid => axis_s2mm_tvalid,
+  s_axis_s2mm_tready => axis_s2mm_tready
+);
 
-        when "10" => --EXT
-          pcie_arb_gnt <= '0';
-          ext_arb_gnt  <= '1';
-          ddr_switch0   <= EXT;
-          ddr_switch1   <= EXT;
-          ddr_switch2   <= EXT;
-          ddr_switch3   <= EXT;
-          ddr_switch4   <= EXT;
+real_ddr:
+if g_use_bram_stub = false generate
+  signal ddr_sys_rst : std_logic;
+  signal init_calib_complete : std_logic;
+begin
 
-        when "11" =>
-          if (pcie_arb_gnt or ext_arb_gnt) = '1' then
-            --we have already granted access, so wait until one of interested modules releases/gives up
-            pcie_arb_gnt <= pcie_arb_gnt;
-            ext_arb_gnt  <= ext_arb_gnt;
-            ddr_switch0   <= ddr_switch0;
-            ddr_switch1   <= ddr_switch1;
-            ddr_switch2   <= ddr_switch2;
-            ddr_switch3   <= ddr_switch3;
-            ddr_switch4   <= ddr_switch4;
-          else
-            --simultaneous access request, favor PCIE
-            pcie_arb_gnt <= '1';
-            ext_arb_gnt  <= '0';
-            ddr_switch0   <= PCIE;
-            ddr_switch1   <= PCIE;
-            ddr_switch2   <= PCIE;
-            ddr_switch3   <= PCIE;
-            ddr_switch4   <= PCIE;
-          end if;
+  ddr_core_inst: ddr_core
+  port map(
+    -- Memory interface ports
+    ddr3_addr => ddr3_addr,
+    ddr3_ba => ddr3_ba,
+    ddr3_cas_n => ddr3_cas_n,
+    ddr3_ck_n => ddr3_ck_n,
+    ddr3_ck_p => ddr3_ck_p,
+    ddr3_cke => ddr3_cke,
+    ddr3_ras_n => ddr3_ras_n,
+    ddr3_reset_n => ddr3_reset_n,
+    ddr3_we_n => ddr3_we_n,
+    ddr3_dq => ddr3_dq,
+    ddr3_dqs_n => ddr3_dqs_n,
+    ddr3_dqs_p => ddr3_dqs_p,
+    init_calib_complete => init_calib_complete,
+    ddr3_cs_n => ddr3_cs_n,
+    ddr3_dm => ddr3_dm,
+    ddr3_odt => ddr3_odt,
+    -- Application interface ports
+    ui_clk => ddr_ui_clk,
+    ui_clk_sync_rst => ddr_ui_rst,
+    mmcm_locked => ddr_mmcm_locked,
+    aresetn => ddr_axi_aresetn,
+    app_sr_req => '0',
+    app_ref_req => '0',
+    app_zq_req => '0',
+    app_sr_active => open,
+    app_ref_ack => open,
+    app_zq_ack => open,
+    -- Slave Interface Write Address Ports
+    s_axi_awid => ddr_axi_awid,
+    s_axi_awaddr => ddr_axi_awaddr(c_ddr_addr_width-1 downto 0),
+    s_axi_awlen => ddr_axi_awlen,
+    s_axi_awsize => ddr_axi_awsize,
+    s_axi_awburst => ddr_axi_awburst,
+    s_axi_awlock(0) => ddr_axi_awlock,
+    s_axi_awcache => ddr_axi_awcache,
+    s_axi_awprot => ddr_axi_awprot,
+    s_axi_awqos => ddr_axi_awqos,
+    s_axi_awvalid => ddr_axi_awvalid,
+    s_axi_awready => ddr_axi_awready,
+    -- Slave Interface Write Data Ports
+    s_axi_wdata => ddr_axi_wdata,
+    s_axi_wstrb => ddr_axi_wstrb,
+    s_axi_wlast => ddr_axi_wlast,
+    s_axi_wvalid => ddr_axi_wvalid,
+    s_axi_wready => ddr_axi_wready,
+    -- Slave Interface Write Response Ports
+    s_axi_bid => ddr_axi_bid,
+    s_axi_bresp => ddr_axi_bresp,
+    s_axi_bvalid => ddr_axi_bvalid,
+    s_axi_bready => ddr_axi_bready,
+    -- Slave Interface Read Address Ports
+    s_axi_arid => ddr_axi_arid,
+    s_axi_araddr => ddr_axi_araddr(c_ddr_addr_width-1 downto 0),
+    s_axi_arlen => ddr_axi_arlen,
+    s_axi_arsize => ddr_axi_arsize,
+    s_axi_arburst => ddr_axi_arburst,
+    s_axi_arlock(0) => ddr_axi_arlock,
+    s_axi_arcache => ddr_axi_arcache,
+    s_axi_arprot => ddr_axi_arprot,
+    s_axi_arqos => ddr_axi_arqos,
+    s_axi_arvalid => ddr_axi_arvalid,
+    s_axi_arready => ddr_axi_arready,
+    -- Slave Interface Read Data Ports
+    s_axi_rid => ddr_axi_rid,
+    s_axi_rdata => ddr_axi_rdata,
+    s_axi_rresp => ddr_axi_rresp,
+    s_axi_rlast => ddr_axi_rlast,
+    s_axi_rvalid => ddr_axi_rvalid,
+    s_axi_rready => ddr_axi_rready,
+    -- System Clock Ports
+    sys_clk_p => ddr_sys_clk_p,
+    sys_clk_n => ddr_sys_clk_n,
+    sys_rst => ddr_sys_rst
+  );
+  
+  -- Reset sequence goes like this:
+  -- 1. pcie_reset (global) or ddr_reset (register driven) reset DDR core
+  -- 2. DDR core drives ddr_ui_rst
+  -- 3. ddr_ui_rst or axi_reset (register driven) reset AXI interconnect
+  -- 4. AXI interconnect resets:
+  --   -> AXI Datamover (via pcie_axi_aresetn)
+  --   -> DDR AXI interface (via ddr_axi_aresetn)
+  --   -> external AXI master (via s_axi_aresetn_out)
+  --
+  -- This should provide a reliable reset chain where global reset correctly sets up all interfaces
+  -- and PCIe core or DDR core reset correctly reset all AXI interfaces (as required by Interconnect IP)
+  
+  ddr_sys_rst <= pcie_reset or ddr_reset;
+  irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset);
+  
+  s_axi_aclk_out <= ddr_ui_clk;
 
-        when others =>
-          pcie_arb_gnt <= '0';
-          ext_arb_gnt  <= '0';
-          ddr_switch0   <= ddr_switch0;
-          ddr_switch1   <= ddr_switch1;
-          ddr_switch2   <= ddr_switch2;
-          ddr_switch3   <= ddr_switch3;
-          ddr_switch4   <= ddr_switch4;
+  ddr_ready <= init_calib_complete and ddr_axi_aresetn;
 
-      end case;
-    end if;
-  end process;
-
-  arb_req <= ext_arb_req & pcie_arb_req;
-  dbg_arb_req_o <= arb_req;
-  dbg_arb_gnt_o <= ext_arb_gnt & pcie_arb_gnt; -- for debug
-
-  ddr_core_arb_mux :
-  process (ddr_switch0, ddr_switch1, ddr_switch2, ddr_switch3, ddr_switch4, pcie_cmd_addr, pcie_cmd_instr, pcie_cmd_en, pcie_wr_data, pcie_wr_en, pcie_wr_end, pcie_wr_mask,
-           ext_cmd_addr, ext_cmd_instr, ext_cmd_en, ext_wr_data, ext_wr_en, ext_wr_end, ext_wr_mask, app_rdy,
-           app_wdf_rdy, app_rd_data, app_rd_data_valid)
-  begin
-    case ddr_switch0 is
-      when PCIE =>
-        --app_addr      <= pcie_cmd_addr;
-        --app_cmd       <= pcie_cmd_instr;
-        --app_en        <= pcie_cmd_en;
-        app_wdf_data(DDR_UI_DATAWIDTH/2-1 downto 0)  <=
-                                    pcie_wr_data(DDR_UI_DATAWIDTH/2-1 downto 0);
-        --app_wdf_end   <= pcie_wr_end;
-        --app_wdf_mask  <= pcie_wr_mask;
-        --app_wdf_wren  <= pcie_wr_en;
-        --pcie_cmd_rdy  <= app_rdy;
-        --pcie_wr_rdy   <= app_wdf_rdy;
-        --pcie_rd_data  <= app_rd_data;
-        --pcie_rd_valid <= app_rd_data_valid;
-        --ext_cmd_rdy   <= '0';
-        --ext_wr_rdy    <= '0';
-        --ext_rd_data   <= (others => '0');
-        --ext_rd_valid  <= '0';
-
-      when EXT =>
-        --app_addr      <= ext_cmd_addr;
-        --app_cmd       <= ext_cmd_instr;
-        --app_en        <= ext_cmd_en;
-        app_wdf_data(DDR_UI_DATAWIDTH/2-1 downto 0) <=
-                                     ext_wr_data(DDR_UI_DATAWIDTH/2-1 downto 0);
-        --app_wdf_end   <= ext_wr_end;
-        --app_wdf_mask  <= ext_wr_mask;
-        --app_wdf_wren  <= ext_wr_en;
-        --pcie_cmd_rdy  <= '0';
-        --pcie_wr_rdy   <= '0';
-        --pcie_rd_data  <= (others => '0');
-        --pcie_rd_valid <= '0';
-        --ext_cmd_rdy   <= app_rdy;
-        --ext_wr_rdy    <= app_wdf_rdy;
-        --ext_rd_data   <= app_rd_data;
-        --ext_rd_valid  <= app_rd_data_valid;
-    end case;
-
-    case ddr_switch1 is
-      when PCIE =>
-        --app_addr      <= pcie_cmd_addr;
-        --app_cmd       <= pcie_cmd_instr;
-        --app_en        <= pcie_cmd_en;
-        app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-                                    pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
-        --app_wdf_end   <= pcie_wr_end;
-        --app_wdf_mask  <= pcie_wr_mask;
-        --app_wdf_wren  <= pcie_wr_en;
-        --pcie_cmd_rdy  <= app_rdy;
-        --pcie_wr_rdy   <= app_wdf_rdy;
-        --pcie_rd_data  <= app_rd_data;
-        --pcie_rd_valid <= app_rd_data_valid;
-        --ext_cmd_rdy   <= '0';
-        --ext_wr_rdy    <= '0';
-        --ext_rd_data   <= (others => '0');
-        --ext_rd_valid  <= '0';
-
-      when EXT =>
-        --app_addr      <= ext_cmd_addr;
-        --app_cmd       <= ext_cmd_instr;
-        --app_en        <= ext_cmd_en;
-        app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-                                     ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        --app_wdf_end   <= ext_wr_end;
-        --app_wdf_mask  <= ext_wr_mask;
-        --app_wdf_wren  <= ext_wr_en;
-        --pcie_cmd_rdy  <= '0';
-        --pcie_wr_rdy   <= '0';
-        --pcie_rd_data  <= (others => '0');
-        --pcie_rd_valid <= '0';
-        --ext_cmd_rdy   <= app_rdy;
-        --ext_wr_rdy    <= app_wdf_rdy;
-        --ext_rd_data   <= app_rd_data;
-        --ext_rd_valid  <= app_rd_data_valid;
-    end case;
-
-    case ddr_switch2 is
-      when PCIE =>
-        --app_addr      <= pcie_cmd_addr;
-        --app_cmd       <= pcie_cmd_instr;
-        --app_en        <= pcie_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
-        --app_wdf_end   <= pcie_wr_end;
-        --app_wdf_mask  <= pcie_wr_mask;
-        --app_wdf_wren  <= pcie_wr_en;
-        --pcie_cmd_rdy  <= app_rdy;
-        --pcie_wr_rdy   <= app_wdf_rdy;
-        pcie_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <=
-                                     app_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0);
-        --pcie_rd_valid <= app_rd_data_valid;
-        --ext_cmd_rdy   <= '0';
-        --ext_wr_rdy    <= '0';
-        ext_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <= (others => '0');
-        --ext_rd_valid  <= '0';
-
-      when EXT =>
-        --app_addr      <= ext_cmd_addr;
-        --app_cmd       <= ext_cmd_instr;
-        --app_en        <= ext_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        --app_wdf_end   <= ext_wr_end;
-        --app_wdf_mask  <= ext_wr_mask;
-        --app_wdf_wren  <= ext_wr_en;
-        --pcie_cmd_rdy  <= '0';
-        --pcie_wr_rdy   <= '0';
-        pcie_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0) <= (others => '0');
-        --pcie_rd_valid <= '0';
-        --ext_cmd_rdy   <= app_rdy;
-        --ext_wr_rdy    <= app_wdf_rdy;
-        ext_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0)
-                                  <= app_rd_data(DDR_UI_DATAWIDTH/2-1 downto 0);
-        --ext_rd_valid  <= app_rd_data_valid;
-    end case;
-
-    case ddr_switch3 is
-      when PCIE =>
-        --app_addr      <= pcie_cmd_addr;
-        --app_cmd       <= pcie_cmd_instr;
-        --app_en        <= pcie_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
-        --app_wdf_end   <= pcie_wr_end;
-        --app_wdf_mask  <= pcie_wr_mask;
-        --app_wdf_wren  <= pcie_wr_en;
-        --pcie_cmd_rdy  <= app_rdy;
-        --pcie_wr_rdy   <= app_wdf_rdy;
-        pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-                                     app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        --pcie_rd_valid <= app_rd_data_valid;
-        --ext_cmd_rdy   <= '0';
-        --ext_wr_rdy    <= '0';
-        ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <= (others => '0');
-        --ext_rd_valid  <= '0';
-
-      when EXT =>
-        --app_addr      <= ext_cmd_addr;
-        --app_cmd       <= ext_cmd_instr;
-        --app_en        <= ext_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        --app_wdf_end   <= ext_wr_end;
-        --app_wdf_mask  <= ext_wr_mask;
-        --app_wdf_wren  <= ext_wr_en;
-        --pcie_cmd_rdy  <= '0';
-        --pcie_wr_rdy   <= '0';
-        pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <= (others => '0');
-        --pcie_rd_valid <= '0';
-        --ext_cmd_rdy   <= app_rdy;
-        --ext_wr_rdy    <= app_wdf_rdy;
-        ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2)
-                                  <= app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        --ext_rd_valid  <= app_rd_data_valid;
-    end case;
-
-    case ddr_switch4 is
-      when PCIE =>
-        app_addr      <= pcie_cmd_addr;
-        app_cmd       <= pcie_cmd_instr;
-        app_en        <= pcie_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                            pcie_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) ;
-        app_wdf_end   <= pcie_wr_end;
-        app_wdf_mask  <= pcie_wr_mask;
-        app_wdf_wren  <= pcie_wr_en;
-        pcie_cmd_rdy  <= app_rdy;
-        pcie_wr_rdy   <= app_wdf_rdy;
-        --pcie_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                             app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        pcie_rd_valid <= app_rd_data_valid;
-        ext_cmd_rdy   <= '0';
-        ext_wr_rdy    <= '0';
-        --ext_rd_data   <= (others => '0');
-        ext_rd_valid  <= '0';
-
-      when EXT =>
-        app_addr      <= ext_cmd_addr;
-        app_cmd       <= ext_cmd_instr;
-        app_en        <= ext_cmd_en;
-        --app_wdf_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2) <=
-        --                             ext_wr_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        app_wdf_end   <= ext_wr_end;
-        app_wdf_mask  <= ext_wr_mask;
-        app_wdf_wren  <= ext_wr_en;
-        pcie_cmd_rdy  <= '0';
-        pcie_wr_rdy   <= '0';
-        --pcie_rd_data  <= (others => '0');
-        pcie_rd_valid <= '0';
-        ext_cmd_rdy   <= app_rdy;
-        ext_wr_rdy    <= app_wdf_rdy;
-        --ext_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2)
-        --                          <= app_rd_data(DDR_UI_DATAWIDTH-1 downto DDR_UI_DATAWIDTH/2);
-        ext_rd_valid  <= app_rd_data_valid;
-    end case;
-  end process;
-
-  memc_cmd_rdy   <= ext_cmd_rdy;
-  ext_cmd_en     <= memc_cmd_en;
-  ext_cmd_instr  <= memc_cmd_instr;
-  ext_cmd_addr   <= memc_cmd_addr(ADDR_WIDTH-1 downto 0);
-  ext_wr_en      <= memc_wr_en;
-  ext_wr_end     <= memc_wr_end;
-  ext_wr_mask    <= memc_wr_mask;
-  ext_wr_data    <= memc_wr_data;
-  memc_wr_rdy    <= ext_wr_rdy;
-  memc_rd_data   <= ext_rd_data;
-  memc_rd_valid  <= ext_rd_valid;
-  memarb_acc_gnt <= ext_arb_gnt;
-  ext_arb_req    <= memarb_acc_req;
-
-  DDR_Ready <= init_calib_complete;
-
-  u_ddr_control : DDRs_Control
-    generic map (
-      P_SIMULATION => SIMULATION,
-      ADDR_WIDTH => ADDR_WIDTH,
-      DDR_DQ_WIDTH => DDR_DQ_WIDTH,
-      DDR_PAYLOAD_WIDTH => DDR_UI_DATAWIDTH,
-      DEVICE_TYPE => DEVICE_TYPE
-      )
-    port map (
-      -- FPGA interface --
-      wr_clk   => user_clk, --: in  std_logic;
-      wr_eof   => DDR_wr_eof, --: in  std_logic;
-      wr_v     => DDR_wr_v, --: in  std_logic;
-      wr_shift => DDR_wr_Shift, --: in  std_logic;
-      wr_mask  => DDR_wr_Mask, --: in  std_logic_vector(2-1 downto 0);
-      wr_din   => DDR_wr_din, --: in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      wr_full  => DDR_wr_full, --: out std_logic;
-
-      rd_clk    => user_clk, --: in  std_logic;
-      rdc_v     => DDR_rdc_v, --: in  std_logic;
-      rdc_shift => DDR_rdc_Shift, --: in  std_logic;
-      rdc_din   => DDR_rdc_din, --: in  std_logic_vector(c_dbus_width-1 downto 0);
-      rdc_full  => DDR_rdc_full, --: out std_logic;
-
-      -- ddr payload fifo read port
-      rdd_fifo_rden  => DDR_FIFO_RdEn, --: in  std_logic;
-      rdd_fifo_empty => DDR_FIFO_Empty, --: out std_logic;
-      rdd_fifo_dout  => DDR_FIFO_RdQout, --: out std_logic_vector(c_dbus_width-1 downto 0);
-
-      -- memory controller interface --
-      memc_cmd_rdy   => pcie_cmd_rdy, --: in   std_logic;
-      memc_cmd_en    => pcie_cmd_en, --: out  std_logic;
-      memc_cmd_instr => pcie_cmd_instr, --: out  std_logic_vector(2 downto 0);
-      memc_cmd_addr  => pcie_cmd_addr, --: out  std_logic_vector(31 downto 0);
-      memc_wr_en     => pcie_wr_en, --: out  std_logic;
-      memc_wr_end    => pcie_wr_end, --: out  std_logic;
-      memc_wr_mask   => pcie_wr_mask, --: out  std_logic_vector(data_width/8-1 downto 0);
-      memc_wr_data   => pcie_wr_data, --: out  std_logic_vector(data_width-1 downto 0);
-      memc_wr_rdy    => pcie_wr_rdy, --: in   std_logic;
-      memc_rd_en     => pcie_rd_en, --: out  std_logic;
-      memc_rd_data   => pcie_rd_data, --: in   std_logic_vector(data_width-1 downto 0);
-      memc_rd_valid  => pcie_rd_valid, --: in   std_logic;
-
-      -- memory arbiter interface
-      memarb_acc_req => pcie_arb_req, --: out std_logic;
-      memarb_acc_gnt => pcie_arb_gnt, --: in  std_logic;
-
-      memc_ui_clk => ui_clk, --: in std_logic;
-      ddr_rdy     => ddr_reset_n, --: in std_logic;
-      reset       => user_reset   --: in std_logic
-    );
+end generate;
 
 end architecture Behavioral;

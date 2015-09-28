@@ -263,28 +263,28 @@ begin
   for i in 0 to C_ARBITRATE_WIDTH-1 generate
 
     Proc_Priority_Cycling :
-    process (clk, rst_n)
+    process (clk)
     begin
-      if (rst_n = '0') then
-        ChPriority(i) <= Prior_Init_Value(i);
-      elsif clk'event and clk = '1' then
-
-        case Arb_FSM is
-
-          when aSt_ReadOne =>
-            if ChPriority(i) = Champion_Vector then
-              ChPriority(i) <= C_LOWEST_PRIORITY;
-            elsif (ChPriority(i) and Champion_Vector) = Champion_Vector then
+      if rising_edge(clk) then
+        if (rst_n = '0') then
+          ChPriority(i) <= Prior_Init_Value(i);
+        else
+          case Arb_FSM is
+  
+            when aSt_ReadOne =>
+              if ChPriority(i) = Champion_Vector then
+                ChPriority(i) <= C_LOWEST_PRIORITY;
+              elsif (ChPriority(i) and Champion_Vector) = Champion_Vector then
+                ChPriority(i) <= ChPriority(i);
+              else
+                ChPriority(i) <= ChPriority(i)(C_ARBITRATE_WIDTH-2 downto 0) & '1';
+              end if;
+  
+            when others =>
               ChPriority(i) <= ChPriority(i);
-            else
-              ChPriority(i) <= ChPriority(i)(C_ARBITRATE_WIDTH-2 downto 0) & '1';
-            end if;
-
-          when others =>
-            ChPriority(i) <= ChPriority(i);
-
-        end case;
-
+  
+          end case;
+        end if;
       end if;
     end process;
 

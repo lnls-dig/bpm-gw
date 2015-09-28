@@ -44,7 +44,6 @@ entity tx_Transact is
     user_clk    : in std_logic;
     user_reset  : in std_logic;
     user_lnk_up : in std_logic;
-
     -- Transaction
     s_axis_tx_tlast   : out std_logic;
     s_axis_tx_tdata   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -54,41 +53,33 @@ entity tx_Transact is
     s_axis_tx_tready  : in  std_logic;
     s_axis_tx_tdsc    : out std_logic;
     tx_buf_av         : in  std_logic_vector(C_TBUF_AWIDTH-1 downto 0);
-
     -- Upstream DMA transferred bytes count up
     us_DMA_Bytes_Add : out std_logic;
     us_DMA_Bytes     : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
-
     -- Wishbone Read interface
     wb_rdc_sof  : out std_logic;
     wb_rdc_v    : out std_logic;
     wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     wb_rdc_full : in std_logic;
-
     -- Wisbbone Buffer read port
     wb_FIFO_re    : out std_logic;
     wb_FIFO_empty : in  std_logic;
     wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
     -- Read interface for Tx port
     Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
     Regs_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
     -- Irpt Channel
     Irpt_Req  : in  std_logic;
     Irpt_RE   : out std_logic;
     Irpt_Qout : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
     -- PIO MRd Channel
     pioCplD_Req  : in  std_logic;
     pioCplD_RE   : out std_logic;
     pioCplD_Qout : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
     -- downstream MRd Channel
     dsMRd_Req  : in  std_logic;
     dsMRd_RE   : out std_logic;
     dsMRd_Qout : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
     -- upstream MWr/MRd Channel
     usTlp_Req   : in  std_logic;
     usTlp_RE    : out std_logic;
@@ -96,23 +87,18 @@ entity tx_Transact is
     us_FC_stop  : out std_logic;
     us_Last_sof : out std_logic;
     us_Last_eof : out std_logic;
-
     -- Message routing method
     Msg_Routing : in std_logic_vector(C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT downto 0);
-
     --  DDR read port
-    DDR_rdc_sof   : out std_logic;
-    DDR_rdc_eof   : out std_logic;
-    DDR_rdc_v     : out std_logic;
-    DDR_rdc_Shift : out std_logic;
-    DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    DDR_rdc_full  : in  std_logic;
-
+    ddr_mm2s_cmd_tvalid : out STD_LOGIC;
+    ddr_mm2s_cmd_tready : in STD_LOGIC;
+    ddr_mm2s_cmd_tdata : out STD_LOGIC_VECTOR(71 DOWNTO 0);
     -- DDR payload FIFO Read Port
-    DDR_FIFO_RdEn   : out std_logic;
-    DDR_FIFO_Empty  : in  std_logic;
-    DDR_FIFO_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
+    ddr_mm2s_tdata : in STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ddr_mm2s_tkeep : in STD_LOGIC_VECTOR(7 DOWNTO 0);
+    ddr_mm2s_tlast : in STD_LOGIC;
+    ddr_mm2s_tvalid : in STD_LOGIC;
+    ddr_mm2s_tready : out STD_LOGIC;
     -- Additional
     Tx_TimeOut    : out std_logic;
     Tx_wb_TimeOut : out std_logic;
@@ -230,62 +216,6 @@ architecture Behavioral of tx_Transact is
   signal us_DMA_Bytes_Add_i : std_logic;
   signal us_DMA_Bytes_i     : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
 
-  ---------------------  Memory Reader  -----------------------------
-  ---
-  --- Memory reader is the interface to access all sorts of memories
-  ---   BRAM, FIFO, Registers, as well as possible DDR SDRAM
-  ---
-  -------------------------------------------------------------------
-  component
-    tx_Mem_Reader
-    port(
-      DDR_rdc_sof   : out std_logic;
-      DDR_rdc_eof   : out std_logic;
-      DDR_rdc_v     : out std_logic;
-      DDR_rdc_Shift : out std_logic;
-      DDR_rdc_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DDR_rdc_full  : in  std_logic;
-
-      DDR_FIFO_RdEn   : out std_logic;
-      DDR_FIFO_Empty  : in  std_logic;
-      DDR_FIFO_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Wishbone Read interface
-      wb_rdc_sof  : out std_logic;
-      wb_rdc_v    : out std_logic;
-      wb_rdc_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      wb_rdc_full : in std_logic;
-
-      -- Wisbbone Buffer read port
-      wb_FIFO_re    : out std_logic;
-      wb_FIFO_empty : in  std_logic;
-      wb_FIFO_qout  : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      Regs_RdAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
-      Regs_RdQout : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      RdNumber        : in  std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
-      RdNumber_eq_One : in  std_logic;
-      RdNumber_eq_Two : in  std_logic;
-      StartAddr       : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      Shift_1st_QWord : in  std_logic;
-      is_CplD         : in  std_logic;
-      BAR_value       : in  std_logic_vector(C_ENCODE_BAR_NUMBER-1 downto 0);
-      RdCmd_Req       : in  std_logic;
-      RdCmd_Ack       : out std_logic;
-
-      mbuf_WE       : out std_logic;
-      mbuf_Din      : out std_logic_vector(C_DBUS_WIDTH*9/8-1 downto 0);
-      mbuf_Full     : in  std_logic;
-      mbuf_aFull    : in  std_logic;
-
-      Tx_TimeOut    : out std_logic;
-      Tx_wb_TimeOut : out std_logic;
-      mReader_Rst_n : in  std_logic;
-      user_clk      : in  std_logic
-      );
-  end component;
-
   signal RdNumber        : std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0);
   signal RdNumber_eq_One : std_logic;
   signal RdNumber_eq_Two : std_logic;
@@ -393,22 +323,24 @@ begin
     end if;
   end process;
 
-------------------------------------------------------------
----             Memory reader
-------------------------------------------------------------
+  ---------------------  Memory Reader  -----------------------------
+  ---
+  --- Memory reader is the interface to access all sorts of memories
+  ---   BRAM, FIFO, Registers, as well as possible DDR SDRAM
+  ---
+  -------------------------------------------------------------------
   ABB_Tx_MReader :
-    tx_Mem_Reader
+    entity work.tx_Mem_Reader
       port map(
-        DDR_rdc_sof   => DDR_rdc_sof ,  --  OUT   std_logic;
-        DDR_rdc_eof   => DDR_rdc_eof ,  --  OUT   std_logic;
-        DDR_rdc_v     => DDR_rdc_v ,    --  OUT   std_logic;
-        DDR_rdc_Shift => DDR_rdc_Shift ,  --  OUT   std_logic;
-        DDR_rdc_din   => DDR_rdc_din ,  --  OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        DDR_rdc_full  => DDR_rdc_full ,   --  IN    std_logic;
-
-        DDR_FIFO_RdEn   => DDR_FIFO_RdEn ,    -- OUT std_logic;
-        DDR_FIFO_Empty  => DDR_FIFO_Empty ,   -- IN  std_logic;
-        DDR_FIFO_RdQout => DDR_FIFO_RdQout ,  -- IN  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        --  DDR read port
+        ddr_mm2s_cmd_tvalid => ddr_mm2s_cmd_tvalid,
+        ddr_mm2s_cmd_tready => ddr_mm2s_cmd_tready,
+        ddr_mm2s_cmd_tdata => ddr_mm2s_cmd_tdata,
+        ddr_mm2s_tdata => ddr_mm2s_tdata,
+        ddr_mm2s_tkeep => ddr_mm2s_tkeep,
+        ddr_mm2s_tlast => ddr_mm2s_tlast,
+        ddr_mm2s_tvalid => ddr_mm2s_tvalid,
+        ddr_mm2s_tready => ddr_mm2s_tready,
 
         wb_rdc_sof  => wb_rdc_sof, -- : out std_logic;
         wb_rdc_v    => wb_rdc_v, --   : out std_logic;
@@ -827,7 +759,7 @@ begin
             is_CplD         <= '0';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
             BAR_value       <= '0' & BAR_pioCplD(C_ENCODE_BAR_NUMBER-2 downto 0);
-            StartAddr       <= (C_ALL_ONES(C_DBUS_WIDTH-1 downto C_DDR_IAWIDTH) & DDRAddr_pioCplD);
+            StartAddr       <= (C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_DDR_IAWIDTH) & DDRAddr_pioCplD);
             Shift_1st_QWord <= '1';
             is_CplD         <= '1';
           elsif BAR_pioCplD = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
@@ -999,9 +931,9 @@ begin
             s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1 downto 32)
                                              & Trn_Qout_reg (C_DBUS_WIDTH+32-1 downto C_DBUS_WIDTH);
             trn_tsof_n_i      <= '1';
-            s_axis_tx_tlast_i <= not(mbuf_Qout(C_DBUS_WIDTH));
-            mbuf_RE_ok        <= s_axis_tx_tvalid_i and mbuf_Qout(C_DBUS_WIDTH);
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            s_axis_tx_tlast_i <= not(mbuf_qout(C_TXMEM_TLAST_BIT));
+            mbuf_RE_ok        <= s_axis_tx_tvalid_i and mbuf_qout(C_TXMEM_TLAST_BIT);
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               TxTrn_State <= St_d_Tail_chk;
             else
               TxTrn_State <= St_d_1st_Data;
@@ -1009,18 +941,18 @@ begin
           end if;
 
         when St_d_1st_Data =>
-          mbuf_RE_ok          <= s_axis_tx_tvalid_i and mbuf_Qout(C_DBUS_WIDTH);
+          mbuf_RE_ok          <= s_axis_tx_tvalid_i and mbuf_qout(C_TXMEM_TLAST_BIT);
           take_an_Arbitration <= '0';
           if s_axis_tx_tready_i = '0' then
             TxTrn_State        <= St_d_1st_Data;
             s_axis_tx_tlast_i  <= '0';
             s_axis_tx_tdata_i  <= s_axis_tx_tdata_i;
             s_axis_tx_tvalid_i <= '1';
-          elsif mbuf_Qout(C_DBUS_WIDTH) = '0' then
+          elsif mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
             TxTrn_State       <= St_d_Tail_chk;
             s_axis_tx_tlast_i <= '1';
-            s_axis_tx_tkeep_i <= X"0" & mbuf_Qout(70) & mbuf_Qout(70)
-                                         & mbuf_Qout(70) & mbuf_Qout(70);
+            s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                         & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
             s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
             s_axis_tx_tvalid_i <= mbuf_Qvalid;  -- '0';
           elsif mbuf_Qvalid = '0' then
@@ -1043,7 +975,7 @@ begin
             s_axis_tx_tlast_i  <= s_axis_tx_tlast_i;
             s_axis_tx_tkeep_i  <= s_axis_tx_tkeep_i;
             s_axis_tx_tvalid_i <= '1';
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               TxTrn_State <= St_d_Tail;
             elsif mbuf_Qvalid = '1' then
               TxTrn_State <= St_d_Payload;
@@ -1052,12 +984,12 @@ begin
             end if;
           else
             s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
-            s_axis_tx_tlast_i  <= not(mbuf_Qout(C_DBUS_WIDTH));
-            s_axis_tx_tvalid_i <= not(mbuf_Qout(C_DBUS_WIDTH)) or mbuf_Qvalid;
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            s_axis_tx_tlast_i  <= not(mbuf_qout(C_TXMEM_TLAST_BIT));
+            s_axis_tx_tvalid_i <= not(mbuf_qout(C_TXMEM_TLAST_BIT)) or mbuf_Qvalid;
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               TxTrn_State       <= St_d_Tail_chk;
-              s_axis_tx_tkeep_i <= X"0" & mbuf_Qout(70) & mbuf_Qout(70)
-                                           & mbuf_Qout(70) & mbuf_Qout(70);
+              s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                           & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
             elsif mbuf_Qvalid = '1' then
               s_axis_tx_tkeep_i <= (others => '1');
               TxTrn_State       <= St_d_Payload;
@@ -1073,10 +1005,10 @@ begin
           if s_axis_tx_tvalid_i = '1' then
             s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
             s_axis_tx_tvalid_i <= mbuf_Qvalid and s_axis_tx_tready_i;
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               s_axis_tx_tlast_i <= '1';
-              s_axis_tx_tkeep_i <= X"0" & mbuf_Qout(70) & mbuf_Qout(70)
-                                           & mbuf_Qout(70) & mbuf_Qout(70);
+              s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                           & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
             else
               s_axis_tx_tlast_i <= '0';
               s_axis_tx_tkeep_i <= (others => '1');
@@ -1089,15 +1021,15 @@ begin
           elsif mbuf_Qvalid = '1' then
             s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
             s_axis_tx_tvalid_i <= '1';
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               s_axis_tx_tlast_i <= '1';
-              s_axis_tx_tkeep_i <= X"0" & mbuf_Qout(70) & mbuf_Qout(70)
-                                           & mbuf_Qout(70) & mbuf_Qout(70);
+              s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                           & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
             else
               s_axis_tx_tlast_i <= '0';
               s_axis_tx_tkeep_i <= (others => '1');
             end if;
-            if mbuf_Qout(C_DBUS_WIDTH) = '0' then
+            if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               TxTrn_State <= St_d_Tail_chk;
             else
               TxTrn_State <= St_d_Payload;
@@ -1122,8 +1054,8 @@ begin
           else
             TxTrn_State       <= St_d_Tail_chk;
             s_axis_tx_tlast_i <= '1';
-            s_axis_tx_tkeep_i <= X"0" & mbuf_Qout(70) & mbuf_Qout(70)
-                                         & mbuf_Qout(70) & mbuf_Qout(70);
+            s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                         & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
             s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
           end if;
 

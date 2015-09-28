@@ -42,12 +42,6 @@ entity rx_CplD_Transact is
     m_axis_rx_tvalid   : in std_logic;
     m_axis_rx_tready   : in std_logic;  -- !!
     m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
---      trn_rfc_ph_av      : IN  std_logic_vector(7 downto 0);
---      trn_rfc_pd_av      : IN  std_logic_vector(11 downto 0);
---      trn_rfc_nph_av     : IN  std_logic_vector(7 downto 0);
---      trn_rfc_npd_av     : IN  std_logic_vector(11 downto 0);
---      trn_rfc_cplh_av    : IN  std_logic_vector(7 downto 0);
---      trn_rfc_cpld_av    : IN  std_logic_vector(11 downto 0);
 
     CplD_Type : in std_logic_vector(3 downto 0);
 
@@ -94,13 +88,14 @@ entity rx_CplD_Transact is
     Regs_WrDin  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- DDR write port
-    DDR_wr_sof   : out std_logic;
-    DDR_wr_eof   : out std_logic;
-    DDR_wr_v     : out std_logic;
-    DDR_wr_Shift : out std_logic;
-    DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
-    DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-    DDR_wr_full  : in  std_logic;
+    ddr_s2mm_cmd_tvalid : out STD_LOGIC;
+    ddr_s2mm_cmd_tready : in STD_LOGIC;
+    ddr_s2mm_cmd_tdata : out STD_LOGIC_VECTOR(71 DOWNTO 0);
+    ddr_s2mm_tdata : out STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ddr_s2mm_tkeep : out STD_LOGIC_VECTOR(7 DOWNTO 0);
+    ddr_s2mm_tlast : out STD_LOGIC;
+    ddr_s2mm_tvalid : out STD_LOGIC;
+    ddr_s2mm_tready : in STD_LOGIC;
 
     -- Common ports
     user_clk    : in std_logic;
@@ -192,12 +187,12 @@ architecture Behavioral of rx_CplD_Transact is
   signal DDR_Space_Hit  : std_logic;
 
   -- DDR write port
-  signal DDR_wr_sof_i   : std_logic;
-  signal DDR_wr_eof_i   : std_logic;
-  signal DDR_wr_v_i     : std_logic;
-  signal DDR_wr_Shift_i : std_logic;
-  signal DDR_wr_Mask_i  : std_logic_vector(2-1 downto 0);
-  signal DDR_wr_din_i   : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+  signal ddr_s2mm_cmd_tvalid_i : STD_LOGIC;
+  signal ddr_s2mm_cmd_btt : std_logic_vector(22 downto 0);
+  signal ddr_s2mm_cmd_eof : std_logic;
+  signal ddr_s2mm_cmd_drr : std_logic;
+  signal ddr_s2mm_cmd_saddr : std_logic_vector(31 downto 0);
+  signal ddr_s2mm_tvalid_i : STD_LOGIC;
 
   -- Event Buffer write port
   signal wb_FIFO_we_i       : std_logic;
@@ -313,12 +308,16 @@ begin
   wb_FIFO_din  <= wb_FIFO_din_i;
 
   -- DDR
-  DDR_wr_sof    <= DDR_wr_sof_i;
-  DDR_wr_eof    <= DDR_wr_eof_i;
-  DDR_wr_v      <= DDR_wr_v_i;
-  DDR_wr_Shift  <= DDR_wr_Shift_i;
-  DDR_wr_Mask   <= DDR_wr_Mask_i;
-  DDR_wr_din    <= DDR_wr_din_i;
+  ddr_s2mm_cmd_tvalid <= ddr_s2mm_cmd_tvalid_i;
+  ddr_s2mm_cmd_tdata(22 downto 0) <= ddr_s2mm_cmd_btt;
+  ddr_s2mm_cmd_tdata(23) <= '1'; --ddr_mm2s_cmd_type;
+  ddr_s2mm_cmd_tdata(29 downto 24) <= "000000"; --ddr_mm2s_cmd_dsa;
+  ddr_s2mm_cmd_tdata(30) <= ddr_s2mm_cmd_eof;
+  ddr_s2mm_cmd_tdata(31) <= ddr_s2mm_cmd_drr;
+  ddr_s2mm_cmd_tdata(63 downto 32) <= ddr_s2mm_cmd_saddr;
+  ddr_s2mm_cmd_tdata(67 downto 64) <= "0000"; --tag
+  ddr_s2mm_cmd_tdata(71 downto 68) <= (others => '0');
+  ddr_s2mm_tvalid <= ddr_s2mm_tvalid_i;
 
   ds_DMA_Bytes_Add <= ds_DMA_Bytes_Add_i;
   ds_DMA_Bytes     <= ds_DMA_Bytes_i;
@@ -335,7 +334,7 @@ begin
   begin
     if Local_Reset_i = '1' then
       FC_pop_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       FC_pop_i <= (CplD_on_Pool or CplD_on_EB)
                      and CplD_is_the_Last
                      and not MSB_DSP_Tag
@@ -354,7 +353,7 @@ begin
   begin
     if Local_Reset_i = '1' then
       CplD_is_Payloaded <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if trn_rsof_n_i = '0' and trn_rx_throttle = '0' then
         CplD_is_Payloaded <= CplD_Type(3) or CplD_Type(1);
       else
@@ -373,7 +372,7 @@ begin
     if Local_Reset_i = '1' then
       ds_DMA_Bytes_Add_i <= '0';
       ds_DMA_Bytes_i     <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if m_axis_rx_tlast_i = '1' and trn_rx_throttle = '0'
         and CplD_is_Payloaded = '1' and MSB_DSP_Tag = '0'
       then
@@ -427,7 +426,7 @@ begin
   RxFSM_CplD_State_is_AFetch :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
 
       CplD_State_is_AFetch_r1 <= CplD_State_is_AFetch;
 
@@ -449,7 +448,7 @@ begin
   RxFSM_CplD_State_is_after_AFetch :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
 
       case RxCplDTrn_State is
         when ST_CplD_AFetch_Special_Tail =>
@@ -471,22 +470,17 @@ begin
   Syn_Delay_trn_r_x :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then    
+      m_axis_rx_tvalid_r1 <= not(trn_rx_throttle);
+      m_axis_rx_tvalid_r2 <= m_axis_rx_tvalid_r1;
+      m_axis_rx_tvalid_r3 <= m_axis_rx_tvalid_r2;
+      m_axis_rx_tvalid_r4 <= m_axis_rx_tvalid_r3;
+      
       m_axis_rx_tlast_r1 <= m_axis_rx_tlast_i;
       m_axis_rx_tlast_r2 <= m_axis_rx_tlast_r1;
       m_axis_rx_tlast_r3 <= m_axis_rx_tlast_r2;
       m_axis_rx_tlast_r4 <= m_axis_rx_tlast_r3;
-
-      m_axis_rx_tvalid_r1 <= not(trn_rx_throttle);  -- m_axis_rx_tvalid_i;
-      m_axis_rx_tvalid_r2 <= m_axis_rx_tvalid_r1;
-      m_axis_rx_tvalid_r3 <= m_axis_rx_tvalid_r2;
-      m_axis_rx_tvalid_r4 <= m_axis_rx_tvalid_r3;
-
-      trn_rx_throttle_r1 <= trn_rx_throttle;
-      trn_rx_throttle_r2 <= trn_rx_throttle_r1;
-      trn_rx_throttle_r3 <= trn_rx_throttle_r2;
-      trn_rx_throttle_r4 <= trn_rx_throttle_r3;
-
+      
       m_axis_rx_tdata_r1 <= m_axis_rx_tdata_i;
       m_axis_rx_tdata_r2 <= m_axis_rx_tdata_r1;
       m_axis_rx_tdata_r3 <= m_axis_rx_tdata_r2;
@@ -496,7 +490,23 @@ begin
       m_axis_rx_tkeep_r2 <= m_axis_rx_tkeep_r1;
       m_axis_rx_tkeep_r3 <= m_axis_rx_tkeep_r2;
       m_axis_rx_tkeep_r4 <= m_axis_rx_tkeep_r3;
-
+      
+      trn_rx_throttle_r1 <= trn_rx_throttle;
+      trn_rx_throttle_r2 <= trn_rx_throttle_r1;
+      trn_rx_throttle_r3 <= trn_rx_throttle_r2;
+      trn_rx_throttle_r4 <= trn_rx_throttle_r3;
+      
+      DSP_Tag_on_RAM_r1   <= DSP_Tag_on_RAM;
+      DSP_Tag_on_RAM_r2   <= DSP_Tag_on_RAM_r1;
+      DSP_Tag_on_RAM_r3   <= DSP_Tag_on_RAM_r2;
+      DSP_Tag_on_RAM_r4p  <= DSP_Tag_on_RAM_r2 or DSP_Tag_on_RAM_r3;
+      DSP_Tag_on_FIFO_r1  <= DSP_Tag_on_FIFO;
+      DSP_Tag_on_FIFO_r2  <= DSP_Tag_on_FIFO_r1;
+      DSP_Tag_on_FIFO_r3  <= DSP_Tag_on_FIFO_r2;
+      DSP_Tag_on_FIFO_r4p <= DSP_Tag_on_FIFO_r2 or DSP_Tag_on_FIFO_r3;
+      
+      CplD_Leng_in_Bytes_r1 <= CplD_Leng_in_Bytes;
+      
     end if;
   end process;
 
@@ -512,42 +522,13 @@ begin
   DSP_Tag_on_RAM  <= CplD_on_pool and (not CplD_Tag(C_TAG_WIDTH-1) and not CplD_Tag(C_TAG_WIDTH-2));
   DSP_Tag_on_FIFO <= CplD_on_EB and (not CplD_Tag(C_TAG_WIDTH-1) and CplD_Tag(C_TAG_WIDTH-2));
 
---
--- Delay Synchronous: MSB_DSP_Tag_r1
---
-  Syn_Delay_MSB_DSP_Tag_r1 :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      DSP_Tag_on_RAM_r1   <= DSP_Tag_on_RAM;
-      DSP_Tag_on_RAM_r2   <= DSP_Tag_on_RAM_r1;
-      DSP_Tag_on_RAM_r3   <= DSP_Tag_on_RAM_r2;
-      DSP_Tag_on_RAM_r4p  <= DSP_Tag_on_RAM_r2 or DSP_Tag_on_RAM_r3;
-      DSP_Tag_on_FIFO_r1  <= DSP_Tag_on_FIFO;
-      DSP_Tag_on_FIFO_r2  <= DSP_Tag_on_FIFO_r1;
-      DSP_Tag_on_FIFO_r3  <= DSP_Tag_on_FIFO_r2;
-      DSP_Tag_on_FIFO_r4p <= DSP_Tag_on_FIFO_r2 or DSP_Tag_on_FIFO_r3;
-    end if;
-  end process;
-
---
--- Delay Synchronous: CplD_Leng_in_Bytes
---
-  Syn_Delay_CplD_Leng_in_Bytes :
-  process (user_clk)
-  begin
-    if user_clk'event and user_clk = '1' then
-      CplD_Leng_in_Bytes_r1 <= CplD_Leng_in_Bytes;
-    end if;
-  end process;
-
 -- ---------------------------------------------
 -- Delay Synchronous Delay: RxCplDTrn_State
 --
   RxFSM_Delay_RxTrn_State :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       RxCplDTrn_State_r1 <= RxCplDTrn_State;
     end if;
   end process;
@@ -560,7 +541,7 @@ begin
   begin
     if Local_Reset_i = '1' then
       RxCplDTrn_State <= ST_CplD_RESET;
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       RxCplDTrn_State <= RxCplDTrn_NextState;
     end if;
 
@@ -757,7 +738,7 @@ begin
     if Local_Reset_i = '1' then
       Tag_Map_Clear_i <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       for j in 0 to C_TAG_MAP_WIDTH-1 loop
 
@@ -787,7 +768,7 @@ begin
       Small_CplD    <= '0';
       Small_CplD_r1 <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       Small_CplD_r1 <= Small_CplD;
 
@@ -820,7 +801,7 @@ begin
     if Local_Reset_i = '1' then
       Addr_Inc <= '1';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       case RxCplDTrn_State_r1 is
 
@@ -850,7 +831,7 @@ begin
       Reg_WrAddr_if_last_us <= (others => '0');  -- C_REGS_BASE_ADDR;
       Reg_WrAddr_if_last_ds <= (others => '0');  -- C_REGS_BASE_ADDR;
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if trn_rsof_n_i = '0' then
         Reg_WrAddr_if_last_us(C_EP_AWIDTH-2-1 downto 2) <= CONV_STD_LOGIC_VECTOR(CINT_ADDR_DMA_US_CTRL, C_EP_AWIDTH-2-2)
@@ -878,7 +859,7 @@ begin
       RegAddr_us_Dex <= (others => '1');
       RegAddr_ds_Dex <= (others => '1');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if CplD_Tag(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) /= C_TAG0_DMA_USB(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) then
         RegAddr_us_Dex <= (others => '1');
@@ -890,7 +871,6 @@ begin
                             CONV_STD_LOGIC_VECTOR(CINT_ADDR_DMA_US_PAH-1, C_DECODE_BIT_BOT) & "00";
       end if;
 
-
       if CplD_Tag(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) /= C_TAG0_DMA_DSB(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) then
         RegAddr_ds_Dex <= (others => '1');
       elsif CplD_is_the_Last = '1' then  -- ds last/2nd dex
@@ -900,7 +880,6 @@ begin
 --                                CONV_STD_LOGIC_VECTOR(CINT_ADDR_DMA_DS_PAH, C_DECODE_BIT_BOT) & "00";
                             CONV_STD_LOGIC_VECTOR(CINT_ADDR_DMA_DS_PAH-1, C_DECODE_BIT_BOT) & "00";
       end if;
-
 
     end if;
   end process;
@@ -914,7 +893,7 @@ begin
     if Local_Reset_i = '1' then
       CplD_Tag_on_Dex <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if CplD_Tag(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) = C_TAG0_DMA_USB(C_TAG_WIDTH-1 downto C_TAG_WIDTH-C_TAG_DECODE_BITS) then
         CplD_Tag_on_Dex <= '1';
@@ -938,7 +917,7 @@ begin
       Regs_WrMask_i <= (others => '0');
       Regs_WrDin_i  <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       case RxCplDTrn_State is
 
@@ -1027,7 +1006,7 @@ begin
     if Local_Reset_i = '1' then
       Regs_WrAddr_i <= (others => '1');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       case RxCplDTrn_State is
 
@@ -1076,7 +1055,7 @@ begin
       usDMA_dex_Tag_i <= C_TAG0_DMA_USB;
       dsDMA_dex_Tag_i <= C_TAG0_DMA_DSB;
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       case RxCplDTrn_State is
 
@@ -1155,7 +1134,7 @@ begin
   Syn_Delay_CplD_is_the_Last :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       CplD_is_the_Last_r1 <= CplD_is_the_Last;
     end if;
   end process;
@@ -1172,7 +1151,7 @@ begin
     if Local_Reset_i = '1' then
       Updates_tRAM <= '0';
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       Updates_tRAM <= CplD_State_is_AFetch
                       and (DSP_Tag_on_RAM_r1 or DSP_Tag_on_FIFO_r1)
@@ -1199,7 +1178,7 @@ begin
       hazard_update_r1    <= '0';
       hazard_update_r2    <= '0';
       hazard_update_r3    <= '0';
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       if Small_CplD_r1 = '1' and CplD_State_is_after_AFetch = '1' then
         hazard_update <= '1';
@@ -1231,7 +1210,7 @@ begin
   RxFSM_Delay_Updates_tRAM :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       Updates_tRAM_r1 <= Updates_tRAM;
     end if;
   end process;
@@ -1243,7 +1222,7 @@ begin
   Delay_tRAM_DoutA :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
 
       if Update_was_too_late = '1' and tag_matches_hazard = '1' then
         tRAM_DoutA_r1 <= hazard_content;
@@ -1264,7 +1243,7 @@ begin
   begin
     if Local_Reset_i = '1' then
       hazard_content <= (others => '1');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if tRAM_wea(0) = '1' then
         hazard_content <= tRAM_dina;
       else
@@ -1284,7 +1263,7 @@ begin
       tRAM_dina_aInc <= (CBIT_AINC_IN_TAGRAM => '1',
                           others             => '0'
                           );
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       tRAM_dina_aInc(C_TAGBAR_BIT_TOP downto C_TAGBAR_BIT_BOT) <= tRAM_DoutA_r1(C_TAGBAR_BIT_TOP downto C_TAGBAR_BIT_BOT);
       tRAM_dina_aInc(C_TAGBAR_BIT_BOT-1 downto 0) <= tRAM_DoutA_r1(C_TAGBAR_BIT_BOT-1 downto 0)     --C_EP_AWIDTH  !!!!!
                                                      + CplD_Leng_in_Bytes_r1(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
@@ -1307,7 +1286,7 @@ begin
   begin
     if Local_Reset_i = '1' then
       tRAM_DoutA_latch <= (CBIT_AINC_IN_TAGRAM => '1', others => '0');
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
       if CplD_State_is_AFetch_r1 = '0' then
         tRAM_DoutA_latch <= tRAM_DoutA_latch;
       elsif Update_was_too_late = '1' then
@@ -1324,146 +1303,121 @@ begin
   RxFSM_Output_DDR_Space_Hit :
   process (user_clk, Local_Reset_i)
   begin
-    if Local_Reset_i = '1' then
-      DDR_Space_Hit  <= '0';
-      DDR_wr_sof_i   <= '0';
-      DDR_wr_eof_i   <= '0';
-      DDR_wr_v_i     <= '0';
-      DDR_wr_Shift_i <= '0';
-      DDR_wr_Mask_i  <= (others => '0');
-      DDR_wr_din_i   <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case RxCplDTrn_State_r1 is
-
-        when ST_CplD_RESET =>
-          DDR_Space_Hit  <= '0';
-          DDR_wr_sof_i   <= '0';
-          DDR_wr_eof_i   <= '0';
-          DDR_wr_v_i     <= '0';
-          DDR_wr_Shift_i <= '0';
-          DDR_wr_Mask_i  <= (others => '0');
-          DDR_wr_din_i   <= (others => '0');
-
-        when ST_CplD_AFetch =>
-          if m_axis_rx_tlast_r4 = '1' then
-            DDR_Space_Hit  <= DSP_Tag_on_RAM_r1;
-            DDR_wr_sof_i   <= '0';
-            DDR_wr_eof_i   <= DSP_Tag_on_RAM_r4p;
-            DDR_wr_v_i     <= DSP_Tag_on_RAM_r4p;  -- DSP_Tag_on_RAM;  -- and not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4);
-            DDR_wr_Shift_i <= '0';
-            DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
-            DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
-          elsif DSP_Tag_on_RAM_r1 = '1' then
-            DDR_Space_Hit  <= '1';
-            DDR_wr_sof_i   <= '0';
-            DDR_wr_eof_i   <= '0';
-            DDR_wr_v_i     <= '0';      -- not trn_rx_throttle_r1;
-            DDR_wr_Shift_i <= '0';
-            DDR_wr_Mask_i  <= (others => '0');
-            DDR_wr_din_i   <= (others => '0');
-          else
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        DDR_Space_Hit <= '0';
+        ddr_s2mm_cmd_tvalid_i <= '0';
+        ddr_s2mm_tvalid_i <= '0';
+        
+      else
+      
+        ddr_s2mm_cmd_tvalid_i <= '0';
+        ddr_s2mm_tvalid_i <= '0';
+        
+        case RxCplDTrn_State_r1 is
+                
+          when ST_CplD_RESET =>
             DDR_Space_Hit  <= '0';
-            DDR_wr_sof_i   <= '0';
-            DDR_wr_eof_i   <= '0';
-            DDR_wr_v_i     <= '0';
-            DDR_wr_Shift_i <= '0';
-            DDR_wr_Mask_i  <= (others => '0');
-            DDR_wr_din_i   <= (others => '0');
-          end if;
+  
+          when ST_CplD_AFetch =>
+            ddr_s2mm_tlast <= ((m_axis_rx_tlast_r4 and ddr_s2mm_cmd_btt(2)) or
+                            (m_axis_rx_tlast_r3 and not(ddr_s2mm_cmd_btt(2)))) and DDR_Space_Hit;
+            ddr_s2mm_tvalid_i <= m_axis_rx_tvalid_r4 and DDR_Space_Hit;
+            ddr_s2mm_tdata <= m_axis_rx_tdata_Little_r3(31 downto 0) & m_axis_rx_tdata_Little_r4(63 downto 32);
+            ddr_s2mm_tkeep <= m_axis_rx_tkeep_r3(3 downto 0) & m_axis_rx_tkeep_r4(7 downto 4);
 
-        when ST_CplD_AFetch_Special =>
-          if DSP_Tag_on_RAM_r1 = '1' then
-            DDR_Space_Hit <= '1';
-          else
-            DDR_Space_Hit <= '0';
-          end if;
-          DDR_wr_sof_i   <= '0';
-          DDR_wr_eof_i   <= m_axis_rx_tlast_r4 and DDR_Space_Hit;
-          DDR_wr_v_i     <= (not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
-          DDR_wr_Shift_i <= '0';
-          DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
-          DDR_wr_Mask_i  <= '1' & not(m_axis_rx_tkeep_r4(3) and m_axis_rx_tkeep_r4(0));
-
-
-        when ST_CplD_AFetch_Special_Tail =>
-          DDR_Space_Hit <= DDR_Space_Hit;
-          DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
-          DDR_wr_eof_i  <= '0';
-          DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_Mask_i <= (others => '0');
-          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
-            DDR_wr_Shift_i <= not hazard_content(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
-          else
-            DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
-          end if;
-
-        when ST_CplD_AFetch_THROTTLE =>
-          DDR_Space_Hit  <= DDR_Space_Hit;
-          DDR_wr_sof_i   <= '0';
-          DDR_wr_eof_i   <= '0';
-          DDR_wr_v_i     <= '0';
-          DDR_wr_Shift_i <= '0';
-          DDR_wr_Mask_i  <= (others => '0');
-          DDR_wr_din_i   <= DDR_wr_din_i;
-
-        when ST_CplD_1ST_DATA =>
-          DDR_Space_Hit <= DDR_Space_Hit;
-          DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
-          DDR_wr_eof_i  <= '0';
-          DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_Mask_i <= (others => '0');
-          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
-            DDR_wr_Shift_i <= not hazard_content(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
-          elsif CplD_State_is_AFetch_r1 = '0' then
-            DDR_wr_Shift_i <= not tRAM_DoutA_latch(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_latch(32-1 downto 0);
-          else
-            DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
-          end if;
-
-        when ST_CplD_ONLY_1DW =>
-          DDR_Space_Hit <= DDR_Space_Hit;
-          DDR_wr_sof_i  <= DDR_Space_Hit;  -- '1';
-          DDR_wr_eof_i  <= '0';
-          DDR_wr_v_i    <= DDR_Space_Hit;  -- '1'; -- not trn_rx_throttle_r1;
-          DDR_wr_Mask_i <= (others => '0');
-          if Update_was_too_late = '1' and tag_matches_hazard = '1' then
-            DDR_wr_Shift_i <= not hazard_content(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & hazard_content(32-1 downto 0);
-          elsif CplD_State_is_AFetch_r1 = '0' then
-            DDR_wr_Shift_i <= not tRAM_DoutA_latch(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_latch(32-1 downto 0);
-          else
-            DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
-            DDR_wr_din_i   <= CplD_Leng_in_Bytes_r1(32-1 downto 0) & tRAM_DoutA_r1(32-1 downto 0);
-          end if;
-
-        when others =>
-          if m_axis_rx_tlast_r4 = '1' then
-            DDR_Space_Hit <= '0';
-          else
+            if DSP_Tag_on_RAM_r1 = '1' then
+              DDR_Space_Hit  <= '1';
+            else
+              DDR_Space_Hit  <= '0';
+            end if;
+  
+          when ST_CplD_AFetch_Special =>
+            ddr_s2mm_tlast <= ((m_axis_rx_tlast_r4 and ddr_s2mm_cmd_btt(2)) or
+                            (m_axis_rx_tlast_r3 and not(ddr_s2mm_cmd_btt(2)))) and DDR_Space_Hit;
+            ddr_s2mm_tvalid_i <= m_axis_rx_tvalid_r4 and DDR_Space_Hit;
+            ddr_s2mm_tdata <= m_axis_rx_tdata_Little_r3(31 downto 0) & m_axis_rx_tdata_Little_r4(63 downto 32);
+            ddr_s2mm_tkeep <= m_axis_rx_tkeep_r3(3 downto 0) & m_axis_rx_tkeep_r4(7 downto 4);
+            
+            if DSP_Tag_on_RAM_r1 = '1' then
+              DDR_Space_Hit <= '1';
+            else
+              DDR_Space_Hit <= '0';
+            end if;
+                        
+  
+          when ST_CplD_AFetch_Special_Tail =>
             DDR_Space_Hit <= DDR_Space_Hit;
-          end if;
-
-          DDR_wr_sof_i   <= '0';
-          DDR_wr_eof_i   <= m_axis_rx_tlast_r4 and DDR_Space_Hit;
-          DDR_wr_v_i     <= (DDR_wr_sof_i or not (trn_rx_throttle_r4 and not m_axis_rx_tlast_r4)) and DDR_Space_Hit;
-          DDR_wr_Shift_i <= '0';
-          DDR_wr_din_i   <= m_axis_rx_tdata_Little_r4;
-          if DDR_wr_sof_i = '1' then
-            DDR_wr_Mask_i <= "01";
-          else
-            DDR_wr_Mask_i <= not(m_axis_rx_tkeep_r4(4)) & not(m_axis_rx_tkeep_r4(0));
-          end if;
-
-      end case;
-
+            ddr_s2mm_cmd_tvalid_i <= DDR_Space_Hit;  -- '1';
+            ddr_s2mm_cmd_eof <= '1';
+            ddr_s2mm_cmd_drr <= '1';
+            if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+              --DDR_wr_Shift_i <= not hazard_content(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= hazard_content(32-1 downto 0);
+            else
+              --DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= tRAM_DoutA_r1(32-1 downto 0);
+            end if;
+  
+          when ST_CplD_AFetch_THROTTLE =>
+            DDR_Space_Hit  <= DDR_Space_Hit;
+  
+          when ST_CplD_1ST_DATA =>
+            DDR_Space_Hit <= DDR_Space_Hit;
+            ddr_s2mm_cmd_tvalid_i <= DDR_Space_Hit;  -- '1';
+            ddr_s2mm_cmd_eof <= '1';
+            ddr_s2mm_cmd_drr <= '1';
+            if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+              --DDR_wr_Shift_i <= not hazard_content(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= hazard_content(32-1 downto 0);
+            elsif CplD_State_is_AFetch_r1 = '0' then
+              --DDR_wr_Shift_i <= not tRAM_DoutA_latch(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= tRAM_DoutA_latch(32-1 downto 0);
+            else
+              --DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= tRAM_DoutA_r1(32-1 downto 0);
+            end if;
+  
+          when ST_CplD_ONLY_1DW =>
+            DDR_Space_Hit <= DDR_Space_Hit;
+            ddr_s2mm_cmd_tvalid_i <= DDR_Space_Hit;  -- '1';
+            ddr_s2mm_cmd_eof <= '1';
+            ddr_s2mm_cmd_drr <= '1';
+            if Update_was_too_late = '1' and tag_matches_hazard = '1' then
+              --DDR_wr_Shift_i <= not hazard_content(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= hazard_content(32-1 downto 0);
+            elsif CplD_State_is_AFetch_r1 = '0' then
+              --DDR_wr_Shift_i <= not tRAM_DoutA_latch(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= tRAM_DoutA_latch(32-1 downto 0);
+            else
+              --DDR_wr_Shift_i <= not tRAM_DoutA_r1(2);
+              ddr_s2mm_cmd_btt <= CplD_Leng_in_Bytes_r1(22 downto 0);
+              ddr_s2mm_cmd_saddr <= tRAM_DoutA_r1(32-1 downto 0);
+            end if;
+  
+          when others =>
+            if ((m_axis_rx_tlast_r3 and ddr_s2mm_cmd_btt(2)) or
+                (m_axis_rx_tlast_r2 and not ddr_s2mm_cmd_btt(2))) = '1' then
+              DDR_Space_Hit <= '0';
+            else
+              DDR_Space_Hit <= DDR_Space_Hit;
+            end if;
+  
+            ddr_s2mm_tlast <= ((m_axis_rx_tlast_r4 and ddr_s2mm_cmd_btt(2)) or
+                            (m_axis_rx_tlast_r3 and not(ddr_s2mm_cmd_btt(2)))) and DDR_Space_Hit;
+            ddr_s2mm_tvalid_i <= m_axis_rx_tvalid_r4 and DDR_Space_Hit;
+            ddr_s2mm_tdata <= m_axis_rx_tdata_Little_r3(31 downto 0) & m_axis_rx_tdata_Little_r4(63 downto 32);
+            ddr_s2mm_tkeep <= m_axis_rx_tkeep_r3(3 downto 0) & m_axis_rx_tkeep_r4(7 downto 4);
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -1482,7 +1436,7 @@ begin
       wb_FIFO_we_i   <= '0';
       wb_FIFO_din_i  <= (others => '0');
 
-    elsif user_clk'event and user_clk = '1' then
+    elsif rising_edge(user_clk) then
 
       case RxCplDTrn_State_r1 is
 

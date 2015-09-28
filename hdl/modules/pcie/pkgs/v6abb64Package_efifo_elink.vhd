@@ -12,9 +12,6 @@ use IEEE.STD_LOGIC_ARITH.all;
 
 package abb64Package is
 
-  -- Implemet a design with only one FIFO and only one BRAM Module: For Loopback Test!!
-  constant USE_LOOPBACK_TEST : boolean := false;
-
 -- Declare constants
 
   -- ----------------------------------------------------------------------
@@ -370,6 +367,11 @@ package abb64Package is
   -- Bit range of Wishbone address in Channel Buffer word
   constant C_CHBUF_WB_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_WB_AWIDTH;  --97;
   constant C_CHBUF_WB_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
+  
+  ------------------------------------------------------------------------
+  -- TX Mem Reader channel bit definitions
+  constant C_TXMEM_TLAST_BIT : integer := C_DBUS_WIDTH;
+  constant C_TXMEM_KEEP_BIT : integer := C_DBUS_WIDTH+6;
   ------------------------------------------------------------------------
   -- The Relaxed Ordering bit constant in TLP
   constant C_RELAXED_ORDERING : std_logic := '0';
@@ -618,7 +620,9 @@ package abb64Package is
   constant CINT_BIT_TX_DDR_TOUT_ISR : integer := 6;
   constant CINT_BIT_TX_WB_TOUT_ISR  : integer := 7;
 
-  -- The Time-out bits in System Error Register (SER)
+  -- Bits in System Error Register (SER)
+  constant CINT_BIT_DDR_S2MM_SER   : integer := 0;
+  constant CINT_BIT_DDR_MM2S_SER   : integer := 1;
   constant CINT_BIT_TX_TOUT_IN_SER : integer := 18;
   constant CINT_BIT_EB_TOUT_IN_SER : integer := 19;
   constant CINT_BIT_EB_OVERWRITTEN : integer := 20;
@@ -626,6 +630,10 @@ package abb64Package is
   -- Bit definition of msg routing method in General Control Register (GCR)
   constant C_GCR_MSG_ROUT_BIT_BOT : integer := 0;
   constant C_GCR_MSG_ROUT_BIT_TOP : integer := 2;
+  constant C_GCR_MWR_PAR_BIT_BOT : integer := 8;
+  constant C_GCR_MWR_PAR_BIT_TOP : integer := 13;
+  constant C_GCR_DDR_RST_BIT : integer := 16;
+  constant C_GCR_DDR_AXIRST_BIT : integer := 17;
 
   -- Bit definition of Data Generator available in global status register (GSR)
   constant CINT_BIT_DG_AVAIL_IN_GSR : integer := 5;
@@ -634,8 +642,11 @@ package abb64Package is
   constant CINT_BIT_DDR_RDY_GSR : integer := 7;
 
   -- Bit range of link width in GSR
-  constant CINT_BIT_LWIDTH_IN_GSR_BOT : integer := 10;  -- 16;
-  constant CINT_BIT_LWIDTH_IN_GSR_TOP : integer := 15;  -- 21;
+  constant CINT_BIT_LWIDTH_IN_GSR_BOT : integer := 10;
+  constant CINT_BIT_LWIDTH_IN_GSR_TOP : integer := 15;
+  -- Bit range of cfg_dcommand in GSR
+  constant CINT_BIT_DCOMM_IN_GSR_BOT : integer := 16;
+  constant CINT_BIT_DCOMM_IN_GSR_TOP : integer := 31;
 
   ----------------------------------------------------------------------------------
   -- Carry bit, only for better timing, used to divide 32-bit add into 2 stages
@@ -680,7 +691,7 @@ package abb64Package is
   --
   function Endian_Invert_32 (Word_in : std_logic_vector) return std_logic_vector;
   function Endian_Invert_64 (Word_in : std_logic_vector(64-1 downto 0)) return std_logic_vector;
-
+  function Endian_Invert_tkeep (tkeep_in : std_logic_vector) return std_logic_vector;
 
   ----------------------------------------------------------------------------------
   ----------------------------------------------------------------------------------
@@ -716,4 +727,19 @@ package body abb64Package is
       & Word_in(7 downto 0)&Word_in(15 downto 8)&Word_in(23 downto 16)&Word_in(31 downto 24);
   end Endian_Invert_64;
 
+  function Endian_Invert_tkeep (tkeep_in : std_logic_vector) return std_logic_vector is
+  begin
+    if tkeep_in'length = 4 then
+      return tkeep_in(0)&tkeep_in(1)&tkeep_in(2)&tkeep_in(3);
+    elsif tkeep_in'length = 8 then
+      return tkeep_in(4)&tkeep_in(5)&tkeep_in(6)&tkeep_in(7) &
+              tkeep_in(0)&tkeep_in(1)&tkeep_in(2)&tkeep_in(3);
+    else
+      return tkeep_in;
+    end if;
+    
+    assert tkeep_in'length = 4 or tkeep_in'length = 8
+    report "tkeep length must be 4 or 8"
+    severity failure;
+  end Endian_Invert_tkeep;
 end abb64Package;

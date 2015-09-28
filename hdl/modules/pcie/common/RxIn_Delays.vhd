@@ -47,7 +47,8 @@ entity RxIn_Delay is
     m_axis_rx_tvalid   : in  std_logic;
     m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
     m_axis_rx_tready   : out std_logic;
-    Pool_wrBuf_full    : in  std_logic;
+    ddr_s2mm_cmd_tready : in std_logic;
+    ddr_s2mm_tready : in std_logic;
     wb_FIFO_full       : in  std_logic;
 
     -- Delay for one clock
@@ -797,11 +798,11 @@ begin
           --will hit when *_tready_i = 0 which will cause deadlock
           if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then
             FSM_TLP_Cnt        <= TK_Idle;
-            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
+            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
                                       or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
           else
             FSM_TLP_Cnt <= TK_Body;
-            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and Pool_wrBuf_full)
+            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
                                       or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
           end if;
 
