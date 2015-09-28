@@ -325,7 +325,7 @@ architecture rtl of dbe_bpm_dsp is
   constant c_ma_rs232_syscon_id            : natural := 1;
 
   constant c_dpram_size                     : natural := 16384/4; -- in 32-bit words (16KB)
-  constant c_acq_fifo_size                  : natural := 256;
+  constant c_acq_fifo_size                  : natural := 1024;
 
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
   constant c_acq_ddr_addr_res_width         : natural := 32;
