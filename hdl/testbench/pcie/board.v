@@ -86,11 +86,11 @@ parameter DATA_BUF_ADDR_WIDTH   = 5;
 parameter DQ_CNT_WIDTH          = 6;
                                  // = ceil(log2(DQ_WIDTH))
 parameter DQ_PER_DM             = 8;
-parameter DM_WIDTH              = 4;
+parameter DM_WIDTH              = 8;
                                  // # of DM (data mask)
-parameter DQ_WIDTH              = 32;
+parameter DQ_WIDTH              = 64;
                                  // # of DQ (data)
-parameter DQS_WIDTH             = 4;
+parameter DQS_WIDTH             = 8;
 parameter DQS_CNT_WIDTH         = 3;
                                  // = ceil(log2(DQS_WIDTH))
 parameter DRAM_WIDTH            = 8;
@@ -101,14 +101,14 @@ parameter RANKS                 = 1;
                                  // # of Ranks.
 parameter ODT_WIDTH             = 1;
                                  // # of ODT outputs to memory.
-parameter ROW_WIDTH             = 16;
+parameter ROW_WIDTH             = 14;
                                  // # of memory Row Address bits.
-parameter ADDR_WIDTH            = 28;
+parameter ADDR_WIDTH            = 30;
                                  // # = RANK_WIDTH + BANK_WIDTH
                                  //     + ROW_WIDTH + COL_WIDTH;
                                  // Chip Select is always tied to low for
                                  // single rank devices
-parameter USE_CS_PORT          = 0;
+parameter USE_CS_PORT          = 1;
                                  // # = 1, When CS output is enabled
                                  //   = 0, When CS output is disabled
                                  // If CS_N disabled, user must connect
@@ -183,7 +183,7 @@ parameter CA_MIRROR             = "OFF";
 // The following parameters are multiplier and divisor factors for PLLE2.
 // Based on the selected design frequency these parameters vary.
 //***************************************************************************
-parameter CLKIN_PERIOD          = 8000;
+parameter CLKIN_PERIOD          = 5000;
                                  // Input Clock Period
 parameter CLKFBOUT_MULT         = 8;
                                  // write PLL VCO multiplier
@@ -535,20 +535,8 @@ reg           DMA_us_is_Last;
 //
 // PCI-Express Endpoint Instance
 //
-`ifdef ENABLE_GT
-parameter PIPE_SIM = "FALSE";
-parameter PIPE_SIM_MODE = "FALSE";
-defparam board.RP.rport.PIPE_SIM_MODE = "FALSE";
-`else
-parameter PIPE_SIM = "TRUE";
-parameter PIPE_SIM_MODE = "TRUE";
-defparam board.RP.rport.PIPE_SIM_MODE = "TRUE";
-`endif
 
 top # (
-  .PL_FAST_TRAIN("TRUE"),
-  .PIPE_SIM_MODE(PIPE_SIM_MODE),
-  .pcieLanes(4),
   .SIMULATION("TRUE")
 )
 EP (
@@ -794,7 +782,7 @@ endgenerate
 //
 
 // Randoms generated for process flow
-always @(posedge board.EP.bpm_pcie.user_clk) begin
+always @(posedge board.EP.bpm_pcie_i.user_clk) begin
   Op_Random[ 31:00] = $random();
   Op_Random[ 63:32] = $random();
   Op_Random[ 95:64] = $random();
@@ -812,7 +800,6 @@ initial begin
   end
 end
 
-`include "pipe_interconnect.v"
 
 initial begin
   $display("[%t] : System Reset Asserted...", $realtime);

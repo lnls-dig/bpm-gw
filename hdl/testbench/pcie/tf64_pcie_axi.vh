@@ -46,6 +46,9 @@ begin
     board.RP.cfg_usrapp.TSK_WRITE_CFG_DW(32'h00000001, 32'h00000007, 4'b1110);
     board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
 
+    board.RP.tx_usrapp.REQUESTER_ID = 'H01a0; //fix endpoint ID
+    board.RP.tx_usrapp.COMPLETER_ID_CFG = `C_HOST_CPLD_ID; //fix Root Port ID
+
     $display("\n%d ns: ####  Starting test...  ####\n", $time);
     // Initialization: TLP
     # 400
@@ -124,7 +127,7 @@ begin
       board.Rx_MWr_Tag   = board.Rx_MWr_Tag + 1;
 
     $display("\n  Wait for DDR memory core to finish calibration...");
-    wait (board.EP.bpm_pcie.ddr_calib_done == 1);
+    wait (board.EP.bpm_pcie_i.DDRs_ctrl_module.ddr_ready == 1);
 
     /////////////////////////////////////////////////////////////////////
     //                       PIO simulation                            //
@@ -185,6 +188,12 @@ begin
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
 
+	   if (P_READ_DATA != {DATA_STORE[3], DATA_STORE[2], DATA_STORE[1], DATA_STORE[0]}) begin
+	     $display("[%t] Data Mismatch Error: 1st word of received data didn't match sent pattern", $realtime);
+	     $display("\t Sent: %x, Received: %x", {DATA_STORE[3], DATA_STORE[2], DATA_STORE[1], DATA_STORE[0]}, P_READ_DATA);
+	     $finish;
+	   end
+
     //  ///////////////////////////////////////////////////////////////////
     //  PIO write & read BAR[4]
     //  NOTE:  FIFO address is 64-bit aligned, only the lower 32-bit is
@@ -213,6 +222,11 @@ begin
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
   board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
 
+	   if (P_READ_DATA != {DATA_STORE[3], DATA_STORE[2], DATA_STORE[1], DATA_STORE[0]}) begin
+	     $display("[%d ns:] Data Mismatch Error: 1st word of received data didn't match sent pattern", $time);
+	     $display("\t Sent: %x, Received: %x", {DATA_STORE[3], DATA_STORE[2], DATA_STORE[1], DATA_STORE[0]}, P_READ_DATA);
+	     $finish;
+	   end
 
     $display("%d ns: ### End PIO simulation\n", $time);
 
@@ -261,6 +275,7 @@ begin
        TLP_Feed_Rx(`C_BAR2_HIT);
        board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
     board.RP.tx_usrapp.TSK_WAIT_FOR_READ_DATA;
+
 
     board.Rx_TLP_Length = 'H01;
       $display("%d ns:   Switch DDR page", $time);
