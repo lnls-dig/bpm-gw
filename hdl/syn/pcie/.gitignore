@@ -1,0 +1,10 @@
+#Vivado working dirs
+*.cache/
+*.hw/
+*.sim/
+*.runs/
+#Vivado project
+*.xpr
+#Other crap
+*.jou
+*.log

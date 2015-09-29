@@ -1,9 +1,0 @@
- 
-
-NET "*/sys_clk_c" TNM_NET = "SYSCLK" ;
-NET "*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/clk_125mhz" TNM_NET = "CLK_125";
-
-
-TIMESPEC "TS_SYSCLK"  = PERIOD "SYSCLK" 100 MHz HIGH 50 %;
-TIMESPEC "TS_CLK_125"  = PERIOD "CLK_125" TS_SYSCLK*1.25;
-
