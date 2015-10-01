@@ -91,8 +91,7 @@ architecture Behavioral of Interrupts is
   signal msi_trigger  : std_logic;
 
   signal Irpt_RE_i   : std_logic;
-  signal Irpt_Qout_i : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0)
- := (others => '0');
+  signal Irpt_Qout_i : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0) := (others => '0');
 
   signal Msg_Tag_Lo : std_logic_vector(3 downto 0);
   signal Msg_Code   : std_logic_vector(7 downto 0);
@@ -117,7 +116,6 @@ architecture Behavioral of Interrupts is
 
   -- Interrupt Generator indicator
   signal IG_Asserting_i : std_logic;
-
 
 begin
 
@@ -162,10 +160,8 @@ begin
   Syn_Interrupts_ORed :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
-      if Sys_IRQ(C_NUM_OF_INTERRUPTS-1 downto 0)
-         = C_ALL_ZEROS(C_NUM_OF_INTERRUPTS-1 downto 0)
-      then
+    if rising_edge(user_clk) then
+      if Sys_IRQ(C_NUM_OF_INTERRUPTS-1 downto 0) = C_ALL_ZEROS(C_NUM_OF_INTERRUPTS-1 downto 0) then
         Interrupts_ORed <= '0';
       else
         Interrupts_ORed <= '1';
@@ -193,82 +189,80 @@ begin
     Msg_Code      <= (others => '0');
 
     States_Machine_Irpt :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        edge_Intrpt_State      <= IntST_RST;
-        cfg_interrupt_i        <= '0';
-        cfg_interrupt_assert_i <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        case edge_Intrpt_State is
-
-          when IntST_RST =>
-            edge_Intrpt_State      <= IntST_Idle;
-            cfg_interrupt_i        <= '0';
-            cfg_interrupt_assert_i <= '0';
-
-          when IntST_Idle =>
-            if (inta_trigger or msi_trigger) = '1' then
-              edge_Intrpt_State      <= IntST_Asserting;
-              cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
-            else
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
+          edge_Intrpt_State      <= IntST_RST;
+          cfg_interrupt_i        <= '0';
+          cfg_interrupt_assert_i <= '0';
+        else
+          case edge_Intrpt_State is
+  
+            when IntST_RST =>
               edge_Intrpt_State      <= IntST_Idle;
               cfg_interrupt_i        <= '0';
               cfg_interrupt_assert_i <= '0';
-            end if;
-
-          when IntST_Asserting =>
-            if cfg_interrupt_rdy = '0' then
-              edge_Intrpt_State      <= IntST_Asserting;
-              cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
-            else
-              if cfg_interrupt_msienable = '1' then
-                edge_Intrpt_State <= IntST_Idle;
+  
+            when IntST_Idle =>
+              if (inta_trigger or msi_trigger) = '1' then
+                edge_Intrpt_State      <= IntST_Asserting;
+                cfg_interrupt_i        <= '1';
+                cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
               else
-                edge_Intrpt_State <= IntST_Asserted;
+                edge_Intrpt_State      <= IntST_Idle;
+                cfg_interrupt_i        <= '0';
+                cfg_interrupt_assert_i <= '0';
               end if;
-              cfg_interrupt_i        <= '0';
-              cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
-            end if;
-
-          when IntST_Asserted =>
-            if Interrupts_ORed = '0' then
-              edge_Intrpt_State      <= IntST_Deasserting;
-              cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= '0';
-            else
-              edge_Intrpt_State      <= IntST_Asserted;
-              cfg_interrupt_i        <= '0';
-              cfg_interrupt_assert_i <= '1';
-            end if;
-
-          when IntST_Deasserting =>
-            if cfg_interrupt_rdy = '0' then
-              edge_Intrpt_State      <= IntST_Deasserting;
-              cfg_interrupt_i        <= '1';
-              cfg_interrupt_assert_i <= '0';
-            else
+  
+            when IntST_Asserting =>
+              if cfg_interrupt_rdy = '0' then
+                edge_Intrpt_State      <= IntST_Asserting;
+                cfg_interrupt_i        <= '1';
+                cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
+              else
+                if cfg_interrupt_msienable = '1' then
+                  edge_Intrpt_State <= IntST_Idle;
+                else
+                  edge_Intrpt_State <= IntST_Asserted;
+                end if;
+                cfg_interrupt_i        <= '0';
+                cfg_interrupt_assert_i <= not(cfg_interrupt_msienable);
+              end if;
+  
+            when IntST_Asserted =>
+              if Interrupts_ORed = '0' then
+                edge_Intrpt_State      <= IntST_Deasserting;
+                cfg_interrupt_i        <= '1';
+                cfg_interrupt_assert_i <= '0';
+              else
+                edge_Intrpt_State      <= IntST_Asserted;
+                cfg_interrupt_i        <= '0';
+                cfg_interrupt_assert_i <= '1';
+              end if;
+  
+            when IntST_Deasserting =>
+              if cfg_interrupt_rdy = '0' then
+                edge_Intrpt_State      <= IntST_Deasserting;
+                cfg_interrupt_i        <= '1';
+                cfg_interrupt_assert_i <= '0';
+              else
+                edge_Intrpt_State      <= IntST_Idle;
+                cfg_interrupt_i        <= '0';
+                cfg_interrupt_assert_i <= '0';
+              end if;
+  
+            when others =>
               edge_Intrpt_State      <= IntST_Idle;
               cfg_interrupt_i        <= '0';
               cfg_interrupt_assert_i <= '0';
-            end if;
-
-          when others =>
-            edge_Intrpt_State      <= IntST_Idle;
-            cfg_interrupt_i        <= '0';
-            cfg_interrupt_assert_i <= '0';
-
-        end case;
-
+  
+          end case;
+        end if;
       end if;
     end process;
 
   end generate;
-
 
 ----------------------------------------------
 --  Channel mode
@@ -284,100 +278,93 @@ begin
 
     -- State Machine for edge interrupts
     State_Machine_edge_Irpt :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        edge_Intrpt_State      <= IntST_RST;
-        edge_Irpt_Req_i        <= '0';
-        edge_MsgCode_is_ASSERT <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        case edge_Intrpt_State is
-
-          when IntST_RST =>
-            edge_Intrpt_State      <= IntST_Idle;
-            edge_Irpt_Req_i        <= '0';
-            edge_MsgCode_is_ASSERT <= '0';
-
-          when IntST_Idle =>
-            if Interrupts_ORed = '1' then
-              edge_Intrpt_State      <= IntST_Asserting;
-              edge_Irpt_Req_i        <= '1';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
-            else
-              edge_Intrpt_State      <= IntST_Idle;
-              edge_Irpt_Req_i        <= '0';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;
-            end if;
-
-          when IntST_Asserting =>
-            if Irpt_RE_i = '0' then
-              edge_Intrpt_State      <= IntST_Asserting;
-              edge_Irpt_Req_i        <= '1';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
-            else
-              edge_Intrpt_State      <= IntST_Asserted;
-              edge_Irpt_Req_i        <= '0';
-              edge_MsgCode_is_ASSERT <= '1';
-            end if;
-
-          when IntST_Asserted =>
-            if Interrupts_ORed = '0' then
-              edge_Intrpt_State      <= IntST_Deasserting;
-              edge_Irpt_Req_i        <= '1';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- !!
-            else
-              edge_Intrpt_State      <= IntST_Asserted;
-              edge_Irpt_Req_i        <= '0';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
-            end if;
-
-          when IntST_Deasserting =>
-            if Irpt_RE_i = '0' then
-              edge_Intrpt_State      <= IntST_Deasserting;
-              edge_Irpt_Req_i        <= '1';
-              edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '0';
-            else
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
+          edge_Intrpt_State      <= IntST_RST;
+          edge_Irpt_Req_i        <= '0';
+          edge_MsgCode_is_ASSERT <= '0';
+        else
+          case edge_Intrpt_State is
+  
+            when IntST_RST =>
               edge_Intrpt_State      <= IntST_Idle;
               edge_Irpt_Req_i        <= '0';
               edge_MsgCode_is_ASSERT <= '0';
-            end if;
-
-          when others =>
-            edge_Intrpt_State      <= IntST_Idle;
-            edge_Irpt_Req_i        <= '0';
-            edge_MsgCode_is_ASSERT <= '0';
-
-        end case;
-
+  
+            when IntST_Idle =>
+              if Interrupts_ORed = '1' then
+                edge_Intrpt_State      <= IntST_Asserting;
+                edge_Irpt_Req_i        <= '1';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
+              else
+                edge_Intrpt_State      <= IntST_Idle;
+                edge_Irpt_Req_i        <= '0';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;
+              end if;
+  
+            when IntST_Asserting =>
+              if Irpt_RE_i = '0' then
+                edge_Intrpt_State      <= IntST_Asserting;
+                edge_Irpt_Req_i        <= '1';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
+              else
+                edge_Intrpt_State      <= IntST_Asserted;
+                edge_Irpt_Req_i        <= '0';
+                edge_MsgCode_is_ASSERT <= '1';
+              end if;
+  
+            when IntST_Asserted =>
+              if Interrupts_ORed = '0' then
+                edge_Intrpt_State      <= IntST_Deasserting;
+                edge_Irpt_Req_i        <= '1';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- !!
+              else
+                edge_Intrpt_State      <= IntST_Asserted;
+                edge_Irpt_Req_i        <= '0';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '1';
+              end if;
+  
+            when IntST_Deasserting =>
+              if Irpt_RE_i = '0' then
+                edge_Intrpt_State      <= IntST_Deasserting;
+                edge_Irpt_Req_i        <= '1';
+                edge_MsgCode_is_ASSERT <= edge_MsgCode_is_ASSERT;  -- '0';
+              else
+                edge_Intrpt_State      <= IntST_Idle;
+                edge_Irpt_Req_i        <= '0';
+                edge_MsgCode_is_ASSERT <= '0';
+              end if;
+  
+            when others =>
+              edge_Intrpt_State      <= IntST_Idle;
+              edge_Irpt_Req_i        <= '0';
+              edge_MsgCode_is_ASSERT <= '0';
+  
+          end case;
+        end if;
       end if;
     end process;
-
-
-
 
     --  Tag of Msg TLP increments
     Sync_Msg_Tag_Increment :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        Msg_Tag_Lo <= (others => '0');
-
-      elsif user_clk'event and user_clk = '1' then
-        if Irpt_RE_i = '1' then
-          Msg_Tag_Lo <= Msg_Tag_Lo + '1';
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
+          Msg_Tag_Lo <= (others => '0');
         else
-          Msg_Tag_Lo <= Msg_Tag_Lo;
+          if Irpt_RE_i = '1' then
+            Msg_Tag_Lo <= Msg_Tag_Lo + '1';
+          else
+            Msg_Tag_Lo <= Msg_Tag_Lo;
+          end if;
         end if;
-
       end if;
     end process;
 
-
   end generate;  -- Gen_Chan_MSI: if not USE_CFG_INTERRUPT
-
-
   --
   --------------      Generate Interrupt Generator       ------------------
   --
@@ -390,144 +377,132 @@ begin
 -- -------------------------------------------------------
 -- FSM: generating interrupts
     FSM_Generate_Interrupts :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Counter <= (others => '0');
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
-          IG_Counter <= (others => '0');
-        elsif IG_Counter /= C_ALL_ZEROS(C_CNT_GINT_WIDTH-1 downto 0) then
-          IG_Counter <= IG_Counter - '1';
-        elsif IG_Run = '0' then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Counter <= (others => '0');
         else
-          IG_Counter <= IG_Latency(C_CNT_GINT_WIDTH-1 downto 0);
+          if IG_Reset = '1' then
+            IG_Counter <= (others => '0');
+          elsif IG_Counter /= C_ALL_ZEROS(C_CNT_GINT_WIDTH-1 downto 0) then
+            IG_Counter <= IG_Counter - '1';
+          elsif IG_Run = '0' then
+            IG_Counter <= (others => '0');
+          else
+            IG_Counter <= IG_Latency(C_CNT_GINT_WIDTH-1 downto 0);
+          end if;
         end if;
-
       end if;
     end process;
-
 
 -- -------------------------------------------------------
 -- Issuing: Interrupt trigger
     Synch_Interrupt_Trigger :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Trigger_i <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Trigger_i <= '0';
-        elsif IG_Counter = CONV_STD_LOGIC_VECTOR(1, C_CNT_GINT_WIDTH) then
-          IG_Trigger_i <= '1';
         else
-          IG_Trigger_i <= '0';
+          if IG_Reset = '1' then
+            IG_Trigger_i <= '0';
+          elsif IG_Counter = CONV_STD_LOGIC_VECTOR(1, C_CNT_GINT_WIDTH) then
+            IG_Trigger_i <= '1';
+          else
+            IG_Trigger_i <= '0';
+          end if;
         end if;
-
       end if;
     end process;
-
 
 -- -------------------------------------------------------
 -- register: IG_Run
     Synch_IG_Run :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Run <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
-          IG_Run <= '0';
-        elsif IG_Latency(C_DBUS_WIDTH-1 downto 2) = C_ALL_ZEROS(C_DBUS_WIDTH-1 downto 2) then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Run <= '0';
         else
-          IG_Run <= '1';
+          if IG_Reset = '1' then
+            IG_Run <= '0';
+          elsif IG_Latency(C_DBUS_WIDTH-1 downto 2) = C_ALL_ZEROS(C_DBUS_WIDTH-1 downto 2) then
+            IG_Run <= '0';
+          else
+            IG_Run <= '1';
+          end if;
         end if;
-
       end if;
     end process;
-
 
 -- -----------------------------------------------
 -- Synchronous Register: IG_Num_Assert_i
     SysReg_IntGen_Number_of_Assert :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Num_Assert_i <= (others => '0');
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Num_Assert_i <= (others => '0');
-        elsif IG_Trigger_i = '1' then
-          IG_Num_Assert_i <= IG_Num_Assert_i + '1';
         else
-          IG_Num_Assert_i <= IG_Num_Assert_i;
+          if IG_Reset = '1' then
+            IG_Num_Assert_i <= (others => '0');
+          elsif IG_Trigger_i = '1' then
+            IG_Num_Assert_i <= IG_Num_Assert_i + '1';
+          else
+            IG_Num_Assert_i <= IG_Num_Assert_i;
+          end if;
         end if;
-
       end if;
     end process;
-
 
 -- -----------------------------------------------
 -- Synchronous Register: IG_Num_Deassert_i
     SysReg_IntGen_Number_of_Deassert :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Num_Deassert_i <= (others => '0');
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Num_Deassert_i <= (others => '0');
-        elsif IG_Host_Clear = '1' and IG_Asserting_i = '1' then
-          IG_Num_Deassert_i <= IG_Num_Deassert_i + '1';
         else
-          IG_Num_Deassert_i <= IG_Num_Deassert_i;
+          if IG_Reset = '1' then
+            IG_Num_Deassert_i <= (others => '0');
+          elsif IG_Host_Clear = '1' and IG_Asserting_i = '1' then
+            IG_Num_Deassert_i <= IG_Num_Deassert_i + '1';
+          else
+            IG_Num_Deassert_i <= IG_Num_Deassert_i;
+          end if;
         end if;
-
       end if;
     end process;
-
 
 -- -----------------------------------------------
 -- Synchronous Register: IG_Asserting_i
     SysReg_IntGen_IG_Asserting_i :
-    process (user_clk, user_reset)
+    process (user_clk)
     begin
-      if user_reset = '1' then
-        IG_Asserting_i <= '0';
-
-      elsif user_clk'event and user_clk = '1' then
-
-        if IG_Reset = '1' then
-          IG_Asserting_i <= '0';
-        elsif IG_Asserting_i = '0' and IG_Trigger_i = '1' then
-          IG_Asserting_i <= '1';
-        elsif IG_Asserting_i = '0' and IG_Trigger_i = '0' then
-          IG_Asserting_i <= '0';
-        elsif IG_Asserting_i = '1' and IG_Host_Clear = '0' then
-          IG_Asserting_i <= '1';
-        elsif IG_Asserting_i = '1' and IG_Host_Clear = '1' then
+      if rising_edge(user_clk) then
+        if user_reset = '1' then
           IG_Asserting_i <= '0';
         else
-          IG_Asserting_i <= IG_Asserting_i;
+          if IG_Reset = '1' then
+            IG_Asserting_i <= '0';
+          elsif IG_Asserting_i = '0' and IG_Trigger_i = '1' then
+            IG_Asserting_i <= '1';
+          elsif IG_Asserting_i = '0' and IG_Trigger_i = '0' then
+            IG_Asserting_i <= '0';
+          elsif IG_Asserting_i = '1' and IG_Host_Clear = '0' then
+            IG_Asserting_i <= '1';
+          elsif IG_Asserting_i = '1' and IG_Host_Clear = '1' then
+            IG_Asserting_i <= '0';
+          else
+            IG_Asserting_i <= IG_Asserting_i;
+          end if;
         end if;
-
       end if;
     end process;
 
   end generate;
-
 
   --
   --------------    No Generation of Interrupt Generator     ----------------

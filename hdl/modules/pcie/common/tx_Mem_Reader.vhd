@@ -677,7 +677,6 @@ begin
     end if;
   end process;
 
-
 -----------------------------------------------------
 -- Synchronous Delay: mbuf_writes
 --
@@ -698,7 +697,6 @@ begin
       wb_FIFO_RdEn_Mask_r2 <= wb_FIFO_RdEn_Mask_r1;
     end if;
   end process;
-
 
 --------------------------------------------------------------------------
 --  Wires to be OR'ed to build mbuf_Din

@@ -36,34 +36,15 @@ entity top is
     pci_exp_txp : out std_logic_vector(c_pcielanes-1 downto 0);
     pci_exp_txn : out std_logic_vector(c_pcielanes-1 downto 0);
     -- Necessity signals
-    ddr_sys_clk_p : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
-    ddr_sys_clk_n : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
-    sys_clk_p     : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
-    sys_clk_n     : in std_logic; --100 MHz PCIe Clock
+    ddr_sys_clk_p : in std_logic;
+    ddr_sys_clk_n : in std_logic;
+    pci_sys_clk_p : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
+    pci_sys_clk_n : in std_logic; --100 MHz PCIe Clock
     sys_rst_n     : in std_logic --Reset to PCIe core
     );
 end entity top;
 
 architecture arch of top is
-
-  -- WISHBONE SLAVE interface:
-  -- Single-Port RAM with Asynchronous Read
-  --
-  component WB_MEM is
-    generic(
-      AWIDTH : natural range 2 to 29 := 7;
-      DWIDTH : natural range 8 to 128 := 64
-    );
-    port(
-      CLK_I : in  std_logic;
-      ACK_O : out std_logic;
-      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
-      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
-      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
-      STB_I : in  std_logic;
-      WE_I  : in  std_logic
-    );
-  end component;
 
   signal ddr_sys_rst_i  : std_logic;
   signal ddr_axi_aclk_o : std_logic;
@@ -109,8 +90,8 @@ begin
       -- Necessity signals
       ddr_sys_clk_p => ddr_sys_clk_p,
       ddr_sys_clk_n => ddr_sys_clk_n,
-      sys_clk_p     => sys_clk_p,
-      sys_clk_n     => sys_clk_n,
+      pci_sys_clk_p => pci_sys_clk_p,
+      pci_sys_clk_n => pci_sys_clk_n,
       sys_rst_n     => sys_rst_n,
 
       -- DDR memory controller AXI4 interface --
@@ -180,7 +161,7 @@ begin
 
   Wishbone_mem_large: if (SIMULATION = "TRUE") generate
     wb_mem_sim :
-      wb_mem
+      entity work.wb_mem
         generic map(
           AWIDTH => 16,
           DWIDTH => 64
@@ -199,7 +180,7 @@ begin
 
   Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
     wb_mem_syn :
-      wb_mem
+      entity work.wb_mem
         generic map(
           AWIDTH => 7,
           DWIDTH => 64

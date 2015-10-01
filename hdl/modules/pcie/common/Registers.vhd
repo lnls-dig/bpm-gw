@@ -86,7 +86,6 @@ entity Regs_Group is
     dsDMA_Channel_Rst : out std_logic;
     dsDMA_Cmd_Ack     : in  std_logic;
 
-
     -- Upstream DMA transferred bytes count up
     us_DMA_Bytes_Add : in std_logic;
     us_DMA_Bytes     : in std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
@@ -258,7 +257,6 @@ architecture Behavioral of Regs_Group is
   signal DMA_us_Status_o_Lo       : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal DMA_us_Transf_Bytes_o_Lo : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
-
   -- System Interrupt Status/Control
   signal Sys_IRQ_i           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal Sys_Int_Status_i    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -347,7 +345,6 @@ architecture Behavioral of Regs_Group is
   signal dsDMA_Channel_Rst_i : std_logic;
   signal ds_Param_Modified   : std_logic;
 
-
   -- Upstream Registers
   signal DMA_us_PA_i           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal DMA_us_HA_i           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -366,7 +363,6 @@ architecture Behavioral of Regs_Group is
   -- Calculation in advance, for better timing
   signal usLeng_Hi19b_True_i : std_logic;
   signal usLeng_Lo7b_True_i  : std_logic;
-
 
   -- Upstream Control Signals
   signal usDMA_Start_i       : std_logic;
@@ -509,27 +505,26 @@ begin
 -- -----------------------------------------------
 -- Synchronous Registered: IG_Latency_i
     SysReg_IntGen_Latency :
-    process (user_clk, user_lnk_up)
+    process (user_clk)
     begin
-      if user_lnk_up = '0' then
-        IG_Latency_i <= (others => '0');
-
-      elsif rising_edge(user_clk) then
-
-        if IG_Reset_i = '1' then
+      if rising_edge(user_clk) then
+        if user_lnk_up = '0' then
           IG_Latency_i <= (others => '0');
-        elsif Regs_WrEn_r2 = '1'
-          and Reg_WrMuxer_Hi(CINT_ADDR_IG_LATENCY) = '1'
-        then
-          IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-        elsif Regs_WrEn_r2 = '1'
-          and Reg_WrMuxer_Lo(CINT_ADDR_IG_LATENCY) = '1'
-        then
-          IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
         else
-          IG_Latency_i <= IG_Latency_i;
+          if IG_Reset_i = '1' then
+            IG_Latency_i <= (others => '0');
+          elsif Regs_WrEn_r2 = '1'
+            and Reg_WrMuxer_Hi(CINT_ADDR_IG_LATENCY) = '1'
+          then
+            IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+          elsif Regs_WrEn_r2 = '1'
+            and Reg_WrMuxer_Lo(CINT_ADDR_IG_LATENCY) = '1'
+          then
+            IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            IG_Latency_i <= IG_Latency_i;
+          end if;
         end if;
-
       end if;
     end process;
 
@@ -554,16 +549,15 @@ begin
 -- Synchronous Delay : Sys_IRQ_i
 --
   Synch_Delay_Sys_IRQ :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Sys_IRQ_i <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-      Sys_IRQ_i(C_NUM_OF_INTERRUPTS-1 downto 0)
- <= Sys_Int_Enable_i(C_NUM_OF_INTERRUPTS-1 downto 0)
-        and Sys_Int_Status_i(C_NUM_OF_INTERRUPTS-1 downto 0);
-
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Sys_IRQ_i <= (others => '0');
+      else
+        Sys_IRQ_i(C_NUM_OF_INTERRUPTS-1 downto 0) <= Sys_Int_Enable_i(C_NUM_OF_INTERRUPTS-1 downto 0)
+                                                    and Sys_Int_Status_i(C_NUM_OF_INTERRUPTS-1 downto 0);
+      end if;
     end if;
   end process;
 
@@ -626,7 +620,6 @@ begin
     end if;
   end process;
 
-
 -- ----------------------------------------------
 -- Synchronous Delay : Regs_WrDin_i
 --
@@ -663,7 +656,6 @@ begin
       else
         WrDin_r2_not_Zero_Hi <= '1';
       end if;
-
 
       if Regs_WrDin_i(31 downto 24) = C_ALL_ZEROS(31 downto 24) then
         WrDin_r1_not_Zero_Lo(3) <= '0';
@@ -766,48 +758,36 @@ begin
 -- ---------------------------------------
 --
   Write_DMA_Registers_Mux :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Reg_WrMuxer_Hi <= (others => '0');
-      Reg_WrMuxer_Lo <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-
-      if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-        -- and
-        Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(0, C_DECODE_BIT_BOT-2)
-        -- and Regs_WrAddr_r1(2-1 downto 0)="00"
-      then
-        Reg_WrMuxer_Hi(0) <= not Regs_WrMask_r1(1);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Reg_WrMuxer_Hi <= (others => '0');
+        Reg_WrMuxer_Lo <= (others => '0');
       else
-        Reg_WrMuxer_Hi(0) <= '0';
+      
+        if Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(0, C_DECODE_BIT_BOT-2) then
+          Reg_WrMuxer_Hi(0) <= not Regs_WrMask_r1(1);
+        else
+          Reg_WrMuxer_Hi(0) <= '0';
+        end if;
+  
+        for k in 1 to C_NUM_OF_ADDRESSES-1 loop
+  
+          if  Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k, C_DECODE_BIT_BOT-2) then
+            Reg_WrMuxer_Hi(k) <= not Regs_WrMask_r1(1);
+          else
+            Reg_WrMuxer_Hi(k) <= '0';
+          end if;
+  
+          if  Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k-1, C_DECODE_BIT_BOT-2) then
+            Reg_WrMuxer_Lo(k) <= not Regs_WrMask_r1(0);
+          else
+            Reg_WrMuxer_Lo(k) <= '0';
+          end if;
+  
+        end loop;
       end if;
-
-      for k in 1 to C_NUM_OF_ADDRESSES-1 loop
-
-        if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          -- and
-          Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k, C_DECODE_BIT_BOT-2)
-          -- and Regs_WrAddr_r1(2-1 downto 0)="00"
-        then
-          Reg_WrMuxer_Hi(k) <= not Regs_WrMask_r1(1);
-        else
-          Reg_WrMuxer_Hi(k) <= '0';
-        end if;
-
-        if  -- Regs_WrAddr_r1(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)=C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          -- and
-          Regs_WrAddr_r1(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k-1, C_DECODE_BIT_BOT-2)
-          -- and Regs_WrAddr_r1(2-1 downto 0)="00"
-        then
-          Reg_WrMuxer_Lo(k) <= not Regs_WrMask_r1(0);
-        else
-          Reg_WrMuxer_Lo(k) <= '0';
-        end if;
-
-      end loop;
-
     end if;
   end process;
 
@@ -818,24 +798,24 @@ begin
 -- -------------------------------------------------------
 -- Synchronous Registered: Sys_Int_Enable_i
   SysReg_Sys_Int_Enable :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Sys_Int_Enable_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_IRQ_EN) = '1'
-      then
-        Sys_Int_Enable_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_IRQ_EN) = '1'
-      then
-        Sys_Int_Enable_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Sys_Int_Enable_i <= (others => '0');
       else
-        Sys_Int_Enable_i <= Sys_Int_Enable_i;
+        if Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_IRQ_EN) = '1'
+        then
+          Sys_Int_Enable_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_IRQ_EN) = '1'
+        then
+          Sys_Int_Enable_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+        else
+          Sys_Int_Enable_i <= Sys_Int_Enable_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -845,24 +825,24 @@ begin
 -- -------------------------------------------------------
 -- Synchronous Registered: wb_pg
   SDRAM_Addr_page :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      sdram_pg_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
-      then
-        sdram_pg_i <= Regs_WrDin_r2(64-1 downto 32);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
-      then
-        sdram_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        sdram_pg_i <= (others => '0');
       else
-        sdram_pg_i <= sdram_pg_i;
+        if Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_SDRAM_PG) = '1'
+        then
+          sdram_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_SDRAM_PG) = '1'
+        then
+          sdram_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+        else
+          sdram_pg_i <= sdram_pg_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -872,24 +852,24 @@ begin
 -- -------------------------------------------------------
 -- Synchronous Registered: wb_pg_i
   Wishbone_addr_page :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      wb_pg_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_WB_PG) = '1'
-      then
-        wb_pg_i <= Regs_WrDin_r2(64-1 downto 32);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_WB_PG) = '1'
-      then
-        wb_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        wb_pg_i <= (others => '0');
       else
-        wb_pg_i <= wb_pg_i;
+        if Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_WB_PG) = '1'
+        then
+          wb_pg_i <= Regs_WrDin_r2(64-1 downto 32);
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_WB_PG) = '1'
+        then
+          wb_pg_i <= Regs_WrDin_r2(32-1 downto 0);
+        else
+          wb_pg_i <= wb_pg_i;
+        end if;
       end if;
-
     end if;
   end process;
 --  -----------------------------------------------
@@ -898,475 +878,451 @@ begin
 -- -----------------------------------------------
 -- Synchronous Registered: General_Control
   SysReg_General_Control :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      General_Control_i <= (others => '0');
-      General_Control_i(C_GCR_MSG_ROUT_BIT_TOP downto C_GCR_MSG_ROUT_BIT_BOT)
-        <= C_TYPE_OF_MSG(C_TLP_TYPE_BIT_BOT+C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT
-                         downto C_TLP_TYPE_BIT_BOT);
-
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_CONTROL) = '1'
-      then
-        General_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_CONTROL) = '1'
-      then
-        General_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        General_Control_i <= (others => '0');
+        General_Control_i(C_GCR_MSG_ROUT_BIT_TOP downto C_GCR_MSG_ROUT_BIT_BOT)
+          <= C_TYPE_OF_MSG(C_TLP_TYPE_BIT_BOT+C_GCR_MSG_ROUT_BIT_TOP-C_GCR_MSG_ROUT_BIT_BOT
+                           downto C_TLP_TYPE_BIT_BOT);
       else
-        General_Control_i <= General_Control_i;
+        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_CONTROL) = '1' then
+          General_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_CONTROL) = '1' then
+          General_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+        else
+          General_Control_i <= General_Control_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -----------------------------------------------
 -- Synchronous Registered: IG_Control_i
   SysReg_IntGen_Control :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      IG_Control_i    <= (others => '0');
-      IG_Reset_i      <= '1';
-      IG_Host_Clear_i <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_IG_CONTROL) = '1'
-      then
-        IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-        IG_Reset_i                  <= Command_is_Reset_Hi;
-        IG_Host_Clear_i             <= Command_is_Host_iClr_Hi;
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_IG_CONTROL) = '1'
-      then
-        IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        IG_Reset_i                  <= Command_is_Reset_Lo;
-        IG_Host_Clear_i             <= Command_is_Host_iClr_Lo;
-      else
-        IG_Control_i    <= IG_Control_i;
-        IG_Reset_i      <= '0';
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        IG_Control_i    <= (others => '0');
+        IG_Reset_i      <= '1';
         IG_Host_Clear_i <= '0';
+      else
+        if Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_IG_CONTROL) = '1'
+        then
+          IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+          IG_Reset_i                  <= Command_is_Reset_Hi;
+          IG_Host_Clear_i             <= Command_is_Host_iClr_Hi;
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_IG_CONTROL) = '1'
+        then
+          IG_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          IG_Reset_i                  <= Command_is_Reset_Lo;
+          IG_Host_Clear_i             <= Command_is_Host_iClr_Lo;
+        else
+          IG_Control_i    <= IG_Control_i;
+          IG_Reset_i      <= '0';
+          IG_Host_Clear_i <= '0';
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -----------------------------------------------
 -- Synchronous Registered: IG_Latency_i
   SysReg_IntGen_Latency :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      IG_Latency_i <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-
-      if IG_Reset_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         IG_Latency_i <= (others => '0');
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_IG_LATENCY) = '1'
-      then
-        IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-      elsif Regs_WrEn_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_IG_LATENCY) = '1'
-      then
-        IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
       else
-        IG_Latency_i <= IG_Latency_i;
+        if IG_Reset_i = '1' then
+          IG_Latency_i <= (others => '0');
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_IG_LATENCY) = '1'
+        then
+          IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+        elsif Regs_WrEn_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_IG_LATENCY) = '1'
+        then
+          IG_Latency_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+        else
+          IG_Latency_i <= IG_Latency_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 --  ------------------------------------------------------
 --  DMA Upstream Registers
 --  ------------------------------------------------------
-
 -- -------------------------------------------------------
 -- Synchronous Registered: DMA_us_PA_i
   RxTrn_DMA_us_PA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_PA_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_us_PA_i <= (others => '0');
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAH) = '1' then
-          DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(64-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAH) = '1' then
-          DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+        if usDMA_Channel_Rst_i = '1' then
+          DMA_us_PA_i <= (others => '0');
         else
-          DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32);
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAH) = '1' then
+            DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(64-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAH) = '1' then
+            DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_PA_i(C_DBUS_WIDTH-1 downto 32);
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAL) = '1' then
+            DMA_us_PA_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAL) = '1' then
+            DMA_us_PA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_us_PA_i(32-1 downto 0) <= DMA_us_PA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAL) = '1' then
-          DMA_us_PA_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAL) = '1' then
-          DMA_us_PA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_us_PA_i(32-1 downto 0) <= DMA_us_PA_i(32-1 downto 0);
-        end if;
-
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous Registered: DMA_us_HA_i
   RxTrn_DMA_us_HA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_HA_i   <= (others => '1');
-      usHA_is_64b_i <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_us_HA_i   <= (others => '1');
         usHA_is_64b_i <= '0';
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAH) = '1' then
-          DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(64-1 downto 32);
-          usHA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAH) = '1' then
-          DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
-          usHA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+        if usDMA_Channel_Rst_i = '1' then
+          DMA_us_HA_i   <= (others => '1');
+          usHA_is_64b_i <= '0';
         else
-          DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32);
-          usHA_is_64b_i                         <= usHA_is_64b_i;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAH) = '1' then
+            DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(64-1 downto 32);
+            usHA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAH) = '1' then
+            DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+            usHA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+          else
+            DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_HA_i(C_DBUS_WIDTH-1 downto 32);
+            usHA_is_64b_i                         <= usHA_is_64b_i;
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAL) = '1' then
+            DMA_us_HA_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAL) = '1' then
+            DMA_us_HA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_us_HA_i(32-1 downto 0) <= DMA_us_HA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAL) = '1' then
-          DMA_us_HA_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAL) = '1' then
-          DMA_us_HA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_us_HA_i(32-1 downto 0) <= DMA_us_HA_i(32-1 downto 0);
-        end if;
-
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_us_BDA_i
   Syn_Output_DMA_us_BDA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_BDA_i   <= (others => '0');
-      usBDA_is_64b_i <= '0';
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_us_BDA_i   <= (others => '0');
         usBDA_is_64b_i <= '0';
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAH) = '1' then
-          DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-          usBDA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAH) = '1' then
-          DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
-          usBDA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+        if usDMA_Channel_Rst_i = '1' then
+          DMA_us_BDA_i   <= (others => '0');
+          usBDA_is_64b_i <= '0';
         else
-          DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32);
-          usBDA_is_64b_i                         <= usBDA_is_64b_i;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAH) = '1' then
+            DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+            usBDA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAH) = '1' then
+            DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+            usBDA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+          else
+            DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_us_BDA_i(C_DBUS_WIDTH-1 downto 32);
+            usBDA_is_64b_i                         <= usBDA_is_64b_i;
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAL) = '1' then
+            DMA_us_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAL) = '1' then
+            DMA_us_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_us_BDA_i(32-1 downto 0) <= DMA_us_BDA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAL) = '1' then
-          DMA_us_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAL) = '1' then
-          DMA_us_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_us_BDA_i(32-1 downto 0) <= DMA_us_BDA_i(32-1 downto 0);
-        end if;
-
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous Registered: DMA_us_Length_i
   RxTrn_DMA_us_Length :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_Length_i     <= (others => '0');
-      usLeng_Hi19b_True_i <= '0';
-      usLeng_Lo7b_True_i  <= '0';
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_us_Length_i     <= (others => '0');
         usLeng_Hi19b_True_i <= '0';
         usLeng_Lo7b_True_i  <= '0';
-
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_LENG) = '1' then
-        DMA_us_Length_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
-        usLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_hq_r2;
-        usLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_hq_r2;
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_LENG) = '1' then
-        DMA_us_Length_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        usLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_lq_r2;
-        usLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_lq_r2;
       else
-        DMA_us_Length_i     <= DMA_us_Length_i;
-        usLeng_Hi19b_True_i <= usLeng_Hi19b_True_i;
-        usLeng_Lo7b_True_i  <= usLeng_Lo7b_True_i;
-
+        if usDMA_Channel_Rst_i = '1' then
+          DMA_us_Length_i     <= (others => '0');
+          usLeng_Hi19b_True_i <= '0';
+          usLeng_Lo7b_True_i  <= '0';
+  
+        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_LENG) = '1' then
+          DMA_us_Length_i(32-1 downto 0) <= Regs_WrDin_r2(64-1 downto 32);
+          usLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_hq_r2;
+          usLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_hq_r2;
+        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_LENG) = '1' then
+          DMA_us_Length_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          usLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_lq_r2;
+          usLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_lq_r2;
+        else
+          DMA_us_Length_i     <= DMA_us_Length_i;
+          usLeng_Hi19b_True_i <= usLeng_Hi19b_True_i;
+          usLeng_Lo7b_True_i  <= usLeng_Lo7b_True_i;
+  
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous us_Param_Modified
   SynReg_us_Param_Modified :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      us_Param_Modified <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1'
-        or usDMA_Start_i = '1'
-        or usDMA_Start2_i = '1'
-      then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         us_Param_Modified <= '0';
-      elsif Regs_WrEn_r2 = '1' and
-        (
-          Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAH) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAH) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAH) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAH) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_LENG) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_LENG) = '1'
-          )
-      then
-        us_Param_Modified <= '1';
       else
-        us_Param_Modified <= us_Param_Modified;
-
+        if usDMA_Channel_Rst_i = '1'
+          or usDMA_Start_i = '1'
+          or usDMA_Start2_i = '1'
+        then
+          us_Param_Modified <= '0';
+        elsif Regs_WrEn_r2 = '1' and
+          (
+            Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_PAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_PAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAH) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAH) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_HAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_HAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAH) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAH) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_BDAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_BDAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_LENG) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_LENG) = '1'
+            )
+        then
+          us_Param_Modified <= '1';
+        else
+          us_Param_Modified <= us_Param_Modified;
+  
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_us_Control_i
   Syn_Output_DMA_us_Control :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_Control_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if Regs_Wr_dma_V_nE_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        DMA_us_Control_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32)& X"00";
-      elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        DMA_us_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8)& X"00";
-      elsif Regs_Wr_dma_nV_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='0'
-      then
-        DMA_us_Control_i(32-1 downto 0) <= Last_Ctrl_Word_us(32-1 downto 0);
-      elsif Regs_Wr_dma_nV_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='0'
-      then
-        DMA_us_Control_i(32-1 downto 0) <= Last_Ctrl_Word_us(32-1 downto 0);
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        DMA_us_Control_i <= (others => '0');
       else
-        DMA_us_Control_i <= DMA_us_Control_i;
+        if Regs_Wr_dma_V_nE_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          DMA_us_Control_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32)& X"00";
+        elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          DMA_us_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8)& X"00";
+        elsif Regs_Wr_dma_nV_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+        then
+          DMA_us_Control_i(32-1 downto 0) <= Last_Ctrl_Word_us(32-1 downto 0);
+        elsif Regs_Wr_dma_nV_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+        then
+          DMA_us_Control_i(32-1 downto 0) <= Last_Ctrl_Word_us(32-1 downto 0);
+        else
+          DMA_us_Control_i <= DMA_us_Control_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous Register: Last_Ctrl_Word_us
   Hold_Last_Ctrl_Word_us :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Last_Ctrl_Word_us <= C_DEF_DMA_CTRL_WORD;
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         Last_Ctrl_Word_us <= C_DEF_DMA_CTRL_WORD;
-      elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
-      elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
-      elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
-      elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and us_Param_Modified = '1'
-        and usDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
       else
-        Last_Ctrl_Word_us <= Last_Ctrl_Word_us;
+        if usDMA_Channel_Rst_i = '1' then
+          Last_Ctrl_Word_us <= C_DEF_DMA_CTRL_WORD;
+        elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
+        elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
+        elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
+        elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and us_Param_Modified = '1'
+          and usDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_us(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
+        else
+          Last_Ctrl_Word_us <= Last_Ctrl_Word_us;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_us_Start_Stop
   Syn_Output_DMA_us_Start_Stop :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      usDMA_Start_i <= '0';
-      usDMA_Stop_i  <= '0';
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
-      then
-        usDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
-                         and not usDMA_Stop_i
-                         and not Command_is_Reset_Hi
-                         and us_Param_Modified;
-        usDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
-                        and not Command_is_Reset_Hi;
-      elsif Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
-      then
-        usDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
-                         and not usDMA_Stop_i
-                         and not Command_is_Reset_Lo
-                         and us_Param_Modified;
-        usDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
-                        and not Command_is_Reset_Lo;
-      elsif Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
-      then
-        usDMA_Start_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END)
-                         and us_Param_Modified;
-        usDMA_Stop_i <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-      elsif Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
-      then
-        usDMA_Start_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END)
-                         and us_Param_Modified;
-        usDMA_Stop_i <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-      elsif usDMA_Cmd_Ack = '1'
-      then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         usDMA_Start_i <= '0';
-        usDMA_Stop_i  <= usDMA_Stop_i;
+        usDMA_Stop_i  <= '0';
       else
-        usDMA_Start_i <= usDMA_Start_i;
-        usDMA_Stop_i  <= usDMA_Stop_i;
+        if Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
+        then
+          usDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
+                           and not usDMA_Stop_i
+                           and not Command_is_Reset_Hi
+                           and us_Param_Modified;
+          usDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
+                          and not Command_is_Reset_Hi;
+        elsif Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
+        then
+          usDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
+                           and not usDMA_Stop_i
+                           and not Command_is_Reset_Lo
+                           and us_Param_Modified;
+          usDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
+                          and not Command_is_Reset_Lo;
+        elsif Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
+        then
+          usDMA_Start_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END)
+                           and us_Param_Modified;
+          usDMA_Stop_i <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+        elsif Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
+        then
+          usDMA_Start_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END)
+                           and us_Param_Modified;
+          usDMA_Stop_i <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+        elsif usDMA_Cmd_Ack = '1'
+        then
+          usDMA_Start_i <= '0';
+          usDMA_Stop_i  <= usDMA_Stop_i;
+        else
+          usDMA_Start_i <= usDMA_Start_i;
+          usDMA_Stop_i  <= usDMA_Stop_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_us_Start2_Stop2
   Syn_Output_DMA_us_Start2_Stop2 :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      usDMA_Start2_i <= '0';
-      usDMA_Stop2_i  <= '0';
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         usDMA_Start2_i <= '0';
         usDMA_Stop2_i  <= '0';
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
-      then
-        usDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
-        usDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Lo;
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
-      then
-        usDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
-        usDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
-      then
-        usDMA_Start2_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-        usDMA_Stop2_i  <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
-      then
-        usDMA_Start2_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-        usDMA_Stop2_i  <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
-      elsif usDMA_Cmd_Ack = '1' then
-        usDMA_Start2_i <= '0';
-        usDMA_Stop2_i  <= usDMA_Stop2_i;
       else
-        usDMA_Start2_i <= usDMA_Start2_i;
-        usDMA_Stop2_i  <= usDMA_Stop2_i;
+        if usDMA_Channel_Rst_i = '1' then
+          usDMA_Start2_i <= '0';
+          usDMA_Stop2_i  <= '0';
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
+        then
+          usDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
+          usDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Lo;
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
+        then
+          usDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
+          usDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
+        then
+          usDMA_Start2_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+          usDMA_Stop2_i  <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
+        then
+          usDMA_Start2_i <= not Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+          usDMA_Stop2_i  <= Last_Ctrl_Word_us(CINT_BIT_DMA_CTRL_END);
+        elsif usDMA_Cmd_Ack = '1' then
+          usDMA_Start2_i <= '0';
+          usDMA_Stop2_i  <= usDMA_Stop2_i;
+        else
+          usDMA_Start2_i <= usDMA_Start2_i;
+          usDMA_Stop2_i  <= usDMA_Stop2_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -1377,357 +1333,337 @@ begin
 -- -------------------------------------------------------
 -- Synchronous Registered: DMA_ds_PA_i
   RxTrn_DMA_ds_PA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_PA_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_ds_PA_i <= (others => '0');
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAH) = '1' then
-          DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAH) = '1' then
-          DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+        if dsDMA_Channel_Rst_i = '1' then
+          DMA_ds_PA_i <= (others => '0');
         else
-          DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32);
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAH) = '1' then
+            DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAH) = '1' then
+            DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_PA_i(C_DBUS_WIDTH-1 downto 32);
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAL) = '1' then
+            DMA_ds_PA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAL) = '1' then
+            DMA_ds_PA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_ds_PA_i(32-1 downto 0) <= DMA_ds_PA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAL) = '1' then
-          DMA_ds_PA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAL) = '1' then
-          DMA_ds_PA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_ds_PA_i(32-1 downto 0) <= DMA_ds_PA_i(32-1 downto 0);
-        end if;
-
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous Registered: DMA_ds_HA_i
   RxTrn_DMA_ds_HA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_HA_i   <= (others => '1');
-      dsHA_is_64b_i <= '0';
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_ds_HA_i   <= (others => '1');
         dsHA_is_64b_i <= '0';
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAH) = '1' then
-          DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-          dsHA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAH) = '1' then
-          DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
-          dsHA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+        if dsDMA_Channel_Rst_i = '1' then
+          DMA_ds_HA_i   <= (others => '1');
+          dsHA_is_64b_i <= '0';
         else
-          DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32);
-          dsHA_is_64b_i                         <= dsHA_is_64b_i;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAH) = '1' then
+            DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+            dsHA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAH) = '1' then
+            DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+            dsHA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+          else
+            DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_HA_i(C_DBUS_WIDTH-1 downto 32);
+            dsHA_is_64b_i                         <= dsHA_is_64b_i;
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAL) = '1' then
+            DMA_ds_HA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAL) = '1' then
+            DMA_ds_HA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_ds_HA_i(32-1 downto 0) <= DMA_ds_HA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAL) = '1' then
-          DMA_ds_HA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAL) = '1' then
-          DMA_ds_HA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_ds_HA_i(32-1 downto 0) <= DMA_ds_HA_i(32-1 downto 0);
-        end if;
-
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_ds_BDA_i
   Syn_Output_DMA_ds_BDA :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_BDA_i   <= (others => '0');
-      dsBDA_is_64b_i <= '0';
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_ds_BDA_i   <= (others => '0');
         dsBDA_is_64b_i <= '0';
       else
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAH) = '1' then
-          DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-          dsBDA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAH) = '1' then
-          DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
-          dsBDA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+        if dsDMA_Channel_Rst_i = '1' then
+          DMA_ds_BDA_i   <= (others => '0');
+          dsBDA_is_64b_i <= '0';
         else
-          DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32);
-          dsBDA_is_64b_i                         <= dsBDA_is_64b_i;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAH) = '1' then
+            DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+            dsBDA_is_64b_i                         <= WrDin_r2_not_Zero_Hi;
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAH) = '1' then
+            DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= Regs_WrDin_r2(32-1 downto 0);
+            dsBDA_is_64b_i                         <= WrDin_r2_not_Zero_Lo;
+          else
+            DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32) <= DMA_ds_BDA_i(C_DBUS_WIDTH-1 downto 32);
+            dsBDA_is_64b_i                         <= dsBDA_is_64b_i;
+          end if;
+  
+          if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAL) = '1' then
+            DMA_ds_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAL) = '1' then
+            DMA_ds_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          else
+            DMA_ds_BDA_i(32-1 downto 0) <= DMA_ds_BDA_i(32-1 downto 0);
+          end if;
+  
         end if;
-
-        if Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAL) = '1' then
-          DMA_ds_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAL) = '1' then
-          DMA_ds_BDA_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        else
-          DMA_ds_BDA_i(32-1 downto 0) <= DMA_ds_BDA_i(32-1 downto 0);
-        end if;
-
       end if;
     end if;
   end process;
 
 -- Synchronous Registered: DMA_ds_Length_i
   RxTrn_DMA_ds_Length :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_Length_i     <= (others => '0');
-      dsLeng_Hi19b_True_i <= '0';
-      dsLeng_Lo7b_True_i  <= '0';
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_ds_Length_i     <= (others => '0');
         dsLeng_Hi19b_True_i <= '0';
         dsLeng_Lo7b_True_i  <= '0';
-
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_LENG) = '1' then
-        DMA_ds_Length_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
-        dsLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_hq_r2;
-        dsLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_hq_r2;
-      elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_LENG) = '1' then
-        DMA_ds_Length_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
-        dsLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_lq_r2;
-        dsLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_lq_r2;
       else
-        DMA_ds_Length_i     <= DMA_ds_Length_i;
-        dsLeng_Hi19b_True_i <= dsLeng_Hi19b_True_i;
-        dsLeng_Lo7b_True_i  <= dsLeng_Lo7b_True_i;
-
+        if dsDMA_Channel_Rst_i = '1' then
+          DMA_ds_Length_i     <= (others => '0');
+          dsLeng_Hi19b_True_i <= '0';
+          dsLeng_Lo7b_True_i  <= '0';
+  
+        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_LENG) = '1' then
+          DMA_ds_Length_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 32);
+          dsLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_hq_r2;
+          dsLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_hq_r2;
+        elsif Regs_WrEn_r2 = '1' and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_LENG) = '1' then
+          DMA_ds_Length_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 0);
+          dsLeng_Hi19b_True_i            <= Regs_WrDin_Hi19b_True_lq_r2;
+          dsLeng_Lo7b_True_i             <= Regs_WrDin_Lo7b_True_lq_r2;
+        else
+          DMA_ds_Length_i     <= DMA_ds_Length_i;
+          dsLeng_Hi19b_True_i <= dsLeng_Hi19b_True_i;
+          dsLeng_Lo7b_True_i  <= dsLeng_Lo7b_True_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous ds_Param_Modified
   SynReg_ds_Param_Modified :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      ds_Param_Modified <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1'
-        or dsDMA_Start_i = '1'
-        or dsDMA_Start2_i = '1'
-      then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         ds_Param_Modified <= '0';
-      elsif Regs_WrEn_r2 = '1' and
-        (
---                    Reg_WrMuxer(CINT_ADDR_DMA_DS_PAH) ='1'
---                 or
-          Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAH) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAH) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAH) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAH) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAL) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAL) = '1'
-          or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_LENG) = '1'
-          or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_LENG) = '1'
-          )
-      then
-        ds_Param_Modified <= '1';
       else
-        ds_Param_Modified <= ds_Param_Modified;
-
+        if dsDMA_Channel_Rst_i = '1' or dsDMA_Start_i = '1' or dsDMA_Start2_i = '1' then
+          ds_Param_Modified <= '0';
+        elsif Regs_WrEn_r2 = '1' and
+          (Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_PAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_PAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAH) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAH) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_HAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_HAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAH) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAH) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_BDAL) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_BDAL) = '1'
+            or Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_LENG) = '1'
+            or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_LENG) = '1'
+            )
+        then
+          ds_Param_Modified <= '1';
+        else
+          ds_Param_Modified <= ds_Param_Modified;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_ds_Control_i
   Syn_Output_DMA_ds_Control :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_Control_i <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-
-      if Regs_Wr_dma_V_nE_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32)='1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)='0'
-        and ds_Param_Modified = '1'
-        and dsDMA_Stop_i = '0'
-      then
-        DMA_ds_Control_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32)& X"00";
-      elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and ds_Param_Modified = '1'
-        and dsDMA_Stop_i = '0'
-      then
-        DMA_ds_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8)& X"00";
-      elsif Regs_Wr_dma_nV_Hi_r2 = '1'
-        and (Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1' or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1')
---            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='0'
-      then
-        DMA_ds_Control_i <= Last_Ctrl_Word_ds;
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        DMA_ds_Control_i <= (others => '0');
       else
-        DMA_ds_Control_i <= DMA_ds_Control_i;
+        if Regs_Wr_dma_V_nE_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and ds_Param_Modified = '1'
+          and dsDMA_Stop_i = '0'
+        then
+          DMA_ds_Control_i(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32)& X"00";
+        elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and ds_Param_Modified = '1'
+          and dsDMA_Stop_i = '0'
+        then
+          DMA_ds_Control_i(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8)& X"00";
+        elsif Regs_Wr_dma_nV_Hi_r2 = '1'
+          and (Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1' or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1')
+        then
+          DMA_ds_Control_i <= Last_Ctrl_Word_ds;
+        else
+          DMA_ds_Control_i <= DMA_ds_Control_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous Register: Last_Ctrl_Word_ds
   Hold_Last_Ctrl_Word_ds :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Last_Ctrl_Word_ds <= C_DEF_DMA_CTRL_WORD;
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         Last_Ctrl_Word_ds <= C_DEF_DMA_CTRL_WORD;
-      elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)='0'
-        and ds_Param_Modified = '1'
-        and dsDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_ds(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
-      elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)='1'
---          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)='0'
-        and ds_Param_Modified = '1'
-        and dsDMA_Stop_i = '0'
-      then
-        Last_Ctrl_Word_ds(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
       else
-        Last_Ctrl_Word_ds <= Last_Ctrl_Word_ds;
+        if dsDMA_Channel_Rst_i = '1' then
+          Last_Ctrl_Word_ds <= C_DEF_DMA_CTRL_WORD;
+        elsif Regs_Wr_dma_V_nE_Hi_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and ds_Param_Modified = '1'
+          and dsDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_ds(32-1 downto 0) <= Regs_WrDin_r2(C_DBUS_WIDTH-1 downto 8+32) & X"00";
+        elsif Regs_Wr_dma_V_nE_Lo_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and ds_Param_Modified = '1'
+          and dsDMA_Stop_i = '0'
+        then
+          Last_Ctrl_Word_ds(32-1 downto 0) <= Regs_WrDin_r2(32-1 downto 8) & X"00";
+        else
+          Last_Ctrl_Word_ds <= Last_Ctrl_Word_ds;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_ds_Start_Stop
   Syn_Output_DMA_ds_Start_Stop :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      dsDMA_Start_i <= '0';
-      dsDMA_Stop_i  <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
-      then
-        dsDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
-                         and not dsDMA_Stop_i
-                         and not Command_is_Reset_Hi
-                         and ds_Param_Modified;
-        dsDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
-                        and not Command_is_Reset_Hi;
-      elsif Regs_WrEnA_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
-      then
-        dsDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
-                         and not dsDMA_Stop_i
-                         and not Command_is_Reset_Lo
-                         and ds_Param_Modified;
-        dsDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
-                        and not Command_is_Reset_Lo;
-      elsif Regs_WrEnA_r2 = '1'
-        and (Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1' or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1')
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
-      then
-        dsDMA_Start_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END)
-                         and ds_Param_Modified;
-        dsDMA_Stop_i <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
-      elsif dsDMA_Cmd_Ack = '1'
-      then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         dsDMA_Start_i <= '0';
-        dsDMA_Stop_i  <= dsDMA_Stop_i;
+        dsDMA_Stop_i  <= '0';
       else
-        dsDMA_Start_i <= dsDMA_Start_i;
-        dsDMA_Stop_i  <= dsDMA_Stop_i;
+        if Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
+        then
+          dsDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
+                           and not dsDMA_Stop_i
+                           and not Command_is_Reset_Hi
+                           and ds_Param_Modified;
+          dsDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32)
+                          and not Command_is_Reset_Hi;
+        elsif Regs_WrEnA_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
+        then
+          dsDMA_Start_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
+                           and not dsDMA_Stop_i
+                           and not Command_is_Reset_Lo
+                           and ds_Param_Modified;
+          dsDMA_Stop_i <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END)
+                          and not Command_is_Reset_Lo;
+        elsif Regs_WrEnA_r2 = '1'
+          and (Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1' or Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1')
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
+        then
+          dsDMA_Start_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END)
+                           and ds_Param_Modified;
+          dsDMA_Stop_i <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
+        elsif dsDMA_Cmd_Ack = '1'
+        then
+          dsDMA_Start_i <= '0';
+          dsDMA_Stop_i  <= dsDMA_Stop_i;
+        else
+          dsDMA_Start_i <= dsDMA_Start_i;
+          dsDMA_Stop_i  <= dsDMA_Stop_i;
+        end if;
       end if;
-
     end if;
   end process;
 
 -- -------------------------------------------------------
 -- Synchronous output: DMA_ds_Start2_Stop2
   Syn_Output_DMA_ds_Start2_Stop2 :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      dsDMA_Start2_i <= '0';
-      dsDMA_Stop2_i  <= '0';
-
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         dsDMA_Start2_i <= '0';
         dsDMA_Stop2_i  <= '0';
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
-      then
-        dsDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
-        dsDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
-      then
-        dsDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
-        dsDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
-      then
-        dsDMA_Start2_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
-        dsDMA_Stop2_i  <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
-      elsif Regs_WrEnB_r2 = '1'
-        and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
-        and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
-      then
-        dsDMA_Start2_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
-        dsDMA_Stop2_i  <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
-      elsif dsDMA_Cmd_Ack = '1' then
-        dsDMA_Start2_i <= '0';
-        dsDMA_Stop2_i  <= dsDMA_Stop2_i;
       else
-        dsDMA_Start2_i <= dsDMA_Start2_i;
-        dsDMA_Stop2_i  <= dsDMA_Stop2_i;
+        if dsDMA_Channel_Rst_i = '1' then
+          dsDMA_Start2_i <= '0';
+          dsDMA_Stop2_i  <= '0';
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '1'
+        then
+          dsDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
+          dsDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END+32) and not Command_is_Reset_Hi;
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '1'
+        then
+          dsDMA_Start2_i <= not Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
+          dsDMA_Stop2_i  <= Regs_WrDin_r2(CINT_BIT_DMA_CTRL_END) and not Command_is_Reset_Lo;
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32) = '0'
+        then
+          dsDMA_Start2_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
+          dsDMA_Stop2_i  <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
+        elsif Regs_WrEnB_r2 = '1'
+          and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL) = '1'
+          and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID) = '0'
+        then
+          dsDMA_Start2_i <= not Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
+          dsDMA_Stop2_i  <= Last_Ctrl_Word_ds(CINT_BIT_DMA_CTRL_END);
+        elsif dsDMA_Cmd_Ack = '1' then
+          dsDMA_Start2_i <= '0';
+          dsDMA_Stop2_i  <= dsDMA_Stop2_i;
+        else
+          dsDMA_Start2_i <= dsDMA_Start2_i;
+          dsDMA_Stop2_i  <= dsDMA_Stop2_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -1739,23 +1675,24 @@ begin
 -- Identification: Command_is_Reset
 --
   Synch_Capture_Command_is_Reset :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Command_is_Reset_Hi <= '0';
-      Command_is_Reset_Lo <= '0';
-
-    elsif rising_edge(user_clk) then
-      if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_CHANNEL_RST_BITS then
-        Command_is_Reset_Hi <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         Command_is_Reset_Hi <= '0';
-      end if;
-
-      if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1 downto 0) = C_CHANNEL_RST_BITS then
-        Command_is_Reset_Lo <= '1';
-      else
         Command_is_Reset_Lo <= '0';
+      else
+        if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_CHANNEL_RST_BITS then
+          Command_is_Reset_Hi <= '1';
+        else
+          Command_is_Reset_Hi <= '0';
+        end if;
+  
+        if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1 downto 0) = C_CHANNEL_RST_BITS then
+          Command_is_Reset_Lo <= '1';
+        else
+          Command_is_Reset_Lo <= '0';
+        end if;
       end if;
     end if;
   end process;
@@ -1764,23 +1701,24 @@ begin
 -- Identification: Command_is_Host_iClr
 --
   Synch_Capture_Command_is_Host_iClr :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Command_is_Host_iClr_Hi <= '0';
-      Command_is_Host_iClr_Lo <= '0';
-
-    elsif rising_edge(user_clk) then
-      if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_HOST_ICLR_BITS then
-        Command_is_Host_iClr_Hi <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         Command_is_Host_iClr_Hi <= '0';
-      end if;
-
-      if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1 downto 0) = C_HOST_ICLR_BITS then
-        Command_is_Host_iClr_Lo <= '1';
-      else
         Command_is_Host_iClr_Lo <= '0';
+      else
+        if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1+32 downto 32) = C_HOST_ICLR_BITS then
+          Command_is_Host_iClr_Hi <= '1';
+        else
+          Command_is_Host_iClr_Hi <= '0';
+        end if;
+  
+        if Regs_WrDin_r1(C_FEAT_BITS_WIDTH-1 downto 0) = C_HOST_ICLR_BITS then
+          Command_is_Host_iClr_Lo <= '1';
+        else
+          Command_is_Host_iClr_Lo <= '0';
+        end if;
       end if;
     end if;
   end process;
@@ -1791,20 +1729,17 @@ begin
   Syn_Output_usDMA_Channel_Rst :
   process (user_clk, user_lnk_up)
   begin
-    if user_lnk_up = '0' then
-      usDMA_Channel_Rst_i <= '1';
-    elsif rising_edge(user_clk) then
-
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        usDMA_Channel_Rst_i <= '1';
+      else
       usDMA_Channel_Rst_i <= (Regs_Wr_dma_V_Hi_r2
                               and Reg_WrMuxer_Hi(CINT_ADDR_DMA_US_CTRL)
---                            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32)
-                              and Command_is_Reset_Hi
-                              )
+                              and Command_is_Reset_Hi)
                              or (Regs_Wr_dma_V_LO_r2
                                  and Reg_WrMuxer_Lo(CINT_ADDR_DMA_US_CTRL)
---                            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)
-                                 and Command_is_Reset_Lo
-                                 );
+                                 and Command_is_Reset_Lo);
+      end if;
     end if;
   end process;
 
@@ -1812,23 +1747,20 @@ begin
 -- Synchronous output: dsDMA_Channel_Rst_i
 --
   Syn_Output_dsDMA_Channel_Rst :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      dsDMA_Channel_Rst_i <= '1';
-    elsif rising_edge(user_clk) then
-
-      dsDMA_Channel_Rst_i <= (Regs_Wr_dma_V_Hi_r2
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        dsDMA_Channel_Rst_i <= '1';
+      else
+        dsDMA_Channel_Rst_i <= (Regs_Wr_dma_V_Hi_r2
                               and Reg_WrMuxer_Hi(CINT_ADDR_DMA_DS_CTRL)
---                            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID+32)
-                              and Command_is_Reset_Hi
-                              )
+                              and Command_is_Reset_Hi)
                              or
                              (Regs_Wr_dma_V_Lo_r2
                               and Reg_WrMuxer_Lo(CINT_ADDR_DMA_DS_CTRL)
---                            and Regs_WrDin_r2(CINT_BIT_DMA_CTRL_VALID)
-                              and Command_is_Reset_Lo
-                              );
+                              and Command_is_Reset_Lo);
+      end if;
     end if;
   end process;
 
@@ -1836,20 +1768,19 @@ begin
 -- Synchronous output: MRd_Channel_Rst_i
 --
   Syn_Output_MRd_Channel_Rst :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      MRd_Channel_Rst_i <= '1';
-    elsif rising_edge(user_clk) then
-
-      MRd_Channel_Rst_i <= Regs_WrEn_r2
-                           and (
-                             (Reg_WrMuxer_Hi(CINT_ADDR_MRD_CTRL)
-                              and Command_is_Reset_Hi)
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        MRd_Channel_Rst_i <= '1';
+      else
+        MRd_Channel_Rst_i <= Regs_WrEn_r2
+                           and ((Reg_WrMuxer_Hi(CINT_ADDR_MRD_CTRL)
+                                and Command_is_Reset_Hi)
                              or
                              (Reg_WrMuxer_Lo(CINT_ADDR_MRD_CTRL)
-                              and Command_is_Reset_Lo)
-                             );
+                              and Command_is_Reset_Lo));
+      end if;
     end if;
   end process;
 
@@ -1857,17 +1788,18 @@ begin
 -- Synchronous output: Tx_Reset_i
 --
   Syn_Output_Tx_Reset :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Tx_Reset_i <= '1';
-      tx_reset_dly <= (others => '1');
-    elsif rising_edge(user_clk) then
-
-      Tx_Reset_i <= or_reduce(tx_reset_dly);
-      tx_reset_dly(5 downto 0) <= tx_reset_dly(4 downto 0) & (Regs_WrEn_r2
-                              and ((Reg_WrMuxer_Hi(CINT_ADDR_TX_CTRL) and Command_is_Reset_Hi)
-                              or (Reg_WrMuxer_Lo(CINT_ADDR_TX_CTRL) and Command_is_Reset_Lo)));
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Tx_Reset_i <= '1';
+        tx_reset_dly <= (others => '1');
+      else
+        Tx_Reset_i <= or_reduce(tx_reset_dly);
+        tx_reset_dly(5 downto 0) <= tx_reset_dly(4 downto 0) & (Regs_WrEn_r2
+                                and ((Reg_WrMuxer_Hi(CINT_ADDR_TX_CTRL) and Command_is_Reset_Hi)
+                                or (Reg_WrMuxer_Lo(CINT_ADDR_TX_CTRL) and Command_is_Reset_Lo)));
+      end if;
     end if;
   end process;
 
@@ -1877,15 +1809,16 @@ begin
   Syn_Output_wb_FIFO_Rst :
   process (user_clk, user_lnk_up)
   begin
-    if user_lnk_up = '0' then
-      wb_FIFO_Rst_i  <= '1';
-      wb_FIFO_Rst_dly <= (others => '1');
-    elsif rising_edge(user_clk) then
-
-      wb_FIFO_Rst_i  <= or_reduce(wb_FIFO_Rst_dly);
-      wb_FIFO_Rst_dly <= wb_FIFO_Rst_dly(5 downto 0) & (Regs_WrEn_r2
-                        and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON) and Command_is_Reset_Hi)
-                             or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON) and Command_is_Reset_Lo)));
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        wb_FIFO_Rst_i  <= '1';
+        wb_FIFO_Rst_dly <= (others => '1');
+      else
+        wb_FIFO_Rst_i  <= or_reduce(wb_FIFO_Rst_dly);
+        wb_FIFO_Rst_dly <= wb_FIFO_Rst_dly(5 downto 0) & (Regs_WrEn_r2
+                          and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON) and Command_is_Reset_Hi)
+                               or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON) and Command_is_Reset_Lo)));
+      end if;
     end if;
   end process;
 
@@ -1893,18 +1826,19 @@ begin
 -- Synchronous Calculation: DMA_us_Transf_Bytes
 --
   Syn_Calc_DMA_us_Transf_Bytes :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_us_Transf_Bytes_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if usDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_us_Transf_Bytes_i <= (others => '0');
-      elsif us_DMA_Bytes_Add = '1' then
-        DMA_us_Transf_Bytes_i(32-1 downto 0) <= DMA_us_Transf_Bytes_i(32-1 downto 0) + us_DMA_Bytes;
       else
-        DMA_us_Transf_Bytes_i <= DMA_us_Transf_Bytes_i;
+        if usDMA_Channel_Rst_i = '1' then
+          DMA_us_Transf_Bytes_i <= (others => '0');
+        elsif us_DMA_Bytes_Add = '1' then
+          DMA_us_Transf_Bytes_i(32-1 downto 0) <= DMA_us_Transf_Bytes_i(32-1 downto 0) + us_DMA_Bytes;
+        else
+          DMA_us_Transf_Bytes_i <= DMA_us_Transf_Bytes_i;
+        end if;
       end if;
     end if;
   end process;
@@ -1913,18 +1847,19 @@ begin
 -- Synchronous Calculation: DMA_ds_Transf_Bytes
 --
   Syn_Calc_DMA_ds_Transf_Bytes :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      DMA_ds_Transf_Bytes_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-
-      if dsDMA_Channel_Rst_i = '1' then
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
         DMA_ds_Transf_Bytes_i <= (others => '0');
-      elsif ds_DMA_Bytes_Add = '1' then
-        DMA_ds_Transf_Bytes_i(32-1 downto 0) <= DMA_ds_Transf_Bytes_i(32-1 downto 0) + ds_DMA_Bytes;
       else
-        DMA_ds_Transf_Bytes_i <= DMA_ds_Transf_Bytes_i;
+        if dsDMA_Channel_Rst_i = '1' then
+          DMA_ds_Transf_Bytes_i <= (others => '0');
+        elsif ds_DMA_Bytes_Add = '1' then
+          DMA_ds_Transf_Bytes_i(32-1 downto 0) <= DMA_ds_Transf_Bytes_i(32-1 downto 0) + ds_DMA_Bytes;
+        else
+          DMA_ds_Transf_Bytes_i <= DMA_ds_Transf_Bytes_i;
+        end if;
       end if;
     end if;
   end process;
@@ -1937,44 +1872,43 @@ begin
 -- Synch Register:  Read Selection
 --
   Tx_DMA_Reg_RdMuxer :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Reg_RdMuxer_Hi <= (others => '0');
-      Reg_RdMuxer_Lo <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-
-      for k in 0 to C_NUM_OF_ADDRESSES-1 loop
-        if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k, C_DECODE_BIT_BOT-2)
-          and Regs_RdAddr_i(2-1 downto 0) = "00"
-        then
-          Reg_RdMuxer_Hi(k) <= '1';
-        else
-          Reg_RdMuxer_Hi(k) <= '0';
-        end if;
-      end loop;
-
-      if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_ALL_ONES(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-        and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = C_ALL_ONES(C_DECODE_BIT_BOT-1 downto 2)
-        and Regs_RdAddr_i(2-1 downto 0) = "00"
-      then
-        Reg_RdMuxer_Lo(0) <= '1';
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Reg_RdMuxer_Hi <= (others => '0');
+        Reg_RdMuxer_Lo <= (others => '0');
       else
-        Reg_RdMuxer_Lo(0) <= '0';
-      end if;
-      for k in 1 to C_NUM_OF_ADDRESSES-1 loop
-        if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
-          and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k-1, C_DECODE_BIT_BOT-2)
+        for k in 0 to C_NUM_OF_ADDRESSES-1 loop
+          if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
+            and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k, C_DECODE_BIT_BOT-2)
+            and Regs_RdAddr_i(2-1 downto 0) = "00"
+          then
+            Reg_RdMuxer_Hi(k) <= '1';
+          else
+            Reg_RdMuxer_Hi(k) <= '0';
+          end if;
+        end loop;
+  
+        if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_ALL_ONES(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
+          and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = C_ALL_ONES(C_DECODE_BIT_BOT-1 downto 2)
           and Regs_RdAddr_i(2-1 downto 0) = "00"
         then
-          Reg_RdMuxer_Lo(k) <= '1';
+          Reg_RdMuxer_Lo(0) <= '1';
         else
-          Reg_RdMuxer_Lo(k) <= '0';
+          Reg_RdMuxer_Lo(0) <= '0';
         end if;
-      end loop;
-
+        for k in 1 to C_NUM_OF_ADDRESSES-1 loop
+          if Regs_RdAddr_i(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT) = C_REGS_BASE_ADDR(C_DECODE_BIT_TOP downto C_DECODE_BIT_BOT)
+            and Regs_RdAddr_i(C_DECODE_BIT_BOT-1 downto 2) = CONV_STD_LOGIC_VECTOR(k-1, C_DECODE_BIT_BOT-2)
+            and Regs_RdAddr_i(2-1 downto 0) = "00"
+          then
+            Reg_RdMuxer_Lo(k) <= '1';
+          else
+            Reg_RdMuxer_Lo(k) <= '0';
+          end if;
+        end loop;
+      end if;
     end if;
   end process;
 
@@ -2258,15 +2192,17 @@ begin
   --  System Error
   --------------------------------------------------------------------------
   Synch_Sys_Error_i :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Sys_Error_i         <= (others => '0');
-    elsif rising_edge(user_clk) then
-      Sys_Error_i(CINT_BIT_DDR_S2MM_SER) <= ddr_s2mm_err;
-      Sys_Error_i(CINT_BIT_DDR_MM2S_SER) <= ddr_mm2s_err;
-      Sys_Error_i(CINT_BIT_TX_TOUT_IN_SER) <= Tx_TimeOut;
-      Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_wb_TimeOut;
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Sys_Error_i <= (others => '0');
+      else
+        Sys_Error_i(CINT_BIT_DDR_S2MM_SER) <= ddr_s2mm_err;
+        Sys_Error_i(CINT_BIT_DDR_MM2S_SER) <= ddr_mm2s_err;
+        Sys_Error_i(CINT_BIT_TX_TOUT_IN_SER) <= Tx_TimeOut;
+        Sys_Error_i(CINT_BIT_EB_TOUT_IN_SER) <= Tx_wb_TimeOut;
+      end if;
     end if;
   end process;
 
@@ -2274,14 +2210,16 @@ begin
   --  General Status and Control
   --------------------------------------------------------------------------
   Synch_General_Status_i :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      General_Status_i <= (others => '0');
-    elsif rising_edge(user_clk) then
-      General_Status_i(CINT_BIT_DCOMM_IN_GSR_TOP downto CINT_BIT_DCOMM_IN_GSR_BOT)   <= cfg_dcommand;
-      General_Status_i(CINT_BIT_LWIDTH_IN_GSR_TOP downto CINT_BIT_LWIDTH_IN_GSR_BOT) <= pcie_link_width;
-      General_Status_i(CINT_BIT_DDR_RDY_GSR)                                         <= ddr_sdram_ready;
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        General_Status_i <= (others => '0');
+      else
+        General_Status_i(CINT_BIT_DCOMM_IN_GSR_TOP downto CINT_BIT_DCOMM_IN_GSR_BOT)   <= cfg_dcommand;
+        General_Status_i(CINT_BIT_LWIDTH_IN_GSR_TOP downto CINT_BIT_LWIDTH_IN_GSR_BOT) <= pcie_link_width;
+        General_Status_i(CINT_BIT_DDR_RDY_GSR)                                         <= ddr_sdram_ready;
+      end if;
     end if;
   end process;
 
@@ -2340,89 +2278,84 @@ begin
 -- Sequential : Regs_RdQout_i
 --
   Synch_Regs_RdQout :
-  process (user_clk, user_lnk_up)
+  process (user_clk)
   begin
-    if user_lnk_up = '0' then
-      Regs_RdQout_i <= (others => '0');
-
-    elsif rising_edge(user_clk) then
-
-      Regs_RdQout_i(64-1 downto 32) <=
-        HW_Version_o_Hi (32-1 downto 0)
-
-        or Sys_Error_o_Hi (32-1 downto 0)
-        or General_Status_o_Hi (32-1 downto 0)
-        or General_Control_o_Hi(32-1 downto 0)
-        or sdram_pg_o_hi(32-1 downto 0)
-        or wb_pg_o_hi(32-1 downto 0)
-
-        or Sys_Int_Status_o_Hi (32-1 downto 0)
-        or Sys_Int_Enable_o_Hi (32-1 downto 0)
-
---                              or  DMA_us_PA_o_Hi      (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_PA_o_Hi (32-1 downto 0)
-        or DMA_us_HA_o_Hi (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_HA_o_Hi (32-1 downto 0)
-        or DMA_us_BDA_o_Hi (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_BDA_o_Hi (32-1 downto 0)
-        or DMA_us_Length_o_Hi (32-1 downto 0)
-        or DMA_us_Control_o_Hi (32-1 downto 0)
-        or DMA_us_Status_o_Hi (32-1 downto 0)
-        or DMA_us_Transf_Bytes_o_Hi (32-1 downto 0)
-
---                              or  DMA_ds_PA_o_Hi      (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_PA_o_Hi (32-1 downto 0)
-        or DMA_ds_HA_o_Hi (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_HA_o_Hi (32-1 downto 0)
-        or DMA_ds_BDA_o_Hi (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_BDA_o_Hi (32-1 downto 0)
-        or DMA_ds_Length_o_Hi (32-1 downto 0)
-        or DMA_ds_Control_o_Hi (32-1 downto 0)
-        or DMA_ds_Status_o_Hi (32-1 downto 0)
-        or DMA_ds_Transf_Bytes_o_Hi (32-1 downto 0)
-
-        or IG_Latency_o_Hi (32-1 downto 0)
-        or IG_Num_Assert_o_Hi (32-1 downto 0)
-        or IG_Num_Deassert_o_Hi(32-1 downto 0);
-
-      Regs_RdQout_i(32-1 downto 0) <=
-        HW_Version_o_Lo (32-1 downto 0)
-
-        or Sys_Error_o_Lo (32-1 downto 0)
-        or General_Status_o_Lo (32-1 downto 0)
-        or General_Control_o_Lo(32-1 downto 0)
-        or sdram_pg_o_lo(32-1 downto 0)
-        or wb_pg_o_lo(32-1 downto 0)
-
-        or Sys_Int_Status_o_Lo (32-1 downto 0)
-        or Sys_Int_Enable_o_Lo (32-1 downto 0)
-
---                              or  DMA_us_PA_o_Lo      (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_PA_o_Lo (32-1 downto 0)
-        or DMA_us_HA_o_Lo (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_HA_o_Lo (32-1 downto 0)
-        or DMA_us_BDA_o_Lo (C_DBUS_WIDTH-1 downto 32)
-        or DMA_us_BDA_o_Lo (32-1 downto 0)
-        or DMA_us_Length_o_Lo (32-1 downto 0)
-        or DMA_us_Control_o_Lo (32-1 downto 0)
-        or DMA_us_Status_o_Lo (32-1 downto 0)
-        or DMA_us_Transf_Bytes_o_Lo (32-1 downto 0)
-
---                              or  DMA_ds_PA_o_Lo      (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_PA_o_Lo (32-1 downto 0)
-        or DMA_ds_HA_o_Lo (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_HA_o_Lo (32-1 downto 0)
-        or DMA_ds_BDA_o_Lo (C_DBUS_WIDTH-1 downto 32)
-        or DMA_ds_BDA_o_Lo (32-1 downto 0)
-        or DMA_ds_Length_o_Lo (32-1 downto 0)
-        or DMA_ds_Control_o_Lo (32-1 downto 0)
-        or DMA_ds_Status_o_Lo (32-1 downto 0)
-        or DMA_ds_Transf_Bytes_o_Lo (32-1 downto 0)
-
-        or IG_Latency_o_Lo (32-1 downto 0)
-        or IG_Num_Assert_o_Lo (32-1 downto 0)
-        or IG_Num_Deassert_o_Lo(32-1 downto 0);
-
+    if rising_edge(user_clk) then
+      if user_lnk_up = '0' then
+        Regs_RdQout_i <= (others => '0');
+      else
+        Regs_RdQout_i(64-1 downto 32) <=
+          HW_Version_o_Hi (32-1 downto 0)
+  
+          or Sys_Error_o_Hi (32-1 downto 0)
+          or General_Status_o_Hi (32-1 downto 0)
+          or General_Control_o_Hi(32-1 downto 0)
+          or sdram_pg_o_hi(32-1 downto 0)
+          or wb_pg_o_hi(32-1 downto 0)
+  
+          or Sys_Int_Status_o_Hi (32-1 downto 0)
+          or Sys_Int_Enable_o_Hi (32-1 downto 0)
+  
+          or DMA_us_PA_o_Hi (32-1 downto 0)
+          or DMA_us_HA_o_Hi (C_DBUS_WIDTH-1 downto 32)
+          or DMA_us_HA_o_Hi (32-1 downto 0)
+          or DMA_us_BDA_o_Hi (C_DBUS_WIDTH-1 downto 32)
+          or DMA_us_BDA_o_Hi (32-1 downto 0)
+          or DMA_us_Length_o_Hi (32-1 downto 0)
+          or DMA_us_Control_o_Hi (32-1 downto 0)
+          or DMA_us_Status_o_Hi (32-1 downto 0)
+          or DMA_us_Transf_Bytes_o_Hi (32-1 downto 0)
+  
+          or DMA_ds_PA_o_Hi (32-1 downto 0)
+          or DMA_ds_HA_o_Hi (C_DBUS_WIDTH-1 downto 32)
+          or DMA_ds_HA_o_Hi (32-1 downto 0)
+          or DMA_ds_BDA_o_Hi (C_DBUS_WIDTH-1 downto 32)
+          or DMA_ds_BDA_o_Hi (32-1 downto 0)
+          or DMA_ds_Length_o_Hi (32-1 downto 0)
+          or DMA_ds_Control_o_Hi (32-1 downto 0)
+          or DMA_ds_Status_o_Hi (32-1 downto 0)
+          or DMA_ds_Transf_Bytes_o_Hi (32-1 downto 0)
+  
+          or IG_Latency_o_Hi (32-1 downto 0)
+          or IG_Num_Assert_o_Hi (32-1 downto 0)
+          or IG_Num_Deassert_o_Hi(32-1 downto 0);
+  
+        Regs_RdQout_i(32-1 downto 0) <=
+          HW_Version_o_Lo (32-1 downto 0)
+  
+          or Sys_Error_o_Lo (32-1 downto 0)
+          or General_Status_o_Lo (32-1 downto 0)
+          or General_Control_o_Lo(32-1 downto 0)
+          or sdram_pg_o_lo(32-1 downto 0)
+          or wb_pg_o_lo(32-1 downto 0)
+  
+          or Sys_Int_Status_o_Lo (32-1 downto 0)
+          or Sys_Int_Enable_o_Lo (32-1 downto 0)
+  
+          or DMA_us_PA_o_Lo (32-1 downto 0)
+          or DMA_us_HA_o_Lo (C_DBUS_WIDTH-1 downto 32)
+          or DMA_us_HA_o_Lo (32-1 downto 0)
+          or DMA_us_BDA_o_Lo (C_DBUS_WIDTH-1 downto 32)
+          or DMA_us_BDA_o_Lo (32-1 downto 0)
+          or DMA_us_Length_o_Lo (32-1 downto 0)
+          or DMA_us_Control_o_Lo (32-1 downto 0)
+          or DMA_us_Status_o_Lo (32-1 downto 0)
+          or DMA_us_Transf_Bytes_o_Lo (32-1 downto 0)
+  
+          or DMA_ds_PA_o_Lo (32-1 downto 0)
+          or DMA_ds_HA_o_Lo (C_DBUS_WIDTH-1 downto 32)
+          or DMA_ds_HA_o_Lo (32-1 downto 0)
+          or DMA_ds_BDA_o_Lo (C_DBUS_WIDTH-1 downto 32)
+          or DMA_ds_BDA_o_Lo (32-1 downto 0)
+          or DMA_ds_Length_o_Lo (32-1 downto 0)
+          or DMA_ds_Control_o_Lo (32-1 downto 0)
+          or DMA_ds_Status_o_Lo (32-1 downto 0)
+          or DMA_ds_Transf_Bytes_o_Lo (32-1 downto 0)
+  
+          or IG_Latency_o_Lo (32-1 downto 0)
+          or IG_Num_Assert_o_Lo (32-1 downto 0)
+          or IG_Num_Deassert_o_Lo(32-1 downto 0);
+      end if;
     end if;
   end process;
 

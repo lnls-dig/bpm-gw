@@ -489,7 +489,6 @@ begin
         end case;
       end if;
     end if;
-
   end process;
 
 -- -----------------------------------------------------------------------
@@ -689,8 +688,7 @@ begin
             wb_FIFO_wsof_i <= '0';
             wb_FIFO_weof_i <= '0';
             wb_FIFO_din_i  <= wb_FIFO_din_i;
-  
-  
+    
           when ST_MWr4_HEAD2 =>
             if m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1'
               and Tlp_is_Zero_Length = '0'
@@ -736,7 +734,6 @@ begin
         end case;
       end if;
     end if;
-
   end process;
 
   -- ---------------------------------

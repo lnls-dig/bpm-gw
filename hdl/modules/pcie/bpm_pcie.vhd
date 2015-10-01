@@ -63,8 +63,8 @@ entity bpm_pcie is
     -- Necessity signals
     ddr_sys_clk_p : in std_logic;
     ddr_sys_clk_n : in std_logic;
-    sys_clk_p     : in std_logic;         --100 MHz PCIe Clock
-    sys_clk_n     : in std_logic;         --100 MHz PCIe Clock
+    pci_sys_clk_p : in std_logic;         --100 MHz PCIe Clock
+    pci_sys_clk_n : in std_logic;         --100 MHz PCIe Clock
     sys_rst_n     : in std_logic; --Reset to PCIe core
     -- DDR memory controller interface --
     ddr_axi_aclk_o : out std_logic;
@@ -333,8 +333,8 @@ begin
     port map (
       O     => sys_clk_c,
       ODIV2 => open,
-      I     => sys_clk_p,
-      IB    => sys_clk_n,
+      I     => pci_sys_clk_p,
+      IB    => pci_sys_clk_n,
       CEB   => '0'
       );
 

@@ -260,54 +260,54 @@ begin
 --                         Tlp_has_0_Length
 --
   FSM_TLP_1ST_DW_Info :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      TLP_DW_Length_i      <= (others => '0');
-      Tlp_has_4KB_i        <= '0';
-      Tlp_has_1DW_Length_i <= '0';
-      Tlp_has_0_Length     <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-      if trn_rsof_n = '0' then
-        TLP_DW_Length_i <= m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
+        TLP_DW_Length_i      <= (others => '0');
+        Tlp_has_4KB_i        <= '0';
+        Tlp_has_1DW_Length_i <= '0';
+        Tlp_has_0_Length     <= '0';
       else
-        TLP_DW_Length_i <= TLP_DW_Length_i;
-      end if;
-
-      if trn_rsof_n = '0' then
-        if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) = C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0) then
-          Tlp_has_4KB_i <= '1';
+        if trn_rsof_n = '0' then
+          TLP_DW_Length_i <= m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
         else
-          Tlp_has_4KB_i <= '0';
+          TLP_DW_Length_i <= TLP_DW_Length_i;
         end if;
-      else
-        Tlp_has_4KB_i <= Tlp_has_4KB_i;
-      end if;
-
-      if trn_rsof_n = '0' then
-        if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
-           = CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG) then
-          Tlp_has_1DW_Length_i <= '1';
+  
+        if trn_rsof_n = '0' then
+          if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) = C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG-1 downto 0) then
+            Tlp_has_4KB_i <= '1';
+          else
+            Tlp_has_4KB_i <= '0';
+          end if;
         else
-          Tlp_has_1DW_Length_i <= '0';
+          Tlp_has_4KB_i <= Tlp_has_4KB_i;
         end if;
-      else
-        Tlp_has_1DW_Length_i <= Tlp_has_1DW_Length_i;
-      end if;
-
-      if trn_rsof_n = '0' then
-        if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
-           = CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG)
-          and m_axis_rx_tdata(32+2) = '0' then
-          Tlp_has_0_Length <= '1';
+  
+        if trn_rsof_n = '0' then
+          if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
+             = CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG) then
+            Tlp_has_1DW_Length_i <= '1';
+          else
+            Tlp_has_1DW_Length_i <= '0';
+          end if;
         else
-          Tlp_has_0_Length <= '0';
+          Tlp_has_1DW_Length_i <= Tlp_has_1DW_Length_i;
         end if;
-      else
-        Tlp_has_0_Length <= Tlp_has_0_Length;
+  
+        if trn_rsof_n = '0' then
+          if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
+             = CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG)
+            and m_axis_rx_tdata(32+2) = '0' then
+            Tlp_has_0_Length <= '1';
+          else
+            Tlp_has_0_Length <= '0';
+          end if;
+        else
+          Tlp_has_0_Length <= Tlp_has_0_Length;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -326,7 +326,7 @@ begin
 --   Trn_Rx_Decoding_MPS:
 --   process ( user_clk )
 --   begin
---      if user_clk'event and user_clk = '1' then
+--      if rising_edge(user_clk) then
 --
 --         case cfg_MPS is
 --           when CONV_STD_LOGIC_VECTOR(0, 3) =>
@@ -362,7 +362,7 @@ begin
 --   Trn_Rx_Decoding_MRS:
 --   process ( user_clk )
 --   begin
---      if user_clk'event and user_clk = '1' then
+--      if rising_edge(user_clk) then
 --
 --         case cfg_MRS is
 --           when CONV_STD_LOGIC_VECTOR(0, 3) =>
@@ -405,7 +405,7 @@ begin
 --   Trn_Rx_MaxPayloadSize_Exceeded:
 --   process ( user_clk )
 --   begin
---      if user_clk'event and user_clk = '1' then
+--      if rising_edge(user_clk) then
 --
 --         case cfg_MPS_decoded is
 --
@@ -466,7 +466,7 @@ begin
 --   Trn_Rx_MaxReadReqSize_Exceeded:
 --   process ( user_clk )
 --   begin
---      if user_clk'event and user_clk = '1' then
+--      if rising_edge(user_clk) then
 --
 --         case cfg_MRS_decoded is
 --
@@ -528,7 +528,7 @@ begin
   Trn_Rx_Inputs_Delayed :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       m_axis_rx_tlast_r1    <= m_axis_rx_tlast;
       m_axis_rx_tkeep_r1    <= m_axis_rx_tkeep;
       m_axis_rx_tdata_r1    <= m_axis_rx_tdata;
@@ -544,148 +544,141 @@ begin
   -- TLP Types
   --
   TLP_Decision_Registered :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      TLP_is_MRd_H3DW <= '0';
-
-      TLP_is_MRdLk_H3DW <= '0';
-
-      TLP_is_MRd_H4DW <= '0';
-
-      TLP_is_MRdLk_H4DW <= '0';
-
-      TLP_is_MWr_H3DW <= '0';
-
-      TLP_is_MWr_H4DW <= '0';
-
-      TLP_is_CplD   <= '0';
-      TLP_is_CplDLk <= '0';
-      TLP_is_Cpl    <= '0';
-      TLP_is_CplLk  <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      -- MRd
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MRd_H3DW <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
         TLP_is_MRd_H3DW <= '0';
-      end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MRd_H4DW <= '1';
-      else
-        TLP_is_MRd_H4DW <= '0';
-      end if;
-
-      -- MRdLk
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MRdLk_H3DW <= '1';
-      else
         TLP_is_MRdLk_H3DW <= '0';
-      end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MRdLk_H4DW <= '1';
-      else
+        TLP_is_MRd_H4DW <= '0';
         TLP_is_MRdLk_H4DW <= '0';
-      end if;
-
-      -- MWr
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MWr_H3DW <= '1';
-      else
         TLP_is_MWr_H3DW <= '0';
-      end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_WITH_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_MWr_H4DW <= '1';
-      else
         TLP_is_MWr_H4DW <= '0';
-      end if;
-
-      -- CplD, Cpl/CplDLk, CplLk
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_CplD <= '1';
-      else
-        TLP_is_CplD <= '0';
-      end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_CplDLk <= '1';
-      else
+        TLP_is_CplD   <= '0';
         TLP_is_CplDLk <= '0';
-      end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_Cpl <= '1';
+        TLP_is_Cpl    <= '0';
+        TLP_is_CplLk  <= '0';
       else
-        TLP_is_Cpl <= '0';
+        -- MRd
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MRd_H3DW <= '1';
+        else
+          TLP_is_MRd_H3DW <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MRd_H4DW <= '1';
+        else
+          TLP_is_MRd_H4DW <= '0';
+        end if;
+  
+        -- MRdLk
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MRdLk_H3DW <= '1';
+        else
+          TLP_is_MRdLk_H3DW <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MRdLk_H4DW <= '1';
+        else
+          TLP_is_MRdLk_H4DW <= '0';
+        end if;
+  
+        -- MWr
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MWr_H3DW <= '1';
+        else
+          TLP_is_MWr_H3DW <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_WITH_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_MWr_H4DW <= '1';
+        else
+          TLP_is_MWr_H4DW <= '0';
+        end if;
+  
+        -- CplD, Cpl/CplDLk, CplLk
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_CplD <= '1';
+        else
+          TLP_is_CplD <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_CplDLk <= '1';
+        else
+          TLP_is_CplDLk <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_Cpl <= '1';
+        else
+          TLP_is_Cpl <= '0';
+        end if;
+  
+        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
+          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+          and m_axis_rx_tvalid = '1'
+          and trn_rsof_n = '0'
+        then
+          TLP_is_CplLk <= '1';
+        else
+          TLP_is_CplLk <= '0';
+        end if;
       end if;
-
-      if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-        and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
-        and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-        and m_axis_rx_tvalid = '1'
-        and trn_rsof_n = '0'
-      then
-        TLP_is_CplLk <= '1';
-      else
-        TLP_is_CplLk <= '0';
-      end if;
-
     end if;
   end process;
 
@@ -721,162 +714,161 @@ begin
   -- Synchronous Registered: TLP_Header_Resolution
   --
   FSM_TLP_Header_Resolution :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      FSM_TLP_Cnt           <= TK_RST;
-      MWr_on_Pool           <= '0';
-      CplD_on_Pool_i        <= '0';
-      CplD_on_EB_i          <= '0';
-      m_axis_rx_tready_i    <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      -- States transition
-      case FSM_TLP_Cnt is
-
-        when TK_RST =>
-          FSM_TLP_Cnt        <= TK_Idle;
-          m_axis_rx_tready_i <= '0';
-
-        when TK_Idle =>
-          m_axis_rx_tready_i <= '1';
-          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
-            and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
-            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
-          then
-            FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
-            and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "11"
-            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
-          then
-            FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
-          elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
-            and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
-            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "01"
-          then
-            FSM_TLP_Cnt <= TK_CplD_Hdr_C;
-          else
-            FSM_TLP_Cnt <= TK_Idle;
-          end if;
-
-        when TK_MWr_3Hdr_C =>
-          m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
-            and m_axis_rx_tready_i = '1' then
-            FSM_TLP_Cnt <= TK_Idle;
-          elsif m_axis_rx_tvalid = '0' then
-            FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
-          else
-            FSM_TLP_Cnt <= TK_Body;
-          end if;
-
-        when TK_MWr_4Hdr_C =>
-          m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
-            and m_axis_rx_tready_i = '1' then
-            FSM_TLP_Cnt <= TK_Idle;
-          elsif m_axis_rx_tvalid = '0' then
-            FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
-          else
-            FSM_TLP_Cnt <= TK_Body;     -- TK_MWr_4Hdr_D;
-          end if;
-
-        when TK_Cpld_Hdr_C =>
-          m_axis_rx_tready_i <= '1';
-          if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
-            and m_axis_rx_tready_i = '1' then
-            FSM_TLP_Cnt <= TK_Idle;
-          elsif m_axis_rx_tvalid = '0' then
-            FSM_TLP_Cnt <= TK_Cpld_Hdr_C;
-          else
-            FSM_TLP_Cnt <= TK_Body;
-          end if;
-
-        when TK_Body =>
-          --for TLP body we can't wait for rising edge because there is a chance that TLP EOF
-          --will hit when *_tready_i = 0 which will cause deadlock
-          if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
+        FSM_TLP_Cnt        <= TK_RST;
+        MWr_on_Pool        <= '0';
+        CplD_on_Pool_i     <= '0';
+        CplD_on_EB_i       <= '0';
+        m_axis_rx_tready_i <= '0';
+      else
+        -- States transition
+        case FSM_TLP_Cnt is
+  
+          when TK_RST =>
             FSM_TLP_Cnt        <= TK_Idle;
-            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
-                                      or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
-          else
-            FSM_TLP_Cnt <= TK_Body;
-            m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
-                                      or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
-          end if;
-
-        when others =>
-          FSM_TLP_Cnt <= TK_RST;
-
-      end case;
-
-      -- MWr_on_Pool
-      case FSM_TLP_Cnt is
-
-        when TK_RST =>
-          MWr_on_Pool <= '0';
-          MWr_on_EB   <= '0';
-
-        when TK_Idle =>
-          if trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
-            and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP) = '1'
-            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
-          then
-            MWr_on_Pool <= m_axis_rx_tbar_hit(CINT_DDR_SPACE_BAR);
-            MWr_on_EB   <= m_axis_rx_tbar_hit(CINT_FIFO_SPACE_BAR);
-          else
+            m_axis_rx_tready_i <= '0';
+  
+          when TK_Idle =>
+            m_axis_rx_tready_i <= '1';
+            if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
+              and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
+              and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
+            then
+              FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
+            elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
+              and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "11"
+              and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
+            then
+              FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
+            elsif trn_rsof_n = '0' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1'
+              and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = "10"
+              and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "01"
+            then
+              FSM_TLP_Cnt <= TK_CplD_Hdr_C;
+            else
+              FSM_TLP_Cnt <= TK_Idle;
+            end if;
+  
+          when TK_MWr_3Hdr_C =>
+            m_axis_rx_tready_i <= '1';
+            if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+              and m_axis_rx_tready_i = '1' then
+              FSM_TLP_Cnt <= TK_Idle;
+            elsif m_axis_rx_tvalid = '0' then
+              FSM_TLP_Cnt <= TK_MWr_3Hdr_C;
+            else
+              FSM_TLP_Cnt <= TK_Body;
+            end if;
+  
+          when TK_MWr_4Hdr_C =>
+            m_axis_rx_tready_i <= '1';
+            if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+              and m_axis_rx_tready_i = '1' then
+              FSM_TLP_Cnt <= TK_Idle;
+            elsif m_axis_rx_tvalid = '0' then
+              FSM_TLP_Cnt <= TK_MWr_4Hdr_C;
+            else
+              FSM_TLP_Cnt <= TK_Body;     -- TK_MWr_4Hdr_D;
+            end if;
+  
+          when TK_Cpld_Hdr_C =>
+            m_axis_rx_tready_i <= '1';
+            if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
+              and m_axis_rx_tready_i = '1' then
+              FSM_TLP_Cnt <= TK_Idle;
+            elsif m_axis_rx_tvalid = '0' then
+              FSM_TLP_Cnt <= TK_Cpld_Hdr_C;
+            else
+              FSM_TLP_Cnt <= TK_Body;
+            end if;
+  
+          when TK_Body =>
+            --for TLP body we can't wait for rising edge because there is a chance that TLP EOF
+            --will hit when *_tready_i = 0 which will cause deadlock
+            if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then
+              FSM_TLP_Cnt        <= TK_Idle;
+              m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
+                                        or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
+            else
+              FSM_TLP_Cnt <= TK_Body;
+              m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
+                                        or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
+            end if;
+  
+          when others =>
+            FSM_TLP_Cnt <= TK_RST;
+  
+        end case;
+  
+        -- MWr_on_Pool
+        case FSM_TLP_Cnt is
+  
+          when TK_RST =>
+            MWr_on_Pool <= '0';
+            MWr_on_EB   <= '0';
+  
+          when TK_Idle =>
+            if trn_rsof_n = '0' and m_axis_rx_tvalid = '1'
+              and m_axis_rx_tdata(C_TLP_FMT_BIT_TOP) = '1'
+              and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_TOP-1) = "00"
+            then
+              MWr_on_Pool <= m_axis_rx_tbar_hit(CINT_DDR_SPACE_BAR);
+              MWr_on_EB   <= m_axis_rx_tbar_hit(CINT_FIFO_SPACE_BAR);
+            else
+              MWr_on_Pool <= MWr_on_Pool;
+              MWr_on_EB   <= MWr_on_EB;
+            end if;
+  
+  
+          when others =>
             MWr_on_Pool <= MWr_on_Pool;
             MWr_on_EB   <= MWr_on_EB;
-          end if;
-
-
-        when others =>
-          MWr_on_Pool <= MWr_on_Pool;
-          MWr_on_EB   <= MWr_on_EB;
-
-      end case;
-
-      -- CplD_on_Pool
-      case FSM_TLP_Cnt is
-
-        when TK_RST =>
-          CplD_on_Pool_i <= '0';
-          CplD_on_EB_i   <= '0';
-
-        when TK_Idle =>
-          CplD_on_Pool_i <= '0';
-          CplD_on_EB_i   <= '0';
-
-        when TK_CplD_Hdr_C =>
-          CplD_on_Pool_i <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
-          CplD_on_EB_i   <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
-
-        when others =>
-          CplD_on_Pool_i <= CplD_on_Pool_i;
-          CplD_on_EB_i   <= CplD_on_EB_i;
-
-      end case;
-
-      -- CplD_Tag
-      case FSM_TLP_Cnt is
-
-        when TK_RST =>
-          CplD_Tag_i <= (others => '1');
-
-        when TK_CplD_Hdr_C =>
-          if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1'
-          then
-            CplD_Tag_i <= m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT);
-          else
+  
+        end case;
+  
+        -- CplD_on_Pool
+        case FSM_TLP_Cnt is
+  
+          when TK_RST =>
+            CplD_on_Pool_i <= '0';
+            CplD_on_EB_i   <= '0';
+  
+          when TK_Idle =>
+            CplD_on_Pool_i <= '0';
+            CplD_on_EB_i   <= '0';
+  
+          when TK_CplD_Hdr_C =>
+            CplD_on_Pool_i <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
+            CplD_on_EB_i   <= not m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP) and m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP-1);
+  
+          when others =>
+            CplD_on_Pool_i <= CplD_on_Pool_i;
+            CplD_on_EB_i   <= CplD_on_EB_i;
+  
+        end case;
+  
+        -- CplD_Tag
+        case FSM_TLP_Cnt is
+  
+          when TK_RST =>
+            CplD_Tag_i <= (others => '1');
+  
+          when TK_CplD_Hdr_C =>
+            if m_axis_rx_tvalid = '1'     -- and m_axis_rx_tready='1'
+            then
+              CplD_Tag_i <= m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT);
+            else
+              CplD_Tag_i <= CplD_Tag_i;
+            end if;
+  
+          when others =>
             CplD_Tag_i <= CplD_Tag_i;
-          end if;
-
-        when others =>
-          CplD_Tag_i <= CplD_Tag_i;
-
-      end case;
-
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -885,26 +877,25 @@ begin
   -- Synchronous Registered: CplD_is_the_Last
   --
   Syn_Calc_CplD_is_the_Last :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      CplD_is_the_Last_i <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' then
-        if m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP-1) = '1'
-          and (m_axis_rx_tdata(C_CPLD_BC_BIT_TOP downto C_CPLD_BC_BIT_BOT+2) = m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
-               or m_axis_rx_tdata(32+1 downto 32+0) = CONV_STD_LOGIC_VECTOR(1, 2))  -- Zero-length
-        then
-          CplD_is_the_Last_i <= '1';
-        else
-          CplD_is_the_Last_i <= '0';
-        end if;
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
+        CplD_is_the_Last_i <= '0';
       else
-        CplD_is_the_Last_i <= CplD_is_the_Last_i;
+        if trn_rsof_n = '0' and m_axis_rx_tvalid = '1' then
+          if m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP-1) = '1'
+            and (m_axis_rx_tdata(C_CPLD_BC_BIT_TOP downto C_CPLD_BC_BIT_BOT+2) = m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT)
+                 or m_axis_rx_tdata(32+1 downto 32+0) = CONV_STD_LOGIC_VECTOR(1, 2))  -- Zero-length
+          then
+            CplD_is_the_Last_i <= '1';
+          else
+            CplD_is_the_Last_i <= '0';
+          end if;
+        else
+          CplD_is_the_Last_i <= CplD_is_the_Last_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -912,15 +903,17 @@ begin
   --  To Cpl/D channel as indicator when ReqID matched
   --
   TLP_ReqID_Matched :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      Req_ID_Match_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if m_axis_rx_tdata(C_CPLD_REQID_BIT_TOP downto C_CPLD_REQID_BIT_BOT) = localID then
-        Req_ID_Match_i <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
         Req_ID_Match_i <= '0';
+      else
+        if m_axis_rx_tdata(C_CPLD_REQID_BIT_TOP downto C_CPLD_REQID_BIT_BOT) = localID then
+          Req_ID_Match_i <= '1';
+        else
+          Req_ID_Match_i <= '0';
+        end if;
       end if;
     end if;
   end process;
@@ -929,15 +922,17 @@ begin
   --  To Cpl/D channel as indicator when us Tag_Descriptor matched
   --
   TLP_usDexTag_Matched :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      usDex_Tag_Matched_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT) = usDMA_dex_Tag then
-        usDex_Tag_Matched_i <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
         usDex_Tag_Matched_i <= '0';
+      else
+        if m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT) = usDMA_dex_Tag then
+          usDex_Tag_Matched_i <= '1';
+        else
+          usDex_Tag_Matched_i <= '0';
+        end if;
       end if;
     end if;
   end process;
@@ -946,15 +941,17 @@ begin
   --  To Cpl/D channel as indicator when ds Tag_Descriptor matched
   --
   TLP_dsDexTag_Matched :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      dsDex_Tag_Matched_i <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT) = dsDMA_dex_Tag then
-        dsDex_Tag_Matched_i <= '1';
-      else
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
         dsDex_Tag_Matched_i <= '0';
+      else
+        if m_axis_rx_tdata(C_CPLD_TAG_BIT_TOP downto C_CPLD_TAG_BIT_BOT) = dsDMA_dex_Tag then
+          dsDex_Tag_Matched_i <= '1';
+        else
+          dsDex_Tag_Matched_i <= '0';
+        end if;
       end if;
     end if;
   end process;
