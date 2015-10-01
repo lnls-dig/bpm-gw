@@ -188,6 +188,10 @@ architecture rtl of wb_acq_core is
   -- Types declaration
   ------------------------------------------------------------------------------
 
+  -- Reset signals
+  signal fs_rst_n                           : std_logic;
+  signal ext_rst_n                          : std_logic;
+
   -- Registers Signals
   signal regs_in                            : t_acq_core_in_registers;
   signal regs_out                           : t_acq_core_out_registers;
@@ -212,6 +216,8 @@ architecture rtl of wb_acq_core is
   ---- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
   signal acq_fsm_req_rst                    : std_logic;
+  signal acq_fsm_rstn_fs_sync               : std_logic;
+  signal acq_fsm_rstn_ext_sync              : std_logic;
   signal acq_start                          : std_logic;
   signal acq_start_sync_ext                 : std_logic;
   signal acq_start_sync_fs                  : std_logic;
@@ -368,6 +374,9 @@ architecture rtl of wb_acq_core is
 
 begin
 
+  fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync;
+  ext_rst_n <= ext_rst_n_i and acq_fsm_rstn_ext_sync;
+
   -----------------------------
   -- Slave adapter for Wishbone Register Interface
   -----------------------------
@@ -489,7 +498,7 @@ begin
   port map
   (
     clk_i                                   => fs_clk_i,
-    rst_n_i                                 => fs_rst_n_i,
+    rst_n_i                                 => fs_rst_n,
 
     -----------------------------
     -- Acquisiton Interface
@@ -524,7 +533,7 @@ begin
   (
     fs_clk_i                                => fs_clk_i,
     fs_ce_i                                 => fs_ce_i,
-    fs_rst_n_i                              => fs_rst_n_i,
+    fs_rst_n_i                              => fs_rst_n,
 
     cfg_hw_trig_sel_i                       => acq_trig_hw_sel,
     cfg_hw_trig_pol_i                       => acq_trig_hw_pol,
@@ -554,9 +563,14 @@ begin
   cmp_acq_fsm : acq_fsm
   port map
   (
+    -- FSM does not use fs_rst_n
     fs_clk_i                                => fs_clk_i,
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n_i,
+
+    -- FSM does not use ext_rst_n
+    ext_clk_i                               => ext_clk_i,
+    ext_rst_n_i                             => ext_rst_n_i,
 
     -----------------------------
     -- FSM Commands (Inputs)
@@ -588,6 +602,8 @@ begin
     acq_post_trig_done_o                    => acq_post_trig_done,
     acq_fsm_req_rst_o                       => acq_fsm_req_rst,
     acq_fsm_state_o                         => acq_fsm_state,
+    acq_fsm_rstn_fs_sync_o                  => acq_fsm_rstn_fs_sync,
+    acq_fsm_rstn_ext_sync_o                 => acq_fsm_rstn_ext_sync,
 
     -----------------------------
     -- Acquistion limits
@@ -621,7 +637,7 @@ begin
   (
     fs_clk_i                                => fs_clk_i,
     fs_ce_i                                 => fs_ce_i,
-    fs_rst_n_i                              => fs_rst_n_i,
+    fs_rst_n_i                              => fs_rst_n,
 
     data_i                                  => acq_data,
     data_id_i                               => acq_fsm_state,
@@ -668,11 +684,11 @@ begin
   (
     fs_clk_i                                => fs_clk_i,
     fs_ce_i                                 => fs_ce_i,
-    fs_rst_n_i                              => fs_rst_n_i,
+    fs_rst_n_i                              => fs_rst_n,
 
     -- DDR3 external clock
     ext_clk_i                               => ext_clk_i,
-    ext_rst_n_i                             => ext_rst_n_i,
+    ext_rst_n_i                             => ext_rst_n,
 
     -- DPRAM data
     dpram_data_i                            => dpram_dout,
@@ -759,9 +775,9 @@ begin
 
   -- fifo_fc_all_trans_done_p signal conversion
   p2l_clk_in(c_p2l_all_trans_done_idx)      <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_all_trans_done_idx)    <= fs_rst_n_i;
+  p2l_rst_in_n(c_p2l_all_trans_done_idx)    <= fs_rst_n;
   p2l_clk_out(c_p2l_all_trans_done_idx)     <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_all_trans_done_idx)   <= fs_rst_n_i;
+  p2l_rst_out_n(c_p2l_all_trans_done_idx)   <= fs_rst_n;
 
   p2l_pulse(c_p2l_all_trans_done_idx)       <= fifo_fc_all_trans_done_p;
   p2l_clr(c_p2l_all_trans_done_idx)         <= acq_start_sync_fs;
@@ -770,9 +786,9 @@ begin
 
   -- fifo_fc_full signal conversion
   p2l_clk_in(c_p2l_fifo_fc_full_idx)        <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_fifo_fc_full_idx)      <= fs_rst_n_i;
+  p2l_rst_in_n(c_p2l_fifo_fc_full_idx)      <= fs_rst_n;
   p2l_clk_out(c_p2l_fifo_fc_full_idx)       <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_fifo_fc_full_idx)     <= fs_rst_n_i;
+  p2l_rst_out_n(c_p2l_fifo_fc_full_idx)     <= fs_rst_n;
 
   p2l_pulse(c_p2l_fifo_fc_full_idx)         <= fifo_fc_full;
   p2l_clr(c_p2l_fifo_fc_full_idx)           <= acq_start_sync_fs;
@@ -781,9 +797,9 @@ begin
 
   -- acq_start signal conversion
   p2l_clk_in(c_p2l_acq_start_idx)           <= fs_clk_i;
-  p2l_rst_in_n(c_p2l_acq_start_idx)         <= fs_rst_n_i;
+  p2l_rst_in_n(c_p2l_acq_start_idx)         <= fs_rst_n;
   p2l_clk_out(c_p2l_acq_start_idx)          <= ext_clk_i;
-  p2l_rst_out_n(c_p2l_acq_start_idx)        <= ext_rst_n_i;
+  p2l_rst_out_n(c_p2l_acq_start_idx)        <= ext_rst_n;
 
   p2l_pulse(c_p2l_acq_start_idx)            <= acq_start;
   p2l_clr(c_p2l_acq_start_idx)              <= '0'; -- not used
@@ -792,9 +808,9 @@ begin
 
   -- ddr3_wr_all_trans_done_p signal conversion
   p2l_clk_in(c_p2l_ddr3_wr_all_trans_done_idx)     <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_ddr3_wr_all_trans_done_idx)   <= ext_rst_n_i;
+  p2l_rst_in_n(c_p2l_ddr3_wr_all_trans_done_idx)   <= ext_rst_n;
   p2l_clk_out(c_p2l_ddr3_wr_all_trans_done_idx)    <= ext_clk_i;
-  p2l_rst_out_n(c_p2l_ddr3_wr_all_trans_done_idx)  <= ext_rst_n_i;
+  p2l_rst_out_n(c_p2l_ddr3_wr_all_trans_done_idx)  <= ext_rst_n;
 
   p2l_pulse(c_p2l_ddr3_wr_all_trans_done_idx)      <= ddr3_wr_all_trans_done_p;
   p2l_clr(c_p2l_ddr3_wr_all_trans_done_idx)        <= acq_start_sync_ext;
@@ -803,9 +819,9 @@ begin
 
   -- ddr3_all_trans_done signal conversion
   p2l_clk_in(c_p2l_ddr3_all_trans_done_idx)     <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_ddr3_all_trans_done_idx)   <= ext_rst_n_i;
+  p2l_rst_in_n(c_p2l_ddr3_all_trans_done_idx)   <= ext_rst_n;
   p2l_clk_out(c_p2l_ddr3_all_trans_done_idx)    <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_ddr3_all_trans_done_idx)  <= fs_rst_n_i;
+  p2l_rst_out_n(c_p2l_ddr3_all_trans_done_idx)  <= fs_rst_n;
 
   p2l_pulse(c_p2l_ddr3_all_trans_done_idx)      <= ddr3_all_trans_done_p;
   p2l_clr(c_p2l_ddr3_all_trans_done_idx)        <= acq_start_sync_fs;
@@ -820,9 +836,9 @@ begin
   -- instance.
   -- acq_start_sync_ext signal conversion
   p2l_clk_in(c_p2l_acq_start_sync_ext_idx)    <= ext_clk_i;
-  p2l_rst_in_n(c_p2l_acq_start_sync_ext_idx)  <= ext_rst_n_i;
+  p2l_rst_in_n(c_p2l_acq_start_sync_ext_idx)  <= ext_rst_n;
   p2l_clk_out(c_p2l_acq_start_sync_ext_idx)   <= fs_clk_i;
-  p2l_rst_out_n(c_p2l_acq_start_sync_ext_idx) <= fs_rst_n_i;
+  p2l_rst_out_n(c_p2l_acq_start_sync_ext_idx) <= fs_rst_n;
 
   p2l_pulse(c_p2l_acq_start_sync_ext_idx)     <= acq_start_sync_ext;
   p2l_clr(c_p2l_acq_start_sync_ext_idx)       <= '0'; -- not used
@@ -861,7 +877,7 @@ begin
   (
     -- DDR3 external clock
     ext_clk_i                               => ext_clk_i,
-    ext_rst_n_i                             => ext_rst_n_i,
+    ext_rst_n_i                             => ext_rst_n,
 
     -- Flow protocol to interface with external SDRAM. Evaluate the use of
     -- Wishbone Streaming protocol.
@@ -938,7 +954,7 @@ begin
     (
       -- DDR3 external clock
       ext_clk_i                             => ext_clk_i,
-      ext_rst_n_i                           => ext_rst_n_i,
+      ext_rst_n_i                           => ext_rst_n,
 
       -- Flow protocol to interface with external SDRAM. Evaluate the use of
       -- Wishbone Streaming protocol.
@@ -990,7 +1006,7 @@ begin
     );
 
     ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
-    acq_ddr3_rst_n                          <= ext_rst_n_i and ddr3_wr_all_trans_done_l;
+    acq_ddr3_rst_n                          <= ext_rst_n and ddr3_wr_all_trans_done_l;
     ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
 
     dbg_ddr_rb_data_o                       <= dbg_ddr_rb_data;

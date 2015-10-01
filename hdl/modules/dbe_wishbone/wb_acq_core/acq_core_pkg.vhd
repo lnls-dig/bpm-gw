@@ -267,6 +267,9 @@ package acq_core_pkg is
     fs_ce_i                                   : in std_logic;
     fs_rst_n_i                                : in std_logic;
 
+    ext_clk_i                                 : in std_logic;
+    ext_rst_n_i                               : in std_logic;
+
     -----------------------------
     -- FSM Commands (Inputs)
     -----------------------------
@@ -297,6 +300,8 @@ package acq_core_pkg is
     acq_post_trig_done_o                      : out std_logic;
     acq_fsm_req_rst_o                         : out std_logic;
     acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
+    acq_fsm_rstn_fs_sync_o                    : out std_logic;
+    acq_fsm_rstn_ext_sync_o                   : out std_logic;
 
     -----------------------------
     -- Acquistion limits

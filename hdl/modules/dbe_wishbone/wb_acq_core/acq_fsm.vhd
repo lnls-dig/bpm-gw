@@ -34,6 +34,8 @@ use work.wishbone_pkg.all;
 use work.gencores_pkg.all;
 -- Genrams cores
 use work.genram_pkg.all;
+-- DBE common cores
+use work.dbe_common_pkg.all;
 -- Acquisition cores
 use work.acq_core_pkg.all;
 
@@ -43,6 +45,9 @@ port
   fs_clk_i                                  : in std_logic;
   fs_ce_i                                   : in std_logic;
   fs_rst_n_i                                : in std_logic;
+
+  ext_clk_i                                 : in std_logic;
+  ext_rst_n_i                               : in std_logic;
 
   -----------------------------
   -- FSM Commands (Inputs)
@@ -74,6 +79,8 @@ port
   acq_post_trig_done_o                      : out std_logic;
   acq_fsm_req_rst_o                         : out std_logic;
   acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
+  acq_fsm_rstn_fs_sync_o                    : out std_logic;
+  acq_fsm_rstn_ext_sync_o                   : out std_logic;
 
   -----------------------------
   -- Acquistion limits
@@ -99,10 +106,20 @@ architecture rtl of acq_fsm is
   type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG,
                                  POST_TRIG_SKIP, DECR_SHOT);
 
+  -- FSM reset pulse width
+  constant c_ext_fsm_pulse_width            : natural := 16;
+
+  -- FSM resets
+  signal acq_stop_extend_fs_sync            : std_logic;
+  signal acq_stop_n_extend_fs_sync          : std_logic;
+  signal acq_stop_rst_n_fs_sync             : std_logic;
+  signal acq_stop_rst_n_ext_sync            : std_logic;
+
   -- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
   signal acq_start                          : std_logic;
   signal acq_stop                           : std_logic;
+  signal acq_stop_n                         : std_logic;
   signal acq_trig                           : std_logic;
   signal acq_end                            : std_logic;
   signal acq_end_t                          : std_logic;
@@ -506,5 +523,42 @@ begin
   samples_wr_en_o    <= samples_wr_en;
   acq_fsm_state_o    <= acq_fsm_state;
   acq_fsm_req_rst_o  <= acq_fsm_req_rst;
+
+  ------------------------------------------------------------------------------
+  -- FSM resets to rest of ACQ logic
+  ------------------------------------------------------------------------------
+
+  cmp_fsm_stop_extended_fs_pulse : gc_extend_pulse
+  generic map (
+    g_width                                 => c_ext_fsm_pulse_width
+  )
+  port map(
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+    -- input pulse (synchronous to clk_i)
+    pulse_i                                 => acq_stop,
+    -- extended output pulse
+    extended_o                              => acq_stop_extend_fs_sync
+  );
+
+  acq_stop_n_extend_fs_sync <= not acq_stop_extend_fs_sync;
+
+  -- Sync and pipeline reset signals
+  cmp_reset_fs_synch : reset_synch
+  port map(
+    clk_i                                   => fs_clk_i,
+    arst_n_i                                => acq_stop_n_extend_fs_sync,
+    rst_n_o                                 => acq_stop_rst_n_fs_sync
+  );
+
+  cmp_reset_ext_synch : reset_synch
+  port map(
+    clk_i                                   => ext_clk_i,
+    arst_n_i                                => acq_stop_n_extend_fs_sync,
+    rst_n_o                                 => acq_stop_rst_n_ext_sync
+  );
+
+  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
+  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
 
 end rtl;
