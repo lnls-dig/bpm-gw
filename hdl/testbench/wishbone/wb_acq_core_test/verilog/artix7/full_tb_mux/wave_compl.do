@@ -904,6 +904,46 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_co
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/c_acq_chan_slice
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/c_fc_payload_ratio
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/c_fc_payload_ratio_log2
+add wave -noupdate -divider acq_fwft_fifo
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_data_width
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_size
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_rd_empty
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_rd_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_rd_almost_empty
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_rd_almost_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_rd_count
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_wr_empty
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_wr_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_wr_almost_empty
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_wr_almost_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_wr_count
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_with_fifo_inferred
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_almost_empty_threshold
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_almost_full_threshold
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/g_async
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_clk_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_rst_n_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_data_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_en_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_clk_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_rst_n_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_en_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_full_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_count_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_almost_empty_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/wr_almost_full_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_data_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_valid_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_empty_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_count_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_almost_empty_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/rd_almost_full_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fwft_rd_en
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fwft_rd_valid
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fwft_rd_empty
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fifo_count_int
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fifo_almost_empty_int
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_curr_chan_fwft_fifo/fifo_almost_full_int
 add wave -noupdate -divider acq_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_cnt/clk_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp0_wb_acq_core/cmp_acq_fc_fifo/cmp_acq_cnt/rst_n_i
@@ -1650,7 +1690,7 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp_ui_mux_2_t
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_acq_core_2_to_1_mux/cmp_ui_mux_2_to_1/M00_AXIS_TUSER
 add wave -noupdate -divider {Mux WDF}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {716857500000 fs} 0}
+WaveRestoreCursors {{Cursor 1} {45842839861 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 223
 configure wave -valuecolwidth 358
@@ -1666,4 +1706,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {367634358705 fs} {1033788125428 fs}
+WaveRestoreZoom {0 fs} {531490424633 fs}
