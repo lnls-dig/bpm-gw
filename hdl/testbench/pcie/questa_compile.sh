@@ -27,15 +27,15 @@ vmap axi_datamover_v5_1 msim/axi_datamover_v5_1
 
 #### Compile DDR IP core ####
 vlog -64 -incr -work xil_defaultlib  \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/ip_top/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/ui/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/clocking/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/phy/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/ecc/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/controller/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/axi/*.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/ddr_core_mig_sim.v" \
-"../../ip_cores/pcie/7k325ffg900/ddr_core/ddr_core/user_design/rtl/ddr_core.v"
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/ip_top/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/ui/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/clocking/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/phy/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/ecc/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/controller/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/axi/*.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/ddr_core_mig_sim.v" \
+"../../platform/kintex7/kc705/ddr_core/ddr_core/user_design/rtl/ddr_core.v"
 
 #pass paremeters to memory model
 vlog -64 -incr +define+x1Gb +define+sg125 +define+x8 -sv -work xil_defaultlib +incdir+../../sim/ddr_model/kintex7 \
@@ -46,84 +46,84 @@ vlog -64 -incr -work xil_defaultlib \
 
 #### Compile AXI Interconnect IP core ####
 vlog -64 -incr -work fifo_generator_v12_0 \
-"../../ip_cores/pcie/7k325ffg900/axi_interconnect/fifo_generator_v12_0/simulation/fifo_generator_vlog_beh.v"
+"../../platform/kintex7/kc705/axi_interconnect/fifo_generator_v12_0/simulation/fifo_generator_vlog_beh.v"
 
 vcom -64 -93 -work fifo_generator_v12_0  \
-"../../ip_cores/pcie/7k325ffg900/axi_interconnect/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.vhd"
+"../../platform/kintex7/kc705/axi_interconnect/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.vhd"
 
 vlog -64 -incr -work fifo_generator_v12_0 \
-"../../ip_cores/pcie/7k325ffg900/axi_interconnect/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.v"
+"../../platform/kintex7/kc705/axi_interconnect/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.v"
 
 vlog -64 -incr -work axi_interconnect_v1_7 \
-"../../ip_cores/pcie/7k325ffg900/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/*.v"
+"../../platform/kintex7/kc705/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/*.v"
 
 vlog -64 -incr -work xil_defaultlib \
-"../../ip_cores/pcie/7k325ffg900/axi_interconnect/sim/axi_interconnect.v"
+"../../platform/kintex7/kc705/axi_interconnect/sim/axi_interconnect.v"
 
 vcom -64 -93 -work lib_pkg_v1_0  \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd"
 
 vcom -64 -93 -work lib_fifo_v1_0 \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/*.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/*.vhd"
 
 vcom -64 -93 -work lib_srl_fifo_v1_0 \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd"
 
 vcom -64 -93 -work lib_cdc_v1_0  \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd"
 
 vcom -64 -93 -work axi_datamover_v5_1 \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd" \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd" \
+"../../platform/kintex7/kc705/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd"
 
 vcom -64 -93 -work xil_defaultlib  \
-"../../ip_cores/pcie/7k325ffg900/axi_datamover_0/sim/axi_datamover_0.vhd"
+"../../platform/kintex7/kc705/axi_datamover_0/sim/axi_datamover_0.vhd"
 
 #### Compile PCIe IP core ####
 vlog -64 -incr -work xil_defaultlib \
-"../../ip_cores/pcie/7k325ffg900/pcie_core/source/*.v" \
-"../../ip_cores/pcie/7k325ffg900/pcie_core/sim/pcie_core.v"
+"../../platform/kintex7/kc705/pcie_core/source/*.v" \
+"../../platform/kintex7/kc705/pcie_core/sim/pcie_core.v"
 
 vlog -64 -incr -work xil_defaultlib  +incdir+../../sim/pcie +incdir+./../../../../../testbench/pcie \
 "../../sim/pcie/sys_clk_gen.v" \
@@ -152,7 +152,7 @@ vcom -64 -93 -work xil_defaultlib  \
 #### Compile PCIe project modules ####
 #Compile packages
 vcom -64 -93 -work xil_defaultlib  \
-"../../ip_cores/pcie/7k325ffg900/ipcores_pkg.vhd" \
+"../../platform/kintex7/kc705/ipcores_pkg.vhd" \
 "../../modules/pcie/pkgs/*.vhd"
 
 #Compile RTL design
@@ -176,7 +176,7 @@ vcom -64 -93 -work xil_defaultlib  \
 "../../modules/pcie/common/wb_transact.vhd" \
 "../../modules/pcie/common/wb_mem.vhd" \
 "../../modules/pcie/bpm_pcie.vhd" \
-"../../top/pcie/top_k7.vhd"
+"../../top/pcie/top_kc705.vhd"
 
 vlog -64 -incr -work xil_defaultlib \
 "../../testbench/pcie/board.v"
