@@ -4,88 +4,52 @@ use IEEE.STD_LOGIC_1164.all;
 
 library work;
 use work.abb64Package.all;
-use work.bpm_pcie_a7_priv_pkg.all;
+use work.ipcores_pkg.all;
 
 library UNISIM;
 use UNISIM.VComponents.all;
 
 entity top is
   generic (
-    SIMULATION   : string := "FALSE";
-    -- ****
-    -- PCIe core parameters
-    -- ****
-    constant pcieLanes : integer := 4;
-    PL_FAST_TRAIN      : string  := "FALSE";
-    PIPE_SIM_MODE      : string  := "FALSE";
-    --***************************************************************************
-    -- Necessary parameters for DDR core support
-    -- (dependent on memory chip connected to FPGA, not to be modified at will)
-    --***************************************************************************
-    constant DDR_DQ_WIDTH      : integer := 32;
-    constant DDR_PAYLOAD_WIDTH : integer := 256;
-    constant DDR_DQS_WIDTH     : integer := 4;
-    constant DDR_DM_WIDTH      : integer := 4;
-    constant DDR_ROW_WIDTH     : integer := 16;
-    constant DDR_BANK_WIDTH    : integer := 3;
-    constant DDR_CK_WIDTH      : integer := 1;
-    constant DDR_CKE_WIDTH     : integer := 1;
-    constant DDR_ODT_WIDTH     : integer := 1
+    SIMULATION   : string := "FALSE"
     );
   port (
     --DDR3 memory pins
-    ddr3_dq      : inout std_logic_vector(DDR_DQ_WIDTH-1 downto 0);
-    ddr3_dqs_p   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
-    ddr3_dqs_n   : inout std_logic_vector(DDR_DQS_WIDTH-1 downto 0);
-    ddr3_addr    : out   std_logic_vector(DDR_ROW_WIDTH-1 downto 0);
-    ddr3_ba      : out   std_logic_vector(DDR_BANK_WIDTH-1 downto 0);
+    ddr3_dq      : inout std_logic_vector(C_DDR_DQ_WIDTH-1 downto 0);
+    ddr3_dqs_p   : inout std_logic_vector(C_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_dqs_n   : inout std_logic_vector(C_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_addr    : out   std_logic_vector(C_DDR_ROW_WIDTH-1 downto 0);
+    ddr3_ba      : out   std_logic_vector(C_DDR_BANK_WIDTH-1 downto 0);
     ddr3_ras_n   : out   std_logic;
     ddr3_cas_n   : out   std_logic;
     ddr3_we_n    : out   std_logic;
     ddr3_reset_n : out   std_logic;
-    ddr3_ck_p    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
-    ddr3_ck_n    : out   std_logic_vector(DDR_CK_WIDTH-1 downto 0);
-    ddr3_cke     : out   std_logic_vector(DDR_CKE_WIDTH-1 downto 0);
+    ddr3_ck_p    : out   std_logic_vector(C_DDR_CK_WIDTH-1 downto 0);
+    ddr3_ck_n    : out   std_logic_vector(C_DDR_CK_WIDTH-1 downto 0);
+    ddr3_cke     : out   std_logic_vector(C_DDR_CKE_WIDTH-1 downto 0);
     ddr3_cs_n    : out   std_logic_vector(0 downto 0);
-    ddr3_dm      : out   std_logic_vector(DDR_DM_WIDTH-1 downto 0);
-    ddr3_odt     : out   std_logic_vector(DDR_ODT_WIDTH-1 downto 0);
+    ddr3_dm      : out   std_logic_vector(C_DDR_DM_WIDTH-1 downto 0);
+    ddr3_odt     : out   std_logic_vector(C_DDR_ODT_WIDTH-1 downto 0);
     -- PCIe transceivers
-    pci_exp_rxp : in  std_logic_vector(pcieLanes - 1 downto 0);
-    pci_exp_rxn : in  std_logic_vector(pcieLanes - 1 downto 0);
-    pci_exp_txp : out std_logic_vector(pcieLanes - 1 downto 0);
-    pci_exp_txn : out std_logic_vector(pcieLanes - 1 downto 0);
+    pci_exp_rxp : in  std_logic_vector(c_pcielanes-1 downto 0);
+    pci_exp_rxn : in  std_logic_vector(c_pcielanes-1 downto 0);
+    pci_exp_txp : out std_logic_vector(c_pcielanes-1 downto 0);
+    pci_exp_txn : out std_logic_vector(c_pcielanes-1 downto 0);
     -- Necessity signals
     ddr_sys_clk_p : in std_logic;
     ddr_sys_clk_n : in std_logic;
-    sys_clk_p     : in std_logic;
-    sys_clk_n     : in std_logic;
+    pci_sys_clk_p : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
+    pci_sys_clk_n : in std_logic; --100 MHz PCIe Clock
     sys_rst_n     : in std_logic
     );
 end entity top;
 
 architecture arch of top is
 
-  -- WISHBONE SLAVE interface:
-  -- Single-Port RAM with Asynchronous Read
-  --
-  component WB_MEM is
-    generic(
-      AWIDTH : natural range 2 to 29 := 7;
-      DWIDTH : natural range 8 to 128 := 64
-    );
-    port(
-      CLK_I : in  std_logic;
-      ACK_O : out std_logic;
-      ADR_I : in  std_logic_vector(AWIDTH-1 downto 0);
-      DAT_I : in  std_logic_vector(DWIDTH-1 downto 0);
-      DAT_O : out std_logic_vector(DWIDTH-1 downto 0);
-      STB_I : in  std_logic;
-      WE_I  : in  std_logic
-    );
-  end component;
-
   signal ddr_sys_clk_i : std_logic;
   signal ddr_sys_rst_i : std_logic;
+  signal ddr_axi_aclk_o : std_logic;
+  signal sys_rst_n_c : std_logic;
 
   signal pll_clkin : std_logic;
   signal pll_clkfbout : std_logic;
@@ -104,15 +68,9 @@ architecture arch of top is
   signal wbone_rst   : std_logic;
 
 begin
-    bpm_pcie : bpm_pcie_a7
+    bpm_pcie_i: entity work.bpm_pcie
     generic map(
-      SIMULATION => SIMULATION,
-      -- ****
-      -- PCIe core parameters
-      -- ****
-      pcieLanes     => pcieLanes,
-      PL_FAST_TRAIN => PL_FAST_TRAIN,
-      PIPE_SIM_MODE => PIPE_SIM_MODE
+      SIMULATION => SIMULATION
       )
     port map(
       --DDR3 memory pins
@@ -137,33 +95,59 @@ begin
       pci_exp_txp => pci_exp_txp,
       pci_exp_txn => pci_exp_txn,
       -- Necessity signals
-      ddr_sys_clk_p => ddr_sys_clk_i,
-      ddr_sys_clk_n => '0',
-      sys_clk_p     => sys_clk_p,
-      sys_clk_n     => sys_clk_n,
-      sys_rst_n     => sys_rst_n,
+      ddr_sys_clk => ddr_sys_clk_i,
+      ddr_sys_rst => ddr_sys_rst_i,
+      pci_sys_clk_p => pci_sys_clk_p,
+      pci_sys_clk_n => pci_sys_clk_n,
+      pci_sys_rst_n => sys_rst_n_c,
 
-      -- DDR memory controller interface --
-      -- uncomment when instantiating in another project
-      ddr_core_rst   => ddr_sys_rst_i,
-      memc_ui_clk    => open,
-      memc_ui_rst    => open,
-      memc_cmd_rdy   => open,
-      memc_cmd_en    => '0',
-      memc_cmd_instr => (others => '0'),
-      memc_cmd_addr  => (others => '0'),
-      memc_wr_en     => '0',
-      memc_wr_end    => '0',
-      memc_wr_mask   => (others => '0'),
-      memc_wr_data   => (others => '0'),
-      memc_wr_rdy    => open,
-      memc_rd_data   => open,
-      memc_rd_valid  => open,
-      ---- memory arbiter interface
-      memarb_acc_req => '0',
-      memarb_acc_gnt => open,
+      -- DDR memory controller AXI4 interface --
+      -- Slave interface clock
+      ddr_axi_aclk_o => ddr_axi_aclk_o,
+      ddr_axi_aresetn_o => open,
+      -- Slave Interface Write Address Ports
+      ddr_axi_awid => (others => '0'),
+      ddr_axi_awaddr => (others => '0'),
+      ddr_axi_awlen => (others => '0'),
+      ddr_axi_awsize => (others => '0'),
+      ddr_axi_awburst => (others => '0'),
+      ddr_axi_awlock => '0',
+      ddr_axi_awcache => (others => '0'),
+      ddr_axi_awprot => (others => '0'),
+      ddr_axi_awqos => (others => '0'),
+      ddr_axi_awvalid => '0',
+      ddr_axi_awready => open,
+      -- Slave Interface Write Data Ports
+      ddr_axi_wdata => (others => '0'),
+      ddr_axi_wstrb => (others => '0'),
+      ddr_axi_wlast => '0',
+      ddr_axi_wvalid => '0',
+      ddr_axi_wready => open,
+      -- Slave Interface Write Response Ports
+      ddr_axi_bid => open,
+      ddr_axi_bresp => open,
+      ddr_axi_bvalid => open,
+      ddr_axi_bready => '1',
+      -- Slave Interface Read Address Ports
+      ddr_axi_arid => (others => '0'),
+      ddr_axi_araddr => (others => '0'),
+      ddr_axi_arlen => (others => '0'),
+      ddr_axi_arsize => (others => '0'),
+      ddr_axi_arburst => (others => '0'),
+      ddr_axi_arlock => '0',
+      ddr_axi_arcache => (others => '0'),
+      ddr_axi_arprot => (others => '0'),
+      ddr_axi_arqos => (others => '0'),
+      ddr_axi_arvalid => '0',
+      ddr_axi_arready => open,
+      -- Slave Interface Read Data Ports
+      ddr_axi_rid => open,
+      ddr_axi_rdata => open,
+      ddr_axi_rresp => open,
+      ddr_axi_rlast => open,
+      ddr_axi_rvalid => open,
+      ddr_axi_rready => '1',
       --/ DDR memory controller interface
-
       -- Wishbone interface --
       -- uncomment when instantiating in another project
       CLK_I  => wbone_clk,
@@ -183,7 +167,7 @@ begin
 
   Wishbone_mem_large: if (SIMULATION = "TRUE") generate
     wb_mem_sim :
-      wb_mem
+      entity work.wb_mem
         generic map(
           AWIDTH => 16,
           DWIDTH => 64
@@ -202,7 +186,7 @@ begin
 
   Wishbone_mem_sample: if (SIMULATION = "FALSE") generate
     wb_mem_syn :
-      wb_mem
+      entity work.wb_mem
         generic map(
           AWIDTH => 7,
           DWIDTH => 64
@@ -221,6 +205,12 @@ begin
 
   --temporary clock assignment
   wbone_clk <= pll_clkin;
+  
+  sys_reset_n_ibuf : IBUF
+  port map (
+    O => sys_rst_n_c,
+    I => sys_rst_n
+    );
 
   ddr_inclk_buf : IBUFGDS
     port map
