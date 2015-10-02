@@ -61,11 +61,11 @@ entity bpm_pcie is
     pci_exp_txp : out std_logic_vector(c_pcielanes-1 downto 0);
     pci_exp_txn : out std_logic_vector(c_pcielanes-1 downto 0);
     -- Necessity signals
-    ddr_sys_clk_p : in std_logic;
-    ddr_sys_clk_n : in std_logic;
+    ddr_sys_clk   : in std_logic;
+    ddr_sys_rst   : in std_logic;
     pci_sys_clk_p : in std_logic;         --100 MHz PCIe Clock
     pci_sys_clk_n : in std_logic;         --100 MHz PCIe Clock
-    sys_rst_n     : in std_logic; --Reset to PCIe core
+    pci_sys_rst_n : in std_logic; --Reset to PCIe core
     -- DDR memory controller interface --
     ddr_axi_aclk_o : out std_logic;
     ddr_axi_aresetn_o : out std_logic;
@@ -313,21 +313,14 @@ architecture Behavioral of bpm_pcie is
   signal ddr_s2mm_err : std_logic;
 
   signal sys_clk_c     : std_logic;
-  signal sys_reset_n_c : std_logic;
   signal sys_reset_c   : std_logic;
-  signal reset_n       : std_logic;
 
   signal localId         : std_logic_vector(15 downto 0);
   signal pcie_link_width : std_logic_vector(5 downto 0);
 
 begin
 
-  sys_reset_c <= not sys_reset_n_c;
-  sys_reset_n_ibuf : IBUF
-    port map (
-      O => sys_reset_n_c,
-      I => sys_rst_n
-      );
+  sys_reset_c <= not pci_sys_rst_n;
 
   pcieclk_ibuf : IBUFDS_GTE2
     port map (
@@ -627,7 +620,7 @@ port map(
   -- 8. System(SYS) Interface                                                                                      --
   -------------------------------------------------------------------------------------------------------------------
   sys_clk         => sys_clk_c ,
-  sys_rst_n       => sys_reset_n_c
+  sys_rst_n       => pci_sys_rst_n
 );
 
 -- ---------------------------------------------------------------
@@ -831,11 +824,10 @@ DDRs_ctrl_module: entity work.DDR_Transact
     ddr3_cs_n     => ddr3_cs_n,
     ddr3_dm       => ddr3_dm,
     ddr3_odt      => ddr3_odt,
-    ddr_sys_clk_p => ddr_sys_clk_p,
-    ddr_sys_clk_n => ddr_sys_clk_n,
+    ddr_sys_clk   => ddr_sys_clk,
     --clocking & reset
     pcie_clk   => user_clk,
-    pcie_reset => sys_reset_c
+    sys_reset => ddr_sys_rst
   );
 
 

@@ -400,7 +400,7 @@ end
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h0, 4'hF);
     TSK_WAIT_FOR_READ_DATA;
 
-    if  (P_READ_DATA[31:16] != 16'h7014) begin
+    if  (P_READ_DATA[31:16] != 16'h7021) begin
         $display("[%t] :    Check Device/Vendor ID - FAILED", $realtime);
         $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, 16'h7014, P_READ_DATA);
         error_check = 1;

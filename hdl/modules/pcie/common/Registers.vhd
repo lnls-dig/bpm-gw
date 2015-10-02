@@ -221,9 +221,11 @@ architecture Behavioral of Regs_Group is
   signal Reg_RdMuxer_Hi : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
   signal Reg_RdMuxer_Lo : std_logic_vector(C_NUM_OF_ADDRESSES-1 downto 0);
 
-  -- Event Buffer
+  -- Event Buffer reset
+  -- quite a long one because with gen2 speed PCIe user clock is 4 ns
+  -- so assuming wb_clk = 10 ns we need at least 13 clock cycles to satisfy reset requirements
   signal wb_FIFO_Rst_i   : std_logic;
-  signal wb_FIFO_Rst_dly : std_logic_vector(6 downto 0);
+  signal wb_FIFO_Rst_dly : std_logic_vector(19 downto 0);
 
   -- Downstream DMA registers
   signal DMA_ds_PA_o_Hi           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -1815,7 +1817,7 @@ begin
         wb_FIFO_Rst_dly <= (others => '1');
       else
         wb_FIFO_Rst_i  <= or_reduce(wb_FIFO_Rst_dly);
-        wb_FIFO_Rst_dly <= wb_FIFO_Rst_dly(5 downto 0) & (Regs_WrEn_r2
+        wb_FIFO_Rst_dly <= wb_FIFO_Rst_dly(18 downto 0) & (Regs_WrEn_r2
                           and ((Reg_WrMuxer_Hi(CINT_ADDR_EB_STACON) and Command_is_Reset_Hi)
                                or (Reg_WrMuxer_Lo(CINT_ADDR_EB_STACON) and Command_is_Reset_Lo)));
       end if;

@@ -46,8 +46,10 @@ end entity top;
 
 architecture arch of top is
 
+  signal ddr_sys_clk_i  : std_logic;
   signal ddr_sys_rst_i  : std_logic;
   signal ddr_axi_aclk_o : std_logic;
+  signal sys_rst_n_c : std_logic;
 
   signal wbone_clk   : std_logic;
   signal wbone_addr  : std_logic_vector(31 downto 0);
@@ -88,11 +90,11 @@ begin
       pci_exp_txp => pci_exp_txp,
       pci_exp_txn => pci_exp_txn,
       -- Necessity signals
-      ddr_sys_clk_p => ddr_sys_clk_p,
-      ddr_sys_clk_n => ddr_sys_clk_n,
+      ddr_sys_clk => ddr_sys_clk_i,
+      ddr_sys_rst => ddr_sys_rst_i,
       pci_sys_clk_p => pci_sys_clk_p,
       pci_sys_clk_n => pci_sys_clk_n,
-      sys_rst_n     => sys_rst_n,
+      pci_sys_rst_n => sys_rst_n_c,
 
       -- DDR memory controller AXI4 interface --
      -- Slave interface clock
@@ -199,6 +201,21 @@ begin
 
   --temporary clock assignment
   wbone_clk <= ddr_axi_aclk_o;
+  
+  sys_reset_n_ibuf: IBUF
+    port map (
+      O => sys_rst_n_c,
+      I => sys_rst_n
+      );
+      
+  ddr_sys_rst_i <= not sys_rst_n_c;
+  
+  ddr_inclk_buf: IBUFGDS
+    port map(
+      o  => ddr_sys_clk_i,
+      i  => ddr_sys_clk_p,
+      ib => ddr_sys_clk_n
+    );
 
 end architecture;
 

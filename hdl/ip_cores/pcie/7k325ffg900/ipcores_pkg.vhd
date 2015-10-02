@@ -200,8 +200,7 @@ Port(
   ddr3_cs_n : out STD_LOGIC_VECTOR ( 0 to 0 );
   ddr3_dm : out STD_LOGIC_VECTOR ( 7 downto 0 );
   ddr3_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
-  sys_clk_p : in STD_LOGIC;
-  sys_clk_n : in STD_LOGIC;
+  sys_clk_i : in STD_LOGIC;
   ui_clk : out STD_LOGIC;
   ui_clk_sync_rst : out STD_LOGIC;
   mmcm_locked : out STD_LOGIC;

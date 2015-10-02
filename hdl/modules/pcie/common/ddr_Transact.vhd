@@ -46,8 +46,7 @@ entity DDR_Transact is
     ddr3_cs_n    : out   std_logic_vector(0 downto 0);
     ddr3_dm      : out   std_logic_vector(C_DDR_DM_WIDTH-1 downto 0);
     ddr3_odt     : out   std_logic_vector(C_DDR_ODT_WIDTH-1 downto 0);
-    ddr_sys_clk_p : in std_logic;
-    ddr_sys_clk_n : in std_logic;
+    ddr_sys_clk  : in std_logic;
     --AXI4 stream command/data
     axis_mm2s_cmd_tvalid : IN STD_LOGIC;
     axis_mm2s_cmd_tready : OUT STD_LOGIC;
@@ -124,7 +123,7 @@ entity DDR_Transact is
 
     --clocking & reset
     pcie_clk : in std_logic;
-    pcie_reset : in std_logic
+    sys_reset : in std_logic
   );
 end entity DDR_Transact;
 
@@ -133,7 +132,7 @@ architecture Behavioral of DDR_Transact is
 -- Signal & type declarations
 -- ----------------------------------------------------------------------------
 signal ddr_ui_clk, ddr_mmcm_locked : std_logic;
-signal ddr_ui_rst, irconnect_arstn, ddr_axi_aresetn, pcie_axi_aresetn, pcie_resetn : std_logic;
+signal ddr_ui_rst, irconnect_arstn, ddr_axi_aresetn, pcie_axi_aresetn : std_logic;
 signal ddr_axi_awid, ddr_axi_arid, ddr_axi_bid, ddr_axi_rid : std_logic_vector(3 downto 0);
 signal pcie_axi_awaddr, ddr_axi_awaddr : std_logic_vector(31 downto 0);
 signal pcie_axi_awlen, ddr_axi_awlen : std_logic_vector(7 downto 0);
@@ -165,8 +164,6 @@ signal pcie_axi_rvalid, pcie_axi_rready, ddr_axi_rvalid, ddr_axi_rready : std_lo
 signal pcie_axi_rlast, ddr_axi_rlast : std_logic;
 
 begin
-
-pcie_resetn <= not(pcie_reset);
 
 axi_interconnect_i : axi_interconnect
 PORT MAP (
@@ -297,7 +294,7 @@ PORT MAP (
   m_axi_mm2s_aresetn => pcie_axi_aresetn,
   mm2s_err => mm2s_err,
   m_axis_mm2s_cmdsts_aclk => pcie_clk,
-  m_axis_mm2s_cmdsts_aresetn => pcie_resetn,
+  m_axis_mm2s_cmdsts_aresetn => pcie_axi_aresetn,
   s_axis_mm2s_cmd_tvalid => axis_mm2s_cmd_tvalid,
   s_axis_mm2s_cmd_tready => axis_mm2s_cmd_tready,
   s_axis_mm2s_cmd_tdata => axis_mm2s_cmd_tdata,
@@ -329,7 +326,7 @@ PORT MAP (
   m_axi_s2mm_aresetn => pcie_axi_aresetn,
   s2mm_err => s2mm_err,
   m_axis_s2mm_cmdsts_awclk => pcie_clk,
-  m_axis_s2mm_cmdsts_aresetn => pcie_resetn,
+  m_axis_s2mm_cmdsts_aresetn => pcie_axi_aresetn,
   s_axis_s2mm_cmd_tvalid => axis_s2mm_cmd_tvalid,
   s_axis_s2mm_cmd_tready => axis_s2mm_cmd_tready,
   s_axis_s2mm_cmd_tdata => axis_s2mm_cmd_tdata,
@@ -441,8 +438,7 @@ begin
     s_axi_rvalid => ddr_axi_rvalid,
     s_axi_rready => ddr_axi_rready,
     -- System Clock Ports
-    sys_clk_p => ddr_sys_clk_p,
-    sys_clk_n => ddr_sys_clk_n,
+    sys_clk_i => ddr_sys_clk,
     sys_rst => ddr_sys_rst
   );
   
@@ -458,7 +454,7 @@ begin
   -- This should provide a reliable reset chain where global reset correctly sets up all interfaces
   -- and PCIe core or DDR core reset correctly reset all AXI interfaces (as required by Interconnect IP)
   
-  ddr_sys_rst <= pcie_reset or ddr_reset;
+  ddr_sys_rst <= sys_reset or ddr_reset;
   irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset);
   
   s_axi_aclk_out <= ddr_ui_clk;

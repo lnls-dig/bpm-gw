@@ -541,8 +541,8 @@ top # (
 )
 EP (
   // SYS Inteface
-  .sys_clk_n(ep_sys_clk_n),
-  .sys_clk_p(ep_sys_clk_p),
+  .pci_sys_clk_n(ep_sys_clk_n),
+  .pci_sys_clk_p(ep_sys_clk_p),
   .sys_rst_n(sys_rst_n),
   .ddr_sys_clk_p(ddr_sys_clk_p),
   .ddr_sys_clk_n(ddr_sys_clk_n),
