@@ -213,6 +213,9 @@ begin
     );
 
   ddr_inclk_buf : IBUFGDS
+    generic map(
+      IBUF_LOW_PWR => false
+    )
     port map
      (o  => pll_clkin,
       i  => ddr_sys_clk_p,
