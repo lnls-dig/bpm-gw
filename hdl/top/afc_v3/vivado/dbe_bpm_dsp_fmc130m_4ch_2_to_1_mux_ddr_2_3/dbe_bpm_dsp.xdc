@@ -1067,7 +1067,7 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y3:CLOCKREGION_X0Y
 #AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
 #INST "cmp2_xwb_fmc130m_4ch" AREA_GROUP = "GRP_fmc2";
 #AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
-### Constraint Position Calc Cores 
+### Constraint Position Calc Cores
 #create_pblock GRP_position_calc_core1
 #add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo1] [get_cells -quiet {list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
 #resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
@@ -1091,9 +1091,9 @@ set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from
 set_multicycle_path 70 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/*}]]
 set_multicycle_path 69 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/*}]]
 
-# CIC FOFB CE (CE_TBT) = CE_ADC * 35
-set_multicycle_path 70 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
-set_multicycle_path 69 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+# CIC FOFB CE (CE_ADC) = 2
+set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
 
 # FOFB CORDIC CE (CE_FOFB) = CE_TBT * 28
 set_multicycle_path 1960 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/*}]]
