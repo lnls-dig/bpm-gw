@@ -608,7 +608,7 @@ begin
     -- Header
     fifo_fc_dout_marsh(i)(c_fc_data_marsh_header_top_idx downto
                           c_fc_data_marsh_header_bot_idx)
-                          <= fifo_fc_data_id(c_num_acq_fifos-1) & -- Get last channel data id as
+                          <= fifo_fc_data_id(c_fc_payload_ratio(i)-1) & -- Get last channel data id as
                                                                   -- all buffers will have the same ID when
                                                                   -- fifo_fc_valid_marsh is 1
                             fifo_fc_trigger_or(c_fc_payload_ratio(i));
@@ -704,9 +704,9 @@ begin
   -- Only count when in pre_trigger or post_trigger and we haven't acquire
   -- enough samples
   fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size and
-                                fifo_fc_data_id(c_num_acq_fifos-1) = "010") or -- Pre-trigger
+                                fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "010") or -- Pre-trigger
                                 (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size and
-                                fifo_fc_data_id(c_num_acq_fifos-1) = "100") -- Post-trigger
+                                fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "100") -- Post-trigger
                             else '0';
 
    -- Counter to detect end of transaction only
