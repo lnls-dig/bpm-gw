@@ -1490,9 +1490,48 @@ module wb_acq_core_tb;
     // Number of shots = 1
     // Pre trigger samples only
     // No trigger
+    // Larger channel
     ////////////////////////
 
     test_id = 4;
+    n_shots = 16'h0001;
+    pre_trig_samples = 32'h00000100;
+    post_trig_samples = 32'h00000000;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    ddr3_end_addr = 32'h00001000;
+    acq_chan = 16'd1;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
+    skip_trig = 1'b1;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 256;
+    max_wait_gnt_l = 512;
+    data_valid_prob = 0.7;
+    min_wait_trig_l = 100;
+    max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
+
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
+                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, min_wait_trig_l,
+                max_wait_trig_l, data_valid_prob);
+
+    ////////////////////////
+    // TEST #5
+    // Number of shots = 1
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+
+    test_id = 5;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00001000;
     post_trig_samples = 32'h00000000;
@@ -1524,13 +1563,13 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #5
+    // TEST #6
     // Number of shots = 2
     // Pre trigger samples only
     // No trigger
     ////////////////////////
 
-    test_id = 5;
+    test_id = 6;
     n_shots = 16'h0002;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
@@ -1562,13 +1601,13 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #6
+    // TEST #7
     // Number of shots = 16
     // Pre trigger samples only
     // No trigger
     ////////////////////////
 
-    test_id = 6;
+    test_id = 7;
     n_shots = 16'h0010;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
@@ -1580,44 +1619,6 @@ module wb_acq_core_tb;
     wait_finish = 1'b1;
     min_wait_gnt_l = 64;
     max_wait_gnt_l = 128;
-    data_valid_prob = 0.6;
-    min_wait_trig_l = 100;
-    max_wait_trig_l = 200;
-    hw_trig_sel = 1'b1; // External trigger
-    hw_trig_en = 1'b0;
-    hw_trig_dly = 'h0;
-    hw_int_trig_thres = 32'h000FFFFF;
-    hw_int_trig_thres_filt = 8'b00001111;
-    sw_trig_en = 1'b0;
-
-    wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
-                hw_int_trig_thres_filt, sw_trig_en,
-                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
-                wait_finish, stop_on_error, min_wait_gnt_l,
-                max_wait_gnt_l, min_wait_trig_l,
-                max_wait_trig_l, data_valid_prob);
-
-    ////////////////////////
-    // TEST #7
-    // Number of shots = 16
-    // Pre trigger samples only
-    // No trigger
-    ////////////////////////
-
-    test_id = 7;
-    n_shots = 16'h0010;
-    pre_trig_samples = 32'h00000020;
-    post_trig_samples = 32'h00000000;
-    ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
-    acq_chan = 16'd0;
-    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
-    skip_trig = 1'b1;
-    wait_finish = 1'b1;
-    min_wait_gnt_l = 128;
-    max_wait_gnt_l = 512;
     data_valid_prob = 0.6;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
@@ -1639,50 +1640,12 @@ module wb_acq_core_tb;
 
     ////////////////////////
     // TEST #8
-    // Number of shots = 1
-    // Pre trigger samples only
-    // No trigger
-    ////////////////////////
-
-    test_id = 8;
-    n_shots = 16'h0010;
-    pre_trig_samples = 32'h00000010;
-    post_trig_samples = 32'h00000000;
-    ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
-    acq_chan = 16'd0;
-    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
-    skip_trig = 1'b1;
-    wait_finish = 1'b1;
-    min_wait_gnt_l = 64;
-    max_wait_gnt_l = 128;
-    data_valid_prob = 0.6;
-    min_wait_trig_l = 100;
-    max_wait_trig_l = 200;
-    hw_trig_sel = 1'b1; // External trigger
-    hw_trig_en = 1'b0;
-    hw_trig_dly = 'h0;
-    hw_int_trig_thres = 32'h000FFFFF;
-    hw_int_trig_thres_filt = 8'b00001111;
-    sw_trig_en = 1'b0;
-
-    wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
-                hw_int_trig_thres_filt, sw_trig_en,
-                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
-                wait_finish, stop_on_error, min_wait_gnt_l,
-                max_wait_gnt_l, min_wait_trig_l,
-                max_wait_trig_l, data_valid_prob);
-
-    ////////////////////////
-    // TEST #9
     // Number of shots = 16
     // Pre trigger samples only
     // No trigger
     ////////////////////////
 
-    test_id = 9;
+    test_id = 8;
     n_shots = 16'h0010;
     pre_trig_samples = 32'h00000020;
     post_trig_samples = 32'h00000000;
@@ -1714,12 +1677,88 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
+    // TEST #9
+    // Number of shots = 1
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+
+    test_id = 9;
+    n_shots = 16'h0010;
+    pre_trig_samples = 32'h00000010;
+    post_trig_samples = 32'h00000000;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    ddr3_end_addr = 32'h00001000;
+    acq_chan = 16'd0;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
+    skip_trig = 1'b1;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 64;
+    max_wait_gnt_l = 128;
+    data_valid_prob = 0.6;
+    min_wait_trig_l = 100;
+    max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
+
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
+                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, min_wait_trig_l,
+                max_wait_trig_l, data_valid_prob);
+
+    ////////////////////////
     // TEST #10
+    // Number of shots = 16
+    // Pre trigger samples only
+    // No trigger
+    ////////////////////////
+
+    test_id = 10;
+    n_shots = 16'h0010;
+    pre_trig_samples = 32'h00000020;
+    post_trig_samples = 32'h00000000;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    ddr3_end_addr = 32'h00001000;
+    acq_chan = 16'd0;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
+    skip_trig = 1'b1;
+    wait_finish = 1'b1;
+    min_wait_gnt_l = 128;
+    max_wait_gnt_l = 512;
+    data_valid_prob = 0.6;
+    min_wait_trig_l = 100;
+    max_wait_trig_l = 200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b0;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
+
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
+                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, min_wait_trig_l,
+                max_wait_trig_l, data_valid_prob);
+
+    ////////////////////////
+    // TEST #11
     // Number of shots = 1
     // Pre trigger samples only, small amount
     // No trigger
     ////////////////////////
-    test_id = 10;
+    test_id = 11;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00000004;
     post_trig_samples = 32'h00000000;
@@ -1756,45 +1795,6 @@ module wb_acq_core_tb;
     ////////////////////////
 
     ////////////////////////
-    // TEST #11
-    // Number of shots = 1
-    // Pre trigger samples
-    // Post trigger samples
-    // With trigger
-    ////////////////////////
-    test_id = 11;
-    n_shots = 16'h0001;
-    pre_trig_samples = 32'h00000010;
-    post_trig_samples = 32'h00000010;
-    ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
-    acq_chan = 16'd0;
-    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
-    skip_trig = 1'b0;
-    wait_finish = 1'b1;
-    stop_on_error = 1'b1;
-    min_wait_gnt_l = 128;
-    max_wait_gnt_l = 512;
-    data_valid_prob = 1.0;
-    min_wait_trig_l = 1000;
-    max_wait_trig_l = 1200;
-    hw_trig_sel = 1'b1; // External trigger
-    hw_trig_en = 1'b1;
-    hw_trig_dly = 'h0;
-    hw_int_trig_thres = 32'h000FFFFF;
-    hw_int_trig_thres_filt = 8'b00001111;
-    sw_trig_en = 1'b0;
-
-    wb_acq(test_id, n_shots,
-                pre_trig_samples, post_trig_samples,
-                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
-                hw_int_trig_thres_filt, sw_trig_en,
-                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
-                wait_finish, stop_on_error, min_wait_gnt_l,
-                max_wait_gnt_l, min_wait_trig_l,
-                max_wait_trig_l, data_valid_prob);
-
-    ////////////////////////
     // TEST #12
     // Number of shots = 1
     // Pre trigger samples
@@ -1803,7 +1803,7 @@ module wb_acq_core_tb;
     ////////////////////////
     test_id = 12;
     n_shots = 16'h0001;
-    pre_trig_samples = 32'h00000100;
+    pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000010;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     ddr3_end_addr = 32'h00001000;
@@ -1842,6 +1842,45 @@ module wb_acq_core_tb;
     ////////////////////////
     test_id = 13;
     n_shots = 16'h0001;
+    pre_trig_samples = 32'h00000100;
+    post_trig_samples = 32'h00000010;
+    ddr3_start_addr = 32'h00000000; // all zeros for now
+    ddr3_end_addr = 32'h00001000;
+    acq_chan = 16'd0;
+    lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
+    skip_trig = 1'b0;
+    wait_finish = 1'b1;
+    stop_on_error = 1'b1;
+    min_wait_gnt_l = 128;
+    max_wait_gnt_l = 512;
+    data_valid_prob = 1.0;
+    min_wait_trig_l = 1000;
+    max_wait_trig_l = 1200;
+    hw_trig_sel = 1'b1; // External trigger
+    hw_trig_en = 1'b1;
+    hw_trig_dly = 'h0;
+    hw_int_trig_thres = 32'h000FFFFF;
+    hw_int_trig_thres_filt = 8'b00001111;
+    sw_trig_en = 1'b0;
+
+    wb_acq(test_id, n_shots,
+                pre_trig_samples, post_trig_samples,
+                hw_trig_sel, hw_trig_en, hw_trig_dly, hw_int_trig_thres,
+                hw_int_trig_thres_filt, sw_trig_en,
+                ddr3_start_addr, ddr3_end_addr, acq_chan, skip_trig,
+                wait_finish, stop_on_error, min_wait_gnt_l,
+                max_wait_gnt_l, min_wait_trig_l,
+                max_wait_trig_l, data_valid_prob);
+
+    ////////////////////////
+    // TEST #14
+    // Number of shots = 1
+    // Pre trigger samples
+    // Post trigger samples
+    // With trigger
+    ////////////////////////
+    test_id = 14;
+    n_shots = 16'h0001;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000100;
     ddr3_start_addr = 32'h00000000; // all zeros for now
@@ -1873,13 +1912,13 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #14
+    // TEST #15
     // Number of shots = 1
     // Pre trigger samples
     // Post trigger samples
     // With trigger
     ////////////////////////
-    test_id = 14;
+    test_id = 15;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00001000;
@@ -1912,13 +1951,13 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #15
+    // TEST #16
     // Number of shots = 16
     // Pre trigger samples
     // Post trigger samples
     // With trigger
     ////////////////////////
-    test_id = 15;
+    test_id = 16;
     n_shots = 16'h0010;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00000100;
@@ -1951,13 +1990,13 @@ module wb_acq_core_tb;
                 max_wait_trig_l, data_valid_prob);
 
     ////////////////////////
-    // TEST #16
+    // TEST #17
     // Number of shots = 1
     // Pre trigger samples only
     // No trigger
     ////////////////////////
 
-    test_id = 16;
+    test_id = 17;
     n_shots = 16'h0001;
     pre_trig_samples = 32'h00000040;
     post_trig_samples = 32'h00000040;
