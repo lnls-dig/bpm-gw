@@ -156,11 +156,11 @@ architecture rtl of acq_ddr3_read is
   signal lmt_chan_curr_width                : unsigned(c_acq_chan_max_w_log2-1 downto 0);
   signal rb_ddr_trig_addr                   : unsigned(g_ddr_addr_width-1 downto 0);
   -- For intermediate multiplication result
-  signal lmt_full_pkt_addr_ss               : unsigned(63 downto 0);
-  signal lmt_full_pkt_addr_ms               : unsigned(63 downto 0);
-  signal lmt_pre_pkt_addr                   : unsigned(63 downto 0);
-  signal lmt_pre_full_addr                  : unsigned(63 downto 0);
-
+  signal lmt_full_pkt_addr_ss               : unsigned(39 downto 0);
+  signal lmt_full_pkt_addr_ms               : unsigned(39 downto 0);
+  signal lmt_pre_pkt_addr                   : unsigned(39 downto 0);
+  signal lmt_pre_full_addr                  : unsigned(39 downto 0);
+  signal sample_size                        : unsigned(7 downto 0);
 
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(c_ddr_payload_width-1 downto 0);
@@ -306,9 +306,12 @@ begin
     end if;
   end process;
 
-  lmt_full_pkt_addr_ss <= lmt_full_pkt_size*c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i));
+  sample_size  <= g_acq_channels(to_integer(lmt_curr_chan_id_i)).width/
+                          g_acq_channels(to_integer(lmt_curr_chan_id_i)).num_atoms/8;
+
+  lmt_full_pkt_addr_ss <= lmt_full_pkt_size*sample_size;
   lmt_full_pkt_addr_ms <= lmt_full_pkt_addr_ss(lmt_full_pkt_addr_ss'left-lmt_shots_nb'length downto 0)*(lmt_shots_nb-1);
-  lmt_pre_pkt_addr <= lmt_pre_pkt_size*c_ddr_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i));
+  lmt_pre_pkt_addr <= lmt_pre_pkt_size*sample_size;
 
   lmt_pre_full_addr <= lmt_full_pkt_addr_ms + lmt_pre_pkt_addr;
 
