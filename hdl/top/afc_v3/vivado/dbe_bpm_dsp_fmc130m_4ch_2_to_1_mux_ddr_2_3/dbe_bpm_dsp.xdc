@@ -1049,7 +1049,7 @@ set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/cmp_position_calc_cdc_fifo/
 create_pblock GRP_pcie_core
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i/*]
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i]
-resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y3:CLOCKREGION_X0Y4}
+resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
 ### Place the DMA design not far from PCIe core, otherwise it also breaks timing
 #create_pblock GRP_tlpControl
 #add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/*]
@@ -1073,7 +1073,7 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y3:CLOCKREGION_X0Y
 #resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
 create_pblock GRP_position_calc_core_cdc_fifo2
 add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] [get_cells -quiet {list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
-resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y1:CLOCKREGION_X1Y1}
+resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 
 #######################################################################
 ##                         CE Constraints                            ##
