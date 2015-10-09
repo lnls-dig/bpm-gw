@@ -157,7 +157,7 @@ architecture Behavioral of rx_MWr_Transact is
 
   signal m_axis_rx_tready_i : std_logic;
 
-  signal trn_rx_throttle    : std_logic;
+  signal trn_rx_throttle, trn_rx_throttle_r : std_logic;
 
   -- 1st DW BE = "0000" means the TLP is of zero-length.
   signal MWr_Has_4DW_Header : std_logic;
@@ -197,9 +197,9 @@ begin
   m_axis_rx_tkeep_i <= m_axis_rx_tkeep;
 
   m_axis_rx_tdata_fixed <= m_axis_rx_tdata_r1 when MWr_Has_4DW_Header = '1' else
-                            (m_axis_rx_tdata_r1(31 downto 0) & m_axis_rx_tdata_r2(63 downto 32));
+                            (m_axis_rx_tdata_i(31 downto 0) & m_axis_rx_tdata_r1(63 downto 32));
   m_axis_rx_tkeep_fixed <= m_axis_rx_tkeep_r1 when MWr_Has_4DW_Header = '1' else
-                            (m_axis_rx_tkeep_r1(3 downto 0) & m_axis_rx_tkeep_r2(7 downto 4));
+                            (m_axis_rx_tkeep_i(3 downto 0) & m_axis_rx_tkeep_r1(7 downto 4));
 
   -- Output to the core as handshaking
   m_axis_rx_tbar_hit_i <= m_axis_rx_tbar_hit;
@@ -218,6 +218,8 @@ begin
   process (user_clk)
   begin
     if rising_edge(user_clk) then
+      trn_rx_throttle_r <= trn_rx_throttle;
+      
       if trn_rx_throttle = '0' then
         m_axis_rx_tlast_r1    <= m_axis_rx_tlast_i;
         m_axis_rx_tlast_r2    <= m_axis_rx_tlast_r1;
@@ -573,6 +575,7 @@ begin
 -- ----------------------------------------------
   RxFSM_Output_DDR_Space_Selected :
   process (user_clk)
+    variable tkeep_hmask : std_logic_vector(3 downto 0) := x"0";
   begin
     if rising_edge(user_clk) then
       if user_reset = '1' then
@@ -580,15 +583,8 @@ begin
         ddr_s2mm_tvalid_i <= '0';
         DDR_space_sel <= '0';
       else
-      
         ddr_s2mm_cmd_tvalid_i <= '0';
         ddr_s2mm_tvalid_i <= '0';
-        if ddr_space_sel = '1' then
-          ddr_s2mm_tdata <= endian_invert_64(m_axis_rx_tdata_fixed);
-          ddr_s2mm_tkeep <= endian_invert_tkeep(m_axis_rx_tkeep_fixed);
-          --r1 in 4DW hdr case, r1 or r2 in 3DW hdr case
-          ddr_s2mm_tlast <= m_axis_rx_tlast_r1 or m_axis_rx_tlast_r2;
-        end if;
         
         case RxMWrTrn_State is
   
@@ -603,6 +599,9 @@ begin
                                     m_axis_rx_tdata_i(C_DDR_PG_WIDTH-1 downto 0);
               ddr_s2mm_cmd_eof <= '1';
               ddr_s2mm_cmd_drr <= '1';
+              for i in 0 to 3 loop
+                tkeep_hmask(i) := mwr_has_4dw_header or not(mwr_leng_in_bytes(2));
+              end loop; 
             else
               DDR_Space_Sel <= '0';
             end if;
@@ -622,25 +621,24 @@ begin
                                     m_axis_rx_tdata_i(32+C_DDR_PG_WIDTH-1 downto 32);
               ddr_s2mm_cmd_eof <= '1';
               ddr_s2mm_cmd_drr <= '1';
+              tkeep_hmask := x"F";
             else
               DDR_Space_Sel <= '0';
             end if;
-            
-          --skip over 1st data word because we take data from a pipelined stream
-          when st_mwr4_1st_data =>
-            null;
-          when st_mwr_1st_data =>
-            null;
   
           when others =>
-            if trn_rx_throttle = '0' and DDR_space_sel = '1' then
+            if trn_rx_throttle_r = '0' and DDR_space_sel = '1' then
             --clear at the end of packet
               ddr_space_sel <= not((m_axis_rx_tlast_r1 and ddr_s2mm_cmd_btt(2)) or
-                                (m_axis_rx_tlast_r1 and not(ddr_s2mm_cmd_btt(2))));
+                                (m_axis_rx_tlast_i and not(ddr_s2mm_cmd_btt(2))));
             end if;
 
             if DDR_Space_Sel = '1' then
-              ddr_s2mm_tvalid_i <= not trn_rx_throttle;
+              ddr_s2mm_tvalid_i <= not trn_rx_throttle_r;
+              ddr_s2mm_tdata <= endian_invert_64(m_axis_rx_tdata_fixed);
+              ddr_s2mm_tkeep <= endian_invert_tkeep(m_axis_rx_tkeep_fixed) and (tkeep_hmask & x"F");
+              --r1 in 4DW hdr case, i or r1 in 3DW hdr case
+              ddr_s2mm_tlast <= m_axis_rx_tlast_i or m_axis_rx_tlast_r1;
             end if;
 
         end case;
@@ -681,13 +679,6 @@ begin
               wb_FIFO_wsof_i <= '0';
               wb_FIFO_weof_i <= '0';
             end if;
-  
-          when ST_MWr_1ST_DATA =>
-            FIFO_Space_Sel <= FIFO_Space_Sel;
-            wb_FIFO_we_i   <= '0';
-            wb_FIFO_wsof_i <= '0';
-            wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= wb_FIFO_din_i;
     
           when ST_MWr4_HEAD2 =>
             if m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1'
@@ -706,15 +697,8 @@ begin
               wb_FIFO_weof_i <= '0';
             end if;
   
-          when ST_MWr4_1ST_DATA =>
-            FIFO_Space_Sel <= FIFO_Space_Sel;
-            wb_FIFO_we_i   <= '0';
-            wb_FIFO_wsof_i <= '0';
-            wb_FIFO_weof_i <= '0';
-            wb_FIFO_din_i  <= wb_FIFO_din_i;
-  
           when others =>
-            if m_axis_rx_tlast_r1 = '1' and trn_rx_throttle = '0' then
+            if m_axis_rx_tlast_r1 = '1' and trn_rx_throttle_r = '0' then
               FIFO_Space_Sel <= '0';
             else
               FIFO_Space_Sel <= FIFO_Space_Sel;
@@ -722,7 +706,7 @@ begin
             if FIFO_Space_Sel = '1' then
               wb_FIFO_wsof_i <= '0';
               wb_FIFO_weof_i <= m_axis_rx_tlast_r1;
-              wb_FIFO_we_i   <= not trn_rx_throttle;
+              wb_FIFO_we_i   <= not trn_rx_throttle_r;
               wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_fixed);
             else
               wb_FIFO_wsof_i <= '0';
