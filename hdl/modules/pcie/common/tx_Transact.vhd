@@ -799,7 +799,8 @@ begin
               s_axis_tx_tlast_i   <= '1';
               if Trn_Qout_reg (C_TLP_FMT_BIT_BOT) = '1' then  -- 4DW header
                 s_axis_tx_tkeep_i <= X"FF";
-                s_axis_tx_tdata_i <= Trn_Qout_reg (C_DBUS_WIDTH*2-1 downto C_DBUS_WIDTH);
+                s_axis_tx_tdata_i <= Trn_Qout_reg(C_DBUS_WIDTH+32-1 downto C_DBUS_WIDTH) &
+                                      Trn_Qout_reg(C_DBUS_WIDTH*2-1 downto C_DBUS_WIDTH+32);
               else
                 s_axis_tx_tkeep_i <= X"0F";
                 s_axis_tx_tdata_i <= X"00000000" & Trn_Qout_reg (C_DBUS_WIDTH-1+32 downto C_DBUS_WIDTH);
@@ -888,7 +889,8 @@ begin
               mbuf_RE_ok        <= not Trn_Qout_reg (C_TLP_FMT_BIT_BOT);
             elsif Trn_Qout_reg (C_TLP_FMT_BIT_BOT) = '1' then  -- 4DW header
               TxTrn_State       <= St_d_1st_Data;  -- St_d_HeaderPlus;
-              s_axis_tx_tdata_i <= Trn_Qout_reg (C_DBUS_WIDTH*2-1 downto C_DBUS_WIDTH);
+              s_axis_tx_tdata_i <= Trn_Qout_reg(C_DBUS_WIDTH+32-1 downto C_DBUS_WIDTH) &
+                                    Trn_Qout_reg(C_DBUS_WIDTH*2-1 downto C_DBUS_WIDTH+32);
               trn_tsof_n_i      <= '1';
               s_axis_tx_tlast_i <= '0';
               mbuf_RE_ok        <= '1';
