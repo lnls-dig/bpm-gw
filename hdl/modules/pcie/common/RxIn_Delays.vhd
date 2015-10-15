@@ -48,8 +48,8 @@ entity RxIn_Delay is
     m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
     m_axis_rx_tready   : out std_logic;
     ddr_s2mm_cmd_tready : in std_logic;
-    ddr_s2mm_tready : in std_logic;
-    wb_FIFO_full       : in  std_logic;
+    cpld_ready         : in std_logic;
+    mwr_ready          : in std_logic;
 
     -- Delay for one clock
     m_axis_rx_tlast_dly    : out std_logic;
@@ -559,124 +559,116 @@ begin
         TLP_is_Cpl    <= '0';
         TLP_is_CplLk  <= '0';
       else
-        -- MRd
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MRd_H3DW <= '1';
-        else
-          TLP_is_MRd_H3DW <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MRd_H4DW <= '1';
-        else
-          TLP_is_MRd_H4DW <= '0';
-        end if;
-  
-        -- MRdLk
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MRdLk_H3DW <= '1';
-        else
-          TLP_is_MRdLk_H3DW <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MRdLk_H4DW <= '1';
-        else
-          TLP_is_MRdLk_H4DW <= '0';
-        end if;
-  
-        -- MWr
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MWr_H3DW <= '1';
-        else
-          TLP_is_MWr_H3DW <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_WITH_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_MWr_H4DW <= '1';
-        else
-          TLP_is_MWr_H4DW <= '0';
-        end if;
-  
-        -- CplD, Cpl/CplDLk, CplLk
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_CplD <= '1';
-        else
-          TLP_is_CplD <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_CplDLk <= '1';
-        else
-          TLP_is_CplDLk <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_Cpl <= '1';
-        else
-          TLP_is_Cpl <= '0';
-        end if;
-  
-        if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
-          and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
-          and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
-          and m_axis_rx_tvalid = '1'
-          and trn_rsof_n = '0'
-        then
-          TLP_is_CplLk <= '1';
-        else
-          TLP_is_CplLk <= '0';
+        if trn_rsof_n = '0' then
+          -- MRd
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MRd_H3DW <= '1';
+          else
+            TLP_is_MRd_H3DW <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MRd_H4DW <= '1';
+          else
+            TLP_is_MRd_H4DW <= '0';
+          end if;
+    
+          -- MRdLk
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MRdLk_H3DW <= '1';
+          else
+            TLP_is_MRdLk_H3DW <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ_LK
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MRdLk_H4DW <= '1';
+          else
+            TLP_is_MRdLk_H4DW <= '0';
+          end if;
+    
+          -- MWr
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MWr_H3DW <= '1';
+          else
+            TLP_is_MWr_H3DW <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT4_WITH_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_MEM_REQ
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tbar_hit(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0)
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_MWr_H4DW <= '1';
+          else
+            TLP_is_MWr_H4DW <= '0';
+          end if;
+    
+          -- CplD, Cpl/CplDLk, CplLk
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_CplD <= '1';
+          else
+            TLP_is_CplD <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_WITH_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_CplDLk <= '1';
+          else
+            TLP_is_CplDLk <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_Cpl <= '1';
+          else
+            TLP_is_Cpl <= '0';
+          end if;
+    
+          if m_axis_rx_tdata(C_TLP_FMT_BIT_TOP downto C_TLP_FMT_BIT_BOT) = C_FMT3_NO_DATA
+            and m_axis_rx_tdata(C_TLP_TYPE_BIT_TOP downto C_TLP_TYPE_BIT_BOT) = C_TYPE_COMPLETION_LK
+            and m_axis_rx_tdata(C_TLP_EP_BIT) = '0'
+            and m_axis_rx_tvalid = '1'
+          then
+            TLP_is_CplLk <= '1';
+          else
+            TLP_is_CplLk <= '0';
+          end if;
         end if;
       end if;
     end if;
@@ -753,7 +745,7 @@ begin
             end if;
   
           when TK_MWr_3Hdr_C =>
-            m_axis_rx_tready_i <= '1';
+            m_axis_rx_tready_i <= mwr_ready;
             if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
               and m_axis_rx_tready_i = '1' then
               FSM_TLP_Cnt <= TK_Idle;
@@ -764,7 +756,7 @@ begin
             end if;
   
           when TK_MWr_4Hdr_C =>
-            m_axis_rx_tready_i <= '1';
+            m_axis_rx_tready_i <= mwr_ready;
             if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
               and m_axis_rx_tready_i = '1' then
               FSM_TLP_Cnt <= TK_Idle;
@@ -775,7 +767,7 @@ begin
             end if;
   
           when TK_Cpld_Hdr_C =>
-            m_axis_rx_tready_i <= '1';
+            m_axis_rx_tready_i <= cpld_ready;
             if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
               and m_axis_rx_tready_i = '1' then
               FSM_TLP_Cnt <= TK_Idle;
@@ -786,16 +778,13 @@ begin
             end if;
   
           when TK_Body =>
+            m_axis_rx_tready_i <= ((TLP_is_MWr_H4DW or TLP_is_MWr_H3DW) and mwr_ready) or (TLP_is_CplD and cpld_ready);
             --for TLP body we can't wait for rising edge because there is a chance that TLP EOF
             --will hit when *_tready_i = 0 which will cause deadlock
             if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then
-              FSM_TLP_Cnt        <= TK_Idle;
-              m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
-                                        or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
+              FSM_TLP_Cnt <= TK_Idle;
             else
               FSM_TLP_Cnt <= TK_Body;
-              m_axis_rx_tready_i <= not(((MWr_on_Pool or CplD_on_Pool_i) and not(ddr_s2mm_tready))
-                                        or ((MWr_on_EB or CplD_on_EB_i) and wb_fifo_full));
             end if;
   
           when others =>

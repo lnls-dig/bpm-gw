@@ -44,6 +44,7 @@ entity rx_CplD_Transact is
     m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
 
     CplD_Type : in std_logic_vector(3 downto 0);
+    cpld_ready : out std_logic;
 
     Req_ID_Match      : in std_logic;
     usDex_Tag_Matched : in std_logic;
@@ -80,6 +81,7 @@ entity rx_CplD_Transact is
     wb_FIFO_wsof : out std_logic;
     wb_FIFO_weof : out std_logic;
     wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_full : in std_logic;
 
     -- Registers Write Port
     Regs_WrEn   : out std_logic;
@@ -175,17 +177,15 @@ architecture Behavioral of rx_CplD_Transact is
   signal m_axis_rx_tdata_Little_r3 : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
   signal m_axis_rx_tdata_Little_r4 : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
 
-  --  signal  m_axis_rx_tbar_hit_i   : std_logic_vector(C_BAR_NUMBER-1 downto 0);
-
   signal trn_rsof_n_i       : std_logic;
   signal in_packet_reg      : std_logic;
+  signal cpld_ready_i       : std_logic;
   signal m_axis_rx_tlast_i  : std_logic;
   signal m_axis_rx_tlast_r1 : std_logic;
   signal m_axis_rx_tlast_r2 : std_logic;
   signal m_axis_rx_tlast_r3 : std_logic;
   signal m_axis_rx_tlast_r4 : std_logic;
 
---  signal Tlp_has_4KB_r1       : std_logic;
   signal m_axis_rx_tkeep_i  : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
   signal m_axis_rx_tkeep_r1 : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
   signal m_axis_rx_tkeep_r2 : std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
@@ -207,7 +207,6 @@ architecture Behavioral of rx_CplD_Transact is
   signal ddr_s2mm_cmd_saddr : std_logic_vector(31 downto 0);
   signal ddr_s2mm_tvalid_i : STD_LOGIC;
   signal ddr_s2mm_tlast_i : STD_LOGIC;
-  signal ddr_s2mm_tready_r : STD_LOGIC;
 
   -- Event Buffer write port
   signal wb_FIFO_we_i       : std_logic;
@@ -316,15 +315,17 @@ architecture Behavioral of rx_CplD_Transact is
   
   --signals of elastic buffer used to accomodate for handshaking delays between DDR/WB "ready" signals
   --and PCIe core data pipeline
-  signal elbuf_din : std_logic_vector(C_ELBUF_WIDTH-1 downto 0);
+  signal elbuf_din : std_logic_vector(C_ELBUF_WIDTH-1 downto 0) := (others => '0');
   signal elbuf_we : std_logic;
-  signal elbuf_dout, elbuf_dout_r : std_logic_vector(C_ELBUF_WIDTH-1 downto 0);
+  signal elbuf_dout: std_logic_vector(C_ELBUF_WIDTH-1 downto 0);
   signal elbuf_re, elbuf_re_r, elbuf_re_st : std_logic;
-  signal elbuf_empty, elbuf_empty_r : std_logic;
+  signal elbuf_empty, elbuf_empty_r, elbuf_afull : std_logic;
 
 begin
 
-  -- Event Buffer write
+  cpld_ready <= cpld_ready_i;
+
+  -- Wishbone fifo write
   wb_FIFO_we   <= wb_FIFO_we_i;
   wb_FIFO_wsof <= wb_FIFO_wsof_i;
   wb_FIFO_weof <= wb_FIFO_weof_i;
@@ -1141,8 +1142,9 @@ begin
         g_with_empty => true,
         g_with_full => false,
         g_with_almost_empty => false,
-        g_with_almost_full => false,
+        g_with_almost_full => true,
         g_with_count => false,
+        g_almost_full_threshold => 26,
         g_with_fifo_inferred => true)
       port map(
         rst_n_i => user_reset_n,
@@ -1154,7 +1156,7 @@ begin
         empty_o => elbuf_empty,
         full_o => open,
         almost_empty_o => open,
-        almost_full_o => open,
+        almost_full_o => elbuf_afull,
         count_o => open
         );
  
@@ -1332,6 +1334,7 @@ begin
         elbuf_we <= '0';
       else
         elbuf_we <= '0';
+        elbuf_din <= (others => '0');
         
         case RxCplDTrn_State_r1 is
                 
@@ -1460,7 +1463,6 @@ begin
             ddr_s2mm_cmd_tvalid_i <= '0';
             ddr_s2mm_tvalid_i <= '0';
             elbuf_re_st <= '1';
-            elbuf_dout_r <= (others => '0');
             if elbuf_empty = '0' then
               ddr_wr_state <= st_cmd;
               elbuf_re_st <= '0';
@@ -1477,6 +1479,7 @@ begin
             --check if this is really a header, something went horribly if it isn't
             if elbuf_dout(C_IS_HDR_BIT) = '0' then
               ddr_wr_state <= st_idle;
+              elbuf_re_st <= '1';
             elsif elbuf_dout(C_IS_HDR_BIT) = '1' and elbuf_dout(C_DDR_HIT_BIT) = '1' and ddr_s2mm_cmd_tready = '1' then
               ddr_wr_state <= st_data;
               elbuf_re_st <= '1';
@@ -1488,7 +1491,7 @@ begin
             ddr_s2mm_tkeep <= elbuf_dout(C_TKEEP_BTOP downto C_TKEEP_BBOT);
             ddr_s2mm_tvalid_i <= not(elbuf_empty_r);
             --stop reading if we are at the end of packet
-            elbuf_re_st <= not(elbuf_empty) and not(elbuf_dout_r(C_TLAST_BIT)) and not(elbuf_dout(C_TLAST_BIT));
+            elbuf_re_st <= not(elbuf_empty) and not(elbuf_dout(C_TLAST_BIT));
             elbuf_empty_r <= elbuf_empty; --have to register only at data phase, otherwise tvalid will come too fast
             if (elbuf_empty = '0' and elbuf_re = '1') or elbuf_dout(C_TLAST_BIT) = '1' then
               --if it's the last word in a packet fifo will be already empty, so push last word unconditionally
@@ -1509,13 +1512,14 @@ begin
   process(user_clk)
   begin
     if rising_edge(user_clk) then
-      ddr_s2mm_tready_r <= ddr_s2mm_tready;
       elbuf_re_r <= elbuf_re;
     end if;
   end process;
   
+  --stop reading *in the same clock cycle* that receiver goes out-of-ready
+  --or it's last word in packet. Otherwise we'll lose one word, usually a header
   elbuf_re <= (elbuf_re_st and ddr_s2mm_cmd_tready) when ddr_wr_state = st_idle else
-              (elbuf_re_st and ddr_s2mm_tready);
+              (elbuf_re_st and ddr_s2mm_tready and not(elbuf_dout(C_TLAST_BIT)));
 
   concat_rd <= m_axis_rx_tdata_r3(31 downto 0) & m_axis_rx_tdata_r4(63 downto 32);
 
@@ -1623,6 +1627,19 @@ begin
             wb_FIFO_din_i  <= Endian_Invert_64(concat_rd);
   
         end case;
+      end if;
+    end if;
+  end process;
+  
+  process(user_clk)
+  begin
+    if rising_edge(user_clk) then
+      if DDR_space_hit = '1' then
+        cpld_ready_i <= not(elbuf_afull);
+      elsif FIFO_space_hit = '1' then
+        cpld_ready_i <= not(wb_fifo_full);
+      else
+        cpld_ready_i <= '1';
       end if;
     end if;
   end process;

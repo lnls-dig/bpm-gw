@@ -30,11 +30,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 library work;
 use work.abb64Package.all;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.genram_pkg.all;
 
 entity rx_MWr_Transact is
   port (
@@ -52,15 +48,16 @@ entity rx_MWr_Transact is
     wb_pg    : in std_logic_vector(31 downto 0);
 
     -- from pre-process module
-    MWr_Type          : in std_logic_vector(1 downto 0);
---      Last_DW_of_TLP     : IN  std_logic;
-    Tlp_has_4KB       : in std_logic;
+    MWr_Type    : in std_logic_vector(1 downto 0);
+    Tlp_has_4KB : in std_logic;
+    mwr_ready   : out std_logic;
 
     -- Event Buffer write port
     wb_FIFO_we   : out std_logic;
     wb_FIFO_wsof : out std_logic;
     wb_FIFO_weof : out std_logic;
     wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+    wb_FIFO_full : in std_logic;
 
     -- Registers Write Port
     Regs_WrEn   : out std_logic;
@@ -89,6 +86,21 @@ end entity rx_MWr_Transact;
 
 architecture Behavioral of rx_MWr_Transact is
 
+  constant C_IS_HDR_BIT : integer := C_DBUS_WIDTH;
+  constant C_DDR_HIT_BIT : integer := C_IS_HDR_BIT+1;
+  constant C_WB_HIT_BIT : integer := C_DDR_HIT_BIT+1;
+  constant C_TLAST_BIT : integer := C_WB_HIT_BIT+1;
+  constant C_TKEEP_BBOT : integer := C_TLAST_BIT+1;
+  constant C_TKEEP_BTOP : integer := C_TKEEP_BBOT+7;
+  constant C_ELBUF_WIDTH : integer := C_TKEEP_BTOP+1;
+  --CMD will fit into DBUS_WIDTH without problem
+  constant C_CMD_SADDR_BBOT : integer := 0;
+  constant C_CMD_SADDR_BTOP : integer := 31;
+  constant C_CMD_BTT_BBOT : integer := C_CMD_SADDR_BTOP+1;
+  constant C_CMD_BTT_BTOP : integer := C_CMD_BTT_BBOT+22;
+  constant C_CMD_DRR_BIT : integer := C_CMD_BTT_BTOP+1;
+  constant C_CMD_EOF_BIT : integer := C_CMD_DRR_BIT+1;
+
   type RxMWrTrnStates is (ST_MWr_RESET
                                  , ST_MWr_IDLE
 --                               , ST_MWr3_HEAD1
@@ -108,6 +120,12 @@ architecture Behavioral of rx_MWr_Transact is
   -- State variables
   signal RxMWrTrn_NextState : RxMWrTrnStates;
   signal RxMWrTrn_State     : RxMWrTrnStates;
+  
+  type t_ddr_wr_state is (st_idle,
+                          st_cmd,
+                          st_data);
+                            
+  signal ddr_wr_state : t_ddr_wr_state;
 
   -- trn_rx stubs
   signal m_axis_rx_tdata_i : std_logic_vector (C_DBUS_WIDTH-1 downto 0);
@@ -123,12 +141,13 @@ architecture Behavioral of rx_MWr_Transact is
   signal m_axis_rx_tbar_hit_i  : std_logic_vector (C_BAR_NUMBER-1 downto 0);
   signal m_axis_rx_tbar_hit_r1 : std_logic_vector (C_BAR_NUMBER-1 downto 0);
 
-  signal m_axis_rx_tvalid_i  : std_logic;
-  signal trn_rsof_n_i        : std_logic;
-  signal in_packet_reg       : std_logic;
-  signal m_axis_rx_tlast_i   : std_logic;
-  signal m_axis_rx_tlast_r1  : std_logic;
-  signal m_axis_rx_tlast_r2  : std_logic;
+  signal m_axis_rx_tvalid_i : std_logic;
+  signal trn_rsof_n_i       : std_logic;
+  signal in_packet_reg      : std_logic;
+  signal mwr_ready_i        : std_logic;
+  signal m_axis_rx_tlast_i  : std_logic;
+  signal m_axis_rx_tlast_r1 : std_logic;
+  signal m_axis_rx_tlast_r2 : std_logic;
 
   -- packet RAM and packet FIFOs selection signals
   signal FIFO_Space_Sel : std_logic;
@@ -142,6 +161,7 @@ architecture Behavioral of rx_MWr_Transact is
   signal ddr_s2mm_cmd_drr : std_logic;
   signal ddr_s2mm_cmd_saddr : std_logic_vector(31 downto 0);
   signal ddr_s2mm_tvalid_i : STD_LOGIC;
+  signal ddr_s2mm_tlast_i : STD_LOGIC;
 
   -- Event Buffer write port
   signal wb_FIFO_we_i   : std_logic;
@@ -164,9 +184,23 @@ architecture Behavioral of rx_MWr_Transact is
   signal Tlp_is_Zero_Length : std_logic;
   signal MWr_Leng_in_Bytes  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal mwr_nwords_even_r : std_logic;
+  
+  --signals of elastic buffer used to accomodate for handshaking delays between DDR/WB "ready" signals
+  --and PCIe core data pipeline
+  signal elbuf_din : std_logic_vector(C_ELBUF_WIDTH-1 downto 0) := (others => '0');
+  signal elbuf_we : std_logic;
+  signal elbuf_dout : std_logic_vector(C_ELBUF_WIDTH-1 downto 0);
+  signal elbuf_re, elbuf_re_r, elbuf_re_st : std_logic;
+  signal elbuf_empty, elbuf_empty_r, elbuf_afull : std_logic;
+  
+  signal user_reset_n : std_logic;
 
 begin
-
+  
+  user_reset_n <= not(user_reset);
+  
+  mwr_ready <= mwr_ready_i;
+  
   -- Event Buffer write
   wb_FIFO_we   <= wb_FIFO_we_i;
   wb_FIFO_wsof <= wb_FIFO_wsof_i;
@@ -184,6 +218,7 @@ begin
   ddr_s2mm_cmd_tdata(67 downto 64) <= "0000"; --tag
   ddr_s2mm_cmd_tdata(71 downto 68) <= (others => '0');
   ddr_s2mm_tvalid <= ddr_s2mm_tvalid_i;
+  ddr_s2mm_tlast <= ddr_s2mm_tlast_i;
 
   -- Registers writing
   Regs_WrEn   <= Regs_WrEn_i;
@@ -211,6 +246,36 @@ begin
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
   trn_rx_throttle <= not(m_axis_rx_tvalid_i) or not(m_axis_rx_tready_i);
 
+-- elastic buffer used to accomodate for handshaking delays between DDR/WB "ready" signals
+-- and PCIe core data pipeline
+
+  elbuf:
+    generic_sync_fifo
+      generic map(
+        g_data_width => C_ELBUF_WIDTH,
+        g_size => 32,
+        g_show_ahead => false,
+        g_with_empty => true,
+        g_with_full => false,
+        g_with_almost_empty => false,
+        g_with_almost_full => true,
+        g_with_count => false,
+        g_almost_full_threshold => 26,
+        g_with_fifo_inferred => true)
+      port map(
+        rst_n_i => user_reset_n,
+        clk_i => user_clk,
+        d_i => elbuf_din,
+        we_i => elbuf_we,
+        q_o => elbuf_dout,
+        rd_i => elbuf_re,
+        empty_o => elbuf_empty,
+        full_o => open,
+        almost_empty_o => open,
+        almost_full_o => elbuf_afull,
+        count_o => open
+        );
+        
 -- -----------------------------------------------------
 --   Delays: m_axis_rx_tdata_i, m_axis_rx_tbar_hit_i, m_axis_rx_tlast_i
 -- -----------------------------------------------------
@@ -579,12 +644,10 @@ begin
   begin
     if rising_edge(user_clk) then
       if user_reset = '1' then
-        ddr_s2mm_cmd_tvalid_i <= '0';
-        ddr_s2mm_tvalid_i <= '0';
         DDR_space_sel <= '0';
       else
-        ddr_s2mm_cmd_tvalid_i <= '0';
-        ddr_s2mm_tvalid_i <= '0';
+        elbuf_we <= '0';
+        elbuf_din <= (others => '0');
         
         case RxMWrTrn_State is
   
@@ -593,52 +656,61 @@ begin
               and Tlp_is_Zero_Length = '0'
             then
               DDR_Space_Sel <= '1';
-              ddr_s2mm_cmd_tvalid_i <= not trn_rx_throttle;
-              ddr_s2mm_cmd_btt <= MWr_leng_in_bytes(22 downto 0);
-              ddr_s2mm_cmd_saddr <= sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
-                                    m_axis_rx_tdata_i(C_DDR_PG_WIDTH-1 downto 0);
-              ddr_s2mm_cmd_eof <= '1';
-              ddr_s2mm_cmd_drr <= '1';
+              elbuf_din(C_IS_HDR_BIT) <= '1';
+              elbuf_din(C_CMD_EOF_BIT) <= '1';
+              elbuf_din(C_CMD_DRR_BIT) <= '1';
+              elbuf_din(C_CMD_BTT_BTOP downto C_CMD_BTT_BBOT) <= MWr_leng_in_bytes(22 downto 0);
+              elbuf_din(C_DDR_HIT_BIT) <= '1';
+              elbuf_din(C_CMD_SADDR_BTOP downto C_CMD_SADDR_BBOT) <= sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
+                                                                     m_axis_rx_tdata_i(C_DDR_PG_WIDTH-1 downto 0);
+              elbuf_we <= not trn_rx_throttle;
               for i in 0 to 3 loop
-                tkeep_hmask(i) := mwr_has_4dw_header or not(mwr_leng_in_bytes(2));
+                tkeep_hmask(i) := not(mwr_leng_in_bytes(2));
               end loop; 
             else
               DDR_Space_Sel <= '0';
+              elbuf_we <= '0';
             end if;
-            --deal with the last data beat from previous TLP
-            if trn_rx_throttle = '0' then
-              ddr_s2mm_tvalid_i <= DDR_space_sel; 
-            end if;
-            
+                  
           when ST_MWr4_HEAD2 =>
             if m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1'
               and Tlp_is_Zero_Length = '0'
             then
               DDR_Space_Sel <= '1';
-              ddr_s2mm_cmd_tvalid_i <= not trn_rx_throttle;
-              ddr_s2mm_cmd_btt <= MWr_leng_in_bytes(22 downto 0);
-              ddr_s2mm_cmd_saddr <= sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
-                                    m_axis_rx_tdata_i(32+C_DDR_PG_WIDTH-1 downto 32);
-              ddr_s2mm_cmd_eof <= '1';
-              ddr_s2mm_cmd_drr <= '1';
+              elbuf_din(C_IS_HDR_BIT) <= '1';
+              elbuf_din(C_CMD_EOF_BIT) <= '1';
+              elbuf_din(C_CMD_DRR_BIT) <= '1';
+              elbuf_din(C_CMD_BTT_BTOP downto C_CMD_BTT_BBOT) <= MWr_leng_in_bytes(22 downto 0);
+              elbuf_din(C_DDR_HIT_BIT) <= '1';
+              elbuf_din(C_CMD_SADDR_BTOP downto C_CMD_SADDR_BBOT) <= sdram_pg(31-C_DDR_PG_WIDTH downto 0) &
+                                                                     m_axis_rx_tdata_i(32+C_DDR_PG_WIDTH-1 downto 32);
+              elbuf_we <= not trn_rx_throttle;
               tkeep_hmask := x"F";
             else
               DDR_Space_Sel <= '0';
+              elbuf_we <= '0';
             end if;
+            
+          --skip over 1st data word because for 4DW hdr we take data from a pipelined stream
+          when st_mwr4_1st_data =>
+            null;
   
           when others =>
             if trn_rx_throttle_r = '0' and DDR_space_sel = '1' then
             --clear at the end of packet
-              ddr_space_sel <= not((m_axis_rx_tlast_r1 and ddr_s2mm_cmd_btt(2)) or
-                                (m_axis_rx_tlast_i and not(ddr_s2mm_cmd_btt(2))));
+              ddr_space_sel <= not(m_axis_rx_tlast_r1);
             end if;
 
             if DDR_Space_Sel = '1' then
-              ddr_s2mm_tvalid_i <= not trn_rx_throttle_r;
-              ddr_s2mm_tdata <= endian_invert_64(m_axis_rx_tdata_fixed);
-              ddr_s2mm_tkeep <= endian_invert_tkeep(m_axis_rx_tkeep_fixed) and (tkeep_hmask & x"F");
+              elbuf_din(C_IS_HDR_BIT) <= '0';
+              elbuf_din(C_DDR_HIT_BIT) <= '1';
+              elbuf_din(C_WB_HIT_BIT) <= '0';
               --r1 in 4DW hdr case, i or r1 in 3DW hdr case
-              ddr_s2mm_tlast <= m_axis_rx_tlast_i or m_axis_rx_tlast_r1;
+              elbuf_din(C_TLAST_BIT) <= (not(mwr_has_4dw_header) and (m_axis_rx_tlast_i or m_axis_rx_tlast_r1))
+                                        or (mwr_has_4dw_header and m_axis_rx_tlast_r1);
+              elbuf_din(C_TKEEP_BTOP downto C_TKEEP_BBOT) <= endian_invert_tkeep(m_axis_rx_tkeep_fixed) and (tkeep_hmask & x"F");
+              elbuf_din(C_DBUS_WIDTH-1 downto 0) <= endian_invert_64(m_axis_rx_tdata_fixed);
+              elbuf_we <= not trn_rx_throttle_r;
             end if;
 
         end case;
@@ -696,6 +768,11 @@ begin
               wb_FIFO_wsof_i <= '0';
               wb_FIFO_weof_i <= '0';
             end if;
+            
+          --skip over 1st data word because for 4DW hdr we take data from a pipelined stream
+          when st_mwr4_1st_data =>
+            wb_fifo_we_i <= '0';
+            wb_FIFO_wsof_i <= '0';
   
           when others =>
             if m_axis_rx_tlast_r1 = '1' and trn_rx_throttle_r = '0' then
@@ -716,6 +793,93 @@ begin
             end if;
   
         end case;
+      end if;
+    end if;
+  end process;
+  
+  ddr_write:
+  process(user_clk)
+  begin
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
+        ddr_wr_state <= st_idle;
+        elbuf_re_st <= '0';
+        ddr_s2mm_cmd_tvalid_i <= '0';
+        ddr_s2mm_tvalid_i <= '0';
+      else
+        
+        case ddr_wr_state is
+          when st_idle =>
+            ddr_s2mm_cmd_tvalid_i <= '0';
+            ddr_s2mm_tvalid_i <= '0';
+            elbuf_re_st <= '1';
+            if elbuf_empty = '0' then
+              ddr_wr_state <= st_cmd;
+              elbuf_re_st <= '0';
+            end if;
+            
+          when st_cmd =>
+            ddr_s2mm_cmd_saddr <= elbuf_dout(C_CMD_SADDR_BTOP downto C_CMD_SADDR_BBOT);
+            ddr_s2mm_cmd_btt <= elbuf_dout(C_CMD_BTT_BTOP downto C_CMD_BTT_BBOT);
+            ddr_s2mm_cmd_eof <= elbuf_dout(C_CMD_EOF_BIT);
+            ddr_s2mm_cmd_drr <= elbuf_dout(C_CMD_DRR_BIT);
+            ddr_s2mm_cmd_tvalid_i <= elbuf_dout(C_IS_HDR_BIT) and elbuf_dout(C_DDR_HIT_BIT);
+            elbuf_re_st <= '0';
+            elbuf_empty_r <= '1';
+            --check if this is really a header, something went horribly if it isn't
+            if elbuf_dout(C_IS_HDR_BIT) = '0' then
+              ddr_wr_state <= st_idle;
+              elbuf_re_st <= '1';
+            elsif elbuf_dout(C_IS_HDR_BIT) = '1' and elbuf_dout(C_DDR_HIT_BIT) = '1' and ddr_s2mm_cmd_tready = '1' then
+              ddr_wr_state <= st_data;
+              elbuf_re_st <= '1';
+            end if;
+            
+          when st_data =>
+            ddr_s2mm_cmd_tvalid_i <= '0';
+            ddr_s2mm_tlast_i <= elbuf_dout(C_TLAST_BIT);
+            ddr_s2mm_tkeep <= elbuf_dout(C_TKEEP_BTOP downto C_TKEEP_BBOT);
+            ddr_s2mm_tvalid_i <= not(elbuf_empty_r);
+            --stop reading if we are at the end of packet
+            elbuf_re_st <= not(elbuf_empty) and not(elbuf_dout(C_TLAST_BIT));
+            elbuf_empty_r <= elbuf_empty; --have to register only at data phase, otherwise tvalid will come too fast
+            if (elbuf_empty = '0' and elbuf_re = '1') or elbuf_dout(C_TLAST_BIT) = '1' then
+              --if it's the last word in a packet fifo will be already empty, so push last word unconditionally
+              ddr_s2mm_tdata <= elbuf_dout(C_DBUS_WIDTH-1 downto 0);
+            end if;
+            if ddr_s2mm_tready = '1' and ddr_s2mm_tvalid_i = '1' and ddr_s2mm_tlast_i = '1' then
+              ddr_wr_state <= st_idle;
+              ddr_s2mm_tvalid_i <= '0';
+              elbuf_re_st <= '0';
+            end if;
+          
+        end case;
+      end if;
+    end if;
+  end process;
+  
+  elbuf_delay:
+  process(user_clk)
+  begin
+    if rising_edge(user_clk) then
+      elbuf_re_r <= elbuf_re;
+    end if;
+  end process;
+  
+  --stop reading *in the same clock cycle* that receiver goes out-of-ready
+  --or it's last word in packet. Otherwise we'll lose one word, usually a header
+  elbuf_re <= (elbuf_re_st and ddr_s2mm_cmd_tready) when ddr_wr_state = st_idle else
+              (elbuf_re_st and ddr_s2mm_tready and not(elbuf_dout(C_TLAST_BIT)));
+  
+  process(user_clk)
+  begin
+    if rising_edge(user_clk) then
+      if DDR_space_sel = '1' then
+        mwr_ready_i <= not(elbuf_afull);
+      elsif FIFO_space_sel = '1' then
+        mwr_ready_i <= not(wb_fifo_full);
+      else
+        mwr_ready_i <= '1';
       end if;
     end if;
   end process;

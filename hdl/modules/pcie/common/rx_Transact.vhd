@@ -278,7 +278,9 @@ architecture Behavioral of rx_Transact is
   signal tRAM_addrB : std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
   signal tRAM_dinB  : std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
 
-
+  --transmission ready signals from CplD, MWr
+  signal cpld_ready, mwr_ready : std_logic;
+  
 begin
 
   ddr_s2mm_cmd_tvalid <= mwr_s2mm_cmd_tvalid or cpld_s2mm_cmd_tvalid;
@@ -319,8 +321,8 @@ begin
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit ,  -- IN  std_logic_vector(C_BAR_NUMBER-1 downto 0);
         m_axis_rx_tready   => m_axis_rx_tready ,    -- OUT std_logic;
         ddr_s2mm_cmd_tready => ddr_s2mm_cmd_tready,
-        ddr_s2mm_tready => ddr_s2mm_tready,
-        wb_FIFO_full       => wb_FIFO_full ,    -- IN  std_logic;
+        cpld_ready         => cpld_ready,
+        mwr_ready          => mwr_ready,
 
         -- Delayed
         m_axis_rx_tlast_dly    => m_axis_rx_tlast_dly ,  -- OUT std_logic;
@@ -372,6 +374,7 @@ begin
         m_axis_rx_tkeep    => m_axis_rx_tkeep_dly,  -- IN  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
         m_axis_rx_terrfwd  => m_axis_rx_terrfwd_dly,   -- IN  std_logic;
         m_axis_rx_tvalid   => m_axis_rx_tvalid_dly,    -- IN  std_logic;
+        m_axis_rx_tready   => m_axis_rx_tready_dly,
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
 --      m_axis_rx_tready      =>  open,  -- m_axis_rx_tready_MRd,            -- OUT std_logic;
         rx_np_ok           => rx_np_ok,             -- OUT std_logic;
@@ -415,12 +418,14 @@ begin
 
         MWr_Type    => MWr_Type ,  -- IN  std_logic_vector(1 downto 0);
         Tlp_has_4KB => Tlp_has_4KB ,        -- IN  std_logic;
+        mwr_ready   => mwr_ready,
 
         -- Event Buffer write port
         wb_FIFO_we   => wb_FIFO_we_MWr ,   -- OUT std_logic;
         wb_FIFO_wsof => wb_FIFO_wsof_MWr ,  -- OUT std_logic;
         wb_FIFO_weof => wb_FIFO_weof_MWr ,  -- OUT std_logic;
         wb_FIFO_din  => wb_FIFO_din_MWr ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_fifo_full => wb_fifo_full,
 
         -- To registers module
         Regs_WrEn   => Regs_WrEn0 ,     -- OUT std_logic;
@@ -458,6 +463,7 @@ begin
         m_axis_rx_tready   => m_axis_rx_tready_dly,    -- IN  std_logic;
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
 
+        cpld_ready => cpld_ready,
         CplD_Type => CplD_Type,         -- IN  std_logic_vector(3 downto 0);
 
         Req_ID_Match      => Req_ID_Match,       -- IN  std_logic;
@@ -495,6 +501,7 @@ begin
         wb_FIFO_wsof => wb_FIFO_wsof_CplD ,  -- OUT std_logic;
         wb_FIFO_weof => wb_FIFO_weof_CplD ,  -- OUT std_logic;
         wb_FIFO_din  => wb_FIFO_din_CplD ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_fifo_full => wb_fifo_full,
 
         -- To registers module
         Regs_WrEn   => Regs_WrEn1,      -- OUT std_logic;

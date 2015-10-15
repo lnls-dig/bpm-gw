@@ -44,6 +44,7 @@ entity rx_MRd_Transact is
     m_axis_rx_tkeep    : in  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
     m_axis_rx_terrfwd  : in  std_logic;
     m_axis_rx_tvalid   : in  std_logic;
+    m_axis_rx_tready   : in  std_logic;
 --      m_axis_rx_tready     : OUT std_logic;
     rx_np_ok           : out std_logic;
     rx_np_req          : out std_logic;
@@ -165,7 +166,7 @@ begin
   rx_np_req_i <= rx_np_ok_i;
 
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
-  trn_rx_throttle <= not m_axis_rx_tvalid;  --  or m_axis_rx_tready_i;
+  trn_rx_throttle <= not(m_axis_rx_tvalid) or not(m_axis_rx_tready);
 
 -- ------------------------------------------------
 -- Synchronous Delay: m_axis_rx_tdata + m_axis_rx_tbar_hit
@@ -211,7 +212,7 @@ begin
 
       when ST_MRd_IDLE =>
 
-        if rx_np_ok_i = '1' then
+        if rx_np_ok_i = '1' and trn_rx_throttle = '0' then
 
           case MRd_Type is
 
@@ -241,7 +242,7 @@ begin
 
       when ST_MRd_Tail =>               -- support back-to-back transactions
 
-        if rx_np_ok_i = '1' then
+        if rx_np_ok_i = '1' and trn_rx_throttle = '0' then
 
           case MRd_Type is
 
