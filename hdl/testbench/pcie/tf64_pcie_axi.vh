@@ -565,6 +565,14 @@ begin
        Copy_rnd_data;
        TLP_Feed_Rx(`C_NO_BAR_HIT);
        board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
+       
+       $display("%d ns:   Polling the DMA status", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | 'H01;
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
+       TLP_Feed_Rx(`C_BAR0_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
 
        board.Hdr_Array[0] = `HEADER0_CPLD | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_CPLD_ID, 4'H0, board.Tx_MRd_Leng[9:0], 2'b00};
@@ -577,6 +585,14 @@ begin
        board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
        board.tx_MRd_Tag_k = board.tx_MRd_Tag_k + 1;
        board.Tx_MRd_Leng  = 'H80;
+       
+       $display("%d ns:   Polling the DMA status", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | 'H01;
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
+       TLP_Feed_Rx(`C_BAR0_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
 
        //2nd CplD
        board.Hdr_Array[0] = `HEADER0_CPLD | board.Rx_TLP_Length[9:0];
@@ -589,6 +605,14 @@ begin
        TLP_Feed_Rx(`C_NO_BAR_HIT);
        board.CplD_Index   = board.CplD_Index + board.Rx_TLP_Length;
 
+       $display("%d ns:   Polling the DMA status", $time);
+       board.Hdr_Array[0] = `HEADER0_MRD4_ | 'H01;
+       board.Hdr_Array[1] = {`C_HOST_RDREQ_ID, 3'H3, board.Rx_MRd_Tag, 4'Hf, 4'Hf};
+       board.Hdr_Array[2] = 'h0;
+       board.Hdr_Array[3] = `C_ADDR_DMA_DS_STA;
+       TLP_Feed_Rx(`C_BAR0_HIT);
+       board.Rx_MRd_Tag       = board.Rx_MRd_Tag + 1;
+       
        board.Hdr_Array[0] = `HEADER0_CPLD | board.Rx_TLP_Length[9:0];
        board.Hdr_Array[1] = {`C_HOST_CPLD_ID, 4'H0, board.Tx_MRd_Leng[9:0], 2'b00};
        board.Hdr_Array[2] = {board.localID, board.tx_MRd_Tag_k, 1'b0, board.Tx_MRd_Addr[6:0]};
