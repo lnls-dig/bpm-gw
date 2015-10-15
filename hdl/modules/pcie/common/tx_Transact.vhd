@@ -918,8 +918,8 @@ begin
             elsif mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
               TxTrn_State       <= St_d_Tail_chk;
               s_axis_tx_tlast_i <= '1';
-              s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
-                                           & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
+              s_axis_tx_tkeep_i <= mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                   & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT) & x"F";
               s_axis_tx_tdata_i  <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
               s_axis_tx_tvalid_i <= mbuf_Qvalid;  -- '0';
             elsif mbuf_Qvalid = '0' then
@@ -955,8 +955,8 @@ begin
               s_axis_tx_tvalid_i <= not(mbuf_qout(C_TXMEM_TLAST_BIT)) or mbuf_Qvalid;
               if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
                 TxTrn_State       <= St_d_Tail_chk;
-                s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
-                                             & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
+                s_axis_tx_tkeep_i <= mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                     & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT) & x"F";
               elsif mbuf_Qvalid = '1' then
                 s_axis_tx_tkeep_i <= (others => '1');
                 TxTrn_State       <= St_d_Payload;
@@ -974,8 +974,8 @@ begin
               s_axis_tx_tvalid_i <= mbuf_Qvalid and s_axis_tx_tready_i;
               if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
                 s_axis_tx_tlast_i <= '1';
-                s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
-                                             & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
+                s_axis_tx_tkeep_i <= mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                     & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT) & x"F";
               else
                 s_axis_tx_tlast_i <= '0';
                 s_axis_tx_tkeep_i <= (others => '1');
@@ -990,8 +990,8 @@ begin
               s_axis_tx_tvalid_i <= '1';
               if mbuf_qout(C_TXMEM_TLAST_BIT) = '0' then
                 s_axis_tx_tlast_i <= '1';
-                s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
-                                             & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
+                s_axis_tx_tkeep_i <= mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                     & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT) & x"F";
               else
                 s_axis_tx_tlast_i <= '0';
                 s_axis_tx_tkeep_i <= (others => '1');
@@ -1021,8 +1021,8 @@ begin
             else
               TxTrn_State       <= St_d_Tail_chk;
               s_axis_tx_tlast_i <= '1';
-              s_axis_tx_tkeep_i <= X"0" & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
-                                           & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT);
+              s_axis_tx_tkeep_i <= mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT)
+                                   & mbuf_qout(C_TXMEM_KEEP_BIT) & mbuf_qout(C_TXMEM_KEEP_BIT) & x"F";
               s_axis_tx_tdata_i <= mbuf_Qout(C_DBUS_WIDTH-1 downto 0);
             end if;
   

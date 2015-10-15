@@ -22,6 +22,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
+use IEEE.STD_LOGIC_MISC.all;
 
 library work;
 use work.abb64Package.all;
@@ -90,6 +91,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal TxMReader_State : mReaderStates;
 
   type t_64b_array is array (natural range<>) of std_logic_vector(63 downto 0);
+  type t_8b_array is array (natural range<>) of std_logic_vector(7 downto 0);
   -- DDR Read Interface
   signal ddr_mm2s_cmd_tvalid_i : STD_LOGIC := '0';
   signal ddr_mm2s_cmd_wtt : std_logic_vector(20 downto 0) := (others => '0');
@@ -100,6 +102,7 @@ architecture Behavioral of tx_Mem_Reader is
   
   -- DDR payload FIFO Read Port
   signal ddr_mm2s_tdata_r: t_64b_array(1 downto 0);
+  signal ddr_mm2s_tkeep_r: t_8b_array(1 downto 0);
   signal ddr_mm2s_tready_i : STD_LOGIC;
   signal ddr_mm2s_tlast_r : std_logic_vector(1 downto 0);
   signal ddr_mm2s_tready_r : std_logic_vector(1 downto 0);
@@ -130,6 +133,7 @@ architecture Behavioral of tx_Mem_Reader is
   signal wb_FIFO_RdEn_Mask_r1      : std_logic;
   signal wb_FIFO_RdEn_Mask_r2      : std_logic;
   signal wb_FIFO_Rd_1Dw            : std_logic;
+  signal wb_FIFO_Rdreq_odd         : std_logic;
   signal wb_FIFO_qout_r1           : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal wb_FIFO_qout_shift        : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
@@ -225,6 +229,8 @@ begin
     if rising_edge(user_clk) then
       ddr_mm2s_tdata_r(0) <= ddr_mm2s_tdata;
       ddr_mm2s_tdata_r(1) <= ddr_mm2s_tdata_r(0);
+      ddr_mm2s_tkeep_r(0) <= ddr_mm2s_tkeep;
+      ddr_mm2s_tkeep_r(1) <= ddr_mm2s_tkeep_r(0);
       ddr_mm2s_tlast_r(0) <= ddr_mm2s_tlast;
       ddr_mm2s_tlast_r(1) <= ddr_mm2s_tlast_r(0);
       ddr_mm2s_tready_r(0) <= ddr_mm2s_tready_i;
@@ -642,13 +648,14 @@ begin
               BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
                = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
             then
+              wb_FIFO_Rdreq_odd <= RdNumber(1);
               if RdNumber_eq_One = '1' then
                 wb_FIFO_Rd_Counter     <= RdNumber + '1';
                 wb_FIFO_Rd_Cntr_eq_Two <= '1';
                 wb_FIFO_Rd_1Dw         <= '1';
               else
                 wb_FIFO_Rd_Counter     <= RdNumber;
-                wb_FIFO_Rd_Cntr_eq_Two <= RdNumber_eq_Two;  -- or RdNumber_eq_One;
+                wb_FIFO_Rd_Cntr_eq_Two <= RdNumber_eq_Two;
                 wb_FIFO_Rd_1Dw         <= '0';
               end if;
             else
@@ -772,15 +779,15 @@ begin
         end if;
   
         if DDR_FIFO_Hit = '1' then
-          mbuf_din_i(C_TXMEM_KEEP_BIT)  <= not(TxTLP_eof_n);
+          mbuf_din_i(C_TXMEM_KEEP_BIT)  <= or_reduce(ddr_mm2s_tkeep_r(1)(7 downto 4));
           mbuf_din_i(C_TXMEM_TLAST_BIT) <= TxTLP_eof_n;
         elsif wb_FIFO_Hit = '1' then
-          if Shift_1st_QWord_k = '1' and wb_FIFO_Rd_1Dw = '0' then
-            mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_r2;
-            mbuf_din_i(C_TXMEM_KEEP_BIT) <= wb_FIFO_RdEn_Mask_r2;
+          if Shift_1st_QWord_k = '1' and wb_fifo_rd_1dw = '0' then
+            mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_rise_r1;
+            mbuf_din_i(C_TXMEM_KEEP_BIT) <= not wb_FIFO_Rdreq_odd;
           else
-            mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_r1;
-            mbuf_din_i(C_TXMEM_KEEP_BIT) <= wb_FIFO_RdEn_Mask_r1;
+            mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_rise;
+            mbuf_din_i(C_TXMEM_KEEP_BIT) <= wb_FIFO_RdEn_Mask_rise;
           end if;
         else
           mbuf_din_i(C_TXMEM_TLAST_BIT) <= TxTLP_eof_n_r1;
