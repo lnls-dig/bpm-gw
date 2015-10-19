@@ -325,7 +325,7 @@ architecture rtl of dbe_bpm_dsp is
   constant c_ma_rs232_syscon_id            : natural := 1;
 
   constant c_dpram_size                     : natural := 16384/4; -- in 32-bit words (16KB)
-  constant c_acq_fifo_size                  : natural := 256;
+  constant c_acq_fifo_size                  : natural := 1024;
 
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
   constant c_acq_ddr_addr_res_width         : natural := 32;
@@ -353,25 +353,37 @@ architecture rtl of dbe_bpm_dsp is
   constant c_acq_num_channels               : natural := 17; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
                                                             -- for each FMC
+  constant c_acq_width_u64                  : unsigned(c_acq_chan_max_w_log2-1 downto 0) :=
+                                                to_unsigned(64, c_acq_chan_max_w_log2);
+  constant c_acq_width_u128                 : unsigned(c_acq_chan_max_w_log2-1 downto 0) :=
+                                                to_unsigned(128, c_acq_chan_max_w_log2);
+  constant c_acq_num_atoms_u4               : unsigned(c_acq_num_atoms_width_log2-1 downto 0) :=
+                                                to_unsigned(4, c_acq_num_atoms_width_log2);
+  constant c_acq_atom_width_u16              : unsigned(c_acq_atom_width_log2-1 downto 0) :=
+                                                to_unsigned(16, c_acq_atom_width_log2);
+  constant c_acq_atom_width_u32             : unsigned(c_acq_atom_width_log2-1 downto 0) :=
+                                                to_unsigned(32, c_acq_atom_width_log2);
+
   constant c_acq_channels                   : t_acq_chan_param_array(c_acq_num_channels-1 downto 0) :=
-    ( c_acq_adc_id            => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
-      c_acq_adc_swap_id       => (width => to_unsigned(64, c_acq_chan_max_w_log2)),
-      c_acq_mixiq12_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_mixiq34_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_tbtdecimiq12_id   => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_tbtdecimiq34_id   => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_tbt_amp_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_tbt_phase_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_tbt_pos_id        => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_fofbdecimiq12_id  => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_fofbdecimiq34_id  => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_fofb_amp_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_fofb_phase_id     => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_fofb_pos_id       => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_monit_amp_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_monit_pos_id      => (width => to_unsigned(128, c_acq_chan_max_w_log2)),
-      c_acq_monit_1_pos_id    => (width => to_unsigned(128, c_acq_chan_max_w_log2))
-    );
+  (
+     c_acq_adc_id            => (width => c_acq_width_u64,  num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u16),
+     c_acq_adc_swap_id       => (width => c_acq_width_u64,  num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u16),
+     c_acq_mixiq12_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_mixiq34_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_tbtdecimiq12_id   => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_tbtdecimiq34_id   => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_tbt_amp_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_tbt_phase_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_tbt_pos_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_fofbdecimiq12_id  => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_fofbdecimiq34_id  => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_fofb_amp_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_fofb_phase_id     => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_fofb_pos_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_monit_amp_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_monit_pos_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_monit_1_pos_id    => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32)
+  );
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
@@ -463,6 +475,7 @@ architecture rtl of dbe_bpm_dsp is
 
   signal wb_ma_pcie_rst                     : std_logic;
   signal wb_ma_pcie_rstn                    : std_logic;
+  signal wb_ma_pcie_rstn_sync               : std_logic;
 
   signal wb_ma_sladp_pcie_ack_in            : std_logic;
   signal wb_ma_sladp_pcie_dat_in            : std_logic_vector(31 downto 0);
@@ -1078,7 +1091,7 @@ begin
   clk_sys_pcie_rst                          <= not clk_sys_pcie_rstn;
   -- Reset for all other modules
   clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
-                                                  rs232_rstn and wb_ma_pcie_rstn;
+                                                  rs232_rstn and wb_ma_pcie_rstn_sync;
   clk_sys_rst                               <= not clk_sys_rstn;
   -- Reset synchronous to clk200mhz
   clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
@@ -1244,6 +1257,14 @@ begin
   );
 
   wb_ma_pcie_rstn                             <= not wb_ma_pcie_rst;
+
+  cmp_pcie_reset_synch : reset_synch
+  port map
+  (
+    clk_i                                    => clk_sys,
+    arst_n_i                                 => wb_ma_pcie_rstn,
+    rst_n_o                                  => wb_ma_pcie_rstn_sync
+  );
 
   ----------------------------------
   --         RS232 Core            --

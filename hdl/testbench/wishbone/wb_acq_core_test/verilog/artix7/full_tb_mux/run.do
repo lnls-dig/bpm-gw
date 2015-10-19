@@ -12,4 +12,4 @@ radix -hexadecimal
 run 5000us
 wave zoomfull
 radix -hexadecimal
-
+quit -sim

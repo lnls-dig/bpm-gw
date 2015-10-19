@@ -39,6 +39,9 @@ use work.dbe_common_pkg.all;
 entity acq_fc_fifo is
 generic
 (
+  g_header_in_width                         : natural := 1;
+  g_data_in_width                           : natural := 128;
+  g_header_out_width                        : natural := 2;
   g_data_out_width                          : natural := 256;
   g_addr_width                              : natural := 32;
   g_acq_num_channels                        : natural := 1;
@@ -57,11 +60,13 @@ port
   ext_rst_n_i                               : in  std_logic;
 
   -- DPRAM data
-  dpram_data_i                              : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dpram_data_i                              : in std_logic_vector(g_header_in_width+g_data_in_width-1 downto 0);
   dpram_dvalid_i                            : in std_logic;
 
   -- Passthough data
-  pt_data_i                                 : in std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  pt_data_i                                 : in std_logic_vector(g_data_in_width-1 downto 0);
+  pt_data_id_i                              : in std_logic_vector(2 downto 0);
+  pt_trig_i                                 : in std_logic;
   pt_dvalid_i                               : in std_logic;
   pt_wr_en_i                                : in std_logic;
 
@@ -76,8 +81,12 @@ port
 
   -- Current channel selection ID
   lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
-  -- Size of the transaction in g_fifo_size bytes
-  lmt_pkt_size_i                            : in unsigned(c_pkt_size_width-1 downto 0);
+  -- Size of the pre trigger transaction in g_fifo_size bytes
+  lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+  -- Size of the post trigger transaction in g_fifo_size bytes
+  lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+  -- Size of the full transaction in g_fifo_size bytes
+  lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
   -- Number of shots in this acquisition
   lmt_shots_nb_i                            : in unsigned(15 downto 0);
   -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
@@ -91,7 +100,7 @@ port
 
   -- Flow protocol to interface with external SDRAM. Evaluate the use of
   -- Wishbone Streaming protocol.
-  fifo_fc_dout_o                            : out std_logic_vector(g_data_out_width-1 downto 0);
+  fifo_fc_dout_o                            : out std_logic_vector(g_header_out_width+g_data_out_width-1 downto 0);
   fifo_fc_valid_o                           : out std_logic;
   fifo_fc_addr_o                            : out std_logic_vector(g_addr_width-1 downto 0);
   fifo_fc_sof_o                             : out std_logic;
@@ -99,15 +108,15 @@ port
   fifo_fc_dreq_i                            : in std_logic;
   fifo_fc_stall_i                           : in std_logic;
 
-  dbg_fifo_we_o		                	        : out std_logic;
-  dbg_fifo_wr_count_o	                	    : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
-  dbg_fifo_re_o		                	        : out std_logic;
-  dbg_fifo_fc_rd_en_o	                	    : out std_logic;
-  dbg_fifo_rd_empty_o	                    	: out std_logic;
-  dbg_fifo_wr_full_o	                    	: out std_logic;
-  dbg_fifo_fc_valid_fwft_o			            : out std_logic;
-  dbg_source_pl_dreq_o	                	  : out std_logic;
-  dbg_source_pl_stall_o	                	  : out std_logic;
+  dbg_fifo_we_o                             : out std_logic;
+  dbg_fifo_wr_count_o                       : out std_logic_vector(f_log2_size(g_fifo_size)-1 downto 0);
+  dbg_fifo_re_o                             : out std_logic;
+  dbg_fifo_fc_rd_en_o                       : out std_logic;
+  dbg_fifo_rd_empty_o                       : out std_logic;
+  dbg_fifo_wr_full_o                        : out std_logic;
+  dbg_fifo_fc_valid_fwft_o                  : out std_logic;
+  dbg_source_pl_dreq_o                      : out std_logic;
+  dbg_source_pl_stall_o                     : out std_logic;
   dbg_pkt_ct_cnt_o                          : out std_logic_vector(c_pkt_size_width-1 downto 0);
   dbg_shots_cnt_o                           : out std_logic_vector(c_shots_size_width-1 downto 0)
 );
@@ -116,14 +125,17 @@ end acq_fc_fifo;
 architecture rtl of acq_fc_fifo is
 
   -- Type declarations
-  subtype t_fc_data is std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  subtype t_fc_data is std_logic_vector(g_data_in_width+g_header_in_width-1 downto 0);
   type t_fc_data_array is array (natural range <>) of t_fc_data;
 
-  subtype t_fc_data_marsh is std_logic_vector(g_data_out_width-1 downto 0);
+  subtype t_fc_data_marsh is std_logic_vector(g_header_out_width+g_data_out_width-1 downto 0);
   type t_fc_data_marsh_array is array (natural range <>) of t_fc_data_marsh;
 
   subtype t_fc_dvalid is std_logic;
   type t_fc_dvalid_array is array (natural range <>) of std_logic;
+
+  subtype t_fc_data_id is std_logic_vector(2 downto 0);
+  type t_fc_data_id_array is array (natural range <>) of t_fc_data_id;
 
   subtype t_fc_data_oob is std_logic_vector(c_data_oob_width -1 downto 0);
   type t_fc_data_oob_array is array (natural range <>) of t_fc_data_oob;
@@ -135,8 +147,13 @@ architecture rtl of acq_fc_fifo is
   subtype t_fc_addr is std_logic_vector(g_addr_width-1 downto 0);
 
   -- Constants
+  constant c_fc_data_header_top_idx         : natural := g_header_in_width+g_data_in_width-1;
+  constant c_fc_data_header_bot_idx         : natural := g_data_in_width;
+  constant c_fc_data_marsh_header_top_idx   : natural := g_header_out_width+g_data_out_width-1;
+  constant c_fc_data_marsh_header_bot_idx   : natural := g_data_out_width;
+
   constant c_narrowest_channel_width        : natural := f_acq_chan_find_narrowest(g_acq_channels);
-  constant c_widest_channel_width           : natural := f_acq_chan_find_widest(g_acq_channels);
+  constant c_widest_channel_width           : natural := g_header_in_width+g_data_in_width;
 
   -- Number of FIFOs to store incoming data. We do this, as the ext_clk_i may be
   -- as low as 100 MHz (for Artix7 DDR3 controllers), whereas the fs_clk_i may
@@ -166,8 +183,11 @@ architecture rtl of acq_fc_fifo is
   -- Signals
   signal fifo_fc_din                        : t_fc_data_array(c_num_acq_fifos-1 downto 0);
   signal fifo_fc_dout                       : t_fc_data_array(c_num_acq_fifos-1 downto 0);
+  signal fifo_fc_trigger                    : t_fc_dvalid_array(c_num_acq_fifos-1 downto 0);
+  signal fifo_fc_data_id                    : t_fc_data_id_array(c_num_acq_fifos-1 downto 0);
   signal fifo_fc_dout_marsh                 : t_fc_data_marsh_array(g_acq_num_channels-1 downto 0);
   signal fifo_fc_wr_en                      : std_logic;
+  signal fifo_fc_cnt_en                     : std_logic;
   signal fifo_fc_dpram_wr_en                : std_logic;
   signal fifo_fc_we                         : t_fc_dvalid_array(c_num_acq_fifos-1 downto 0);
   signal fifo_fc_mux_cnt                    : unsigned(f_log2_size(c_num_acq_fifos)-1 downto 0);
@@ -188,6 +208,7 @@ architecture rtl of acq_fc_fifo is
   signal fifo_fc_rd_en                      : std_logic;
   signal fifo_fc_valid_out                  : t_fc_dvalid_array(c_num_acq_fifos-1 downto 0);
   signal fifo_fc_valid_and                  : t_fc_dvalid_array(c_num_acq_fifos downto 0);
+  signal fifo_fc_trigger_or                 : t_fc_dvalid_array(c_num_acq_fifos downto 0);
   signal fifo_fc_valid_marsh                : t_fc_dvalid_array(g_acq_num_channels-1 downto 0);
   signal fifo_fc_valid_pkt                  : std_logic;
   signal fifo_fc_valid_fwft                 : std_logic;
@@ -205,7 +226,7 @@ architecture rtl of acq_fc_fifo is
   signal fc_src_addr_in                     : std_logic_vector(g_addr_width-1 downto 0);
 
   -- Output signals
-  signal fc_dout                            : std_logic_vector(g_data_out_width-1 downto 0);
+  signal fc_dout                            : std_logic_vector(g_header_out_width+g_data_out_width-1 downto 0);
   signal fc_valid                           : std_logic;
   signal fc_addr                            : std_logic_vector(g_addr_width-1 downto 0);
   signal fc_sof                             : std_logic;
@@ -228,15 +249,27 @@ architecture rtl of acq_fc_fifo is
 
   -- Counts the completed tranfered words to ext mem
   signal fifo_pkt_sent                      : std_logic;
+  signal fifo_pkt_cnt_en                    : std_logic;
   signal fifo_pkt_sent_cnt                  : t_fc_pkt;
   signal fifo_pkt_sent_ct_cnt               : t_fc_pkt;
   signal fifo_pkt_sent_ct_all               : std_logic;
+  signal acq_cnt_en                         : std_logic;
+  signal dbg_pkt_ct_cnt                     : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal dbg_shots_cnt                      : std_logic_vector(c_shots_size_width-1 downto 0);
 
   -- Transaction limit signals
-  signal lmt_pkt_size                       : unsigned(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_s                     : std_logic_vector(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_alig_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
-  signal lmt_pkt_size_aggd                  : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size                  : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_alig_s           : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_aggd             : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_curr_chan_id_ext               : unsigned(c_chan_id_width-1 downto 0);
@@ -267,7 +300,9 @@ begin
   ----------------------------------------------------------------------------
   -- Register transaction limits
   -----------------------------------------------------------------------------
-  lmt_pkt_size_s <= std_logic_vector(lmt_pkt_size_i);
+  lmt_pre_pkt_size_s <= std_logic_vector(lmt_pre_pkt_size_i);
+  lmt_pos_pkt_size_s <= std_logic_vector(lmt_pos_pkt_size_i);
+  lmt_full_pkt_size_s <= std_logic_vector(lmt_full_pkt_size_i);
 
   p_in_reg : process (fs_clk_i)
   begin
@@ -275,7 +310,9 @@ begin
       if fs_rst_n_i = '0' then
         lmt_valid <= '0';
         --avoid detection of *_done pulses by setting them to 1
-        lmt_pkt_size_alig_s <= (others => '0');
+        lmt_pre_pkt_size_alig_s <= (others => '0');
+        lmt_pos_pkt_size_alig_s <= (others => '0');
+        lmt_full_pkt_size_alig_s <= (others => '0');
         lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
         lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
         fifo_fc_fifo_idx_max <= to_unsigned(0, fifo_fc_fifo_idx_max'length);
@@ -283,7 +320,9 @@ begin
         lmt_valid <= lmt_valid_i;
 
         if lmt_valid_i = '1' then
-          lmt_pkt_size <= lmt_pkt_size_i;
+          lmt_pre_pkt_size <= lmt_pre_pkt_size_i;
+          lmt_pos_pkt_size <= lmt_pos_pkt_size_i;
+          lmt_full_pkt_size <= lmt_full_pkt_size_i;
 
           -- Aggregated packet size. The packet size here is constrained by the
           -- relation f_log2(<output data width>/<input channel data width>),
@@ -291,17 +330,33 @@ begin
           -- controller. Some modules need this packet size to function properly
           case c_fc_payload_ratio_log2(to_integer(lmt_curr_chan_id_i)) is
             when 1 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 1);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 1);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 1);
             when 2 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 2);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 2);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 2);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(2, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 2);
             when 3 =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 3);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 3);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 3);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(3, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 3);
             when others =>
-              lmt_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
-                                    lmt_pkt_size_s(lmt_pkt_size_s'left downto 1);
+              lmt_pre_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pre_pkt_size_s(lmt_pre_pkt_size_s'left downto 1);
+              lmt_pos_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_pos_pkt_size_s(lmt_pos_pkt_size_s'left downto 1);
+              lmt_full_pkt_size_alig_s <= f_gen_std_logic_vector(1, '0') &
+                                    lmt_full_pkt_size_s(lmt_full_pkt_size_s'left downto 1);
           end case;
 
           lmt_shots_nb <= lmt_shots_nb_i;
@@ -316,7 +371,9 @@ begin
   end process;
 
   -- Aggregated pakcet size
-  lmt_pkt_size_aggd <= unsigned(lmt_pkt_size_alig_s);
+  lmt_pre_pkt_size_aggd <= unsigned(lmt_pre_pkt_size_alig_s);
+  lmt_pos_pkt_size_aggd <= unsigned(lmt_pos_pkt_size_alig_s);
+  lmt_full_pkt_size_aggd <= unsigned(lmt_full_pkt_size_alig_s);
 
   cmp_lmt_valid_pulse_synchronizer : gc_pulse_synchronizer
   port map (
@@ -344,10 +401,11 @@ begin
         fifo_fc_mux_cnt <= to_unsigned(0, fifo_fc_mux_cnt'length);
       else
         if passthrough_en_i = '1' then
-          fifo_fc_din(to_integer(fifo_fc_mux_cnt)) <= pt_data_i;  -- trigger + data
+          fifo_fc_din(to_integer(fifo_fc_mux_cnt)) <= pt_data_id_i & pt_trig_i &
+                                                        pt_data_i;  -- data_id + trigger + data
           fifo_fc_we(to_integer(fifo_fc_mux_cnt)) <= fifo_fc_wr_en;
         else
-          fifo_fc_din(to_integer(fifo_fc_mux_cnt)) <= dpram_data_i;
+          fifo_fc_din(to_integer(fifo_fc_mux_cnt)) <= dpram_data_i; -- This already has data_id + trigger + data
           fifo_fc_we(to_integer(fifo_fc_mux_cnt)) <= dpram_dvalid_i;
         end if;
 
@@ -391,7 +449,7 @@ begin
       else
         if rst_trans_fs_sync = '1' then
           fifo_in_valid_cnt <= to_unsigned(0, fifo_in_valid_cnt'length);
-        elsif fifo_fc_wr_en = '1' then -- valid word on fifo input
+        elsif fifo_fc_wr_en = '1' and fifo_fc_cnt_en = '1' then -- valid word on fifo input
           fifo_in_valid_cnt <= fifo_in_valid_cnt + 1;
         end if;
       end if;
@@ -399,11 +457,19 @@ begin
   end process;
 
   -- Used only for passthrough mode
-  fifo_in_valid_full <= '1' when fifo_in_valid_cnt = lmt_pkt_size else '0';
+  fifo_in_valid_full <= '1' when fifo_in_valid_cnt = lmt_full_pkt_size else '0';
 
   -- Fifo valid input. We use only the first FIFO full, for precaution and simplicity
   fifo_fc_wr_en <= pt_wr_en_i and pt_dvalid_i and not(fifo_in_valid_full) and not(fifo_fc_wr_full(0));
   fifo_fc_dpram_wr_en <= dpram_dvalid_i and not(fifo_fc_wr_full(0));
+
+  -- Only count when in pre_trigger or post_trigger and we haven't acquire
+  -- enough samples
+  fifo_fc_cnt_en <= '1' when (fifo_in_valid_cnt < lmt_pre_pkt_size and
+                                pt_data_id_i = "010") or -- Pre-trigger
+                                (fifo_in_valid_cnt < lmt_full_pkt_size and
+                                pt_data_id_i = "100") -- Post-trigger
+                            else '0';
 
   -----------------------------------------------------------------------------
   -- Output FIFOs
@@ -423,24 +489,24 @@ begin
   port map
   (
     -- Write clock
-    wr_clk_i                                 => fs_clk_i,
-    wr_rst_n_i                               => fs_rst_n_i,
+    wr_clk_i                                => fs_clk_i,
+    wr_rst_n_i                              => fs_rst_n_i,
 
-    wr_data_i                                => fifo_fc_id_din,
-    wr_en_i                                  => fifo_fc_id_we,
+    wr_data_i                               => fifo_fc_id_din,
+    wr_en_i                                 => fifo_fc_id_we,
     -- Ignored, as we rely on the data FIFOs wr_full signal
-    wr_full_o                                => open,
-    wr_count_o                               => open,
+    wr_full_o                               => open,
+    wr_count_o                              => open,
 
     -- Read clock
-    rd_clk_i                                 => ext_clk_i,
-    rd_rst_n_i                               => ext_rst_n_i,
+    rd_clk_i                                => ext_clk_i,
+    rd_rst_n_i                              => ext_rst_n_i,
 
-    rd_data_o                                => fifo_fc_id_dout,
-    rd_valid_o                               => fifo_fc_id_valid_out,
-    rd_en_i                                  => fifo_fc_id_rd_en,
-    rd_empty_o                               => open,
-    rd_count_o                               => open
+    rd_data_o                               => fifo_fc_id_dout,
+    rd_valid_o                              => fifo_fc_id_valid_out,
+    rd_en_i                                 => fifo_fc_id_rd_en,
+    rd_empty_o                              => open,
+    rd_count_o                              => open
   );
 
   fifo_fc_id_rd_en <= fifo_fc_rd_en;
@@ -452,35 +518,41 @@ begin
     generic map
     (
       -- For simplicity take the widest channel
-      g_data_width                            => c_widest_channel_width,
-      g_size                                  => g_fifo_size,
-      g_almost_empty_threshold                => 0,
-      g_almost_full_threshold                 => 0,
-      g_with_wr_count                         => true,
-      g_with_rd_count                         => false
+      g_data_width                          => c_widest_channel_width,
+      g_size                                => g_fifo_size,
+      g_almost_empty_threshold              => 0,
+      g_almost_full_threshold               => 0,
+      g_with_wr_count                       => true,
+      g_with_rd_count                       => false
     )
     port map
     (
       -- Write clock
-      wr_clk_i                                 => fs_clk_i,
-      wr_rst_n_i                               => fs_rst_n_i,
+      wr_clk_i                              => fs_clk_i,
+      wr_rst_n_i                            => fs_rst_n_i,
 
-      wr_data_i                                => fifo_fc_din(i),
-      wr_en_i                                  => fifo_fc_we(i),
-      wr_full_o                                => fifo_fc_wr_full(i),
-      wr_count_o                               => fifo_fc_wr_count(i),
+      wr_data_i                             => fifo_fc_din(i),
+      wr_en_i                               => fifo_fc_we(i),
+      wr_full_o                             => fifo_fc_wr_full(i),
+      wr_count_o                            => fifo_fc_wr_count(i),
 
       -- Read clock
-      rd_clk_i                                 => ext_clk_i,
-      rd_rst_n_i                               => ext_rst_n_i,
+      rd_clk_i                              => ext_clk_i,
+      rd_rst_n_i                            => ext_rst_n_i,
 
-      rd_data_o                                => fifo_fc_dout(i),
-      rd_valid_o                               => fifo_fc_valid_out(i),
-      rd_en_i                                  => fifo_fc_rd_en,
-      rd_empty_o                               => fifo_fc_rd_empty(i),
-      rd_count_o                               => open
+      rd_data_o                             => fifo_fc_dout(i),
+      rd_valid_o                            => fifo_fc_valid_out(i),
+      rd_en_i                               => fifo_fc_rd_en,
+      rd_empty_o                            => fifo_fc_rd_empty(i),
+      rd_count_o                            => open
     );
 
+    -- Extract fifo trigger from fifo_fc_dout
+    fifo_fc_trigger(i) <= fifo_fc_dout(i)(c_acq_header_trigger_idx+c_fc_data_header_bot_idx);
+
+    -- Extract fifo data id from fifo_fc_dout
+    fifo_fc_data_id(i) <= fifo_fc_dout(i)(c_acq_header_id_top_idx+c_fc_data_header_bot_idx downto
+                            c_acq_header_id_bot_idx+c_fc_data_header_bot_idx);
   end generate;
 
   fifo_fc_full_o <= fifo_fc_wr_full(0);
@@ -517,15 +589,30 @@ begin
     fifo_fc_valid_and(i+1) <= fifo_fc_valid_and(i) and fifo_fc_valid_out(i);
   end generate;
 
+  -- ORing all header trigger data
+  fifo_fc_trigger_or(0) <= '0';
+  gen_fifo_fc_trigger_or : for i in 0 to c_num_acq_fifos-1 generate
+    fifo_fc_trigger_or(i+1) <= fifo_fc_trigger_or(i) or fifo_fc_trigger(i);
+  end generate;
+
   -- Marsh FIFO data outputs
   gen_marsh_data_channels : for i in 0 to g_acq_num_channels-1  generate -- for all input channels
 
     gen_marsh_data_fifos : for j in 0 to c_fc_payload_ratio(i)-1 generate -- for all valid FIFOs for this channel
+      -- Data
       fifo_fc_dout_marsh(i)(to_integer(g_acq_channels(i).width)*(j+1)-1 downto
                             to_integer(g_acq_channels(i).width)*j)
           <= fifo_fc_dout(j)(to_integer(g_acq_channels(i).width)-1 downto 0);
     end generate;
 
+    -- Header
+    fifo_fc_dout_marsh(i)(c_fc_data_marsh_header_top_idx downto
+                          c_fc_data_marsh_header_bot_idx)
+                          <= fifo_fc_data_id(c_fc_payload_ratio(i)-1) & -- Get last channel data id as
+                                                                  -- all buffers will have the same ID when
+                                                                  -- fifo_fc_valid_marsh is 1
+                            fifo_fc_trigger_or(c_fc_payload_ratio(i));
+    -- Valid
     fifo_fc_valid_marsh(i) <= fifo_fc_valid_and(c_fc_payload_ratio(i)); -- get the corresponding FIFO valid AND'ed signal
 
   end generate;
@@ -563,7 +650,7 @@ begin
   );
 
   rst_trans_ext_sync <= '1' when req_rst_trans_sync = '1' and
-			fifo_fc_all_trans_done_lvl = '1' else '0';
+            fifo_fc_all_trans_done_lvl = '1' else '0';
 
   -- Delay Reset signal to Level logic. This will give a few cycles
   -- for all modules to safely reset
@@ -610,9 +697,20 @@ begin
 
   fifo_fc_addr <= resize(fifo_pkt_sent_cnt, fifo_fc_addr'length);
 
-  -- When the input of FC module is valid and is not stalled, packet is considered
-  -- sent
+  -- When the input of FC module is valid, not stalled and we are in pre-trigger
+  -- or post-trigger, packet is considered sent
   fifo_pkt_sent <= not(pl_stall) and fc_src_valid_in;
+
+  -- Only count when in pre_trigger or post_trigger and we haven't acquire
+  -- enough samples
+  fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size and
+                                fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "010") or -- Pre-trigger
+                                (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size and
+                                fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "100") -- Post-trigger
+                            else '0';
+
+   -- Counter to detect end of transaction only
+   acq_cnt_en <= '1' when fifo_pkt_cnt_en = '1' and fifo_pkt_sent = '1' else '0';
 
   -----------------------------------------------------------------------------
   -- Number of packets and shots transfered
@@ -621,23 +719,26 @@ begin
   port map
   (
     -- DDR3 external clock
-    clk_i                                     => ext_clk_i,
-    rst_n_i                                   => acq_cnt_rst_n,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => acq_cnt_rst_n,
 
-    cnt_all_pkts_ct_done_p_o                  => fifo_pkt_sent_ct_all,
-    cnt_all_trans_done_p_o                    => shots_sent_all,
-    cnt_en_i                                  => fifo_pkt_sent,
+    cnt_all_pkts_ct_done_p_o                => fifo_pkt_sent_ct_all,
+    cnt_all_trans_done_p_o                  => shots_sent_all,
+    cnt_en_i                                => acq_cnt_en,
 
     -- Size of the transaction in g_fifo_size bytes
-    lmt_pkt_size_i                            => lmt_pkt_size_aggd,
+    lmt_pkt_size_i                          => lmt_full_pkt_size_aggd,
     -- Number of shots in this acquisition
-    lmt_shots_nb_i                            => lmt_shots_nb,
+    lmt_shots_nb_i                          => lmt_shots_nb,
     -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
-    lmt_valid_i                               => lmt_valid_ext,
+    lmt_valid_i                             => lmt_valid_ext,
 
-    dbg_pkt_ct_cnt_o                          => dbg_pkt_ct_cnt_o,
-    dbg_shots_cnt_o                           => dbg_shots_cnt_o
+    dbg_pkt_ct_cnt_o                        => dbg_pkt_ct_cnt,
+    dbg_shots_cnt_o                         => dbg_shots_cnt
   );
+
+  dbg_pkt_ct_cnt_o <= dbg_pkt_ct_cnt;
+  dbg_shots_cnt_o <= dbg_shots_cnt;
 
   acq_cnt_rst_n <= ext_rst_n_i and not(rst_trans_ext_sync); -- is this a good idea?
 
@@ -663,12 +764,12 @@ begin
   cmp_conv_fifo_fc_all_trans_done : pulse2level
   port map
   (
-    clk_i                                  => ext_clk_i,
-    rst_n_i                                => ext_rst_n_i,
+    clk_i                                   => ext_clk_i,
+    rst_n_i                                 => ext_rst_n_i,
 
-    pulse_i                                => fifo_fc_all_trans_done,
-    clr_i                                  => rst_trans_ext_sync_d,
-    level_o                                => fifo_fc_all_trans_done_lvl
+    pulse_i                                 => fifo_fc_all_trans_done,
+    clr_i                                   => rst_trans_ext_sync_d,
+    level_o                                 => fifo_fc_all_trans_done_lvl
   );
 
   -----------------------------------------------------------------------------
@@ -685,6 +786,7 @@ begin
 
   cmp_fc_source : fc_source
   generic map (
+    g_header_in_width                       => g_header_out_width,
     g_data_width                            => g_data_out_width,
     g_pkt_size_width                        => c_pkt_size_width,
     g_addr_width                            => g_addr_width,
@@ -707,7 +809,9 @@ begin
     -- This signals cross clock domains, but lmt_pkt_size_i is asserted long before
     -- (Wishbone CPU register) the lmt_valid_ext signal, which is synchronized
     -- to ext_clk domain
-    lmt_pkt_size_i                          => lmt_pkt_size_aggd,
+    lmt_pre_pkt_size_i                      => lmt_pre_pkt_size_aggd,
+    lmt_pos_pkt_size_i                      => lmt_pos_pkt_size_aggd,
+    lmt_full_pkt_size_i                     => lmt_full_pkt_size_aggd,
     lmt_valid_i                             => lmt_valid_ext,
 
     fc_dout_o                               => fc_dout,

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Product Version: Vivado v2014.4 (64-bit)              -->
+<!-- Product Version: Vivado v2015.2.1 (64-bit)              -->
 <!--                                                         -->
-<!-- Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.   -->
+<!-- Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="2" Path="/home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.xpr">
+<Project Version="7" Minor="5" Path="/home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="96ca6d9a77034d48a4aba88faf50ee90"/>
@@ -14,6 +14,8 @@
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
+    <Option Name="EnableCoreContainer" Val="FALSE"/>
+    <Option Name="EnableCoreContainerForIPI" Val="FALSE"/>
   </Configuration>
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
@@ -3199,6 +3201,18 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_pulse_level_sync.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_trigger.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="dbe_bpm_dsp"/>
@@ -3286,7 +3300,10 @@
       <Option Name="CompiledLib" Val="0"/>
     </Simulator>
     <Simulator Name="ModelSim">
-      <Option Name="Description" Val="QuestaSim/ModelSim Simulator"/>
+      <Option Name="Description" Val="ModelSim Simulator"/>
+    </Simulator>
+    <Simulator Name="Questa">
+      <Option Name="Description" Val="Questa Advanced Simulator"/>
     </Simulator>
     <Simulator Name="IES">
       <Option Name="Description" Val="Incisive Enterprise Simulator (IES)"/>
@@ -3294,18 +3311,11 @@
     <Simulator Name="VCS">
       <Option Name="Description" Val="Verilog Compiler Simulator (VCS)"/>
     </Simulator>
+    <Simulator Name="Riviera">
+      <Option Name="Description" Val="Riviera-PRO Simulator"/>
+    </Simulator>
   </Simulators>
   <Runs Version="1" Minor="9">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a200tffg1156-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" State="current" Dir="$PRUNDIR/synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2014"/>
-        <Step Id="synth_design">
-          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="FlattenHierarchy">1</Option>
-        </Step>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
     <Run Id="sin_lut_uvx_35_148_synth_1" Type="Ft3:Synth" SrcSet="sin_lut_uvx_35_148" Part="xc7a200tffg1156-1" ConstrsSet="sin_lut_uvx_35_148" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/sin_lut_uvx_35_148_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2014"/>
@@ -3327,37 +3337,13 @@
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="constrs_1" Description="Vivado Implementation Defaults" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a200tffg1156-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" State="current">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2014"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design">
-          <Option Id="Directive">0</Option>
-          <Option Id="Verbose">1</Option>
-        </Step>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design">
-          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="Directive">0</Option>
-        </Step>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design" EnableStepBool="1">
-          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="Directive">0</Option>
-        </Step>
-        <Step Id="route_design">
-          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="Directive">0</Option>
-        </Step>
-        <Step Id="post_route_phys_opt_design" EnableStepBool="1">
-          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="Directive">0</Option>
-        </Step>
-        <Step Id="write_bitstream">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design">
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
         </Step>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
     </Run>
     <Run Id="sin_lut_uvx_35_148_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="sin_lut_uvx_35_148" Description="Vivado Implementation Defaults" SynthRun="sin_lut_uvx_35_148_synth_1">
       <Strategy Version="1" Minor="2">
@@ -3401,6 +3387,36 @@
         <Step Id="write_bitstream"/>
       </Strategy>
     </Run>
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="constrs_1" Description="Vivado Implementation Defaults" State="current" SynthRun="synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design">
+          <Option Id="Directive">0</Option>
+          <Option Id="Verbose">1</Option>
+        </Step>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design">
+          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
+          <Option Id="Directive">0</Option>
+        </Step>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design" EnableStepBool="1">
+          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
+          <Option Id="Directive">0</Option>
+        </Step>
+        <Step Id="route_design">
+          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
+          <Option Id="Directive">0</Option>
+        </Step>
+        <Step Id="post_route_phys_opt_design" EnableStepBool="1">
+          <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
+          <Option Id="Directive">0</Option>
+        </Step>
+        <Step Id="write_bitstream">
+          <Option Id="VerboseBool">1</Option>
+        </Step>
+      </Strategy>
+    </Run>
   </Runs>
-  <HWSession Dir="hw_1" File="hw.xml"/>
 </Project>

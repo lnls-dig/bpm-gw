@@ -881,6 +881,10 @@ set_input_jitter fmc2_adc3_clk_i 0.050
 
 # Reset synchronization path
 set_false_path -through [get_nets cmp_reset/master_rstn]
+# This reset is synched with PCIe user_clk but we decouple it with a
+# chain of FFs synched with clk_sys. We use asynchronous assertion and
+# synchronous deassertion
+set_false_path -through [get_nets cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/Memory_Space/wb_FIFO_Rst_i0]
 # DDR 3 temperature monitor reset path
 set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
@@ -1011,50 +1015,65 @@ set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks
 set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
 
 # FIFO CDC timimng. Using faster clock period / 2
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_pll_i] 4.000
 
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks adc_clk_mmcm_out_1] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 4.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out_1] 4.000
+set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks clk_pll_i] 4.000
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] -to [get_clocks clk_userclk2] 8.000
-set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks -of_objects [get_pins */*/*/u_ddr_core/ui_clk]] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks clk_userclk2] 8.000
+set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks clk_pll_i] 8.000
+
+# Wishbone Acqsuisition registers
+
+# This path is only valid after a synchronized start pulse.
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins {*/*/*acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+
+# Use Distributed RAM, as these FIFOs are small and sparse through the module
+set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/cmp_position_calc_cdc_fifo/mem_reg*}]
 
 #######################################################################
 ##                      Placement Constraints                        ##
 #######################################################################
 
-# Constrain the PCIe core elements placement, so that it won't fail
-# timing analysis.
-# Comment out because we use nonstandard GTP location
+### Constrain the PCIe core elements placement, so that it won't fail
+### timing analysis.
 create_pblock GRP_pcie_core
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i/*]
 add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/pcie_core_i]
 resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
 ### Place the DMA design not far from PCIe core, otherwise it also breaks timing
-create_pblock GRP_tlpControl
-add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/*]
-add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl]
-resize_pblock [get_pblocks GRP_tlpControl] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y4}
+#create_pblock GRP_tlpControl
+#add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells -quiet cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl/*]
+#add_cells_to_pblock [get_pblocks GRP_tlpControl] [get_cells cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/theTlpControl]
+#resize_pblock [get_pblocks GRP_tlpControl] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y4}
+### Constraint DDR core
 #create_pblock GRP_ddr_core
 #add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/*]]
 #resize_pblock [get_pblocks GRP_ddr_core] -add {CLOCKREGION_X1Y0:CLOCKREGION_X1Y1}
 #create_pblock GRP_ddr_core_temp_mon
 #add_cells_to_pblock [get_pblocks GRP_ddr_core_temp_mon] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/temp_mon_enabled.u_tempmon/*]]
 #resize_pblock [get_pblocks GRP_ddr_core_temp_mon] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y3}
-## The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
+### The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
 #INST "cmp1_xwb_fmc130m_4ch/*" AREA_GROUP = "GRP_fmc1";
 #AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
 #INST "cmp2_xwb_fmc130m_4ch" AREA_GROUP = "GRP_fmc2";
 #AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
-create_pblock GRP_position_calc_core1
-add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -quiet [list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
-resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
-create_pblock GRP_position_calc_core2
-add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -quiet [list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/cmp_position_calc]]
-resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+### Constraint Position Calc Cores
+#create_pblock GRP_position_calc_core1
+#add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo1] [get_cells -quiet {list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
+#resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
+create_pblock GRP_position_calc_core_cdc_fifo2
+add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] [get_cells -quiet {list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
+resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 
 #######################################################################
 ##                         CE Constraints                            ##
@@ -1072,9 +1091,9 @@ set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from
 set_multicycle_path 70 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/*}]]
 set_multicycle_path 69 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/*}]]
 
-# CIC FOFB CE (CE_TBT) = CE_ADC * 35
-set_multicycle_path 70 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
-set_multicycle_path 69 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+# CIC FOFB CE (CE_ADC) = 2
+set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
 
 # FOFB CORDIC CE (CE_FOFB) = CE_TBT * 28
 set_multicycle_path 1960 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/*}]]
