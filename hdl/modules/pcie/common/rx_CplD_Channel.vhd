@@ -597,7 +597,9 @@ begin
 
       when ST_CplD_IDLE =>
 
-        if trn_rx_throttle = '0' then
+        --FSM will enter IDLE while TLP is throttled at the last TLP word when tlast is asserted
+        --protect from throttle at the last word of a TLP
+        if trn_rx_throttle = '0' and m_axis_rx_tlast_i = '0' then
           case CplD_Type is
             when C_TLP_TYPE_IS_CPLD =>
               RxCplDTrn_NextState <= ST_CplD_HEAD2;
@@ -1144,7 +1146,7 @@ begin
         g_with_almost_empty => false,
         g_with_almost_full => true,
         g_with_count => false,
-        g_almost_full_threshold => 26,
+        g_almost_full_threshold => 24,
         g_with_fifo_inferred => true)
       port map(
         rst_n_i => user_reset_n,
@@ -1463,7 +1465,7 @@ begin
             ddr_s2mm_cmd_tvalid_i <= '0';
             ddr_s2mm_tvalid_i <= '0';
             elbuf_re_st <= '1';
-            if elbuf_empty = '0' then
+            if elbuf_empty = '0' and elbuf_re = '1' then
               ddr_wr_state <= st_cmd;
               elbuf_re_st <= '0';
             end if;
@@ -1489,18 +1491,20 @@ begin
             ddr_s2mm_cmd_tvalid_i <= '0';
             ddr_s2mm_tlast_i <= elbuf_dout(C_TLAST_BIT);
             ddr_s2mm_tkeep <= elbuf_dout(C_TKEEP_BTOP downto C_TKEEP_BBOT);
-            ddr_s2mm_tvalid_i <= not(elbuf_empty_r);
             --stop reading if we are at the end of packet
             elbuf_re_st <= not(elbuf_empty) and not(elbuf_dout(C_TLAST_BIT));
             elbuf_empty_r <= elbuf_empty; --have to register only at data phase, otherwise tvalid will come too fast
             if (elbuf_empty = '0' and elbuf_re = '1') or elbuf_dout(C_TLAST_BIT) = '1' then
               --if it's the last word in a packet fifo will be already empty, so push last word unconditionally
               ddr_s2mm_tdata <= elbuf_dout(C_DBUS_WIDTH-1 downto 0);
+              ddr_s2mm_tvalid_i <= not(ddr_s2mm_cmd_tvalid_i); --omit 1st word after command
+            else
+              ddr_s2mm_tvalid_i <= not(ddr_s2mm_tready); --keep valid to push word currently present on *_tdata
             end if;
             if ddr_s2mm_tready = '1' and ddr_s2mm_tvalid_i = '1' and ddr_s2mm_tlast_i = '1' then
               ddr_wr_state <= st_idle;
               ddr_s2mm_tvalid_i <= '0';
-              elbuf_re_st <= '0';
+              elbuf_re_st <= '1';
             end if;
           
         end case;

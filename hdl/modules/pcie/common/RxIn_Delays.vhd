@@ -767,7 +767,7 @@ begin
             end if;
   
           when TK_Cpld_Hdr_C =>
-            m_axis_rx_tready_i <= cpld_ready;
+            m_axis_rx_tready_i <= '1';
             if m_axis_rx_tlast = '1' and m_axis_rx_tlast_r1 = '0'  -- raising edge
               and m_axis_rx_tready_i = '1' then
               FSM_TLP_Cnt <= TK_Idle;
