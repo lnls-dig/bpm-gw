@@ -53,6 +53,15 @@ port
   cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
   cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 
+  -- Data-driven data input
+  dtrig_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
+  dtrig_valid_i                             : in std_logic;
+
+  -- Data-driven trigger channel selection ID
+  lmt_dtrig_chan_id_i                       : in unsigned(c_chan_id_width-1 downto 0);
+  -- Acquisition limits valid signal
+  lmt_dtrig_valid_i                         : in std_logic;
+
   -- Acquisition input
   acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
   acq_valid_i                               : in std_logic;
@@ -98,8 +107,13 @@ architecture rtl of acq_trigger is
   type t_valid_pipe is array (natural range <>) of std_logic;
 
   -- Signals
+  signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
+  signal lmt_dtrig_valid                    : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
+
+  signal dtrig_data_in                      : std_logic_vector(g_data_in_width-1 downto 0);
+  signal dtrig_valid_in                     : std_logic;
 
   signal acq_data_in                        : std_logic_vector(g_data_in_width-1 downto 0);
   signal acq_data_sel_out                   : std_logic_vector(g_data_in_width-1 downto 0);
@@ -140,6 +154,22 @@ begin
   -- Input Register Logic
   -----------------------------------------------------------------------------
 
+  p_reg_lmt_dtrig_iface : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        lmt_dtrig_valid <= '0';
+        lmt_dtrig_chan_id <= to_unsigned(0, lmt_dtrig_chan_id'length);
+      else
+        lmt_dtrig_valid <= lmt_dtrig_valid_i;
+
+        if lmt_dtrig_valid_i = '1' then
+          lmt_dtrig_chan_id <= lmt_dtrig_chan_id_i;
+        end if;
+      end if;
+    end if;
+  end process;
+
   p_reg_lmt_iface : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
@@ -151,6 +181,22 @@ begin
 
         if lmt_valid_i = '1' then
           lmt_curr_chan_id <= lmt_curr_chan_id_i;
+        end if;
+      end if;
+    end if;
+  end process;
+
+  p_reg_dtrig_data_in : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        dtrig_data_in <= (others => '0');
+        dtrig_valid_in <= '0';
+      else
+        dtrig_valid_in <= dtrig_valid_i;
+
+        if dtrig_valid_i = '1' then
+          dtrig_data_in <= dtrig_data_i;
         end if;
       end if;
     end if;
@@ -178,7 +224,7 @@ begin
       gen_channel_atoms : for j in 0 to c_num_atoms_array(i)-1 generate -- for all atoms
         -- with sign extension
         acq_atoms(i,j) <=
-        std_logic_vector(resize(signed(acq_data_in(c_atom_width_array(i)*(j+1)-1 downto
+        std_logic_vector(resize(signed(dtrig_data_in(c_atom_width_array(i)*(j+1)-1 downto
                                 c_atom_width_array(i)*j)), acq_atoms(i,j)'length));
     end generate;
 
@@ -189,7 +235,7 @@ begin
   -----------------------------------------------------------------------------
 
   -- Internal hardware trigger
-  int_trig_data <= acq_atoms(to_integer(lmt_curr_chan_id),
+  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
                    to_integer(unsigned(cfg_int_trig_sel_i)));
 
   -- Sign extend data according to the selected channel
