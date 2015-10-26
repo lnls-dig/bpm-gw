@@ -243,6 +243,15 @@ package acq_core_pkg is
     cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
     cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 
+    -- Data-driven data input
+    dtrig_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
+    dtrig_valid_i                             : in std_logic;
+
+    -- Data-driven trigger channel selection ID
+    lmt_dtrig_chan_id_i                       : in unsigned(c_chan_id_width-1 downto 0);
+    -- Acquisition limits valid signal
+    lmt_dtrig_valid_i                         : in std_logic;
+
     -- Acquisition input
     acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_i                               : in std_logic;
