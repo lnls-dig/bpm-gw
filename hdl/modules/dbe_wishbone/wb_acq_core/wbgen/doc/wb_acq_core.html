@@ -1398,6 +1398,57 @@ acq_core_acq_chan_ctl_which_o[4:0]
 &rArr;
 </td>
 </tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+acq_core_acq_chan_ctl_reserved_o[2:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+acq_core_acq_chan_ctl_dtrig_which_o[4:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+acq_core_acq_chan_ctl_reserved1_o[18:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
 </table>
 
 <h3><a name="sect_3_0">3. Register description</a></h3>
@@ -5151,29 +5202,29 @@ ACQ_CHAN_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RESERVED1[18:11]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -5205,29 +5256,29 @@ ACQ_CHAN_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RESERVED1[10:3]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -5259,29 +5310,29 @@ ACQ_CHAN_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=3  class="td_field">
+RESERVED1[2:0]
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=5  class="td_field">
+DTRIG_WHICH[4:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -5313,17 +5364,17 @@ ACQ_CHAN_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=3  class="td_field">
+RESERVED[2:0]
 </td>
 <td style="border: solid 1px black;" colspan=5  class="td_field">
 WHICH[4:0]
+</td>
+<td >
+
+</td>
+<td >
+
 </td>
 <td >
 
@@ -5344,6 +5395,18 @@ WHICH[4:0]
 WHICH
 </b>[<i>read/write</i>]: Acquisition channel selection
 <br>Selection of path to acquire on next acquisition.
+<li><b>
+RESERVED
+</b>[<i>read/write</i>]: Reserved
+<br>Ignore on read, write with 0's
+<li><b>
+DTRIG_WHICH
+</b>[<i>read/write</i>]: Data-driven channel selection
+<br>Selection of path to detect data-driven trigger on next acquisition.
+<li><b>
+RESERVED1
+</b>[<i>read/write</i>]: Reserved1
+<br>Ignore on read, write with 0's
 </ul>
 
 

@@ -440,5 +440,37 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 3;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Data-driven channel selection";
+      description = "Selection of path to detect data-driven trigger on next acquisition.";
+      prefix = "dtrig_which";
+      type = SLV;
+      align = 8;
+      size = 5;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved1";
+      description = "Ignore on read, write with 0's";
+      prefix = "reserved1";
+      type = SLV;
+      size = 19;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
   };
 };
