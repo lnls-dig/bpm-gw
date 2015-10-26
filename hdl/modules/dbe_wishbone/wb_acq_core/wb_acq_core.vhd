@@ -228,11 +228,13 @@ architecture rtl of wb_acq_core is
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
   signal acq_data_marsh                     : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal dtrig_data_marsh                   : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_trig_in                        : std_logic;
   signal acq_trig                           : std_logic;
   signal acq_trig_det                       : std_logic;
   signal acq_dvalid_in                      : std_logic;
+  signal dtrig_valid_in                     : std_logic;
   signal acq_valid                          : std_logic;
   signal samples_wr_en                      : std_logic;
 
@@ -262,6 +264,7 @@ architecture rtl of wb_acq_core is
   signal acq_wait_trig_skip_done            : std_logic;
   signal acq_post_trig_done                 : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
+  signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
   signal shots_cnt                          : unsigned(15 downto 0);
   signal shots_decr                         : std_logic;
@@ -446,6 +449,7 @@ begin
   shots_nb_c                                <= unsigned(regs_out.shots_nb_o);
 
   lmt_curr_chan_id                          <= unsigned(regs_out.acq_chan_ctl_which_o); -- 5-bit
+  lmt_dtrig_chan_id                         <= unsigned(regs_out.acq_chan_ctl_dtrig_which_o); -- 5-bit
 
   -- Synchronous to ext_clk_i
   acq_ddr3_start_addr_full                  <= regs_out.ddr3_start_addr_o;
@@ -487,8 +491,41 @@ begin
                                                     ddr_trig_addr'length, '0') & ddr_trig_addr;
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
 
+
   ------------------------------------------------------------------------------
-  -- Acquisiton Channel Selection
+  -- Data-driven Trigger Channel Selection
+  -----------------------------------------------------------------------------
+  cmp_acq_dtrig_sel_chan : acq_sel_chan
+  generic map
+  (
+    g_acq_num_channels                      => g_acq_num_channels
+  )
+  port map
+  (
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n,
+
+    -----------------------------
+    -- Acquisiton Interface
+    -----------------------------
+    acq_val_low_i                           => acq_val_low_i,
+    acq_val_high_i                          => acq_val_high_i,
+    acq_dvalid_i                            => acq_dvalid_i,
+    acq_trig_i                              => acq_trig_i,
+
+    lmt_curr_chan_id_i                      => lmt_dtrig_chan_id,
+    lmt_valid_i                             => acq_start,
+
+    -----------------------------
+    -- Output Interface.
+    -----------------------------
+    acq_data_o                              => dtrig_data_marsh,
+    acq_dvalid_o                            => dtrig_valid_in,
+    acq_trig_o                              => open
+  );
+
+  ------------------------------------------------------------------------------
+  -- Data Acquisiton Channel Selection
   -----------------------------------------------------------------------------
   cmp_acq_sel_chan : acq_sel_chan
   generic map
@@ -544,6 +581,12 @@ begin
     cfg_int_trig_sel_i                      => acq_trig_int_sw_sel,
     cfg_int_trig_thres_i                    => acq_trig_int_thres,
     cfg_int_trig_thres_filt_i               => acq_trig_int_thres_filt,
+
+    dtrig_data_i                            => dtrig_data_marsh(c_acq_data_width-1 downto 0),
+    dtrig_valid_i                           => dtrig_valid_in,
+
+    lmt_dtrig_chan_id_i                     => lmt_dtrig_chan_id,
+    lmt_dtrig_valid_i                       => acq_start,
 
     acq_data_i                              => acq_data_marsh(c_acq_data_width-1 downto 0),
     acq_valid_i                             => acq_dvalid_in,
