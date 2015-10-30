@@ -47,7 +47,7 @@ use work.bpm_pcie_a7_pkg.all;
 -- PCIe Core Constants
 use work.bpm_pcie_a7_const_pkg.all;
 -- Meta Package
-use work.sdb_meta_pkg.all;
+use work.synthesis_descriptor_pkg.all;
 
 entity dbe_bpm is
 port(
@@ -297,10 +297,10 @@ architecture rtl of dbe_bpm is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 13;
+  constant c_slaves                         : natural := 14;
   -- General Dual-port memory, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, Repo URL,
-  -- SDB synthesis, SDB integration
+  -- SDB synthesis top, general-cores, dsp-cores
 
   -- Slaves indexes
   constant c_slv_dpram_sys_port0_id        : natural := 0;
@@ -314,8 +314,9 @@ architecture rtl of dbe_bpm is
   constant c_slv_periph_id                 : natural := 8;
   constant c_slv_afc_diag_id               : natural := 9;
   constant c_slv_sdb_repo_url_id           : natural := 10;
-  constant c_slv_sdb_synthesis_id          : natural := 11;
-  constant c_slv_sdb_integration_id        : natural := 12;
+  constant c_slv_sdb_top_syn_id            : natural := 11;
+  constant c_slv_sdb_dsp_cores_id          : natural := 12;
+  constant c_slv_sdb_gen_cores_id          : natural := 13;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -432,8 +433,9 @@ architecture rtl of dbe_bpm is
      c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
      c_slv_afc_diag_id         => f_sdb_embed_device(c_xwb_afc_diag_sdb,         x"00380000"),   -- AFC Diagnostics control port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
-     c_slv_sdb_synthesis_id    => f_sdb_embed_synthesis(c_sdb_synthesis),
-     c_slv_sdb_integration_id  => f_sdb_embed_integration(c_sdb_integration)
+     c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
+     c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
+     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info)
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
