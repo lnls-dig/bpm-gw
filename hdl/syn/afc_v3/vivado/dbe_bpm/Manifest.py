@@ -8,7 +8,7 @@ syn_top = "dbe_bpm"
 syn_project = "dbe_bpm"
 syn_tool = "vivado"
 
-files = ["project.vhd"];
+files = ["synthesis_descriptor_pkg.vhd"];
 
 machine_pkg = "uvx_130M"
 
