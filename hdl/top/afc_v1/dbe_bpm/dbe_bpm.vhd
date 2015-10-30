@@ -54,7 +54,7 @@ use work.bpm_pcie_a7_const_pkg.all;
 library UNISIM;
 use UNISIM.vcomponents.all;
 
-entity dbe_bpm_dsp is
+entity dbe_bpm is
 port(
   -----------------------------------------
   -- Clocking pins
@@ -314,9 +314,9 @@ port(
   -----------------------------------------
   --leds_o                                    : out std_logic_vector(7 downto 0)
 );
-end dbe_bpm_dsp;
+end dbe_bpm;
 
-architecture rtl of dbe_bpm_dsp is
+architecture rtl of dbe_bpm is
 
   -- Top crossbar layout
   -- Number of slaves
@@ -1041,10 +1041,10 @@ architecture rtl of dbe_bpm_dsp is
     g_clkin_period                            : real := 5.000;
     g_divclk_divide                           : integer := 1;
     g_clkbout_mult_f                          : real := 5.000;
-  
-    -- 100 MHz output clock             
+
+    -- 100 MHz output clock
     g_clk0_divide_f                           : real := 10.000;
-    -- 200 MHz output clock                 
+    -- 200 MHz output clock
     g_clk1_divide                             : integer := 5
   );
   port(
