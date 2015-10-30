@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="5" Path="/home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.xpr">
+<Project Version="7" Minor="5" Path="/home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/vivado/dbe_bpm/dbe_bpm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="96ca6d9a77034d48a4aba88faf50ee90"/>
@@ -2902,19 +2902,19 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/sys_pll.vhd">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/sys_pll.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/clk_gen.vhd">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/clk_gen.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.vhd">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/dbe_bpm.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -3233,31 +3233,31 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="dbe_bpm_dsp"/>
+        <Option Name="TopModule" Val="dbe_bpm"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
       <Filter Type="Constrs"/>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/pcie_core.xdc">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/pcie_core.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/ddr_core.xdc">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/ddr_core.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.xdc">
+      <File Path="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/dbe_bpm.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
       <Config>
-        <Option Name="TargetConstrsFile" Val="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm_dsp_fmc130m_4ch_2_to_1_mux_ddr_2_3/dbe_bpm_dsp.xdc"/>
+        <Option Name="TargetConstrsFile" Val="$PPRDIR/../../../../top/afc_v3/vivado/dbe_bpm/dbe_bpm.xdc"/>
         <Option Name="ConstrsType" Val="XDC"/>
       </Config>
     </FileSet>
@@ -3265,7 +3265,7 @@
       <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="dbe_bpm_dsp"/>
+        <Option Name="TopModule" Val="dbe_bpm"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="SimMode" Val="post-implementation"/>
