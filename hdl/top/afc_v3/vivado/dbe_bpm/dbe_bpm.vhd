@@ -49,7 +49,7 @@ use work.bpm_pcie_a7_const_pkg.all;
 -- Meta Package
 use work.sdb_meta_pkg.all;
 
-entity dbe_bpm_dsp is
+entity dbe_bpm is
 port(
   -----------------------------------------
   -- Clocking pins
@@ -291,9 +291,9 @@ port(
   -----------------------------------------
   --leds_o                                    : out std_logic_vector(7 downto 0)
 );
-end dbe_bpm_dsp;
+end dbe_bpm;
 
-architecture rtl of dbe_bpm_dsp is
+architecture rtl of dbe_bpm is
 
   -- Top crossbar layout
   -- Number of slaves
