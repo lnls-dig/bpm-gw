@@ -40,7 +40,7 @@ use work.gencores_pkg.all;
 -- Acquisition cores
 use work.acq_core_pkg.all;
 
-entity acq_ddr3_iface is
+entity acq_ddr3_ui_write is
 generic
 (
   g_acq_num_channels                        : natural := 1;
@@ -101,16 +101,12 @@ port
   ui_app_wdf_wren_o                         : out std_logic;
   ui_app_wdf_rdy_i                          : in std_logic;
 
-  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ui_app_rd_data_end_i                      : in std_logic;
-  ui_app_rd_data_valid_i                    : in std_logic;
-
   ui_app_req_o                              : out std_logic;
   ui_app_gnt_i                              : in std_logic
 );
-end acq_ddr3_iface;
+end acq_ddr3_ui_write;
 
-architecture rtl of acq_ddr3_iface is
+architecture rtl of acq_ddr3_ui_write is
 
   alias c_acq_channels : t_acq_chan_param_array(g_acq_num_channels-1 downto 0) is g_acq_channels;
 
@@ -252,7 +248,7 @@ architecture rtl of acq_ddr3_iface is
 begin
 
   assert (g_ddr_payload_width = 256 or g_ddr_payload_width = 512)
-  report "[acq_ddr3_iface] Only DDR Payload of 256 or 512 are supported!"
+  report "[acq_ddr3_ui_write] Only DDR Payload of 256 or 512 are supported!"
   severity failure;
 
   ----------------------------------------------------------------------------
