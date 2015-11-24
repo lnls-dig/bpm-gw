@@ -126,72 +126,6 @@ architecture Behavioral of dsDMA_Transact is
   signal tRAM_AddrB_i : std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
   signal tRAM_weB_i   : std_logic;
 
-
-  -- DMA calculation
-  component DMA_Calculate
-    port(
-      -- Downstream Registers from MWr Channel
-      DMA_PA      : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);  -- EP   (local)
-      DMA_HA      : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);  -- Host (remote)
-      DMA_BDA     : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_Length  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_Control : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Calculation in advance, for better timing
-      HA_is_64b  : in std_logic;
-      BDA_is_64b : in std_logic;
-
-      -- Calculation in advance, for better timing
-      Leng_Hi19b_True : in std_logic;
-      Leng_Lo7b_True  : in std_logic;
-
-
-      -- Parameters fed to DMA_FSM
-      DMA_PA_Loaded : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_PA_Var    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_HA_Var    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      DMA_BDA_fsm    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      BDA_is_64b_fsm : out std_logic;
-
-      -- Only for downstream channel
-      DMA_PA_Snout   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_BAR_Number : out std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
-
-      --
-      DMA_Snout_Length : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Body_Length  : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Tail_Length  : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
-
-
-      -- Engine control signals
-      DMA_Start  : in std_logic;
-      DMA_Start2 : in std_logic;        -- out of consecutive dex
-
-      -- Control signals to FSM
-      No_More_Bodies : out std_logic;
-      ThereIs_Snout  : out std_logic;
-      ThereIs_Body   : out std_logic;
-      ThereIs_Tail   : out std_logic;
-      ThereIs_Dex    : out std_logic;
-      HA64bit        : out std_logic;
-      Addr_Inc       : out std_logic;
-
-      -- FSM indicators
-      State_Is_LoadParam : in std_logic;
-      State_Is_Snout     : in std_logic;
-      State_Is_Body      : in std_logic;
---      State_Is_Tail      : IN  std_logic;
-
-      -- Additional
-      Param_Max_Cfg : in std_logic_vector(2 downto 0);
-
-      -- Common ports
-      dma_clk   : in std_logic;
-      dma_reset : in std_logic
-      );
-  end component;
-
   signal dsDMA_PA_Loaded : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal dsDMA_PA_Var    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal dsDMA_HA_Var    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -215,79 +149,6 @@ architecture Behavioral of dsDMA_Transact is
   signal dsHA64bit        : std_logic;
   signal ds_AInc          : std_logic;
 
-  -- DMA state machine
-  component DMA_FSM
-    port(
-      -- Fixed information for 1st header of TLP: MRd/MWr
-      TLP_Has_Payload : in std_logic;
-      TLP_Hdr_is_4DW  : in std_logic;
-      DMA_Addr_Inc    : in std_logic;
-
-      DMA_BAR_Number : in std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
-
-      -- FSM control signals
-      DMA_Start  : in std_logic;
-      DMA_Start2 : in std_logic;
-      DMA_Stop   : in std_logic;
-      DMA_Stop2  : in std_logic;
-
-      No_More_Bodies : in std_logic;
-      ThereIs_Snout  : in std_logic;
-      ThereIs_Body   : in std_logic;
-      ThereIs_Tail   : in std_logic;
-      ThereIs_Dex    : in std_logic;
-
-      -- Parameters to be written into ChBuf
-      DMA_PA_Loaded : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_PA_Var    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_HA_Var    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      DMA_BDA_fsm    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      BDA_is_64b_fsm : in std_logic;
-
-      DMA_Snout_Length : in std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Body_Length  : in std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Tail_Length  : in std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
-
-      -- Busy/Done conditions
-      Done_Condition_1 : in std_logic;
-      Done_Condition_2 : in std_logic;
-      Done_Condition_3 : in std_logic;
-      Done_Condition_4 : in std_logic;
-      Done_Condition_5 : in std_logic;
-
-      -- Channel buffer write
-      us_MWr_Param_Vec : in  std_logic_vector(6-1 downto 0);
-      ChBuf_aFull      : in  std_logic;
-      ChBuf_WrEn       : out std_logic;
-      ChBuf_WrDin      : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-
-      -- FSM indicators
-      State_Is_LoadParam : out std_logic;
-      State_Is_Snout     : out std_logic;
-      State_Is_Body      : out std_logic;
-      State_Is_Tail      : out std_logic;
-      DMA_Cmd_Ack        : out std_logic;
-
-      -- To Tx Port
-      ChBuf_ValidRd : in  std_logic;
-      BDA_nAligned  : out std_logic;
-      DMA_TimeOut   : out std_logic;
-      DMA_Busy      : out std_logic;
-      DMA_Done      : out std_logic;
---      DMA_Done_Rise      : OUT std_logic;
-
-      -- Tags
-      Pkt_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-      Dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- Common ports
-      dma_clk   : in std_logic;
-      dma_reset : in std_logic
-      );
-  end component;
-
   signal Tag_DMA_dsp : std_logic_vector(C_TAG_WIDTH-1 downto 0);
 
   -- FSM state indicators
@@ -309,25 +170,6 @@ architecture Behavioral of dsDMA_Transact is
   signal Tag_Map_Bits       : std_logic_vector(C_TAG_MAP_WIDTH-1 downto 0);
   signal Tag_Map_filling    : std_logic_vector(C_SUB_TAG_MAP_WIDTH-1 downto 0);
   signal All_CplD_have_come : std_logic;
-
-  -- Built-in single-port fifo as downstream DMA channel buffer
-  --   128-bit wide, for 64-bit address
-  component sfifo_15x128
-    port (
-      clk        : in  std_logic;
-      rst        : in  std_logic;
-      prog_full  : out std_logic;
---          wr_clk             : IN  std_logic;
-      wr_en      : in  std_logic;
-      din        : in  std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      full       : out std_logic;
---          rd_clk             : IN  std_logic;
-      rd_en      : in  std_logic;
-      dout       : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-      prog_empty : out std_logic;
-      empty      : out std_logic
-      );
-  end component;
 
   -- Signal with DMA_downstream channel FIFO
   signal MRd_dsp_din       : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
@@ -371,7 +213,7 @@ begin
 
   -- Kernel Engine
   ds_DMA_Calculation :
-    DMA_Calculate
+    entity work.DMA_Calculate
       port map(
         DMA_PA      => DMA_ds_PA ,
         DMA_HA      => DMA_ds_HA ,
@@ -427,7 +269,7 @@ begin
 
   -- Kernel FSM
   ds_DMA_StateMachine :
-    DMA_FSM
+    entity work.DMA_FSM
       port map(
         TLP_Has_Payload => '0' ,
         TLP_Hdr_is_4DW  => dsHA64bit ,
@@ -499,22 +341,21 @@ begin
 -- Synchronous output: DMA_Status
 --
   DS_DMA_Status_Concat :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      DMA_Status_i <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      DMA_Status_i <= (
-        CINT_BIT_DMA_STAT_NALIGN  => dsBDA_nAligned,
-        CINT_BIT_DMA_STAT_TIMEOUT => dsDMA_TimeOut_i,
-        CINT_BIT_DMA_STAT_BDANULL => dsDMA_BDA_eq_Null,
-        CINT_BIT_DMA_STAT_BUSY    => dsDMA_Busy_i,
-        CINT_BIT_DMA_STAT_DONE    => dsDMA_Done_i,
-        others                    => '0'
-        );
-
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        DMA_Status_i <= (others => '0');
+      else
+        DMA_Status_i <= (
+          CINT_BIT_DMA_STAT_NALIGN  => dsBDA_nAligned,
+          CINT_BIT_DMA_STAT_TIMEOUT => dsDMA_TimeOut_i,
+          CINT_BIT_DMA_STAT_BDANULL => dsDMA_BDA_eq_Null,
+          CINT_BIT_DMA_STAT_BUSY    => dsDMA_Busy_i,
+          CINT_BIT_DMA_STAT_DONE    => dsDMA_Done_i,
+          others                    => '0'
+          );
+      end if;
     end if;
   end process;
 
@@ -524,40 +365,27 @@ begin
 --                  tRAM_dinB
 --
   FSM_dsDMA_tRAM_PortB :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      tRAM_weB_i   <= '0';
-      tRAM_AddrB_i <= (others => '1');
-      tRAM_dinB_i  <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-
-      tRAM_AddrB_i <= Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0);
-
-      tRAM_weB_i <= dsState_Is_Snout
-                        or dsState_Is_Body
-                        or dsState_Is_Tail;
-
-      if dsState_Is_Snout = '1' then
-        tRAM_dinB_i <=
-          ds_AInc             -- DMA_ds_Control(CINT_BIT_DMA_CTRL_AINC)
-          & dsDMA_BAR_Number  -- (C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0)
-          & dsDMA_PA_snout(C_TAGBAR_BIT_BOT-1 downto 2)&"00";
-      elsif dsState_Is_Body = '1' then
-        tRAM_dinB_i <=
-          ds_AInc             -- DMA_ds_Control(CINT_BIT_DMA_CTRL_AINC)
-          & dsDMA_BAR_Number  -- (C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0)
-          & dsDMA_PA_Var(C_TAGBAR_BIT_BOT-1 downto 2) &"00";
-      elsif dsState_Is_Tail = '1' then
-        tRAM_dinB_i <=
-          ds_AInc             -- DMA_ds_Control(CINT_BIT_DMA_CTRL_AINC)
-          & dsDMA_BAR_Number  -- (C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0)
-          & dsDMA_PA_Var(C_TAGBAR_BIT_BOT-1 downto 2) &"00";
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        tRAM_weB_i   <= '0';
+        tRAM_AddrB_i <= (others => '1');
+        tRAM_dinB_i  <= (others => '0');
       else
-        tRAM_dinB_i <= (others => '0');
-
+        tRAM_AddrB_i <= Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0);
+        tRAM_weB_i <= dsState_Is_Snout or dsState_Is_Body or dsState_Is_Tail;
+  
+        if dsState_Is_Snout = '1' then
+          tRAM_dinB_i <= ds_AInc & dsDMA_BAR_Number & dsDMA_PA_snout(C_TAGBAR_BIT_BOT-1 downto 2)&"00";
+        elsif dsState_Is_Body = '1' then
+          tRAM_dinB_i <= ds_AInc & dsDMA_BAR_Number & dsDMA_PA_Var(C_TAGBAR_BIT_BOT-1 downto 2) &"00";
+        elsif dsState_Is_Tail = '1' then
+          tRAM_dinB_i <= ds_AInc & dsDMA_BAR_Number & dsDMA_PA_Var(C_TAGBAR_BIT_BOT-1 downto 2) &"00";
+        else
+          tRAM_dinB_i <= (others => '0');
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -565,56 +393,52 @@ begin
 --  Loop:  Tag_Map
 --
   Sync_Tag_set_reset_Bits :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      Tag_Map_Bits <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      for j in 0 to C_TAG_MAP_WIDTH-1 loop
-        if tRAM_AddrB_i = CONV_STD_LOGIC_VECTOR(j, C_TAGRAM_AWIDTH) and tRAM_weB_i = '1' then
-          Tag_Map_Bits(j) <= '1';
-        elsif Tag_Map_Clear(j) = '1' then
-          Tag_Map_Bits(j) <= '0';
-        else
-          Tag_Map_Bits(j) <= Tag_Map_Bits(j);
-        end if;
-      end loop;
-
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        Tag_Map_Bits <= (others => '0');
+      else
+        for j in 0 to C_TAG_MAP_WIDTH-1 loop
+          if tRAM_AddrB_i = CONV_STD_LOGIC_VECTOR(j, C_TAGRAM_AWIDTH) and tRAM_weB_i = '1' then
+            Tag_Map_Bits(j) <= '1';
+          elsif Tag_Map_Clear(j) = '1' then
+            Tag_Map_Bits(j) <= '0';
+          else
+            Tag_Map_Bits(j) <= Tag_Map_Bits(j);
+          end if;
+        end loop;
+      end if;
     end if;
   end process;
-
 
 -- ------------------------------------------
 -- Determination: All_CplD_have_come
 --
   Sync_Reg_All_CplD_have_come :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      Tag_Map_filling    <= (others => '0');
-      All_CplD_have_come <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      for k in 0 to C_SUB_TAG_MAP_WIDTH-1 loop
-        if Tag_Map_Bits((C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*(k+1)-1 downto (C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*k)
-           = C_ALL_ZEROS((C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*(k+1)-1 downto (C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*k)
-        then
-          Tag_Map_filling(k) <= '1';
-        else
-          Tag_Map_filling(k) <= '0';
-        end if;
-      end loop;
-
-      -- final signal :  All_CplD_have_come
-      if Tag_Map_filling = C_ALL_ONES(C_SUB_TAG_MAP_WIDTH-1 downto 0) then
-        All_CplD_have_come <= '1';
-      else
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        Tag_Map_filling    <= (others => '0');
         All_CplD_have_come <= '0';
+      else
+        for k in 0 to C_SUB_TAG_MAP_WIDTH-1 loop
+          if Tag_Map_Bits((C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*(k+1)-1 downto (C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*k)
+             = C_ALL_ZEROS((C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*(k+1)-1 downto (C_TAG_MAP_WIDTH/C_SUB_TAG_MAP_WIDTH)*k)
+          then
+            Tag_Map_filling(k) <= '1';
+          else
+            Tag_Map_filling(k) <= '0';
+          end if;
+        end loop;
+        -- final signal :  All_CplD_have_come
+        if Tag_Map_filling = C_ALL_ONES(C_SUB_TAG_MAP_WIDTH-1 downto 0) then
+          All_CplD_have_come <= '1';
+        else
+          All_CplD_have_come <= '0';
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -622,28 +446,23 @@ begin
 -- Synchronous Output: Tag_DMA_dsp
 --
   FSM_dsDMA_Tag_DMA_dsp :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      Tag_DMA_dsp <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if dsState_Is_Snout = '1'
-        or dsState_Is_Body = '1'
-        or dsState_Is_Tail = '1'
-      then
-        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
-                       & (Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0)
-                          + CONV_STD_LOGIC_VECTOR(1, C_TAGRAM_AWIDTH));
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        Tag_DMA_dsp <= (others => '0');
       else
-        Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
-                       & Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0);
+        if dsState_Is_Snout = '1' or dsState_Is_Body = '1' or dsState_Is_Tail = '1' then
+          Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
+                         & (Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0)
+                            + CONV_STD_LOGIC_VECTOR(1, C_TAGRAM_AWIDTH));
+        else
+          Tag_DMA_dsp <= '0' & dsDMA_BAR_Number(CINT_FIFO_SPACE_BAR/2)
+                         & Tag_DMA_dsp(C_TAGRAM_AWIDTH-1 downto 0);
+        end if;
       end if;
-
     end if;
   end process;
-
 
   -- -------------------------------------------------
   -- ds MRd TLP Buffer
@@ -681,7 +500,7 @@ begin
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       MRd_dsp_re_r1        <= MRd_dsp_re_i;
       MRd_dsp_empty_r1     <= MRd_dsp_empty_i;
       MRd_dsp_prog_Full_r1 <= MRd_dsp_prog_Full;
@@ -696,16 +515,14 @@ begin
 -- Synchronous: FC_push
 --
   Synch_Calc_FC_push :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      FC_push <= '0';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      FC_push <= MRd_dsp_re_r1 and not MRd_dsp_empty_r1
-                    and not MRd_dsp_dout(C_CHBUF_TAG_BIT_TOP);
-
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        FC_push <= '0';
+      else
+        FC_push <= MRd_dsp_re_r1 and not MRd_dsp_empty_r1 and not MRd_dsp_dout(C_CHBUF_TAG_BIT_TOP);
+      end if;
     end if;
   end process;
 
@@ -713,21 +530,20 @@ begin
 -- Synchronous: FC_counter
 --
   Synch_Calc_FC_counter :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      FC_counter <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if FC_push = '1' and FC_pop = '0' then
-        FC_counter <= FC_counter + '1';
-      elsif FC_push = '0' and FC_pop = '1' then
-        FC_counter <= FC_counter - '1';
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        FC_counter <= (others => '0');
       else
-        FC_counter <= FC_counter;
+        if FC_push = '1' and FC_pop = '0' then
+          FC_counter <= FC_counter + '1';
+        elsif FC_push = '0' and FC_pop = '1' then
+          FC_counter <= FC_counter - '1';
+        else
+          FC_counter <= FC_counter;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -735,54 +551,53 @@ begin
 -- Synchronous: dsFC_stop
 --
   Synch_Calc_dsFC_stop :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      dsFC_stop_128B  <= '1';
-      dsFC_stop_256B  <= '1';
-      dsFC_stop_512B  <= '1';
-      dsFC_stop_1024B <= '1';
-      dsFC_stop_2048B <= '1';
-      dsFC_stop_4096B <= '1';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 0) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 0) then
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        dsFC_stop_128B  <= '1';
+        dsFC_stop_256B  <= '1';
+        dsFC_stop_512B  <= '1';
+        dsFC_stop_1024B <= '1';
+        dsFC_stop_2048B <= '1';
         dsFC_stop_4096B <= '1';
       else
-        dsFC_stop_4096B <= '0';
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 0) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 0) then
+          dsFC_stop_4096B <= '1';
+        else
+          dsFC_stop_4096B <= '0';
+        end if;
+  
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 0) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 0) then
+          dsFC_stop_2048B <= '1';
+        else
+          dsFC_stop_2048B <= '0';
+        end if;
+  
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 1) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 1) then
+          dsFC_stop_1024B <= '1';
+        else
+          dsFC_stop_1024B <= '0';
+        end if;
+  
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 2) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 2) then
+          dsFC_stop_512B <= '1';
+        else
+          dsFC_stop_512B <= '0';
+        end if;
+  
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 3) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 3) then
+          dsFC_stop_256B <= '1';
+        else
+          dsFC_stop_256B <= '0';
+        end if;
+  
+        if FC_counter(C_TAGRAM_AWIDTH-1 downto 4) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 4) then
+          dsFC_stop_128B <= '1';
+        else
+          dsFC_stop_128B <= '0';
+        end if;
       end if;
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 0) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 0) then
-        dsFC_stop_2048B <= '1';
-      else
-        dsFC_stop_2048B <= '0';
-      end if;
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 1) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 1) then
-        dsFC_stop_1024B <= '1';
-      else
-        dsFC_stop_1024B <= '0';
-      end if;
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 2) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 2) then
-        dsFC_stop_512B <= '1';
-      else
-        dsFC_stop_512B <= '0';
-      end if;
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 3) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 3) then
-        dsFC_stop_256B <= '1';
-      else
-        dsFC_stop_256B <= '0';
-      end if;
-
-      if FC_counter(C_TAGRAM_AWIDTH-1 downto 4) /= C_ALL_ZEROS(C_TAGRAM_AWIDTH-1 downto 4) then
-        dsFC_stop_128B <= '1';
-      else
-        dsFC_stop_128B <= '0';
-      end if;
-
     end if;
   end process;
 
@@ -790,38 +605,37 @@ begin
   -- Configuration pamameters: cfg_MRS
   --
   Syn_Config_Param_cfg_MRS :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then         -- 0x0080 Bytes
-      dsFC_stop <= '1';
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case cfg_MRS is
-
-        when "000" =>                   -- 0x0080 Bytes
-          dsFC_stop <= dsFC_stop_128B;
-
-        when "001" =>                   -- 0x0100 Bytes
-          dsFC_stop <= dsFC_stop_256B;
-
-        when "010" =>                   -- 0x0200 Bytes
-          dsFC_stop <= dsFC_stop_512B;
-
-        when "011" =>                   -- 0x0400 Bytes
-          dsFC_stop <= dsFC_stop_1024B;
-
-        when "100" =>                   -- 0x0800 Bytes
-          dsFC_stop <= dsFC_stop_2048B;
-
-        when "101" =>                   -- 0x1000 Bytes
-          dsFC_stop <= dsFC_stop_4096B;
-
-        when others =>                  -- as 0x0080 Bytes
-          dsFC_stop <= dsFC_stop_128B;
-
-      end case;
-
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then         -- 0x0080 Bytes
+        dsFC_stop <= '1';
+      else
+        case cfg_MRS is
+  
+          when "000" =>                   -- 0x0080 Bytes
+            dsFC_stop <= dsFC_stop_128B;
+  
+          when "001" =>                   -- 0x0100 Bytes
+            dsFC_stop <= dsFC_stop_256B;
+  
+          when "010" =>                   -- 0x0200 Bytes
+            dsFC_stop <= dsFC_stop_512B;
+  
+          when "011" =>                   -- 0x0400 Bytes
+            dsFC_stop <= dsFC_stop_1024B;
+  
+          when "100" =>                   -- 0x0800 Bytes
+            dsFC_stop <= dsFC_stop_2048B;
+  
+          when "101" =>                   -- 0x1000 Bytes
+            dsFC_stop <= dsFC_stop_4096B;
+  
+          when others =>                  -- as 0x0080 Bytes
+            dsFC_stop <= dsFC_stop_128B;
+  
+        end case;
+      end if;
     end if;
   end process;
 

@@ -117,7 +117,7 @@ begin
   Synch_Delay_Req :
   process(clk)
   begin
-    if clk'event and clk = '1' then
+    if rising_edge(clk) then
       Req_r1 <= Req_i;
     end if;
   end process;
@@ -126,12 +126,14 @@ begin
 -- Synchronous: States
 --
   Seq_FSM_NextState :
-  process(clk, rst_n)
+  process(clk)
   begin
-    if (rst_n = '0') then
-      Arb_FSM <= aSt_Reset;
-    elsif clk'event and clk = '1' then
-      Arb_FSM <= Arb_FSM_NS;
+    if rising_edge(clk) then
+      if (rst_n = '0') then
+        Arb_FSM <= aSt_Reset;
+      else
+        Arb_FSM <= Arb_FSM_NS;
+      end if;
     end if;
   end process;
 
@@ -197,7 +199,7 @@ begin
   Sync_Champion_Vector :
   process(clk)
   begin
-    if clk'event and clk = '1' then
+    if rising_edge(clk) then
 
       for i in 0 to C_ARBITRATE_WIDTH-1 loop
         if Wide_Req_turned(i) = C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0) then
@@ -222,37 +224,37 @@ begin
 -- FSM Output :  Buffer read_i and Indice_i
 --
   FSM_Output_read_Indice :
-  process (clk, rst_n)
+  process (clk)
   begin
-    if (rst_n = '0') then
-      read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-      Indice_prep <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-      Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-    elsif clk'event and clk = '1' then
-
-      case Arb_FSM is
-
-        when aSt_ReadOne =>
-          read_i      <= read_prep;
-          Indice_prep <= read_prep;
-          Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-
-        when aSt_Ready =>
-          read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-          Indice_prep <= Indice_prep;
-          if take_i = '1' then
-            Indice_i <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-          else
-            Indice_i <= Indice_prep;
-          end if;
-
-        when others =>
-          read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-          Indice_prep <= Indice_prep;
-          Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
-
-      end case;
-
+    if rising_edge(clk) then
+      if (rst_n = '0') then
+        read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+        Indice_prep <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+        Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+      else
+        case Arb_FSM is
+  
+          when aSt_ReadOne =>
+            read_i      <= read_prep;
+            Indice_prep <= read_prep;
+            Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+  
+          when aSt_Ready =>
+            read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+            Indice_prep <= Indice_prep;
+            if take_i = '1' then
+              Indice_i <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+            else
+              Indice_i <= Indice_prep;
+            end if;
+  
+          when others =>
+            read_i      <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+            Indice_prep <= Indice_prep;
+            Indice_i    <= C_ALL_ZEROS(C_ARBITRATE_WIDTH-1 downto 0);
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -263,28 +265,28 @@ begin
   for i in 0 to C_ARBITRATE_WIDTH-1 generate
 
     Proc_Priority_Cycling :
-    process (clk, rst_n)
+    process (clk)
     begin
-      if (rst_n = '0') then
-        ChPriority(i) <= Prior_Init_Value(i);
-      elsif clk'event and clk = '1' then
-
-        case Arb_FSM is
-
-          when aSt_ReadOne =>
-            if ChPriority(i) = Champion_Vector then
-              ChPriority(i) <= C_LOWEST_PRIORITY;
-            elsif (ChPriority(i) and Champion_Vector) = Champion_Vector then
+      if rising_edge(clk) then
+        if (rst_n = '0') then
+          ChPriority(i) <= Prior_Init_Value(i);
+        else
+          case Arb_FSM is
+  
+            when aSt_ReadOne =>
+              if ChPriority(i) = Champion_Vector then
+                ChPriority(i) <= C_LOWEST_PRIORITY;
+              elsif (ChPriority(i) and Champion_Vector) = Champion_Vector then
+                ChPriority(i) <= ChPriority(i);
+              else
+                ChPriority(i) <= ChPriority(i)(C_ARBITRATE_WIDTH-2 downto 0) & '1';
+              end if;
+  
+            when others =>
               ChPriority(i) <= ChPriority(i);
-            else
-              ChPriority(i) <= ChPriority(i)(C_ARBITRATE_WIDTH-2 downto 0) & '1';
-            end if;
-
-          when others =>
-            ChPriority(i) <= ChPriority(i);
-
-        end case;
-
+  
+          end case;
+        end if;
       end if;
     end process;
 

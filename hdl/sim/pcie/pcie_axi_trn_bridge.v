@@ -49,7 +49,7 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pcie_axi_trn_bridge.v
-// Version    : 1.8
+// Version    : 3.1
 //
 //     Description : AXI - TRN Bridge for Root Port Model. 
 //                   Root Port Usrapp's require TRN interface.

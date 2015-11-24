@@ -49,14 +49,15 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pci_exp_usrapp_tx.v
-// Version    : 1.8
+// Version    : 3.1
 //
 //------------------------------------------------------------------------------
 
-`include "board_common.v"
+`include "board_common.vh"
 
 module pci_exp_usrapp_tx #(
-parameter                                      LINK_CAP_MAX_LINK_SPEED = 4'h2)                    (
+parameter                                      LINK_CAP_MAX_LINK_SPEED = 4'h2
+)                    (
 
                                                trn_td,
                                                trn_trem_n,
@@ -259,7 +260,7 @@ initial begin
         BAR_INIT_P_IO_START      =   33'h00000_0000; // start of 32bit io
 
 
-        DEV_VEN_ID = (32'h7014 << 16) | (32'h10EE);
+        DEV_VEN_ID = (32'h7021 << 16) | (32'h10EE);
         PIO_MAX_MEMORY = 8192; // PIO has max of 8Kbytes of memory
         PIO_MAX_NUM_BLOCK_RAMS = 4; // PIO has four block RAMS to test
 
@@ -304,7 +305,7 @@ end
     begin
       // $display("[%t] %m: No TESTNAME specified!", $realtime);
       // $finish(2);
-      testname = "sample_smoke_test0";
+      testname = "pio_writeReadBack_test0";
       $display("Running default test {%0s}......", testname);
     end
     expect_status = 0;
@@ -328,7 +329,7 @@ end
       $display("[%t] %m: Invalid TESTNAME: %0s", $realtime, testname);
       $finish(2);
     end
-    `include "tests.v"
+    `include "tests.vh"
     else begin
       $display("[%t] %m: Error: Unrecognized TESTNAME: %0s", $realtime, testname);
       $finish(2);
@@ -385,26 +386,28 @@ end
           $display("[%t] :    Check Max Link Speed = 5.0GT/s - PASSED", $realtime);
     end else begin
           $display("[%t] :    Check Max Link Speed - FAILED", $realtime);
-          $display("[%t] : Data Error Mismatch, Parameter Data %s != Read Data %x", $realtime, "2", P_READ_DATA[19:16]);
+          $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, "2", P_READ_DATA[19:16]);
     end
 
 
-    if  (P_READ_DATA[23:20] == 4'h04)
-          $display("[%t] : Check Negotiated Link Width = 04x - PASSED", $realtime);
+    if  (P_READ_DATA[23:20] == 4'h4)
+          $display("[%t] : Check Negotiated Link Width = 4x - PASSED", $realtime);
     else
-          $display("[%t] : Data Error Mismatch, Parameter Data %s != Read Data %x", $realtime, "04", P_READ_DATA[23:20]);
+          $display("[%t] : Data Error Mismatch, Parameter Data %s != Read Data %x", $realtime, "4", P_READ_DATA[23:20]);
 
 
     // Check Device/Vendor ID
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h0, 4'hF);
     TSK_WAIT_FOR_READ_DATA;
 
-    if  (P_READ_DATA[31:16] != 16'h7014) begin
+    if  (P_READ_DATA[31:16] != 16'h7021) begin
         $display("[%t] :    Check Device/Vendor ID - FAILED", $realtime);
-        $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, 16'h7014, P_READ_DATA);
+        $display("[%t] : Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, 16'h7021, P_READ_DATA);
         error_check = 1;
     end else begin
         $display("[%t] :    Check Device/Vendor ID - PASSED", $realtime);
+
+
     end
 
 
@@ -1132,7 +1135,7 @@ end
             TSK_TX_SYNCHRONIZE(1, 0);
 
             trn_td            <= #(Tcq)    {
-                                COMPLETER_ID_CFG,
+                                REQUESTER_ID,
                                 tag_,
                                 8'b00,
                                 32'b0
@@ -1210,7 +1213,7 @@ end
             TSK_TX_SYNCHRONIZE(1, 0);
 
             trn_td            <= #(Tcq)    {
-                                COMPLETER_ID_CFG,
+                                REQUESTER_ID,
                                 tag_,
                                 1'b0,
                                 lower_addr_,
@@ -1710,7 +1713,7 @@ end
 		        begin
 		           if (verbose) $display("[%t] : MEMREAD64, address = %x", $realtime,
                                    BAR_INIT_P_BAR[bar_index][31:0]+(byte_offset));
-			   TSK_TX_MEMORY_READ_64(tag_, tc_, 10'd1, {BAR_INIT_P_BAR[ii+1][31:0],
+			   TSK_TX_MEMORY_READ_64(tag_, tc_, 10'd1, {BAR_INIT_P_BAR[bar_index+1][31:0],
 			                        BAR_INIT_P_BAR[bar_index][31:0]+(byte_offset)}, 4'h0, 4'hF);
 
 
@@ -2428,7 +2431,7 @@ end
 
  	// Read PCIe Device Control Register
 
-        TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h60, 4'h1);
+        TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h68, 4'h1);
         DEFAULT_TAG = DEFAULT_TAG + 1;
         TSK_TX_CLK_EAT(1000);
 
