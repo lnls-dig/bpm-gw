@@ -903,7 +903,7 @@ begin
   -- DDR3 Interface
   ------------------------------------------------------------------------------
 
-  cmp_acq_ddr3_iface : acq_ddr3_iface
+  cmp_acq_ddr3_iface : acq_ddr3_ui_write
   generic map
   (
     g_acq_num_channels                      => g_acq_num_channels,
@@ -967,10 +967,6 @@ begin
     ui_app_wdf_mask_o                       => ui_app_wdf_mask_o,
     ui_app_wdf_wren_o                       => ui_app_wdf_wren_o,
     ui_app_wdf_rdy_i                        => ui_app_wdf_rdy_i,
-
-    ui_app_rd_data_i                        => ui_app_rd_data_i,
-    ui_app_rd_data_end_i                    => ui_app_rd_data_end_i,
-    ui_app_rd_data_valid_i                  => ui_app_rd_data_valid_i,
 
     ui_app_req_o                            => ui_app_wdf_req,
     ui_app_gnt_i                            => ui_app_wdf_gnt

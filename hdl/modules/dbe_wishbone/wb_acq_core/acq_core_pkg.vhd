@@ -619,7 +619,7 @@ package acq_core_pkg is
   );
   end component;
 
-  component acq_ddr3_iface
+  component acq_ddr3_ui_write
   generic
   (
     g_acq_num_channels                        : natural := 1;
@@ -679,10 +679,6 @@ package acq_core_pkg is
     ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     ui_app_wdf_wren_o                         : out std_logic;
     ui_app_wdf_rdy_i                          : in std_logic;
-
-    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-    ui_app_rd_data_end_i                      : in std_logic;
-    ui_app_rd_data_valid_i                    : in std_logic;
 
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic
