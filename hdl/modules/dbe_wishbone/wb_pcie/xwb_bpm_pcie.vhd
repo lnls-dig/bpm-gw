@@ -21,18 +21,17 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
-use work.wishbone_pkg.all;
-use work.bpm_pcie_ml605_pkg.all;
-use work.bpm_pcie_ml605_const_pkg.all;
+use work.dbe_wishbone_pkg.all;
+use work.ipcores_pkg.all;
+use work.bpm_axi_pkg.all;
 
-entity xwb_bpm_pcie_ml605 is
+entity xwb_bpm_pcie is
 generic (
   g_ma_interface_mode                       : t_wishbone_interface_mode := PIPELINED;
   g_ma_address_granularity                  : t_wishbone_address_granularity := BYTE;
-  g_sim_bypass_init_cal                     : string  := "FAST"
+  g_simulation                              : string  := "FALSE"
 );
 port (
-
   -- DDR3 memory pins
   ddr3_dq_b                                 : inout std_logic_vector(c_ddr_dq_width-1 downto 0);
   ddr3_dqs_p_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
@@ -51,76 +50,44 @@ port (
   ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
 
   -- PCIe transceivers
-  pci_exp_rxp_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_rxn_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_txp_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_txn_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
+  pci_exp_rxp_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_rxn_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_txp_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_txn_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
 
   -- Necessity signals
-  ddr_clk_p_i                               : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
-  ddr_clk_n_i                               : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
+  ddr_clk_i                                 : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
+  ddr_rst_i                                 : in std_logic; --200 MHz DDR core clock (connect through BUFG or PLL)
   pcie_clk_p_i                              : in std_logic; --100 MHz PCIe Clock (connect directly to input pin)
   pcie_clk_n_i                              : in std_logic; --100 MHz PCIe Clock
   pcie_rst_n_i                              : in std_logic; --Reset to PCIe core
 
   -- DDR memory controller interface --
-  -- uncomment when instantiating in another project
-  ddr_core_rst_i                            : in  std_logic;
-  memc_ui_clk_o                             : out std_logic;
-  memc_ui_rst_o                             : out std_logic;
-  memc_cmd_rdy_o                            : out std_logic;
-  memc_cmd_en_i                             : in  std_logic;
-  memc_cmd_instr_i                          : in  std_logic_vector(2 downto 0);
-  memc_cmd_addr_i                           : in  std_logic_vector(31 downto 0);
-  memc_wr_en_i                              : in  std_logic;
-  memc_wr_end_i                             : in  std_logic;
-  memc_wr_mask_i                            : in  std_logic_vector(c_ddr_payload_width/8-1 downto 0);
-  memc_wr_data_i                            : in  std_logic_vector(c_ddr_payload_width-1 downto 0);
-  memc_wr_rdy_o                             : out std_logic;
-  memc_rd_data_o                            : out std_logic_vector(c_ddr_payload_width-1 downto 0);
-  memc_rd_valid_o                           : out std_logic;
-  ---- memory arbiter interface
-  memarb_acc_req_i                          : in  std_logic;
-  memarb_acc_gnt_o                          : out std_logic;
+  ddr_aximm_sl_aclk_o                       : out std_logic;
+  ddr_aximm_sl_aresetn_o                    : out std_logic;
+  ddr_aximm_sl_i                            : in t_aximm_in := cc_dummy_aximm_slave_in;
+  ddr_aximm_sl_o                            : out t_aximm_out;
 
   -- Wishbone interface --
   wb_clk_i                                  : in std_logic;
   wb_rst_i                                  : in std_logic;
   wb_ma_i                                   : in  t_wishbone_master_in := cc_dummy_slave_out;
   wb_ma_o                                   : out t_wishbone_master_out;
+
   -- Additional exported signals for instantiation
-  wb_ma_pcie_rst_o                          : out std_logic;
-
-  -- Debug signals
-  dbg_app_addr_o                            : out   std_logic_vector(31 downto 0);
-  dbg_app_cmd_o                             : out   std_logic_vector(2 downto 0);
-  dbg_app_en_o                              : out   std_logic;
-  dbg_app_wdf_data_o                        : out   std_logic_vector(c_ddr_payload_width-1 downto 0);
-  dbg_app_wdf_end_o                         : out   std_logic;
-  dbg_app_wdf_wren_o                        : out   std_logic;
-  dbg_app_wdf_mask_o                        : out   std_logic_vector(c_ddr_payload_width/8-1 downto 0);
-  dbg_app_rd_data_o                         : out   std_logic_vector(c_ddr_payload_width-1 downto 0);
-  dbg_app_rd_data_end_o                     : out   std_logic;
-  dbg_app_rd_data_valid_o                   : out   std_logic;
-  dbg_app_rdy_o                             : out   std_logic;
-  dbg_app_wdf_rdy_o                         : out   std_logic;
-  dbg_ddr_ui_clk_o                          : out   std_logic;
-  dbg_ddr_ui_reset_o                        : out   std_logic;
-
-  dbg_arb_req_o                             : out std_logic_vector(1 downto 0);
-  dbg_arb_gnt_o                             : out std_logic_vector(1 downto 0)
+  wb_ma_pcie_rst_o                          : out std_logic
 );
-end entity xwb_bpm_pcie_ml605;
+end entity xwb_bpm_pcie;
 
-architecture rtl of xwb_bpm_pcie_ml605 is
+architecture rtl of xwb_bpm_pcie is
 
 begin
 
-  cmp_wb_bpm_pcie_ml605 : wb_bpm_pcie_ml605
+  cmp_wb_bpm_pcie : wb_bpm_pcie
   generic map (
     g_ma_interface_mode                      => g_ma_interface_mode,
     g_ma_address_granularity                 => g_ma_address_granularity,
-    g_sim_bypass_init_cal                    => g_sim_bypass_init_cal
+    g_simulation                             => g_simulation
   )
   port map (
     -- DDR3 memory pins
@@ -154,23 +121,45 @@ begin
     pcie_rst_n_i                             => pcie_rst_n_i,
 
     -- DDR memory controller interface
-    ddr_core_rst_i                           => ddr_core_rst_i,
-    memc_ui_clk_o                            => memc_ui_clk_o,
-    memc_ui_rst_o                            => memc_ui_rst_o,
-    memc_cmd_rdy_o                           => memc_cmd_rdy_o,
-    memc_cmd_en_i                            => memc_cmd_en_i,
-    memc_cmd_instr_i                         => memc_cmd_instr_i,
-    memc_cmd_addr_i                          => memc_cmd_addr_i,
-    memc_wr_en_i                             => memc_wr_en_i,
-    memc_wr_end_i                            => memc_wr_end_i,
-    memc_wr_mask_i                           => memc_wr_mask_i,
-    memc_wr_data_i                           => memc_wr_data_i,
-    memc_wr_rdy_o                            => memc_wr_rdy_o,
-    memc_rd_data_o                           => memc_rd_data_o,
-    memc_rd_valid_o                          => memc_rd_valid_o,
-    ---- memory arbiter interface
-    memarb_acc_req_i                         => memarb_acc_req_i,
-    memarb_acc_gnt_o                         => memarb_acc_gnt_o,
+    ddr_axi_aclk_o                          => ddr_aximm_sl_aclk_o,
+    ddr_axi_aresetn_o                       => ddr_aximm_sl_aresetn_o,
+    ddr_axi_awid_i                          => ddr_aximm_sl_i.awid,
+    ddr_axi_awaddr_i                        => ddr_aximm_sl_i.awaddr,
+    ddr_axi_awlen_i                         => ddr_aximm_sl_i.awlen,
+    ddr_axi_awsize_i                        => ddr_aximm_sl_i.awsize,
+    ddr_axi_awburst_i                       => ddr_aximm_sl_i.awburst,
+    ddr_axi_awlock_i                        => ddr_aximm_sl_i.awlock,
+    ddr_axi_awcache_i                       => ddr_aximm_sl_i.awcache,
+    ddr_axi_awprot_i                        => ddr_aximm_sl_i.awprot,
+    ddr_axi_awqos_i                         => ddr_aximm_sl_i.awqos,
+    ddr_axi_awvalid_i                       => ddr_aximm_sl_i.awvalid,
+    ddr_axi_awready_o                       => ddr_aximm_sl_o.awready,
+    ddr_axi_wdata_i                         => ddr_aximm_sl_i.wdata,
+    ddr_axi_wstrb_i                         => ddr_aximm_sl_i.wstrb,
+    ddr_axi_wlast_i                         => ddr_aximm_sl_i.wlast,
+    ddr_axi_wvalid_i                        => ddr_aximm_sl_i.wvalid,
+    ddr_axi_wready_o                        => ddr_aximm_sl_o.wready,
+    ddr_axi_bready_i                        => ddr_aximm_sl_i.bready,
+    ddr_axi_bid_o                           => ddr_aximm_sl_o.bid,
+    ddr_axi_bresp_o                         => ddr_aximm_sl_o.bresp,
+    ddr_axi_bvalid_o                        => ddr_aximm_sl_o.bvalid,
+    ddr_axi_arid_i                          => ddr_aximm_sl_i.arid,
+    ddr_axi_araddr_i                        => ddr_aximm_sl_i.araddr,
+    ddr_axi_arlen_i                         => ddr_aximm_sl_i.arlen,
+    ddr_axi_arsize_i                        => ddr_aximm_sl_i.arsize,
+    ddr_axi_arburst_i                       => ddr_aximm_sl_i.arburst,
+    ddr_axi_arlock_i                        => ddr_aximm_sl_i.arlock,
+    ddr_axi_arcache_i                       => ddr_aximm_sl_i.arcache,
+    ddr_axi_arprot_i                        => ddr_aximm_sl_i.arprot,
+    ddr_axi_arqos_i                         => ddr_aximm_sl_i.arqos,
+    ddr_axi_arvalid_i                       => ddr_aximm_sl_i.arvalid,
+    ddr_axi_arready_o                       => ddr_aximm_sl_o.arready,
+    ddr_axi_rready_i                        => ddr_aximm_sl_i.rready,
+    ddr_axi_rid_o                           => ddr_aximm_sl_o.rid,
+    ddr_axi_rdata_o                         => ddr_aximm_sl_o.rdata,
+    ddr_axi_rresp_o                         => ddr_aximm_sl_o.rresp,
+    ddr_axi_rlast_o                         => ddr_aximm_sl_o.rlast,
+    ddr_axi_rvalid_o                        => ddr_aximm_sl_o.rvalid,
 
     -- Wishbone interface --
     wb_clk_i                                 => wb_clk_i,
@@ -187,26 +176,7 @@ begin
     wb_ma_ack_i                              => wb_ma_i.ack,
     wb_ma_stall_i                            => wb_ma_i.stall,
     -- Additional exported signals for instantiation
-    wb_ma_pcie_rst_o                         => wb_ma_pcie_rst_o,
-
-    -- Debug signals
-    dbg_app_addr_o                           => dbg_app_addr_o,
-    dbg_app_cmd_o                            => dbg_app_cmd_o,
-    dbg_app_en_o                             => dbg_app_en_o,
-    dbg_app_wdf_data_o                       => dbg_app_wdf_data_o,
-    dbg_app_wdf_end_o                        => dbg_app_wdf_end_o,
-    dbg_app_wdf_wren_o                       => dbg_app_wdf_wren_o,
-    dbg_app_wdf_mask_o                       => dbg_app_wdf_mask_o,
-    dbg_app_rd_data_o                        => dbg_app_rd_data_o,
-    dbg_app_rd_data_end_o                    => dbg_app_rd_data_end_o,
-    dbg_app_rd_data_valid_o                  => dbg_app_rd_data_valid_o,
-    dbg_app_rdy_o                            => dbg_app_rdy_o,
-    dbg_app_wdf_rdy_o                        => dbg_app_wdf_rdy_o,
-    dbg_ddr_ui_clk_o                         => dbg_ddr_ui_clk_o,
-    dbg_ddr_ui_reset_o                       => dbg_ddr_ui_reset_o,
-
-    dbg_arb_req_o                            => dbg_arb_req_o,
-    dbg_arb_gnt_o                            => dbg_arb_gnt_o
+    wb_ma_pcie_rst_o                         => wb_ma_pcie_rst_o
   );
 
 end rtl;
