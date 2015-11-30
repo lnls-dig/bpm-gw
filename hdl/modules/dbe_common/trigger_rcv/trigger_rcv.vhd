@@ -1,19 +1,19 @@
 -------------------------------------------------------------------------------
 -- Title      : Trigger receiver
--- Project    : 
+-- Project    :
 -------------------------------------------------------------------------------
 -- File       : trigger_rcv.vhd
 -- Author     : aylons  <aylons@LNLS190>
--- Company    : 
+-- Company    :
 -- Created    : 2015-11-09
--- Last update: 2015-11-10
--- Platform   : 
+-- Last update: 2015-11-30
+-- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: Receives a signal from an FPGA port, debounces the signal and
 -- outputs a pulse with a configurable clock width.
 -------------------------------------------------------------------------------
--- Copyright (c) 2015     
+-- Copyright (c) 2015
 
 -- This program is free software: you can redistribute it and/or
 -- modify it under the terms of the GNU Lesser General Public License
@@ -33,6 +33,62 @@
 -- Revisions  :
 -- Date        Version  Author  Description
 -- 2015-11-09  1.0      aylons  Created
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity gen_pulse is
+
+  port (
+    clk_i   : in  std_logic;
+    rst_i   : in  std_logic;
+    pulse_i : in  std_logic;
+    pulse_o : out std_logic);
+end entity gen_pulse;
+
+architecture structural of gen_pulse is
+
+  signal s_state : natural := 0;
+
+begin
+
+  process (clk_i, rst_i)
+  begin
+    if rst_i = '1' then
+      pulse_o <= '0';
+      s_state <= 0;
+    elsif rising_edge(clk_i) then
+      case s_state is
+        -- wait for pulse rising edge to output a pulse
+        when 0 =>
+          if pulse_i = '1' then
+            s_state <= 1;
+            pulse_o <= '1';
+          else
+            pulse_o <= '0';
+          end if;
+        -- return output to '0' and wait for signal unset to begin again
+        when 1 =>
+          if pulse_i = '0' then
+            s_state <= 0;
+          end if;
+          pulse_o <= '0';
+        when others =>
+          s_state <= 0;
+          pulse_o <= '0';
+      end case;
+    end if;
+  end process;
+
+
+end architecture structural;
+
+-------------------------------------------------------------------------------
+-----------------
+----Main entity--
+-----------------
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -73,15 +129,13 @@ architecture structural of trigger_rcv is
       dat_o   : out std_logic);
   end component gc_dyn_glitch_filt;
 
-  component gc_extend_pulse is
-    generic (
-      g_width : natural);
+  component gen_pulse is
     port (
-      clk_i      : in  std_logic;
-      rst_n_i    : in  std_logic;
-      pulse_i    : in  std_logic;
-      extended_o : out std_logic := '0');
-  end component gc_extend_pulse;
+      clk_i   : in  std_logic;
+      rst_i   : in  std_logic;
+      pulse_i : in  std_logic;
+      pulse_o : out std_logic);
+  end component gen_pulse;
 
 begin
 
@@ -97,13 +151,11 @@ begin
       dat_i   => data_i,
       dat_o   => deglitched);
 
-  cmp_edge_detector : gc_extend_pulse
-    generic map (
-      g_width => g_pulse_width)
+  cmp_edge_detector : gen_pulse
     port map (
-      clk_i      => clk_i,
-      rst_n_i    => rst_n,
-      pulse_i    => deglitched,
-      extended_o => pulse_o);
+      clk_i   => clk_i,
+      rst_i   => rst_i,
+      pulse_i => deglitched,
+      pulse_o => pulse_o);
 
 end architecture structural;
