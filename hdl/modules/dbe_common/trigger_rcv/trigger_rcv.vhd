@@ -60,10 +60,11 @@ begin
       s_reg <= '0';
     elsif rising_edge(clk_i) then
       s_reg <= pulse_i;
+      pulse_o <= pulse_i and not(s_reg);
     end if;
   end process;
 
-  pulse_o <= pulse_i and not(s_reg);
+
 
 
 end architecture structural;
