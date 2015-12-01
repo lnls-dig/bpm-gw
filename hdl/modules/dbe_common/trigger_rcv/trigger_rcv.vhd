@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-09
--- Last update: 2015-11-30
+-- Last update: 2015-12-01
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -50,37 +50,20 @@ end entity gen_pulse;
 
 architecture structural of gen_pulse is
 
-  signal s_state : natural := 0;
+  signal s_reg : std_logic := '0';
 
 begin
 
   process (clk_i, rst_i)
   begin
     if rst_i = '1' then
-      pulse_o <= '0';
-      s_state <= 0;
+      s_reg <= '0';
     elsif rising_edge(clk_i) then
-      case s_state is
-        -- wait for pulse rising edge to output a pulse
-        when 0 =>
-          if pulse_i = '1' then
-            s_state <= 1;
-            pulse_o <= '1';
-          else
-            pulse_o <= '0';
-          end if;
-        -- return output to '0' and wait for signal unset to begin again
-        when 1 =>
-          if pulse_i = '0' then
-            s_state <= 0;
-          end if;
-          pulse_o <= '0';
-        when others =>
-          s_state <= 0;
-          pulse_o <= '0';
-      end case;
+      s_reg <= pulse_i;
     end if;
   end process;
+
+  pulse_o <= pulse_i and not(s_reg);
 
 
 end architecture structural;
