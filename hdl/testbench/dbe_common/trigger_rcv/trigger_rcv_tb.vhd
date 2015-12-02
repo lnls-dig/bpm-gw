@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-11-27
--- Last update: 2015-11-30
+-- Last update: 2015-12-02
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ architecture test of trigger_rcv_tb is
 
   -- component generics
   constant g_glitch_len_width : positive := 6;
-
+  constant g_sync_edge        : string   := "positive";
   -- component ports
   signal s_clk     : std_logic                                       := '1';
   signal s_rst     : std_logic                                       := '1';
@@ -67,7 +67,8 @@ architecture test of trigger_rcv_tb is
   -- component declaration
   component trigger_rcv is
     generic (
-      g_glitch_len_width : positive);
+      g_glitch_len_width : positive;
+      g_sync_edge        : string);
     port (
       clk_i   : in  std_logic;
       rst_i   : in  std_logic;
@@ -76,6 +77,9 @@ architecture test of trigger_rcv_tb is
       pulse_o : out std_logic);
   end component trigger_rcv;
 
+  -----------------------------------------------------------------------------
+  -- Test procedures
+  -----------------------------------------------------------------------------
 
   procedure p_pwm_gen(
     signal clk           : in  std_ulogic;
@@ -122,7 +126,8 @@ begin  -- architecture test
   -- component instantiation
   DUT : trigger_rcv
     generic map (
-      g_glitch_len_width => g_glitch_len_width)
+      g_glitch_len_width => g_glitch_len_width,
+      g_sync_edge        => "positive")
     port map (
       clk_i   => s_clk,
       rst_i   => s_rst,

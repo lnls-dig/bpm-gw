@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-09
--- Last update: 2015-12-01
+-- Last update: 2015-12-02
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,46 +39,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity gen_pulse is
-
-  port (
-    clk_i   : in  std_logic;
-    rst_i   : in  std_logic;
-    pulse_i : in  std_logic;
-    pulse_o : out std_logic);
-end entity gen_pulse;
-
-architecture structural of gen_pulse is
-
-  signal s_reg : std_logic := '0';
-
-begin
-
-  process (clk_i, rst_i)
-  begin
-    if rst_i = '1' then
-      s_reg <= '0';
-    elsif rising_edge(clk_i) then
-      s_reg <= pulse_i;
-      pulse_o <= pulse_i and not(s_reg);
-    end if;
-  end process;
-
-
-
-
-end architecture structural;
-
--------------------------------------------------------------------------------
------------------
-----Main entity--
------------------
--------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
 use work.gencores_pkg.all;
 
 entity trigger_rcv is
@@ -86,7 +46,7 @@ entity trigger_rcv is
     -- Number of glicth filter registers
     g_glitch_len_width : positive := 8;
     -- Width of the output pulse after edge detection
-    g_pulse_width      : positive := 1
+    g_sync_edge        : string   := "positive"
     );
   port(
     clk_i   : in  std_logic;
@@ -113,13 +73,17 @@ architecture structural of trigger_rcv is
       dat_o   : out std_logic);
   end component gc_dyn_glitch_filt;
 
-  component gen_pulse is
+  component gc_sync_ffs is
+    generic (
+      g_sync_edge : string);
     port (
-      clk_i   : in  std_logic;
-      rst_i   : in  std_logic;
-      pulse_i : in  std_logic;
-      pulse_o : out std_logic);
-  end component gen_pulse;
+      clk_i    : in  std_logic;
+      rst_n_i  : in  std_logic;
+      data_i   : in  std_logic;
+      synced_o : out std_logic;
+      npulse_o : out std_logic;
+      ppulse_o : out std_logic);
+  end component gc_sync_ffs;
 
 begin
 
@@ -135,11 +99,15 @@ begin
       dat_i   => data_i,
       dat_o   => deglitched);
 
-  cmp_edge_detector : gen_pulse
-    port map (
-      clk_i   => clk_i,
-      rst_i   => rst_i,
-      pulse_i => deglitched,
-      pulse_o => pulse_o);
+  cmp_edge_detector : gc_sync_ffs
+    generic map(
+      g_sync_edge => g_sync_edge)
+    port map(
+      clk_i    => clk_i,
+      rst_n_i  => rst_n,
+      data_i   => deglitched,
+      synced_o => open,
+      npulse_o => open,
+      ppulse_o => pulse_o);
 
 end architecture structural;
