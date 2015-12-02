@@ -128,7 +128,7 @@ architecture Behavioral of bpm_pcie is
   signal DDR_Ready : std_logic;
   signal ddr_reset : std_logic;
   signal ddr_axi_reset : std_logic;
-
+				
   signal wbone_clk     : std_logic;
   signal wb_wr_we      : std_logic;
   signal wb_wr_wsof    : std_logic;
@@ -169,7 +169,6 @@ architecture Behavioral of bpm_pcie is
 
   signal cfg_dcommand2            : std_logic_vector (16-1 downto 0);
   signal tx_cfg_req               : std_logic;
-
   signal pl_initial_link_width          : std_logic_vector (3-1 downto 0);
   signal pl_lane_reversal_mode          : std_logic_vector (2-1 downto 0);
   signal pl_link_gen2_cap               : std_logic;
@@ -243,6 +242,7 @@ architecture Behavioral of bpm_pcie is
   signal cfg_interrupt_assert       : std_logic;
   signal cfg_interrupt_msixenable   : std_logic;
   signal cfg_interrupt_msixfm       : std_logic;
+  
   signal cfg_turnoff_ok             : std_logic;
   signal cfg_to_turnoff             : std_logic;
   signal cfg_pm_wake                : std_logic;
@@ -337,13 +337,13 @@ begin
   cfg_err_cpl_timeout    <= '0';
   cfg_err_cpl_abort      <= '0';
   cfg_err_cpl_unexpect   <= '0';
-  cfg_err_posted         <= '1';
-  cfg_err_locked         <= '1';
+  cfg_err_posted         <= '0';
+  cfg_err_locked         <= '0';
   cfg_err_tlp_cpl_header <= (others => '0');
   cfg_trn_pending        <= '0';
   cfg_pm_wake            <= '0';
 --
-  fc_sel <= (others => '0');
+  fc_sel <= "000";
 
   pl_directed_link_auton    <= '0';
   pl_directed_link_change   <= (others => '0');
@@ -351,7 +351,6 @@ begin
   pl_directed_link_width    <= (others => '0');
   pl_upstream_prefer_deemph <= '0';
 
-  tx_cfg_gnt         <= '1';
   s_axis_tx_tuser    <= s_axis_tx_tdsc & '0' & s_axis_tx_terrfwd & '0';
   m_axis_rx_terrfwd  <= m_axis_rx_tuser(1);
   m_axis_rx_tbar_hit <= m_axis_rx_tuser(8 downto 2);
@@ -690,6 +689,7 @@ theTlpControl: entity work.tlpControl
   s_axis_tx_tdsc    => s_axis_tx_tdsc ,
   tx_buf_av         => tx_buf_av ,
   s_axis_tx_terrfwd => s_axis_tx_terrfwd ,
+  tx_cfg_gnt        => tx_cfg_gnt,
 
   user_clk          => user_clk ,
   user_reset        => user_reset ,
@@ -829,8 +829,7 @@ DDRs_ctrl_module: entity work.DDR_Transact
     pcie_clk   => user_clk,
     sys_reset => ddr_sys_rst
   );
-
-
+  
 Wishbone_intf: entity work.wb_transact
   port map(
     -- PCIE user clk

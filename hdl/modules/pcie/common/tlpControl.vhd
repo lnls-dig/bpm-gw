@@ -120,6 +120,7 @@ entity tlpControl is
     s_axis_tx_tready  : in  std_logic;
     s_axis_tx_tdsc    : out std_logic;
     tx_buf_av         : in  std_logic_vector(C_TBUF_AWIDTH-1 downto 0);
+    tx_cfg_gnt        : out std_logic;
 
     -- Interrupt Interface
     cfg_interrupt            : out std_logic;
@@ -275,6 +276,7 @@ begin
 
   wb_FIFO_re <= wb_FIFO_RdEn_i;
   wb_timeout <= Tx_wb_TimeOut;
+  tx_cfg_gnt <= not(DMA_us_Busy_i) or DMA_us_Tout; 
 
   -- Rx TLP interface
   rx_Itf :
