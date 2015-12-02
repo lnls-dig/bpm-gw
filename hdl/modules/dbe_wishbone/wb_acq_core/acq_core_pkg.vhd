@@ -33,6 +33,10 @@ package acq_core_pkg is
 
   constant c_ddr3_ui_diff_threshold         : natural := 3;
 
+  -- UI Commands
+  constant c_ui_cmd_write                   : std_logic_vector(2 downto 0) := "000";
+  constant c_ui_cmd_read                    : std_logic_vector(2 downto 0) := "001";
+
   -- ADC + TBT + FOFB + MONIT + MONIT_1
   constant c_acq_num_channels               : natural := 5;
 

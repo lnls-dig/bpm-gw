@@ -132,10 +132,6 @@ architecture rtl of acq_ddr3_ui_write is
   constant c_pkt_size_width                 : natural := 32;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
 
-  -- UI Commands
-  constant c_ui_cmd_write                   : std_logic_vector(2 downto 0) := "000";
-  constant c_ui_cmd_read                    : std_logic_vector(2 downto 0) := "001";
-
   -- Constants for data + mask aggregate signal
   constant c_mask_low                       : natural := 0;
   constant c_mask_high                      : natural := c_ddr_mask_width + c_mask_low -1;
