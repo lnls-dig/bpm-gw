@@ -94,7 +94,10 @@
 # (UG) for guidelines regarding clock resource selection.
 #
 
-set_property LOC IBUFDS_GTE2_X0Y3 [get_cells *refclk_ibuf]
+#set_property LOC IBUFDS_GTE2_X0Y3 [get_cells -hier -filter {name=~ */pcieclk_ibuf}]
+
+#place DDR input PLL close input pins and DDR logic
+#set_property LOC PLLE2_ADV_X1Y1 [get_cells plle2_adv_inst]
 
 #
 # Transceiver instance placement.  This constraint selects the
@@ -103,73 +106,89 @@ set_property LOC IBUFDS_GTE2_X0Y3 [get_cells *refclk_ibuf]
 # Virtex-7 GT Transceiver User Guide (UG) for more information.
 #
 
+#XDC supplied by PCIe IP core generates GTP connection in reverse order, we have to swap it.
+#Simply providing correct connections will generate errors "Cannot set LOC ... because the bel is occupied by ..."
+#So, firstly set PCIe lanes to temporary locations
+set_property LOC GTPE2_CHANNEL_X0Y0 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y1 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y2 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y3 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+# ..., and then the correct ones:
 # PCIe Lane 0
-set_property LOC GTPE2_CHANNEL_X0Y4 [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y4 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
 # PCIe Lane 1
-set_property LOC GTPE2_CHANNEL_X0Y5 [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y5 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[1].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
 # PCIe Lane 2
-set_property LOC GTPE2_CHANNEL_X0Y6 [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y6 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[2].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
 # PCIe Lane 3
-set_property LOC GTPE2_CHANNEL_X0Y7 [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
+set_property LOC GTPE2_CHANNEL_X0Y7 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[3].gt_wrapper_i/gtp_channel.gtpe2_channel_i}]
 
 # GTP Common Placement
-set_property LOC GTPE2_COMMON_X0Y1 [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].pipe_quad.pipe_common.qpll_wrapper_i/gtp_common.gtpe2_common_i}]
+set_property LOC GTPE2_COMMON_X0Y1 [get_cells -hier -filter {name=~ */pipe_wrapper_i/pipe_lane[0].pipe_quad.gt_common_enabled.gt_common_int.gt_common_i/qpll_wrapper_i/gtp_common.gtpe2_common_i}]
 
 #
 # PCI Express Block placement. This constraint selects the PCI Express
 # Block to be used.
 #
 
-set_property LOC PCIE_X0Y0 [get_cells */*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i]
+set_property LOC PCIE_X0Y0 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_block_i}]
 
 #
 # BlockRAM placement
 #
-set_property LOC RAMB36_X2Y46 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[3].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y47 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[2].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y46 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[1].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y45 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[0].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y44 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[0].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y43 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[1].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y42 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[2].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
-set_property LOC RAMB36_X1Y41 [get_cells {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[3].ram/use_tdp.ramb36/genblk*.bram36_tdp_bl.bram36_tdp_bl}]
+set_property LOC RAMB36_X2Y46 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[3].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y47 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[2].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y46 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[1].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y45 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_rx/brams[0].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y44 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[0].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y43 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[1].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y42 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[2].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
+set_property LOC RAMB36_X1Y41 [get_cells -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_bram_top/pcie_brams_tx/brams[3].ram/use_tdp.ramb36/ramb_bl.ramb36_dp_bl.ram36_bl}]
 
 ###############################################################################
 # Timing Constraints
 ###############################################################################
+#
+create_clock -name pcie_clk -period 10 [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_lane[0].gt_wrapper_i/gtp_channel.gtpe2_channel_i/TXOUTCLK}]
+
+create_generated_clock -name clk_125mhz -source [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1}] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT0}]
+
+create_generated_clock -name clk_userclk -source [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1}] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT2}]
+
+create_generated_clock -name clk_userclk2 -source [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1}] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT3}]
 
 #
-# Timing requirements and related constraints.
 #
+set_false_path -to [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S0}]
+set_false_path -to [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S1}]
+#
+#
+set_case_analysis 1 [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S0}]
+set_case_analysis 0 [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S1}]
+set_property DONT_TOUCH true [get_cells -of [get_nets -of [get_pins -hier -filter {name=~ */gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S0}]]]
+#
+#
+# Timing ignoring the below pins to avoid CDC analysis, but care has been taken in RTL to sync properly to other clock domain.
+#
+#
+set_false_path -through [get_pins -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_block_i/PLPHYLNKUPN}]
+set_false_path -through [get_pins -hier -filter {name=~ */pcie_top_i/pcie_7x_i/pcie_block_i/PLRECEIVEDHOTRST}]
 
-create_clock -name pcie_clk -period 10 [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1]
-
-create_generated_clock -name clk_125mhz -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT0]
-
-
-
-create_generated_clock -name clk_userclk -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT2]
-
-create_generated_clock -name clk_userclk2 -source [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKIN1] -edges {1 2 3} -edge_shift {0 -1 -2} [get_pins */*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/mmcm_i/CLKOUT3]
-
-
-set_false_path -through [get_pins {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i/PLPHYLNKUPN*}]
-set_false_path -through [get_pins {*/*/*/pcie_core_i/pcie_top_i/pcie_7x_i/pcie_block_i/PLRECEIVEDHOTRST*}]
-
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/user_resetdone*}]
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[0].gtp_pipe_rate.gtp_pipe_rate_i/*}]
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[1].gtp_pipe_rate.gtp_pipe_rate_i/*}]
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[2].gtp_pipe_rate.gtp_pipe_rate_i/*}]
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_lane[3].gtp_pipe_rate.gtp_pipe_rate_i/*}]
-
-set_false_path -through [get_nets {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_sel*}]
-
-set_case_analysis 1 [get_pins {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S0}] 
-set_case_analysis 0 [get_pins {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/pipe_clock_int.pipe_clock_i/pclk_i1_bufgctrl.pclk_i1/S1}] 
-
-
-set_false_path -through [get_cells {*/*/*/pcie_core_i/gt_top.gt_top_i/pipe_wrapper_i/gtp_pipe_reset.gtp_pipe_reset_i/pllreset_reg*}]
-
+#------------------------------------------------------------------------------
+# Asynchronous Paths
+#------------------------------------------------------------------------------
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXELECIDLE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/TXPHINITDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/TXPHALIGNDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/TXDLYSRESETDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXDLYSRESETDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXPHALIGNDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXCDRLOCK}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/CFGMSGRECEIVEDPMETO}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/PLL0LOCK}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXPMARESETDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/RXSYNCDONE}]
+set_false_path -through [get_pins -hierarchical -filter {NAME=~*/TXSYNCDONE}]
 
 ###############################################################################
 # Physical Constraints
