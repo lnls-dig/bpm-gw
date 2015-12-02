@@ -27,20 +27,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/eb_fifo_counted_resized.ngc">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/mbuf_128x72.ngc">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_ethmac/eth_clockgen.v">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -392,62 +378,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_k7.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_k7_const_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/bpm_pcie_k7_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_k7_priv_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_ml605.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_ml605_const_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/bpm_pcie_ml605_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_ml605_priv_pkg.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../platform/artix7/chipscope/icon_4_port/chipscope_icon_4_port.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -763,13 +693,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux_plain.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/wb_acq_core_plain.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -778,20 +701,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_k7.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_ml605.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1029,20 +938,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie_k7.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie_ml605.vhd">
-        <FileInfo>
-          <Attr Name="IsGlobalInclude" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/xwb_bpm_swap.vhd">
         <FileInfo>
           <Attr Name="IsGlobalInclude" Val="1"/>
@@ -1229,436 +1124,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_if_post_fifo.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_of_pre_fifo.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_byte_group_io.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_round_robin_arb.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_meta.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_byte_lane.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_tap_base.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_edge_store.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_cc.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_queue.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_po_cntlr.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_samp.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_lim.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_4lanes.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_cntlr.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_state.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_compare.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_mux.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_data.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_arb_row_col.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_arb_select.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_edge.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_arb_mux.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_poc_pd.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ck_addr_cmd_delay.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_wrcal.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_rank_common.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_oclkdelay_cal.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_mc_phy.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_wrlvl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_prbs_gen.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_dqs_found_cal.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_common.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_prbs_rdlvl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_tempmon.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_init.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_cntrl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_rank_cntrl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_wrlvl_off_delay.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_rdlvl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_dqs_found_cal_hr.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_bank_mach.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_calib_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_mc_phy_wrapper.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_bram_7x.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ecc/mig_7series_v2_3_ecc_gen.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ecc/mig_7series_v2_3_ecc_dec_fix.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ecc/mig_7series_v2_3_fi_xor.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_col_mach.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ecc/mig_7series_v2_3_ecc_buf.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ecc/mig_7series_v2_3_ecc_merge_enc.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_rank_mach.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_rx_null_gen.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_rxeq_scan.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_brams_7x.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ui/mig_7series_v2_3_ui_rd_data.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_rx_pipeline.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ui/mig_7series_v2_3_ui_cmd.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ui/mig_7series_v2_3_ui_wr_data.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_tx_pipeline.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -1668,63 +1136,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_top.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/common/v6abb64Package_efifo_elink.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/controller/mig_7series_v2_3_mc.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gt_wrapper.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_pipe_lane.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_sync.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gtp_pipe_rate.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -1734,37 +1148,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_pipe_misc.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ip_top/mig_7series_v2_3_mem_intfc.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_bram_top_7x.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_rx.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -1774,44 +1160,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_user.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_rate.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ui/mig_7series_v2_3_ui_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_core_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gtp_pipe_drp.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_qpll_wrapper.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -1827,34 +1178,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_qpll_reset.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gtp_pipe_reset.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_reset.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_qpll_drp.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1864,55 +1187,6 @@
       <File Path="$PPRDIR/../../../../modules/pcie/common/DMA_FSM.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_tx.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_eq.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_drp.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_clock.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pipe_wrapper.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/clocking/mig_7series_v2_3_infrastructure.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/clocking/mig_7series_v2_3_iodelay_ctrl.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -1973,20 +1247,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/clocking/mig_7series_v2_3_clk_ibuf.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ip_top/mig_7series_v2_3_memc_ui_top_std.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/pcie/common/rx_MRd_Channel.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -1996,33 +1256,6 @@
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/clocking/mig_7series_v2_3_tempmon.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/sfifo_15x128.ngc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_7x.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_axi_basic_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -2042,12 +1275,6 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/prime_FIFO_plain.ngc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_internals_pkg.vhd">
@@ -2071,20 +1298,6 @@
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/clock_driver/xlclockdriver.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_pipe_pipeline.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -2204,13 +1417,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gt_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/multiplier/generic_multiplier.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2235,13 +1441,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_gt_top_pipe_mode.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2261,12 +1460,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/bram_x64.ngc">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/inv_chs_top.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2279,12 +1472,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ddr_core_mig.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_common/dbe_common_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2292,12 +1479,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../modules/dbe_common/pulse2level/pulse2level.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/common/DDRs_Control.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2328,20 +1509,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core_pcie_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/pcie/common/Registers.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/common/DDR_Blinker.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2425,18 +1593,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_iface.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_a7_const_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_pass_fifo.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2470,13 +1626,6 @@
       <File Path="$PPRDIR/../../../../modules/fmc_adc_common/fmc_adc_data.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/pcie_core/source/pcie_core.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -2595,12 +1744,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/rtl/ddr_core.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/pcie/common/wb_transact.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2608,12 +1751,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/common/bram_DDRs_Control_Loopback.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2644,12 +1781,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../modules/fmc_adc_common/fmc_adc_dly_iface.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_a7.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2752,12 +1883,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie_a7_priv_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2806,12 +1931,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/bpm_pcie_a7_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_ethernet_slave.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2830,19 +1949,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/wb_acq_core_2_to_1_mux.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_dbe_periph/wb_dbe_periph.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie_a7.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2855,12 +1962,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_dbe_periph/xwb_dbe_periph.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie_a7.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2891,12 +1992,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_2_to_1_mux/xwb_acq_core_2_to_1_mux.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -3231,6 +2326,65 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/ddr_core/mig_b.prj">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/ipcores_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/bpm_axi_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/pcie/pkgs/v6abb64Package_efifo_elink.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_write.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/pcie/bpm_pcie.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_mux/xwb_acq_core_mux.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="dbe_bpm"/>
@@ -3311,6 +2465,96 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
+    <FileSet Name="axi_datamover_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_datamover_0">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="axi_datamover_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="axi_interconnect_bpm" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_interconnect_bpm">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="axi_interconnect_bpm"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="axi_datamover_bpm" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_datamover_bpm">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="axi_datamover_bpm"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="axi_interconnect" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_interconnect">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="axi_interconnect"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="pcie_core" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pcie_core">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="source/pcie_core-PCIE_X0Y0.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="synth/pcie_core_ooc.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="pcie_core"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="ddr_core" Type="BlockSrcs" RelSrcDir="$PSRCDIR/ddr_core">
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/ddr_core/ddr_core.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+        <CompFileExtendedInfo CompFileName="ddr_core.xci" FileRelPathName="ddr_core/user_design/constraints/ddr_core.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="ddr_core.xci" FileRelPathName="ddr_core/user_design/constraints/ddr_core_ooc.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="ddr_core"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
   </FileSets>
   <Simulators>
     <Simulator Name="XSim">
@@ -3361,6 +2605,48 @@
         <Step Id="synth_design">
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
         </Step>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="axi_datamover_0_synth_1" Type="Ft3:Synth" SrcSet="axi_datamover_0" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_0" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_datamover_0_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="axi_interconnect_bpm_synth_1" Type="Ft3:Synth" SrcSet="axi_interconnect_bpm" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect_bpm" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_interconnect_bpm_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="axi_datamover_bpm_synth_1" Type="Ft3:Synth" SrcSet="axi_datamover_bpm" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_bpm" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_datamover_bpm_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="axi_interconnect_synth_1" Type="Ft3:Synth" SrcSet="axi_interconnect" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_interconnect_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="pcie_core_synth_1" Type="Ft3:Synth" SrcSet="pcie_core" Part="xc7a200tffg1156-1" ConstrsSet="pcie_core" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/pcie_core_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="ddr_core_synth_1" Type="Ft3:Synth" SrcSet="ddr_core" Part="xc7a200tffg1156-1" ConstrsSet="ddr_core" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/ddr_core_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
     </Run>
@@ -3437,6 +2723,90 @@
         </Step>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="axi_datamover_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_0" Description="Vivado Implementation Defaults" SynthRun="axi_datamover_0_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="axi_interconnect_bpm_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect_bpm" Description="Vivado Implementation Defaults" SynthRun="axi_interconnect_bpm_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="axi_datamover_bpm_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_bpm" Description="Vivado Implementation Defaults" SynthRun="axi_datamover_bpm_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="axi_interconnect_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect" Description="Vivado Implementation Defaults" SynthRun="axi_interconnect_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="pcie_core_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="pcie_core" Description="Vivado Implementation Defaults" SynthRun="pcie_core_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+    </Run>
+    <Run Id="ddr_core_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="ddr_core" Description="Vivado Implementation Defaults" SynthRun="ddr_core_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
     </Run>
   </Runs>
 </Project>
