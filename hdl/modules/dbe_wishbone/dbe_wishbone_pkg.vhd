@@ -1320,7 +1320,7 @@ package dbe_wishbone_pkg is
   );
   end component;
 
-  component wb_acq_core_2_to_1_mux
+  component wb_acq_core_mux
   generic
   (
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
@@ -1444,7 +1444,7 @@ package dbe_wishbone_pkg is
   );
   end component;
 
-  component xwb_acq_core_2_to_1_mux
+  component xwb_acq_core_mux
   generic
   (
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;

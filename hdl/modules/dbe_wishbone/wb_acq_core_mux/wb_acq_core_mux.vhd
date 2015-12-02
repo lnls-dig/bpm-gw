@@ -41,7 +41,7 @@ use work.bpm_axi_pkg.all;
 -- Platform ipcores
 use work.ipcores_pkg.all;
 
-entity wb_acq_core_2_to_1_mux is
+entity wb_acq_core_mux is
 generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
@@ -163,9 +163,9 @@ port
   ddr_aximm_ma_rlast_i                      : in std_logic;
   ddr_aximm_ma_rvalid_i                     : in std_logic
 );
-end wb_acq_core_2_to_1_mux;
+end wb_acq_core_mux;
 
-architecture rtl of wb_acq_core_2_to_1_mux is
+architecture rtl of wb_acq_core_mux is
 
   constant c_num_max_acq_cores              : natural := 8;
 

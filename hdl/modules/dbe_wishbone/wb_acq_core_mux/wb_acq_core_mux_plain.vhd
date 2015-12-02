@@ -32,7 +32,7 @@ use work.acq_core_pkg.all;
 -- DBE wishbone cores
 use work.dbe_wishbone_pkg.all;
 
-entity wb_acq_core_2_to_1_mux_plain is
+entity wb_acq_core_mux_plain is
 generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
@@ -172,9 +172,9 @@ port
   dbg_ddr_rb1_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
   dbg_ddr_rb1_valid_o                       : out std_logic
 );
-end wb_acq_core_2_to_1_mux_plain;
+end wb_acq_core_mux_plain;
 
-architecture rtl of wb_acq_core_2_to_1_mux_plain is
+architecture rtl of wb_acq_core_mux_plain is
 
   signal acq0_val_low_array                  : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   signal acq0_val_high_array                 : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
@@ -188,7 +188,7 @@ architecture rtl of wb_acq_core_2_to_1_mux_plain is
 
 begin
 
-  cmp_wb_acq_core_2_to_1_mux : wb_acq_core_2_to_1_mux
+  cmp_wb_acq_core_mux : wb_acq_core_mux
   generic map
   (
     g_interface_mode                         => g_interface_mode,

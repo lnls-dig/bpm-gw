@@ -38,7 +38,7 @@ use work.bpm_axi_pkg.all;
 -- Platform ipcores
 use work.ipcores_pkg.all;
 
-entity xwb_acq_core_2_to_1_mux is
+entity xwb_acq_core_mux is
 generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
@@ -116,9 +116,9 @@ port
   ddr_aximm_w_ma_i                          : in t_aximm_w_master_in := cc_dummy_aximm_w_master_in;
   ddr_aximm_w_ma_o                          : out t_aximm_w_master_out
 );
-end xwb_acq_core_2_to_1_mux;
+end xwb_acq_core_mux;
 
-architecture rtl of xwb_acq_core_2_to_1_mux is
+architecture rtl of xwb_acq_core_mux is
 
   signal acq_val_low_array                  : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_val_high_array                 : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
@@ -139,7 +139,7 @@ architecture rtl of xwb_acq_core_2_to_1_mux is
 
 begin
 
-  cmp_wb_acq_core_2_to_1_mux : wb_acq_core_2_to_1_mux
+  cmp_wb_acq_core_mux : wb_acq_core_mux
   generic map
   (
     g_interface_mode                         => g_interface_mode,
