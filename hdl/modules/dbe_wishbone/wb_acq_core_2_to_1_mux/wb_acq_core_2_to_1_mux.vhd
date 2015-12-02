@@ -36,6 +36,10 @@ use work.genram_pkg.all;
 use work.dbe_wishbone_pkg.all;
 -- DBE Common cores
 use work.dbe_common_pkg.all;
+-- AXI cores
+use work.bpm_axi_pkg.all;
+-- Platform ipcores
+use work.ipcores_pkg.all;
 
 entity wb_acq_core_2_to_1_mux is
 generic
@@ -50,19 +54,15 @@ generic
   g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
-  g_sim_readback                            : boolean := false
+  g_sim_readback                            : boolean := false;
+  g_acq_num_cores                           : natural := 2
 );
 port
 (
-  -- Clock signals for acquisition core 1
-  fs1_clk_i                                 : in std_logic;
-  fs1_ce_i                                  : in std_logic;
-  fs1_rst_n_i                               : in std_logic;
-
-  -- Clock signals for acquisition core 2
-  fs2_clk_i                                 : in std_logic;
-  fs2_ce_i                                  : in std_logic;
-  fs2_rst_n_i                               : in std_logic;
+  -- Clock signals
+  fs_clk_array_i                            : in std_logic_vector(g_acq_num_cores-1 downto 0);
+  fs_ce_array_i                             : in std_logic_vector(g_acq_num_cores-1 downto 0);
+  fs_rst_n_array_i                          : in std_logic_vector(g_acq_num_cores-1 downto 0);
 
   -- Clock signals for Wishbone
   sys_clk_i                                 : in std_logic;
@@ -76,488 +76,819 @@ port
   -- Wishbone Control Interface signals
   -----------------------------
 
-  wb0_adr_i                                 : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
-  wb0_dat_i                                 : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
-  wb0_dat_o                                 : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-  wb0_sel_i                                 : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
-  wb0_we_i                                  : in  std_logic := '0';
-  wb0_cyc_i                                 : in  std_logic := '0';
-  wb0_stb_i                                 : in  std_logic := '0';
-  wb0_ack_o                                 : out std_logic;
-  wb0_err_o                                 : out std_logic;
-  wb0_rty_o                                 : out std_logic;
-  wb0_stall_o                               : out std_logic;
-
-  wb1_adr_i                                 : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
-  wb1_dat_i                                 : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
-  wb1_dat_o                                 : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-  wb1_sel_i                                 : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
-  wb1_we_i                                  : in  std_logic := '0';
-  wb1_cyc_i                                 : in  std_logic := '0';
-  wb1_stb_i                                 : in  std_logic := '0';
-  wb1_ack_o                                 : out std_logic;
-  wb1_err_o                                 : out std_logic;
-  wb1_rty_o                                 : out std_logic;
-  wb1_stall_o                               : out std_logic;
+  wb_adr_array_i                            : in  std_logic_vector(g_acq_num_cores*c_wishbone_address_width-1 downto 0) := (others => '0');
+  wb_dat_array_i                            : in  std_logic_vector(g_acq_num_cores*c_wishbone_data_width-1 downto 0) := (others => '0');
+  wb_dat_array_o                            : out std_logic_vector(g_acq_num_cores*c_wishbone_data_width-1 downto 0);
+  wb_sel_array_i                            : in  std_logic_vector(g_acq_num_cores*c_wishbone_data_width/8-1 downto 0) := (others => '0');
+  wb_we_array_i                             : in  std_logic_vector(g_acq_num_cores-1 downto 0) := (others => '0');
+  wb_cyc_array_i                            : in  std_logic_vector(g_acq_num_cores-1 downto 0) := (others => '0');
+  wb_stb_array_i                            : in  std_logic_vector(g_acq_num_cores-1 downto 0) := (others => '0');
+  wb_ack_array_o                            : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  wb_err_array_o                            : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  wb_rty_array_o                            : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  wb_stall_array_o                          : out std_logic_vector(g_acq_num_cores-1 downto 0);
 
   -----------------------------
   -- External Interface
   -----------------------------
-  acq0_val_low_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
-  acq0_val_high_i                           : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
-  acq0_dvalid_i                             : in std_logic_vector(g_acq_num_channels-1 downto 0);
-  acq0_trig_i                               : in std_logic_vector(g_acq_num_channels-1 downto 0);
-
-  acq1_val_low_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
-  acq1_val_high_i                           : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
-  acq1_dvalid_i                             : in std_logic_vector(g_acq_num_channels-1 downto 0);
-  acq1_trig_i                               : in std_logic_vector(g_acq_num_channels-1 downto 0);
+  acq_val_low_array_i                       : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  acq_val_high_array_i                      : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  acq_dvalid_array_i                        : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  acq_trig_array_i                          : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
   -----------------------------
   -- DRRAM Interface
   -----------------------------
-  dpram0_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
-  dpram0_valid_o                            : out std_logic;
-
-  dpram1_dout_o                             : out std_logic_vector(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
-  dpram1_valid_o                            : out std_logic;
+  dpram_dout_array_o                        : out std_logic_vector(g_acq_num_cores*f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
+  dpram_valid_array_o                       : out std_logic_vector(g_acq_num_cores-1 downto 0);
 
   -----------------------------
   -- External Interface (w/ FLow Control)
   -----------------------------
-  ext0_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ext0_valid_o                              : out std_logic;
-  ext0_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
-  ext0_sof_o                                : out std_logic;
-  ext0_eof_o                                : out std_logic;
-  ext0_dreq_o                               : out std_logic; -- for debbuging purposes
-  ext0_stall_o                              : out std_logic; -- for debbuging purposes
-
-  ext1_dout_o                               : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ext1_valid_o                              : out std_logic;
-  ext1_addr_o                               : out std_logic_vector(g_acq_addr_width-1 downto 0);
-  ext1_sof_o                                : out std_logic;
-  ext1_eof_o                                : out std_logic;
-  ext1_dreq_o                               : out std_logic; -- for debbuging purposes
-  ext1_stall_o                              : out std_logic; -- for debbuging purposes
-
-  -----------------------------
-  -- DDR3 SDRAM Interface
-  -----------------------------
-  ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
-  ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
-  ui_app_en_o                               : out std_logic;
-  ui_app_rdy_i                              : in std_logic;
-
-  ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ui_app_wdf_end_o                          : out std_logic;
-  ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
-  ui_app_wdf_wren_o                         : out std_logic;
-  ui_app_wdf_rdy_i                          : in std_logic;
-
-  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ui_app_rd_data_end_i                      : in std_logic;
-  ui_app_rd_data_valid_i                    : in std_logic;
-
-  ui_app_req_o                              : out std_logic;
-  ui_app_gnt_i                              : in std_logic;
+  ext_dout_array_o                          : out std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
+  ext_valid_array_o                         : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  ext_addr_array_o                          : out std_logic_vector(g_acq_num_cores*g_acq_addr_width-1 downto 0);
+  ext_sof_array_o                           : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  ext_eof_array_o                           : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  ext_dreq_array_o                          : out std_logic_vector(g_acq_num_cores-1 downto 0); -- for debbuging purposes
+  ext_stall_array_o                         : out std_logic_vector(g_acq_num_cores-1 downto 0); -- for debbuging purposes
 
   -----------------------------
   -- Debug Interface
   -----------------------------
-  dbg_ddr_rb0_start_p_i                     : in std_logic;
-  dbg_ddr_rb0_rdy_o                         : out std_logic;
-  dbg_ddr_rb0_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-  dbg_ddr_rb0_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
-  dbg_ddr_rb0_valid_o                       : out std_logic;
+  dbg_ddr_rb_start_p_array_i                : in std_logic_vector(g_acq_num_cores-1 downto 0);
+  dbg_ddr_rb_rdy_array_o                    : out std_logic_vector(g_acq_num_cores-1 downto 0);
+  dbg_ddr_rb_data_array_o                   : out std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
+  dbg_ddr_rb_addr_array_o                   : out std_logic_vector(g_acq_num_cores*g_acq_addr_width-1 downto 0);
+  dbg_ddr_rb_valid_array_o                  : out std_logic_vector(g_acq_num_cores-1 downto 0);
 
-  dbg_ddr_rb1_start_p_i                     : in std_logic;
-  dbg_ddr_rb1_rdy_o                         : out std_logic;
-  dbg_ddr_rb1_data_o                        : out std_logic_vector(g_ddr_payload_width-1 downto 0);
-  dbg_ddr_rb1_addr_o                        : out std_logic_vector(g_acq_addr_width-1 downto 0);
-  dbg_ddr_rb1_valid_o                       : out std_logic
+  -----------------------------
+  -- DDR3 SDRAM Interface
+  -----------------------------
+  ddr_aximm_ma_awid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_awaddr_o                     : out std_logic_vector (31 downto 0);
+  ddr_aximm_ma_awlen_o                      : out std_logic_vector (7 downto 0);
+  ddr_aximm_ma_awsize_o                     : out std_logic_vector (2 downto 0);
+  ddr_aximm_ma_awburst_o                    : out std_logic_vector (1 downto 0);
+  ddr_aximm_ma_awlock_o                     : out std_logic;
+  ddr_aximm_ma_awcache_o                    : out std_logic_vector (3 downto 0);
+  ddr_aximm_ma_awprot_o                     : out std_logic_vector (2 downto 0);
+  ddr_aximm_ma_awqos_o                      : out std_logic_vector (3 downto 0);
+  ddr_aximm_ma_awvalid_o                    : out std_logic;
+  ddr_aximm_ma_awready_i                    : in std_logic;
+  ddr_aximm_ma_wdata_o                      : out std_logic_vector (g_ddr_payload_width-1 downto 0);
+  ddr_aximm_ma_wstrb_o                      : out std_logic_vector (g_ddr_payload_width/8-1 downto 0);
+  ddr_aximm_ma_wlast_o                      : out std_logic;
+  ddr_aximm_ma_wvalid_o                     : out std_logic;
+  ddr_aximm_ma_wready_i                     : in std_logic;
+  ddr_aximm_ma_bready_o                     : out std_logic;
+  ddr_aximm_ma_bid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_bresp_i                      : in std_logic_vector (1 downto 0);
+  ddr_aximm_ma_bvalid_i                     : in std_logic;
+  ddr_aximm_ma_arid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_araddr_o                     : out std_logic_vector (31 downto 0);
+  ddr_aximm_ma_arlen_o                      : out std_logic_vector (7 downto 0);
+  ddr_aximm_ma_arsize_o                     : out std_logic_vector (2 downto 0);
+  ddr_aximm_ma_arburst_o                    : out std_logic_vector (1 downto 0);
+  ddr_aximm_ma_arlock_o                     : out std_logic;
+  ddr_aximm_ma_arcache_o                    : out std_logic_vector (3 downto 0);
+  ddr_aximm_ma_arprot_o                     : out std_logic_vector (2 downto 0);
+  ddr_aximm_ma_arqos_o                      : out std_logic_vector (3 downto 0);
+  ddr_aximm_ma_arvalid_o                    : out std_logic;
+  ddr_aximm_ma_arready_i                    : in std_logic;
+  ddr_aximm_ma_rready_o                     : out std_logic;
+  ddr_aximm_ma_rid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_rdata_i                      : in std_logic_vector (g_ddr_payload_width-1 downto 0);
+  ddr_aximm_ma_rresp_i                      : in std_logic_vector (1 downto 0);
+  ddr_aximm_ma_rlast_i                      : in std_logic;
+  ddr_aximm_ma_rvalid_i                     : in std_logic
 );
 end wb_acq_core_2_to_1_mux;
 
 architecture rtl of wb_acq_core_2_to_1_mux is
 
-  -- ACQ core component 0 signals
-  signal ui_app0_addr_int                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
-  signal ui_app0_cmd_int                    : std_logic_vector(2 downto 0);
-  signal ui_app0_en_int                     : std_logic;
-  signal ui_app0_rdy_int                    : std_logic;
+  constant c_num_max_acq_cores              : natural := 8;
 
-  signal ui_wdf0_data_int                   : std_logic_vector(g_ddr_payload_width-1 downto 0);
-  signal ui_wdf0_end_int                    : std_logic;
-  signal ui_wdf0_mask_int                   : std_logic_vector(g_ddr_payload_width/8-1 downto 0);
-  signal ui_wdf0_wren_int                   : std_logic;
-  signal ui_wdf0_rdy_int                    : std_logic;
+  -- ACQ core components signals
+  signal ui_app_addr_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_addr_width-1 downto 0);
+  signal ui_app_cmd_array_int               : std_logic_vector(g_acq_num_cores*3-1 downto 0);
+  signal ui_app_en_array_int                : std_logic_vector(g_acq_num_cores-1 downto 0);
+  signal ui_app_rdy_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
 
-  signal ui_rd0_data_int                    : std_logic_vector(g_ddr_payload_width-1 downto 0);
-  signal ui_rd0_data_end_int                : std_logic;
-  signal ui_rd0_data_valid_int              : std_logic;
+  signal ui_wdf_data_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
+  signal ui_wdf_end_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
+  signal ui_wdf_mask_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_payload_width/8-1 downto 0);
+  signal ui_wdf_wren_array_int              : std_logic_vector(g_acq_num_cores-1 downto 0);
+  signal ui_wdf_rdy_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
 
-  signal ui_app0_req_int                    : std_logic;
-  signal ui_app0_gnt_int                    : std_logic;
+  signal ui_rd_data_array_int               : std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
+  signal ui_rd_data_end_array_int           : std_logic_vector(g_acq_num_cores-1 downto 0);
+  signal ui_rd_data_valid_array_int         : std_logic_vector(g_acq_num_cores-1 downto 0);
 
-  -- ACQ core component 1 signals
-  signal ui_app1_addr_int                   : std_logic_vector(g_ddr_addr_width-1 downto 0) := (others => '0');
-  signal ui_app1_cmd_int                    : std_logic_vector(2 downto 0) := (others => '0');
-  signal ui_app1_en_int                     : std_logic := '0';
-  signal ui_app1_rdy_int                    : std_logic;
+  signal ui_app_req_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
+  signal ui_app_gnt_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
 
-  signal ui_wdf1_data_int                   : std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
-  signal ui_wdf1_end_int                    : std_logic := '0';
-  signal ui_wdf1_mask_int                   : std_logic_vector(g_ddr_payload_width/8-1 downto 0) := (others => '0');
-  signal ui_wdf1_wren_int                   : std_logic := '0';
-  signal ui_wdf1_rdy_int                    : std_logic;
+  -- AXI Data mover signals
+  signal axi_rst_n_array                    : std_logic_vector(c_num_max_acq_cores-1 downto 0);
 
-  signal ui_rd1_data_int                    : std_logic_vector(g_ddr_payload_width-1 downto 0);
-  signal ui_rd1_data_end_int                : std_logic;
-  signal ui_rd1_data_valid_int              : std_logic;
+  signal axis_mm2s_cmd_mo_array             : t_axis_cmd_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_mm2s_cmd_mi_array             : t_axis_cmd_master_in_array(g_acq_num_cores-1 downto 0);
 
-  signal ui_app1_req_int                    : std_logic := '0';
-  signal ui_app1_gnt_int                    : std_logic;
+  signal axis_mm2s_sts_mo_array             : t_axis_sts_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_mm2s_sts_mi_array             : t_axis_sts_master_in_array(g_acq_num_cores-1 downto 0);
 
-  -- AXIS 00 mux signals
-  signal axis_app_s00_trdy                  : std_logic;
-  signal axis_app_s00_valid                 : std_logic;
-  signal axis_app_s00_data                  : std_logic_vector(255 downto 0);
-  signal axis_app_s00_tuser                 : std_logic_vector(127 downto 0);
+  signal axi_mm2s_r_mo_array                : t_aximm_r_master_out_array(c_num_max_acq_cores-1 downto 0);
+  signal axi_mm2s_r_mi_array                : t_aximm_r_master_in_array(c_num_max_acq_cores-1 downto 0);
 
-  signal axis_wdf_s00_trdy                  : std_logic;
-  signal axis_wdf_s00_valid                 : std_logic;
-  signal axis_wdf_s00_data                  : std_logic_vector(255 downto 0);
-  signal axis_wdf_s00_tuser                 : std_logic_vector(127 downto 0);
+  signal axis_mm2s_pld_mo_array             : t_axis_pld_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_mm2s_pld_mi_array             : t_axis_pld_master_in_array(g_acq_num_cores-1 downto 0);
 
-  -- AXIS 01 mux signals
-  signal axis_app_s01_trdy                  : std_logic;
-  signal axis_app_s01_valid                 : std_logic;
-  signal axis_app_s01_data                  : std_logic_vector(255 downto 0);
-  signal axis_app_s01_tuser                 : std_logic_vector(127 downto 0);
+  signal axis_s2mm_cmd_mo_array             : t_axis_cmd_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_s2mm_cmd_mi_array             : t_axis_cmd_master_in_array(g_acq_num_cores-1 downto 0);
 
-  signal axis_wdf_s01_trdy                  : std_logic;
-  signal axis_wdf_s01_valid                 : std_logic;
-  signal axis_wdf_s01_data                  : std_logic_vector(255 downto 0);
-  signal axis_wdf_s01_tuser                 : std_logic_vector(127 downto 0);
+  signal axis_s2mm_sts_mo_array             : t_axis_sts_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_s2mm_sts_mi_array             : t_axis_sts_master_in_array(g_acq_num_cores-1 downto 0);
 
-  -- AXIM 00 signals
-  signal axis_app_m00_tready                  : std_logic;
-  signal axis_app_m00_tvalid                : std_logic;
-  signal axis_app_m00_tdata                 : std_logic_vector(255 downto 0);
-  signal axis_app_m00_tuser                 : std_logic_vector(127 downto 0);
+  signal axi_s2mm_w_mo_array                : t_aximm_w_master_out_array(c_num_max_acq_cores-1 downto 0);
+  signal axi_s2mm_w_mi_array                : t_aximm_w_master_in_array(c_num_max_acq_cores-1 downto 0);
 
-  -- AXIM 01 signals
-  signal axis_wdf_m01_tready                  : std_logic;
-  signal axis_wdf_m01_tvalid                : std_logic;
-  signal axis_wdf_m01_tdata                 : std_logic_vector(255 downto 0);
-  signal axis_wdf_m01_tuser                 : std_logic_vector(127 downto 0);
+  signal axis_s2mm_pld_mo_array             : t_axis_pld_master_out_array(g_acq_num_cores-1 downto 0);
+  signal axis_s2mm_pld_mi_array             : t_axis_pld_master_in_array(g_acq_num_cores-1 downto 0);
 
-  component axis_mux_2_to_1
-  port (
-    aclk                                    : in std_logic;
-    aresetn                                 : in std_logic;
-    s00_axis_aclk                           : in std_logic;
-    s01_axis_aclk                           : in std_logic;
-    s00_axis_aresetn                        : in std_logic;
-    s01_axis_aresetn                        : in std_logic;
-    s00_axis_tvalid                         : in std_logic;
-    s01_axis_tvalid                         : in std_logic;
-    s00_axis_tready                         : out std_logic;
-    s01_axis_tready                         : out std_logic;
-    s00_axis_tdata                          : in std_logic_vector(255 downto 0);
-    s01_axis_tdata                          : in std_logic_vector(255 downto 0);
-    s00_axis_tuser                          : in std_logic_vector(127 downto 0);
-    s01_axis_tuser                          : in std_logic_vector(127 downto 0);
-    m00_axis_aclk                           : in std_logic;
-    m00_axis_aresetn                        : in std_logic;
-    m00_axis_tvalid                         : out std_logic;
-    m00_axis_tready                         : in std_logic;
-    m00_axis_tdata                          : out std_logic_vector(255 downto 0);
-    m00_axis_tuser                          : out std_logic_vector(127 downto 0);
-    s00_arb_req_suppress                    : in std_logic;
-    s01_arb_req_suppress                    : in std_logic
-  );
-  end component;
+  -- Intermediate signals
+  signal ddr_aximm_ma_awid_int              : std_logic_vector (3 downto 0);
+  signal ddr_aximm_ma_bid_int               : std_logic_vector (3 downto 0);
+  signal ddr_aximm_ma_arid_int              : std_logic_vector (3 downto 0);
+  signal ddr_aximm_ma_rid_int               : std_logic_vector (3 downto 0);
 
 begin
 
-  cmp0_wb_acq_core : wb_acq_core
-  generic map
-  (
-    g_interface_mode                          => g_interface_mode,
-    g_address_granularity                     => g_address_granularity,
-    g_acq_addr_width                          => g_acq_addr_width,
-    g_acq_num_channels                        => g_acq_num_channels,
-    g_acq_channels                            => g_acq_channels,
-    g_ddr_payload_width                       => g_ddr_payload_width,
-    g_ddr_addr_width                          => g_ddr_addr_width,
-    g_ddr_dq_width                            => g_ddr_dq_width,
-    g_multishot_ram_size                      => g_multishot_ram_size,
-    g_fifo_fc_size                            => g_fifo_fc_size,
-    g_sim_readback                            => g_sim_readback
-  )
-  port map
-  (
-    fs_clk_i                                  => fs1_clk_i,
-    fs_ce_i                                   => fs1_ce_i,
-    fs_rst_n_i                                => fs1_rst_n_i,
-
-    sys_clk_i                                 => sys_clk_i,
-    sys_rst_n_i                               => sys_rst_n_i,
-
-    ext_clk_i                                 => ext_clk_i,
-    ext_rst_n_i                               => ext_rst_n_i,
-
-    -----------------------------
-    -- Wishbone Control Interface signals
-    -----------------------------
-
-    wb_adr_i                                  => wb0_adr_i,
-    wb_dat_i                                  => wb0_dat_i,
-    wb_dat_o                                  => wb0_dat_o,
-    wb_sel_i                                  => wb0_sel_i,
-    wb_we_i                                   => wb0_we_i,
-    wb_cyc_i                                  => wb0_cyc_i,
-    wb_stb_i                                  => wb0_stb_i,
-    wb_ack_o                                  => wb0_ack_o,
-    wb_err_o                                  => wb0_err_o,
-    wb_rty_o                                  => wb0_rty_o,
-    wb_stall_o                                => wb0_stall_o,
-
-    -----------------------------
-    -- External Interface
-    -----------------------------
-    acq_val_low_i                             => acq0_val_low_i,
-    acq_val_high_i                            => acq0_val_high_i,
-    acq_dvalid_i                              => acq0_dvalid_i,
-    acq_trig_i                                => acq0_trig_i,
-
-    -----------------------------
-    -- DRRAM Interface
-    -----------------------------
-    dpram_dout_o                              => dpram0_dout_o,
-    dpram_valid_o                             => dpram0_valid_o,
-
-    -----------------------------
-    -- External Interface (w/ FLow Control)
-    -----------------------------
-    ext_dout_o                                => ext0_dout_o,
-    ext_valid_o                               => ext0_valid_o,
-    ext_addr_o                                => ext0_addr_o,
-    ext_sof_o                                 => ext0_sof_o,
-    ext_eof_o                                 => ext0_eof_o,
-    ext_dreq_o                                => ext0_dreq_o,
-    ext_stall_o                               => ext0_stall_o,
-
-    -----------------------------
-    -- DDR3 SDRAM Interface
-    -----------------------------
-    ui_app_addr_o                             => ui_app0_addr_int,
-    ui_app_cmd_o                              => ui_app0_cmd_int,
-    ui_app_en_o                               => ui_app0_en_int,
-    ui_app_rdy_i                              => ui_app0_rdy_int,
-
-    ui_app_wdf_data_o                         => ui_wdf0_data_int,
-    ui_app_wdf_end_o                          => ui_wdf0_end_int,
-    ui_app_wdf_mask_o                         => ui_wdf0_mask_int,
-    ui_app_wdf_wren_o                         => ui_wdf0_wren_int,
-    ui_app_wdf_rdy_i                          => ui_wdf0_rdy_int,
-
-    ui_app_rd_data_i                          => ui_rd0_data_int,
-    ui_app_rd_data_end_i                      => ui_rd0_data_end_int,
-    ui_app_rd_data_valid_i                    => ui_rd0_data_valid_int,
-
-    ui_app_req_o                              => ui_app0_req_int,
-    ui_app_gnt_i                              => ui_app0_gnt_int,
-
-    -----------------------------
-    -- Debug Interface
-    -----------------------------
-    dbg_ddr_rb_start_p_i                      => dbg_ddr_rb0_start_p_i,
-    dbg_ddr_rb_rdy_o                          => dbg_ddr_rb0_rdy_o,
-    dbg_ddr_rb_data_o                         => dbg_ddr_rb0_data_o,
-    dbg_ddr_rb_addr_o                         => dbg_ddr_rb0_addr_o,
-    dbg_ddr_rb_valid_o                        => dbg_ddr_rb0_valid_o
-  );
-
-  -- ACQ core component 0 AXIS APP signals
-  ui_app0_rdy_int                     <= axis_app_s00_trdy;
-  ui_wdf0_rdy_int                     <= axis_app_s00_trdy;
-
-  axis_app_s00_data                   <= ui_wdf0_data_int;
-  axis_app_s00_tuser(127 downto 68)   <= (others => '0');
-  axis_app_s00_tuser(67 downto 0)     <= ui_wdf0_mask_int & ui_wdf0_end_int &
-                                            ui_app0_cmd_int & ui_app0_addr_int &
-                                            ui_wdf0_wren_int & ui_app0_en_int;
-  axis_app_s00_valid                  <= ui_app0_en_int or ui_wdf0_wren_int;
-
-  cmp1_wb_acq_core : wb_acq_core
-  generic map
-  (
-    g_interface_mode                          => g_interface_mode,
-    g_address_granularity                     => g_address_granularity,
-    g_acq_addr_width                          => g_acq_addr_width,
-    g_acq_num_channels                        => g_acq_num_channels,
-    g_acq_channels                            => g_acq_channels,
-    g_ddr_payload_width                       => g_ddr_payload_width,
-    g_ddr_addr_width                          => g_ddr_addr_width,
-    g_ddr_dq_width                            => g_ddr_dq_width,
-    g_multishot_ram_size                      => g_multishot_ram_size,
-    g_fifo_fc_size                            => g_fifo_fc_size,
-    g_sim_readback                            => g_sim_readback
-  )
-  port map
-  (
-    fs_clk_i                                  => fs2_clk_i,
-    fs_ce_i                                   => fs2_ce_i,
-    fs_rst_n_i                                => fs2_rst_n_i,
-
-    sys_clk_i                                 => sys_clk_i,
-    sys_rst_n_i                               => sys_rst_n_i,
-
-    ext_clk_i                                 => ext_clk_i,
-    ext_rst_n_i                               => ext_rst_n_i,
-
-    -----------------------------
-    -- Wishbone Control Interface signals
-    -----------------------------
-
-    wb_adr_i                                  => wb1_adr_i,
-    wb_dat_i                                  => wb1_dat_i,
-    wb_dat_o                                  => wb1_dat_o,
-    wb_sel_i                                  => wb1_sel_i,
-    wb_we_i                                   => wb1_we_i,
-    wb_cyc_i                                  => wb1_cyc_i,
-    wb_stb_i                                  => wb1_stb_i,
-    wb_ack_o                                  => wb1_ack_o,
-    wb_err_o                                  => wb1_err_o,
-    wb_rty_o                                  => wb1_rty_o,
-    wb_stall_o                                => wb1_stall_o,
-
-    -----------------------------
-    -- External Interface
-    -----------------------------
-    acq_val_low_i                             => acq1_val_low_i,
-    acq_val_high_i                            => acq1_val_high_i,
-    acq_dvalid_i                              => acq1_dvalid_i,
-    acq_trig_i                                => acq1_trig_i,
-
-    -----------------------------
-    -- DRRAM Interface
-    -----------------------------
-    dpram_dout_o                              => dpram1_dout_o,
-    dpram_valid_o                             => dpram1_valid_o,
-
-    -----------------------------
-    -- External Interface (w/ FLow Control)
-    -----------------------------
-    ext_dout_o                                => ext1_dout_o,
-    ext_valid_o                               => ext1_valid_o,
-    ext_addr_o                                => ext1_addr_o,
-    ext_sof_o                                 => ext1_sof_o,
-    ext_eof_o                                 => ext1_eof_o,
-    ext_dreq_o                                => ext1_dreq_o,
-    ext_stall_o                               => ext1_stall_o,
-
-    -----------------------------
-    -- DDR3 SDRAM Interface
-    -----------------------------
-    ui_app_addr_o                             => ui_app1_addr_int,
-    ui_app_cmd_o                              => ui_app1_cmd_int,
-    ui_app_en_o                               => ui_app1_en_int,
-    ui_app_rdy_i                              => ui_app1_rdy_int,
-
-    ui_app_wdf_data_o                         => ui_wdf1_data_int,
-    ui_app_wdf_end_o                          => ui_wdf1_end_int,
-    ui_app_wdf_mask_o                         => ui_wdf1_mask_int,
-    ui_app_wdf_wren_o                         => ui_wdf1_wren_int,
-    ui_app_wdf_rdy_i                          => ui_wdf1_rdy_int,
-
-    ui_app_rd_data_i                          => ui_rd1_data_int,
-    ui_app_rd_data_end_i                      => ui_rd1_data_end_int,
-    ui_app_rd_data_valid_i                    => ui_rd1_data_valid_int,
-
-    ui_app_req_o                              => ui_app1_req_int,
-    ui_app_gnt_i                              => ui_app1_gnt_int,
-
-    -----------------------------
-    -- Debug Interface
-    -----------------------------
-    dbg_ddr_rb_start_p_i                      => dbg_ddr_rb1_start_p_i,
-    dbg_ddr_rb_rdy_o                          => dbg_ddr_rb1_rdy_o,
-    dbg_ddr_rb_data_o                         => dbg_ddr_rb1_data_o,
-    dbg_ddr_rb_addr_o                         => dbg_ddr_rb1_addr_o,
-    dbg_ddr_rb_valid_o                        => dbg_ddr_rb1_valid_o
-  );
-
-  -- ACQ core component 1 AXIS APP signals
-  ui_app1_rdy_int                     <= axis_app_s01_trdy;
-  ui_wdf1_rdy_int                     <= axis_app_s01_trdy;
-
-  axis_app_s01_data                   <= ui_wdf1_data_int;
-  axis_app_s01_tuser(127 downto 68)   <= (others => '0');
-  axis_app_s01_tuser(67 downto 0)     <= ui_wdf1_mask_int & ui_wdf1_end_int &
-                                            ui_app1_cmd_int & ui_app1_addr_int &
-                                            ui_wdf1_wren_int & ui_app1_en_int;
-  axis_app_s01_valid                  <= ui_app1_en_int or ui_wdf1_wren_int;
+  assert (g_acq_num_cores <= c_num_max_acq_cores)
+    report "[wb_acq_core_mux] Number of acqsition cores exceeded (8)"
+    severity Failure;
 
   -----------------------------------------------------------------------------
-  -- AXIS Muxer
+  -- ACQ CORE
   -----------------------------------------------------------------------------
+  gen_acq_core : for i in g_acq_num_cores-1 downto 0 generate
 
-  cmp_ui_mux_2_to_1 : axis_mux_2_to_1
-  port map
-  (
-    aclk                                      => ext_clk_i,
-    aresetn                                   => ext_rst_n_i,
+    cmp_wb_acq_core : wb_acq_core
+    generic map
+    (
+      g_interface_mode                          => g_interface_mode,
+      g_address_granularity                     => g_address_granularity,
+      g_acq_addr_width                          => g_acq_addr_width,
+      g_acq_num_channels                        => g_acq_num_channels,
+      g_acq_channels                            => g_acq_channels,
+      g_ddr_payload_width                       => g_ddr_payload_width,
+      g_ddr_addr_width                          => g_ddr_addr_width,
+      g_ddr_dq_width                            => g_ddr_dq_width,
+      g_multishot_ram_size                      => g_multishot_ram_size,
+      g_fifo_fc_size                            => g_fifo_fc_size,
+      g_sim_readback                            => g_sim_readback
+    )
+    port map
+    (
+      fs_clk_i                                  => fs_clk_array_i(i),
+      fs_ce_i                                   => fs_ce_array_i(i),
+      fs_rst_n_i                                => fs_rst_n_array_i(i),
 
-    s00_axis_aclk                             => ext_clk_i,
-    s00_axis_aresetn                          => ext_rst_n_i,
-    s00_axis_tvalid                           => axis_app_s00_valid,
-    s00_axis_tready                           => axis_app_s00_trdy,
-    s00_axis_tdata                            => axis_app_s00_data,
-    s00_axis_tuser                            => axis_app_s00_tuser,
-    s00_arb_req_suppress                      => '0',
+      sys_clk_i                                 => sys_clk_i,
+      sys_rst_n_i                               => sys_rst_n_i,
 
-    s01_axis_aclk                             => ext_clk_i,
-    s01_axis_aresetn                          => ext_rst_n_i,
-    s01_axis_tvalid                           => axis_app_s01_valid,
-    s01_axis_tready                           => axis_app_s01_trdy,
-    s01_axis_tdata                            => axis_app_s01_data,
-    s01_axis_tuser                            => axis_app_s01_tuser,
-    s01_arb_req_suppress                      => '0',
+      ext_clk_i                                 => ext_clk_i,
+      ext_rst_n_i                               => ext_rst_n_i,
 
-    m00_axis_aclk                             => ext_clk_i,
-    m00_axis_aresetn                          => ext_rst_n_i,
-    m00_axis_tvalid                           => axis_app_m00_tvalid,
-    m00_axis_tready                           => axis_app_m00_tready,
-    m00_axis_tdata                            => axis_app_m00_tdata,
-    m00_axis_tuser                            => axis_app_m00_tuser
+      -----------------------------
+      -- Wishbone Control Interface signals
+      -----------------------------
+
+      wb_adr_i                                  => wb_adr_array_i((i+1)*c_wishbone_address_width-1 downto i*c_wishbone_address_width),
+      wb_dat_i                                  => wb_dat_array_i((i+1)*c_wishbone_data_width-1 downto i*c_wishbone_data_width),
+      wb_dat_o                                  => wb_dat_array_o((i+1)*c_wishbone_data_width-1 downto i*c_wishbone_data_width),
+      wb_sel_i                                  => wb_sel_array_i((i+1)*c_wishbone_data_width/8-1 downto i*c_wishbone_data_width/8),
+      wb_we_i                                   => wb_we_array_i(i),
+      wb_cyc_i                                  => wb_cyc_array_i(i),
+      wb_stb_i                                  => wb_stb_array_i(i),
+      wb_ack_o                                  => wb_ack_array_o(i),
+      wb_err_o                                  => wb_err_array_o(i),
+      wb_rty_o                                  => wb_rty_array_o(i),
+      wb_stall_o                                => wb_stall_array_o(i),
+
+      -----------------------------
+      -- External Interface
+      -----------------------------
+      acq_val_low_i                             => acq_val_low_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
+      acq_val_high_i                            => acq_val_high_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
+      acq_dvalid_i                              => acq_dvalid_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
+      acq_trig_i                                => acq_trig_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
+
+      -----------------------------
+      -- DRRAM Interface
+      -----------------------------
+      dpram_dout_o                              => dpram_dout_array_o((i+1)*f_acq_chan_find_widest(g_acq_channels)-1 downto
+                                                     i*f_acq_chan_find_widest(g_acq_channels)),
+      dpram_valid_o                             => dpram_valid_array_o(i),
+
+      -----------------------------
+      -- External Interface (w/ FLow Control)
+      -----------------------------
+      ext_dout_o                                => ext_dout_array_o((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
+      ext_valid_o                               => ext_valid_array_o(i),
+      ext_addr_o                                => ext_addr_array_o((i+1)*g_acq_addr_width-1 downto i*g_acq_addr_width),
+      ext_sof_o                                 => ext_sof_array_o(i),
+      ext_eof_o                                 => ext_eof_array_o(i),
+      ext_dreq_o                                => ext_dreq_array_o(i),
+      ext_stall_o                               => ext_stall_array_o(i),
+
+      -----------------------------
+      -- DDR3 SDRAM Interface
+      -----------------------------
+      ui_app_addr_o                             => ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width),
+      ui_app_cmd_o                              => ui_app_cmd_array_int((i+1)*3-1 downto i*3),
+      ui_app_en_o                               => ui_app_en_array_int(i),
+      ui_app_rdy_i                              => ui_app_rdy_array_int(i),
+
+      ui_app_wdf_data_o                         => ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
+      ui_app_wdf_end_o                          => ui_wdf_end_array_int(i),
+      ui_app_wdf_mask_o                         => ui_wdf_mask_array_int((i+1)*g_ddr_payload_width/8-1 downto i*g_ddr_payload_width/8),
+      ui_app_wdf_wren_o                         => ui_wdf_wren_array_int(i),
+      ui_app_wdf_rdy_i                          => ui_wdf_rdy_array_int(i),
+
+      ui_app_rd_data_i                          => ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
+      ui_app_rd_data_end_i                      => ui_rd_data_end_array_int(i),
+      ui_app_rd_data_valid_i                    => ui_rd_data_valid_array_int(i),
+
+      ui_app_req_o                              => ui_app_req_array_int(i),
+      ui_app_gnt_i                              => ui_app_gnt_array_int(i),
+
+      -----------------------------
+      -- Debug Interface
+      -----------------------------
+      dbg_ddr_rb_start_p_i                      => dbg_ddr_rb_start_p_array_i(i),
+      dbg_ddr_rb_rdy_o                          => dbg_ddr_rb_rdy_array_o(i),
+      dbg_ddr_rb_data_o                         => dbg_ddr_rb_data_array_o((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
+      dbg_ddr_rb_addr_o                         => dbg_ddr_rb_addr_array_o((i+1)*g_acq_addr_width-1 downto i*g_acq_addr_width),
+      dbg_ddr_rb_valid_o                        => dbg_ddr_rb_valid_array_o(i)
+    );
+
+    -- We don't rely on this signal to arbiter us, we use the VALID/TREADY handshake,
+    -- now properly implemented through DDR AXI interface
+    ui_app_gnt_array_int(i)                      <= '1';
+    -- ACQ core component 0 AXIS APP signals
+    ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready;
+    ui_wdf_rdy_array_int(i)                      <= axis_s2mm_pld_mi_array(i).tready;
+
+    gen_no_sim_signals : if not(g_sim_readback) generate
+
+      -- Stream to Memory Mapped Commands
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
+        c_axis_cmd_tdata_btt_bot_idx)                             <=
+          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
+        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
+        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
+          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
+        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
+        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
+
+      axis_s2mm_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i);
+
+      -- Stream to Memory Mapped Payload
+      axis_s2mm_pld_mo_array(i).tdata  <= ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width);
+      axis_s2mm_pld_mo_array(i).tkeep  <= (others => '1');
+      axis_s2mm_pld_mo_array(i).tlast  <= ui_wdf_end_array_int(i);
+      axis_s2mm_pld_mo_array(i).tvalid <= ui_wdf_wren_array_int(i);
+
+    end generate;
+
+    -- Generate signals for reading DDR core (WARNING: only for simulation!)
+    gen_sim_signals : if g_sim_readback generate
+
+      -- Stream to Memory Mapped Commands
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
+        c_axis_cmd_tdata_btt_bot_idx)                             <=
+          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
+        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
+        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
+          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
+        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
+      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
+        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
+
+      -- We only need to invalidate this transaction if the module is not writing
+      axis_s2mm_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i) when
+                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else '0';
+
+      -- Stream to Memory Mapped Payload
+      axis_s2mm_pld_mo_array(i).tdata  <= ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width);
+      axis_s2mm_pld_mo_array(i).tkeep  <= (others => '1');
+      axis_s2mm_pld_mo_array(i).tlast  <= ui_wdf_end_array_int(i);
+      axis_s2mm_pld_mo_array(i).tvalid <= ui_wdf_wren_array_int(i) when
+                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else '0';
+
+      -- Memory Mapped to Stream Commands
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
+        c_axis_cmd_tdata_btt_bot_idx)                             <=
+          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
+        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
+        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
+          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
+        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
+      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
+        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
+
+      axis_mm2s_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i) when
+                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_read else '0';
+
+      -- Stream to Memory Mapped Payload
+      ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width) <= axis_mm2s_pld_mo_array(i).tdata;
+      ui_rd_data_end_array_int(i)                                                    <= axis_mm2s_pld_mo_array(i).tlast;
+      ui_rd_data_valid_array_int(i)                                                  <= axis_mm2s_pld_mo_array(i).tvalid when
+                                                                                        ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_read else '0';
+      -- We are always ready to receive. CAUTION: This is just used for simulation!
+      axis_mm2s_pld_mi_array(i).tready                                               <= '1';
+
+    end generate;
+
+  end generate;
+
+  -----------------------------------------------------------------------------
+  -- AXIS Datamover
+  -----------------------------------------------------------------------------
+  gen_axis_data_mover : for i in g_acq_num_cores-1 downto 0 generate
+    cmp_axi_s2mm_bridge : axi_datamover_bpm
+    port map (
+      -- Memory Mapped to Stream
+      m_axi_mm2s_aclk                          => ext_clk_i,
+      m_axi_mm2s_aresetn                       => axi_rst_n_array(i),
+      mm2s_err                                 => open,
+      m_axis_mm2s_cmdsts_aclk                  => ext_clk_i,
+      m_axis_mm2s_cmdsts_aresetn               => axi_rst_n_array(i),
+
+      s_axis_mm2s_cmd_tvalid                   => axis_mm2s_cmd_mo_array(i).tvalid,
+      s_axis_mm2s_cmd_tready                   => axis_mm2s_cmd_mi_array(i).tready,
+      s_axis_mm2s_cmd_tdata                    => axis_mm2s_cmd_mo_array(i).tdata,
+
+      m_axis_mm2s_sts_tvalid                   => open,
+      m_axis_mm2s_sts_tready                   => c_axi_sl_zero,
+      m_axis_mm2s_sts_tdata                    => open,
+      m_axis_mm2s_sts_tkeep                    => open,
+      m_axis_mm2s_sts_tlast                    => open,
+
+      m_axi_mm2s_araddr                        => axi_mm2s_r_mo_array(i).araddr,
+      m_axi_mm2s_arlen                         => axi_mm2s_r_mo_array(i).arlen,
+      m_axi_mm2s_arsize                        => axi_mm2s_r_mo_array(i).arsize,
+      m_axi_mm2s_arburst                       => axi_mm2s_r_mo_array(i).arburst,
+      m_axi_mm2s_arprot                        => axi_mm2s_r_mo_array(i).arprot,
+      m_axi_mm2s_arcache                       => axi_mm2s_r_mo_array(i).arcache,
+      m_axi_mm2s_aruser                        => open,
+      m_axi_mm2s_arvalid                       => axi_mm2s_r_mo_array(i).arvalid,
+      m_axi_mm2s_arready                       => axi_mm2s_r_mi_array(i).arready,
+      m_axi_mm2s_rdata                         => axi_mm2s_r_mi_array(i).rdata,
+      m_axi_mm2s_rresp                         => axi_mm2s_r_mi_array(i).rresp,
+      m_axi_mm2s_rlast                         => axi_mm2s_r_mi_array(i).rlast,
+      m_axi_mm2s_rvalid                        => axi_mm2s_r_mi_array(i).rvalid,
+      m_axi_mm2s_rready                        => axi_mm2s_r_mo_array(i).rready,
+
+      m_axis_mm2s_tdata                        => axis_mm2s_pld_mo_array(i).tdata,
+      m_axis_mm2s_tkeep                        => axis_mm2s_pld_mo_array(i).tkeep,
+      m_axis_mm2s_tlast                        => axis_mm2s_pld_mo_array(i).tlast,
+      m_axis_mm2s_tvalid                       => axis_mm2s_pld_mo_array(i).tvalid,
+      m_axis_mm2s_tready                       => axis_mm2s_pld_mi_array(i).tready,
+
+      -- Stream to Memory Mapped
+      m_axi_s2mm_aclk                          => ext_clk_i,
+      m_axi_s2mm_aresetn                       => axi_rst_n_array(i),
+      s2mm_err                                 => open,
+      m_axis_s2mm_cmdsts_awclk                 => ext_clk_i,
+      m_axis_s2mm_cmdsts_aresetn               => axi_rst_n_array(i),
+
+      s_axis_s2mm_cmd_tvalid                   => axis_s2mm_cmd_mo_array(i).tvalid,
+      s_axis_s2mm_cmd_tready                   => axis_s2mm_cmd_mi_array(i).tready,
+      s_axis_s2mm_cmd_tdata                    => axis_s2mm_cmd_mo_array(i).tdata,
+
+      m_axis_s2mm_sts_tvalid                   => open,
+      m_axis_s2mm_sts_tready                   => c_axi_sl_zero,
+      m_axis_s2mm_sts_tdata                    => open,
+      m_axis_s2mm_sts_tkeep                    => open,
+      m_axis_s2mm_sts_tlast                    => open,
+
+      m_axi_s2mm_awaddr                        => axi_s2mm_w_mo_array(i).awaddr,
+      m_axi_s2mm_awlen                         => axi_s2mm_w_mo_array(i).awlen,
+      m_axi_s2mm_awsize                        => axi_s2mm_w_mo_array(i).awsize,
+      m_axi_s2mm_awburst                       => axi_s2mm_w_mo_array(i).awburst,
+      m_axi_s2mm_awprot                        => axi_s2mm_w_mo_array(i).awprot,
+      m_axi_s2mm_awcache                       => axi_s2mm_w_mo_array(i).awcache,
+      m_axi_s2mm_awuser                        => open,
+      m_axi_s2mm_awvalid                       => axi_s2mm_w_mo_array(i).awvalid,
+      m_axi_s2mm_awready                       => axi_s2mm_w_mi_array(i).awready,
+      m_axi_s2mm_wdata                         => axi_s2mm_w_mo_array(i).wdata,
+      m_axi_s2mm_wstrb                         => axi_s2mm_w_mo_array(i).wstrb,
+      m_axi_s2mm_wlast                         => axi_s2mm_w_mo_array(i).wlast,
+      m_axi_s2mm_wvalid                        => axi_s2mm_w_mo_array(i).wvalid,
+      m_axi_s2mm_wready                        => axi_s2mm_w_mi_array(i).wready,
+      m_axi_s2mm_bresp                         => axi_s2mm_w_mi_array(i).bresp,
+      m_axi_s2mm_bvalid                        => axi_s2mm_w_mi_array(i).bvalid,
+      m_axi_s2mm_bready                        => axi_s2mm_w_mo_array(i).bready,
+
+      s_axis_s2mm_tdata                        => axis_s2mm_pld_mo_array(i).tdata,
+      s_axis_s2mm_tkeep                        => axis_s2mm_pld_mo_array(i).tkeep,
+      s_axis_s2mm_tlast                        => axis_s2mm_pld_mo_array(i).tlast,
+      s_axis_s2mm_tvalid                       => axis_s2mm_pld_mo_array(i).tvalid,
+      s_axis_s2mm_tready                       => axis_s2mm_pld_mi_array(i).tready
+    );
+  end generate;
+
+  -- Assign dummy data to other unassigned records. We just need to assign signals
+  -- going to AXI interface. The other ones are not assigned anywhere, so we are
+  -- safe
+  gen_axis_data_mover_unused : for i in c_num_max_acq_cores-1 downto g_acq_num_cores generate
+    axi_mm2s_r_mo_array(i)                       <= cc_dummy_aximm_r_slave_in;
+    axi_s2mm_w_mo_array(i)                       <= cc_dummy_aximm_w_slave_in;
+  end generate;
+
+  -----------------------------------------------------------------------------
+  -- AXIMM Interconnect 8x1
+  -----------------------------------------------------------------------------
+  cmp_axi_interconnect_bpm : axi_interconnect_bpm
+  port map (
+    interconnect_aclk                        => ext_clk_i,                      -- in std_logic;
+    interconnect_aresetn                     => ext_rst_n_i,                    -- in std_logic;
+    s00_axi_areset_out_n                     => axi_rst_n_array(0),             -- out std_logic;
+    s00_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s00_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s00_axi_awaddr                           => axi_s2mm_w_mo_array(0).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s00_axi_awlen                            => axi_s2mm_w_mo_array(0).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s00_axi_awsize                           => axi_s2mm_w_mo_array(0).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s00_axi_awburst                          => axi_s2mm_w_mo_array(0).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s00_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s00_axi_awcache                          => axi_s2mm_w_mo_array(0).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s00_axi_awprot                           => axi_s2mm_w_mo_array(0).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s00_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s00_axi_awvalid                          => axi_s2mm_w_mo_array(0).awvalid, -- in std_logic;
+    s00_axi_awready                          => axi_s2mm_w_mi_array(0).awready, -- out std_logic;
+    s00_axi_wdata                            => axi_s2mm_w_mo_array(0).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s00_axi_wstrb                            => axi_s2mm_w_mo_array(0).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s00_axi_wlast                            => axi_s2mm_w_mo_array(0).wlast,   -- in std_logic;
+    s00_axi_wvalid                           => axi_s2mm_w_mo_array(0).wvalid,  -- in std_logic;
+    s00_axi_wready                           => axi_s2mm_w_mi_array(0).wready,  -- out std_logic;
+    s00_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s00_axi_bresp                            => axi_s2mm_w_mi_array(0).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s00_axi_bvalid                           => axi_s2mm_w_mi_array(0).bvalid,  -- out std_logic;
+    s00_axi_bready                           => axi_s2mm_w_mo_array(0).bready,  -- in std_logic;
+    s00_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s00_axi_araddr                           => axi_mm2s_r_mo_array(0).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s00_axi_arlen                            => axi_mm2s_r_mo_array(0).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s00_axi_arsize                           => axi_mm2s_r_mo_array(0).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s00_axi_arburst                          => axi_mm2s_r_mo_array(0).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s00_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s00_axi_arcache                          => axi_mm2s_r_mo_array(0).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s00_axi_arprot                           => axi_mm2s_r_mo_array(0).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s00_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s00_axi_arvalid                          => axi_mm2s_r_mo_array(0).arvalid, -- in std_logic;
+    s00_axi_arready                          => axi_mm2s_r_mi_array(0).arready, -- out std_logic;
+    s00_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s00_axi_rdata                            => axi_mm2s_r_mi_array(0).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s00_axi_rresp                            => axi_mm2s_r_mi_array(0).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s00_axi_rlast                            => axi_mm2s_r_mi_array(0).rlast,   -- out std_logic;
+    s00_axi_rvalid                           => axi_mm2s_r_mi_array(0).rvalid,  -- out std_logic;
+    s00_axi_rready                           => axi_mm2s_r_mo_array(0).rready,  -- in std_logic;
+    s01_axi_areset_out_n                     => axi_rst_n_array(1),             -- out std_logic;
+    s01_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s01_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s01_axi_awaddr                           => axi_s2mm_w_mo_array(1).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s01_axi_awlen                            => axi_s2mm_w_mo_array(1).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s01_axi_awsize                           => axi_s2mm_w_mo_array(1).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s01_axi_awburst                          => axi_s2mm_w_mo_array(1).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s01_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s01_axi_awcache                          => axi_s2mm_w_mo_array(1).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s01_axi_awprot                           => axi_s2mm_w_mo_array(1).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s01_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s01_axi_awvalid                          => axi_s2mm_w_mo_array(1).awvalid, -- in std_logic;
+    s01_axi_awready                          => axi_s2mm_w_mi_array(1).awready, -- out std_logic;
+    s01_axi_wdata                            => axi_s2mm_w_mo_array(1).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s01_axi_wstrb                            => axi_s2mm_w_mo_array(1).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s01_axi_wlast                            => axi_s2mm_w_mo_array(1).wlast,   -- in std_logic;
+    s01_axi_wvalid                           => axi_s2mm_w_mo_array(1).wvalid,  -- in std_logic;
+    s01_axi_wready                           => axi_s2mm_w_mi_array(1).wready,  -- out std_logic;
+    s01_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s01_axi_bresp                            => axi_s2mm_w_mi_array(1).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s01_axi_bvalid                           => axi_s2mm_w_mi_array(1).bvalid,  -- out std_logic;
+    s01_axi_bready                           => axi_s2mm_w_mo_array(1).bready,  -- in std_logic;
+    s01_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s01_axi_araddr                           => axi_mm2s_r_mo_array(1).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s01_axi_arlen                            => axi_mm2s_r_mo_array(1).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s01_axi_arsize                           => axi_mm2s_r_mo_array(1).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s01_axi_arburst                          => axi_mm2s_r_mo_array(1).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s01_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s01_axi_arcache                          => axi_mm2s_r_mo_array(1).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s01_axi_arprot                           => axi_mm2s_r_mo_array(1).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s01_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s01_axi_arvalid                          => axi_mm2s_r_mo_array(1).arvalid, -- in std_logic;
+    s01_axi_arready                          => axi_mm2s_r_mi_array(1).arready, -- out std_logic;
+    s01_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s01_axi_rdata                            => axi_mm2s_r_mi_array(1).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s01_axi_rresp                            => axi_mm2s_r_mi_array(1).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s01_axi_rlast                            => axi_mm2s_r_mi_array(1).rlast,   -- out std_logic;
+    s01_axi_rvalid                           => axi_mm2s_r_mi_array(1).rvalid,  -- out std_logic;
+    s01_axi_rready                           => axi_mm2s_r_mo_array(1).rready,  -- in std_logic;
+    s02_axi_areset_out_n                     => axi_rst_n_array(2),             -- out std_logic;
+    s02_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s02_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s02_axi_awaddr                           => axi_s2mm_w_mo_array(2).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s02_axi_awlen                            => axi_s2mm_w_mo_array(2).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s02_axi_awsize                           => axi_s2mm_w_mo_array(2).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s02_axi_awburst                          => axi_s2mm_w_mo_array(2).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s02_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s02_axi_awcache                          => axi_s2mm_w_mo_array(2).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s02_axi_awprot                           => axi_s2mm_w_mo_array(2).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s02_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s02_axi_awvalid                          => axi_s2mm_w_mo_array(2).awvalid, -- in std_logic;
+    s02_axi_awready                          => axi_s2mm_w_mi_array(2).awready, -- out std_logic;
+    s02_axi_wdata                            => axi_s2mm_w_mo_array(2).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s02_axi_wstrb                            => axi_s2mm_w_mo_array(2).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s02_axi_wlast                            => axi_s2mm_w_mo_array(2).wlast,   -- in std_logic;
+    s02_axi_wvalid                           => axi_s2mm_w_mo_array(2).wvalid,  -- in std_logic;
+    s02_axi_wready                           => axi_s2mm_w_mi_array(2).wready,  -- out std_logic;
+    s02_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s02_axi_bresp                            => axi_s2mm_w_mi_array(2).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s02_axi_bvalid                           => axi_s2mm_w_mi_array(2).bvalid,  -- out std_logic;
+    s02_axi_bready                           => axi_s2mm_w_mo_array(2).bready,  -- in std_logic;
+    s02_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s02_axi_araddr                           => axi_mm2s_r_mo_array(2).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s02_axi_arlen                            => axi_mm2s_r_mo_array(2).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s02_axi_arsize                           => axi_mm2s_r_mo_array(2).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s02_axi_arburst                          => axi_mm2s_r_mo_array(2).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s02_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s02_axi_arcache                          => axi_mm2s_r_mo_array(2).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s02_axi_arprot                           => axi_mm2s_r_mo_array(2).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s02_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s02_axi_arvalid                          => axi_mm2s_r_mo_array(2).arvalid, -- in std_logic;
+    s02_axi_arready                          => axi_mm2s_r_mi_array(2).arready, -- out std_logic;
+    s02_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s02_axi_rdata                            => axi_mm2s_r_mi_array(2).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s02_axi_rresp                            => axi_mm2s_r_mi_array(2).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s02_axi_rlast                            => axi_mm2s_r_mi_array(2).rlast,   -- out std_logic;
+    s02_axi_rvalid                           => axi_mm2s_r_mi_array(2).rvalid,  -- out std_logic;
+    s02_axi_rready                           => axi_mm2s_r_mo_array(2).rready,  -- in std_logic;
+    s03_axi_areset_out_n                     => axi_rst_n_array(3),             -- out std_logic;
+    s03_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s03_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s03_axi_awaddr                           => axi_s2mm_w_mo_array(3).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s03_axi_awlen                            => axi_s2mm_w_mo_array(3).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s03_axi_awsize                           => axi_s2mm_w_mo_array(3).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s03_axi_awburst                          => axi_s2mm_w_mo_array(3).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s03_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s03_axi_awcache                          => axi_s2mm_w_mo_array(3).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s03_axi_awprot                           => axi_s2mm_w_mo_array(3).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s03_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s03_axi_awvalid                          => axi_s2mm_w_mo_array(3).awvalid, -- in std_logic;
+    s03_axi_awready                          => axi_s2mm_w_mi_array(3).awready, -- out std_logic;
+    s03_axi_wdata                            => axi_s2mm_w_mo_array(3).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s03_axi_wstrb                            => axi_s2mm_w_mo_array(3).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s03_axi_wlast                            => axi_s2mm_w_mo_array(3).wlast,   -- in std_logic;
+    s03_axi_wvalid                           => axi_s2mm_w_mo_array(3).wvalid,  -- in std_logic;
+    s03_axi_wready                           => axi_s2mm_w_mi_array(3).wready,  -- out std_logic;
+    s03_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s03_axi_bresp                            => axi_s2mm_w_mi_array(3).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s03_axi_bvalid                           => axi_s2mm_w_mi_array(3).bvalid,  -- out std_logic;
+    s03_axi_bready                           => axi_s2mm_w_mo_array(3).bready,  -- in std_logic;
+    s03_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s03_axi_araddr                           => axi_mm2s_r_mo_array(3).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s03_axi_arlen                            => axi_mm2s_r_mo_array(3).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s03_axi_arsize                           => axi_mm2s_r_mo_array(3).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s03_axi_arburst                          => axi_mm2s_r_mo_array(3).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s03_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s03_axi_arcache                          => axi_mm2s_r_mo_array(3).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s03_axi_arprot                           => axi_mm2s_r_mo_array(3).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s03_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s03_axi_arvalid                          => axi_mm2s_r_mo_array(3).arvalid, -- in std_logic;
+    s03_axi_arready                          => axi_mm2s_r_mi_array(3).arready, -- out std_logic;
+    s03_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s03_axi_rdata                            => axi_mm2s_r_mi_array(3).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s03_axi_rresp                            => axi_mm2s_r_mi_array(3).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s03_axi_rlast                            => axi_mm2s_r_mi_array(3).rlast,   -- out std_logic;
+    s03_axi_rvalid                           => axi_mm2s_r_mi_array(3).rvalid,  -- out std_logic;
+    s03_axi_rready                           => axi_mm2s_r_mo_array(3).rready,  -- in std_logic;
+    s04_axi_areset_out_n                     => axi_rst_n_array(4),             -- out std_logic;
+    s04_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s04_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s04_axi_awaddr                           => axi_s2mm_w_mo_array(4).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s04_axi_awlen                            => axi_s2mm_w_mo_array(4).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s04_axi_awsize                           => axi_s2mm_w_mo_array(4).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s04_axi_awburst                          => axi_s2mm_w_mo_array(4).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s04_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s04_axi_awcache                          => axi_s2mm_w_mo_array(4).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s04_axi_awprot                           => axi_s2mm_w_mo_array(4).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s04_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s04_axi_awvalid                          => axi_s2mm_w_mo_array(4).awvalid, -- in std_logic;
+    s04_axi_awready                          => axi_s2mm_w_mi_array(4).awready, -- out std_logic;
+    s04_axi_wdata                            => axi_s2mm_w_mo_array(4).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s04_axi_wstrb                            => axi_s2mm_w_mo_array(4).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s04_axi_wlast                            => axi_s2mm_w_mo_array(4).wlast,   -- in std_logic;
+    s04_axi_wvalid                           => axi_s2mm_w_mo_array(4).wvalid,  -- in std_logic;
+    s04_axi_wready                           => axi_s2mm_w_mi_array(4).wready,  -- out std_logic;
+    s04_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s04_axi_bresp                            => axi_s2mm_w_mi_array(4).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s04_axi_bvalid                           => axi_s2mm_w_mi_array(4).bvalid,  -- out std_logic;
+    s04_axi_bready                           => axi_s2mm_w_mo_array(4).bready,  -- in std_logic;
+    s04_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s04_axi_araddr                           => axi_mm2s_r_mo_array(4).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s04_axi_arlen                            => axi_mm2s_r_mo_array(4).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s04_axi_arsize                           => axi_mm2s_r_mo_array(4).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s04_axi_arburst                          => axi_mm2s_r_mo_array(4).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s04_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s04_axi_arcache                          => axi_mm2s_r_mo_array(4).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s04_axi_arprot                           => axi_mm2s_r_mo_array(4).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s04_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s04_axi_arvalid                          => axi_mm2s_r_mo_array(4).arvalid, -- in std_logic;
+    s04_axi_arready                          => axi_mm2s_r_mi_array(4).arready, -- out std_logic;
+    s04_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s04_axi_rdata                            => axi_mm2s_r_mi_array(4).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s04_axi_rresp                            => axi_mm2s_r_mi_array(4).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s04_axi_rlast                            => axi_mm2s_r_mi_array(4).rlast,   -- out std_logic;
+    s04_axi_rvalid                           => axi_mm2s_r_mi_array(4).rvalid,  -- out std_logic;
+    s04_axi_rready                           => axi_mm2s_r_mo_array(4).rready,  -- in std_logic;
+    s05_axi_areset_out_n                     => axi_rst_n_array(5),             -- out std_logic;
+    s05_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s05_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s05_axi_awaddr                           => axi_s2mm_w_mo_array(5).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s05_axi_awlen                            => axi_s2mm_w_mo_array(5).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s05_axi_awsize                           => axi_s2mm_w_mo_array(5).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s05_axi_awburst                          => axi_s2mm_w_mo_array(5).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s05_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s05_axi_awcache                          => axi_s2mm_w_mo_array(5).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s05_axi_awprot                           => axi_s2mm_w_mo_array(5).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s05_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s05_axi_awvalid                          => axi_s2mm_w_mo_array(5).awvalid, -- in std_logic;
+    s05_axi_awready                          => axi_s2mm_w_mi_array(5).awready, -- out std_logic;
+    s05_axi_wdata                            => axi_s2mm_w_mo_array(5).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s05_axi_wstrb                            => axi_s2mm_w_mo_array(5).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s05_axi_wlast                            => axi_s2mm_w_mo_array(5).wlast,   -- in std_logic;
+    s05_axi_wvalid                           => axi_s2mm_w_mo_array(5).wvalid,  -- in std_logic;
+    s05_axi_wready                           => axi_s2mm_w_mi_array(5).wready,  -- out std_logic;
+    s05_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s05_axi_bresp                            => axi_s2mm_w_mi_array(5).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s05_axi_bvalid                           => axi_s2mm_w_mi_array(5).bvalid,  -- out std_logic;
+    s05_axi_bready                           => axi_s2mm_w_mo_array(5).bready,  -- in std_logic;
+    s05_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s05_axi_araddr                           => axi_mm2s_r_mo_array(5).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s05_axi_arlen                            => axi_mm2s_r_mo_array(5).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s05_axi_arsize                           => axi_mm2s_r_mo_array(5).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s05_axi_arburst                          => axi_mm2s_r_mo_array(5).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s05_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s05_axi_arcache                          => axi_mm2s_r_mo_array(5).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s05_axi_arprot                           => axi_mm2s_r_mo_array(5).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s05_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s05_axi_arvalid                          => axi_mm2s_r_mo_array(5).arvalid, -- in std_logic;
+    s05_axi_arready                          => axi_mm2s_r_mi_array(5).arready, -- out std_logic;
+    s05_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s05_axi_rdata                            => axi_mm2s_r_mi_array(5).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s05_axi_rresp                            => axi_mm2s_r_mi_array(5).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s05_axi_rlast                            => axi_mm2s_r_mi_array(5).rlast,   -- out std_logic;
+    s05_axi_rvalid                           => axi_mm2s_r_mi_array(5).rvalid,  -- out std_logic;
+    s05_axi_rready                           => axi_mm2s_r_mo_array(5).rready,  -- in std_logic;
+    s06_axi_areset_out_n                     => axi_rst_n_array(6),             -- out std_logic;
+    s06_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s06_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s06_axi_awaddr                           => axi_s2mm_w_mo_array(6).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s06_axi_awlen                            => axi_s2mm_w_mo_array(6).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s06_axi_awsize                           => axi_s2mm_w_mo_array(6).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s06_axi_awburst                          => axi_s2mm_w_mo_array(6).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s06_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s06_axi_awcache                          => axi_s2mm_w_mo_array(6).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s06_axi_awprot                           => axi_s2mm_w_mo_array(6).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s06_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s06_axi_awvalid                          => axi_s2mm_w_mo_array(6).awvalid, -- in std_logic;
+    s06_axi_awready                          => axi_s2mm_w_mi_array(6).awready, -- out std_logic;
+    s06_axi_wdata                            => axi_s2mm_w_mo_array(6).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s06_axi_wstrb                            => axi_s2mm_w_mo_array(6).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s06_axi_wlast                            => axi_s2mm_w_mo_array(6).wlast,   -- in std_logic;
+    s06_axi_wvalid                           => axi_s2mm_w_mo_array(6).wvalid,  -- in std_logic;
+    s06_axi_wready                           => axi_s2mm_w_mi_array(6).wready,  -- out std_logic;
+    s06_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s06_axi_bresp                            => axi_s2mm_w_mi_array(6).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s06_axi_bvalid                           => axi_s2mm_w_mi_array(6).bvalid,  -- out std_logic;
+    s06_axi_bready                           => axi_s2mm_w_mo_array(6).bready,  -- in std_logic;
+    s06_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s06_axi_araddr                           => axi_mm2s_r_mo_array(6).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s06_axi_arlen                            => axi_mm2s_r_mo_array(6).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s06_axi_arsize                           => axi_mm2s_r_mo_array(6).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s06_axi_arburst                          => axi_mm2s_r_mo_array(6).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s06_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s06_axi_arcache                          => axi_mm2s_r_mo_array(6).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s06_axi_arprot                           => axi_mm2s_r_mo_array(6).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s06_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s06_axi_arvalid                          => axi_mm2s_r_mo_array(6).arvalid, -- in std_logic;
+    s06_axi_arready                          => axi_mm2s_r_mi_array(6).arready, -- out std_logic;
+    s06_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s06_axi_rdata                            => axi_mm2s_r_mi_array(6).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s06_axi_rresp                            => axi_mm2s_r_mi_array(6).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s06_axi_rlast                            => axi_mm2s_r_mi_array(6).rlast,   -- out std_logic;
+    s06_axi_rvalid                           => axi_mm2s_r_mi_array(6).rvalid,  -- out std_logic;
+    s06_axi_rready                           => axi_mm2s_r_mo_array(6).rready,  -- in std_logic;
+    s07_axi_areset_out_n                     => axi_rst_n_array(7),             -- out std_logic;
+    s07_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    s07_axi_awid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s07_axi_awaddr                           => axi_s2mm_w_mo_array(7).awaddr,  -- in std_logic_vector ( 31 downto 0 );
+    s07_axi_awlen                            => axi_s2mm_w_mo_array(7).awlen,   -- in std_logic_vector ( 7 downto 0 );
+    s07_axi_awsize                           => axi_s2mm_w_mo_array(7).awsize,  -- in std_logic_vector ( 2 downto 0 );
+    s07_axi_awburst                          => axi_s2mm_w_mo_array(7).awburst, -- in std_logic_vector ( 1 downto 0 );
+    s07_axi_awlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s07_axi_awcache                          => axi_s2mm_w_mo_array(7).awcache, -- in std_logic_vector ( 3 downto 0 );
+    s07_axi_awprot                           => axi_s2mm_w_mo_array(7).awprot,  -- in std_logic_vector ( 2 downto 0 );
+    s07_axi_awqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s07_axi_awvalid                          => axi_s2mm_w_mo_array(7).awvalid, -- in std_logic;
+    s07_axi_awready                          => axi_s2mm_w_mi_array(7).awready, -- out std_logic;
+    s07_axi_wdata                            => axi_s2mm_w_mo_array(7).wdata,   -- in std_logic_vector ( 255 downto 0 );
+    s07_axi_wstrb                            => axi_s2mm_w_mo_array(7).wstrb,   -- in std_logic_vector ( 31 downto 0 );
+    s07_axi_wlast                            => axi_s2mm_w_mo_array(7).wlast,   -- in std_logic;
+    s07_axi_wvalid                           => axi_s2mm_w_mo_array(7).wvalid,  -- in std_logic;
+    s07_axi_wready                           => axi_s2mm_w_mi_array(7).wready,  -- out std_logic;
+    s07_axi_bid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s07_axi_bresp                            => axi_s2mm_w_mi_array(7).bresp,   -- out std_logic_vector ( 1 downto 0 );
+    s07_axi_bvalid                           => axi_s2mm_w_mi_array(7).bvalid,  -- out std_logic;
+    s07_axi_bready                           => axi_s2mm_w_mo_array(7).bready,  -- in std_logic;
+    s07_axi_arid                             => c_axi_slv_zero,                 -- in std_logic_vector ( 0 to 0 );
+    s07_axi_araddr                           => axi_mm2s_r_mo_array(7).araddr,  -- in std_logic_vector ( 31 downto 0 );
+    s07_axi_arlen                            => axi_mm2s_r_mo_array(7).arlen,   -- in std_logic_vector ( 7 downto 0 );
+    s07_axi_arsize                           => axi_mm2s_r_mo_array(7).arsize,  -- in std_logic_vector ( 2 downto 0 );
+    s07_axi_arburst                          => axi_mm2s_r_mo_array(7).arburst, -- in std_logic_vector ( 1 downto 0 );
+    s07_axi_arlock                           => c_axi_sl_zero,                  -- in std_logic;
+    s07_axi_arcache                          => axi_mm2s_r_mo_array(7).arcache, -- in std_logic_vector ( 3 downto 0 );
+    s07_axi_arprot                           => axi_mm2s_r_mo_array(7).arprot,  -- in std_logic_vector ( 2 downto 0 );
+    s07_axi_arqos                            => c_axi_qos_zeros,                -- in std_logic_vector ( 3 downto 0 );
+    s07_axi_arvalid                          => axi_mm2s_r_mo_array(7).arvalid, -- in std_logic;
+    s07_axi_arready                          => axi_mm2s_r_mi_array(7).arready, -- out std_logic;
+    s07_axi_rid                              => open,                           -- out std_logic_vector ( 0 to 0 );
+    s07_axi_rdata                            => axi_mm2s_r_mi_array(7).rdata,   -- out std_logic_vector ( 255 downto 0 );
+    s07_axi_rresp                            => axi_mm2s_r_mi_array(7).rresp,   -- out std_logic_vector ( 1 downto 0 );
+    s07_axi_rlast                            => axi_mm2s_r_mi_array(7).rlast,   -- out std_logic;
+    s07_axi_rvalid                           => axi_mm2s_r_mi_array(7).rvalid,  -- out std_logic;
+    s07_axi_rready                           => axi_mm2s_r_mo_array(7).rready,  -- in std_logic;
+    m00_axi_areset_out_n                     => open,                           -- out std_logic;
+    m00_axi_aclk                             => ext_clk_i,                      -- in std_logic;
+    m00_axi_awid                             => ddr_aximm_ma_awid_int,          -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_awaddr                           => ddr_aximm_ma_awaddr_o,          -- out std_logic_vector ( 31 downto 0 );
+    m00_axi_awlen                            => ddr_aximm_ma_awlen_o,           -- out std_logic_vector ( 7 downto 0 );
+    m00_axi_awsize                           => ddr_aximm_ma_awsize_o,          -- out std_logic_vector ( 2 downto 0 );
+    m00_axi_awburst                          => ddr_aximm_ma_awburst_o,         -- out std_logic_vector ( 1 downto 0 );
+    m00_axi_awlock                           => ddr_aximm_ma_awlock_o,          -- out std_logic;
+    m00_axi_awcache                          => ddr_aximm_ma_awcache_o,         -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_awprot                           => ddr_aximm_ma_awprot_o,          -- out std_logic_vector ( 2 downto 0 );
+    m00_axi_awqos                            => ddr_aximm_ma_awqos_o,           -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_awvalid                          => ddr_aximm_ma_awvalid_o,         -- out std_logic;
+    m00_axi_awready                          => ddr_aximm_ma_awready_i,         -- in std_logic;
+    m00_axi_wdata                            => ddr_aximm_ma_wdata_o,           -- out std_logic_vector ( 255 downto 0 );
+    m00_axi_wstrb                            => ddr_aximm_ma_wstrb_o,           -- out std_logic_vector ( 31 downto 0 );
+    m00_axi_wlast                            => ddr_aximm_ma_wlast_o,           -- out std_logic;
+    m00_axi_wvalid                           => ddr_aximm_ma_wvalid_o,          -- out std_logic;
+    m00_axi_wready                           => ddr_aximm_ma_wready_i,          -- in std_logic;
+    m00_axi_bid                              => ddr_aximm_ma_bid_int,           -- in std_logic_vector ( 3 downto 0 );
+    m00_axi_bresp                            => ddr_aximm_ma_bresp_i,           -- in std_logic_vector ( 1 downto 0 );
+    m00_axi_bvalid                           => ddr_aximm_ma_bvalid_i,          -- in std_logic;
+    m00_axi_bready                           => ddr_aximm_ma_bready_o,          -- out std_logic;
+    m00_axi_arid                             => ddr_aximm_ma_arid_int,          -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_araddr                           => ddr_aximm_ma_araddr_o,          -- out std_logic_vector ( 31 downto 0 );
+    m00_axi_arlen                            => ddr_aximm_ma_arlen_o,           -- out std_logic_vector ( 7 downto 0 );
+    m00_axi_arsize                           => ddr_aximm_ma_arsize_o,          -- out std_logic_vector ( 2 downto 0 );
+    m00_axi_arburst                          => ddr_aximm_ma_arburst_o,         -- out std_logic_vector ( 1 downto 0 );
+    m00_axi_arlock                           => ddr_aximm_ma_arlock_o,          -- out std_logic;
+    m00_axi_arcache                          => ddr_aximm_ma_arcache_o,         -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_arprot                           => ddr_aximm_ma_arprot_o,          -- out std_logic_vector ( 2 downto 0 );
+    m00_axi_arqos                            => ddr_aximm_ma_arqos_o,           -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_arvalid                          => ddr_aximm_ma_arvalid_o,         -- out std_logic;
+    m00_axi_arready                          => ddr_aximm_ma_arready_i,         -- in std_logic;
+    m00_axi_rid                              => ddr_aximm_ma_rid_int,           -- in std_logic_vector ( 3 downto 0 );
+    m00_axi_rdata                            => ddr_aximm_ma_rdata_i,           -- in std_logic_vector ( 255 downto 0 );
+    m00_axi_rresp                            => ddr_aximm_ma_rresp_i,           -- in std_logic_vector ( 1 downto 0 );
+    m00_axi_rlast                            => ddr_aximm_ma_rlast_i,           -- in std_logic;
+    m00_axi_rvalid                           => ddr_aximm_ma_rvalid_i,          -- in std_logic;
+    m00_axi_rready                           => ddr_aximm_ma_rready_o           -- out std_logic
   );
 
-  axis_app_m00_tready   <= ui_app_rdy_i and ui_app_wdf_rdy_i and ui_app_gnt_i;
-
-  ui_app_addr_o         <= axis_app_m00_tuser(31 downto 2);
-  ui_app_cmd_o          <= axis_app_m00_tuser(34 downto 32);
-  ui_app_en_o           <= axis_app_m00_tuser(0) and ui_app_wdf_rdy_i when axis_app_m00_tvalid = '1' else '0';
-
-  ui_app_wdf_data_o     <= axis_app_m00_tdata;
-  ui_app_wdf_end_o      <= axis_app_m00_tuser(35);
-  ui_app_wdf_mask_o     <= axis_app_m00_tuser(67 downto 36);
-  ui_app_wdf_wren_o     <= axis_app_m00_tuser(1) and ui_app_rdy_i when axis_app_m00_tvalid = '1' else '0';
-
-  -- Output assignments
-  ui_app_req_o      <= ui_app0_req_int or ui_app1_req_int;
-  ui_app0_gnt_int   <= ui_app_gnt_i;
-  ui_app1_gnt_int   <= ui_app_gnt_i;
-
-  ui_rd0_data_int        <= ui_app_rd_data_i;
-  ui_rd0_data_end_int    <= ui_app_rd_data_end_i;
-  ui_rd0_data_valid_int  <= ui_app_rd_data_valid_i;
-
-  ui_rd1_data_int        <= ui_app_rd_data_i;
-  ui_rd1_data_end_int    <= ui_app_rd_data_end_i;
-  ui_rd1_data_valid_int  <= ui_app_rd_data_valid_i;
+  ddr_aximm_ma_awid_o                        <= ddr_aximm_ma_awid_int(0 downto 0);
+  ddr_aximm_ma_bid_int                       <= "000" & ddr_aximm_ma_bid_i;
+  ddr_aximm_ma_arid_o                        <= ddr_aximm_ma_arid_int(0 downto 0);
+  ddr_aximm_ma_rid_int                       <= "000" & ddr_aximm_ma_rid_i;
 
 end rtl;
