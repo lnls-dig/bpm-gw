@@ -1705,43 +1705,43 @@ package dbe_wishbone_pkg is
     -- DDR memory controller interface --
     ddr_aximm_sl_aclk_o                       : out std_logic;
     ddr_aximm_sl_aresetn_o                    : out std_logic;
-    ddr_aximm_sl_awid_i                       : in std_logic_vector (0 downto 0);
-    ddr_aximm_sl_awaddr_i                     : in std_logic_vector (31 downto 0);
-    ddr_aximm_sl_awlen_i                      : in std_logic_vector (7 downto 0);
-    ddr_aximm_sl_awsize_i                     : in std_logic_vector (2 downto 0);
-    ddr_aximm_sl_awburst_i                    : in std_logic_vector (1 downto 0);
-    ddr_aximm_sl_awlock_i                     : in std_logic;
-    ddr_aximm_sl_awcache_i                    : in std_logic_vector (3 downto 0);
-    ddr_aximm_sl_awprot_i                     : in std_logic_vector (2 downto 0);
-    ddr_aximm_sl_awqos_i                      : in std_logic_vector (3 downto 0);
-    ddr_aximm_sl_awvalid_i                    : in std_logic;
-    ddr_aximm_sl_awready_o                    : out std_logic;
-    ddr_aximm_sl_wdata_i                      : in std_logic_vector (c_ddr_payload_width-1 downto 0);
-    ddr_aximm_sl_wstrb_i                      : in std_logic_vector (c_ddr_payload_width/8-1 downto 0);
-    ddr_aximm_sl_wlast_i                      : in std_logic;
-    ddr_aximm_sl_wvalid_i                     : in std_logic;
-    ddr_aximm_sl_wready_o                     : out std_logic;
-    ddr_aximm_sl_bready_i                     : in std_logic;
-    ddr_aximm_sl_bid_o                        : out std_logic_vector (0 downto 0);
-    ddr_aximm_sl_bresp_o                      : out std_logic_vector (1 downto 0);
-    ddr_aximm_sl_bvalid_o                     : out std_logic;
-    ddr_aximm_sl_arid_i                       : in std_logic_vector (0 downto 0);
-    ddr_aximm_sl_araddr_i                     : in std_logic_vector (31 downto 0);
-    ddr_aximm_sl_arlen_i                      : in std_logic_vector (7 downto 0);
-    ddr_aximm_sl_arsize_i                     : in std_logic_vector (2 downto 0);
-    ddr_aximm_sl_arburst_i                    : in std_logic_vector (1 downto 0);
-    ddr_aximm_sl_arlock_i                     : in std_logic;
-    ddr_aximm_sl_arcache_i                    : in std_logic_vector (3 downto 0);
-    ddr_aximm_sl_arprot_i                     : in std_logic_vector (2 downto 0);
-    ddr_aximm_sl_arqos_i                      : in std_logic_vector (3 downto 0);
-    ddr_aximm_sl_arvalid_i                    : in std_logic;
-    ddr_aximm_sl_arready_o                    : out std_logic;
-    ddr_aximm_sl_rready_i                     : in std_logic;
-    ddr_aximm_sl_rid_o                        : out std_logic_vector (0 downto 0 );
-    ddr_aximm_sl_rdata_o                      : out std_logic_vector (c_ddr_payload_width-1 downto 0);
-    ddr_aximm_sl_rresp_o                      : out std_logic_vector (1 downto 0 );
-    ddr_aximm_sl_rlast_o                      : out std_logic;
-    ddr_aximm_sl_rvalid_o                     : out std_logic;
+    ddr_aximm_w_sl_awid_i                     : in std_logic_vector (0 downto 0);
+    ddr_aximm_w_sl_awaddr_i                   : in std_logic_vector (31 downto 0);
+    ddr_aximm_w_sl_awlen_i                    : in std_logic_vector (7 downto 0);
+    ddr_aximm_w_sl_awsize_i                   : in std_logic_vector (2 downto 0);
+    ddr_aximm_w_sl_awburst_i                  : in std_logic_vector (1 downto 0);
+    ddr_aximm_w_sl_awlock_i                   : in std_logic;
+    ddr_aximm_w_sl_awcache_i                  : in std_logic_vector (3 downto 0);
+    ddr_aximm_w_sl_awprot_i                   : in std_logic_vector (2 downto 0);
+    ddr_aximm_w_sl_awqos_i                    : in std_logic_vector (3 downto 0);
+    ddr_aximm_w_sl_awvalid_i                  : in std_logic;
+    ddr_aximm_w_sl_awready_o                  : out std_logic;
+    ddr_aximm_w_sl_wdata_i                    : in std_logic_vector (c_ddr_payload_width-1 downto 0);
+    ddr_aximm_w_sl_wstrb_i                    : in std_logic_vector (c_ddr_payload_width/8-1 downto 0);
+    ddr_aximm_w_sl_wlast_i                    : in std_logic;
+    ddr_aximm_w_sl_wvalid_i                   : in std_logic;
+    ddr_aximm_w_sl_wready_o                   : out std_logic;
+    ddr_aximm_w_sl_bready_i                   : in std_logic;
+    ddr_aximm_w_sl_bid_o                      : out std_logic_vector (0 downto 0);
+    ddr_aximm_w_sl_bresp_o                    : out std_logic_vector (1 downto 0);
+    ddr_aximm_w_sl_bvalid_o                   : out std_logic;
+    ddr_aximm_r_sl_arid_i                     : in std_logic_vector (0 downto 0);
+    ddr_aximm_r_sl_araddr_i                   : in std_logic_vector (31 downto 0);
+    ddr_aximm_r_sl_arlen_i                    : in std_logic_vector (7 downto 0);
+    ddr_aximm_r_sl_arsize_i                   : in std_logic_vector (2 downto 0);
+    ddr_aximm_r_sl_arburst_i                  : in std_logic_vector (1 downto 0);
+    ddr_aximm_r_sl_arlock_i                   : in std_logic;
+    ddr_aximm_r_sl_arcache_i                  : in std_logic_vector (3 downto 0);
+    ddr_aximm_r_sl_arprot_i                   : in std_logic_vector (2 downto 0);
+    ddr_aximm_r_sl_arqos_i                    : in std_logic_vector (3 downto 0);
+    ddr_aximm_r_sl_arvalid_i                  : in std_logic;
+    ddr_aximm_r_sl_arready_o                  : out std_logic;
+    ddr_aximm_r_sl_rready_i                   : in std_logic;
+    ddr_aximm_r_sl_rid_o                      : out std_logic_vector (0 downto 0 );
+    ddr_aximm_r_sl_rdata_o                    : out std_logic_vector (c_ddr_payload_width-1 downto 0);
+    ddr_aximm_r_sl_rresp_o                    : out std_logic_vector (1 downto 0 );
+    ddr_aximm_r_sl_rlast_o                    : out std_logic;
+    ddr_aximm_r_sl_rvalid_o                   : out std_logic;
 
     -- Wishbone interface --
     wb_clk_i                                  : in std_logic;
@@ -1802,8 +1802,12 @@ package dbe_wishbone_pkg is
     -- DDR memory controller interface --
     ddr_aximm_sl_aclk_o                       : out std_logic;
     ddr_aximm_sl_aresetn_o                    : out std_logic;
-    ddr_aximm_sl_i                            : in t_aximm_in := cc_dummy_aximm_in;
-    ddr_aximm_sl_o                            : out t_aximm_out;
+    -- AXIMM Read Channel
+    ddr_aximm_r_sl_i                          : in t_aximm_r_slave_in := cc_dummy_aximm_r_slave_in;
+    ddr_aximm_r_sl_o                          : out t_aximm_r_slave_out;
+    -- AXIMM Write Channel
+    ddr_aximm_w_sl_i                          : in t_aximm_w_slave_in := cc_dummy_aximm_w_slave_in;
+    ddr_aximm_w_sl_o                          : out t_aximm_w_slave_out;
 
     -- Wishbone interface --
     wb_clk_i                                  : in std_logic;

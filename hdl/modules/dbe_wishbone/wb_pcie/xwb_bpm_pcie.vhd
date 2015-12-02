@@ -21,6 +21,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
+use work.wishbone_pkg.all;
 use work.dbe_wishbone_pkg.all;
 use work.ipcores_pkg.all;
 use work.bpm_axi_pkg.all;
@@ -65,8 +66,12 @@ port (
   -- DDR memory controller interface --
   ddr_aximm_sl_aclk_o                       : out std_logic;
   ddr_aximm_sl_aresetn_o                    : out std_logic;
-  ddr_aximm_sl_i                            : in t_aximm_in := cc_dummy_aximm_slave_in;
-  ddr_aximm_sl_o                            : out t_aximm_out;
+  -- AXIMM Read Channel
+  ddr_aximm_r_sl_i                          : in t_aximm_r_slave_in := cc_dummy_aximm_r_slave_in;
+  ddr_aximm_r_sl_o                          : out t_aximm_r_slave_out;
+  -- AXIMM Write Channel
+  ddr_aximm_w_sl_i                          : in t_aximm_w_slave_in := cc_dummy_aximm_w_slave_in;
+  ddr_aximm_w_sl_o                          : out t_aximm_w_slave_out;
 
   -- Wishbone interface --
   wb_clk_i                                  : in std_logic;
@@ -114,52 +119,52 @@ begin
     pci_exp_txn_o                            => pci_exp_txn_o,
 
     -- Necessity signals
-    ddr_clk_p_i                              => ddr_clk_p_i,
-    ddr_clk_n_i                              => ddr_clk_n_i,
+    ddr_clk_i                                => ddr_clk_i,
+    ddr_rst_i                                => ddr_rst_i,
     pcie_clk_p_i                             => pcie_clk_p_i,
     pcie_clk_n_i                             => pcie_clk_n_i,
     pcie_rst_n_i                             => pcie_rst_n_i,
 
     -- DDR memory controller interface
-    ddr_axi_aclk_o                          => ddr_aximm_sl_aclk_o,
-    ddr_axi_aresetn_o                       => ddr_aximm_sl_aresetn_o,
-    ddr_axi_awid_i                          => ddr_aximm_sl_i.awid,
-    ddr_axi_awaddr_i                        => ddr_aximm_sl_i.awaddr,
-    ddr_axi_awlen_i                         => ddr_aximm_sl_i.awlen,
-    ddr_axi_awsize_i                        => ddr_aximm_sl_i.awsize,
-    ddr_axi_awburst_i                       => ddr_aximm_sl_i.awburst,
-    ddr_axi_awlock_i                        => ddr_aximm_sl_i.awlock,
-    ddr_axi_awcache_i                       => ddr_aximm_sl_i.awcache,
-    ddr_axi_awprot_i                        => ddr_aximm_sl_i.awprot,
-    ddr_axi_awqos_i                         => ddr_aximm_sl_i.awqos,
-    ddr_axi_awvalid_i                       => ddr_aximm_sl_i.awvalid,
-    ddr_axi_awready_o                       => ddr_aximm_sl_o.awready,
-    ddr_axi_wdata_i                         => ddr_aximm_sl_i.wdata,
-    ddr_axi_wstrb_i                         => ddr_aximm_sl_i.wstrb,
-    ddr_axi_wlast_i                         => ddr_aximm_sl_i.wlast,
-    ddr_axi_wvalid_i                        => ddr_aximm_sl_i.wvalid,
-    ddr_axi_wready_o                        => ddr_aximm_sl_o.wready,
-    ddr_axi_bready_i                        => ddr_aximm_sl_i.bready,
-    ddr_axi_bid_o                           => ddr_aximm_sl_o.bid,
-    ddr_axi_bresp_o                         => ddr_aximm_sl_o.bresp,
-    ddr_axi_bvalid_o                        => ddr_aximm_sl_o.bvalid,
-    ddr_axi_arid_i                          => ddr_aximm_sl_i.arid,
-    ddr_axi_araddr_i                        => ddr_aximm_sl_i.araddr,
-    ddr_axi_arlen_i                         => ddr_aximm_sl_i.arlen,
-    ddr_axi_arsize_i                        => ddr_aximm_sl_i.arsize,
-    ddr_axi_arburst_i                       => ddr_aximm_sl_i.arburst,
-    ddr_axi_arlock_i                        => ddr_aximm_sl_i.arlock,
-    ddr_axi_arcache_i                       => ddr_aximm_sl_i.arcache,
-    ddr_axi_arprot_i                        => ddr_aximm_sl_i.arprot,
-    ddr_axi_arqos_i                         => ddr_aximm_sl_i.arqos,
-    ddr_axi_arvalid_i                       => ddr_aximm_sl_i.arvalid,
-    ddr_axi_arready_o                       => ddr_aximm_sl_o.arready,
-    ddr_axi_rready_i                        => ddr_aximm_sl_i.rready,
-    ddr_axi_rid_o                           => ddr_aximm_sl_o.rid,
-    ddr_axi_rdata_o                         => ddr_aximm_sl_o.rdata,
-    ddr_axi_rresp_o                         => ddr_aximm_sl_o.rresp,
-    ddr_axi_rlast_o                         => ddr_aximm_sl_o.rlast,
-    ddr_axi_rvalid_o                        => ddr_aximm_sl_o.rvalid,
+    ddr_aximm_sl_aclk_o                      => ddr_aximm_sl_aclk_o,
+    ddr_aximm_sl_aresetn_o                   => ddr_aximm_sl_aresetn_o,
+    ddr_aximm_w_sl_awid_i                    => ddr_aximm_w_sl_i.awid,
+    ddr_aximm_w_sl_awaddr_i                  => ddr_aximm_w_sl_i.awaddr,
+    ddr_aximm_w_sl_awlen_i                   => ddr_aximm_w_sl_i.awlen,
+    ddr_aximm_w_sl_awsize_i                  => ddr_aximm_w_sl_i.awsize,
+    ddr_aximm_w_sl_awburst_i                 => ddr_aximm_w_sl_i.awburst,
+    ddr_aximm_w_sl_awlock_i                  => ddr_aximm_w_sl_i.awlock,
+    ddr_aximm_w_sl_awcache_i                 => ddr_aximm_w_sl_i.awcache,
+    ddr_aximm_w_sl_awprot_i                  => ddr_aximm_w_sl_i.awprot,
+    ddr_aximm_w_sl_awqos_i                   => ddr_aximm_w_sl_i.awqos,
+    ddr_aximm_w_sl_awvalid_i                 => ddr_aximm_w_sl_i.awvalid,
+    ddr_aximm_w_sl_awready_o                 => ddr_aximm_w_sl_o.awready,
+    ddr_aximm_w_sl_wdata_i                   => ddr_aximm_w_sl_i.wdata,
+    ddr_aximm_w_sl_wstrb_i                   => ddr_aximm_w_sl_i.wstrb,
+    ddr_aximm_w_sl_wlast_i                   => ddr_aximm_w_sl_i.wlast,
+    ddr_aximm_w_sl_wvalid_i                  => ddr_aximm_w_sl_i.wvalid,
+    ddr_aximm_w_sl_wready_o                  => ddr_aximm_w_sl_o.wready,
+    ddr_aximm_w_sl_bready_i                  => ddr_aximm_w_sl_i.bready,
+    ddr_aximm_w_sl_bid_o                     => ddr_aximm_w_sl_o.bid,
+    ddr_aximm_w_sl_bresp_o                   => ddr_aximm_w_sl_o.bresp,
+    ddr_aximm_w_sl_bvalid_o                  => ddr_aximm_w_sl_o.bvalid,
+    ddr_aximm_r_sl_arid_i                    => ddr_aximm_r_sl_i.arid,
+    ddr_aximm_r_sl_araddr_i                  => ddr_aximm_r_sl_i.araddr,
+    ddr_aximm_r_sl_arlen_i                   => ddr_aximm_r_sl_i.arlen,
+    ddr_aximm_r_sl_arsize_i                  => ddr_aximm_r_sl_i.arsize,
+    ddr_aximm_r_sl_arburst_i                 => ddr_aximm_r_sl_i.arburst,
+    ddr_aximm_r_sl_arlock_i                  => ddr_aximm_r_sl_i.arlock,
+    ddr_aximm_r_sl_arcache_i                 => ddr_aximm_r_sl_i.arcache,
+    ddr_aximm_r_sl_arprot_i                  => ddr_aximm_r_sl_i.arprot,
+    ddr_aximm_r_sl_arqos_i                   => ddr_aximm_r_sl_i.arqos,
+    ddr_aximm_r_sl_arvalid_i                 => ddr_aximm_r_sl_i.arvalid,
+    ddr_aximm_r_sl_arready_o                 => ddr_aximm_r_sl_o.arready,
+    ddr_aximm_r_sl_rready_i                  => ddr_aximm_r_sl_i.rready,
+    ddr_aximm_r_sl_rid_o                     => ddr_aximm_r_sl_o.rid,
+    ddr_aximm_r_sl_rdata_o                   => ddr_aximm_r_sl_o.rdata,
+    ddr_aximm_r_sl_rresp_o                   => ddr_aximm_r_sl_o.rresp,
+    ddr_aximm_r_sl_rlast_o                   => ddr_aximm_r_sl_o.rlast,
+    ddr_aximm_r_sl_rvalid_o                  => ddr_aximm_r_sl_o.rvalid,
 
     -- Wishbone interface --
     wb_clk_i                                 => wb_clk_i,
