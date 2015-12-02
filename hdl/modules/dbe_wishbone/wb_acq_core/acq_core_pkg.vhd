@@ -104,6 +104,7 @@ package acq_core_pkg is
   end record;
 
   type t_acq_chan_array is array (natural range <>) of t_acq_chan;
+  type t_acq_chan_array2d is array (natural range <>, natural range <>) of t_acq_chan;
 
   constant c_default_acq_num_channels : natural := 5;
   constant c_default_acq_chan_param64 : t_acq_chan_param := (
