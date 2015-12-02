@@ -23,7 +23,7 @@ constant C_DDR_ADDR_WIDTH    : positive := 31;
   -- Component declarations
   -- ----------------------------------------------------------------------------
 component pcie_core
-Port ( 
+Port (
   pci_exp_txp : out STD_LOGIC_VECTOR ( 3 downto 0 );
   pci_exp_txn : out STD_LOGIC_VECTOR ( 3 downto 0 );
   pci_exp_rxp : in STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -182,9 +182,9 @@ Port (
   sys_rst_n : in STD_LOGIC
 );
 end component;
-  
+
 component ddr_core
-Port( 
+Port(
   ddr3_dq : inout STD_LOGIC_VECTOR ( 31 downto 0 );
   ddr3_dqs_n : inout STD_LOGIC_VECTOR ( 3 downto 0 );
   ddr3_dqs_p : inout STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -377,8 +377,8 @@ PORT (
 );
 END COMPONENT;
 
-COMPONENT axi_interconnect_bpm
-PORT (
+component axi_interconnect_bpm
+Port (
   INTERCONNECT_ACLK : in STD_LOGIC;
   INTERCONNECT_ARESETN : in STD_LOGIC;
   S00_AXI_ARESET_OUT_N : out STD_LOGIC;
@@ -498,6 +498,201 @@ PORT (
   S02_AXI_RLAST : out STD_LOGIC;
   S02_AXI_RVALID : out STD_LOGIC;
   S02_AXI_RREADY : in STD_LOGIC;
+  S03_AXI_ARESET_OUT_N : out STD_LOGIC;
+  S03_AXI_ACLK : in STD_LOGIC;
+  S03_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S03_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S03_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S03_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S03_AXI_AWBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S03_AXI_AWLOCK : in STD_LOGIC;
+  S03_AXI_AWCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S03_AXI_AWPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S03_AXI_AWQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S03_AXI_AWVALID : in STD_LOGIC;
+  S03_AXI_AWREADY : out STD_LOGIC;
+  S03_AXI_WDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  S03_AXI_WSTRB : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S03_AXI_WLAST : in STD_LOGIC;
+  S03_AXI_WVALID : in STD_LOGIC;
+  S03_AXI_WREADY : out STD_LOGIC;
+  S03_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S03_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S03_AXI_BVALID : out STD_LOGIC;
+  S03_AXI_BREADY : in STD_LOGIC;
+  S03_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S03_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S03_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S03_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S03_AXI_ARBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S03_AXI_ARLOCK : in STD_LOGIC;
+  S03_AXI_ARCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S03_AXI_ARPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S03_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S03_AXI_ARVALID : in STD_LOGIC;
+  S03_AXI_ARREADY : out STD_LOGIC;
+  S03_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S03_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  S03_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S03_AXI_RLAST : out STD_LOGIC;
+  S03_AXI_RVALID : out STD_LOGIC;
+  S03_AXI_RREADY : in STD_LOGIC;
+  S04_AXI_ARESET_OUT_N : out STD_LOGIC;
+  S04_AXI_ACLK : in STD_LOGIC;
+  S04_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S04_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S04_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S04_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S04_AXI_AWBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S04_AXI_AWLOCK : in STD_LOGIC;
+  S04_AXI_AWCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S04_AXI_AWPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S04_AXI_AWQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S04_AXI_AWVALID : in STD_LOGIC;
+  S04_AXI_AWREADY : out STD_LOGIC;
+  S04_AXI_WDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  S04_AXI_WSTRB : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S04_AXI_WLAST : in STD_LOGIC;
+  S04_AXI_WVALID : in STD_LOGIC;
+  S04_AXI_WREADY : out STD_LOGIC;
+  S04_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S04_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S04_AXI_BVALID : out STD_LOGIC;
+  S04_AXI_BREADY : in STD_LOGIC;
+  S04_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S04_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S04_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S04_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S04_AXI_ARBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S04_AXI_ARLOCK : in STD_LOGIC;
+  S04_AXI_ARCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S04_AXI_ARPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S04_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S04_AXI_ARVALID : in STD_LOGIC;
+  S04_AXI_ARREADY : out STD_LOGIC;
+  S04_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S04_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  S04_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S04_AXI_RLAST : out STD_LOGIC;
+  S04_AXI_RVALID : out STD_LOGIC;
+  S04_AXI_RREADY : in STD_LOGIC;
+  S05_AXI_ARESET_OUT_N : out STD_LOGIC;
+  S05_AXI_ACLK : in STD_LOGIC;
+  S05_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S05_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S05_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S05_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S05_AXI_AWBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S05_AXI_AWLOCK : in STD_LOGIC;
+  S05_AXI_AWCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S05_AXI_AWPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S05_AXI_AWQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S05_AXI_AWVALID : in STD_LOGIC;
+  S05_AXI_AWREADY : out STD_LOGIC;
+  S05_AXI_WDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  S05_AXI_WSTRB : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S05_AXI_WLAST : in STD_LOGIC;
+  S05_AXI_WVALID : in STD_LOGIC;
+  S05_AXI_WREADY : out STD_LOGIC;
+  S05_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S05_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S05_AXI_BVALID : out STD_LOGIC;
+  S05_AXI_BREADY : in STD_LOGIC;
+  S05_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S05_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S05_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S05_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S05_AXI_ARBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S05_AXI_ARLOCK : in STD_LOGIC;
+  S05_AXI_ARCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S05_AXI_ARPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S05_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S05_AXI_ARVALID : in STD_LOGIC;
+  S05_AXI_ARREADY : out STD_LOGIC;
+  S05_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S05_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  S05_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S05_AXI_RLAST : out STD_LOGIC;
+  S05_AXI_RVALID : out STD_LOGIC;
+  S05_AXI_RREADY : in STD_LOGIC;
+  S06_AXI_ARESET_OUT_N : out STD_LOGIC;
+  S06_AXI_ACLK : in STD_LOGIC;
+  S06_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S06_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S06_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S06_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S06_AXI_AWBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S06_AXI_AWLOCK : in STD_LOGIC;
+  S06_AXI_AWCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S06_AXI_AWPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S06_AXI_AWQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S06_AXI_AWVALID : in STD_LOGIC;
+  S06_AXI_AWREADY : out STD_LOGIC;
+  S06_AXI_WDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  S06_AXI_WSTRB : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S06_AXI_WLAST : in STD_LOGIC;
+  S06_AXI_WVALID : in STD_LOGIC;
+  S06_AXI_WREADY : out STD_LOGIC;
+  S06_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S06_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S06_AXI_BVALID : out STD_LOGIC;
+  S06_AXI_BREADY : in STD_LOGIC;
+  S06_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S06_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S06_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S06_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S06_AXI_ARBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S06_AXI_ARLOCK : in STD_LOGIC;
+  S06_AXI_ARCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S06_AXI_ARPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S06_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S06_AXI_ARVALID : in STD_LOGIC;
+  S06_AXI_ARREADY : out STD_LOGIC;
+  S06_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S06_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  S06_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S06_AXI_RLAST : out STD_LOGIC;
+  S06_AXI_RVALID : out STD_LOGIC;
+  S06_AXI_RREADY : in STD_LOGIC;
+  S07_AXI_ARESET_OUT_N : out STD_LOGIC;
+  S07_AXI_ACLK : in STD_LOGIC;
+  S07_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S07_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S07_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S07_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S07_AXI_AWBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S07_AXI_AWLOCK : in STD_LOGIC;
+  S07_AXI_AWCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S07_AXI_AWPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S07_AXI_AWQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S07_AXI_AWVALID : in STD_LOGIC;
+  S07_AXI_AWREADY : out STD_LOGIC;
+  S07_AXI_WDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  S07_AXI_WSTRB : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S07_AXI_WLAST : in STD_LOGIC;
+  S07_AXI_WVALID : in STD_LOGIC;
+  S07_AXI_WREADY : out STD_LOGIC;
+  S07_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S07_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S07_AXI_BVALID : out STD_LOGIC;
+  S07_AXI_BREADY : in STD_LOGIC;
+  S07_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S07_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
+  S07_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
+  S07_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S07_AXI_ARBURST : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  S07_AXI_ARLOCK : in STD_LOGIC;
+  S07_AXI_ARCACHE : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S07_AXI_ARPROT : in STD_LOGIC_VECTOR ( 2 downto 0 );
+  S07_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  S07_AXI_ARVALID : in STD_LOGIC;
+  S07_AXI_ARREADY : out STD_LOGIC;
+  S07_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S07_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  S07_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  S07_AXI_RLAST : out STD_LOGIC;
+  S07_AXI_RVALID : out STD_LOGIC;
+  S07_AXI_RREADY : in STD_LOGIC;
   M00_AXI_ARESET_OUT_N : out STD_LOGIC;
   M00_AXI_ACLK : in STD_LOGIC;
   M00_AXI_AWID : out STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -538,7 +733,7 @@ PORT (
   M00_AXI_RVALID : in STD_LOGIC;
   M00_AXI_RREADY : out STD_LOGIC
 );
-END COMPONENT;
+end component;
 
 COMPONENT axi_datamover_0
 PORT (
@@ -612,8 +807,40 @@ PORT (
 );
 END COMPONENT;
 
-COMPONENT axi_datamover_bpm
-PORT (
+component axi_datamover_bpm
+Port (
+  m_axi_mm2s_aclk : in STD_LOGIC;
+  m_axi_mm2s_aresetn : in STD_LOGIC;
+  mm2s_err : out STD_LOGIC;
+  m_axis_mm2s_cmdsts_aclk : in STD_LOGIC;
+  m_axis_mm2s_cmdsts_aresetn : in STD_LOGIC;
+  s_axis_mm2s_cmd_tvalid : in STD_LOGIC;
+  s_axis_mm2s_cmd_tready : out STD_LOGIC;
+  s_axis_mm2s_cmd_tdata : in STD_LOGIC_VECTOR ( 71 downto 0 );
+  m_axis_mm2s_sts_tvalid : out STD_LOGIC;
+  m_axis_mm2s_sts_tready : in STD_LOGIC;
+  m_axis_mm2s_sts_tdata : out STD_LOGIC_VECTOR ( 7 downto 0 );
+  m_axis_mm2s_sts_tkeep : out STD_LOGIC_VECTOR ( 0 to 0 );
+  m_axis_mm2s_sts_tlast : out STD_LOGIC;
+  m_axi_mm2s_araddr : out STD_LOGIC_VECTOR ( 31 downto 0 );
+  m_axi_mm2s_arlen : out STD_LOGIC_VECTOR ( 7 downto 0 );
+  m_axi_mm2s_arsize : out STD_LOGIC_VECTOR ( 2 downto 0 );
+  m_axi_mm2s_arburst : out STD_LOGIC_VECTOR ( 1 downto 0 );
+  m_axi_mm2s_arprot : out STD_LOGIC_VECTOR ( 2 downto 0 );
+  m_axi_mm2s_arcache : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  m_axi_mm2s_aruser : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  m_axi_mm2s_arvalid : out STD_LOGIC;
+  m_axi_mm2s_arready : in STD_LOGIC;
+  m_axi_mm2s_rdata : in STD_LOGIC_VECTOR ( 255 downto 0 );
+  m_axi_mm2s_rresp : in STD_LOGIC_VECTOR ( 1 downto 0 );
+  m_axi_mm2s_rlast : in STD_LOGIC;
+  m_axi_mm2s_rvalid : in STD_LOGIC;
+  m_axi_mm2s_rready : out STD_LOGIC;
+  m_axis_mm2s_tdata : out STD_LOGIC_VECTOR ( 255 downto 0 );
+  m_axis_mm2s_tkeep : out STD_LOGIC_VECTOR ( 31 downto 0 );
+  m_axis_mm2s_tlast : out STD_LOGIC;
+  m_axis_mm2s_tvalid : out STD_LOGIC;
+  m_axis_mm2s_tready : in STD_LOGIC;
   m_axi_s2mm_aclk : in STD_LOGIC;
   m_axi_s2mm_aresetn : in STD_LOGIC;
   s2mm_err : out STD_LOGIC;
@@ -650,6 +877,6 @@ PORT (
   s_axis_s2mm_tvalid : in STD_LOGIC;
   s_axis_s2mm_tready : out STD_LOGIC
 );
-END COMPONENT;
+end component;
 
 end package;
