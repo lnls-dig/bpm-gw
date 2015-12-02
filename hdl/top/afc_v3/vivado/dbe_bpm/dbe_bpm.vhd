@@ -2528,7 +2528,7 @@ begin
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).dvalid    <= '0';
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).trig      <= fmc2_trig_hw;
 
-  cmp_xwb_acq_core_2_to_1_mux : xwb_acq_core_2_to_1_mux
+  cmp_xwb_acq_core_mux : xwb_acq_core_mux
   generic map
   (
     g_interface_mode                          => PIPELINED,
