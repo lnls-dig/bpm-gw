@@ -366,6 +366,16 @@ begin
       axis_s2mm_pld_mo_array(i).tlast  <= ui_wdf_end_array_int(i);
       axis_s2mm_pld_mo_array(i).tvalid <= ui_wdf_wren_array_int(i);
 
+      -- Memory Mapped to Stream Commands. Unused for synthesis.
+      axis_mm2s_cmd_mo_array(i).tdata  <= (others => '0');
+      axis_mm2s_cmd_mo_array(i).tvalid <= '0';
+
+      -- Stream to Memory Mapped Payload
+      ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width) <= (others => '0');
+      ui_rd_data_end_array_int(i)                                                    <= '0';
+      ui_rd_data_valid_array_int(i)                                                  <= '0';
+      axis_mm2s_pld_mi_array(i).tready                                               <= '0';
+
     end generate;
 
     -- Generate signals for reading DDR core (WARNING: only for simulation!)
