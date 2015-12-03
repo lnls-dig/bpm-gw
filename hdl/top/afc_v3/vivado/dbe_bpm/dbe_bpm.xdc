@@ -874,6 +874,10 @@ set_input_jitter fmc1_adc3_clk_i 0.050
 create_clock -period 8.000 -name fmc2_adc3_clk_i [get_ports fmc2_adc3_clk_i]
 set_input_jitter fmc2_adc3_clk_i 0.050
 
+# set asynchronous clock between PCIe and DDR
+set_clock_groups -asynchronous \
+  -group [get_clocks -include_generated_clocks pcie_clk] \
+  -group [get_clocks -include_generated_clocks clk_200mhz]
 
 #######################################################################
 ##                         Cross Clock Constraints		     ##
