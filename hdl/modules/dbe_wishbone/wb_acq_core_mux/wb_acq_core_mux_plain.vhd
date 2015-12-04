@@ -290,15 +290,17 @@ begin
     ddr_aximm_ma_rvalid_i                     => ddr_aximm_ma_rvalid_i
   );
 
-  gen_wb_acq_core_plain_2_to_1_plain0_inputs : for i in 0 to g_acq_num_cores - 1 generate
+  gen_wb_acq_core_plain_mux_plain_inputs_cores : for i in 0 to g_acq_num_cores - 1 generate
+    gen_wb_acq_core_plain_mux_plain_inputs_chan : for j in 0 to g_acq_num_channels - 1 generate
 
-    acq_val_low_array(i)      <=
-               acq_val_low_array_i(g_acq_num_channels*c_acq_chan_width*(i+1)-1 downto g_acq_num_channels*c_acq_chan_width*i);
-    acq_val_high_array(i)     <=
-               acq_val_high_array_i(g_acq_num_channels*c_acq_chan_width*(i+1)-1 downto g_acq_num_channels*c_acq_chan_width*i);
-    acq_dvalid_array(i)       <= acq_dvalid_array_i(i);
-    acq_trig_array(i)         <= acq_trig_array_i(i);
+      acq_val_low_array(i*g_acq_num_channels+j)      <=
+              acq_val_low_array_i(i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*(j+1)-1 downto i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*j);
+      acq_val_high_array(i*g_acq_num_channels+j)     <=
+              acq_val_high_array_i(i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*(j+1)-1 downto i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*j);
+      acq_dvalid_array(i*g_acq_num_channels+j)       <= acq_dvalid_array_i(i*g_acq_num_channels+j);
+      acq_trig_array(i*g_acq_num_channels+j)         <= acq_trig_array_i(i*g_acq_num_channels+j);
 
+    end generate;
   end generate;
 
 end rtl;
