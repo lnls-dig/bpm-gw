@@ -335,11 +335,12 @@ begin
     -- We don't rely on this signal to arbiter us, we use the VALID/TREADY handshake,
     -- now properly implemented through DDR AXI interface
     ui_app_gnt_array_int(i)                      <= '1';
-    -- ACQ core component 0 AXIS APP signals
-    ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready;
     ui_wdf_rdy_array_int(i)                      <= axis_s2mm_pld_mi_array(i).tready;
 
     gen_no_sim_signals : if not(g_sim_readback) generate
+
+      -- ACQ core component AXIS APP signals
+      ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready;
 
       -- Stream to Memory Mapped Commands
       axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
@@ -380,6 +381,10 @@ begin
 
     -- Generate signals for reading DDR core (WARNING: only for simulation!)
     gen_sim_signals : if g_sim_readback generate
+
+      -- ACQ core component AXIS APP signals
+      ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready when
+                                                        ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else axis_mm2s_cmd_mi_array(i).tready;
 
       -- Stream to Memory Mapped Commands
       axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
