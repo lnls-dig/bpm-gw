@@ -978,7 +978,7 @@ begin
     sim_in_rb <= ddr3_wr_all_trans_done_l;
     ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
 
-    cmp_acq_ddr3_read : acq_ddr3_read
+    cmp_acq_ddr3_ui_read : acq_ddr3_ui_read
     generic map
     (
       g_acq_addr_width                      => g_acq_addr_width,

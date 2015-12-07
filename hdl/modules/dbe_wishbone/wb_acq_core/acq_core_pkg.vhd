@@ -690,7 +690,7 @@ package acq_core_pkg is
   );
   end component;
 
-  component acq_ddr3_read
+  component acq_ddr3_ui_read
   generic
   (
     g_acq_addr_width                          : natural := 32;

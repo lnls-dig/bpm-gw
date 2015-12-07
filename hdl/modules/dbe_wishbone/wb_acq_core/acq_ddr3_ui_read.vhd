@@ -34,7 +34,7 @@ use work.acq_core_pkg.all;
 -- DBE common cores
 use work.dbe_common_pkg.all;
 
-entity acq_ddr3_read is
+entity acq_ddr3_ui_read is
 generic
 (
   g_acq_addr_width                          : natural := 32;
@@ -94,9 +94,9 @@ port
   ui_app_req_o                              : out std_logic;
   ui_app_gnt_i                              : in std_logic
 );
-end acq_ddr3_read;
+end acq_ddr3_ui_read;
 
-architecture rtl of acq_ddr3_read is
+architecture rtl of acq_ddr3_ui_read is
 
   alias c_acq_channels : t_acq_chan_param_array(g_acq_num_channels-1 downto 0) is g_acq_channels;
 
@@ -177,7 +177,7 @@ begin
 
   -- g_acq_addr_width != g_ddr_addr_width is not supported!
   assert (g_acq_addr_width = g_ddr_addr_width)
-  report "[acq_ddr3_read] Different address widths are not supported!"
+  report "[acq_ddr3_ui_read] Different address widths are not supported!"
   severity error;
 
   -----------------------------------------------------------------------------
