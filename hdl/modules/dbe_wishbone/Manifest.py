@@ -5,6 +5,7 @@ modules = { "local" : [
                         "wb_fmc150",
                         "wb_fmc516",
                         "wb_fmc130m_4ch",
+                        "wb_fmcpico1m_4ch",
                         "wb_ethmac_adapter",
                         "wb_ethmac",
                         "wb_dbe_periph",
