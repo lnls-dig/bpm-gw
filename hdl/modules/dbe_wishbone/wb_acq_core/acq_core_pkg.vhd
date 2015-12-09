@@ -690,6 +690,69 @@ package acq_core_pkg is
   );
   end component;
 
+  component acq_ddr3_axis_write
+  generic
+  (
+    g_acq_num_channels                        : natural := 1;
+    g_acq_channels                            : t_acq_chan_param_array;
+    g_fc_pipe_size                            : natural := 4;
+    -- Do not modify these! As they are dependent of the memory controller generated!
+    g_ddr_header_width                        : natural := 4;
+    g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+    g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+    g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
+    g_max_burst_size                          : natural := 4        -- be careful changing these!
+  );
+  port
+  (
+    -- DDR3 external clock
+    ext_clk_i                                 : in  std_logic;
+    ext_rst_n_i                               : in  std_logic;
+
+    -- Flow protocol to interface with external SDRAM. Evaluate the use of
+    -- Wishbone Streaming protocol.
+    fifo_fc_din_i                             : in std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
+    fifo_fc_valid_i                           : in std_logic;
+    fifo_fc_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+    fifo_fc_sof_i                             : in std_logic;
+    fifo_fc_eof_i                             : in std_logic;
+    fifo_fc_dreq_o                            : out std_logic;
+    fifo_fc_stall_o                           : out std_logic;
+
+    wr_start_i                                : in std_logic;
+    wr_init_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+    wr_end_addr_i                             : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+
+    lmt_all_trans_done_p_o                    : out std_logic;
+    lmt_ddr_trig_addr_o                       : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    lmt_rst_i                                 : in std_logic;
+
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the post trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Number of shots in this acquisition
+    lmt_shots_nb_i                            : in unsigned(15 downto 0);
+    -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
+    lmt_valid_i                               : in std_logic;
+
+    -- DDR3 AXIS Interface
+    axis_s2mm_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+    axis_s2mm_cmd_tvalid_o                    : out std_logic;
+    axis_s2mm_cmd_tready_i                    : in std_logic;
+
+    axis_s2mm_pld_tdata_o                     : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    axis_s2mm_pld_tkeep_o                     : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+    axis_s2mm_pld_tlast_o                     : out std_logic;
+    axis_s2mm_pld_tvalid_o                    : out std_logic;
+    axis_s2mm_pld_tready_i                    : in std_logic
+  );
+  end component;
+
   component acq_ddr3_ui_read
   generic
   (
@@ -749,6 +812,67 @@ package acq_core_pkg is
 
     ui_app_req_o                              : out std_logic;
     ui_app_gnt_i                              : in std_logic
+  );
+  end component;
+
+  component acq_ddr3_axis_read
+  generic
+  (
+    g_acq_addr_width                          : natural := 32;
+    g_acq_num_channels                        : natural := 1;
+    g_acq_channels                            : t_acq_chan_param_array;
+    -- Do not modify these! As they are dependent of the memory controller generated!
+    g_ddr_payload_width                       : natural := 256;     -- be careful changing these!
+    g_ddr_dq_width                            : natural := 64;      -- be careful changing these!
+    g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
+    g_max_burst_size                          : natural := 4        -- be careful changing these!
+  );
+  port
+  (
+    -- DDR3 external clock
+    ext_clk_i                                 : in  std_logic;
+    ext_rst_n_i                               : in  std_logic;
+
+    -- Flow protocol to interface with external SDRAM. Evaluate the use of
+    -- Wishbone Streaming protocol.
+    fifo_fc_din_o                             : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    fifo_fc_valid_o                           : out std_logic;
+    fifo_fc_addr_o                            : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    fifo_fc_sof_o                             : out std_logic; -- ignored
+    fifo_fc_eof_o                             : out std_logic; -- ignored
+    fifo_fc_dreq_i                            : in std_logic;  -- ignored
+    fifo_fc_stall_i                           : in std_logic;  -- ignored
+
+    rb_start_i                                : in std_logic;
+    rb_init_addr_i                            : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+    rb_ddr_trig_addr_i                        : in std_logic_vector(g_ddr_addr_width-1 downto 0);
+
+    lmt_all_trans_done_p_o                    : out std_logic;
+    lmt_rst_i                                 : in std_logic;
+
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Size of the pre trigger transaction in g_fifo_size bytes
+    lmt_pre_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the post trigger transaction in g_fifo_size bytes
+    lmt_pos_pkt_size_i                        : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Size of the full transaction in g_fifo_size bytes
+    lmt_full_pkt_size_i                       : in unsigned(c_pkt_size_width-1 downto 0);
+    -- Number of shots in this acquisition
+    lmt_shots_nb_i                            : in unsigned(15 downto 0);
+    -- Acquisition limits valid signal. Qualifies lmt_pkt_size_i and lmt_shots_nb_i
+    lmt_valid_i                               : in std_logic;
+
+    -- DDR3 AXIS Interface
+     axis_mm2s_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+     axis_mm2s_cmd_tvalid_o                    : out std_logic;
+     axis_mm2s_cmd_tready_i                    : in std_logic;
+
+     axis_mm2s_pld_tdata_i                     : in std_logic_vector(g_ddr_payload_width-1 downto 0);
+     axis_mm2s_pld_tkeep_i                     : in std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+     axis_mm2s_pld_tlast_i                     : in std_logic;
+     axis_mm2s_pld_tvalid_i                    : in std_logic;
+     axis_mm2s_pld_tready_o                    : out std_logic
   );
   end component;
 
