@@ -45,14 +45,14 @@ use work.dbe_common_pkg.all;
 library UNISIM;
 use UNISIM.vcomponents.all;
 
-entity test_trigger is
+entity test_trigger_rcv is
   port(
     sys_clk_p_i : in  std_logic;
     sys_clk_n_i : in  std_logic;
     trigger_i   : in  std_logic_vector(7 downto 0);
     direction_o : out std_logic_vector(7 downto 0)
     );
-end test_trigger;
+end test_trigger_rcv;
 
 architecture structural of test_trigger is
 
@@ -80,18 +80,6 @@ architecture structural of test_trigger is
       data_i  : in  std_logic;
       pulse_o : out std_logic);
   end component trigger_rcv;
-
-  component counter is
-    generic (
-      g_output_width : positive);
-    port (
-      clk_i   : in  std_logic;
-      rst_i   : in  std_logic;
-      ce_i    : in  std_logic;
-      up_i    : in  std_logic;
-      down_i  : in  std_logic;
-      count_o : out std_logic_vector(g_output_width-1 downto 0));
-  end component counter;
 
 -------------------------------------------------------------------------------
 -- Chipscope
@@ -250,38 +238,6 @@ begin
         data_i  => trigger_buf(i),
         pulse_o => pulse(i));
 
-    --cmp_counter_success : counter        -- Count when pulse is correctly received
-    --  generic map (
-    --    g_output_width => c_count_width)
-    --  port map (
-    --    clk_i   => clk_100mhz,
-    --    rst_i   => rst,
-    --    ce_i    => '1',
-    --    up_i    => pulse(i),
-    --    down_i  => '0',
-    --    count_o => count_success(i));
-
-    --cmp_counter_fail : counter          -- Count when pulse is not received
-    --  generic map (
-    --    g_output_width => c_count_width)
-    --  port map (
-    --    clk_i   => clk_100mhz,
-    --    rst_i   => rst,
-    --    ce_i    => '1',
-    --    up_i    => pulse(i),
-    --    down_i  => '0',
-    --    count_o => count_fail(i));
-
-  --cmp_counter_repeated : counter      -- Count when more than 1 pulse is received
-  --  generic map (
-  --    g_output_width => c_count_width)
-  --  port map (
-  --    clk_i   => clk_100mhz,
-  --    rst_i   => rst,
-  --    ce_i    => '1',
-  --    up_i    => pulse(i),
-  --    down_i  => '0',
-  --    count_o => count_repeated(i));
   end generate gen_trigger;
 
   -----------------------------------------------------------------------------
@@ -316,28 +272,6 @@ begin
       count_fail_o     => count_fail,
       count_repeated_o => count_repeated,
       count_others_o   => count_others);
-
-  --gen_counters : for i in 0 to 7 generate
-
-  --  -- purpose: defines whats happens when a pulse ir received
-  --  -- type   : sequential
-  --  -- inputs : pulse(i), pulse
-  --  -- outputs: counters
-  --  sm_counter_i : process (pulse(i)) is
-  --  begin  -- process sm_counter_i
-  --    if rising_edge(pulse(i)) then     -- rising clock edge
-  --      if (current_s = i) then         -- pulse properly received
-  --        count_success(i) <= count_success(i) + 1;
-  --      elsif (current_s = i+1) then    -- repeated pulse
-  --        count_repeated(i) <= count_repeated(i) + 1;
-  --      end if;
-  --    elsif (current_s = i-1) then
-  --      count_failed(i-1) <= count_failed(i-1) + 1;
-  --    else
-  --      count_others(i) <= count_others(i) + 1;
-  --    end if;
-  --  end process sm_counter_i;
-  --end generate gen_counters;
 
   cmp_chipscope_icon_4_port : chipscope_icon_4_port
     port map (
