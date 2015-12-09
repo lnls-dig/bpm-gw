@@ -2,7 +2,7 @@
 -- Title      : Trigger receiver test top
 -- Project    :
 -------------------------------------------------------------------------------
--- File       : test_trigger.vhd
+-- File       : test_trigger_rcv.vhd
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
@@ -30,8 +30,8 @@
 
 -------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author  Description
--- 2015-11-11  1.0      aylons  Created
+-- Date        Version  Author          Description
+-- 2015-11-11  1.0      aylons          Created
 -------------------------------------------------------------------------------
 
 library ieee;
