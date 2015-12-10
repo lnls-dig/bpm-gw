@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    : 
 -- Created    : 2015-11-11
--- Last update: 2015-11-18
+-- Last update: 2015-12-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -40,38 +40,39 @@ use ieee.numeric_std.all;
 library UNISIM;
 use UNISIM.vcomponents.all;
 
-entity counter is
+entity counter_simple is
   generic(
     g_output_width : positive := 8
     );
   port(
     clk_i   : in  std_logic;
-    rst_i   : in  std_logic;
+    rst_n_i   : in  std_logic;
     ce_i    : in  std_logic;
     up_i    : in  std_logic;
     down_i  : in  std_logic;
     count_o : out std_logic_vector(g_output_width-1 downto 0)
     );
-end counter;
+end counter_simple;
 
-architecture behavioural of counter is
+architecture behavioural of counter_simple is
   signal count : unsigned(g_output_width-1 downto 0) := to_unsigned(0, g_output_width);
 begin
 
-  counter : process(clk_i)
+  counter_simple : process(clk_i)
   begin
 
-    if clk_i = '1' and ce_i = '1' then
-      if rst_i = '1' then
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then
         count <= to_unsigned(0, g_output_width);
       else
+        if ce = '1' then
 
-        if up_i = '1' then
-          count <= count + 1;
-        elsif down_i = '1' then
-          count <= count - 1;
-        end if;
-
+          if up_i = '1' then
+            count <= count + 1;
+          elsif down_i = '1' then
+            count <= count - 1;
+          end if;
+        end if;  --ce
       end if;  --rst
     end if;  -- clk
 
