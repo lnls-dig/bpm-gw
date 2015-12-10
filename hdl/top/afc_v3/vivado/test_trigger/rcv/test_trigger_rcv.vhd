@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-09
+-- Last update: 2015-12-10
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -143,33 +143,24 @@ architecture structural of test_trigger is
   signal clk_100mhz, clk_200mhz : std_logic;
   signal sys_clk_gen_bufg       : std_logic;
   signal locked                 : std_logic;
-  signal rst                    : std_logic;
+  signal rst, rst_n             : std_logic;
 
   -----------------------------------------------------------------------------
   -- State Machine Signals
   -----------------------------------------------------------------------------
 
-  type state_type is natural range 0 to 7;     -- types of the machine
-  signal current_s, next_s : state_type := 0;  --current and next state declaration.
+  type state_type is natural range 0 to 7;  -- types of the machine
+  signal current_s : state_type := 0;       --current state declaration.
 
-  component sm_next is
+  component sm_states_rcv is
     generic (
       g_num_states : positive);
     port (
       clk_i       : in  std_logic;
-      rst_i       : in  std_logic;
-      next_s_i    : in  natural;
+      rst_n_i     : in  std_logic;
+      data_i      : in  std_logic_vector(g_num_states-1 downto 0);
       current_s_o : out natural);
-  end component sm_next;
-
-  component sm_state is
-    generic (
-      g_num_states : natural);
-    port (
-      current_s_i : in  natural;
-      data_i      : in  std_logic_vector;
-      next_s_o    : out natural);
-  end component sm_state;
+  end component sm_states_rcv;
 
   component sm_counter is
     generic (
@@ -184,6 +175,8 @@ architecture structural of test_trigger is
   end component sm_counter;
 
 begin
+
+  rst_n <= not(rst);
 
   -- Clock generation
   cmp_clk_gen : clk_gen
@@ -244,23 +237,14 @@ begin
   -- State Machine
   -----------------------------------------------------------------------------
 
-  sm_next_1 : sm_next
+  sm_states_rcv_1 : entity work.sm_states_rcv
     generic map (
       g_num_states => 8)
     port map (
       clk_i       => clk_100mhz,
-      rst_i       => rst_i,
-      next_s_i    => next_s,
-      current_s_o => current_s);
-
-
-  sm_state_1 : sm_state
-    generic map (
-      g_num_states => 8)
-    port map (
-      current_s_i => current_s,
+      rst_n_i     => rst_n,
       data_i      => pulse,
-      next_s_o    => next_s);
+      current_s_o => current_s);
 
   sm_counter_1 : sm_counter
     generic map (
@@ -279,7 +263,6 @@ begin
       CONTROL1 => CONTROL1,
       CONTROL2 => CONTROL2,
       CONTROL3 => CONTROL3);
-
 
   cmp_chipscope_ila_0 : entity work.chipscope_ila
     port map (
@@ -308,7 +291,6 @@ begin
       TRIG1              => filler,
       TRIG2              => filler,
       TRIG3              => filler);
-
 
   cmp_chipscope_vio : entity work.chipscope_vio_32
     port map (
