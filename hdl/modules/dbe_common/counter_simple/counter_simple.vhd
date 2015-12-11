@@ -1,18 +1,18 @@
 -------------------------------------------------------------------------------
 -- Title      : Simple counter
--- Project    : 
+-- Project    :
 -------------------------------------------------------------------------------
 -- File       : counter.vhd
 -- Author     : aylons  <aylons@LNLS190>
--- Company    : 
+-- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-10
--- Platform   : 
+-- Last update: 2015-12-11
+-- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: Simple counter for testing, with clock enable
 -------------------------------------------------------------------------------
--- Copyright (c) 2015     
+-- Copyright (c) 2015
 
 -- This program is free software: you can redistribute it and/or
 -- modify it under the terms of the GNU Lesser General Public License
@@ -46,7 +46,7 @@ entity counter_simple is
     );
   port(
     clk_i   : in  std_logic;
-    rst_n_i   : in  std_logic;
+    rst_n_i : in  std_logic;
     ce_i    : in  std_logic;
     up_i    : in  std_logic;
     down_i  : in  std_logic;
@@ -65,7 +65,7 @@ begin
       if rst_n_i = '0' then
         count <= to_unsigned(0, g_output_width);
       else
-        if ce = '1' then
+        if ce_i = '1' then
 
           if up_i = '1' then
             count <= count + 1;
@@ -81,4 +81,3 @@ begin
   count_o <= std_logic_vector(count);
 
 end architecture behavioural;
-
