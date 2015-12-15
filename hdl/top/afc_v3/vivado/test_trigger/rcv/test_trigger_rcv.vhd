@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-11
+-- Last update: 2015-12-15
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ architecture structural of test_trigger_rcv is
       TRIG3   : in    std_logic_vector(31 downto 0));
   end component chipscope_ila;
 
-  component chipscope_vio_31 is
+  component chipscope_vio_32 is
     port (
       CONTROL  : inout std_logic_vector(35 downto 0);
       CLK      : in    std_logic;
@@ -176,7 +176,7 @@ architecture structural of test_trigger_rcv is
 
 begin
 
-  rst_n <= not(rst);
+  rst <= not(rst_n);
 
   -- Clock generation
   cmp_clk_gen : clk_gen
@@ -203,10 +203,9 @@ begin
     port map (
       rst_i    => '0',
       clk_i    => sys_clk_gen_bufg,
-      --clk_i                                   => sys_clk_gen,
       clk0_o   => clk_100mhz,           -- 100MHz locked clock
       clk1_o   => clk_200mhz,           -- 200MHz locked clock
-      locked_o => rst                   -- '1' when the PLL has locked
+      locked_o => rst_n                   -- '1' when the PLL has locked
       );
 
   gen_trigger : for i in 0 to 7 generate
