@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-10
+-- Last update: 2015-12-11
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ entity test_trigger_rcv is
     );
 end test_trigger_rcv;
 
-architecture structural of test_trigger is
+architecture structural of test_trigger_rcv is
 
   constant c_glitch_len_width : positive := 8;
   constant c_count_width      : positive := 32;
@@ -149,7 +149,7 @@ architecture structural of test_trigger is
   -- State Machine Signals
   -----------------------------------------------------------------------------
 
-  type state_type is natural range 0 to 7;  -- types of the machine
+  subtype state_type is natural range 0 to 7;  -- types of the machine
   signal current_s : state_type := 0;       --current state declaration.
 
   component sm_states_rcv is
@@ -237,7 +237,7 @@ begin
   -- State Machine
   -----------------------------------------------------------------------------
 
-  sm_states_rcv_1 : entity work.sm_states_rcv
+  sm_states_rcv_1 : sm_states_rcv
     generic map (
       g_num_states => 8)
     port map (
@@ -248,7 +248,7 @@ begin
 
   sm_counter_1 : sm_counter
     generic map (
-      g_num_states => g_num_states)
+      g_num_states => 8)
     port map (
       data_i           => pulse,
       current_s_i      => current_s,
@@ -268,8 +268,8 @@ begin
     port map (
       CONTROL => CONTROL0,
       CLK     => clk_100mhz,
-      TRIG0   => count(0),
-      TRIG1   => count(1),
+      TRIG0   => count_success(0),
+      TRIG1   => count_fail(0),
       TRIG2   => filler,
       TRIG3   => filler);
 
@@ -277,8 +277,8 @@ begin
     port map (
       CONTROL => CONTROL1,
       CLK     => clk_100mhz,
-      TRIG0   => count(4),
-      TRIG1   => count(5),
+      TRIG0   => count_repeated(0),
+      TRIG1   => count_others(0),
       TRIG2   => filler,
       TRIG3   => filler);
 
