@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-09
--- Last update: 2015-12-09
+-- Last update: 2015-12-11
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,12 +41,13 @@ entity sm_transm is
 
   generic (
     g_num_pins         : natural := 8;
-    g_cycles_to_change : natural := 4);  -- number of clock cycles to change pins and generate pulse
+    g_max_pulse_length : natural := 10000);
 
   port (
-    clk_i   : in  std_logic;
-    rst_n_i : in  std_logic;
-    pulse_o : out std_logic_vector(g_num_pins-1 downto 0));
+    clk_i              : in  std_logic;
+    rst_n_i            : in  std_logic;
+    cycles_to_change_i : in  natural;  -- number of clock cycles to change pins and generate pulse
+    pulse_o            : out std_logic_vector(g_num_pins-1 downto 0));
 
 end sm_transm;
 
@@ -58,14 +59,14 @@ architecture structure of sm_transm is
 begin  -- architecture structure
 
   pr_clk_counter : process (clk_i) is
-    variable clk_counter : natural range g_cycles_to_change downto 0 := 0;
+    variable clk_counter : natural range g_max_pulse_length downto 0 := 0;
   begin  -- process main
     if rising_edge(clk_i) then          -- rising clock edge
       if rst_n_i = '0' then             -- synchronous reset (negative high)
         clk_counter  := 0;
         transm_pulse <= '0';
       else
-        if clk_counter < g_cycles_to_change then
+        if clk_counter < cycles_to_change_i then
           clk_counter  := clk_counter + 1;
           transm_pulse <= '0';
         else                            -- generate pulse and reset counter
