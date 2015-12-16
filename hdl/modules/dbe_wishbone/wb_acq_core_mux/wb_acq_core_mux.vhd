@@ -55,7 +55,9 @@ generic
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
   g_sim_readback                            : boolean := false;
-  g_acq_num_cores                           : natural := 2
+  g_acq_num_cores                           : natural := 2;
+  g_ddr_interface_type                      : string  := "AXIS";
+  g_max_burst_size                          : natural := 4
 );
 port
 (
@@ -227,6 +229,10 @@ begin
     report "[wb_acq_core_mux] Number of acqsition cores exceeded (8)"
     severity Failure;
 
+  assert (g_ddr_interface_type = "AXIS")
+    report "[wb_acq_core_mux] Currently, we only support AXIS interface type"
+    severity Failure;
+
   -----------------------------------------------------------------------------
   -- ACQ CORE
   -----------------------------------------------------------------------------
@@ -245,7 +251,9 @@ begin
       g_ddr_dq_width                            => g_ddr_dq_width,
       g_multishot_ram_size                      => g_multishot_ram_size,
       g_fifo_fc_size                            => g_fifo_fc_size,
-      g_sim_readback                            => g_sim_readback
+      g_sim_readback                            => g_sim_readback,
+      g_ddr_interface_type                      => g_ddr_interface_type,
+      g_max_burst_size                          => g_max_burst_size
     )
     port map
     (
