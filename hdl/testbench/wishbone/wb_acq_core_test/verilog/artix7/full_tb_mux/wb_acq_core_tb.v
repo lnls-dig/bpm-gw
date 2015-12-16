@@ -907,64 +907,74 @@ module wb_acq_core_tb;
   end
 
   // Very simple dbg_ddr_rb_start_p and dbg_ddr_rb_rdy
+  // Just delay the start pulse until the AXI datamover has finished
+  // writing everything to DDR controller
 
   // WB acq core 0
   always @(posedge ui_clk) begin
-    if (~ui_clk_sync_rst_n) begin
-      dbg_ddr_rb0_rdy_d0 <= 1'b0;
-      dbg_ddr_rb0_rdy_d1 <= 1'b0;
+    if (~ui_clk_sync_rst_n | ~test_in_progress) begin
       dbg_ddr_rb0_in_progress <= 1'b0;
+//      dbg_ddr_rb0_start_counter <= 'h0;
+      dbg_ddr_rb0_start_p <= 1'b0;
+      dbg_ddr_rb0_start_pulse_gen <= 1'b0;
     end else begin
-      dbg_ddr_rb0_rdy_d0 <= dbg_ddr_rb0_rdy;
-      dbg_ddr_rb0_rdy_d1 <= dbg_ddr_rb0_rdy_d0;
 
       if (dbg_ddr_rb0_start_p) begin
         dbg_ddr_rb0_in_progress <= 1'b1;
       end
-    end
-  end
 
-  // Detect level and generate pulse
-  assign dbg_ddr_rb0_start_p = dbg_ddr_rb0_rdy_d0 & ~dbg_ddr_rb0_rdy_d1;
-
-  // WB acq core 1
-  always @(posedge ui_clk) begin
-    if (~ui_clk_sync_rst_n | ~test_in_progress) begin
-      dbg_ddr_rb1_rdy_d0 <= 1'b0;
-      dbg_ddr_rb1_rdy_d1 <= 1'b0;
-      dbg_ddr_rb1_in_progress <= 1'b0;
-    end else begin
-      dbg_ddr_rb1_rdy_d0 <= dbg_ddr_rb1_rdy & chk0_end;
-      dbg_ddr_rb1_rdy_d1 <= dbg_ddr_rb1_rdy_d0;
-
-      if (dbg_ddr_rb1_start_p) begin
-        dbg_ddr_rb1_in_progress <= 1'b1;
+      if (dbg_ddr_rb0_rdy) begin
+        if (~dbg_ddr_rb0_start_counter[RB_COUNTER_WIDTH-1]) begin
+          dbg_ddr_rb0_start_counter <= dbg_ddr_rb0_start_counter + 1;
+          dbg_ddr_rb0_start_p <= 1'b0;
+          dbg_ddr_rb0_start_pulse_gen <= 1'b1;
+        end else if (~dbg_ddr_rb0_start_p & dbg_ddr_rb0_start_pulse_gen) begin
+          dbg_ddr_rb0_start_p <= 1'b1;
+          dbg_ddr_rb0_start_pulse_gen <= 1'b0;
+        end else begin
+          dbg_ddr_rb0_start_p <= 1'b0;
+          dbg_ddr_rb0_start_pulse_gen <= 1'b0;
+        end
+      end else begin
+        dbg_ddr_rb0_start_p <= 1'b0;
+        dbg_ddr_rb0_start_pulse_gen <= 1'b0;
+        dbg_ddr_rb0_start_counter <= 'h0;
       end
     end
   end
 
-  // Detect level and generate pulse
-  assign dbg_ddr_rb1_start_p = dbg_ddr_rb1_rdy_d0 & ~dbg_ddr_rb1_rdy_d1;
+  // WB acq core 1
+  always @(posedge ui_clk) begin
+    if (~ui_clk_sync_rst_n | ~test_in_progress) begin
+      dbg_ddr_rb1_in_progress <= 1'b0;
+ //     dbg_ddr_rb1_start_counter <= 'h0;
+      dbg_ddr_rb1_start_p <= 1'b0;
+      dbg_ddr_rb1_start_pulse_gen <= 1'b0;
+    end else begin
 
-  // In our use case, the lines ui_app_rdy and ui_app_wdf_rdy are only high
-  // if the DDR core drives it high AND if the PCIe arbiter grants us. So,
-  // we emulate this behavior here
-  assign ui_app_rdy = ui_app_rdy_ddr & ui_app_gnt;
-  assign ui_app_wdf_rdy = ui_app_wdf_rdy_ddr & ui_app_gnt;
+      if (dbg_ddr_rb1_start_p) begin
+        dbg_ddr_rb1_in_progress <= 1'b1;
+      end
 
-  //// Test in progress pulse
-  //always @(posedge adc_clk) begin
-  //  if (~adc_rstn) begin
-  //    test_in_progress_d0 <= 1'b0;
-  //    test_in_progress_d1 <= 1'b0;
-  //  end else begin
-  //    test_in_progress_d0 <= test_in_progress;
-  //    test_in_progress_d1 <= test_in_progress_d0;
-  //  end
-  //end
-
-  //// Detect level and generate pulse
-  //assign test_in_progress_p = test_in_progress_d0 & ~test_in_progress_d1;
+      if (dbg_ddr_rb1_rdy) begin
+        if (~dbg_ddr_rb1_start_counter[RB_COUNTER_WIDTH-1]) begin
+          dbg_ddr_rb1_start_counter <= dbg_ddr_rb1_start_counter + 1;
+          dbg_ddr_rb1_start_p <= 1'b0;
+          dbg_ddr_rb1_start_pulse_gen <= 1'b1;
+        end else if (~dbg_ddr_rb1_start_p & dbg_ddr_rb1_start_pulse_gen) begin
+          dbg_ddr_rb1_start_p <= 1'b1;
+          dbg_ddr_rb1_start_pulse_gen <= 1'b0;
+        end else begin
+          dbg_ddr_rb1_start_p <= 1'b0;
+          dbg_ddr_rb1_start_pulse_gen <= 1'b0;
+        end
+      end else begin
+        dbg_ddr_rb1_start_p <= 1'b0;
+        dbg_ddr_rb1_start_pulse_gen <= 1'b0;
+        dbg_ddr_rb1_start_counter <= 'h0;
+      end
+    end
+  end
 
   //**************************************************************************//
   // Data readback checker instantiation
