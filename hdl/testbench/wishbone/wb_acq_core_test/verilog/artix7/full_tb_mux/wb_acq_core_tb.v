@@ -1072,7 +1072,7 @@ module wb_acq_core_tb;
   //**************************************************************************//
   // DDR3 ARTIX7 Controller instantiation
   //**************************************************************************//
-  ddr_core_wrapper # (
+  ddr_core_mig # (
     .SIMULATION                (SIMULATION),
 
     //.BANK_WIDTH                (BANK_WIDTH),
@@ -1219,10 +1219,10 @@ module wb_acq_core_tb;
 
     .RST_ACT_LOW               (RST_ACT_LOW)
   )
-  cmp_ddr_core_wrapper (
+  cmp_ddr_core_mig (
      // System Clock Ports
     .sys_clk_i                              (ddr3_sys_clk),
-    .sys_rst                                (ddr3_sys_rstn), // RST_ACT_LOW = 1
+    .sys_rst                                (ddr3_sys_rst),
 
     // Memory interface ports
     .ddr3_dq                                (ddr3_dq_fpga),
@@ -1241,25 +1241,54 @@ module wb_acq_core_tb;
     .ddr3_ck_p                              (ddr3_ck_p_fpga),
     .ddr3_ck_n                              (ddr3_ck_n_fpga),
 
-    // Application interface ports
-    //.app_wdf_wren                           (ui_app_wdf_wren),
-    // Only accept transaction if access to the DDR3 controller was granted
-    // before
-    .app_wdf_wren                           (ui_app_wdf_wren & ui_app_gnt),
-    .app_wdf_data                           (ui_app_wdf_data),
-    .app_wdf_mask                           (ui_app_wdf_mask),
-    .app_wdf_end                            (ui_app_wdf_end),
-    .app_addr                               (ui_app_addr),
-    .app_cmd                                (ui_app_cmd),
-    //.app_en                                 (ui_app_en),
-    // Only accept transaction if access to the DDR3 controller was granted
-    // before
-    .app_en                                 (ui_app_en & ui_app_gnt),
-    .app_rdy                                (ui_app_rdy_ddr),
-    .app_wdf_rdy                            (ui_app_wdf_rdy_ddr),
-    .app_rd_data                            (ui_app_rd_data),
-    .app_rd_data_end                        (ui_app_rd_data_end),
-    .app_rd_data_valid                      (ui_app_rd_data_valid),
+    // Application AXI interface ports
+    .s_axi_awid                             (ddr_aximm_ma_awid),
+    .s_axi_awaddr                           (ddr_aximm_ma_awaddr[30:0]),
+    .s_axi_awlen                            (ddr_aximm_ma_awlen),
+    .s_axi_awsize                           (ddr_aximm_ma_awsize),
+    .s_axi_awburst                          (ddr_aximm_ma_awburst),
+    .s_axi_awlock                           (ddr_aximm_ma_awlock),
+    .s_axi_awcache                          (ddr_aximm_ma_awcache),
+    .s_axi_awprot                           (ddr_aximm_ma_awprot),
+    .s_axi_awqos                            (ddr_aximm_ma_awqos),
+    .s_axi_awvalid                          (ddr_aximm_ma_awvalid),
+    .s_axi_awready                          (ddr_aximm_ma_awready),
+
+    .s_axi_wdata                            (ddr_aximm_ma_wdata),
+    .s_axi_wstrb                            (ddr_aximm_ma_wstrb),
+    .s_axi_wlast                            (ddr_aximm_ma_wlast),
+    .s_axi_wvalid                           (ddr_aximm_ma_wvalid),
+    .s_axi_wready                           (ddr_aximm_ma_wready),
+
+    .s_axi_bready                           (ddr_aximm_ma_bready),
+    .s_axi_bid                              (ddr_aximm_ma_bid),
+    .s_axi_bresp                            (ddr_aximm_ma_bresp),
+    .s_axi_bvalid                           (ddr_aximm_ma_bvalid),
+
+    .s_axi_arid                             (ddr_aximm_ma_arid),
+    .s_axi_araddr                           (ddr_aximm_ma_araddr[30:0]),
+    .s_axi_arlen                            (ddr_aximm_ma_arlen),
+    .s_axi_arsize                           (ddr_aximm_ma_arsize),
+    .s_axi_arburst                          (ddr_aximm_ma_arburst),
+    .s_axi_arlock                           (ddr_aximm_ma_arlock),
+    .s_axi_arcache                          (ddr_aximm_ma_arcache),
+    .s_axi_arprot                           (ddr_aximm_ma_arprot),
+    .s_axi_arqos                            (ddr_aximm_ma_arqos),
+    .s_axi_arvalid                          (ddr_aximm_ma_arvalid),
+    .s_axi_arready                          (ddr_aximm_ma_arready),
+
+    .s_axi_rready                           (ddr_aximm_ma_rready),
+    .s_axi_rid                              (ddr_aximm_ma_rid),
+    .s_axi_rdata                            (ddr_aximm_ma_rdata),
+    .s_axi_rresp                            (ddr_aximm_ma_rresp),
+    .s_axi_rlast                            (ddr_aximm_ma_rlast),
+    .s_axi_rvalid                           (ddr_aximm_ma_rvalid),
+
+    .mmcm_locked                            (),
+    .aresetn                                (1'b1),
+    .app_sr_active                          (),
+    .app_ref_ack                            (),
+    .app_zq_ack                             (),
     .app_sr_req                             (1'b0),
     .app_ref_req                            (1'b0),
     .app_zq_req                             (1'b0),
