@@ -1146,7 +1146,9 @@ package dbe_wishbone_pkg is
     g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
     g_multishot_ram_size                      : natural := 2048;
     g_fifo_fc_size                            : natural := 64;
-    g_sim_readback                            : boolean := false
+    g_sim_readback                            : boolean := false;
+    g_ddr_interface_type                      : string  := "AXIS";
+    g_max_burst_size                          : natural := 4
   );
   port
   (
@@ -1202,25 +1204,48 @@ package dbe_wishbone_pkg is
     ext_stall_o                               : out std_logic; -- for debbuging purposes
 
     -----------------------------
-    -- DDR3 SDRAM Interface
+    -- Xilinx UI DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
     -----------------------------
     ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
     ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
     ui_app_en_o                               : out std_logic;
-    ui_app_rdy_i                              : in std_logic;
+    ui_app_rdy_i                              : in std_logic := '0';
 
     ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_wdf_end_o                          : out std_logic;
     ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     ui_app_wdf_wren_o                         : out std_logic;
-    ui_app_wdf_rdy_i                          : in std_logic;
+    ui_app_wdf_rdy_i                          : in std_logic := '0';
 
-    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-    ui_app_rd_data_end_i                      : in std_logic;
-    ui_app_rd_data_valid_i                    : in std_logic;
+    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+    ui_app_rd_data_end_i                      : in std_logic := '0';
+    ui_app_rd_data_valid_i                    : in std_logic := '0';
 
     ui_app_req_o                              : out std_logic;
-    ui_app_gnt_i                              : in std_logic;
+    ui_app_gnt_i                              : in std_logic := '0';
+
+    -----------------------------
+    -- AXIS DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
+    -----------------------------
+    axis_s2mm_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+    axis_s2mm_cmd_tvalid_o                    : out std_logic;
+    axis_s2mm_cmd_tready_i                    : in std_logic := '0';
+
+    axis_s2mm_pld_tdata_o                     : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+    axis_s2mm_pld_tkeep_o                     : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+    axis_s2mm_pld_tlast_o                     : out std_logic;
+    axis_s2mm_pld_tvalid_o                    : out std_logic;
+    axis_s2mm_pld_tready_i                    : in std_logic := '0';
+
+    axis_mm2s_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+    axis_mm2s_cmd_tvalid_o                    : out std_logic;
+    axis_mm2s_cmd_tready_i                    : in std_logic := '0';
+
+    axis_mm2s_pld_tdata_i                     : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+    axis_mm2s_pld_tkeep_i                     : in std_logic_vector(g_ddr_payload_width/8-1 downto 0) := (others => '0');
+    axis_mm2s_pld_tlast_i                     : in std_logic := '0';
+    axis_mm2s_pld_tvalid_i                    : in std_logic := '0';
+    axis_mm2s_pld_tready_o                    : out std_logic;
 
     -----------------------------
     -- Debug Interface
@@ -1246,7 +1271,9 @@ package dbe_wishbone_pkg is
     g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
     g_multishot_ram_size                      : natural := 2048;
     g_fifo_fc_size                            : natural := 64;
-    g_sim_readback                            : boolean := false
+    g_sim_readback                            : boolean := false;
+    g_ddr_interface_type                      : string  := "AXIS";
+    g_max_burst_size                          : natural := 4
   );
   port
   (
@@ -1282,32 +1309,46 @@ package dbe_wishbone_pkg is
     -----------------------------
     ext_dout_o                                : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ext_valid_o                               : out std_logic;
-    ext_addr_o                                : out std_logic_vector(g_acq_addr_width-1 downto 0);
+    ext_addr_o                                : out std_logic_vector(g_ddr_addr_width-1 downto 0);
     ext_sof_o                                 : out std_logic;
     ext_eof_o                                 : out std_logic;
     ext_dreq_o                                : out std_logic; -- for debbuging purposes
     ext_stall_o                               : out std_logic; -- for debbuging purposes
 
     -----------------------------
-    -- DDR3 SDRAM Interface
+    -- Xilinx UI DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
     -----------------------------
     ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
     ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
     ui_app_en_o                               : out std_logic;
-    ui_app_rdy_i                              : in std_logic;
+    ui_app_rdy_i                              : in std_logic := '0';
 
     ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
     ui_app_wdf_end_o                          : out std_logic;
     ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     ui_app_wdf_wren_o                         : out std_logic;
-    ui_app_wdf_rdy_i                          : in std_logic;
+    ui_app_wdf_rdy_i                          : in std_logic := '0';
 
-    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-    ui_app_rd_data_end_i                      : in std_logic;
-    ui_app_rd_data_valid_i                    : in std_logic;
+    ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+    ui_app_rd_data_end_i                      : in std_logic := '0';
+    ui_app_rd_data_valid_i                    : in std_logic := '0';
 
     ui_app_req_o                              : out std_logic;
-    ui_app_gnt_i                              : in std_logic;
+    ui_app_gnt_i                              : in std_logic := '0';
+
+    -----------------------------
+    -- AXIS DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
+    -----------------------------
+    -- AXIS Read Channel
+    axis_mm2s_cmd_ma_i                        : in t_axis_cmd_master_in := cc_dummy_axis_cmd_master_in;
+    axis_mm2s_cmd_ma_o                        : out t_axis_cmd_master_out;
+    axis_mm2s_pld_sl_i                        : in t_axis_pld_slave_in := cc_dummy_axis_pld_slave_in;
+    axis_mm2s_pld_sl_o                        : out t_axis_pld_slave_out;
+    -- AXIMM Write Channel
+    axis_s2mm_cmd_ma_i                        : in t_axis_cmd_master_in := cc_dummy_axis_cmd_master_in;
+    axis_s2mm_cmd_ma_o                        : out t_axis_cmd_master_out;
+    axis_s2mm_pld_ma_i                        : in t_axis_pld_master_in := cc_dummy_axis_pld_master_in;
+    axis_s2mm_pld_ma_o                        : out t_axis_pld_master_out;
 
     -----------------------------
     -- Debug Interface
