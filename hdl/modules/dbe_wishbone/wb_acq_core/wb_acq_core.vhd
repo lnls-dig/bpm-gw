@@ -65,7 +65,9 @@ generic
   g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
-  g_sim_readback                            : boolean := false
+  g_sim_readback                            : boolean := false;
+  g_ddr_interface_type                      : string  := "AXIS";
+  g_max_burst_size                          : natural := 4
 );
 port
 (
@@ -121,25 +123,48 @@ port
   ext_stall_o                               : out std_logic; -- for debbuging purposes
 
   -----------------------------
-  -- DDR3 SDRAM Interface
+  -- Xilinx UI DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
   -----------------------------
   ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
   ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
   ui_app_en_o                               : out std_logic;
-  ui_app_rdy_i                              : in std_logic;
+  ui_app_rdy_i                              : in std_logic := '0';
 
   ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   ui_app_wdf_end_o                          : out std_logic;
   ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
   ui_app_wdf_wren_o                         : out std_logic;
-  ui_app_wdf_rdy_i                          : in std_logic;
+  ui_app_wdf_rdy_i                          : in std_logic := '0';
 
-  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ui_app_rd_data_end_i                      : in std_logic;
-  ui_app_rd_data_valid_i                    : in std_logic;
+  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+  ui_app_rd_data_end_i                      : in std_logic := '0';
+  ui_app_rd_data_valid_i                    : in std_logic := '0';
 
   ui_app_req_o                              : out std_logic;
-  ui_app_gnt_i                              : in std_logic;
+  ui_app_gnt_i                              : in std_logic := '0';
+
+  -----------------------------
+  -- AXIS DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
+  -----------------------------
+  axis_s2mm_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+  axis_s2mm_cmd_tvalid_o                    : out std_logic;
+  axis_s2mm_cmd_tready_i                    : in std_logic := '0';
+
+  axis_s2mm_pld_tdata_o                     : out std_logic_vector(g_ddr_payload_width-1 downto 0);
+  axis_s2mm_pld_tkeep_o                     : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
+  axis_s2mm_pld_tlast_o                     : out std_logic;
+  axis_s2mm_pld_tvalid_o                    : out std_logic;
+  axis_s2mm_pld_tready_i                    : in std_logic := '0';
+
+  axis_mm2s_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
+  axis_mm2s_cmd_tvalid_o                    : out std_logic;
+  axis_mm2s_cmd_tready_i                    : in std_logic := '0';
+
+  axis_mm2s_pld_tdata_i                     : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+  axis_mm2s_pld_tkeep_i                     : in std_logic_vector(g_ddr_payload_width/8-1 downto 0) := (others => '0');
+  axis_mm2s_pld_tlast_i                     : in std_logic := '0';
+  axis_mm2s_pld_tvalid_i                    : in std_logic := '0';
+  axis_mm2s_pld_tready_o                    : out std_logic;
 
   -----------------------------
   -- Debug Interface
@@ -376,6 +401,14 @@ architecture rtl of wb_acq_core is
   end component;
 
 begin
+
+  assert (g_ddr_interface_type = "AXIS" or g_ddr_interface_type = "UI")
+    report "[wb_acq_core] DDR interface type must be either AXIS or UI"
+    severity Failure;
+
+  assert (g_max_burst_size = 2 or g_max_burst_size = 4 or g_max_burst_size = 8)
+    report "[wb_acq_core] Max burst size must be either 2, 4 or 8"
+    severity Failure;
 
   fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync;
   ext_rst_n <= ext_rst_n_i and acq_fsm_rstn_ext_sync;
@@ -903,119 +936,47 @@ begin
   -- DDR3 Interface
   ------------------------------------------------------------------------------
 
-  cmp_acq_ddr3_iface : acq_ddr3_ui_write
-  generic map
-  (
-    g_acq_num_channels                      => g_acq_num_channels,
-    g_acq_channels                          => g_acq_channels,
-    g_fc_pipe_size                          => c_fc_pipe_size,
-    -- This is the number of header bits interleaved after marshalling
-    g_ddr_header_width                      => c_acq_header_width,
-    -- Do not modify these! As they are dependent of the memory controller generated!
-    g_ddr_payload_width                     => g_ddr_payload_width,
-    g_ddr_dq_width                          => g_ddr_dq_width,
-    g_ddr_addr_width                        => g_ddr_addr_width
-  )
-  port map
-  (
-    -- DDR3 external clock
-    ext_clk_i                               => ext_clk_i,
-    ext_rst_n_i                             => ext_rst_n,
+  gen_ddr3_ui_interface : if g_ddr_interface_type = "UI" generate
 
-    -- Flow protocol to interface with external SDRAM. Evaluate the use of
-    -- Wishbone Streaming protocol.
-    fifo_fc_din_i                           => ext_dout,
-    fifo_fc_valid_i                         => ext_valid,
-    fifo_fc_addr_i                          => ext_addr,
-    fifo_fc_sof_i                           => ext_sof,
-    fifo_fc_eof_i                           => ext_eof,
-    fifo_fc_dreq_o                          => ext_dreq,
-    fifo_fc_stall_o                         => ext_stall,
-
-    wr_start_i                              => acq_start_sync_ext,
-    -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
-    -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
-    -- impose any metastability problem in this module
-    wr_init_addr_i                          => acq_ddr3_start_addr,
-    wr_end_addr_i                           => acq_ddr3_end_addr,
-
-    lmt_all_trans_done_p_o                  => ddr3_wr_all_trans_done_p,
-    lmt_ddr_trig_addr_o                     => ddr_trig_addr,
-    lmt_rst_i                               => '0', --remove this signal
-
-    -- Current channel selection ID
-    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    -- Size of the pre trigger transaction in g_fifo_size bytes
-    lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
-    -- Size of the pos trigger transaction in g_fifo_size bytes
-    lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
-    -- Size of the full transaction in g_fifo_size bytes
-    lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
-    -- Number of shots in this acquisition
-    lmt_shots_nb_i                          => lmt_shots_nb,
-    --lmt_valid_i                             => lmt_valid,
-    lmt_valid_i                             => acq_start_sync_ext,
-
-    -- Xilinx DDR3 UI Interface
-    ui_app_addr_o                           => ui_app_wdf_addr,
-    ui_app_cmd_o                            => ui_app_wdf_cmd,
-    ui_app_en_o                             => ui_app_wdf_en,
-    ui_app_rdy_i                            => ui_app_rdy_i,
-
-    ui_app_wdf_data_o                       => ui_app_wdf_data_o,
-    ui_app_wdf_end_o                        => ui_app_wdf_end_o,
-    ui_app_wdf_mask_o                       => ui_app_wdf_mask_o,
-    ui_app_wdf_wren_o                       => ui_app_wdf_wren_o,
-    ui_app_wdf_rdy_i                        => ui_app_wdf_rdy_i,
-
-    ui_app_req_o                            => ui_app_wdf_req,
-    ui_app_gnt_i                            => ui_app_wdf_gnt
-  );
-
-  -- Only for simulation!
-  gen_ddr3_readback : if (g_sim_readback) generate
-
-    sim_in_rb <= ddr3_wr_all_trans_done_l;
-    ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
-
-    cmp_acq_ddr3_ui_read : acq_ddr3_ui_read
+    cmp_acq_ddr3_iface : acq_ddr3_ui_write
     generic map
     (
-      g_acq_addr_width                      => g_acq_addr_width,
-      g_acq_num_channels                    => g_acq_num_channels,
-      g_acq_channels                        => g_acq_channels,
+      g_acq_num_channels                      => g_acq_num_channels,
+      g_acq_channels                          => g_acq_channels,
+      g_fc_pipe_size                          => c_fc_pipe_size,
+      -- This is the number of header bits interleaved after marshalling
+      g_ddr_header_width                      => c_acq_header_width,
       -- Do not modify these! As they are dependent of the memory controller generated!
-      g_ddr_payload_width                   => g_ddr_payload_width,
-      g_ddr_dq_width                        => g_ddr_dq_width,
-      g_ddr_addr_width                      => g_ddr_addr_width
+      g_ddr_payload_width                     => g_ddr_payload_width,
+      g_ddr_dq_width                          => g_ddr_dq_width,
+      g_ddr_addr_width                        => g_ddr_addr_width
     )
     port map
     (
       -- DDR3 external clock
-      ext_clk_i                             => ext_clk_i,
-      ext_rst_n_i                           => ext_rst_n,
+      ext_clk_i                               => ext_clk_i,
+      ext_rst_n_i                             => ext_rst_n,
 
       -- Flow protocol to interface with external SDRAM. Evaluate the use of
       -- Wishbone Streaming protocol.
-      fifo_fc_din_o                         => dbg_ddr_rb_data,
-      fifo_fc_valid_o                       => dbg_ddr_rb_valid,
-      fifo_fc_addr_o                        => dbg_ddr_rb_addr,
-      fifo_fc_sof_o                         => open,
-      fifo_fc_eof_o                         => open,
-      fifo_fc_dreq_i                        => '0',
-      fifo_fc_stall_i                       => '0',
+      fifo_fc_din_i                           => ext_dout,
+      fifo_fc_valid_i                         => ext_valid,
+      fifo_fc_addr_i                          => ext_addr,
+      fifo_fc_sof_i                           => ext_sof,
+      fifo_fc_eof_i                           => ext_eof,
+      fifo_fc_dreq_o                          => ext_dreq,
+      fifo_fc_stall_o                         => ext_stall,
 
-      -- Only start the readbak test when we have done writing and an external signal
-      -- tells us to
-      rb_start_i                            => ddr3_rb_start,
+      wr_start_i                              => acq_start_sync_ext,
       -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
-      -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
+      -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
       -- impose any metastability problem in this module
-      rb_init_addr_i                        => acq_ddr3_start_addr,
-      rb_ddr_trig_addr_i                    => ddr_trig_addr,
+      wr_init_addr_i                          => acq_ddr3_start_addr,
+      wr_end_addr_i                           => acq_ddr3_end_addr,
 
-      lmt_all_trans_done_p_o                => ddr3_rb_all_trans_done_p,
-      lmt_rst_i                             => '0', -- remove this signal!
+      lmt_all_trans_done_p_o                  => ddr3_wr_all_trans_done_p,
+      lmt_ddr_trig_addr_o                     => ddr_trig_addr,
+      lmt_rst_i                               => '0', --remove this signal
 
       -- Current channel selection ID
       lmt_curr_chan_id_i                      => lmt_curr_chan_id,
@@ -1031,38 +992,267 @@ begin
       lmt_valid_i                             => acq_start_sync_ext,
 
       -- Xilinx DDR3 UI Interface
-      ui_app_addr_o                         => ui_app_rb_addr,
-      ui_app_cmd_o                          => ui_app_rb_cmd,
-      ui_app_en_o                           => ui_app_rb_en,
-      ui_app_rdy_i                          => ui_app_rdy_i,
+      ui_app_addr_o                           => ui_app_wdf_addr,
+      ui_app_cmd_o                            => ui_app_wdf_cmd,
+      ui_app_en_o                             => ui_app_wdf_en,
+      ui_app_rdy_i                            => ui_app_rdy_i,
 
-      ui_app_rd_data_i                      => ui_app_rd_data_i,
-      ui_app_rd_data_end_i                  => ui_app_rd_data_end_i,
-      ui_app_rd_data_valid_i                => ui_app_rd_data_valid_i,
+      ui_app_wdf_data_o                       => ui_app_wdf_data_o,
+      ui_app_wdf_end_o                        => ui_app_wdf_end_o,
+      ui_app_wdf_mask_o                       => ui_app_wdf_mask_o,
+      ui_app_wdf_wren_o                       => ui_app_wdf_wren_o,
+      ui_app_wdf_rdy_i                        => ui_app_wdf_rdy_i,
 
-      ui_app_req_o                          => ui_app_rb_req,
-      ui_app_gnt_i                          => ui_app_rb_gnt
+      ui_app_req_o                            => ui_app_wdf_req,
+      ui_app_gnt_i                            => ui_app_wdf_gnt
     );
+  end generate;
 
-    ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
-    acq_ddr3_rst_n                          <= ext_rst_n and ddr3_wr_all_trans_done_l;
-    ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
+  gen_ddr3_axis_interface : if g_ddr_interface_type = "AXIS" generate
+    cmp_acq_ddr3_iface : acq_ddr3_axis_write
+    generic map
+    (
+      g_acq_num_channels                      => g_acq_num_channels,
+      g_acq_channels                          => g_acq_channels,
+      g_fc_pipe_size                          => c_fc_pipe_size,
+      -- This is the number of header bits interleaved after marshalling
+      g_ddr_header_width                      => c_acq_header_width,
+      -- Do not modify these! As they are dependent of the memory controller generated!
+      g_ddr_payload_width                     => g_ddr_payload_width,
+      g_ddr_dq_width                          => g_ddr_dq_width,
+      g_ddr_addr_width                        => g_ddr_addr_width,
+      g_max_burst_size                        => g_max_burst_size
+    )
+    port map
+    (
+      -- DDR3 external clock
+      ext_clk_i                               => ext_clk_i,
+      ext_rst_n_i                             => ext_rst_n,
 
-    dbg_ddr_rb_data_o                       <= dbg_ddr_rb_data;
-    dbg_ddr_rb_valid_o                      <= dbg_ddr_rb_valid;
-    dbg_ddr_rb_addr_o                       <= dbg_ddr_rb_addr;
+      -- Flow protocol to interface with external SDRAM. Evaluate the use of
+      -- Wishbone Streaming protocol.
+      fifo_fc_din_i                           => ext_dout,
+      fifo_fc_valid_i                         => ext_valid,
+      fifo_fc_addr_i                          => ext_addr,
+      fifo_fc_sof_i                           => ext_sof,
+      fifo_fc_eof_i                           => ext_eof,
+      fifo_fc_dreq_o                          => ext_dreq,
+      fifo_fc_stall_o                         => ext_stall,
 
-    -- Multiplex between write to DDR3 and readback from DDR3 (simulation only!)
-    ui_app_addr_o <= ui_app_wdf_addr when sim_in_rb = '0' else ui_app_rb_addr;
-    ui_app_cmd_o <= ui_app_wdf_cmd when sim_in_rb = '0' else ui_app_rb_cmd;
-    ui_app_en_o <= ui_app_wdf_en when sim_in_rb = '0' else ui_app_rb_en;
+      wr_start_i                              => acq_start_sync_ext,
+      -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
+      -- acq_start_sync_ext is set, which is sync to ext_clk. So, that does not
+      -- impose any metastability problem in this module
+      wr_init_addr_i                          => acq_ddr3_start_addr,
+      wr_end_addr_i                           => acq_ddr3_end_addr,
 
-    ui_app_req_o <= ui_app_wdf_req when sim_in_rb = '0' else ui_app_rb_req;
+      lmt_all_trans_done_p_o                  => ddr3_wr_all_trans_done_p,
+      lmt_ddr_trig_addr_o                     => ddr_trig_addr,
+      lmt_rst_i                               => '0', --remove this signal
 
-    ui_app_wdf_gnt <= ui_app_gnt_i when sim_in_rb = '0' else '0';
-    ui_app_rb_gnt <= ui_app_gnt_i when sim_in_rb = '1' else '0';
+      -- Current channel selection ID
+      lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+      -- Size of the pre trigger transaction in g_fifo_size bytes
+      lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+      -- Size of the pos trigger transaction in g_fifo_size bytes
+      lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+      -- Size of the full transaction in g_fifo_size bytes
+      lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
+      -- Number of shots in this acquisition
+      lmt_shots_nb_i                          => lmt_shots_nb,
+      --lmt_valid_i                             => lmt_valid,
+      lmt_valid_i                             => acq_start_sync_ext,
 
-    dbg_ddr_rb_rdy_o <= sim_in_rb;
+      -- DDR3 AXIS Interface
+      axis_s2mm_cmd_tdata_o                   => axis_s2mm_cmd_tdata_o,
+      axis_s2mm_cmd_tvalid_o                  => axis_s2mm_cmd_tvalid_o,
+      axis_s2mm_cmd_tready_i                  => axis_s2mm_cmd_tready_i,
+
+      axis_s2mm_pld_tdata_o                   => axis_s2mm_pld_tdata_o,
+      axis_s2mm_pld_tkeep_o                   => axis_s2mm_pld_tkeep_o,
+      axis_s2mm_pld_tlast_o                   => axis_s2mm_pld_tlast_o,
+      axis_s2mm_pld_tvalid_o                  => axis_s2mm_pld_tvalid_o,
+      axis_s2mm_pld_tready_i                  => axis_s2mm_pld_tready_i
+    );
+  end generate;
+
+  -- Only for simulation!
+  gen_ddr3_readback : if (g_sim_readback) generate
+
+    gen_ddr3_readback_ui_interface : if g_ddr_interface_type = "UI" generate
+
+      sim_in_rb <= ddr3_wr_all_trans_done_l;
+      ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
+
+      cmp_acq_ddr3_read : acq_ddr3_ui_read
+      generic map
+      (
+        g_acq_addr_width                      => g_acq_addr_width,
+        g_acq_num_channels                    => g_acq_num_channels,
+        g_acq_channels                        => g_acq_channels,
+        -- Do not modify these! As they are dependent of the memory controller generated!
+        g_ddr_payload_width                   => g_ddr_payload_width,
+        g_ddr_dq_width                        => g_ddr_dq_width,
+        g_ddr_addr_width                      => g_ddr_addr_width
+      )
+      port map
+      (
+        -- DDR3 external clock
+        ext_clk_i                             => ext_clk_i,
+        ext_rst_n_i                           => ext_rst_n,
+
+        -- Flow protocol to interface with external SDRAM. Evaluate the use of
+        -- Wishbone Streaming protocol.
+        fifo_fc_din_o                         => dbg_ddr_rb_data,
+        fifo_fc_valid_o                       => dbg_ddr_rb_valid,
+        fifo_fc_addr_o                        => dbg_ddr_rb_addr,
+        fifo_fc_sof_o                         => open,
+        fifo_fc_eof_o                         => open,
+        fifo_fc_dreq_i                        => '0',
+        fifo_fc_stall_i                       => '0',
+
+        -- Only start the readbak test when we have done writing and an external signal
+        -- tells us to
+        rb_start_i                            => ddr3_rb_start,
+        -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
+        -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
+        -- impose any metastability problem in this module
+        rb_init_addr_i                        => acq_ddr3_start_addr,
+        rb_ddr_trig_addr_i                    => ddr_trig_addr,
+
+        lmt_all_trans_done_p_o                => ddr3_rb_all_trans_done_p,
+        lmt_rst_i                             => '0', -- remove this signal!
+
+        -- Current channel selection ID
+        lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+        -- Size of the pre trigger transaction in g_fifo_size bytes
+        lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+        -- Size of the pos trigger transaction in g_fifo_size bytes
+        lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+        -- Size of the full transaction in g_fifo_size bytes
+        lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
+        -- Number of shots in this acquisition
+        lmt_shots_nb_i                          => lmt_shots_nb,
+        --lmt_valid_i                             => lmt_valid,
+        lmt_valid_i                             => acq_start_sync_ext,
+
+        -- Xilinx DDR3 UI Interface
+        ui_app_addr_o                         => ui_app_rb_addr,
+        ui_app_cmd_o                          => ui_app_rb_cmd,
+        ui_app_en_o                           => ui_app_rb_en,
+        ui_app_rdy_i                          => ui_app_rdy_i,
+
+        ui_app_rd_data_i                      => ui_app_rd_data_i,
+        ui_app_rd_data_end_i                  => ui_app_rd_data_end_i,
+        ui_app_rd_data_valid_i                => ui_app_rd_data_valid_i,
+
+        ui_app_req_o                          => ui_app_rb_req,
+        ui_app_gnt_i                          => ui_app_rb_gnt
+      );
+
+      ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
+      acq_ddr3_rst_n                          <= ext_rst_n and ddr3_wr_all_trans_done_l;
+      ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
+
+      dbg_ddr_rb_data_o                       <= dbg_ddr_rb_data;
+      dbg_ddr_rb_valid_o                      <= dbg_ddr_rb_valid;
+      dbg_ddr_rb_addr_o                       <= dbg_ddr_rb_addr;
+
+      -- Multiplex between write to DDR3 and readback from DDR3 (simulation only!)
+      ui_app_addr_o <= ui_app_wdf_addr when sim_in_rb = '0' else ui_app_rb_addr;
+      ui_app_cmd_o <= ui_app_wdf_cmd when sim_in_rb = '0' else ui_app_rb_cmd;
+      ui_app_en_o <= ui_app_wdf_en when sim_in_rb = '0' else ui_app_rb_en;
+
+      ui_app_req_o <= ui_app_wdf_req when sim_in_rb = '0' else ui_app_rb_req;
+
+      ui_app_wdf_gnt <= ui_app_gnt_i when sim_in_rb = '0' else '0';
+      ui_app_rb_gnt <= ui_app_gnt_i when sim_in_rb = '1' else '0';
+
+      dbg_ddr_rb_rdy_o <= sim_in_rb;
+
+    end generate;
+
+    gen_ddr3_readback_axis_interface : if g_ddr_interface_type = "AXIS" generate
+
+      sim_in_rb <= ddr3_wr_all_trans_done_l;
+      ddr3_rb_lmt_rb_rst <= not ddr3_wr_all_trans_done_l;
+
+      cmp_acq_ddr3_read : acq_ddr3_axis_read
+      generic map
+      (
+        g_acq_addr_width                      => g_acq_addr_width,
+        g_acq_num_channels                    => g_acq_num_channels,
+        g_acq_channels                        => g_acq_channels,
+        -- Do not modify these! As they are dependent of the memory controller generated!
+        g_ddr_payload_width                   => g_ddr_payload_width,
+        g_ddr_dq_width                        => g_ddr_dq_width,
+        g_ddr_addr_width                      => g_ddr_addr_width,
+        g_max_burst_size                      => g_max_burst_size
+      )
+      port map
+      (
+        -- DDR3 external clock
+        ext_clk_i                             => ext_clk_i,
+        ext_rst_n_i                           => ext_rst_n,
+
+        -- Flow protocol to interface with external SDRAM. Evaluate the use of
+        -- Wishbone Streaming protocol.
+        fifo_fc_din_o                         => dbg_ddr_rb_data,
+        fifo_fc_valid_o                       => dbg_ddr_rb_valid,
+        fifo_fc_addr_o                        => dbg_ddr_rb_addr,
+        fifo_fc_sof_o                         => open,
+        fifo_fc_eof_o                         => open,
+        fifo_fc_dreq_i                        => '0',
+        fifo_fc_stall_i                       => '0',
+
+        -- Only start the readbak test when we have done writing and an external signal
+        -- tells us to
+        rb_start_i                            => ddr3_rb_start,
+        -- "acq_ddr3_start_addr" is synced with sys_clk, but we only read it after
+        -- ddr3_wr_all_trans_done_p is set, which is sync to ext_clk. So, that does not
+        -- impose any metastability problem in this module
+        rb_init_addr_i                        => acq_ddr3_start_addr,
+        rb_ddr_trig_addr_i                    => ddr_trig_addr,
+
+        lmt_all_trans_done_p_o                => ddr3_rb_all_trans_done_p,
+        lmt_rst_i                             => '0', -- remove this signal!
+
+        -- Current channel selection ID
+        lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+        -- Size of the pre trigger transaction in g_fifo_size bytes
+        lmt_pre_pkt_size_i                      => lmt_acq_pre_pkt_size,
+        -- Size of the pos trigger transaction in g_fifo_size bytes
+        lmt_pos_pkt_size_i                      => lmt_acq_pos_pkt_size,
+        -- Size of the full transaction in g_fifo_size bytes
+        lmt_full_pkt_size_i                     => lmt_acq_full_pkt_size,
+        -- Number of shots in this acquisition
+        lmt_shots_nb_i                          => lmt_shots_nb,
+        --lmt_valid_i                             => lmt_valid,
+        lmt_valid_i                             => acq_start_sync_ext,
+
+        -- DDR3 AXIS Interface
+        axis_mm2s_cmd_tdata_o                   => axis_mm2s_cmd_tdata_o,
+        axis_mm2s_cmd_tvalid_o                  => axis_mm2s_cmd_tvalid_o,
+        axis_mm2s_cmd_tready_i                  => axis_mm2s_cmd_tready_i,
+
+        axis_mm2s_pld_tdata_i                   => axis_mm2s_pld_tdata_i,
+        axis_mm2s_pld_tkeep_i                   => axis_mm2s_pld_tkeep_i,
+        axis_mm2s_pld_tlast_i                   => axis_mm2s_pld_tlast_i,
+        axis_mm2s_pld_tvalid_i                  => axis_mm2s_pld_tvalid_i,
+        axis_mm2s_pld_tready_o                  => axis_mm2s_pld_tready_o
+      );
+
+      ddr3_rb_start                           <= ddr3_wr_all_trans_done_l and dbg_ddr_rb_start_p_i;
+      acq_ddr3_rst_n                          <= ext_rst_n and ddr3_wr_all_trans_done_l;
+      ddr3_all_trans_done_p                   <= ddr3_rb_all_trans_done_p;
+
+      dbg_ddr_rb_data_o                       <= dbg_ddr_rb_data;
+      dbg_ddr_rb_valid_o                      <= dbg_ddr_rb_valid;
+      dbg_ddr_rb_addr_o                       <= dbg_ddr_rb_addr;
+
+      dbg_ddr_rb_rdy_o <= sim_in_rb;
+
+    end generate;
 
   end generate;
 
