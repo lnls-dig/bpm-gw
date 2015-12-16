@@ -8,8 +8,9 @@
   <Configuration>
     <Option Name="Id" Val="96ca6d9a77034d48a4aba88faf50ee90"/>
     <Option Name="Part" Val="xc7a200tffg1156-1"/>
-    <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
+    <Option Name="CompiledLibDir" Val="$PPRDIR/../../../../../../../../../opt/Xilinx/Vivado/2015.2/data"/>
     <Option Name="TargetLanguage" Val="VHDL"/>
+    <Option Name="TargetSimulator" Val="ModelSim"/>
     <Option Name="BoardPart" Val=""/>
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
@@ -1581,12 +1582,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_read.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2385,6 +2380,72 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_read.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux_plain.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_write.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/ddr_core/ddr_core.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="dbe_bpm"/>
@@ -2422,8 +2483,9 @@
         <Option Name="TopModule" Val="dbe_bpm"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
-        <Option Name="SimMode" Val="post-implementation"/>
+        <Option Name="SimMode" Val="post-synthesis"/>
         <Option Name="SrcSet" Val="sources_1"/>
+        <Option Name="NLNetlistMode" Val="funcsim"/>
       </Config>
     </FileSet>
     <FileSet Name="sin_lut_uvx_35_148" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sin_lut_uvx_35_148">
@@ -2462,96 +2524,6 @@
       </File>
       <Config>
         <Option Name="TopModule" Val="sw_windowing_n_251_tukey_0_2"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="axi_datamover_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_datamover_0">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="axi_datamover_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="axi_interconnect_bpm" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_interconnect_bpm">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="axi_interconnect_bpm"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="axi_datamover_bpm" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_datamover_bpm">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="axi_datamover_bpm"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="axi_interconnect" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_interconnect">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="axi_interconnect"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="pcie_core" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pcie_core">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="source/pcie_core-PCIE_X0Y0.xdc">
-          <Attr Name="UserDisabled" Val="1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="synth/pcie_core_ooc.xdc">
-          <Attr Name="UserDisabled" Val="1"/>
-        </CompFileExtendedInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="pcie_core"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="ddr_core" Type="BlockSrcs" RelSrcDir="$PSRCDIR/ddr_core">
-      <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/ddr_core/ddr_core.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-        <CompFileExtendedInfo CompFileName="ddr_core.xci" FileRelPathName="ddr_core/user_design/constraints/ddr_core.xdc">
-          <Attr Name="UserDisabled" Val="1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="ddr_core.xci" FileRelPathName="ddr_core/user_design/constraints/ddr_core_ooc.xdc">
-          <Attr Name="UserDisabled" Val="1"/>
-        </CompFileExtendedInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="ddr_core"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -2605,48 +2577,6 @@
         <Step Id="synth_design">
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
         </Step>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="axi_datamover_0_synth_1" Type="Ft3:Synth" SrcSet="axi_datamover_0" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_0" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_datamover_0_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="axi_interconnect_bpm_synth_1" Type="Ft3:Synth" SrcSet="axi_interconnect_bpm" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect_bpm" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_interconnect_bpm_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="axi_datamover_bpm_synth_1" Type="Ft3:Synth" SrcSet="axi_datamover_bpm" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_bpm" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_datamover_bpm_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="axi_interconnect_synth_1" Type="Ft3:Synth" SrcSet="axi_interconnect" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/axi_interconnect_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="pcie_core_synth_1" Type="Ft3:Synth" SrcSet="pcie_core" Part="xc7a200tffg1156-1" ConstrsSet="pcie_core" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/pcie_core_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="ddr_core_synth_1" Type="Ft3:Synth" SrcSet="ddr_core" Part="xc7a200tffg1156-1" ConstrsSet="ddr_core" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/ddr_core_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
-        <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
     </Run>
@@ -2723,90 +2653,6 @@
         </Step>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-    </Run>
-    <Run Id="axi_datamover_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_0" Description="Vivado Implementation Defaults" SynthRun="axi_datamover_0_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-    </Run>
-    <Run Id="axi_interconnect_bpm_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect_bpm" Description="Vivado Implementation Defaults" SynthRun="axi_interconnect_bpm_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-    </Run>
-    <Run Id="axi_datamover_bpm_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_datamover_bpm" Description="Vivado Implementation Defaults" SynthRun="axi_datamover_bpm_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-    </Run>
-    <Run Id="axi_interconnect_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="axi_interconnect" Description="Vivado Implementation Defaults" SynthRun="axi_interconnect_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-    </Run>
-    <Run Id="pcie_core_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="pcie_core" Description="Vivado Implementation Defaults" SynthRun="pcie_core_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-    </Run>
-    <Run Id="ddr_core_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-1" ConstrsSet="ddr_core" Description="Vivado Implementation Defaults" SynthRun="ddr_core_synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
     </Run>
   </Runs>
 </Project>
