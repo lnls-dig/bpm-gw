@@ -19,6 +19,12 @@ constant C_DDR_CKE_WIDTH     : positive := 1;
 constant C_DDR_ODT_WIDTH     : positive := 1;
 constant C_DDR_ADDR_WIDTH    : positive := 31;
 
+--***************************************************************************
+-- Necessary parameters for AXI BPM Data Mover core support
+-- (dependent on generated core, not to be modified at will)
+--***************************************************************************
+constant C_DDR_DATAMOVER_BPM_BURST_SIZE : positive := 4;
+
   -- ----------------------------------------------------------------------------
   -- Component declarations
   -- ----------------------------------------------------------------------------
