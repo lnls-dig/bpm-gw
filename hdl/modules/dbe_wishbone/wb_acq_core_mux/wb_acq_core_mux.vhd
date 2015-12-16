@@ -171,25 +171,6 @@ architecture rtl of wb_acq_core_mux is
 
   constant c_num_max_acq_cores              : natural := 8;
 
-  -- ACQ core components signals
-  signal ui_app_addr_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_addr_width-1 downto 0);
-  signal ui_app_cmd_array_int               : std_logic_vector(g_acq_num_cores*3-1 downto 0);
-  signal ui_app_en_array_int                : std_logic_vector(g_acq_num_cores-1 downto 0);
-  signal ui_app_rdy_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
-
-  signal ui_wdf_data_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
-  signal ui_wdf_end_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
-  signal ui_wdf_mask_array_int              : std_logic_vector(g_acq_num_cores*g_ddr_payload_width/8-1 downto 0);
-  signal ui_wdf_wren_array_int              : std_logic_vector(g_acq_num_cores-1 downto 0);
-  signal ui_wdf_rdy_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
-
-  signal ui_rd_data_array_int               : std_logic_vector(g_acq_num_cores*g_ddr_payload_width-1 downto 0);
-  signal ui_rd_data_end_array_int           : std_logic_vector(g_acq_num_cores-1 downto 0);
-  signal ui_rd_data_valid_array_int         : std_logic_vector(g_acq_num_cores-1 downto 0);
-
-  signal ui_app_req_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
-  signal ui_app_gnt_array_int               : std_logic_vector(g_acq_num_cores-1 downto 0);
-
   -- AXI Data mover signals
   signal axi_rst_n_array                    : std_logic_vector(c_num_max_acq_cores-1 downto 0);
 
@@ -216,6 +197,14 @@ architecture rtl of wb_acq_core_mux is
 
   signal axis_s2mm_pld_mo_array             : t_axis_pld_master_out_array(g_acq_num_cores-1 downto 0);
   signal axis_s2mm_pld_mi_array             : t_axis_pld_master_in_array(g_acq_num_cores-1 downto 0);
+
+  type t_aximm_delay_array is array(natural range <>) of std_logic_vector(7 downto 0);
+  signal axis_s2mm_ready_d_array            : t_aximm_delay_array(g_acq_num_cores-1 downto 0);
+  type t_aximm_last_array is array(natural range <>) of std_logic;
+  signal axis_s2mm_last_array               : t_aximm_last_array(g_acq_num_cores-1 downto 0);
+  type t_aximm_valid_cnt_array is array(natural range <>) of unsigned(1 downto 0);
+  signal axis_s2mm_valid_cnt_array            : t_aximm_valid_cnt_array(g_acq_num_cores-1 downto 0);
+  signal axis_mm2s_valid_cnt_array            : t_aximm_valid_cnt_array(g_acq_num_cores-1 downto 0);
 
   -- Intermediate signals
   signal ddr_aximm_ma_awid_int              : std_logic_vector (3 downto 0);
@@ -309,26 +298,29 @@ begin
       ext_dreq_o                                => ext_dreq_array_o(i),
       ext_stall_o                               => ext_stall_array_o(i),
 
-      -----------------------------
-      -- DDR3 SDRAM Interface
-      -----------------------------
-      ui_app_addr_o                             => ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width),
-      ui_app_cmd_o                              => ui_app_cmd_array_int((i+1)*3-1 downto i*3),
-      ui_app_en_o                               => ui_app_en_array_int(i),
-      ui_app_rdy_i                              => ui_app_rdy_array_int(i),
+    -----------------------------
+    -- AXIS DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
+    -----------------------------
 
-      ui_app_wdf_data_o                         => ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
-      ui_app_wdf_end_o                          => ui_wdf_end_array_int(i),
-      ui_app_wdf_mask_o                         => ui_wdf_mask_array_int((i+1)*g_ddr_payload_width/8-1 downto i*g_ddr_payload_width/8),
-      ui_app_wdf_wren_o                         => ui_wdf_wren_array_int(i),
-      ui_app_wdf_rdy_i                          => ui_wdf_rdy_array_int(i),
+      axis_s2mm_cmd_tdata_o                     => axis_s2mm_cmd_mo_array(i).tdata,
+      axis_s2mm_cmd_tvalid_o                    => axis_s2mm_cmd_mo_array(i).tvalid,
+      axis_s2mm_cmd_tready_i                    => axis_s2mm_cmd_mi_array(i).tready,
 
-      ui_app_rd_data_i                          => ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width),
-      ui_app_rd_data_end_i                      => ui_rd_data_end_array_int(i),
-      ui_app_rd_data_valid_i                    => ui_rd_data_valid_array_int(i),
+      axis_s2mm_pld_tdata_o                     => axis_s2mm_pld_mo_array(i).tdata,
+      axis_s2mm_pld_tkeep_o                     => axis_s2mm_pld_mo_array(i).tkeep,
+      axis_s2mm_pld_tlast_o                     => axis_s2mm_pld_mo_array(i).tlast,
+      axis_s2mm_pld_tvalid_o                    => axis_s2mm_pld_mo_array(i).tvalid,
+      axis_s2mm_pld_tready_i                    => axis_s2mm_pld_mi_array(i).tready,
 
-      ui_app_req_o                              => ui_app_req_array_int(i),
-      ui_app_gnt_i                              => ui_app_gnt_array_int(i),
+      axis_mm2s_cmd_tdata_o                     => axis_mm2s_cmd_mo_array(i).tdata,
+      axis_mm2s_cmd_tvalid_o                    => axis_mm2s_cmd_mo_array(i).tvalid,
+      axis_mm2s_cmd_tready_i                    => axis_mm2s_cmd_mi_array(i).tready,
+
+      axis_mm2s_pld_tdata_i                     => axis_mm2s_pld_mo_array(i).tdata,
+      axis_mm2s_pld_tkeep_i                     => axis_mm2s_pld_mo_array(i).tkeep,
+      axis_mm2s_pld_tlast_i                     => axis_mm2s_pld_mo_array(i).tlast,
+      axis_mm2s_pld_tvalid_i                    => axis_mm2s_pld_mo_array(i).tvalid,
+      axis_mm2s_pld_tready_o                    => axis_mm2s_pld_mi_array(i).tready,
 
       -----------------------------
       -- Debug Interface
@@ -339,118 +331,6 @@ begin
       dbg_ddr_rb_addr_o                         => dbg_ddr_rb_addr_array_o((i+1)*g_acq_addr_width-1 downto i*g_acq_addr_width),
       dbg_ddr_rb_valid_o                        => dbg_ddr_rb_valid_array_o(i)
     );
-
-    -- We don't rely on this signal to arbiter us, we use the VALID/TREADY handshake,
-    -- now properly implemented through DDR AXI interface
-    ui_app_gnt_array_int(i)                      <= '1';
-    ui_wdf_rdy_array_int(i)                      <= axis_s2mm_pld_mi_array(i).tready;
-
-    gen_no_sim_signals : if not(g_sim_readback) generate
-
-      -- ACQ core component AXIS APP signals
-      ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready;
-
-      -- Stream to Memory Mapped Commands
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
-        c_axis_cmd_tdata_btt_bot_idx)                             <=
-          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
-        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
-        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
-          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
-        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
-        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
-
-      axis_s2mm_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i);
-
-      -- Stream to Memory Mapped Payload
-      axis_s2mm_pld_mo_array(i).tdata  <= ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width);
-      axis_s2mm_pld_mo_array(i).tkeep  <= (others => '1');
-      axis_s2mm_pld_mo_array(i).tlast  <= ui_wdf_end_array_int(i);
-      axis_s2mm_pld_mo_array(i).tvalid <= ui_wdf_wren_array_int(i);
-
-      -- Memory Mapped to Stream Commands. Unused for synthesis.
-      axis_mm2s_cmd_mo_array(i).tdata  <= (others => '0');
-      axis_mm2s_cmd_mo_array(i).tvalid <= '0';
-
-      -- Stream to Memory Mapped Payload
-      ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width) <= (others => '0');
-      ui_rd_data_end_array_int(i)                                                    <= '0';
-      ui_rd_data_valid_array_int(i)                                                  <= '0';
-      axis_mm2s_pld_mi_array(i).tready                                               <= '0';
-
-    end generate;
-
-    -- Generate signals for reading DDR core (WARNING: only for simulation!)
-    gen_sim_signals : if g_sim_readback generate
-
-      -- ACQ core component AXIS APP signals
-      ui_app_rdy_array_int(i)                      <= axis_s2mm_cmd_mi_array(i).tready when
-                                                        ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else axis_mm2s_cmd_mi_array(i).tready;
-
-      -- Stream to Memory Mapped Commands
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
-        c_axis_cmd_tdata_btt_bot_idx)                             <=
-          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
-        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
-        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
-          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
-        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
-      axis_s2mm_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
-        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
-
-      -- We only need to invalidate this transaction if the module is not writing
-      axis_s2mm_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i) when
-                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else '0';
-
-      -- Stream to Memory Mapped Payload
-      axis_s2mm_pld_mo_array(i).tdata  <= ui_wdf_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width);
-      axis_s2mm_pld_mo_array(i).tkeep  <= (others => '1');
-      axis_s2mm_pld_mo_array(i).tlast  <= ui_wdf_end_array_int(i);
-      axis_s2mm_pld_mo_array(i).tvalid <= ui_wdf_wren_array_int(i) when
-                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_write else '0';
-
-      -- Memory Mapped to Stream Commands
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_btt_top_idx downto
-        c_axis_cmd_tdata_btt_bot_idx)                             <=
-          std_logic_vector(to_unsigned(g_ddr_payload_width/8, c_axis_cmd_tdata_btt_width));          -- cmd_btt (Bytes to transfer)
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_type_idx)  <= '0';                            -- cmd_type (1 = fixed address);
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_dsa_top_idx downto
-        c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                       -- cmd_dsa
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_last_idx)  <= ui_wdf_end_array_int(i);        -- cmd_last
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_drr_idx)   <= '0';                            -- cmd_drr (0 = no realignment requested)
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_addr_top_idx downto
-        c_axis_cmd_tdata_addr_bot_idx)                            <= '0' &
-          ui_app_addr_array_int((i+1)*g_ddr_addr_width-1 downto i*g_ddr_addr_width); -- cmd_addr
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_tag_top_idx downto
-        c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                         -- cmd_tag
-      axis_mm2s_cmd_mo_array(i).tdata(c_axis_cmd_tdata_pad_top_idx downto
-        c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');                -- cmd_pad
-
-      axis_mm2s_cmd_mo_array(i).tvalid <= ui_app_en_array_int(i) when
-                                          ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_read else '0';
-
-      -- Stream to Memory Mapped Payload
-      ui_rd_data_array_int((i+1)*g_ddr_payload_width-1 downto i*g_ddr_payload_width) <= axis_mm2s_pld_mo_array(i).tdata;
-      ui_rd_data_end_array_int(i)                                                    <= axis_mm2s_pld_mo_array(i).tlast;
-      ui_rd_data_valid_array_int(i)                                                  <= axis_mm2s_pld_mo_array(i).tvalid when
-                                                                                        ui_app_cmd_array_int((i+1)*3-1 downto i*3) = c_ui_cmd_read else '0';
-      -- We are always ready to receive. CAUTION: This is just used for simulation!
-      axis_mm2s_pld_mi_array(i).tready                                               <= '1';
-
-    end generate;
 
   end generate;
 
