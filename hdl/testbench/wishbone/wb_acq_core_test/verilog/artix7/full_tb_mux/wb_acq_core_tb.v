@@ -979,9 +979,10 @@ module wb_acq_core_tb;
   //**************************************************************************//
   // Data readback checker instantiation
   //**************************************************************************//
-  data_checker #(.g_addr_width(ADDR_WIDTH),
+  data_checker #(.g_addr_width(ACQ_ADDR_WIDTH),
                         .g_data_width(DDR3_PAYLOAD_WIDTH),
-                        .g_fifo_size(DATA_CHECK_FIFO_SIZE)
+                        .g_fifo_size(DATA_CHECK_FIFO_SIZE),
+                        .g_addr_inc(DDR3_ADDR_INC_BYTES)
                     )
   cmp0_data_checker(
     .ext_clk_i                              (ui_clk),
@@ -1021,11 +1022,12 @@ module wb_acq_core_tb;
 
   assign ext0_dout_conv  = ext0_dout;
   assign ext0_valid_conv = ext0_valid;
-  assign ext0_addr_conv  = ext0_addr*DDR3_ADDR_INC;
+  assign ext0_addr_conv  = ext0_addr*DDR3_ADDR_INC_BYTES;
 
-  data_checker #(.g_addr_width(ADDR_WIDTH),
+  data_checker #(.g_addr_width(ACQ_ADDR_WIDTH),
                         .g_data_width(DDR3_PAYLOAD_WIDTH),
-                        .g_fifo_size(DATA_CHECK_FIFO_SIZE)
+                        .g_fifo_size(DATA_CHECK_FIFO_SIZE),
+                        .g_addr_inc(DDR3_ADDR_INC_BYTES)
                     )
   cmp1_data_checker(
     .ext_clk_i                              (ui_clk),
@@ -1061,7 +1063,7 @@ module wb_acq_core_tb;
 
   assign ext1_dout_conv  = ext1_dout;
   assign ext1_valid_conv = ext1_valid;
-  assign ext1_addr_conv  = ext1_addr*DDR3_ADDR_INC + c_ddr3_acq1_addr_offset;
+  assign ext1_addr_conv  = ext1_addr*DDR3_ADDR_INC_BYTES + c_ddr3_acq1_addr_offset;
 
   ///////assign ext1_dout_conv_rb  = c_ddr3_acq1_addr_offset ? ext0_dout : ext1_dout;
   ///////assign ext1_valid_conv_rb = ext0_valid : ext1_valid;
