@@ -464,7 +464,7 @@ begin
       s_axis_mm2s_cmd_tdata                    => axis_mm2s_cmd_mo_array(i).tdata,
 
       m_axis_mm2s_sts_tvalid                   => open,
-      m_axis_mm2s_sts_tready                   => c_axi_sl_zero,
+      m_axis_mm2s_sts_tready                   => c_axi_sl_one,
       m_axis_mm2s_sts_tdata                    => open,
       m_axis_mm2s_sts_tkeep                    => open,
       m_axis_mm2s_sts_tlast                    => open,
@@ -502,7 +502,7 @@ begin
       s_axis_s2mm_cmd_tdata                    => axis_s2mm_cmd_mo_array(i).tdata,
 
       m_axis_s2mm_sts_tvalid                   => open,
-      m_axis_s2mm_sts_tready                   => c_axi_sl_zero,
+      m_axis_s2mm_sts_tready                   => c_axi_sl_one,
       m_axis_s2mm_sts_tdata                    => open,
       m_axis_s2mm_sts_tkeep                    => open,
       m_axis_s2mm_sts_tlast                    => open,
