@@ -97,13 +97,13 @@ set origin_dir "."
 set orig_proj_dir "[file normalize "$origin_dir/"]"
 
 # Create project
-create_project bpm_pcie_afcv3 ./bpm_pcie_afcv3
+create_project bpm_pcie_afc_v3 ./bpm_pcie_afc_v3
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
 
 # Set project properties
-set obj [get_projects bpm_pcie_afcv3]
+set obj [get_projects bpm_pcie_afc_v3]
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "part" "xc7a200tffg1156-1" $obj
 set_property "simulator_language" "Mixed" $obj
@@ -142,7 +142,7 @@ set files [list \
  "[file normalize "$origin_dir/../../modules/pcie/common/tx_Transact.vhd"]"\
  "[file normalize "$origin_dir/../../modules/pcie/common/rx_Transact.vhd"]"\
  "[file normalize "$origin_dir/../../modules/pcie/common/Registers.vhd"]"\
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/ipcores_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/ipcores_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../ip_cores/general-cores/modules/genrams/xilinx/series7/generic_async_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../modules/pcie/common/wb_transact.vhd"]"\
  "[file normalize "$origin_dir/../../modules/pcie/common/tlpControl.vhd"]"\
@@ -150,8 +150,8 @@ set files [list \
  "[file normalize "$origin_dir/../../modules/pcie/bpm_pcie.vhd"]"\
  "[file normalize "$origin_dir/../../modules/pcie/common/wb_mem.vhd"]"\
  "[file normalize "$origin_dir/../../top/pcie/top_afcv3.vhd"]"\
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/ddr_core/mig_a.prj"]"\
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/ddr_core/mig_b.prj"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/ddr_core/mig_a.prj"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/ddr_core/mig_b.prj"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -281,7 +281,7 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 
-set file "$origin_dir/../../platform/artix7/afcv3/ipcores_pkg.vhd"
+set file "$origin_dir/../../platform/artix7/afc_v3/ipcores_pkg.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -332,12 +332,12 @@ set_property "top" "top" $obj
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/pcie_core/pcie_core.xci"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/pcie_core/pcie_core.xci"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../../platform/artix7/afcv3/pcie_core/pcie_core.xci"
+set file "$origin_dir/../../platform/artix7/afc_v3/pcie_core/pcie_core.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 if { ![get_property "is_locked" $file_obj] } {
@@ -351,12 +351,12 @@ if { ![get_property "is_locked" $file_obj] } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/ddr_core/ddr_core.xci"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/ddr_core/ddr_core.xci"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../../platform/artix7/afcv3/ddr_core/ddr_core.xci"
+set file "$origin_dir/../../platform/artix7/afc_v3/ddr_core/ddr_core.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 if { ![get_property "is_locked" $file_obj] } {
@@ -370,12 +370,12 @@ if { ![get_property "is_locked" $file_obj] } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/axi_datamover_0/axi_datamover_0.xci"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../../platform/artix7/afcv3/axi_datamover_0/axi_datamover_0.xci"
+set file "$origin_dir/../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 if { ![get_property "is_locked" $file_obj] } {
@@ -389,12 +389,12 @@ if { ![get_property "is_locked" $file_obj] } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../../platform/artix7/afcv3/axi_interconnect/axi_interconnect.xci"]"\
+ "[file normalize "$origin_dir/../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../../platform/artix7/afcv3/axi_interconnect/axi_interconnect.xci"
+set file "$origin_dir/../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 if { ![get_property "is_locked" $file_obj] } {
