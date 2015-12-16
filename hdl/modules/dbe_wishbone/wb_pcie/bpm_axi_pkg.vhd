@@ -59,6 +59,7 @@ package bpm_axi_pkg is
   constant c_axi_sl_zero                     : std_logic := '0';
   constant c_axi_slv_zero                    : std_logic_vector(0 downto 0) := "0";
   constant c_axi_qos_zeros                   : std_logic_vector(c_aximm_qos_width-1 downto 0) := (others => '0');
+  constant c_axi_sl_one                      : std_logic := '1';
 
   -- AXIMM subtypes
   subtype t_aximm_id is
@@ -303,7 +304,7 @@ package bpm_axi_pkg is
 
   constant cc_dummy_axis_sts_slave_in : t_axis_sts_slave_in :=
     ('0', cc_dummy_axis_sts_tdata, cc_dummy_axis_sts_tkeep, 'X');
---  constant cc_dummy_axis_sts_master_in : t_axis_sts_master_in := ('X');
+  constant cc_dummy_axis_sts_master_in : t_axis_sts_master_in := (tready => 'X');
 
   -- AXIS CMD dummy constants
   constant cc_dummy_axis_cmd_tdata : std_logic_vector(c_axis_cmd_tdata_width-1 downto 0) :=
@@ -313,7 +314,7 @@ package bpm_axi_pkg is
 
   constant cc_dummy_axis_cmd_slave_in : t_axis_cmd_slave_in :=
     ('0', cc_dummy_axis_cmd_tdata, cc_dummy_axis_cmd_tkeep, 'X');
---  constant cc_dummy_axis_cmd_master_in : t_axis_cmd_master_in := ('X');
+  constant cc_dummy_axis_cmd_master_in : t_axis_cmd_master_in := (tready => 'X');
 
   -- AXIS PLD dummy constants
   constant cc_dummy_axis_pld_tdata : std_logic_vector(c_axis_pld_tdata_width-1 downto 0) :=
@@ -323,6 +324,6 @@ package bpm_axi_pkg is
 
   constant cc_dummy_axis_pld_slave_in : t_axis_pld_slave_in :=
     ('0', cc_dummy_axis_pld_tdata, cc_dummy_axis_pld_tkeep, 'X');
---  constant cc_dummy_axis_pld_master_in : t_axis_pld_master_in := ('X');
+  constant cc_dummy_axis_pld_master_in : t_axis_pld_master_in := (tready => 'X');
 
 end bpm_axi_pkg;
