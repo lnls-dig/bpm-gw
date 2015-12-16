@@ -354,6 +354,8 @@ architecture rtl of dbe_bpm is
 
   -- Number of acquisition cores
   constant c_acq_num_cores                  : natural := 2;
+  -- Type of DDR3 core interface
+  constant c_ddr_interface_type             : string := "AXIS";
 
   -- Acquisition core IDs
   constant c_acq_core_0_id                  : natural := 0;
@@ -2542,7 +2544,9 @@ begin
     --g_multishot_ram_size                      => 2048,
     g_fifo_fc_size                            => c_acq_fifo_size,
     --g_sim_readback                            => false
-    g_acq_num_cores                           => c_acq_num_cores
+    g_acq_num_cores                           => c_acq_num_cores,
+    g_ddr_interface_type                      => c_ddr_interface_type,
+    g_max_burst_size                          => c_ddr_datamover_bpm_burst_size
   )
   port map
   (
