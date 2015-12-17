@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-09
--- Last update: 2015-12-11
+-- Last update: 2015-12-17
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -40,8 +40,8 @@ use ieee.numeric_std.all;
 entity sm_transm is
 
   generic (
-    g_num_pins         : natural := 8;
-    g_max_pulse_length : natural := 10000);
+    g_num_pins   : natural := 8;
+    g_max_period : natural := 10000);
 
   port (
     clk_i              : in  std_logic;
@@ -59,7 +59,7 @@ architecture structure of sm_transm is
 begin  -- architecture structure
 
   pr_clk_counter : process (clk_i) is
-    variable clk_counter : natural range g_max_pulse_length downto 0 := 0;
+    variable clk_counter : natural range g_max_period downto 0 := 0;
   begin  -- process main
     if rising_edge(clk_i) then          -- rising clock edge
       if rst_n_i = '0' then             -- synchronous reset (negative high)

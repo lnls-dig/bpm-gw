@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-09
--- Last update: 2015-12-15
+-- Last update: 2015-12-17
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,8 +63,8 @@ architecture structure of test_trigger_transm is
 
   component sm_transm is
     generic (
-      g_num_pins         : natural;
-      g_max_pulse_length : natural);
+      g_num_pins   : natural;
+      g_max_period : natural);
     port (
       clk_i              : in  std_logic;
       rst_n_i            : in  std_logic;
@@ -165,8 +165,8 @@ begin  -- architecture behav
 
   sm_transm_1 : sm_transm
     generic map (
-      g_num_pins         => c_glitch_len_width,
-      g_max_pulse_length => 10000)
+      g_num_pins   => c_glitch_len_width,
+      g_max_period => 10000)
     port map (
       clk_i              => clk_100mhz,
       rst_n_i            => rst_n,
