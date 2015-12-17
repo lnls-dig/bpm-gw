@@ -272,7 +272,7 @@ begin
       if Tx_Reset = '1' then
         us_FC_stop_i <= '1';
       else
-        if tx_buf_av_i(C_TBUF_AWIDTH-1 downto 1) /= C_ALL_ZEROS(C_TBUF_AWIDTH-1 downto 1) then
+        if tx_buf_av_i(C_TBUF_AWIDTH-1 downto 2) /= C_ALL_ZEROS(C_TBUF_AWIDTH-1 downto 2) then
           us_FC_stop_i  <= '0';
         else
           us_FC_stop_i  <= '1';

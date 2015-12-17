@@ -648,7 +648,7 @@ begin
               BAR_value(C_ENCODE_BAR_NUMBER-2 downto 0)
                = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER-1)
             then
-              wb_FIFO_Rdreq_odd <= RdNumber(1);
+              wb_FIFO_Rdreq_odd <= RdNumber(0);
               if RdNumber_eq_One = '1' then
                 wb_FIFO_Rd_Counter     <= RdNumber + '1';
                 wb_FIFO_Rd_Cntr_eq_Two <= '1';
@@ -784,7 +784,7 @@ begin
         elsif wb_FIFO_Hit = '1' then
           if Shift_1st_QWord_k = '1' and wb_fifo_rd_1dw = '0' then
             mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_rise_r1;
-            mbuf_din_i(C_TXMEM_KEEP_BIT) <= not wb_FIFO_Rdreq_odd;
+            mbuf_din_i(C_TXMEM_KEEP_BIT) <= wb_FIFO_Rdreq_odd;
           else
             mbuf_din_i(C_TXMEM_TLAST_BIT) <= not wb_FIFO_RdEn_Mask_rise;
             mbuf_din_i(C_TXMEM_KEEP_BIT) <= wb_FIFO_RdEn_Mask_rise;

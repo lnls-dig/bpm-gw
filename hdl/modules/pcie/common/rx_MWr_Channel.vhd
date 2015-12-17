@@ -782,7 +782,8 @@ begin
             end if;
             if FIFO_Space_Sel = '1' then
               wb_FIFO_wsof_i <= '0';
-              wb_FIFO_weof_i <= m_axis_rx_tlast_r1;
+              wb_FIFO_weof_i <= (not(mwr_has_4dw_header) and (m_axis_rx_tlast_i or m_axis_rx_tlast_r1))
+                                or (mwr_has_4dw_header and m_axis_rx_tlast_r1);
               wb_FIFO_we_i   <= not trn_rx_throttle_r;
               wb_FIFO_din_i  <= Endian_Invert_64(m_axis_rx_tdata_fixed);
             else
