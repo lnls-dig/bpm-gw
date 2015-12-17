@@ -340,7 +340,6 @@ begin
   end process;
 
   valid_trans_in <= '1' when axis_mm2s_pld_tvalid_i = '1' else '0';
-                    --and axis_mm2s_pld_tlast_i = '1' else '0';
 
   p_ddr_data_reg : process(ext_clk_i)
   begin
