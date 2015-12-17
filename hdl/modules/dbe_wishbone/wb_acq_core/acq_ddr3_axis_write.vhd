@@ -121,7 +121,6 @@ architecture rtl of acq_ddr3_axis_write is
   constant c_bytes_per_word_log2            : natural := f_log2_size(c_bytes_per_word);
   constant c_addr_ddr_inc                   : natural := c_ddr_payload_width/g_ddr_dq_width; -- in words
   constant c_addr_ddr_inc_axis              : natural := c_ddr_payload_width/g_ddr_dq_width*c_bytes_per_word; -- in bytes
-------------------  constant c_addr_ddr_inc_axis_burst        : natural := c_addr_ddr_inc_axis*g_max_burst_size; -- in bytes
   constant c_addr_ddr_inc_axis_burst        : natural := c_addr_ddr_inc_axis; -- in bytes
 
   -- Flow Control constants
@@ -143,8 +142,6 @@ architecture rtl of acq_ddr3_axis_write is
   -- Constants for ddr3 address bits
   constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
 
---------------------------  constant c_ddr3_ui_diff_threshold         : natural := 1;
---------------------------
   subtype t_addr_cnt is unsigned(c_addr_cnt_width-1 downto 0);
   type t_addr_cnt_array is array (natural range <>) of t_addr_cnt;
 
