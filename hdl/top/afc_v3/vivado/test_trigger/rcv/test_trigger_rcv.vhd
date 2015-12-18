@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-15
+-- Last update: 2015-12-16
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -269,7 +269,8 @@ begin
       CLK     => clk_100mhz,
       TRIG0   => count_success(0),
       TRIG1   => count_fail(0),
-      TRIG2   => filler,
+      TRIG2(7 downto 0)  => trigger_buf,
+      TRIG2(31 downto 8) => filler(31 downto 8),
       TRIG3   => filler);
 
   cmp_chipscope_ila_1 : entity work.chipscope_ila
@@ -285,7 +286,7 @@ begin
     port map (
       CONTROL            => CONTROL2,
       CLK                => clk_100mhz,
-      TRIG0(7 downto 0)  => pulse,
+      TRIG0(7 downto 0)  => trigger_buf,
       TRIG0(31 downto 8) => filler(31 downto 8),
       TRIG1              => filler,
       TRIG2              => filler,
