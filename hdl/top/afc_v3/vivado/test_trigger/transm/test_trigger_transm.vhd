@@ -42,7 +42,8 @@ entity test_trigger_transm is
   port (
     sys_clk_p_i : in  std_logic;
     sys_clk_n_i : in  std_logic;
-    trigger_o   : out std_logic_vector(7 downto 0));
+    trigger_o   : out std_logic_vector(7 downto 0);
+    direction_o : out std_logic_vector(7 downto 0));
 
 end entity test_trigger_transm;
 
