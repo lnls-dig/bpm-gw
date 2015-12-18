@@ -317,124 +317,72 @@ clk_rst.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_sample_cycle_ratio.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_carry_latch_or.v \
 
-VERILOG_OBJ := work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v \
-work/mig_7series_v2_3_ddr_phy_oclkdelay_cal/.mig_7series_v2_3_ddr_phy_oclkdelay_cal_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v \
+VERILOG_OBJ := work/mig_7series_v2_3_ddr_phy_oclkdelay_cal/.mig_7series_v2_3_ddr_phy_oclkdelay_cal_v \
 work/mig_7series_v2_3_axi_mc_aw_channel/.mig_7series_v2_3_axi_mc_aw_channel_v \
 work/mig_7series_v2_3_ddr_mc_phy_wrapper/.mig_7series_v2_3_ddr_mc_phy_wrapper_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v \
 work/defines/.defines_v \
 work/eth_maccontrol/.eth_maccontrol_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
 work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v \
 work/mig_7series_v2_3_ecc_dec_fix/.mig_7series_v2_3_ecc_dec_fix_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
 work/pcie_core_gt_common/.pcie_core_gt_common_v \
 work/mig_7series_v2_3_rank_mach/.mig_7series_v2_3_rank_mach_v \
 work/mig_7series_v2_3_bank_cntrl/.mig_7series_v2_3_bank_cntrl_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v \
 work/mig_7series_v2_3_iodelay_ctrl/.mig_7series_v2_3_iodelay_ctrl_v \
 work/eth_transmitcontrol/.eth_transmitcontrol_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v \
 work/jtag_cores/.jtag_cores_v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
 work/mig_7series_v2_3_ddr_byte_lane/.mig_7series_v2_3_ddr_byte_lane_v \
 work/eth_rxcounters/.eth_rxcounters_v \
 work/mig_7series_v2_3_ui_rd_data/.mig_7series_v2_3_ui_rd_data_v \
 work/mig_7series_v2_3_ddr_byte_group_io/.mig_7series_v2_3_ddr_byte_group_io_v \
 work/mig_7series_v2_3_ddr_phy_ocd_edge/.mig_7series_v2_3_ddr_phy_ocd_edge_v \
 work/mig_7series_v2_3_ddr_if_post_fifo/.mig_7series_v2_3_ddr_if_post_fifo_v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
 work/timescale/.timescale_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
 work/axis_interconnect_v1_1_util_axis2vector/.axis_interconnect_v1_1_util_axis2vector_v \
 work/mig_7series_v2_3_clk_ibuf/.mig_7series_v2_3_clk_ibuf_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
 work/eth_top/.eth_top_v \
 work/mig_7series_v2_3_ddr_r_upsizer/.mig_7series_v2_3_ddr_r_upsizer_v \
 work/mig_7series_v2_3_ddr_comparator_sel/.mig_7series_v2_3_ddr_comparator_sel_v \
 work/mig_7series_v2_3_ddr_of_pre_fifo/.mig_7series_v2_3_ddr_of_pre_fifo_v \
 work/axis_interconnect_v1_1_axis_interconnect_16x16_top/.axis_interconnect_v1_1_axis_interconnect_16x16_top_v \
 work/mig_7series_v2_3_arb_select/.mig_7series_v2_3_arb_select_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
 work/axis_interconnect_v1_1_util_vector2axis/.axis_interconnect_v1_1_util_vector2axis_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
 work/mig_7series_v2_3_ddr_a_upsizer/.mig_7series_v2_3_ddr_a_upsizer_v \
 work/axis_interconnect_v1_1_arb_rr/.axis_interconnect_v1_1_arb_rr_v \
 work/mig_7series_v2_3_axi_mc_cmd_arbiter/.mig_7series_v2_3_axi_mc_cmd_arbiter_v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
-work/axi_interconnect_v1_7_comparator_sel_mask_static/.axi_interconnect_v1_7_comparator_sel_mask_static_v \
 work/eth_fifo/.eth_fifo_v \
 work/mig_7series_v2_3_col_mach/.mig_7series_v2_3_col_mach_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
 work/mig_7series_v2_3_ddr_phy_prbs_rdlvl/.mig_7series_v2_3_ddr_phy_prbs_rdlvl_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v \
 work/mig_7series_v2_3_ddr_axic_register_slice/.mig_7series_v2_3_ddr_axic_register_slice_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
 work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v \
 work/eth_shiftreg/.eth_shiftreg_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
 work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v \
-work/axi_interconnect_v1_7_comparator_sel_mask/.axi_interconnect_v1_7_comparator_sel_mask_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v \
 work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v \
 work/mig_7series_v2_3_ui_top/.mig_7series_v2_3_ui_top_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
 work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v \
 work/mig_7series_v2_3_ddr_calib_top/.mig_7series_v2_3_ddr_calib_top_v \
 work/ethmac_defines/.ethmac_defines_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
 work/eth_outputcontrol/.eth_outputcontrol_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v \
 work/mig_7series_v2_3_axi_mc_wrap_cmd/.mig_7series_v2_3_axi_mc_wrap_cmd_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v \
 work/mig_7series_v2_3_ddr_phy_ocd_mux/.mig_7series_v2_3_ddr_phy_ocd_mux_v \
 work/mig_7series_v2_3_axi_mc_cmd_translator/.mig_7series_v2_3_axi_mc_cmd_translator_v \
 work/axis_interconnect_v1_1_axis_data_fifo/.axis_interconnect_v1_1_axis_data_fifo_v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
 work/spi_bidir_defines/.spi_bidir_defines_v \
 work/mig_7series_v2_3_fi_xor/.mig_7series_v2_3_fi_xor_v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
 work/sockit_owm/.sockit_owm_v \
 work/lm32_multiplier/.lm32_multiplier_v \
 work/mig_7series_v2_3_ui_cmd/.mig_7series_v2_3_ui_cmd_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v \
 work/mig_7series_v2_3_ecc_merge_enc/.mig_7series_v2_3_ecc_merge_enc_v \
 work/eth_rxethmac/.eth_rxethmac_v \
 work/mig_7series_v2_3_ddr_prbs_gen/.mig_7series_v2_3_ddr_prbs_gen_v \
 work/mig_7series_v2_3_ecc_buf/.mig_7series_v2_3_ecc_buf_v \
 work/mig_7series_v2_3_ddr_phy_rdlvl/.mig_7series_v2_3_ddr_phy_rdlvl_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
 work/mig_7series_v2_3_ddr_phy_tempmon/.mig_7series_v2_3_ddr_phy_tempmon_v \
 work/lm32_mc_arithmetic/.lm32_mc_arithmetic_v \
-work/axi_interconnect_v1_7_carry/.axi_interconnect_v1_7_carry_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
 work/spi_bidir_clgen/.spi_bidir_clgen_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
 work/mig_7series_v2_3_bank_queue/.mig_7series_v2_3_bank_queue_v \
 work/spi_clgen/.spi_clgen_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
 work/pcie_core_gtp_pipe_drp/.pcie_core_gtp_pipe_drp_v \
 work/mig_7series_v2_3_arb_row_col/.mig_7series_v2_3_arb_row_col_v \
-work/axi_interconnect_v1_7_comparator_mask/.axi_interconnect_v1_7_comparator_mask_v \
 work/eth_rxstatem/.eth_rxstatem_v \
 work/mig_7series_v2_3_mc/.mig_7series_v2_3_mc_v \
 work/mig_7series_v2_3_axi_ctrl_reg_bank/.mig_7series_v2_3_axi_ctrl_reg_bank_v \
@@ -442,57 +390,36 @@ work/spi_top/.spi_top_v \
 work/axis_interconnect_v1_1_axisc_register_slice/.axis_interconnect_v1_1_axisc_register_slice_v \
 work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v \
 work/mig_7series_v2_3_ddr_phy_ocd_lim/.mig_7series_v2_3_ddr_phy_ocd_lim_v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v \
-work/axi_interconnect_bpm/.axi_interconnect_bpm_v \
 work/mig_7series_v2_3_axi_mc_fifo/.mig_7series_v2_3_axi_mc_fifo_v \
 work/axis_interconnect_v1_1_mux_enc/.axis_interconnect_v1_1_mux_enc_v \
 work/mig_7series_v2_3_ddr_phy_ocd_data/.mig_7series_v2_3_ddr_phy_ocd_data_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
 work/spi_shift/.spi_shift_v \
-work/axi_interconnect_v1_7_comparator_sel_mask/.axi_interconnect_v1_7_comparator_sel_mask_v \
 work/eth_random/.eth_random_v \
 work/mig_7series_v2_3_axi_mc_cmd_fsm/.mig_7series_v2_3_axi_mc_cmd_fsm_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
 work/lm32_shifter/.lm32_shifter_v \
 work/mig_7series_v2_3_ddr_mc_phy/.mig_7series_v2_3_ddr_mc_phy_v \
 work/mig_7series_v2_3_ddr_comparator_sel_static/.mig_7series_v2_3_ddr_comparator_sel_static_v \
 work/mig_7series_v2_3_ddr_comparator/.mig_7series_v2_3_ddr_comparator_v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v \
 work/ddr_core_mig_sim/.ddr_core_mig_sim_v \
-work/axi_interconnect_v1_7_comparator_mask_static/.axi_interconnect_v1_7_comparator_mask_static_v \
 work/mig_7series_v2_3_ddr_phy_top/.mig_7series_v2_3_ddr_phy_top_v \
 work/mig_7series_v2_3_ddr_phy_ck_addr_cmd_delay/.mig_7series_v2_3_ddr_phy_ck_addr_cmd_delay_v \
 work/eth_cop/.eth_cop_v \
 work/eth_rxaddrcheck/.eth_rxaddrcheck_v \
 work/mig_7series_v2_3_rank_cntrl/.mig_7series_v2_3_rank_cntrl_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v \
 work/mig_7series_v2_3_poc_meta/.mig_7series_v2_3_poc_meta_v \
 work/eth_register/.eth_register_v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
 work/mig_7series_v2_3_bank_compare/.mig_7series_v2_3_bank_compare_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
 work/mig_7series_v2_3_ddr_phy_4lanes/.mig_7series_v2_3_ddr_phy_4lanes_v \
-work/axi_interconnect_v1_7_comparator_mask_static/.axi_interconnect_v1_7_comparator_mask_static_v \
 work/timescale/.timescale_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v \
 work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v \
 work/eth_miim/.eth_miim_v \
 work/mig_7series_v2_3_axi_mc_simple_fifo/.mig_7series_v2_3_axi_mc_simple_fifo_v \
 work/pcie_core_gtx_cpllpd_ovrd/.pcie_core_gtx_cpllpd_ovrd_v \
 work/eth_defines/.eth_defines_v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
-work/axi_interconnect/.axi_interconnect_v \
 work/mig_7series_v2_3_ddr_axi_upsizer/.mig_7series_v2_3_ddr_axi_upsizer_v \
 work/mig_7series_v2_3_axi_ctrl_write/.mig_7series_v2_3_axi_ctrl_write_v \
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v \
 work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v \
 work/spi_bidir_shift/.spi_bidir_shift_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
 work/eth_txstatem/.eth_txstatem_v \
 work/mig_7series_v2_3_ddr_axi_register_slice/.mig_7series_v2_3_ddr_axi_register_slice_v \
 work/mig_7series_v2_3_poc_top/.mig_7series_v2_3_poc_top_v \
@@ -500,93 +427,58 @@ work/timescale/.timescale_v \
 work/mig_7series_v2_3_mem_intfc/.mig_7series_v2_3_mem_intfc_v \
 work/lm32_adder/.lm32_adder_v \
 work/mig_7series_v2_3_ddr_carry_and/.mig_7series_v2_3_ddr_carry_and_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
 work/pcie_core_pipe_user/.pcie_core_pipe_user_v \
 work/pcie_core_gtp_cpllpd_ovrd/.pcie_core_gtp_cpllpd_ovrd_v \
 work/mig_7series_v2_3_ddr_w_upsizer/.mig_7series_v2_3_ddr_w_upsizer_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
 work/axis_interconnect_v1_1_axis_subset_converter/.axis_interconnect_v1_1_axis_subset_converter_v \
 work/mig_7series_v2_3_axi_ctrl_addr_decode/.mig_7series_v2_3_axi_ctrl_addr_decode_v \
 work/mig_7series_v2_3_ddr_phy_dqs_found_cal_hr/.mig_7series_v2_3_ddr_phy_dqs_found_cal_hr_v \
 work/mig_7series_v2_3_ddr_carry_latch_and/.mig_7series_v2_3_ddr_carry_latch_and_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
 work/eth_registers/.eth_registers_v \
 work/mig_7series_v2_3_axi_mc_ar_channel/.mig_7series_v2_3_axi_mc_ar_channel_v \
 work/axis_interconnect_v1_1_axis_clock_converter/.axis_interconnect_v1_1_axis_clock_converter_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v \
 work/mig_7series_v2_3_axi_ctrl_reg/.mig_7series_v2_3_axi_ctrl_reg_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
 work/axis_interconnect_v1_1_axisc_downsizer/.axis_interconnect_v1_1_axisc_downsizer_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
 work/wishbone_test_master/.wishbone_test_master_v \
 work/lm32_allprofiles/.lm32_allprofiles_v \
 work/eth_wishbone/.eth_wishbone_v \
 work/axis_interconnect_v1_1_axis_register_slice/.axis_interconnect_v1_1_axis_register_slice_v \
 work/mig_7series_v2_3_bank_common/.mig_7series_v2_3_bank_common_v \
 work/mig_7series_v2_3_poc_tap_base/.mig_7series_v2_3_poc_tap_base_v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v \
 work/eth_crc/.eth_crc_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
 work/eth_clockgen/.eth_clockgen_v \
 work/ethmac/.ethmac_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v \
 work/mig_7series_v2_3_ddr_phy_init/.mig_7series_v2_3_ddr_phy_init_v \
 work/jtag_tap/.jtag_tap_v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
 work/mig_7series_v2_3_ui_wr_data/.mig_7series_v2_3_ui_wr_data_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
 work/axis_interconnect_v1_1_util_aclken_converter/.axis_interconnect_v1_1_util_aclken_converter_v \
 work/axis_interconnect_v1_1_axisc_decoder/.axis_interconnect_v1_1_axisc_decoder_v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v \
 work/mig_7series_v2_3_bank_mach/.mig_7series_v2_3_bank_mach_v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v \
 work/mig_7series_v2_3_ddr_phy_wrlvl/.mig_7series_v2_3_ddr_phy_wrlvl_v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
 work/mig_7series_v2_3_axi_ctrl_read/.mig_7series_v2_3_axi_ctrl_read_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_mask/.axi_interconnect_v1_7_comparator_mask_v \
 work/mig_7series_v2_3_rank_common/.mig_7series_v2_3_rank_common_v \
 work/axis_interconnect_v1_1_axisc_arb_responder/.axis_interconnect_v1_1_axisc_arb_responder_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
 work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
 work/mig_7series_v2_3_ddr_carry_or/.mig_7series_v2_3_ddr_carry_or_v \
 work/eth_txcounters/.eth_txcounters_v \
 work/wb_acq_core_tb/.wb_acq_core_tb_v \
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v \
 work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v \
 work/mig_7series_v2_3_arb_mux/.mig_7series_v2_3_arb_mux_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
 work/mig_7series_v2_3_infrastructure/.mig_7series_v2_3_infrastructure_v \
 work/axis_interconnect_v1_1_dynamic_datapath/.axis_interconnect_v1_1_dynamic_datapath_v \
 work/mig_7series_v2_3_ddr_phy_wrcal/.mig_7series_v2_3_ddr_phy_wrcal_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
 work/mig_7series_v2_3_axi_mc_w_channel/.mig_7series_v2_3_axi_mc_w_channel_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
 work/mig_7series_v2_3_ddr_phy_ocd_cntlr/.mig_7series_v2_3_ddr_phy_ocd_cntlr_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
 work/mig_7series_v2_3_round_robin_arb/.mig_7series_v2_3_round_robin_arb_v \
 work/mig_7series_v2_3_axi_mc_wr_cmd_fsm/.mig_7series_v2_3_axi_mc_wr_cmd_fsm_v \
 work/axis_interconnect_v1_1_axisc_upsizer/.axis_interconnect_v1_1_axisc_upsizer_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_carry/.axi_interconnect_v1_7_carry_v \
 work/mig_7series_v2_3_bank_state/.mig_7series_v2_3_bank_state_v \
 work/axis_interconnect_v1_1_axis_dwidth_converter/.axis_interconnect_v1_1_axis_dwidth_converter_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
 work/eth_spram_256x32/.eth_spram_256x32_v \
 work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v \
 work/axis_interconnect_v1_1_axisc_transfer_mux/.axis_interconnect_v1_1_axisc_transfer_mux_v \
 work/axis_interconnect_v1_1_axis_switch/.axis_interconnect_v1_1_axis_switch_v \
 work/mig_7series_v2_3_axi_mc_b_channel/.mig_7series_v2_3_axi_mc_b_channel_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
 work/mig_7series_v2_3_tempmon/.mig_7series_v2_3_tempmon_v \
 work/lm32_addsub/.lm32_addsub_v \
 work/eth_txethmac/.eth_txethmac_v \
@@ -596,47 +488,31 @@ work/mig_7series_v2_3_ddr_command_fifo/.mig_7series_v2_3_ddr_command_fifo_v \
 work/mig_7series_v2_3_axi_ctrl_top/.mig_7series_v2_3_axi_ctrl_top_v \
 work/clk_rst/.clk_rst_v \
 work/mig_7series_v2_3_poc_pd/.mig_7series_v2_3_poc_pd_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
 work/mig_7series_v2_3_ecc_gen/.mig_7series_v2_3_ecc_gen_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
 work/mig_7series_v2_3_ddr_phy_wrlvl_off_delay/.mig_7series_v2_3_ddr_phy_wrlvl_off_delay_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
 work/mig_7series_v2_3_ddr_phy_dqs_found_cal/.mig_7series_v2_3_ddr_phy_dqs_found_cal_v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v \
 work/xilinx_dist_ram_16x32/.xilinx_dist_ram_16x32_v \
 work/mig_7series_v2_3_ddr_phy_ocd_samp/.mig_7series_v2_3_ddr_phy_ocd_samp_v \
 work/eth_macstatus/.eth_macstatus_v \
 work/axis_interconnect_v1_1_axisc_sync_clock_converter/.axis_interconnect_v1_1_axisc_sync_clock_converter_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
 work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v \
 work/mig_7series_v2_3_axi_mc_r_channel/.mig_7series_v2_3_axi_mc_r_channel_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
 work/lm32_logic_op/.lm32_logic_op_v \
 work/ddr_core/.ddr_core_v \
 work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v \
 work/eth_receivecontrol/.eth_receivecontrol_v \
 work/wiredly/.wiredly_v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v \
 work/axis_interconnect_v1_1_axis_switch_arbiter/.axis_interconnect_v1_1_axis_switch_arbiter_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
 work/axis_interconnect_v1_1_util_aclken_converter_wrapper/.axis_interconnect_v1_1_util_aclken_converter_wrapper_v \
 work/axis_interconnect_v1_1_axis_interconnect/.axis_interconnect_v1_1_axis_interconnect_v \
 work/glbl/.glbl_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v \
 work/mig_7series_v2_3_axi_mc_incr_cmd/.mig_7series_v2_3_axi_mc_incr_cmd_v \
 work/mig_7series_v2_3_poc_edge_store/.mig_7series_v2_3_poc_edge_store_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
 work/mig_7series_v2_3_axi_mc/.mig_7series_v2_3_axi_mc_v \
 work/mig_7series_v2_3_ddr_phy_ocd_po_cntlr/.mig_7series_v2_3_ddr_phy_ocd_po_cntlr_v \
 work/ddr3_model/.ddr3_model_v \
 work/axis_interconnect_v1_1_dynamic_priority_encoder/.axis_interconnect_v1_1_dynamic_priority_encoder_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
 work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v \
-work/axi_interconnect_v1_7_comparator_sel_mask_static/.axi_interconnect_v1_7_comparator_sel_mask_static_v \
 work/spi_bidir_top/.spi_bidir_top_v \
 work/axis_interconnect_v1_1_axisc_sample_cycle_ratio/.axis_interconnect_v1_1_axisc_sample_cycle_ratio_v \
 work/mig_7series_v2_3_ddr_carry_latch_or/.mig_7series_v2_3_ddr_carry_latch_or_v \
@@ -973,21 +849,15 @@ ddr_core_wrapper.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd \
 
-VHDL_OBJ := work/axi_datamover_ms_strb_set/.axi_datamover_ms_strb_set_vhd \
-work/gc_word_packer/.gc_word_packer_vhd \
+VHDL_OBJ := work/gc_word_packer/.gc_word_packer_vhd \
 work/dynshreg_f/.dynshreg_f_vhd \
 work/wb_i2c_master/.wb_i2c_master_vhd \
 work/eb_master_top/.eb_master_top_vhd \
-work/axi_datamover_rdmux/.axi_datamover_rdmux_vhd \
 work/eb_slave_core/.eb_slave_core_vhd \
-work/axi_datamover_s2mm_dre/.axi_datamover_s2mm_dre_vhd \
-work/axi_datamover_s2mm_basic_wrap/.axi_datamover_s2mm_basic_wrap_vhd \
 work/wb_irq_master/.wb_irq_master_vhd \
 work/eb_master_slave_wrapper/.eb_master_slave_wrapper_vhd \
 work/gc_frequency_meter/.gc_frequency_meter_vhd \
-work/axi_datamover_rd_sf/.axi_datamover_rd_sf_vhd \
 work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_vhd \
-work/axi_datamover_sfifo_autord/.axi_datamover_sfifo_autord_vhd \
 work/wb_irq_slave/.wb_irq_slave_vhd \
 work/eb_ethernet_slave/.eb_ethernet_slave_vhd \
 work/gc_serial_dac/.gc_serial_dac_vhd \
@@ -997,30 +867,23 @@ work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_vhd \
 work/mc_serial_ctrl/.mc_serial_ctrl_vhd \
 work/bpm_axi_pkg/.bpm_axi_pkg_vhd \
 work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_vhd \
-work/axi_datamover_ibttcc/.axi_datamover_ibttcc_vhd \
 work/cdc_sync/.cdc_sync_vhd \
 work/xwb_acq_core/.xwb_acq_core_vhd \
 work/wb_fmc150/.wb_fmc150_vhd \
-work/axi_datamover_pcc/.axi_datamover_pcc_vhd \
 work/reset_synch/.reset_synch_vhd \
 work/pulse2pulse/.pulse2pulse_vhd \
 work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd \
 work/xwb_dbe_periph/.xwb_dbe_periph_vhd \
 work/simple_uart_wb/.simple_uart_wb_vhd \
-work/axi_datamover_reset/.axi_datamover_reset_vhd \
 work/generic_dpram/.generic_dpram_vhd \
-work/axi_datamover_wrdata_cntl/.axi_datamover_wrdata_cntl_vhd \
-work/axi_datamover_wr_demux/.axi_datamover_wr_demux_vhd \
 work/xwb_stream_source/.xwb_stream_source_vhd \
 work/fmc150_spi_ctrl/.fmc150_spi_ctrl_vhd \
-work/axi_datamover_s2mm_realign/.axi_datamover_s2mm_realign_vhd \
 work/rf_ch_swap/.rf_ch_swap_vhd \
 work/srl_fifo_rbu_f/.srl_fifo_rbu_f_vhd \
 work/cntr_incr_decr_addn_f/.cntr_incr_decr_addn_f_vhd \
 work/uart_async_tx/.uart_async_tx_vhd \
 work/generic_spram/.generic_spram_vhd \
 work/gc_moving_average/.gc_moving_average_vhd \
-work/axi_datamover_dre_mux8_1_x_n/.axi_datamover_dre_mux8_1_x_n_vhd \
 work/fmc_adc_pkg/.fmc_adc_pkg_vhd \
 work/i2c_master_byte_ctrl/.i2c_master_byte_ctrl_vhd \
 work/fmc_adc_dly_iface/.fmc_adc_dly_iface_vhd \
@@ -1028,7 +891,6 @@ work/gc_pulse_synchronizer2/.gc_pulse_synchronizer2_vhd \
 work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_vhd \
 work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_vhd \
 work/cdc_sync/.cdc_sync_vhd \
-work/axi_datamover_afifo_autord/.axi_datamover_afifo_autord_vhd \
 work/gc_reset/.gc_reset_vhd \
 work/acq_core_regs_pkg/.acq_core_regs_pkg_vhd \
 work/fmc_adc_clk/.fmc_adc_clk_vhd \
@@ -1037,7 +899,6 @@ work/wb_ethmac/.wb_ethmac_vhd \
 work/s7_fifo_pkg/.s7_fifo_pkg_vhd \
 work/multiboot_fsm/.multiboot_fsm_vhd \
 work/wb_acq_core_plain/.wb_acq_core_plain_vhd \
-work/axi_datamover_wrdata_cntl/.axi_datamover_wrdata_cntl_vhd \
 work/bpm_pcie/.bpm_pcie_vhd \
 work/adc_pkg/.adc_pkg_vhd \
 work/wb_slave_vic/.wb_slave_vic_vhd \
@@ -1047,7 +908,6 @@ work/wb_irq_pkg/.wb_irq_pkg_vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/wb_irq_lm32/.wb_irq_lm32_vhd \
 work/i2c_master_top/.i2c_master_top_vhd \
-work/axi_datamover_s2mm_dre/.axi_datamover_s2mm_dre_vhd \
 work/wb_fmc516/.wb_fmc516_vhd \
 work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_vhd \
 work/eb_commit_fifo/.eb_commit_fifo_vhd \
@@ -1055,26 +915,18 @@ work/fmc150_dac_if/.fmc150_dac_if_vhd \
 work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_vhd \
 work/xwb_register_link/.xwb_register_link_vhd \
 work/eb_stream_widen/.eb_stream_widen_vhd \
-work/axi_datamover_s2mm_basic_wrap/.axi_datamover_s2mm_basic_wrap_vhd \
 work/acq_fwft_fifo/.acq_fwft_fifo_vhd \
-work/axi_datamover_skid_buf/.axi_datamover_skid_buf_vhd \
 work/lm32_dp_ram/.lm32_dp_ram_vhd \
-work/axi_datamover_sfifo_autord/.axi_datamover_sfifo_autord_vhd \
 work/data_checker/.data_checker_vhd \
-work/axi_datamover_slice/.axi_datamover_slice_vhd \
 work/wb_fmc130m_4ch/.wb_fmc130m_4ch_vhd \
 work/eb_checksum/.eb_checksum_vhd \
-work/axi_datamover_mm2s_omit_wrap/.axi_datamover_mm2s_omit_wrap_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/xwb_fmc516/.xwb_fmc516_vhd \
 work/eb_master_wb_if/.eb_master_wb_if_vhd \
-work/axi_datamover_addr_cntl/.axi_datamover_addr_cntl_vhd \
-work/axi_datamover_indet_btt/.axi_datamover_indet_btt_vhd \
 work/acq_ddr3_ui_read/.acq_ddr3_ui_read_vhd \
 work/xwb_streamer/.xwb_streamer_vhd \
 work/wb_i2c_bridge/.wb_i2c_bridge_vhd \
 work/fmc_adc_buf/.fmc_adc_buf_vhd \
-work/axi_datamover_skid2mm_buf/.axi_datamover_skid2mm_buf_vhd \
 work/wb_spi_flash/.wb_spi_flash_vhd \
 work/wb_spi/.wb_spi_vhd \
 work/eb_stream_narrow/.eb_stream_narrow_vhd \
@@ -1085,25 +937,19 @@ work/cdce72010_init_mem_int/.cdce72010_init_mem_int_vhd \
 work/lm32_ram/.lm32_ram_vhd \
 work/xwb_lm32/.xwb_lm32_vhd \
 work/utilities_package/.utilities_package_vhd \
-work/axi_datamover_mm2s_full_wrap/.axi_datamover_mm2s_full_wrap_vhd \
 work/gc_glitch_filt/.gc_glitch_filt_vhd \
 work/wb_xil_multiboot/.wb_xil_multiboot_vhd \
 work/dbe_wishbone_pkg/.dbe_wishbone_pkg_vhd \
 work/eb_pass_fifo/.eb_pass_fifo_vhd \
-work/axi_datamover_dre_mux4_1_x_n/.axi_datamover_dre_mux4_1_x_n_vhd \
 work/s7_hwfifo_wrapper/.s7_hwfifo_wrapper_vhd \
 work/xwb_bus_fanout/.xwb_bus_fanout_vhd \
 work/generic_dpram_dualclock/.generic_dpram_dualclock_vhd \
 work/generic_sync_fifo/.generic_sync_fifo_vhd \
-work/axi_datamover_pcc/.axi_datamover_pcc_vhd \
-work/axi_datamover_stbs_set/.axi_datamover_stbs_set_vhd \
 work/wbgen2_fifo_sync/.wbgen2_fifo_sync_vhd \
 work/xwb_fabric_sink/.xwb_fabric_sink_vhd \
 work/xwb_tics/.xwb_tics_vhd \
 work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_vhd \
 work/acq_fc_fifo/.acq_fc_fifo_vhd \
-work/axi_datamover/.axi_datamover_vhd \
-work/axi_datamover_slice/.axi_datamover_slice_vhd \
 work/chipscope_ila/.chipscope_ila_vhd \
 work/eb_eth_tx/.eb_eth_tx_vhd \
 work/xwb_simple_pwm/.xwb_simple_pwm_vhd \
@@ -1112,21 +958,16 @@ work/xwb_stream_sink/.xwb_stream_sink_vhd \
 work/wbgen2_eic/.wbgen2_eic_vhd \
 work/pcie_core/.pcie_core_vhd \
 work/wb_tics/.wb_tics_vhd \
-work/axi_datamover_rd_status_cntl/.axi_datamover_rd_status_cntl_vhd \
 work/xwb_stream_source_gen/.xwb_stream_source_gen_vhd \
 work/uart_baud_gen/.uart_baud_gen_vhd \
 work/inferred_async_fifo/.inferred_async_fifo_vhd \
 work/wb_fmc516_regs_pkg/.wb_fmc516_regs_pkg_vhd \
 work/fc_source/.fc_source_vhd \
-work/axi_datamover_bpm/.axi_datamover_bpm_vhd \
 work/wb_fmc516_regs/.wb_fmc516_regs_vhd \
 work/acq_pulse_level_sync/.acq_pulse_level_sync_vhd \
 work/gc_big_adder/.gc_big_adder_vhd \
 work/gc_arbitrated_mux/.gc_arbitrated_mux_vhd \
-work/axi_datamover_mm2s_basic_wrap/.axi_datamover_mm2s_basic_wrap_vhd \
-work/axi_datamover_scc/.axi_datamover_scc_vhd \
 work/wb_bpm_pcie/.wb_bpm_pcie_vhd \
-work/axi_datamover_s2mm_omit_wrap/.axi_datamover_s2mm_omit_wrap_vhd \
 work/wb_stream_pkg/.wb_stream_pkg_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/xwb_simple_uart/.xwb_simple_uart_vhd \
@@ -1145,20 +986,13 @@ work/gc_prio_encoder/.gc_prio_encoder_vhd \
 work/simple_pwm_wb/.simple_pwm_wb_vhd \
 work/i2c_master_bit_ctrl/.i2c_master_bit_ctrl_vhd \
 work/srl_fifo_rbu_f/.srl_fifo_rbu_f_vhd \
-work/axi_datamover/.axi_datamover_vhd \
 work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_vhd \
 work/wb_spi_bidir/.wb_spi_bidir_vhd \
 work/xwb_vic/.xwb_vic_vhd \
 work/xwb_spi_bidir/.xwb_spi_bidir_vhd \
 work/xloader_wb/.xloader_wb_vhd \
-work/axi_datamover_reset/.axi_datamover_reset_vhd \
 work/gc_extend_pulse/.gc_extend_pulse_vhd \
-work/axi_datamover_stbs_set_nodre/.axi_datamover_stbs_set_nodre_vhd \
-work/axi_datamover_wr_sf/.axi_datamover_wr_sf_vhd \
-work/axi_datamover_wr_status_cntl/.axi_datamover_wr_status_cntl_vhd \
 work/xwb_ethmac/.xwb_ethmac_vhd \
-work/axi_datamover_strb_gen2/.axi_datamover_strb_gen2_vhd \
-work/axi_datamover_wr_sf/.axi_datamover_wr_sf_vhd \
 work/chipscope_icon_4_port/.chipscope_icon_4_port_vhd \
 work/async_fifo_fg/.async_fifo_fg_vhd \
 work/eb_slave_top/.eb_slave_top_vhd \
@@ -1169,13 +1003,10 @@ work/wb_stream_source_gen/.wb_stream_source_gen_vhd \
 work/pcie_core_gt_top/.pcie_core_gt_top_vhd \
 work/xwb_fmc130m_4ch/.xwb_fmc130m_4ch_vhd \
 work/gc_pulse_synchronizer/.gc_pulse_synchronizer_vhd \
-work/axi_datamover_rd_sf/.axi_datamover_rd_sf_vhd \
 work/generic_async_fifo/.generic_async_fifo_vhd \
 work/xwb_onewire_master/.xwb_onewire_master_vhd \
 work/gc_dyn_glitch_filt/.gc_dyn_glitch_filt_vhd \
 work/v6abb64Package_efifo_elink/.v6abb64Package_efifo_elink_vhd \
-work/axi_datamover_indet_btt/.axi_datamover_indet_btt_vhd \
-work/axi_datamover_strb_gen2/.axi_datamover_strb_gen2_vhd \
 work/wr_fabric_pkg/.wr_fabric_pkg_vhd \
 work/memory_loader_pkg/.memory_loader_pkg_vhd \
 work/eb_cfg_fifo/.eb_cfg_fifo_vhd \
@@ -1183,18 +1014,12 @@ work/ez_usb_fifos/.ez_usb_fifos_vhd \
 work/ddr_core_wrapper/.ddr_core_wrapper_vhd \
 work/irqm_core/.irqm_core_vhd \
 work/xwb_fmc150/.xwb_fmc150_vhd \
-work/axi_datamover_s2mm_omit_wrap/.axi_datamover_s2mm_omit_wrap_vhd \
-work/axi_datamover_mm2s_full_wrap/.axi_datamover_mm2s_full_wrap_vhd \
-work/axi_datamover_mssai_skid_buf/.axi_datamover_mssai_skid_buf_vhd \
-work/axi_datamover_ms_strb_set/.axi_datamover_ms_strb_set_vhd \
-work/axi_datamover_s2mm_scatter/.axi_datamover_s2mm_scatter_vhd \
 work/ads62p49_ctrl/.ads62p49_ctrl_vhd \
 work/dbe_common_pkg/.dbe_common_pkg_vhd \
 work/wb_async_bridge/.wb_async_bridge_vhd \
 work/xwb_stream_sink_gen/.xwb_stream_sink_gen_vhd \
 work/wbgen2_pkg/.wbgen2_pkg_vhd \
 work/eb_tag_fifo/.eb_tag_fifo_vhd \
-work/axi_datamover_afifo_autord/.axi_datamover_afifo_autord_vhd \
 work/acq_2_diff_cnt/.acq_2_diff_cnt_vhd \
 work/wb_serial_lcd/.wb_serial_lcd_vhd \
 work/wb_vic/.wb_vic_vhd \
@@ -1203,15 +1028,12 @@ work/xwb_async_bridge/.xwb_async_bridge_vhd \
 work/srl_fifo_f/.srl_fifo_f_vhd \
 work/fmc_130m_4ch_regs/.fmc_130m_4ch_regs_vhd \
 work/eb_framer/.eb_framer_vhd \
-work/axi_datamover_dre_mux4_1_x_n/.axi_datamover_dre_mux4_1_x_n_vhd \
 work/xwb_gpio_port/.xwb_gpio_port_vhd \
 work/fmc_adc_private_pkg/.fmc_adc_private_pkg_vhd \
-work/axi_datamover_rd_status_cntl/.axi_datamover_rd_status_cntl_vhd \
 work/fmc_adc_sync_chains/.fmc_adc_sync_chains_vhd \
 work/fmc150_testbench/.fmc150_testbench_vhd \
 work/xwb_spi/.xwb_spi_vhd \
 work/acq_fsm/.acq_fsm_vhd \
-work/axi_datamover_mssai_skid_buf/.axi_datamover_mssai_skid_buf_vhd \
 work/gc_ext_pulse_sync/.gc_ext_pulse_sync_vhd \
 work/xwb_i2c_master/.xwb_i2c_master_vhd \
 work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_vhd \
@@ -1220,47 +1042,30 @@ work/acq_core_regs/.acq_core_regs_vhd \
 work/eb_hdr_pkg/.eb_hdr_pkg_vhd \
 work/wb_stream_sink_gen/.wb_stream_sink_gen_vhd \
 work/wb_onewire_master/.wb_onewire_master_vhd \
-work/axi_datamover_mm2s_omit_wrap/.axi_datamover_mm2s_omit_wrap_vhd \
 work/fmc_130m_4ch_regs_pkg/.fmc_130m_4ch_regs_pkg_vhd \
 work/spi_master/.spi_master_vhd \
 work/eb_fifo/.eb_fifo_vhd \
 work/sync_fifo_fg/.sync_fifo_fg_vhd \
 work/generic_simple_dpram/.generic_simple_dpram_vhd \
 work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_vhd \
-work/axi_datamover_s2mm_full_wrap/.axi_datamover_s2mm_full_wrap_vhd \
-work/axi_datamover_skid_buf/.axi_datamover_skid_buf_vhd \
 work/dynshreg_f/.dynshreg_f_vhd \
 work/gc_rr_arbiter/.gc_rr_arbiter_vhd \
-work/axi_datamover_dre_mux8_1_x_n/.axi_datamover_dre_mux8_1_x_n_vhd \
-work/axi_datamover_fifo/.axi_datamover_fifo_vhd \
 work/vic_prio_enc/.vic_prio_enc_vhd \
 work/etherbone_pkg/.etherbone_pkg_vhd \
-work/axi_datamover_ibttcc/.axi_datamover_ibttcc_vhd \
-work/axi_datamover_cmd_status/.axi_datamover_cmd_status_vhd \
-work/axi_datamover_fifo/.axi_datamover_fifo_vhd \
 work/dac3283_init_mem/.dac3283_init_mem_vhd \
 work/lib_pkg/.lib_pkg_vhd \
 work/eb_internals_pkg/.eb_internals_pkg_vhd \
-work/axi_datamover_stbs_set/.axi_datamover_stbs_set_vhd \
 work/axis_mux_2_to_1/.axis_mux_2_to_1_vhd \
-work/axi_datamover_mm2s_basic_wrap/.axi_datamover_mm2s_basic_wrap_vhd \
 work/eb_slave_fsm/.eb_slave_fsm_vhd \
 work/cdce72010_ctrl/.cdce72010_ctrl_vhd \
-work/axi_datamover_cmd_status/.axi_datamover_cmd_status_vhd \
 work/acq_trigger/.acq_trigger_vhd \
 work/srl_fifo_f/.srl_fifo_f_vhd \
-work/axi_datamover_skid2mm_buf/.axi_datamover_skid2mm_buf_vhd \
 work/acq_multishot_dpram/.acq_multishot_dpram_vhd \
-work/axi_datamover_scc/.axi_datamover_scc_vhd \
-work/axi_datamover_wr_demux/.axi_datamover_wr_demux_vhd \
-work/axi_datamover_mm2s_dre/.axi_datamover_mm2s_dre_vhd \
 work/uart_async_rx/.uart_async_rx_vhd \
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd \
-work/axi_datamover_addr_cntl/.axi_datamover_addr_cntl_vhd \
 work/xwb_ethmac_adapter/.xwb_ethmac_adapter_vhd \
 work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_vhd \
 work/xwb_crossbar/.xwb_crossbar_vhd \
-work/axi_datamover_rddata_cntl/.axi_datamover_rddata_cntl_vhd \
 work/ipcores_pkg/.ipcores_pkg_vhd \
 work/eb_record_gen/.eb_record_gen_vhd \
 work/amc7823_ctrl/.amc7823_ctrl_vhd \
@@ -1274,18 +1079,12 @@ work/pcie_core_pcie2_top/.pcie_core_pcie2_top_vhd \
 work/wb_simple_pwm/.wb_simple_pwm_vhd \
 work/pcie_core_pcie_top/.pcie_core_pcie_top_vhd \
 work/xwb_clock_crossing/.xwb_clock_crossing_vhd \
-work/axi_datamover_dre_mux2_1_x_n/.axi_datamover_dre_mux2_1_x_n_vhd \
 work/fmc150_adc_if/.fmc150_adc_if_vhd \
 work/simple_uart_pkg/.simple_uart_pkg_vhd \
-work/axi_datamover_dre_mux2_1_x_n/.axi_datamover_dre_mux2_1_x_n_vhd \
-work/axi_datamover_s2mm_full_wrap/.axi_datamover_s2mm_full_wrap_vhd \
 work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_vhd \
 work/eb_tx_mux/.eb_tx_mux_vhd \
-work/axi_datamover_rddata_cntl/.axi_datamover_rddata_cntl_vhd \
-work/axi_datamover_s2mm_scatter/.axi_datamover_s2mm_scatter_vhd \
 work/pcie_core_core_top/.pcie_core_core_top_vhd \
 work/sdb_rom/.sdb_rom_vhd \
-work/axi_datamover_s2mm_realign/.axi_datamover_s2mm_realign_vhd \
 work/async_fifo_fg/.async_fifo_fg_vhd \
 work/gc_fsm_watchdog/.gc_fsm_watchdog_vhd \
 work/ez_usb/.ez_usb_vhd \
@@ -1300,13 +1099,11 @@ work/generic_shiftreg_fifo/.generic_shiftreg_fifo_vhd \
 work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_vhd \
 work/inferred_sync_fifo/.inferred_sync_fifo_vhd \
 work/dac3283_ctrl/.dac3283_ctrl_vhd \
-work/axi_datamover_mm2s_dre/.axi_datamover_mm2s_dre_vhd \
 work/xwb_xilinx_fpga_loader/.xwb_xilinx_fpga_loader_vhd \
 work/wb_acq_core/.wb_acq_core_vhd \
 work/eb_master_eth_tx/.eb_master_eth_tx_vhd \
 work/xwb_sdb_crossbar/.xwb_sdb_crossbar_vhd \
 work/wb_fmc150_port/.wb_fmc150_port_vhd \
-work/axi_datamover_wr_status_cntl/.axi_datamover_wr_status_cntl_vhd \
 work/pcie_core_pcie_7x/.pcie_core_pcie_7x_vhd \
 work/acq_sel_chan/.acq_sel_chan_vhd \
 work/gc_shiftreg/.gc_shiftreg_vhd \
@@ -1317,14 +1114,11 @@ work/acq_ddr3_ui_write/.acq_ddr3_ui_write_vhd \
 work/acq_ddr3_axis_write/.acq_ddr3_axis_write_vhd \
 work/acq_ddr3_axis_read/.acq_ddr3_axis_read_vhd \
 work/eb_raw_slave/.eb_raw_slave_vhd \
-work/axi_datamover_0/.axi_datamover_0_vhd \
-work/axi_datamover_rdmux/.axi_datamover_rdmux_vhd \
 work/lib_pkg/.lib_pkg_vhd \
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd \
 work/sync_fifo_fg/.sync_fifo_fg_vhd \
 work/wb_simple_uart/.wb_simple_uart_vhd \
 work/strobe_lvds/.strobe_lvds_vhd \
-work/axi_datamover_stbs_set_nodre/.axi_datamover_stbs_set_nodre_vhd \
 work/wbgen2_dpssram/.wbgen2_dpssram_vhd \
 
 LIBS := work
@@ -1353,9 +1147,6 @@ work/.work:
 	(vlib work && vmap $(VMAP_FLAGS) work && touch work/.work )|| rm -rf work
 
 
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axilite_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1373,27 +1164,9 @@ work/mig_7series_v2_3_ddr_phy_ocd_lim/.mig_7series_v2_3_ddr_phy_ocd_lim_v
 
 
 
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_reg_srl_fifo.v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_interconnect.v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1414,27 +1187,9 @@ work/mig_7series_v2_3_ddr_of_pre_fifo/.mig_7series_v2_3_ddr_of_pre_fifo_v
 
 
 
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1453,9 +1208,6 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_arbiter_resp.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1465,9 +1217,6 @@ work/mig_7series_v2_3_ecc_dec_fix/.mig_7series_v2_3_ecc_dec_fix_v: ../../../../.
 
 
 
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1488,35 +1237,9 @@ work/mig_7series_v2_3_bank_queue/.mig_7series_v2_3_bank_queue_v
 
 
 
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar.v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_top.v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1533,13 +1256,6 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_crossbar.v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1550,39 +1266,15 @@ work/jtag_tap/.jtag_tap_v
 
 
 
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_data_fifo_bank.v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_converter_bank.v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_fifo.v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1625,17 +1317,6 @@ work/mig_7series_v2_3_ddr_if_post_fifo/.mig_7series_v2_3_ddr_if_post_fifo_v: ../
 
 
 
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi3_conv.v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1645,17 +1326,6 @@ work/timescale/.timescale_v: timescale.v
 
 
 
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_upsizer.v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1672,23 +1342,12 @@ work/mig_7series_v2_3_clk_ibuf/.mig_7series_v2_3_clk_ibuf_v: ../../../../../../p
 
 
 
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_axi3_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_axi3_conv.v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_axi3_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1744,9 +1403,6 @@ work/mig_7series_v2_3_arb_select/.mig_7series_v2_3_arb_select_v: ../../../../../
 
 
 
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_and.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1757,37 +1413,12 @@ work/axis_interconnect_v1_1_util_vector2axis/.axis_interconnect_v1_1_util_vector
 
 
 
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_command_fifo.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_interconnect.v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v \
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v \
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v \
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v \
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_downsizer.v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1815,17 +1446,9 @@ work/mig_7series_v2_3_axi_mc_cmd_arbiter/.mig_7series_v2_3_axi_mc_cmd_arbiter_v:
 
 
 
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_sync_clock_converter.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_mask_static/.axi_interconnect_v1_7_comparator_sel_mask_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1843,9 +1466,6 @@ work/mig_7series_v2_3_col_mach/.mig_7series_v2_3_col_mach_v: ../../../../../../p
 
 
 
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_register_slice.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1855,15 +1475,9 @@ work/mig_7series_v2_3_ddr_phy_prbs_rdlvl/.mig_7series_v2_3_ddr_phy_prbs_rdlvl_v:
 
 
 
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_or.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_data_fifo.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1873,11 +1487,6 @@ work/mig_7series_v2_3_ddr_axic_register_slice/.mig_7series_v2_3_ddr_axic_registe
 
 
 
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_protocol_conv_bank.v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1888,51 +1497,12 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_mask/.axi_interconnect_v1_7_comparator_sel_mask_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar.v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v \
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v \
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1945,9 +1515,6 @@ work/mig_7series_v2_3_ui_wr_data/.mig_7series_v2_3_ui_wr_data_v
 
 
 
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_splitter.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1975,19 +1542,6 @@ work/ethmac_defines/.ethmac_defines_v: ../../../../../../modules/dbe_wishbone/wb
 
 
 
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -1998,17 +1552,9 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_decoder.v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_sample_cycle_ratio.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2018,9 +1564,6 @@ work/mig_7series_v2_3_axi_mc_wrap_cmd/.mig_7series_v2_3_axi_mc_wrap_cmd_v: ../..
 
 
 
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_sample_cycle_ratio.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2046,9 +1589,6 @@ work/axis_interconnect_v1_1_util_aclken_converter_wrapper/.axis_interconnect_v1_
 
 
 
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_sync_clock_converter.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2064,11 +1604,6 @@ work/mig_7series_v2_3_fi_xor/.mig_7series_v2_3_fi_xor_v: ../../../../../../platf
 
 
 
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2091,19 +1626,9 @@ work/mig_7series_v2_3_ui_cmd/.mig_7series_v2_3_ui_cmd_v: ../../../../../../platf
 
 
 
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_command_fifo.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axilite_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2142,53 +1667,21 @@ work/mig_7series_v2_3_ddr_phy_rdlvl/.mig_7series_v2_3_ddr_phy_rdlvl_v: ../../../
 
 
 
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_and.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_ndeep_srl.v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_ndeep_srl.v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v \
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2205,17 +1698,9 @@ work/lm32_mc_arithmetic/.lm32_mc_arithmetic_v: ../../../../../../ip_cores/genera
 
 
 
-work/axi_interconnect_v1_7_carry/.axi_interconnect_v1_7_carry_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_register_slice.v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2227,11 +1712,6 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_register_slice_bank.v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2249,13 +1729,6 @@ work/spi_clgen/.spi_clgen_v: ../../../../../../ip_cores/general-cores/modules/wi
 
 
 
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_clock_converter.v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2266,11 +1739,6 @@ work/mig_7series_v2_3_round_robin_arb/.mig_7series_v2_3_round_robin_arb_v
 
 
 
-work/axi_interconnect_v1_7_comparator_mask/.axi_interconnect_v1_7_comparator_mask_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_mask.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2324,25 +1792,9 @@ work/mig_7series_v2_3_ddr_phy_ocd_lim/.mig_7series_v2_3_ddr_phy_ocd_lim_v: ../..
 
 
 
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_downsizer.v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_bpm/.axi_interconnect_bpm_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/sim/axi_interconnect_bpm.v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/sim  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2364,9 +1816,6 @@ work/mig_7series_v2_3_ddr_phy_ocd_data/.mig_7series_v2_3_ddr_phy_ocd_data_v: ../
 
 
 
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_splitter.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2378,11 +1827,6 @@ work/spi_shift/.spi_shift_v: ../../../../../../ip_cores/general-cores/modules/wi
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_mask/.axi_interconnect_v1_7_comparator_sel_mask_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2399,11 +1843,6 @@ work/mig_7series_v2_3_axi_mc_cmd_fsm/.mig_7series_v2_3_axi_mc_cmd_fsm_v: ../../.
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2435,9 +1874,6 @@ work/mig_7series_v2_3_ddr_carry_and/.mig_7series_v2_3_ddr_carry_and_v
 
 
 
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_nto1_mux.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2452,11 +1888,6 @@ work/mig_7series_v2_3_tempmon/.mig_7series_v2_3_tempmon_v
 
 
 
-work/axi_interconnect_v1_7_comparator_mask_static/.axi_interconnect_v1_7_comparator_mask_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_mask_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2495,23 +1926,12 @@ work/mig_7series_v2_3_rank_cntrl/.mig_7series_v2_3_rank_cntrl_v: ../../../../../
 
 
 
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_downsizer.v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_carry_latch_or/.axi_interconnect_v1_7_carry_latch_or_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_or.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_axi3_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2528,21 +1948,6 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar_sasd.v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2552,33 +1957,9 @@ work/mig_7series_v2_3_bank_compare/.mig_7series_v2_3_bank_compare_v: ../../../..
 
 
 
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_upsizer.v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_r_upsizer/.axi_interconnect_v1_7_r_upsizer_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v \
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v \
-work/axi_interconnect_v1_7_w_upsizer/.axi_interconnect_v1_7_w_upsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2589,11 +1970,6 @@ work/mig_7series_v2_3_ddr_byte_lane/.mig_7series_v2_3_ddr_byte_lane_v
 
 
 
-work/axi_interconnect_v1_7_comparator_mask_static/.axi_interconnect_v1_7_comparator_mask_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_mask_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2603,17 +1979,9 @@ work/timescale/.timescale_v: ../../../../../../ip_cores/general-cores/modules/wi
 
 
 
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_wdata_router.v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2639,25 +2007,9 @@ work/eth_defines/.eth_defines_v: ../../../../../../modules/dbe_wishbone/wb_ethma
 
 
 
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi3_conv.v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v \
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v \
-work/axi_interconnect_v1_7_w_axi3_conv/.axi_interconnect_v1_7_w_axi3_conv_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect/.axi_interconnect_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/sim/axi_interconnect.v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v \
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/sim  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2678,10 +2030,6 @@ work/mig_7series_v2_3_axi_ctrl_addr_decode/.mig_7series_v2_3_axi_ctrl_addr_decod
 
 
 
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2693,17 +2041,9 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_srl_fifo.v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_decerr_slave.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2759,23 +2099,9 @@ work/mig_7series_v2_3_ddr_carry_and/.mig_7series_v2_3_ddr_carry_and_v: ../../../
 
 
 
-work/axi_interconnect_v1_7_converter_bank/.axi_interconnect_v1_7_converter_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_converter_bank.v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v \
-work/axi_interconnect_v1_7_axi_upsizer/.axi_interconnect_v1_7_axi_upsizer_v \
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_fifo.v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v \
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2790,11 +2116,6 @@ work/mig_7series_v2_3_ddr_carry_latch_and/.mig_7series_v2_3_ddr_carry_latch_and_
 
 
 
-work/axi_interconnect_v1_7_a_axi3_conv/.axi_interconnect_v1_7_a_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_axi3_conv.v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v \
-work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2823,9 +2144,6 @@ work/mig_7series_v2_3_ddr_carry_latch_and/.mig_7series_v2_3_ddr_carry_latch_and_
 
 
 
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux_enc.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2859,31 +2177,12 @@ work/axis_interconnect_v1_1_util_axis2vector/.axis_interconnect_v1_1_util_axis2v
 
 
 
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_srl_fifo.v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_arbiter_resp.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_downsizer/.axi_interconnect_v1_7_axi_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_downsizer.v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_r_downsizer/.axi_interconnect_v1_7_r_downsizer_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_a_downsizer/.axi_interconnect_v1_7_a_downsizer_v \
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v \
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2893,11 +2192,6 @@ work/mig_7series_v2_3_axi_ctrl_reg/.mig_7series_v2_3_axi_ctrl_reg_v: ../../../..
 
 
 
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_register_slice.v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2908,17 +2202,6 @@ work/axis_interconnect_v1_1_axisc_downsizer/.axis_interconnect_v1_1_axisc_downsi
 
 
 
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_si_transactor.v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2975,9 +2258,6 @@ work/mig_7series_v2_3_poc_tap_base/.mig_7series_v2_3_poc_tap_base_v: ../../../..
 
 
 
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_data_fifo.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -2988,17 +2268,6 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_si_transactor/.axi_interconnect_v1_7_si_transactor_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_si_transactor.v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_axic_srl_fifo/.axi_interconnect_v1_7_axic_srl_fifo_v \
-work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3024,17 +2293,9 @@ work/timescale/.timescale_v
 
 
 
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_and.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_top/.axi_interconnect_v1_7_top_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_top.v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v \
-work/axi_interconnect_v1_7_axi_interconnect/.axi_interconnect_v1_7_axi_interconnect_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3050,9 +2311,6 @@ work/jtag_tap/.jtag_tap_v: ../../../../../../ip_cores/general-cores/modules/wish
 
 
 
-work/axi_interconnect_v1_7_r_axi3_conv/.axi_interconnect_v1_7_r_axi3_conv_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_axi3_conv.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3062,11 +2320,6 @@ work/mig_7series_v2_3_ui_wr_data/.mig_7series_v2_3_ui_wr_data_v: ../../../../../
 
 
 
-work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3085,19 +2338,9 @@ work/axis_interconnect_v1_1_util_vector2axis/.axis_interconnect_v1_1_util_vector
 
 
 
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_fifo_gen.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_protocol_converter.v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v \
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3110,31 +2353,12 @@ work/mig_7series_v2_3_bank_common/.mig_7series_v2_3_bank_common_v
 
 
 
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_protocol_converter.v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
-work/axi_interconnect_v1_7_axi3_conv/.axi_interconnect_v1_7_axi3_conv_v \
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v \
-work/axi_interconnect_v1_7_axilite_conv/.axi_interconnect_v1_7_axilite_conv_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_wdata_mux.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3144,21 +2368,6 @@ work/mig_7series_v2_3_ddr_phy_wrlvl/.mig_7series_v2_3_ddr_phy_wrlvl_v: ../../../
 
 
 
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar_sasd.v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v \
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v \
-work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3169,17 +2378,9 @@ work/mig_7series_v2_3_axi_ctrl_addr_decode/.mig_7series_v2_3_axi_ctrl_addr_decod
 
 
 
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_or.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_mask/.axi_interconnect_v1_7_comparator_mask_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_mask.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3197,25 +2398,12 @@ work/axis_interconnect_v1_1_axisc_arb_responder/.axis_interconnect_v1_1_axisc_ar
 
 
 
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_reg_srl_fifo.v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v \
-work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_and.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_data_fifo_bank/.axi_interconnect_v1_7_data_fifo_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_data_fifo_bank.v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v \
-work/axi_interconnect_v1_7_axi_data_fifo/.axi_interconnect_v1_7_axi_data_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3248,10 +2436,6 @@ work/wiredly/.wiredly_v
 
 
 
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
-work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3263,11 +2447,6 @@ work/mig_7series_v2_3_arb_row_col/.mig_7series_v2_3_arb_row_col_v
 
 
 
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter_sasd.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3294,11 +2473,6 @@ work/mig_7series_v2_3_ddr_phy_wrcal/.mig_7series_v2_3_ddr_phy_wrcal_v: ../../../
 
 
 
-work/axi_interconnect_v1_7_addr_decoder/.axi_interconnect_v1_7_addr_decoder_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_decoder.v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v \
-work/axi_interconnect_v1_7_comparator_static/.axi_interconnect_v1_7_comparator_static_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3308,11 +2482,6 @@ work/mig_7series_v2_3_axi_mc_w_channel/.mig_7series_v2_3_axi_mc_w_channel_v: ../
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_static/.axi_interconnect_v1_7_comparator_sel_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3322,13 +2491,6 @@ work/mig_7series_v2_3_ddr_phy_ocd_cntlr/.mig_7series_v2_3_ddr_phy_ocd_cntlr_v: .
 
 
 
-work/axi_interconnect_v1_7_axi_clock_converter/.axi_interconnect_v1_7_axi_clock_converter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_clock_converter.v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v \
-work/axi_interconnect_v1_7_axic_sync_clock_converter/.axi_interconnect_v1_7_axic_sync_clock_converter_v \
-work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_sample_cycle_ratio_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3351,19 +2513,9 @@ work/axis_interconnect_v1_1_axisc_upsizer/.axis_interconnect_v1_1_axisc_upsizer_
 
 
 
-work/axi_interconnect_v1_7_wdata_mux/.axi_interconnect_v1_7_wdata_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_wdata_mux.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_carry/.axi_interconnect_v1_7_carry_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3383,11 +2535,6 @@ work/axis_interconnect_v1_1_axisc_upsizer/.axis_interconnect_v1_1_axisc_upsizer_
 
 
 
-work/axi_interconnect_v1_7_register_slice_bank/.axi_interconnect_v1_7_register_slice_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_register_slice_bank.v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v \
-work/axi_interconnect_v1_7_axi_register_slice/.axi_interconnect_v1_7_axi_register_slice_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3429,9 +2576,6 @@ work/mig_7series_v2_3_axi_mc_fifo/.mig_7series_v2_3_axi_mc_fifo_v
 
 
 
-work/axi_interconnect_v1_7_axic_register_slice/.axi_interconnect_v1_7_axic_register_slice_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_register_slice.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3506,11 +2650,6 @@ work/mig_7series_v2_3_poc_pd/.mig_7series_v2_3_poc_pd_v: ../../../../../../platf
 
 
 
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3520,25 +2659,9 @@ work/mig_7series_v2_3_ecc_gen/.mig_7series_v2_3_ecc_gen_v: ../../../../../../pla
 
 
 
-work/axi_interconnect_v1_7_a_upsizer/.axi_interconnect_v1_7_a_upsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_upsizer.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v \
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v \
-work/axi_interconnect_v1_7_command_fifo/.axi_interconnect_v1_7_command_fifo_v \
-work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_decerr_slave.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3548,29 +2671,12 @@ work/mig_7series_v2_3_ddr_phy_wrlvl_off_delay/.mig_7series_v2_3_ddr_phy_wrlvl_of
 
 
 
-work/axi_interconnect_v1_7_axi_crossbar/.axi_interconnect_v1_7_axi_crossbar_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_crossbar.v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
-work/axi_interconnect_v1_7_crossbar_sasd/.axi_interconnect_v1_7_crossbar_sasd_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v \
-work/axi_interconnect_v1_7_crossbar/.axi_interconnect_v1_7_crossbar_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_addr_arbiter/.axi_interconnect_v1_7_addr_arbiter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_wdata_router/.axi_interconnect_v1_7_wdata_router_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_wdata_router.v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v \
-work/axi_interconnect_v1_7_axic_reg_srl_fifo/.axi_interconnect_v1_7_axic_reg_srl_fifo_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3580,9 +2686,6 @@ work/mig_7series_v2_3_ddr_phy_dqs_found_cal/.mig_7series_v2_3_ddr_phy_dqs_found_
 
 
 
-work/axi_interconnect_v1_7_nto1_mux/.axi_interconnect_v1_7_nto1_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_nto1_mux.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3611,19 +2714,9 @@ work/axis_interconnect_v1_1_axisc_sync_clock_converter/.axis_interconnect_v1_1_a
 
 
 
-work/axi_interconnect_v1_7_protocol_conv_bank/.axi_interconnect_v1_7_protocol_conv_bank_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_protocol_conv_bank.v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v \
-work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_protocol_converter_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_addr_arbiter_sasd/.axi_interconnect_v1_7_addr_arbiter_sasd_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter_sasd.v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v \
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3634,11 +2727,6 @@ work/mig_7series_v2_3_axi_mc_fifo/.mig_7series_v2_3_axi_mc_fifo_v
 
 
 
-work/axi_interconnect_v1_7_comparator/.axi_interconnect_v1_7_comparator_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3669,9 +2757,6 @@ work/wiredly/.wiredly_v: ../../../../../../sim/ddr_model/wiredly.v
 
 
 
-work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_fifo_gen.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3682,9 +2767,6 @@ work/axis_interconnect_v1_1_arb_rr/.axis_interconnect_v1_1_arb_rr_v
 
 
 
-work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux_enc.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3713,9 +2795,6 @@ work/glbl/.glbl_v: ../../../../../../../../../../../opt/Xilinx/14.7/ISE_DS/ISE/v
 
 
 
-work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3731,9 +2810,6 @@ work/mig_7series_v2_3_poc_edge_store/.mig_7series_v2_3_poc_edge_store_v: ../../.
 
 
 
-work/axi_interconnect_v1_7_carry_or/.axi_interconnect_v1_7_carry_or_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_or.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3770,17 +2846,9 @@ work/axis_interconnect_v1_1_dynamic_priority_encoder/.axis_interconnect_v1_1_dyn
 
 
 
-work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
-work/axi_interconnect_v1_7_comparator_sel_mask_static/.axi_interconnect_v1_7_comparator_sel_mask_static_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask_static.v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v \
-work/axi_interconnect_v1_7_carry_and/.axi_interconnect_v1_7_carry_and_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 
@@ -3806,9 +2874,6 @@ work/mig_7series_v2_3_ddr_carry_latch_or/.mig_7series_v2_3_ddr_carry_latch_or_v:
 
 
 
-work/axi_datamover_ms_strb_set/.axi_datamover_ms_strb_set_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_word_packer/.gc_word_packer_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_word_packer.vhd \
@@ -3817,9 +2882,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/dynshreg_f/.dynshreg_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_i2c_master/.wb_i2c_master_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd \
@@ -3844,9 +2906,6 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rdmux/.axi_datamover_rdmux_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/eb_slave_core/.eb_slave_core_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_core.vhd \
@@ -3858,14 +2917,8 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_dre/.axi_datamover_s2mm_dre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_basic_wrap/.axi_datamover_s2mm_basic_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_irq_master/.wb_irq_master_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_master.vhd \
@@ -3897,14 +2950,8 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rd_sf/.axi_datamover_rd_sf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_sfifo_autord/.axi_datamover_sfifo_autord_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_irq_slave/.wb_irq_slave_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_slave.vhd \
@@ -3960,14 +3007,8 @@ work/bpm_axi_pkg/.bpm_axi_pkg_vhd: ../../../../../../modules/dbe_wishbone/wb_pci
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_ibttcc/.axi_datamover_ibttcc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/cdc_sync/.cdc_sync_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_acq_core/.xwb_acq_core_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/xwb_acq_core.vhd \
@@ -3997,9 +3038,6 @@ work/xwb_stream_source/.xwb_stream_source_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_pcc/.axi_datamover_pcc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/reset_synch/.reset_synch_vhd: ../../../../../../modules/dbe_common/reset_synch/reset_synch.vhd
@@ -4025,8 +3063,7 @@ work/wb_dbe_periph/.wb_dbe_periph_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/blk_mem_gen_v8_2/.blk_mem_gen_v8_2_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd
-#		vcom $(VCOM_FLAGS)  -work work $<
+##		vcom $(VCOM_FLAGS)  -work work $<
 #		@mkdir -p $(dir $@) && touch $@
 
 
@@ -4036,9 +3073,6 @@ work/simple_uart_pkg/.simple_uart_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_reset/.axi_datamover_reset_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/generic_dpram/.generic_dpram_vhd: ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd \
@@ -4050,14 +3084,8 @@ work/generic_dpram_dualclock/.generic_dpram_dualclock_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wrdata_cntl/.axi_datamover_wrdata_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_demux/.axi_datamover_wr_demux_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_stream_source/.xwb_stream_source_vhd: ../../../../../../modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd \
@@ -4078,9 +3106,6 @@ work/dac3283_ctrl/.dac3283_ctrl_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_realign/.axi_datamover_s2mm_realign_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/rf_ch_swap/.rf_ch_swap_vhd: ../../../../../../modules/rffe_top/bpm_swap_ctrl/rf_ch_swap.vhd
@@ -4088,14 +3113,8 @@ work/rf_ch_swap/.rf_ch_swap_vhd: ../../../../../../modules/rffe_top/bpm_swap_ctr
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/srl_fifo_rbu_f/.srl_fifo_rbu_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/cntr_incr_decr_addn_f/.cntr_incr_decr_addn_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/uart_async_tx/.uart_async_tx_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd
@@ -4115,9 +3134,6 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux8_1_x_n/.axi_datamover_dre_mux8_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc_adc_pkg/.fmc_adc_pkg_vhd: ../../../../../../modules/fmc_adc_common/fmc_adc_pkg.vhd \
@@ -4145,18 +3161,11 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/cdc_sync/.cdc_sync_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_afifo_autord/.axi_datamover_afifo_autord_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/fifo_generator_v12_0/simulation/fifo_generator_vhdl_beh.vhd \
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
+##work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd
@@ -4219,9 +3228,6 @@ work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wrdata_cntl/.axi_datamover_wrdata_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 work/adc_pkg/.adc_pkg_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/adc/adc_pkg.vhd
 		vcom $(VCOM_FLAGS)  -work work $<
@@ -4272,9 +3278,6 @@ work/i2c_master_byte_ctrl/.i2c_master_byte_ctrl_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_dre/.axi_datamover_s2mm_dre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_fmc516/.wb_fmc516_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc516/wb_fmc516.vhd \
@@ -4330,9 +3333,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_basic_wrap/.axi_datamover_s2mm_basic_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_fwft_fifo/.acq_fwft_fifo_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd \
@@ -4345,9 +3345,6 @@ work/generic_async_fifo/.generic_async_fifo_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_skid_buf/.axi_datamover_skid_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/lm32_dp_ram/.lm32_dp_ram_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.vhd \
@@ -4357,9 +3354,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_sfifo_autord/.axi_datamover_sfifo_autord_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/data_checker/.data_checker_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/data_checker.vhd \
@@ -4373,9 +3367,6 @@ work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_slice/.axi_datamover_slice_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_fmc130m_4ch/.wb_fmc130m_4ch_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc130m_4ch/wb_fmc130m_4ch.vhd \
@@ -4409,8 +3400,7 @@ work/eb_hdr_pkg/.eb_hdr_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/simulation/fifo_generator_vhdl_beh.vhd \
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
+##work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd
@@ -4418,9 +3408,6 @@ work/eb_hdr_pkg/.eb_hdr_pkg_vhd
 #		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_omit_wrap/.axi_datamover_mm2s_omit_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gencores_pkg/.gencores_pkg_vhd: ../../../../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd \
@@ -4439,8 +3426,7 @@ work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/fifo_generator_v12_0/simulation/fifo_generator_vhdl_beh.vhd \
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
+##work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd
@@ -4455,14 +3441,8 @@ work/eb_hdr_pkg/.eb_hdr_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_addr_cntl/.axi_datamover_addr_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_indet_btt/.axi_datamover_indet_btt_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_ddr3_ui_read/.acq_ddr3_ui_read_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd \
@@ -4498,9 +3478,6 @@ work/fmc_adc_pkg/.fmc_adc_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_skid2mm_buf/.axi_datamover_skid2mm_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_spi_flash/.wb_spi_flash_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_flash/wb_spi_flash.vhd \
@@ -4573,9 +3550,6 @@ work/utilities_package/.utilities_package_vhd: ../../../../../../modules/rffe_to
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_full_wrap/.axi_datamover_mm2s_full_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_glitch_filt/.gc_glitch_filt_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_glitch_filt.vhd \
@@ -4614,9 +3588,6 @@ work/eb_internals_pkg/.eb_internals_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux4_1_x_n/.axi_datamover_dre_mux4_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/s7_hwfifo_wrapper/.s7_hwfifo_wrapper_vhd: ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/series7/s7_hwfifo_wrapper.vhd \
@@ -4649,14 +3620,8 @@ work/inferred_sync_fifo/.inferred_sync_fifo_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_pcc/.axi_datamover_pcc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_stbs_set/.axi_datamover_stbs_set_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wbgen2_fifo_sync/.wbgen2_fifo_sync_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd \
@@ -4698,14 +3663,8 @@ work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover/.axi_datamover_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_slice/.axi_datamover_slice_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/chipscope_ila/.chipscope_ila_vhd: ../../../../../../platform/artix7/chipscope/ila/chipscope_ila.vhd
@@ -4758,9 +3717,6 @@ work/wb_slave_adapter/.wb_slave_adapter_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rd_status_cntl/.axi_datamover_rd_status_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_stream_source_gen/.xwb_stream_source_gen_vhd: ../../../../../../modules/dbe_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd \
@@ -4796,11 +3752,6 @@ work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_bpm/.axi_datamover_bpm_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/sim/axi_datamover_bpm.vhd \
-work/axi_datamover/.axi_datamover_vhd \
-work/axi_datamover/.axi_datamover_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_fmc516_regs/.wb_fmc516_regs_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd \
@@ -4833,14 +3784,8 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_basic_wrap/.axi_datamover_mm2s_basic_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_scc/.axi_datamover_scc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_bpm_pcie/.wb_bpm_pcie_vhd: ../../../../../../modules/dbe_wishbone/wb_pcie/wb_bpm_pcie.vhd \
@@ -4854,9 +3799,6 @@ work/bpm_axi_pkg/.bpm_axi_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_omit_wrap/.axi_datamover_s2mm_omit_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_stream_pkg/.wb_stream_pkg_vhd: ../../../../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd \
@@ -4899,9 +3841,6 @@ work/eb_internals_pkg/.eb_internals_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/cntr_incr_decr_addn_f/.cntr_incr_decr_addn_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_acq_core_mux_plain/.wb_acq_core_mux_plain_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux_plain.vhd \
@@ -4975,8 +3914,7 @@ work/simple_pwm_wbgen2_pkg/.simple_pwm_wbgen2_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/blk_mem_gen_v8_2/.blk_mem_gen_v8_2_vhd: ../../../../../../platform/artix7/afc_v3/axi_interconnect/blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd
-#		vcom $(VCOM_FLAGS)  -work work $<
+##		vcom $(VCOM_FLAGS)  -work work $<
 #		@mkdir -p $(dir $@) && touch $@
 
 
@@ -4985,14 +3923,8 @@ work/i2c_master_bit_ctrl/.i2c_master_bit_ctrl_vhd: ../../../../../../ip_cores/ge
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/srl_fifo_rbu_f/.srl_fifo_rbu_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover/.axi_datamover_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_spi_bidir/.wb_spi_bidir_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/wb_spi_bidir.vhd \
@@ -5025,9 +3957,6 @@ work/wbgen2_fifo_sync/.wbgen2_fifo_sync_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_reset/.axi_datamover_reset_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_extend_pulse/.gc_extend_pulse_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_extend_pulse.vhd \
@@ -5037,19 +3966,10 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_stbs_set_nodre/.axi_datamover_stbs_set_nodre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_sf/.axi_datamover_wr_sf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_status_cntl/.axi_datamover_wr_status_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_ethmac/.xwb_ethmac_vhd: ../../../../../../modules/dbe_wishbone/wb_ethmac/xwb_ethmac.vhd \
@@ -5060,14 +3980,8 @@ work/wb_ethmac/.wb_ethmac_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_strb_gen2/.axi_datamover_strb_gen2_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_sf/.axi_datamover_wr_sf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/chipscope_icon_4_port/.chipscope_icon_4_port_vhd: ../../../../../../platform/artix7/chipscope/icon_4_port/chipscope_icon_4_port.vhd
@@ -5075,9 +3989,6 @@ work/chipscope_icon_4_port/.chipscope_icon_4_port_vhd: ../../../../../../platfor
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/async_fifo_fg/.async_fifo_fg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_fifo_v1_0/hdl/src/vhdl/async_fifo_fg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/eb_slave_top/.eb_slave_top_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_top.vhd \
@@ -5100,13 +4011,11 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/blk_mem_gen_v8_2/.blk_mem_gen_v8_2_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd
-#		vcom $(VCOM_FLAGS)  -work work $<
+##		vcom $(VCOM_FLAGS)  -work work $<
 #		@mkdir -p $(dir $@) && touch $@
 
 
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd: ../../../../../../platform/artix7/afc_v3/axi_interconnect/fifo_generator_v12_0/simulation/fifo_generator_vhdl_beh.vhd \
-#work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
+##work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd \
 #work/fifo_generator_vhdl_beh/.fifo_generator_vhdl_beh_vhd
@@ -5157,9 +4066,6 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rd_sf/.axi_datamover_rd_sf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/generic_async_fifo/.generic_async_fifo_vhd: ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/series7/generic_async_fifo.vhd \
@@ -5184,14 +4090,8 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_indet_btt/.axi_datamover_indet_btt_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_strb_gen2/.axi_datamover_strb_gen2_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wr_fabric_pkg/.wr_fabric_pkg_vhd: ../../../../../../modules/fabric/wr_fabric_pkg.vhd
@@ -5242,29 +4142,14 @@ work/wb_fmc150/.wb_fmc150_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_omit_wrap/.axi_datamover_s2mm_omit_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_full_wrap/.axi_datamover_mm2s_full_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mssai_skid_buf/.axi_datamover_mssai_skid_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_ms_strb_set/.axi_datamover_ms_strb_set_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_scatter/.axi_datamover_s2mm_scatter_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/ads62p49_ctrl/.ads62p49_ctrl_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/ads62p49_ctrl.vhd \
@@ -5289,8 +4174,7 @@ work/wb_slave_adapter/.wb_slave_adapter_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-#work/blk_mem_gen_v8_2/.blk_mem_gen_v8_2_vhd: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd
-#		vcom $(VCOM_FLAGS)  -work work $<
+##		vcom $(VCOM_FLAGS)  -work work $<
 #		@mkdir -p $(dir $@) && touch $@
 
 
@@ -5315,9 +4199,6 @@ work/eb_internals_pkg/.eb_internals_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_afifo_autord/.axi_datamover_afifo_autord_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_2_diff_cnt/.acq_2_diff_cnt_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_2_diff_cnt.vhd \
@@ -5360,9 +4241,6 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/srl_fifo_f/.srl_fifo_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc_130m_4ch_regs/.fmc_130m_4ch_regs_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc130m_4ch/wbgen/fmc_130m_4ch_regs.vhd \
@@ -5382,9 +4260,6 @@ work/etherbone_pkg/.etherbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux4_1_x_n/.axi_datamover_dre_mux4_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_gpio_port/.xwb_gpio_port_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd \
@@ -5401,9 +4276,6 @@ work/fmc_adc_pkg/.fmc_adc_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rd_status_cntl/.axi_datamover_rd_status_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc_adc_sync_chains/.fmc_adc_sync_chains_vhd: ../../../../../../modules/fmc_adc_common/fmc_adc_sync_chains.vhd \
@@ -5442,9 +4314,6 @@ work/acq_core_pkg/.acq_core_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mssai_skid_buf/.axi_datamover_mssai_skid_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_ext_pulse_sync/.gc_ext_pulse_sync_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_ext_pulse_sync.vhd
@@ -5493,9 +4362,6 @@ work/wb_slave_adapter/.wb_slave_adapter_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_omit_wrap/.axi_datamover_mm2s_omit_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc_130m_4ch_regs_pkg/.fmc_130m_4ch_regs_pkg_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc130m_4ch/wbgen/fmc_130m_4ch_regs_pkg.vhd
@@ -5517,9 +4383,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/sync_fifo_fg/.sync_fifo_fg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/sync_fifo_fg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/generic_simple_dpram/.generic_simple_dpram_vhd: ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_simple_dpram.vhd \
@@ -5530,19 +4393,10 @@ work/generic_dpram/.generic_dpram_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_full_wrap/.axi_datamover_s2mm_full_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_skid_buf/.axi_datamover_skid_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/dynshreg_f/.dynshreg_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_rr_arbiter/.gc_rr_arbiter_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_rr_arbiter.vhd \
@@ -5551,14 +4405,8 @@ work/gc_prio_encoder/.gc_prio_encoder_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux8_1_x_n/.axi_datamover_dre_mux8_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_fifo/.axi_datamover_fifo_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/vic_prio_enc/.vic_prio_enc_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd
@@ -5573,19 +4421,10 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_ibttcc/.axi_datamover_ibttcc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_cmd_status/.axi_datamover_cmd_status_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_fifo/.axi_datamover_fifo_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/dac3283_init_mem/.dac3283_init_mem_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/sim/dac3283_init_mem.vhd
@@ -5593,9 +4432,6 @@ work/dac3283_init_mem/.dac3283_init_mem_vhd: ../../../../../../modules/dbe_wishb
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/lib_pkg/.lib_pkg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/eb_internals_pkg/.eb_internals_pkg_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_internals_pkg.vhd \
@@ -5606,9 +4442,6 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_stbs_set/.axi_datamover_stbs_set_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/axis_mux_2_to_1/.axis_mux_2_to_1_vhd: ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/axis_mux_2_to_1.vhd \
@@ -5617,9 +4450,6 @@ work/axis_interconnect_v1_1_axis_interconnect_16x16_top/.axis_interconnect_v1_1_
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_basic_wrap/.axi_datamover_mm2s_basic_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/eb_slave_fsm/.eb_slave_fsm_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_fsm.vhd \
@@ -5639,9 +4469,6 @@ work/cdce72010_init_mem_ext/.cdce72010_init_mem_ext_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_cmd_status/.axi_datamover_cmd_status_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_trigger/.acq_trigger_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_trigger.vhd \
@@ -5652,14 +4479,8 @@ work/gc_dyn_glitch_filt/.gc_dyn_glitch_filt_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/srl_fifo_f/.srl_fifo_f_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_skid2mm_buf/.axi_datamover_skid2mm_buf_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_multishot_dpram/.acq_multishot_dpram_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_multishot_dpram.vhd \
@@ -5672,19 +4493,10 @@ work/generic_dpram/.generic_dpram_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_scc/.axi_datamover_scc_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_demux/.axi_datamover_wr_demux_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_dre/.axi_datamover_mm2s_dre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/uart_async_rx/.uart_async_rx_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd
@@ -5697,9 +4509,6 @@ work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd: ../../../../../../modules
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_addr_cntl/.axi_datamover_addr_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_ethmac_adapter/.xwb_ethmac_adapter_vhd: ../../../../../../modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd \
@@ -5718,9 +4527,6 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rddata_cntl/.axi_datamover_rddata_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/ipcores_pkg/.ipcores_pkg_vhd: ../../../../../../platform/artix7/afc_v3/ipcores_pkg.vhd
@@ -5817,9 +4623,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux2_1_x_n/.axi_datamover_dre_mux2_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/fmc150_adc_if/.fmc150_adc_if_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd \
@@ -5835,14 +4638,8 @@ work/simple_uart_pkg/.simple_uart_pkg_vhd: ../../../../../../ip_cores/general-co
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_dre_mux2_1_x_n/.axi_datamover_dre_mux2_1_x_n_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_full_wrap/.axi_datamover_s2mm_full_wrap_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/eb_tx_mux/.eb_tx_mux_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd \
@@ -5852,14 +4649,8 @@ work/eb_internals_pkg/.eb_internals_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rddata_cntl/.axi_datamover_rddata_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_scatter/.axi_datamover_s2mm_scatter_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/sdb_rom/.sdb_rom_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd \
@@ -5868,14 +4659,8 @@ work/wishbone_pkg/.wishbone_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_s2mm_realign/.axi_datamover_s2mm_realign_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/async_fifo_fg/.async_fifo_fg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/async_fifo_fg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/gc_fsm_watchdog/.gc_fsm_watchdog_vhd: ../../../../../../ip_cores/general-cores/modules/common/gc_fsm_watchdog.vhd \
@@ -5966,9 +4751,6 @@ work/dac3283_init_mem/.dac3283_init_mem_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_mm2s_dre/.axi_datamover_mm2s_dre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/xwb_xilinx_fpga_loader/.xwb_xilinx_fpga_loader_vhd: ../../../../../../ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd \
@@ -6027,9 +4809,6 @@ work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_wr_status_cntl/.axi_datamover_wr_status_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/acq_sel_chan/.acq_sel_chan_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd \
@@ -6046,10 +4825,8 @@ work/genram_pkg/.genram_pkg_vhd
 
 work/wb_acq_core_mux/.wb_acq_core_mux_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux.vhd \
 work/wb_acq_core/.wb_acq_core_vhd \
-work/axi_datamover_bpm/.axi_datamover_bpm_vhd \
 work/ipcores_pkg/.ipcores_pkg_vhd \
 work/bpm_axi_pkg/.bpm_axi_pkg_vhd \
-work/axi_interconnect_bpm/.axi_interconnect_bpm_v \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/gencores_pkg/.gencores_pkg_vhd \
 work/dbe_common_pkg/.dbe_common_pkg_vhd \
@@ -6120,21 +4897,10 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_0/.axi_datamover_0_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/sim/axi_datamover_0.vhd \
-work/axi_datamover/.axi_datamover_vhd \
-work/axi_datamover/.axi_datamover_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_rdmux/.axi_datamover_rdmux_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
-work/lib_pkg/.lib_pkg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/adc/adc_channel_lvds_ddr.vhd
@@ -6142,9 +4908,6 @@ work/adc_channel_lvds_ddr/.adc_channel_lvds_ddr_vhd: ../../../../../../modules/d
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/sync_fifo_fg/.sync_fifo_fg_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_fifo_v1_0/hdl/src/vhdl/sync_fifo_fg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wb_simple_uart/.wb_simple_uart_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd \
@@ -6166,9 +4929,6 @@ work/strobe_lvds/.strobe_lvds_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/axi_datamover_stbs_set_nodre/.axi_datamover_stbs_set_nodre_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
 
 
 work/wbgen2_dpssram/.wbgen2_dpssram_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd \
