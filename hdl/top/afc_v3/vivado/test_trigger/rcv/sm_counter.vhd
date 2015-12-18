@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-03
--- Last update: 2015-12-09
+-- Last update: 2015-12-18
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,6 +63,7 @@ entity sm_counter is
   generic (
     g_num_states : natural := 8);
   port (
+    clk_i            : in  std_logic;
     data_i           : in  std_logic_vector(g_num_states-1 downto 0);
     current_s_i      : in  natural;
     count_success_o  : out count_array;
@@ -85,9 +86,10 @@ begin  -- architecture behav
 
   gen_counter : for i in g_num_states-2 downto 1 generate
 
-    sm_counter_i : process (data_i(i)) is
+    sm_counter_i : process (clk_i) is
     begin  -- process sm_counter_i
-      if rising_edge(data_i(i)) then    -- rising clock edge
+      if rising_edge(clk_i) then    -- rising clock edge
+        if (data_i(i) = '1') then
         if (current_s_i = i) then       -- pulse properly received
           count_success(i) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(i)) + 1), 32));
         elsif (current_s_i = i+1) then  -- repeated pulse
@@ -98,6 +100,7 @@ begin  -- architecture behav
           count_others(i) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(i)) + 1), 32));
         end if;
       end if;
+      end if;
     end process sm_counter_i;
   end generate gen_counter;
 
@@ -106,12 +109,13 @@ begin  -- architecture behav
 -- "count_repeated")
 -----------------------------------------------------------------------------
 
-  sm_counter_i : process (data_i(g_num_states-1)) is
+  sm_counter_i : process (clk_i) is
   begin  -- process sm_counter_i
-    if rising_edge(data_i(g_num_states-1)) then      -- rising clock edge
-      if (current_s_i = g_num_states -1) then         -- pulse properly received
+    if rising_edge(clk_i) then  -- rising clock edge
+      if (data_i(g_num_states-1) = '1') then
+      if (current_s_i = g_num_states -1) then    -- pulse properly received
         count_success(g_num_states -1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(g_num_states - 1)) + 1), 32));
-      elsif (current_s_i = 0) then    -- repeated pulse
+      elsif (current_s_i = 0) then               -- repeated pulse
         count_repeated(g_num_states - 1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_repeated(g_num_states - 1)) + 1), 32));
       elsif (current_s_i = g_num_states-2) then
         count_fail(g_num_states - 2) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_fail(g_num_states -2)) + 1), 32));
@@ -119,15 +123,17 @@ begin  -- architecture behav
         count_others(g_num_states -1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(g_num_states -1)) + 1), 32));
       end if;
     end if;
+    end if;
   end process sm_counter_i;
 
 -----------------------------------------------------------------------------
 -- Generating for index 0 (preventing negative index on "count_fail")
 -----------------------------------------------------------------------------
 
-  sm_counter_0 : process (data_i(0)) is
+  sm_counter_0 : process (clk_i) is
   begin  -- process sm_counter_i
-    if rising_edge(data_i(0)) then      -- rising clock edge
+    if rising_edge(clk_i) then      -- rising clock edge
+      if (data_i(0) = '1') then
       if (current_s_i = 0) then         -- pulse properly received
         count_success(0) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(0)) + 1), 32));
       elsif (current_s_i = 1) then      -- repeated pulse
@@ -137,6 +143,7 @@ begin  -- architecture behav
       else
         count_others(0) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(0)) + 1), 32));
       end if;
+    end if;
     end if;
   end process sm_counter_0;
 

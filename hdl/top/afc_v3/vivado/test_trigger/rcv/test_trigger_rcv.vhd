@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-16
+-- Last update: 2015-12-18
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ architecture structural of test_trigger_rcv is
   -----------------------------------------------------------------------------
 
   subtype state_type is natural range 0 to 7;  -- types of the machine
-  signal current_s : state_type := 0;       --current state declaration.
+  signal current_s : state_type := 0;          --current state declaration.
 
   component sm_states_rcv is
     generic (
@@ -166,6 +166,7 @@ architecture structural of test_trigger_rcv is
     generic (
       g_num_states : natural);
     port (
+      clk_i            : in  std_logic;
       data_i           : in  std_logic_vector(g_num_states-1 downto 0);
       current_s_i      : in  natural;
       count_success_o  : out count_array;
@@ -205,7 +206,7 @@ begin
       clk_i    => sys_clk_gen_bufg,
       clk0_o   => clk_100mhz,           -- 100MHz locked clock
       clk1_o   => clk_200mhz,           -- 200MHz locked clock
-      locked_o => rst_n                   -- '1' when the PLL has locked
+      locked_o => rst_n                 -- '1' when the PLL has locked
       );
 
   gen_trigger : for i in 0 to 7 generate
@@ -249,6 +250,7 @@ begin
     generic map (
       g_num_states => 8)
     port map (
+      clk_i            => clk_100mhz,
       data_i           => pulse,
       current_s_i      => current_s,
       count_success_o  => count_success,
@@ -265,13 +267,15 @@ begin
 
   cmp_chipscope_ila_0 : entity work.chipscope_ila
     port map (
-      CONTROL => CONTROL0,
-      CLK     => clk_100mhz,
-      TRIG0   => count_success(0),
-      TRIG1   => count_fail(0),
-      TRIG2(7 downto 0)  => trigger_buf,
-      TRIG2(31 downto 8) => filler(31 downto 8),
-      TRIG3   => filler);
+      CONTROL             => CONTROL0,
+      CLK                 => clk_100mhz,
+      TRIG0               => count_success(0),
+      TRIG1               => count_fail(0),
+      TRIG2(7 downto 0)   => trigger_buf,
+      TRIG2(9 downto 8)   => filler(9 downto 8),
+      TRIG2(17 downto 10) => pulse,
+      TRIG2(31 downto 18) => filler(31 downto 18),
+      TRIG3               => filler);
 
   cmp_chipscope_ila_1 : entity work.chipscope_ila
     port map (
