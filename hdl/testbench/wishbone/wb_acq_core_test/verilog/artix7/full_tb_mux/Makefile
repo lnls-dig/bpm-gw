@@ -23,10 +23,8 @@ VERILOG_SRC := ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi
 defines.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_maccontrol.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_arbiter_resp.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_drp.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ecc/mig_7series_v2_3_ecc_dec_fix.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_common.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_rank_mach.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_bank_cntrl.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar.v \
@@ -77,16 +75,12 @@ timescale.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_data_fifo.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_axic_register_slice.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_protocol_conv_bank.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_wrapper.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_shiftreg.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_upsizer.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_reset.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_crossbar.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_sync.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ui/mig_7series_v2_3_ui_top.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_splitter.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_drp.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/phy/mig_7series_v2_3_ddr_calib_top.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/ethmac_defines.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_r_upsizer.v \
@@ -127,7 +121,6 @@ timescale.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_bank_queue.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_clock_converter.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_drp.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_arb_row_col.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_mask.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_rxstatem.v \
@@ -135,7 +128,6 @@ timescale.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_ctrl_reg_bank.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_register_slice.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_rxeq_scan.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/phy/mig_7series_v2_3_ddr_phy_ocd_lim.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi_downsizer.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/sim/axi_interconnect_bpm.v \
@@ -174,17 +166,14 @@ timescale.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/timescale.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_wdata_router.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_downsizer.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_eq.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_miim.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_mc_simple_fifo.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtx_cpllpd_ovrd.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_defines.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axi3_conv.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/sim/axi_interconnect.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_axi_upsizer.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_ctrl_write.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_reset.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_shift.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_srl_fifo.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_decerr_slave.v \
@@ -197,8 +186,6 @@ timescale.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_carry_and.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_converter_bank.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_fifo.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_user.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_cpllpd_ovrd.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_w_upsizer.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_a_axi3_conv.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axis_subset_converter.v \
@@ -250,14 +237,12 @@ timescale.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_rank_common.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_arb_responder.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_axic_reg_srl_fifo.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_wrapper.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_and.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_data_fifo_bank.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_ddr_carry_or.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_txcounters.v \
 wb_acq_core_tb.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_wrapper.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_arb_mux.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter_sasd.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/clocking/mig_7series_v2_3_infrastructure.v \
@@ -277,7 +262,6 @@ wb_acq_core_tb.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axis_dwidth_converter.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_register_slice_bank.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_spram_256x32.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_clock.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_transfer_mux.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axis_switch.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_mc_b_channel.v \
@@ -307,12 +291,10 @@ clk_rst.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_sync_clock_converter.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_protocol_conv_bank.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_addr_arbiter_sasd.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_rate.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_mc_r_channel.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.v \
 ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ddr_core.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_rate.v \
 ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_receivecontrol.v \
 ../../../../../../sim/ddr_model/wiredly.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_fifo_gen.v \
@@ -330,7 +312,6 @@ clk_rst.v \
 ../../../../../../sim/ddr_model/artix7/ddr3_model.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_dynamic_priority_encoder.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_reset.v \
 ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_comparator_sel_mask_static.v \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_top.v \
 ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_sample_cycle_ratio.v \
@@ -673,17 +654,14 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/etherbone-core/hdl/eb_master_core/eb_master_slave_wrapper.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_frequency_meter.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_brams_7x.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_slave.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_ethernet_slave.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_serial_dac.vhd \
 ../../../../../../modules/dbe_common/pulse2level/pulse2level.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx_pipeline.vhd \
 ../../../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd \
 ../../../../../../modules/dbe_wishbone/wb_pcie/bpm_axi_pkg.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_pipeline.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/xwb_acq_core.vhd \
@@ -712,8 +690,6 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd \
 ../../../../../../modules/fmc_adc_common/fmc_adc_dly_iface.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_pulse_synchronizer2.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_bram_7x.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_top.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_reset.vhd \
@@ -735,10 +711,8 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc516/wb_fmc516.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_misc.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_commit_fifo.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_register_link.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_stream_widen.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd \
@@ -786,7 +760,6 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd \
 ../../../../../../modules/fabric/xwb_fabric_sink.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_lane.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fc_fifo.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd \
@@ -796,7 +769,6 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/general-cores/modules/common/gc_sync_ffs.vhd \
 ../../../../../../modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/sim/pcie_core.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd \
 ../../../../../../modules/dbe_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd \
@@ -832,7 +804,6 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx_null_gen.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/wb_spi_bidir.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/xwb_spi_bidir.vhd \
@@ -852,7 +823,6 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core_mux/xwb_acq_core_mux.vhd \
 ../../../../../../modules/dbe_wishbone/wb_stream/generic/wb_stream_source_gen.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_top.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc130m_4ch/xwb_fmc130m_4ch.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd \
@@ -899,7 +869,6 @@ ddr_core_wrapper.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd \
 ../../../../../../ip_cores/general-cores/modules/common/gc_ext_pulse_sync.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.vhd \
 ../../../../../../ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/multiboot_regs.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/wbgen/acq_core_regs.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd \
@@ -911,7 +880,6 @@ ddr_core_wrapper.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_fifo.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/sync_fifo_fg.vhd \
 ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_simple_dpram.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_bram_top_7x.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd \
@@ -943,7 +911,6 @@ ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd \
 ../../../../../../modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd \
 ../../../../../../platform/artix7/afc_v3/ipcores_pkg.vhd \
@@ -955,20 +922,16 @@ ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd \
 ../../../../../../ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie2_top.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_simple_pwm/wb_simple_pwm.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_top.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_adc_if.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_core_top.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_0/lib_fifo_v1_0/hdl/src/vhdl/async_fifo_fg.vhd \
@@ -982,7 +945,6 @@ ddr_core_wrapper.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/sim/amc7823_init_mem.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_cnt.vhd \
 ../../../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx_pipeline.vhd \
 ../../../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/dac3283_ctrl.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd \
@@ -992,7 +954,6 @@ ddr_core_wrapper.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd \
-../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_7x.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd \
 ../../../../../../ip_cores/general-cores/modules/genrams/xilinx/gc_shiftreg.vhd \
 ../../../../../../modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux.vhd \
@@ -1498,12 +1459,6 @@ work/axi_interconnect_v1_7_arbiter_resp/.axi_interconnect_v1_7_arbiter_resp_v: .
 
 
 
-work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_drp.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/mig_7series_v2_3_ecc_dec_fix/.mig_7series_v2_3_ecc_dec_fix_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ecc/mig_7series_v2_3_ecc_dec_fix.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ecc  $<
 		@mkdir -p $(dir $@) && touch $@
@@ -1512,14 +1467,6 @@ work/mig_7series_v2_3_ecc_dec_fix/.mig_7series_v2_3_ecc_dec_fix_v: ../../../../.
 
 work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_gt_common/.pcie_core_gt_common_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_common.v \
-work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v \
-work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -1934,13 +1881,6 @@ work/axi_interconnect_v1_7_axi_protocol_converter/.axi_interconnect_v1_7_axi_pro
 
 
 
-work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_wrapper.v \
-work/pcie_core_gtx_cpllpd_ovrd/.pcie_core_gtx_cpllpd_ovrd_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/eth_shiftreg/.eth_shiftreg_v: ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_shiftreg.v \
 work/timescale/.timescale_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../modules/dbe_wishbone/wb_ethmac  $<
@@ -1960,12 +1900,6 @@ work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_
 work/axi_interconnect_v1_7_comparator_sel/.axi_interconnect_v1_7_comparator_sel_v \
 work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_reset.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -2002,12 +1936,6 @@ work/axi_interconnect_v1_7_decerr_slave/.axi_interconnect_v1_7_decerr_slave_v
 
 
 
-work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_sync.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/mig_7series_v2_3_ui_top/.mig_7series_v2_3_ui_top_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ui/mig_7series_v2_3_ui_top.v \
 work/mig_7series_v2_3_ui_rd_data/.mig_7series_v2_3_ui_rd_data_v \
 work/mig_7series_v2_3_ui_cmd/.mig_7series_v2_3_ui_cmd_v \
@@ -2019,12 +1947,6 @@ work/mig_7series_v2_3_ui_wr_data/.mig_7series_v2_3_ui_wr_data_v
 
 work/axi_interconnect_v1_7_splitter/.axi_interconnect_v1_7_splitter_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_splitter.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_qpll_drp/.pcie_core_qpll_drp_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_drp.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -2337,12 +2259,6 @@ work/axi_interconnect_v1_7_axic_sample_cycle_ratio/.axi_interconnect_v1_7_axic_s
 
 
 
-work/pcie_core_gtp_pipe_drp/.pcie_core_gtp_pipe_drp_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_drp.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/mig_7series_v2_3_arb_row_col/.mig_7series_v2_3_arb_row_col_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller/mig_7series_v2_3_arb_row_col.v \
 work/mig_7series_v2_3_round_robin_arb/.mig_7series_v2_3_round_robin_arb_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/controller  $<
@@ -2398,12 +2314,6 @@ work/spi_clgen/.spi_clgen_v \
 
 work/axis_interconnect_v1_1_axisc_register_slice/.axis_interconnect_v1_1_axisc_register_slice_v: ../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog/axis_interconnect_v1_1_axisc_register_slice.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/ip_cores/axis_mux_2_to_1/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_rxeq_scan.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -2707,13 +2617,6 @@ work/axi_interconnect_v1_7_w_downsizer/.axi_interconnect_v1_7_w_downsizer_v: ../
 
 
 
-work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_eq.v \
-work/pcie_core_rxeq_scan/.pcie_core_rxeq_scan_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/eth_miim/.eth_miim_v: ../../../../../../modules/dbe_wishbone/wb_ethmac/eth_miim.v \
 work/eth_shiftreg/.eth_shiftreg_v \
 work/eth_clockgen/.eth_clockgen_v \
@@ -2726,12 +2629,6 @@ work/timescale/.timescale_v
 
 work/mig_7series_v2_3_axi_mc_simple_fifo/.mig_7series_v2_3_axi_mc_simple_fifo_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_mc_simple_fifo.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_gtx_cpllpd_ovrd/.pcie_core_gtx_cpllpd_ovrd_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtx_cpllpd_ovrd.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -2784,12 +2681,6 @@ work/mig_7series_v2_3_axi_ctrl_addr_decode/.mig_7series_v2_3_axi_ctrl_addr_decod
 work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
 work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_reset.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -2884,18 +2775,6 @@ work/axi_interconnect_v1_7_axic_fifo/.axi_interconnect_v1_7_axic_fifo_v: ../../.
 work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v \
 work/axi_interconnect_v1_7_fifo_gen/.axi_interconnect_v1_7_fifo_gen_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_pipe_user/.pcie_core_pipe_user_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_user.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_gtp_cpllpd_ovrd/.pcie_core_gtp_cpllpd_ovrd_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_cpllpd_ovrd.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -3326,25 +3205,6 @@ work/axi_interconnect_v1_7_ndeep_srl/.axi_interconnect_v1_7_ndeep_srl_v
 
 
 
-work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_wrapper.v \
-work/pcie_core_gtp_pipe_drp/.pcie_core_gtp_pipe_drp_v \
-work/pcie_core_gt_common/.pcie_core_gt_common_v \
-work/pcie_core_pipe_user/.pcie_core_pipe_user_v \
-work/pcie_core_gt_wrapper/.pcie_core_gt_wrapper_v \
-work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v \
-work/pcie_core_pipe_drp/.pcie_core_pipe_drp_v \
-work/pcie_core_gtp_pipe_reset/.pcie_core_gtp_pipe_reset_v \
-work/pcie_core_qpll_reset/.pcie_core_qpll_reset_v \
-work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v \
-work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v \
-work/pcie_core_pipe_eq/.pcie_core_pipe_eq_v \
-work/pcie_core_pipe_sync/.pcie_core_pipe_sync_v \
-work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/axi_interconnect_v1_7_carry_latch_and/.axi_interconnect_v1_7_carry_latch_and_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_carry_latch_and.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
 		@mkdir -p $(dir $@) && touch $@
@@ -3391,13 +3251,6 @@ work/wiredly/.wiredly_v
 work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_mux.v \
 work/axi_interconnect_v1_7_mux/.axi_interconnect_v1_7_mux_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_qpll_wrapper/.pcie_core_qpll_wrapper_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_qpll_wrapper.v \
-work/pcie_core_gtp_cpllpd_ovrd/.pcie_core_gtp_cpllpd_ovrd_v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -3542,12 +3395,6 @@ work/eth_spram_256x32/.eth_spram_256x32_v: ../../../../../../modules/dbe_wishbon
 work/ethmac_defines/.ethmac_defines_v \
 work/timescale/.timescale_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../modules/dbe_wishbone/wb_ethmac  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_pipe_clock/.pcie_core_pipe_clock_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_clock.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -3780,12 +3627,6 @@ work/axi_interconnect_v1_7_mux_enc/.axi_interconnect_v1_7_mux_enc_v
 
 
 
-work/pcie_core_gtp_pipe_rate/.pcie_core_gtp_pipe_rate_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gtp_pipe_rate.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
 work/mig_7series_v2_3_axi_mc_r_channel/.mig_7series_v2_3_axi_mc_r_channel_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi/mig_7series_v2_3_axi_mc_r_channel.v \
 work/mig_7series_v2_3_axi_mc_fifo/.mig_7series_v2_3_axi_mc_fifo_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/axi  $<
@@ -3811,12 +3652,6 @@ work/lm32_logic_op/.lm32_logic_op_v: ../../../../../../ip_cores/general-cores/mo
 work/ddr_core/.ddr_core_v: ../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl/ddr_core.v \
 work/ddr_core_mig_sim/.ddr_core_mig_sim_v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/ddr_core/ddr_core/user_design/rtl  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_pipe_rate/.pcie_core_pipe_rate_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_rate.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -3937,12 +3772,6 @@ work/axis_interconnect_v1_1_dynamic_priority_encoder/.axis_interconnect_v1_1_dyn
 
 work/axi_interconnect_v1_7_b_downsizer/.axi_interconnect_v1_7_b_downsizer_v: ../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_b_downsizer.v
 		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect_v1_7/hdl/verilog  $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-
-work/pcie_core_pipe_reset/.pcie_core_pipe_reset_v: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pipe_reset.v
-		vlog -work work $(VLOG_FLAGS)  +incdir+../../../../../../platform/artix7/afc_v3/pcie_core/source  $<
 		@mkdir -p $(dir $@) && touch $@
 
 
@@ -4073,12 +3902,6 @@ work/axi_datamover_rd_sf/.axi_datamover_rd_sf_vhd: ../../../../../../platform/ar
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_brams_7x.vhd \
-work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/axi_datamover_sfifo_autord/.axi_datamover_sfifo_autord_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
@@ -4126,11 +3949,6 @@ work/genram_pkg/.genram_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx_pipeline.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/mc_serial_ctrl/.mc_serial_ctrl_vhd: ../../../../../../modules/rffe_top/bpm_gain_ctrl/mc_serial_ctrl.vhd \
 work/utilities_package/.utilities_package_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
@@ -4138,13 +3956,6 @@ work/utilities_package/.utilities_package_vhd
 
 
 work/bpm_axi_pkg/.bpm_axi_pkg_vhd: ../../../../../../modules/dbe_wishbone/wb_pcie/bpm_axi_pkg.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_pipeline.vhd \
-work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_vhd \
-work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -4334,18 +4145,6 @@ work/gencores_pkg/.gencores_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_pcie_bram_7x/.pcie_core_pcie_bram_7x_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_bram_7x.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_top.vhd \
-work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_vhd \
-work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/cdc_sync/.cdc_sync_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
@@ -4503,11 +4302,6 @@ work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_pcie_pipe_misc/.pcie_core_pcie_pipe_misc_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_misc.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/eb_commit_fifo/.eb_commit_fifo_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_commit_fifo.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/generic_simple_dpram/.generic_simple_dpram_vhd \
@@ -4518,13 +4312,6 @@ work/genram_pkg/.genram_pkg_vhd
 
 
 work/fmc150_dac_if/.fmc150_dac_if_vhd: ../../../../../../modules/dbe_wishbone/wb_fmc150/fmc150/fmc150_dac_if.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_axi_basic_tx/.pcie_core_axi_basic_tx_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx.vhd \
-work/pcie_core_axi_basic_tx_pipeline/.pcie_core_axi_basic_tx_pipeline_vhd \
-work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -4895,11 +4682,6 @@ work/wb_tics/.wb_tics_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_pcie_pipe_lane/.pcie_core_pcie_pipe_lane_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_pipe_lane.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/acq_fc_fifo/.acq_fc_fifo_vhd: ../../../../../../modules/dbe_wishbone/wb_acq_core/acq_fc_fifo.vhd \
 work/pulse2level/.pulse2level_vhd \
 work/fc_source/.fc_source_vhd \
@@ -4965,12 +4747,6 @@ work/xwb_stream_sink/.xwb_stream_sink_vhd
 
 work/wbgen2_eic/.wbgen2_eic_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd \
 work/wbgen2_pkg/.wbgen2_pkg_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core/.pcie_core_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/sim/pcie_core.vhd \
-work/pcie_core_pcie2_top/.pcie_core_pcie2_top_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -5219,11 +4995,6 @@ work/axi_datamover/.axi_datamover_vhd: ../../../../../../platform/artix7/afc_v3/
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx_null_gen.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/wb_spi_bidir/.wb_spi_bidir_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/wb_spi_bidir.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/spi_bidir_top/.spi_bidir_top_v \
@@ -5366,13 +5137,6 @@ work/wb_stream_source_gen/.wb_stream_source_gen_vhd: ../../../../../../modules/d
 work/generic_shiftreg_fifo/.generic_shiftreg_fifo_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/wb_stream_generic_pkg/.wb_stream_generic_pkg_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_gt_top/.pcie_core_gt_top_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_top.vhd \
-work/pcie_core_pipe_wrapper/.pcie_core_pipe_wrapper_v \
-work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -5695,11 +5459,6 @@ work/wb_i2c_master/.wb_i2c_master_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_gt_rx_valid_filter_7x/.pcie_core_gt_rx_valid_filter_7x_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_gt_rx_valid_filter_7x.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/multiboot_regs/.multiboot_regs_vhd: ../../../../../../ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/multiboot_regs.vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
@@ -5767,12 +5526,6 @@ work/generic_simple_dpram/.generic_simple_dpram_vhd: ../../../../../../ip_cores/
 work/memory_loader_pkg/.memory_loader_pkg_vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/generic_dpram/.generic_dpram_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_bram_top_7x.vhd \
-work/pcie_core_pcie_brams_7x/.pcie_core_pcie_brams_7x_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -5959,11 +5712,6 @@ work/wr_fabric_pkg/.wr_fabric_pkg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_axi_basic_tx_thrtl_ctl/.pcie_core_axi_basic_tx_thrtl_ctl_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_tx_thrtl_ctl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/xwb_crossbar/.xwb_crossbar_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
@@ -6053,24 +5801,10 @@ work/xloader_wb/.xloader_wb_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_pcie2_top/.pcie_core_pcie2_top_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie2_top.vhd \
-work/pcie_core_core_top/.pcie_core_core_top_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/wb_simple_pwm/.wb_simple_pwm_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_simple_pwm/wb_simple_pwm.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/simple_pwm_wb/.simple_pwm_wb_vhd \
 work/simple_pwm_wbgen2_pkg/.simple_pwm_wbgen2_pkg_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_pcie_top/.pcie_core_pcie_top_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_top.vhd \
-work/pcie_core_axi_basic_top/.pcie_core_axi_basic_top_vhd \
-work/pcie_core_pcie_pipe_pipeline/.pcie_core_pcie_pipe_pipeline_vhd \
-work/pcie_core_pcie_7x/.pcie_core_pcie_7x_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -6111,13 +5845,6 @@ work/axi_datamover_s2mm_full_wrap/.axi_datamover_s2mm_full_wrap_vhd: ../../../..
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_axi_basic_rx/.pcie_core_axi_basic_rx_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx.vhd \
-work/pcie_core_axi_basic_rx_null_gen/.pcie_core_axi_basic_rx_null_gen_vhd \
-work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/eb_tx_mux/.eb_tx_mux_vhd: ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
 work/eb_internals_pkg/.eb_internals_pkg_vhd
@@ -6131,13 +5858,6 @@ work/axi_datamover_rddata_cntl/.axi_datamover_rddata_cntl_vhd: ../../../../../..
 
 
 work/axi_datamover_s2mm_scatter/.axi_datamover_s2mm_scatter_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_core_top/.pcie_core_core_top_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_core_top.vhd \
-work/pcie_core_gt_top/.pcie_core_gt_top_vhd \
-work/pcie_core_pcie_top/.pcie_core_pcie_top_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
@@ -6231,11 +5951,6 @@ work/gc_shiftreg/.gc_shiftreg_vhd
 		@mkdir -p $(dir $@) && touch $@
 
 
-work/pcie_core_axi_basic_rx_pipeline/.pcie_core_axi_basic_rx_pipeline_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_axi_basic_rx_pipeline.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
 work/inferred_sync_fifo/.inferred_sync_fifo_vhd: ../../../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd \
 work/genram_pkg/.genram_pkg_vhd \
 work/generic_dpram/.generic_dpram_vhd
@@ -6313,12 +6028,6 @@ work/xfmc150_regs_pkg/.xfmc150_regs_pkg_vhd
 
 
 work/axi_datamover_wr_status_cntl/.axi_datamover_wr_status_cntl_vhd: ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd
-		vcom $(VCOM_FLAGS)  -work work $<
-		@mkdir -p $(dir $@) && touch $@
-
-
-work/pcie_core_pcie_7x/.pcie_core_pcie_7x_vhd: ../../../../../../platform/artix7/afc_v3/pcie_core/source/pcie_core_pcie_7x.vhd \
-work/pcie_core_pcie_bram_top_7x/.pcie_core_pcie_bram_top_7x_vhd
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
