@@ -240,3 +240,5 @@ vcom -64 -93 -work axi_datamover_v5_1 \
 "../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd" \
 "../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd"
 
+vcom -64 -93 -work xil_defaultlib \
+"../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/synth/axi_datamover_bpm.vhd"
