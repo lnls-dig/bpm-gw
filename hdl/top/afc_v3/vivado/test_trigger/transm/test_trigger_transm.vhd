@@ -52,10 +52,12 @@ architecture structure of test_trigger_transm is
   constant c_glitch_len_width : positive := 8;
   constant c_count_width      : positive := 32;
 
-  signal direction   : std_logic_vector(7 downto 0);
-  signal length      : std_logic_vector(c_glitch_len_width-1 downto 0);
-  signal trigger_buf : std_logic_vector(7 downto 0);
-  signal pulse       : std_logic_vector(7 downto 0);
+  signal direction      : std_logic_vector(7 downto 0);
+  signal length         : std_logic_vector(c_glitch_len_width-1 downto 0);
+  signal trigger_buf    : std_logic_vector(7 downto 0);
+  signal pulse          : std_logic_vector(7 downto 0);
+  signal pulse_width    : std_logic_vector(7 downto 0);
+  signal pulse_extended : std_logic_vector(7 downto 0);
 
   type count_array is array(7 downto 0) of std_logic_vector(c_count_width-1 downto 0);
   signal count_sent : count_array;
@@ -84,6 +86,17 @@ architecture structure of test_trigger_transm is
       down_i  : in  std_logic;
       count_o : out std_logic_vector(g_output_width-1 downto 0));
   end component counter;
+
+  component extend_pulse_dyn is
+    generic (
+      g_max_width : natural);
+    port (
+      clk_i         : in  std_logic;
+      rst_n_i       : in  std_logic;
+      pulse_i       : in  std_logic;
+      pulse_width_i : in  natural;
+      extended_o    : out std_logic := '0');
+  end component extend_pulse_dyn;
 
 -------------------------------------------------------------------------------
 -- Chipscope
@@ -153,7 +166,7 @@ architecture structure of test_trigger_transm is
 
 begin  -- architecture behav
 
-  trigger_o <= pulse;
+  trigger_o <= pulse_extended;
 
   -- Clock generation
   cmp_clk_gen : clk_gen
@@ -189,6 +202,19 @@ begin  -- architecture behav
 
   end generate generate_counter;
 
+  extender : for i in c_glitch_len_width-1 downto 0 generate
+    extend_pulse_dyn_1 : extend_pulse_dyn
+      generic map (
+        g_max_width => 1000)
+      port map (
+        clk_i         => clk_100mhz,
+        rst_n_i       => rst_n,
+        pulse_i       => pulse(i),
+        pulse_width_i => to_integer(unsigned(pulse_width)),
+        extended_o    => pulse_extended(i));
+
+  end generate extender;
+
   -- Obtain core locking and generate necessary clocks
   cmp_sys_pll_inst : sys_pll
     generic map (
@@ -221,9 +247,8 @@ begin  -- architecture behav
     port map (
       CONTROL            => CONTROL0,
       CLK                => clk_100mhz,
-      TRIG0(7 downto 0)  => pulse,
-      TRIG0(8)           => clk_100mhz,
-      TRIG0(31 downto 9) => filler(31 downto 9),
+      TRIG0(7 downto 0)  => pulse_extended,
+      TRIG0(31 downto 8) => filler(31 downto 8),
       TRIG1              => filler,
       TRIG2              => filler,
       TRIG3              => filler);
@@ -231,7 +256,7 @@ begin  -- architecture behav
     port map (
       CONTROL => CONTROL2,
       CLK     => clk_100mhz,
-      TRIG0   => filler,
+      TRIG0   => (others => clk_100mhz),
       TRIG1   => filler,
       TRIG2   => filler,
       TRIG3   => filler);
@@ -249,8 +274,8 @@ begin  -- architecture behav
       CONTROL                => CONTROL1,
       CLK                    => clk_100mhz,
       SYNC_OUT(7 downto 0)   => length,
-      SYNC_OUT(15 downto 8)  => open,
-      SYNC_OUT(31 downto 16) => open);
-
+      SYNC_OUT(15 downto 8)  => pulse_width,
+      SYNC_OUT(23 downto 16) => direction_o,
+      SYNC_OUT(31 downto 24) => open);
 
 end architecture structure;
