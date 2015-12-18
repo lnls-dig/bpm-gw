@@ -34,14 +34,23 @@ vmap axi_datamover_v5_1 axi_datamover_v5_1
 vcom -64 -work fifo_generator_v12_0 \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/simulation/fifo_generator_vhdl_beh.vhd"
 
+vlog -64 -work fifo_generator_v12_0 \
+"../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/simulation/fifo_generator_vlog_beh.v"
+
 vcom -64 -93 -work fifo_generator_v12_0  \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0_vh_rfs.vhd"
 
 vlog -64 -work fifo_generator_v12_0 \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0_vh_rfs.v"
 
+vlog -64 -work fifo_generator_v12_0 \
+"../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.v"
+
 vcom -64 -work fifo_generator_v12_0 \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0_vhsyn_rfs.vhd"
+
+vcom -64 -work fifo_generator_v12_0 \
+"../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.vhd"
 
 vcom -64 -work fifo_generator_v12_0 \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/fifo_generator_v12_0/hdl/fifo_generator_v12_0.vhd"
