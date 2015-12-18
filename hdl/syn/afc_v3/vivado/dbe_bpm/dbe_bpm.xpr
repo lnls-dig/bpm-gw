@@ -9,7 +9,6 @@
     <Option Name="Id" Val="96ca6d9a77034d48a4aba88faf50ee90"/>
     <Option Name="Part" Val="xc7a200tffg1156-1"/>
     <Option Name="CompiledLibDir" Val="$PPRDIR/../../../../../../../../../opt/Xilinx/Vivado/2015.2/data"/>
-    <Option Name="TargetLanguage" Val="VHDL"/>
     <Option Name="TargetSimulator" Val="ModelSim"/>
     <Option Name="BoardPart" Val=""/>
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
