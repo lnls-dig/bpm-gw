@@ -640,6 +640,39 @@ module wb_acq_core_tb;
   wire                                      ddr_aximm_ma_rlast;
   wire                                      ddr_aximm_ma_rvalid;
 
+  // PCIe / DDR AXI interconnect
+  wire ddr_ui_clk             , ddr_mmcm_locked;
+  wire ddr_ui_rst             , irconnect_arstn  , ddr_axi_aresetn , pcie_axi_aresetn;
+  wire [7:0] ddr_axi_awid     , ddr_axi_arid     , ddr_axi_bid     , ddr_axi_rid;
+  wire [31:0]  ddr_axi_awaddr;
+  wire [7:0]  ddr_axi_awlen;
+  wire [2:0]  ddr_axi_awsize;
+  wire [1:0]  ddr_axi_awburst;
+  wire  ddr_axi_awlock;
+  wire [3:0]  ddr_axi_awcache;
+  wire [2:0]  ddr_axi_awprot;
+  wire [3:0]  ddr_axi_awqos;
+  wire  ddr_axi_awvalid , ddr_axi_awready;
+  wire [255:0]  ddr_axi_wdata;
+  wire [31:0]  ddr_axi_wstrb;
+  wire  ddr_axi_wvalid  , ddr_axi_wready;
+  wire  ddr_axi_wlast;
+  wire [1:0]  ddr_axi_bresp;
+  wire  ddr_axi_bvalid  , ddr_axi_bready;
+  wire [31:0]  ddr_axi_araddr;
+  wire [7:0]  ddr_axi_arlen;
+  wire [2:0]  ddr_axi_arsize;
+  wire [1:0]  ddr_axi_arburst;
+  wire ddr_axi_arlock;
+  wire [3:0]  ddr_axi_arcache;
+  wire [2:0]  ddr_axi_arprot;
+  wire [3:0]  ddr_axi_arqos;
+  wire  ddr_axi_arvalid , ddr_axi_arready;
+  wire [255:0]  ddr_axi_rdata;
+  wire [1:0]  ddr_axi_rresp;
+  wire ddr_axi_rvalid  , ddr_axi_rready;
+  wire ddr_axi_rlast;
+
   reg                                       ddr_sys_clk_i;
   reg                                       clk_ref_i;
 
@@ -839,7 +872,7 @@ module wb_acq_core_tb;
     .dbg_ddr_rb_valid_array_o              ({dbg_ddr_rb1_valid, dbg_ddr_rb0_valid}),
 
     // DDR interface
-    .ddr_aximm_ma_awid_o                    (ddr_aximm_ma_awid[0]),
+    .ddr_aximm_ma_awid_o                    (ddr_aximm_ma_awid),
     .ddr_aximm_ma_awaddr_o                  (ddr_aximm_ma_awaddr),
     .ddr_aximm_ma_awlen_o                   (ddr_aximm_ma_awlen),
     .ddr_aximm_ma_awsize_o                  (ddr_aximm_ma_awsize),
@@ -856,10 +889,10 @@ module wb_acq_core_tb;
     .ddr_aximm_ma_wvalid_o                  (ddr_aximm_ma_wvalid),
     .ddr_aximm_ma_wready_i                  (ddr_aximm_ma_wready),
     .ddr_aximm_ma_bready_o                  (ddr_aximm_ma_bready),
-    .ddr_aximm_ma_bid_i                     (ddr_aximm_ma_bid[0]),
+    .ddr_aximm_ma_bid_i                     (ddr_aximm_ma_bid),
     .ddr_aximm_ma_bresp_i                   (ddr_aximm_ma_bresp),
     .ddr_aximm_ma_bvalid_i                  (ddr_aximm_ma_bvalid),
-    .ddr_aximm_ma_arid_o                    (ddr_aximm_ma_arid[0]),
+    .ddr_aximm_ma_arid_o                    (ddr_aximm_ma_arid),
     .ddr_aximm_ma_araddr_o                  (ddr_aximm_ma_araddr),
     .ddr_aximm_ma_arlen_o                   (ddr_aximm_ma_arlen),
     .ddr_aximm_ma_arsize_o                  (ddr_aximm_ma_arsize),
@@ -871,17 +904,12 @@ module wb_acq_core_tb;
     .ddr_aximm_ma_arvalid_o                 (ddr_aximm_ma_arvalid),
     .ddr_aximm_ma_arready_i                 (ddr_aximm_ma_arready),
     .ddr_aximm_ma_rready_o                  (ddr_aximm_ma_rready),
-    .ddr_aximm_ma_rid_i                     (ddr_aximm_ma_rid[0]),
+    .ddr_aximm_ma_rid_i                     (ddr_aximm_ma_rid),
     .ddr_aximm_ma_rdata_i                   (ddr_aximm_ma_rdata),
     .ddr_aximm_ma_rresp_i                   (ddr_aximm_ma_rresp),
     .ddr_aximm_ma_rlast_i                   (ddr_aximm_ma_rlast),
     .ddr_aximm_ma_rvalid_i                  (ddr_aximm_ma_rvalid)
   );
-
-  assign ddr_aximm_ma_awid[3:1] = 'h0;
-  assign ddr_aximm_ma_bid[3:1] = 'h0;
-  assign ddr_aximm_ma_arid[3:1] = 'h0;
-  assign ddr_aximm_ma_rid[3:1] = 'h0;
 
   // Very simple software trigger driving
 
@@ -1069,6 +1097,128 @@ module wb_acq_core_tb;
   ///////assign ext1_valid_conv_rb = ext0_valid : ext1_valid;
   ///////assign ext1_addr_conv_rb  = ext0_addr*DDR3_ADDR_INC : ext1_addr*DDR3_ADDR_INC;
 
+  axi_interconnect_wrapper axi_interconnect_ddr_pcie (
+    .interconnect_aclk                          (ui_clk),
+    .interconnect_aresetn                       (ui_clk_sync_rst_n),
+    .s00_axi_areset_out_n                       (),
+    .s00_axi_aclk                               (ui_clk),
+    .s00_axi_awid                               (4'b0),
+    .s00_axi_awaddr                             (32'h0),
+    .s00_axi_awlen                              (8'h00),
+    .s00_axi_awsize                             (3'h0),
+    .s00_axi_awburst                            (2'h0),
+    .s00_axi_awlock                             (1'b0),
+    .s00_axi_awcache                            (4'h0),
+    .s00_axi_awprot                             (3'h0),
+    .s00_axi_awqos                              (4'h0),
+    .s00_axi_awvalid                            (1'b0),
+    .s00_axi_awready                            (),
+    .s00_axi_wdata                              (256'h0),
+    .s00_axi_wstrb                              (32'h0),
+    .s00_axi_wlast                              (1'b0),
+    .s00_axi_wvalid                             (1'b0),
+    .s00_axi_wready                             (),
+    .s00_axi_bid                                (),
+    .s00_axi_bresp                              (),
+    .s00_axi_bvalid                             (),
+    .s00_axi_bready                             (1'b1),
+    .s00_axi_arid                               (4'h0),
+    .s00_axi_araddr                             (32'h0),
+    .s00_axi_arlen                              (8'h0),
+    .s00_axi_arsize                             (3'h0),
+    .s00_axi_arburst                            (2'h0),
+    .s00_axi_arlock                             (1'b0),
+    .s00_axi_arcache                            (4'h0),
+    .s00_axi_arprot                             (3'h0),
+    .s00_axi_arqos                              (4'h0),
+    .s00_axi_arvalid                            (1'b0),
+    .s00_axi_arready                            (),
+    .s00_axi_rid                                (),
+    .s00_axi_rdata                              (),
+    .s00_axi_rresp                              (),
+    .s00_axi_rlast                              (),
+    .s00_axi_rvalid                             (),
+    .s00_axi_rready                             (1'b1),
+    .s01_axi_areset_out_n                       (),
+    .s01_axi_aclk                               (ui_clk),
+    .s01_axi_awid                               (ddr_aximm_ma_awid),
+    .s01_axi_awaddr                             (ddr_aximm_ma_awaddr),
+    .s01_axi_awlen                              (ddr_aximm_ma_awlen),
+    .s01_axi_awsize                             (ddr_aximm_ma_awsize),
+    .s01_axi_awburst                            (ddr_aximm_ma_awburst),
+    .s01_axi_awlock                             (ddr_aximm_ma_awlock),
+    .s01_axi_awcache                            (ddr_aximm_ma_awcache),
+    .s01_axi_awprot                             (ddr_aximm_ma_awprot),
+    .s01_axi_awqos                              (ddr_aximm_ma_awqos),
+    .s01_axi_awvalid                            (ddr_aximm_ma_awvalid),
+    .s01_axi_awready                            (ddr_aximm_ma_awready),
+    .s01_axi_wdata                              (ddr_aximm_ma_wdata),
+    .s01_axi_wstrb                              (ddr_aximm_ma_wstrb),
+    .s01_axi_wlast                              (ddr_aximm_ma_wlast),
+    .s01_axi_wvalid                             (ddr_aximm_ma_wvalid),
+    .s01_axi_wready                             (ddr_aximm_ma_wready),
+    .s01_axi_bid                                (ddr_aximm_ma_bid),
+    .s01_axi_bresp                              (ddr_aximm_ma_bresp),
+    .s01_axi_bvalid                             (ddr_aximm_ma_bvalid),
+    .s01_axi_bready                             (ddr_aximm_ma_bready),
+    .s01_axi_arid                               (ddr_aximm_ma_arid),
+    .s01_axi_araddr                             (ddr_aximm_ma_araddr),
+    .s01_axi_arlen                              (ddr_aximm_ma_arlen),
+    .s01_axi_arsize                             (ddr_aximm_ma_arsize),
+    .s01_axi_arburst                            (ddr_aximm_ma_arburst),
+    .s01_axi_arlock                             (ddr_aximm_ma_arlock),
+    .s01_axi_arcache                            (ddr_aximm_ma_arcache),
+    .s01_axi_arprot                             (ddr_aximm_ma_arprot),
+    .s01_axi_arqos                              (ddr_aximm_ma_arqos),
+    .s01_axi_arvalid                            (ddr_aximm_ma_arvalid),
+    .s01_axi_arready                            (ddr_aximm_ma_arready),
+    .s01_axi_rid                                (ddr_aximm_ma_rid),
+    .s01_axi_rdata                              (ddr_aximm_ma_rdata),
+    .s01_axi_rresp                              (ddr_aximm_ma_rresp),
+    .s01_axi_rlast                              (ddr_aximm_ma_rlast),
+    .s01_axi_rvalid                             (ddr_aximm_ma_rvalid),
+    .s01_axi_rready                             (ddr_aximm_ma_rready),
+    .m00_axi_areset_out_n                       (),
+    .m00_axi_aclk                               (ui_clk),
+    .m00_axi_awid                               (ddr_axi_awid),
+    .m00_axi_awaddr                             (ddr_axi_awaddr),
+    .m00_axi_awlen                              (ddr_axi_awlen),
+    .m00_axi_awsize                             (ddr_axi_awsize),
+    .m00_axi_awburst                            (ddr_axi_awburst),
+    .m00_axi_awlock                             (ddr_axi_awlock),
+    .m00_axi_awcache                            (ddr_axi_awcache),
+    .m00_axi_awprot                             (ddr_axi_awprot),
+    .m00_axi_awqos                              (ddr_axi_awqos),
+    .m00_axi_awvalid                            (ddr_axi_awvalid),
+    .m00_axi_awready                            (ddr_axi_awready),
+    .m00_axi_wdata                              (ddr_axi_wdata),
+    .m00_axi_wstrb                              (ddr_axi_wstrb),
+    .m00_axi_wlast                              (ddr_axi_wlast),
+    .m00_axi_wvalid                             (ddr_axi_wvalid),
+    .m00_axi_wready                             (ddr_axi_wready),
+    .m00_axi_bid                                (ddr_axi_bid),
+    .m00_axi_bresp                              (ddr_axi_bresp),
+    .m00_axi_bvalid                             (ddr_axi_bvalid),
+    .m00_axi_bready                             (ddr_axi_bready),
+    .m00_axi_arid                               (ddr_axi_arid),
+    .m00_axi_araddr                             (ddr_axi_araddr),
+    .m00_axi_arlen                              (ddr_axi_arlen),
+    .m00_axi_arsize                             (ddr_axi_arsize),
+    .m00_axi_arburst                            (ddr_axi_arburst),
+    .m00_axi_arlock                             (ddr_axi_arlock),
+    .m00_axi_arcache                            (ddr_axi_arcache),
+    .m00_axi_arprot                             (ddr_axi_arprot),
+    .m00_axi_arqos                              (ddr_axi_arqos),
+    .m00_axi_arvalid                            (ddr_axi_arvalid),
+    .m00_axi_arready                            (ddr_axi_arready),
+    .m00_axi_rid                                (ddr_axi_rid),
+    .m00_axi_rdata                              (ddr_axi_rdata),
+    .m00_axi_rresp                              (ddr_axi_rresp),
+    .m00_axi_rlast                              (ddr_axi_rlast),
+    .m00_axi_rvalid                             (ddr_axi_rvalid),
+    .m00_axi_rready                             (ddr_axi_rready)
+  );
+
   //**************************************************************************//
   // DDR3 ARTIX7 Controller instantiation
   //**************************************************************************//
@@ -1242,47 +1392,47 @@ module wb_acq_core_tb;
     .ddr3_ck_n                              (ddr3_ck_n_fpga),
 
     // Application AXI interface ports
-    .s_axi_awid                             (ddr_aximm_ma_awid),
-    .s_axi_awaddr                           (ddr_aximm_ma_awaddr[30:0]),
-    .s_axi_awlen                            (ddr_aximm_ma_awlen),
-    .s_axi_awsize                           (ddr_aximm_ma_awsize),
-    .s_axi_awburst                          (ddr_aximm_ma_awburst),
-    .s_axi_awlock                           (ddr_aximm_ma_awlock),
-    .s_axi_awcache                          (ddr_aximm_ma_awcache),
-    .s_axi_awprot                           (ddr_aximm_ma_awprot),
-    .s_axi_awqos                            (ddr_aximm_ma_awqos),
-    .s_axi_awvalid                          (ddr_aximm_ma_awvalid),
-    .s_axi_awready                          (ddr_aximm_ma_awready),
+    .s_axi_awid                             (ddr_axi_awid),
+    .s_axi_awaddr                           (ddr_axi_awaddr[30:0]),
+    .s_axi_awlen                            (ddr_axi_awlen),
+    .s_axi_awsize                           (ddr_axi_awsize),
+    .s_axi_awburst                          (ddr_axi_awburst),
+    .s_axi_awlock                           (ddr_axi_awlock),
+    .s_axi_awcache                          (ddr_axi_awcache),
+    .s_axi_awprot                           (ddr_axi_awprot),
+    .s_axi_awqos                            (ddr_axi_awqos),
+    .s_axi_awvalid                          (ddr_axi_awvalid),
+    .s_axi_awready                          (ddr_axi_awready),
 
-    .s_axi_wdata                            (ddr_aximm_ma_wdata),
-    .s_axi_wstrb                            (ddr_aximm_ma_wstrb),
-    .s_axi_wlast                            (ddr_aximm_ma_wlast),
-    .s_axi_wvalid                           (ddr_aximm_ma_wvalid),
-    .s_axi_wready                           (ddr_aximm_ma_wready),
+    .s_axi_wdata                            (ddr_axi_wdata),
+    .s_axi_wstrb                            (ddr_axi_wstrb),
+    .s_axi_wlast                            (ddr_axi_wlast),
+    .s_axi_wvalid                           (ddr_axi_wvalid),
+    .s_axi_wready                           (ddr_axi_wready),
 
-    .s_axi_bready                           (ddr_aximm_ma_bready),
-    .s_axi_bid                              (ddr_aximm_ma_bid),
-    .s_axi_bresp                            (ddr_aximm_ma_bresp),
-    .s_axi_bvalid                           (ddr_aximm_ma_bvalid),
+    .s_axi_bready                           (ddr_axi_bready),
+    .s_axi_bid                              (ddr_axi_bid),
+    .s_axi_bresp                            (ddr_axi_bresp),
+    .s_axi_bvalid                           (ddr_axi_bvalid),
 
-    .s_axi_arid                             (ddr_aximm_ma_arid),
-    .s_axi_araddr                           (ddr_aximm_ma_araddr[30:0]),
-    .s_axi_arlen                            (ddr_aximm_ma_arlen),
-    .s_axi_arsize                           (ddr_aximm_ma_arsize),
-    .s_axi_arburst                          (ddr_aximm_ma_arburst),
-    .s_axi_arlock                           (ddr_aximm_ma_arlock),
-    .s_axi_arcache                          (ddr_aximm_ma_arcache),
-    .s_axi_arprot                           (ddr_aximm_ma_arprot),
-    .s_axi_arqos                            (ddr_aximm_ma_arqos),
-    .s_axi_arvalid                          (ddr_aximm_ma_arvalid),
-    .s_axi_arready                          (ddr_aximm_ma_arready),
+    .s_axi_arid                             (ddr_axi_arid),
+    .s_axi_araddr                           (ddr_axi_araddr[30:0]),
+    .s_axi_arlen                            (ddr_axi_arlen),
+    .s_axi_arsize                           (ddr_axi_arsize),
+    .s_axi_arburst                          (ddr_axi_arburst),
+    .s_axi_arlock                           (ddr_axi_arlock),
+    .s_axi_arcache                          (ddr_axi_arcache),
+    .s_axi_arprot                           (ddr_axi_arprot),
+    .s_axi_arqos                            (ddr_axi_arqos),
+    .s_axi_arvalid                          (ddr_axi_arvalid),
+    .s_axi_arready                          (ddr_axi_arready),
 
-    .s_axi_rready                           (ddr_aximm_ma_rready),
-    .s_axi_rid                              (ddr_aximm_ma_rid),
-    .s_axi_rdata                            (ddr_aximm_ma_rdata),
-    .s_axi_rresp                            (ddr_aximm_ma_rresp),
-    .s_axi_rlast                            (ddr_aximm_ma_rlast),
-    .s_axi_rvalid                           (ddr_aximm_ma_rvalid),
+    .s_axi_rready                           (ddr_axi_rready),
+    .s_axi_rid                              (ddr_axi_rid),
+    .s_axi_rdata                            (ddr_axi_rdata),
+    .s_axi_rresp                            (ddr_axi_rresp),
+    .s_axi_rlast                            (ddr_axi_rlast),
+    .s_axi_rvalid                           (ddr_axi_rvalid),
 
     .mmcm_locked                            (),
     .aresetn                                (1'b1),
