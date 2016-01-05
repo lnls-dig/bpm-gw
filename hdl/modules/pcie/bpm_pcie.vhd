@@ -69,7 +69,7 @@ entity bpm_pcie is
     -- DDR memory controller interface --
     ddr_axi_aclk_o : out std_logic;
     ddr_axi_aresetn_o : out std_logic;
-    ddr_axi_awid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     ddr_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     ddr_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -86,10 +86,10 @@ entity bpm_pcie is
     ddr_axi_wvalid : in STD_LOGIC;
     ddr_axi_wready : out STD_LOGIC;
     ddr_axi_bready : in STD_LOGIC;
-    ddr_axi_bid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ddr_axi_bvalid : out STD_LOGIC;
-    ddr_axi_arid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     ddr_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     ddr_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -101,7 +101,7 @@ entity bpm_pcie is
     ddr_axi_arvalid : in STD_LOGIC;
     ddr_axi_arready : out STD_LOGIC;
     ddr_axi_rready : in STD_LOGIC;
-    ddr_axi_rid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_rdata : out STD_LOGIC_VECTOR ( c_ddr_payload_width-1 downto 0 );
     ddr_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ddr_axi_rlast : out STD_LOGIC;

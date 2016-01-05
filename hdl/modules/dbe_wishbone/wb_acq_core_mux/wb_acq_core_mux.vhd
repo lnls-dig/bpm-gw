@@ -127,7 +127,7 @@ port
   -----------------------------
   -- DDR3 SDRAM Interface
   -----------------------------
-  ddr_aximm_ma_awid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_awid_o                       : out std_logic_vector (3 downto 0);
   ddr_aximm_ma_awaddr_o                     : out std_logic_vector (31 downto 0);
   ddr_aximm_ma_awlen_o                      : out std_logic_vector (7 downto 0);
   ddr_aximm_ma_awsize_o                     : out std_logic_vector (2 downto 0);
@@ -144,10 +144,10 @@ port
   ddr_aximm_ma_wvalid_o                     : out std_logic;
   ddr_aximm_ma_wready_i                     : in std_logic;
   ddr_aximm_ma_bready_o                     : out std_logic;
-  ddr_aximm_ma_bid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_bid_i                        : in std_logic_vector (3 downto 0);
   ddr_aximm_ma_bresp_i                      : in std_logic_vector (1 downto 0);
   ddr_aximm_ma_bvalid_i                     : in std_logic;
-  ddr_aximm_ma_arid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_arid_o                       : out std_logic_vector (3 downto 0);
   ddr_aximm_ma_araddr_o                     : out std_logic_vector (31 downto 0);
   ddr_aximm_ma_arlen_o                      : out std_logic_vector (7 downto 0);
   ddr_aximm_ma_arsize_o                     : out std_logic_vector (2 downto 0);
@@ -159,7 +159,7 @@ port
   ddr_aximm_ma_arvalid_o                    : out std_logic;
   ddr_aximm_ma_arready_i                    : in std_logic;
   ddr_aximm_ma_rready_o                     : out std_logic;
-  ddr_aximm_ma_rid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_rid_i                        : in std_logic_vector (3 downto 0);
   ddr_aximm_ma_rdata_i                      : in std_logic_vector (g_ddr_payload_width-1 downto 0);
   ddr_aximm_ma_rresp_i                      : in std_logic_vector (1 downto 0);
   ddr_aximm_ma_rlast_i                      : in std_logic;
@@ -205,12 +205,6 @@ architecture rtl of wb_acq_core_mux is
   type t_aximm_valid_cnt_array is array(natural range <>) of unsigned(1 downto 0);
   signal axis_s2mm_valid_cnt_array            : t_aximm_valid_cnt_array(g_acq_num_cores-1 downto 0);
   signal axis_mm2s_valid_cnt_array            : t_aximm_valid_cnt_array(g_acq_num_cores-1 downto 0);
-
-  -- Intermediate signals
-  signal ddr_aximm_ma_awid_int              : std_logic_vector (3 downto 0);
-  signal ddr_aximm_ma_bid_int               : std_logic_vector (3 downto 0);
-  signal ddr_aximm_ma_arid_int              : std_logic_vector (3 downto 0);
-  signal ddr_aximm_ma_rid_int               : std_logic_vector (3 downto 0);
 
 begin
 
@@ -750,7 +744,7 @@ begin
     s07_axi_rready                           => axi_mm2s_r_mo_array(7).rready,  -- in std_logic;
     m00_axi_areset_out_n                     => open,                           -- out std_logic;
     m00_axi_aclk                             => ext_clk_i,                      -- in std_logic;
-    m00_axi_awid                             => ddr_aximm_ma_awid_int,          -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_awid                             => ddr_aximm_ma_awid_o,            -- out std_logic_vector ( 3 downto 0 );
     m00_axi_awaddr                           => ddr_aximm_ma_awaddr_o,          -- out std_logic_vector ( 31 downto 0 );
     m00_axi_awlen                            => ddr_aximm_ma_awlen_o,           -- out std_logic_vector ( 7 downto 0 );
     m00_axi_awsize                           => ddr_aximm_ma_awsize_o,          -- out std_logic_vector ( 2 downto 0 );
@@ -766,11 +760,11 @@ begin
     m00_axi_wlast                            => ddr_aximm_ma_wlast_o,           -- out std_logic;
     m00_axi_wvalid                           => ddr_aximm_ma_wvalid_o,          -- out std_logic;
     m00_axi_wready                           => ddr_aximm_ma_wready_i,          -- in std_logic;
-    m00_axi_bid                              => ddr_aximm_ma_bid_int,           -- in std_logic_vector ( 3 downto 0 );
+    m00_axi_bid                              => ddr_aximm_ma_bid_i,             -- in std_logic_vector ( 3 downto 0 );
     m00_axi_bresp                            => ddr_aximm_ma_bresp_i,           -- in std_logic_vector ( 1 downto 0 );
     m00_axi_bvalid                           => ddr_aximm_ma_bvalid_i,          -- in std_logic;
     m00_axi_bready                           => ddr_aximm_ma_bready_o,          -- out std_logic;
-    m00_axi_arid                             => ddr_aximm_ma_arid_int,          -- out std_logic_vector ( 3 downto 0 );
+    m00_axi_arid                             => ddr_aximm_ma_arid_o,            -- out std_logic_vector ( 3 downto 0 );
     m00_axi_araddr                           => ddr_aximm_ma_araddr_o,          -- out std_logic_vector ( 31 downto 0 );
     m00_axi_arlen                            => ddr_aximm_ma_arlen_o,           -- out std_logic_vector ( 7 downto 0 );
     m00_axi_arsize                           => ddr_aximm_ma_arsize_o,          -- out std_logic_vector ( 2 downto 0 );
@@ -781,17 +775,12 @@ begin
     m00_axi_arqos                            => ddr_aximm_ma_arqos_o,           -- out std_logic_vector ( 3 downto 0 );
     m00_axi_arvalid                          => ddr_aximm_ma_arvalid_o,         -- out std_logic;
     m00_axi_arready                          => ddr_aximm_ma_arready_i,         -- in std_logic;
-    m00_axi_rid                              => ddr_aximm_ma_rid_int,           -- in std_logic_vector ( 3 downto 0 );
+    m00_axi_rid                              => ddr_aximm_ma_rid_i,             -- in std_logic_vector ( 3 downto 0 );
     m00_axi_rdata                            => ddr_aximm_ma_rdata_i,           -- in std_logic_vector ( 255 downto 0 );
     m00_axi_rresp                            => ddr_aximm_ma_rresp_i,           -- in std_logic_vector ( 1 downto 0 );
     m00_axi_rlast                            => ddr_aximm_ma_rlast_i,           -- in std_logic;
     m00_axi_rvalid                           => ddr_aximm_ma_rvalid_i,          -- in std_logic;
     m00_axi_rready                           => ddr_aximm_ma_rready_o           -- out std_logic
   );
-
-  ddr_aximm_ma_awid_o                        <= ddr_aximm_ma_awid_int(0 downto 0);
-  ddr_aximm_ma_bid_int                       <= "000" & ddr_aximm_ma_bid_i;
-  ddr_aximm_ma_arid_o                        <= ddr_aximm_ma_arid_int(0 downto 0);
-  ddr_aximm_ma_rid_int                       <= "000" & ddr_aximm_ma_rid_i;
 
 end rtl;

@@ -7,7 +7,7 @@ library work;
 package bpm_axi_pkg is
 
   -- AXIMM constants
-  constant c_aximm_id_width                  : natural := 1;
+  constant c_aximm_id_width                  : natural := 4;
   constant c_aximm_addr_width                : natural := 32;
   constant c_aximm_len_width                 : natural := 8;
   constant c_aximm_size_width                : natural := 3;

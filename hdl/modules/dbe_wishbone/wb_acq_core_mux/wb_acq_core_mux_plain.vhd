@@ -121,7 +121,7 @@ port
   -----------------------------
   -- DDR3 SDRAM Interface
   -----------------------------
-  ddr_aximm_ma_awid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_awid_o                       : out std_logic_vector (3 downto 0);
   ddr_aximm_ma_awaddr_o                     : out std_logic_vector (31 downto 0);
   ddr_aximm_ma_awlen_o                      : out std_logic_vector (7 downto 0);
   ddr_aximm_ma_awsize_o                     : out std_logic_vector (2 downto 0);
@@ -138,10 +138,10 @@ port
   ddr_aximm_ma_wvalid_o                     : out std_logic;
   ddr_aximm_ma_wready_i                     : in std_logic;
   ddr_aximm_ma_bready_o                     : out std_logic;
-  ddr_aximm_ma_bid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_bid_i                        : in std_logic_vector (3 downto 0);
   ddr_aximm_ma_bresp_i                      : in std_logic_vector (1 downto 0);
   ddr_aximm_ma_bvalid_i                     : in std_logic;
-  ddr_aximm_ma_arid_o                       : out std_logic_vector (0 downto 0);
+  ddr_aximm_ma_arid_o                       : out std_logic_vector (3 downto 0);
   ddr_aximm_ma_araddr_o                     : out std_logic_vector (31 downto 0);
   ddr_aximm_ma_arlen_o                      : out std_logic_vector (7 downto 0);
   ddr_aximm_ma_arsize_o                     : out std_logic_vector (2 downto 0);
@@ -153,7 +153,7 @@ port
   ddr_aximm_ma_arvalid_o                    : out std_logic;
   ddr_aximm_ma_arready_i                    : in std_logic;
   ddr_aximm_ma_rready_o                     : out std_logic;
-  ddr_aximm_ma_rid_i                        : in std_logic_vector (0 downto 0);
+  ddr_aximm_ma_rid_i                        : in std_logic_vector (3 downto 0);
   ddr_aximm_ma_rdata_i                      : in std_logic_vector (g_ddr_payload_width-1 downto 0);
   ddr_aximm_ma_rresp_i                      : in std_logic_vector (1 downto 0);
   ddr_aximm_ma_rlast_i                      : in std_logic;

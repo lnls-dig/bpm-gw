@@ -66,7 +66,7 @@ port (
   -- DDR memory controller interface --
   ddr_aximm_sl_aclk_o                       : out std_logic;
   ddr_aximm_sl_aresetn_o                    : out std_logic;
-  ddr_aximm_w_sl_awid_i                     : in std_logic_vector (0 downto 0);
+  ddr_aximm_w_sl_awid_i                     : in std_logic_vector (3 downto 0);
   ddr_aximm_w_sl_awaddr_i                   : in std_logic_vector (31 downto 0);
   ddr_aximm_w_sl_awlen_i                    : in std_logic_vector (7 downto 0);
   ddr_aximm_w_sl_awsize_i                   : in std_logic_vector (2 downto 0);
@@ -83,10 +83,10 @@ port (
   ddr_aximm_w_sl_wvalid_i                   : in std_logic;
   ddr_aximm_w_sl_wready_o                   : out std_logic;
   ddr_aximm_w_sl_bready_i                   : in std_logic;
-  ddr_aximm_w_sl_bid_o                      : out std_logic_vector (0 downto 0);
+  ddr_aximm_w_sl_bid_o                      : out std_logic_vector (3 downto 0);
   ddr_aximm_w_sl_bresp_o                    : out std_logic_vector (1 downto 0);
   ddr_aximm_w_sl_bvalid_o                   : out std_logic;
-  ddr_aximm_r_sl_arid_i                     : in std_logic_vector (0 downto 0);
+  ddr_aximm_r_sl_arid_i                     : in std_logic_vector (3 downto 0);
   ddr_aximm_r_sl_araddr_i                   : in std_logic_vector (31 downto 0);
   ddr_aximm_r_sl_arlen_i                    : in std_logic_vector (7 downto 0);
   ddr_aximm_r_sl_arsize_i                   : in std_logic_vector (2 downto 0);
@@ -98,7 +98,7 @@ port (
   ddr_aximm_r_sl_arvalid_i                  : in std_logic;
   ddr_aximm_r_sl_arready_o                  : out std_logic;
   ddr_aximm_r_sl_rready_i                   : in std_logic;
-  ddr_aximm_r_sl_rid_o                      : out std_logic_vector (0 downto 0 );
+  ddr_aximm_r_sl_rid_o                      : out std_logic_vector (3 downto 0 );
   ddr_aximm_r_sl_rdata_o                    : out std_logic_vector (c_ddr_payload_width-1 downto 0);
   ddr_aximm_r_sl_rresp_o                    : out std_logic_vector (1 downto 0 );
   ddr_aximm_r_sl_rlast_o                    : out std_logic;
@@ -181,7 +181,7 @@ architecture rtl of wb_bpm_pcie is
     -- DDR memory controller interface --
     ddr_axi_aclk_o : out std_logic;
     ddr_axi_aresetn_o : out std_logic;
-    ddr_axi_awid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     ddr_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     ddr_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -198,10 +198,10 @@ architecture rtl of wb_bpm_pcie is
     ddr_axi_wvalid : in STD_LOGIC;
     ddr_axi_wready : out STD_LOGIC;
     ddr_axi_bready : in STD_LOGIC;
-    ddr_axi_bid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ddr_axi_bvalid : out STD_LOGIC;
-    ddr_axi_arid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     ddr_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     ddr_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -213,7 +213,7 @@ architecture rtl of wb_bpm_pcie is
     ddr_axi_arvalid : in STD_LOGIC;
     ddr_axi_arready : out STD_LOGIC;
     ddr_axi_rready : in STD_LOGIC;
-    ddr_axi_rid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    ddr_axi_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     ddr_axi_rdata : out STD_LOGIC_VECTOR ( c_ddr_payload_width-1 downto 0 );
     ddr_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ddr_axi_rlast : out STD_LOGIC;
