@@ -712,6 +712,7 @@ VHDL_SRC := ../../../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamov
 ../../../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_cfg_fifo.vhd \
 ../../../../../../ip_cores/etherbone-core/hdl/eb_usb_core/ez_usb_fifos.vhd \
 ddr_core_wrapper.vhd \
+axi_interconnect_wrapper.vhd \
 ../../../../../../ip_cores/general-cores/modules/wishbone/wb_irq/irqm_core.vhd \
 ../../../../../../modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd \
 ../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd \
@@ -1012,6 +1013,7 @@ work/memory_loader_pkg/.memory_loader_pkg_vhd \
 work/eb_cfg_fifo/.eb_cfg_fifo_vhd \
 work/ez_usb_fifos/.ez_usb_fifos_vhd \
 work/ddr_core_wrapper/.ddr_core_wrapper_vhd \
+work/axi_interconnect_wrapper/.axi_interconnect_wrapper_vhd \
 work/irqm_core/.irqm_core_vhd \
 work/xwb_fmc150/.xwb_fmc150_vhd \
 work/ads62p49_ctrl/.ads62p49_ctrl_vhd \
@@ -4124,6 +4126,10 @@ work/ddr_core/.ddr_core_v
 		vcom $(VCOM_FLAGS)  -work work $<
 		@mkdir -p $(dir $@) && touch $@
 
+work/axi_interconnect_wrapper/.axi_interconnect_wrapper_vhd: axi_interconnect_wrapper.vhd \
+work/ddr_core/.ddr_core_v
+		vcom $(VCOM_FLAGS)  -work work $<
+		@mkdir -p $(dir $@) && touch $@
 
 work/irqm_core/.irqm_core_vhd: ../../../../../../ip_cores/general-cores/modules/wishbone/wb_irq/irqm_core.vhd \
 work/wishbone_pkg/.wishbone_pkg_vhd \
