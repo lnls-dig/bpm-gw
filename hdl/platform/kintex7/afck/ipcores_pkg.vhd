@@ -211,7 +211,7 @@ Port(
   app_sr_active : out STD_LOGIC;
   app_ref_ack : out STD_LOGIC;
   app_zq_ack : out STD_LOGIC;
-  s_axi_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  s_axi_awid : in STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_awaddr : in STD_LOGIC_VECTOR ( 30 downto 0 );
   s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -228,10 +228,10 @@ Port(
   s_axi_wvalid : in STD_LOGIC;
   s_axi_wready : out STD_LOGIC;
   s_axi_bready : in STD_LOGIC;
-  s_axi_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  s_axi_bid : out STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
   s_axi_bvalid : out STD_LOGIC;
-  s_axi_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  s_axi_arid : in STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_araddr : in STD_LOGIC_VECTOR ( 30 downto 0 );
   s_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -243,7 +243,7 @@ Port(
   s_axi_arvalid : in STD_LOGIC;
   s_axi_arready : out STD_LOGIC;
   s_axi_rready : in STD_LOGIC;
-  s_axi_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  s_axi_rid : out STD_LOGIC_VECTOR ( 7 downto 0 );
   s_axi_rdata : out STD_LOGIC_VECTOR ( 255 downto 0 );
   s_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
   s_axi_rlast : out STD_LOGIC;
@@ -259,7 +259,7 @@ PORT (
   INTERCONNECT_ARESETN : in STD_LOGIC;
   S00_AXI_ARESET_OUT_N : out STD_LOGIC;
   S00_AXI_ACLK : in STD_LOGIC;
-  S00_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S00_AXI_AWID : in STD_LOGIC_VECTOR ( 3 to 0 );
   S00_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
   S00_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
   S00_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -275,11 +275,11 @@ PORT (
   S00_AXI_WLAST : in STD_LOGIC;
   S00_AXI_WVALID : in STD_LOGIC;
   S00_AXI_WREADY : out STD_LOGIC;
-  S00_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S00_AXI_BID : out STD_LOGIC_VECTOR ( 3 to 0 );
   S00_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
   S00_AXI_BVALID : out STD_LOGIC;
   S00_AXI_BREADY : in STD_LOGIC;
-  S00_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S00_AXI_ARID : in STD_LOGIC_VECTOR ( 3 to 0 );
   S00_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
   S00_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
   S00_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -290,7 +290,7 @@ PORT (
   S00_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
   S00_AXI_ARVALID : in STD_LOGIC;
   S00_AXI_ARREADY : out STD_LOGIC;
-  S00_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S00_AXI_RID : out STD_LOGIC_VECTOR ( 3 to 0 );
   S00_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
   S00_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
   S00_AXI_RLAST : out STD_LOGIC;
@@ -298,7 +298,7 @@ PORT (
   S00_AXI_RREADY : in STD_LOGIC;
   S01_AXI_ARESET_OUT_N : out STD_LOGIC;
   S01_AXI_ACLK : in STD_LOGIC;
-  S01_AXI_AWID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S01_AXI_AWID : in STD_LOGIC_VECTOR ( 3 to 0 );
   S01_AXI_AWADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
   S01_AXI_AWLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
   S01_AXI_AWSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -314,11 +314,11 @@ PORT (
   S01_AXI_WLAST : in STD_LOGIC;
   S01_AXI_WVALID : in STD_LOGIC;
   S01_AXI_WREADY : out STD_LOGIC;
-  S01_AXI_BID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S01_AXI_BID : out STD_LOGIC_VECTOR ( 3 to 0 );
   S01_AXI_BRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
   S01_AXI_BVALID : out STD_LOGIC;
   S01_AXI_BREADY : in STD_LOGIC;
-  S01_AXI_ARID : in STD_LOGIC_VECTOR ( 0 to 0 );
+  S01_AXI_ARID : in STD_LOGIC_VECTOR ( 3 to 0 );
   S01_AXI_ARADDR : in STD_LOGIC_VECTOR ( 31 downto 0 );
   S01_AXI_ARLEN : in STD_LOGIC_VECTOR ( 7 downto 0 );
   S01_AXI_ARSIZE : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -329,7 +329,7 @@ PORT (
   S01_AXI_ARQOS : in STD_LOGIC_VECTOR ( 3 downto 0 );
   S01_AXI_ARVALID : in STD_LOGIC;
   S01_AXI_ARREADY : out STD_LOGIC;
-  S01_AXI_RID : out STD_LOGIC_VECTOR ( 0 to 0 );
+  S01_AXI_RID : out STD_LOGIC_VECTOR ( 3 to 0 );
   S01_AXI_RDATA : out STD_LOGIC_VECTOR ( 255 downto 0 );
   S01_AXI_RRESP : out STD_LOGIC_VECTOR ( 1 downto 0 );
   S01_AXI_RLAST : out STD_LOGIC;
@@ -337,7 +337,7 @@ PORT (
   S01_AXI_RREADY : in STD_LOGIC;
   M00_AXI_ARESET_OUT_N : out STD_LOGIC;
   M00_AXI_ACLK : in STD_LOGIC;
-  M00_AXI_AWID : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  M00_AXI_AWID : out STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_AWADDR : out STD_LOGIC_VECTOR ( 31 downto 0 );
   M00_AXI_AWLEN : out STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_AWSIZE : out STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -353,11 +353,11 @@ PORT (
   M00_AXI_WLAST : out STD_LOGIC;
   M00_AXI_WVALID : out STD_LOGIC;
   M00_AXI_WREADY : in STD_LOGIC;
-  M00_AXI_BID : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  M00_AXI_BID : in STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_BRESP : in STD_LOGIC_VECTOR ( 1 downto 0 );
   M00_AXI_BVALID : in STD_LOGIC;
   M00_AXI_BREADY : out STD_LOGIC;
-  M00_AXI_ARID : out STD_LOGIC_VECTOR ( 3 downto 0 );
+  M00_AXI_ARID : out STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_ARADDR : out STD_LOGIC_VECTOR ( 31 downto 0 );
   M00_AXI_ARLEN : out STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_ARSIZE : out STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -368,7 +368,7 @@ PORT (
   M00_AXI_ARQOS : out STD_LOGIC_VECTOR ( 3 downto 0 );
   M00_AXI_ARVALID : out STD_LOGIC;
   M00_AXI_ARREADY : in STD_LOGIC;
-  M00_AXI_RID : in STD_LOGIC_VECTOR ( 3 downto 0 );
+  M00_AXI_RID : in STD_LOGIC_VECTOR ( 7 downto 0 );
   M00_AXI_RDATA : in STD_LOGIC_VECTOR ( 255 downto 0 );
   M00_AXI_RRESP : in STD_LOGIC_VECTOR ( 1 downto 0 );
   M00_AXI_RLAST : in STD_LOGIC;
