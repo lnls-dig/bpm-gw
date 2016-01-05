@@ -180,7 +180,8 @@ vlog -64 -work axi_interconnect_v1_7 \
 "../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_v1_7/hdl/verilog/axi_interconnect_v1_7_w_upsizer.v"
 
 vlog -64 -work xil_defaultlib \
-"../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/sim/axi_interconnect_bpm.v"
+"../../../../../../platform/artix7/afc_v3/axi_interconnect_bpm/sim/axi_interconnect_bpm.v" \
+"../../../../../../platform/artix7/afc_v3/axi_interconnect/sim/axi_interconnect.v"
 
 vcom -64 -93 -work lib_pkg_v1_0  \
 "../../../../../../platform/artix7/afc_v3/axi_datamover_bpm/lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd"
