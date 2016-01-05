@@ -17,6 +17,9 @@
     <InternalVref>0</InternalVref>
     <dci_hr_inouts_inputs>50 Ohms</dci_hr_inouts_inputs>
     <dci_cascade>0</dci_cascade>
+    <FPGADevice>
+        <selected>7a/xc7a200ti-ffg1156</selected>
+    </FPGADevice>
     <Controller number="0" >
         <MemoryDevice>DDR3_SDRAM/Components/MT41J512M8XX-125</MemoryDevice>
         <TimePeriod>2500</TimePeriod>
@@ -149,7 +152,7 @@
             <C0_C_RD_WR_ARB_ALGORITHM>RD_PRI_REG</C0_C_RD_WR_ARB_ALGORITHM>
             <C0_S_AXI_ADDR_WIDTH>31</C0_S_AXI_ADDR_WIDTH>
             <C0_S_AXI_DATA_WIDTH>256</C0_S_AXI_DATA_WIDTH>
-            <C0_S_AXI_ID_WIDTH>4</C0_S_AXI_ID_WIDTH>
+            <C0_S_AXI_ID_WIDTH>8</C0_S_AXI_ID_WIDTH>
             <C0_S_AXI_SUPPORTS_NARROW_BURST>0</C0_S_AXI_SUPPORTS_NARROW_BURST>
         </AXIParameters>
     </Controller>
