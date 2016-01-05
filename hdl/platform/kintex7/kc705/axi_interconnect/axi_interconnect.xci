@@ -10,7 +10,7 @@
       <spirit:componentRef spirit:vendor="xilinx.com" spirit:library="ip" spirit:name="axi_interconnect" spirit:version="1.7"/>
       <spirit:configurableElementValues>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.NUM_SLAVE_PORTS">2</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.THREAD_ID_WIDTH">0</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.THREAD_ID_WIDTH">4</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.AXI_ADDR_WIDTH">32</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.S00_AXI_DATA_WIDTH">512</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.S01_AXI_DATA_WIDTH">512</spirit:configurableElementValue>
@@ -220,7 +220,7 @@
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.M00_AXI_ACLK_RATIO">1:1</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_FAMILY">kintex7</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_NUM_SLAVE_PORTS">2</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_THREAD_ID_WIDTH">0</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_THREAD_ID_WIDTH">4</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_THREAD_ID_PORT_WIDTH">1</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_AXI_ADDR_WIDTH">32</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_SYNCHRONIZER_STAGE">3</spirit:configurableElementValue>
