@@ -120,6 +120,7 @@ architecture rtl of fc_source is
 
   -- signals that a packet was actually transfered
   signal pkt_sent                           : std_logic;
+  signal lmt_valid                          : std_logic;
   signal lmt_pre_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_pos_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_full_pkt_size                  : unsigned(c_pkt_size_width-1 downto 0);
@@ -162,11 +163,14 @@ begin
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
+        lmt_valid <= '0';
         --Avoid detection of *_done pulses by setting them to 1
         lmt_pre_pkt_size <= to_unsigned(1, lmt_pre_pkt_size'length);
         lmt_pos_pkt_size <= to_unsigned(1, lmt_pos_pkt_size'length);
         lmt_full_pkt_size <= to_unsigned(1, lmt_full_pkt_size'length);
       else
+        lmt_valid <= lmt_valid_i;
+
         if lmt_valid_i = '1' then
           lmt_pre_pkt_size <= lmt_pre_pkt_size_i;
           lmt_pos_pkt_size <= lmt_pos_pkt_size_i;
@@ -278,13 +282,15 @@ begin
       else
         -- We don't care if the first data is asserted for a long time.
         -- It just matters when fc_valid_s = '1' anyway
-        if fc_first_data = '1' and fc_valid_s = '1' then -- first data tag
-          fc_first_data <= '0';
-        elsif fc_in_pend_cnt = to_unsigned(0, fc_in_pend_cnt'length) then
+        if lmt_valid = '1' then
           fc_first_data <= '1';
+        elsif fc_valid_s = '1' then -- first data tag
+          fc_first_data <= '0';
         end if;
 
-        if lmt_full_pkt_size = to_unsigned(1, lmt_full_pkt_size'length) or -- base case of lmt_full_pkt_size = 1
+        if lmt_valid = '1' then
+          fc_last_data <= '0';
+        elsif lmt_full_pkt_size = to_unsigned(1, lmt_full_pkt_size'length) or -- base case of lmt_full_pkt_size = 1
             (fc_in_pend_cnt = lmt_full_pkt_size-2 and fc_valid_s = '1') then -- will increment
           fc_last_data <= '1';
         elsif fc_valid_s = '1' then
