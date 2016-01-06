@@ -1,4 +1,3 @@
--------------------------------------------------------------------------------
 -- Title      : Trigger receiver test top
 -- Project    :
 -------------------------------------------------------------------------------
@@ -6,7 +5,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2015-12-18
+-- Last update: 2016-01-06
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -61,7 +60,6 @@ architecture structural of test_trigger_rcv is
 
   signal direction   : std_logic_vector(7 downto 0);
   signal length      : std_logic_vector(c_glitch_len_width-1 downto 0);
-  signal trigger_buf : std_logic_vector(7 downto 0);
   signal pulse       : std_logic_vector(7 downto 0);
 
   type count_array is array(7 downto 0) of std_logic_vector(c_count_width-1 downto 0);
@@ -211,15 +209,6 @@ begin
 
   gen_trigger : for i in 0 to 7 generate
 
-    cmp_ibuf_trigger : ibuf
-      generic map(
-        IOSTANDARD => "LVCMOS15"
-        )
-      port map(
-        i => trigger_i(i),
-        o => trigger_buf(i)
-        );
-
     cmp_trigger_rcv : trigger_rcv
       generic map (
         g_glitch_len_width => c_glitch_len_width,
@@ -228,7 +217,7 @@ begin
         clk_i   => clk_100mhz,
         rst_i   => rst,
         len_i   => length,
-        data_i  => trigger_buf(i),
+        data_i  => trigger_i(i),
         pulse_o => pulse(i));
 
   end generate gen_trigger;
