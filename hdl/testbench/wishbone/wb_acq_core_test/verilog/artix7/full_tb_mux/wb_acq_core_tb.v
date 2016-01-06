@@ -1818,7 +1818,7 @@ module wb_acq_core_tb;
     wait_finish = 1'b1;
     min_wait_gnt_l = 1024; // watch for errors here!
     max_wait_gnt_l = 2048; // watch for errors here!
-    data_valid_prob = 0.5;
+    data_valid_prob = 1.0;
     min_wait_trig_l = 100;
     max_wait_trig_l = 200;
     hw_trig_sel = 1'b1; // External trigger
