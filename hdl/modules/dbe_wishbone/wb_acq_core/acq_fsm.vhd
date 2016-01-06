@@ -287,6 +287,7 @@ begin
       if fs_rst_n_i = '0' then
         lmt_acq_pre_pkt_size <= to_unsigned(0, lmt_acq_pre_pkt_size'length);
         lmt_acq_pos_pkt_size <= to_unsigned(0, lmt_acq_pos_pkt_size'length);
+        lmt_acq_full_pkt_size <= to_unsigned(0, lmt_acq_full_pkt_size'length);
         lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
       else
         lmt_acq_pre_pkt_size <= unsigned(pre_trig_samples_i(lmt_acq_pre_pkt_size'left downto 0));
