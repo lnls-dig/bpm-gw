@@ -3237,7 +3237,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_MM2S_BTT_USED</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_MM2S_BTT_USED" spirit:minimum="8" spirit:maximum="23">16</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_MM2S_BTT_USED" spirit:minimum="8" spirit:maximum="23">23</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_MM2S_ADDR_PIPE_DEPTH</spirit:name>
@@ -3289,7 +3289,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_S2MM_BTT_USED</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_BTT_USED" spirit:minimum="8" spirit:maximum="23">16</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_BTT_USED" spirit:minimum="8" spirit:maximum="23">23</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_S2MM_SUPPORT_INDET_BTT</spirit:name>
@@ -4275,7 +4275,7 @@
       <spirit:name>c_mm2s_btt_used</spirit:name>
       <spirit:displayName>Btt Bit Used</spirit:displayName>
       <spirit:description>This is the number of valid bits in the BTT field of the command.</spirit:description>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.c_mm2s_btt_used" spirit:order="1900" spirit:minimum="8" spirit:maximum="23">16</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.c_mm2s_btt_used" spirit:order="1900" spirit:minimum="8" spirit:maximum="23">23</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -4425,7 +4425,7 @@
       <spirit:name>c_s2mm_btt_used</spirit:name>
       <spirit:displayName>Btt Bit Used</spirit:displayName>
       <spirit:description>This is the number of valid bits in the BTT field of the command.</spirit:description>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_btt_used" spirit:order="3000" spirit:minimum="8" spirit:maximum="23">16</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_btt_used" spirit:order="3000" spirit:minimum="8" spirit:maximum="23">23</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -4672,6 +4672,7 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_stsfifo" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_include_sf" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_btt_used" xilinx:valueSource="user"/>
       </xilinx:configElementInfos>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
