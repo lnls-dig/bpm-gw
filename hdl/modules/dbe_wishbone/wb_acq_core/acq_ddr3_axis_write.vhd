@@ -122,6 +122,7 @@ architecture rtl of acq_ddr3_axis_write is
   constant c_addr_ddr_inc                   : natural := c_ddr_payload_width/g_ddr_dq_width; -- in words
   constant c_addr_ddr_inc_axis              : natural := c_ddr_payload_width/g_ddr_dq_width*c_bytes_per_word; -- in bytes
   constant c_addr_ddr_inc_axis_burst        : natural := c_addr_ddr_inc_axis; -- in bytes
+  constant c_ddr_payload_width_byte_log2    : natural := f_log2_size(c_ddr_payload_width/8);
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
@@ -153,21 +154,31 @@ architecture rtl of acq_ddr3_axis_write is
   signal lmt_pre_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_pre_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_pre_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_aggd_byte_s       : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pre_pkt_size_aggd_byte         : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_pos_pkt_size                   : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_pos_pkt_size_s                 : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_pos_pkt_size_alig_s            : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_pos_pkt_size_aggd              : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_aggd_byte_s       : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_pos_pkt_size_aggd_byte         : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_full_pkt_size                  : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_full_pkt_size_s                : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_full_pkt_size_alig_s           : std_logic_vector(c_pkt_size_width-1 downto 0);
   signal lmt_full_pkt_size_aggd             : unsigned(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_aggd_byte_s      : std_logic_vector(c_pkt_size_width-1 downto 0);
+  signal lmt_full_pkt_size_aggd_byte        : unsigned(c_pkt_size_width-1 downto 0);
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
   signal fc_dout                            : std_logic_vector(g_ddr_header_width+g_ddr_payload_width+c_ddr_keep_width-1 downto 0);
   signal fc_valid_cmd                       : std_logic;
+  signal fc_sof_cmd                         : std_logic;
+  signal fc_eof_cmd                         : std_logic;
   signal fc_header_cmd                      : std_logic_vector(g_ddr_header_width-1 downto 0);
   signal fc_valid_pld                       : std_logic;
+  signal fc_sof_pld                         : std_logic;
+  signal fc_eof_pld                         : std_logic;
   signal fc_addr                            : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal fc_stall_cmd                       : std_logic;
   signal fc_dreq_cmd                        : std_logic;
@@ -316,6 +327,17 @@ begin
   lmt_pre_pkt_size_aggd <= unsigned(lmt_pre_pkt_size_alig_s);
   lmt_pos_pkt_size_aggd <= unsigned(lmt_pos_pkt_size_alig_s);
   lmt_full_pkt_size_aggd <= unsigned(lmt_full_pkt_size_alig_s);
+
+  lmt_pre_pkt_size_aggd_byte_s <= lmt_pre_pkt_size_alig_s(lmt_pre_pkt_size_alig_s'left - c_ddr_payload_width_byte_log2 downto 0) &
+                                    f_gen_std_logic_vector(c_ddr_payload_width_byte_log2, '0');
+  lmt_pos_pkt_size_aggd_byte_s <= lmt_pos_pkt_size_alig_s(lmt_pos_pkt_size_alig_s'left - c_ddr_payload_width_byte_log2 downto 0) &
+                                    f_gen_std_logic_vector(c_ddr_payload_width_byte_log2, '0');
+  lmt_full_pkt_size_aggd_byte_s <= lmt_full_pkt_size_alig_s(lmt_full_pkt_size_alig_s'left - c_ddr_payload_width_byte_log2 downto 0) &
+                                    f_gen_std_logic_vector(c_ddr_payload_width_byte_log2, '0');
+
+  lmt_pre_pkt_size_aggd_byte <= unsigned(lmt_pre_pkt_size_aggd_byte_s);
+  lmt_pos_pkt_size_aggd_byte <= unsigned(lmt_pos_pkt_size_aggd_byte_s);
+  lmt_full_pkt_size_aggd_byte <= unsigned(lmt_full_pkt_size_aggd_byte_s);
 
   -- To previous flow control module (Acquisition FIFO)
   fifo_fc_stall_o <= pl_stall;
@@ -572,8 +594,8 @@ begin
     fc_dout_o                               => fc_header_cmd,
     fc_valid_o                              => fc_valid_cmd,
     fc_addr_o                               => fc_addr,
-    fc_sof_o                                => open,
-    fc_eof_o                                => open,
+    fc_sof_o                                => fc_sof_cmd,
+    fc_eof_o                                => fc_eof_cmd,
 
     fc_stall_i                              => fc_stall_cmd,
     fc_dreq_i                               => fc_dreq_cmd
@@ -628,8 +650,8 @@ begin
     fc_dout_o                               => fc_dout,
     fc_valid_o                              => fc_valid_pld,
     fc_addr_o                               => open,
-    fc_sof_o                                => open,
-    fc_eof_o                                => open,
+    fc_sof_o                                => fc_sof_pld,
+    fc_eof_o                                => fc_eof_pld,
 
     fc_stall_i                              => fc_stall_pld,
     fc_dreq_i                               => fc_dreq_pld
@@ -649,28 +671,29 @@ begin
   fc_dreq_pld <= '1';
 
   -- To/From AXIS Stream to Memory Mapped Commands
-  axis_s2mm_cmd_tvalid_o <= fc_valid_cmd;
+  axis_s2mm_cmd_tvalid_o <= fc_valid_cmd and fc_sof_cmd;
 
+  -- With 23 bits we can transfer up to 8GB of data, which will always be enough
+  -- for our purposes
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_btt_top_idx downto
     c_axis_cmd_tdata_btt_bot_idx)                             <=
-      std_logic_vector(to_unsigned(g_ddr_payload_width/8,
-      c_axis_cmd_tdata_btt_width));                                                      -- cmd_btt (Bytes to transfer)
-  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_type_idx)            <= '0';                    -- cmd_type (0 = fixed address)
+    lmt_full_pkt_size_aggd_byte_s(c_axis_cmd_tdata_btt_width-1 downto 0);                     -- cmd_btt (Bytes to transfer)
+  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_type_idx)            <= '1';                         -- cmd_type (1 = increment address)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_dsa_top_idx downto
-    c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";               -- cmd_dsa
-  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_last_idx)            <= fc_valid_cmd;           -- cmd_last
-  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_drr_idx)             <= '0';                    -- cmd_drr (0 = no realignment requested)
+    c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                    -- cmd_dsa
+  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_last_idx)            <= fc_valid_cmd and fc_sof_cmd; -- cmd_last
+  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_drr_idx)             <= '0';                         -- cmd_drr (0 = no realignment requested)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_addr_top_idx downto
     c_axis_cmd_tdata_addr_bot_idx)                            <=
-    f_gen_std_logic_vector(c_axis_cmd_tdata_addr_width-g_ddr_addr_width, '0') & fc_addr; -- cmd_addr
+    f_gen_std_logic_vector(c_axis_cmd_tdata_addr_width-g_ddr_addr_width, '0') & fc_addr;      -- cmd_addr
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_tag_top_idx downto
-    c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                 -- cmd_tag
+    c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                      -- cmd_tag
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_pad_top_idx downto
-    c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');        -- cmd_pad
+    c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');             -- cmd_pad
 
   -- To/From AXIS Memory Mapped to Stream Commands
   axis_s2mm_pld_tdata_o  <= fc_dout(c_data_high downto c_data_low);
-  axis_s2mm_pld_tlast_o  <= fc_valid_pld;
+  axis_s2mm_pld_tlast_o  <= fc_eof_pld;
   axis_s2mm_pld_tkeep_o  <= fc_dout(c_keep_high downto c_keep_low);
   axis_s2mm_pld_tvalid_o <= fc_valid_pld;
 
