@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-11-27
--- Last update: 2015-12-02
+-- Last update: 2016-01-05
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -55,12 +55,12 @@ end entity trigger_rcv_tb;
 architecture test of trigger_rcv_tb is
 
   -- component generics
-  constant g_glitch_len_width : positive := 6;
+  constant g_glitch_len_width : positive := 8;
   constant g_sync_edge        : string   := "positive";
   -- component ports
   signal s_clk     : std_logic                                       := '1';
   signal s_rst     : std_logic                                       := '1';
-  signal s_len_i   : std_logic_vector(g_glitch_len_width-1 downto 0) := "000011";
+  signal s_len_i   : std_logic_vector(g_glitch_len_width-1 downto 0) := "00111100";
   signal s_data_i  : std_logic                                       := '0';
   signal s_pulse_o : std_logic;
 
@@ -120,8 +120,8 @@ begin  -- architecture test
     clk         => s_clk,
     rst         => s_rst,
     pwm         => s_data_i,
-    c_on_CYCLE  => 10,
-    c_off_CYCLE => 13);
+    c_on_CYCLE  => 50,
+    c_off_CYCLE => 150);
 
   -- component instantiation
   DUT : trigger_rcv
