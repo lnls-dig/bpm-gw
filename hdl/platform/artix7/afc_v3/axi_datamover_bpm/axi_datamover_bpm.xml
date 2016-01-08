@@ -879,284 +879,6 @@
     </spirit:addressSpace>
   </spirit:addressSpaces>
   <spirit:model>
-    <spirit:views>
-      <spirit:view>
-        <spirit:name>xilinx_veriloginstantiationtemplate</spirit:name>
-        <spirit:displayName>Verilog Instantiation Template</spirit:displayName>
-        <spirit:envIdentifier>verilogSource:vivado.xilinx.com:synthesis.template</spirit:envIdentifier>
-        <spirit:language>verilog</spirit:language>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_veriloginstantiationtemplate_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>9cff8666</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_vhdlsynthesis</spirit:name>
-        <spirit:displayName>VHDL Synthesis</spirit:displayName>
-        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:synthesis</spirit:envIdentifier>
-        <spirit:language>vhdl</spirit:language>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_lib_pkg_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_blk_mem_gen_8_2__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_fifo_generator_12_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_lib_fifo_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_lib_srl_fifo_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_xilinx_com_ip_lib_cdc_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesis_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>9cff8666</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_vhdlsynthesiswrapper</spirit:name>
-        <spirit:displayName>VHDL Synthesis Wrapper</spirit:displayName>
-        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:synthesis.wrapper</spirit:envIdentifier>
-        <spirit:language>vhdl</spirit:language>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsynthesiswrapper_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>9cff8666</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_vhdlbehavioralsimulation</spirit:name>
-        <spirit:displayName>VHDL Simulation</spirit:displayName>
-        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:simulation</spirit:envIdentifier>
-        <spirit:language>vhdl</spirit:language>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_pkg_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_fifo_generator_12_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_fifo_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_srl_fifo_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_cdc_1_0__ref_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>b2eaf4aa</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_vhdlsimulationwrapper</spirit:name>
-        <spirit:displayName>VHDL Simulation Wrapper</spirit:displayName>
-        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:simulation.wrapper</spirit:envIdentifier>
-        <spirit:language>vhdl</spirit:language>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_vhdlsimulationwrapper_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>b2eaf4aa</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_versioninformation</spirit:name>
-        <spirit:displayName>Version Information</spirit:displayName>
-        <spirit:envIdentifier>:vivado.xilinx.com:docs.versioninfo</spirit:envIdentifier>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_versioninformation_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>9cff8666</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Jan 06 17:21:47 UTC 2016</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_externalfiles</spirit:name>
-        <spirit:displayName>External Files</spirit:displayName>
-        <spirit:envIdentifier>:vivado.xilinx.com:external.files</spirit:envIdentifier>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_externalfiles_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>9cff8666</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>customizationCRCversion</spirit:name>
-            <spirit:value>5</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>84ab41da</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>boundaryCRCversion</spirit:name>
-            <spirit:value>1</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Jan 01 00:00:00 UTC 1970</spirit:value>
-          </spirit:parameter>
-          <spirit:parameter>
-            <spirit:name>StaleAtRelink</spirit:name>
-            <spirit:value>false</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-    </spirit:views>
     <spirit:ports>
       <spirit:port>
         <spirit:name>m_axi_mm2s_aclk</spirit:name>
@@ -1165,8 +887,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1189,8 +910,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1213,8 +933,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1237,8 +956,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1258,8 +976,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1279,8 +996,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1303,8 +1019,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1327,8 +1042,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1351,8 +1065,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1376,8 +1089,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1400,8 +1112,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1421,8 +1132,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1449,8 +1159,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1474,8 +1183,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1495,8 +1203,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1516,8 +1223,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1540,8 +1246,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1561,8 +1266,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1586,8 +1290,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1611,8 +1314,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1636,8 +1338,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1661,8 +1362,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1686,8 +1386,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1711,8 +1410,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1736,8 +1434,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1761,8 +1458,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1782,8 +1478,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1803,8 +1498,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1831,8 +1525,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1859,8 +1552,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1883,8 +1575,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1907,8 +1598,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -1931,8 +1621,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1956,8 +1645,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -1981,8 +1669,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2002,8 +1689,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2023,8 +1709,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2044,8 +1729,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2072,8 +1756,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2100,8 +1783,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2121,8 +1803,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2145,8 +1826,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2169,8 +1849,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2193,8 +1872,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2214,8 +1892,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2235,8 +1912,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2259,8 +1935,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2283,8 +1958,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2307,8 +1981,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2332,8 +2005,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2356,8 +2028,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2377,8 +2048,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2399,14 +2069,13 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT&apos;))*24)+8)-1">7</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT&apos;))*24)+8)-1">31</spirit:left>
             <spirit:right>0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2424,14 +2093,13 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="(((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT&apos;))*24)+8) div 8)-1">0</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="(((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT&apos;))*24)+8) div 8)-1">3</spirit:left>
             <spirit:right>0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2451,8 +2119,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2472,8 +2139,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2496,8 +2162,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2517,8 +2182,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2538,8 +2202,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2563,8 +2226,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2588,8 +2250,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2613,8 +2274,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2638,8 +2298,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2663,8 +2322,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2688,8 +2346,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2713,8 +2370,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2738,8 +2394,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2763,8 +2418,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2784,8 +2438,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2805,8 +2458,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2833,8 +2485,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2858,8 +2509,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2879,8 +2529,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2900,8 +2549,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -2921,8 +2569,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2949,8 +2596,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2973,8 +2619,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -2997,8 +2642,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -3022,8 +2666,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -3050,8 +2693,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -3074,8 +2716,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -3098,8 +2739,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -3122,8 +2762,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -3147,8 +2786,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
           <spirit:driver>
@@ -3175,8 +2813,7 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+              <spirit:viewNameRef>dummy_view</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
@@ -3293,7 +2930,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_S2MM_SUPPORT_INDET_BTT</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT" spirit:minimum="0" spirit:maximum="1">0</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_SUPPORT_INDET_BTT" spirit:minimum="0" spirit:maximum="1">1</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_S2MM_ADDR_PIPE_DEPTH</spirit:name>
@@ -3309,7 +2946,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_S2MM_INCLUDE_SF</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_INCLUDE_SF" spirit:minimum="0" spirit:maximum="1">1</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S2MM_INCLUDE_SF" spirit:minimum="0" spirit:maximum="1">0</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="Integer">
         <spirit:name>C_ENABLE_CACHE_USER</spirit:name>
@@ -3429,724 +3066,6 @@
       <spirit:enumeration spirit:text="false">0</spirit:enumeration>
     </spirit:choice>
   </spirit:choices>
-  <spirit:fileSets>
-    <spirit:fileSet>
-      <spirit:name>xilinx_veriloginstantiationtemplate_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm.veo</spirit:name>
-        <spirit:userFileType>verilogTemplate</spirit:userFileType>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_ooc.xdc</spirit:name>
-        <spirit:userFileType>xdc</spirit:userFileType>
-        <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
-        <spirit:userFileType>USED_IN_synthesis</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm.xdc</spirit:name>
-        <spirit:userFileType>xdc</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_clocks.xdc</spirit:name>
-        <spirit:userFileType>xdc</spirit:userFileType>
-        <spirit:define>
-          <spirit:name>processing_order</spirit:name>
-          <spirit:value>late</spirit:value>
-        </spirit:define>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_lib_pkg_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_pkg_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xsi:type="xilinx:componentRefType" xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_pkg" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="01a3f573">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_blk_mem_gen_8_2__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2_vhsyn_rfs.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>blk_mem_gen_v8_2</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>blk_mem_gen_v8_2</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="blk_mem_gen" xilinx:version="8.2" xilinx:isGenerated="true" xilinx:checksum="1418234d">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_fifo_generator_12_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>fifo_generator_v12_0/hdl/fifo_generator_v12_0_vhsyn_rfs.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>fifo_generator_v12_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fifo_generator_v12_0/hdl/fifo_generator_v12_0.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>fifo_generator_v12_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="fifo_generator" xilinx:version="12.0" xilinx:isGenerated="true" xilinx:checksum="be41bd74">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_lib_fifo_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_fifo_v1_0/hdl/src/vhdl/async_fifo_fg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_fifo_v1_0/hdl/src/vhdl/sync_fifo_fg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_fifo" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="48ec80a3">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_lib_srl_fifo_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_srl_fifo" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="b9c355a1">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesis_xilinx_com_ip_lib_cdc_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_cdc_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_cdc" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="64acfbf8">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsynthesiswrapper_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>synth/axi_datamover_bpm.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_reset.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_afifo_autord.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_sfifo_autord.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_fifo.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_cmd_status.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_scc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_strb_gen2.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_pcc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_addr_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rdmux.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rddata_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_status_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_demux.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wrdata_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_status_cntl.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid2mm_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_skid_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_rd_sf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_wr_sf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_stbs_set_nodre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ibttcc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_indet_btt.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux2_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux4_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_dre_mux8_1_x_n.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_dre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_dre.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_ms_strb_set.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mssai_skid_buf.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_slice.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_scatter.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_realign.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_basic_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_omit_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_s2mm_full_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_basic_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_omit_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover_mm2s_full_wrap.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_v5_1/hdl/src/vhdl/axi_datamover.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>axi_datamover_v5_1</spirit:logicalName>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_pkg_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_pkg_v1_0/hdl/src/vhdl/lib_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_pkg_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_pkg" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="01a3f573">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_fifo_generator_12_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>fifo_generator_v12_0/simulation/fifo_generator_vlog_beh.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:logicalName>fifo_generator_v12_0</spirit:logicalName>
-        <spirit:exportedName>fifo_generator_vlog_beh</spirit:exportedName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>fifo_generator_v12_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fifo_generator_v12_0/hdl/fifo_generator_v12_0_rfs.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:logicalName>fifo_generator_v12_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="fifo_generator" xilinx:version="12.0" xilinx:isGenerated="true" xilinx:checksum="8d5e3513">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_fifo_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_fifo_v1_0/hdl/src/vhdl/async_fifo_fg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_fifo_v1_0/hdl/src/vhdl/sync_fifo_fg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_fifo" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="48ec80a3">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_srl_fifo_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/cntr_incr_decr_addn_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/dynshreg_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_rbu_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib_srl_fifo_v1_0/hdl/src/vhdl/srl_fifo_f.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_srl_fifo_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_srl_fifo" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="b9c355a1">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlbehavioralsimulation_xilinx_com_ip_lib_cdc_1_0__ref_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>lib_cdc_v1_0/hdl/src/vhdl/cdc_sync.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>lib_cdc_v1_0</spirit:logicalName>
-      </spirit:file>
-      <spirit:vendorExtensions>
-        <xilinx:subCoreRef>
-          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="lib_cdc" xilinx:version="1.0" xilinx:isGenerated="true" xilinx:checksum="64acfbf8">
-            <xilinx:mode xilinx:name="copy_mode"/>
-          </xilinx:componentRef>
-        </xilinx:subCoreRef>
-      </spirit:vendorExtensions>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_vhdlsimulationwrapper_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>sim/axi_datamover_bpm.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_versioninformation_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>doc/axi_datamover_v5_1_changelog.txt</spirit:name>
-        <spirit:userFileType>text</spirit:userFileType>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_externalfiles_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm.dcp</spirit:name>
-        <spirit:userFileType>dcp</spirit:userFileType>
-        <spirit:userFileType>USED_IN_synthesis</spirit:userFileType>
-        <spirit:userFileType>USED_IN_implementation</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_stub.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_synth_blackbox_stub</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_stub.vhdl</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_synth_blackbox_stub</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_funcsim.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
-        <spirit:userFileType>USED_IN_single_language</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>axi_datamover_bpm_funcsim.vhdl</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
-        <spirit:userFileType>USED_IN_single_language</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-    </spirit:fileSet>
-  </spirit:fileSets>
   <spirit:description>AXI DataMover is a soft Xilinx IP core used as a building block for scalable DMA functions. It provides the basic AXI4 Memory Map Read to AXI4-Stream and AXI4-Stream to AXI4 Memory Map Write data transport and protocol conversion. It supports Synchronous/Asynchronous clocking for Command/Status interface. Supports Memory Map and Stream side data widht up to 1024 bits and Memory Map address width up to 64-bit. AXI Datamover core also provide optional Data Realignment Engine (DRE) upto 64-bit of stream data width, General purpose Store and Forward unit, Interminate BTT mode.</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
@@ -4465,7 +3384,7 @@
       <spirit:name>c_s2mm_support_indet_btt</spirit:name>
       <spirit:displayName>Enable Indeterminate BTT Mode</spirit:displayName>
       <spirit:description>Enable/Disable the Indeterminate-BTT mode.</spirit:description>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_support_indet_btt" spirit:order="3300">false</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_support_indet_btt" spirit:order="3300">true</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -4493,12 +3412,12 @@
       <spirit:name>c_s2mm_include_sf</spirit:name>
       <spirit:displayName>Enable Store Forward</spirit:displayName>
       <spirit:description>Enable/Disable the store and forward feature.</spirit:description>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_include_sf" spirit:order="3500">true</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.c_s2mm_include_sf" spirit:order="3500">false</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
             <xilinx:presence>optional</xilinx:presence>
-            <xilinx:isEnabled xilinx:resolve="dependent">true</xilinx:isEnabled>
+            <xilinx:isEnabled xilinx:resolve="dependent">false</xilinx:isEnabled>
           </xilinx:enablement>
         </xilinx:parameterInfo>
       </spirit:vendorExtensions>
@@ -4673,6 +3592,8 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_stsfifo" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_include_sf" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_btt_used" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_support_indet_btt" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_include_sf" xilinx:valueSource="user"/>
       </xilinx:configElementInfos>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
