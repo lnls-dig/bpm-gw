@@ -406,10 +406,6 @@ begin
     report "[wb_acq_core] DDR interface type must be either AXIS or UI"
     severity Failure;
 
-  assert (g_max_burst_size = 2 or g_max_burst_size = 4 or g_max_burst_size = 8)
-    report "[wb_acq_core] Max burst size must be either 2, 4 or 8"
-    severity Failure;
-
   fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync;
   ext_rst_n <= ext_rst_n_i and acq_fsm_rstn_ext_sync;
 
