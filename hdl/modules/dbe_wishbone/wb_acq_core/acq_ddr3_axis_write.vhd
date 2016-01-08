@@ -116,13 +116,15 @@ architecture rtl of acq_ddr3_axis_write is
 
   alias c_ddr_payload_width                 is g_ddr_payload_width;
 
+  constant c_ddr_payload_keep_width         : natural := g_ddr_payload_width + c_ddr_keep_width;
+
   -- Data increment constant
   constant c_bytes_per_word                 : natural := g_ddr_dq_width/8; -- in bytes
   constant c_bytes_per_word_log2            : natural := f_log2_size(c_bytes_per_word);
   constant c_addr_ddr_inc                   : natural := c_ddr_payload_width/g_ddr_dq_width; -- in words
   constant c_addr_ddr_inc_axis              : natural := c_ddr_payload_width/g_ddr_dq_width*c_bytes_per_word; -- in bytes
-  constant c_addr_ddr_inc_axis_burst        : natural := c_addr_ddr_inc_axis; -- in bytes
   constant c_ddr_payload_width_byte_log2    : natural := f_log2_size(c_ddr_payload_width/8);
+  constant c_ddr_axis_max_btt               : natural := 8388607; -- 2^23 -1
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
@@ -137,8 +139,8 @@ architecture rtl of acq_ddr3_axis_write is
   constant c_ddr_header_top_idx             : natural := g_ddr_header_width + g_ddr_payload_width-1;
   constant c_ddr_header_bot_idx             : natural := g_ddr_payload_width;
 
-  constant c_fc_header_top_idx              : natural := g_ddr_header_width-1;
-  constant c_fc_header_bot_idx              : natural := 0;
+  constant c_fc_header_top_idx              : natural := g_ddr_header_width + c_ddr_payload_keep_width -1;
+  constant c_fc_header_bot_idx              : natural := c_ddr_payload_keep_width;
 
   -- Constants for ddr3 address bits
   constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
@@ -193,6 +195,7 @@ architecture rtl of acq_ddr3_axis_write is
   signal valid_trans_pld                    : std_logic;
   signal cnt_all_trans_done_cmd_p           : std_logic;
   signal cnt_all_trans_done_pld_p           : std_logic;
+  signal cnt_all_pkts_ct_done_pld_p         : std_logic;
   signal cnt_all_trans_done_cmd_l           : std_logic;
   signal cnt_all_trans_done_pld_l           : std_logic;
   signal cnt_all_trans_done_p               : std_logic;
@@ -229,12 +232,13 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_first                     : std_logic;
+  signal ddr_new_shot_coming                : std_logic;
   signal ddr_addr_in                        : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_in_axis                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_valid_in                       : std_logic;
   signal ddr_axis_cmd_valid_in              : std_logic;
   signal ddr_sent_cnt_out                   : unsigned(f_log2_size(g_max_burst_size)-1 downto 0);
-  signal ddr_axis_pld_last_out              : std_logic;
   signal ddr_valid_in_t                     : std_logic;
   signal ddr_trigger_in                     : std_logic;
   signal ddr_trig_captured                  : std_logic;
@@ -369,7 +373,6 @@ begin
 
   fc_ack <= '1' when ddr_valid_in_t = '1' and pl_stall = '0' else '0';
   ddr_valid_in <= ddr_valid_in_t and not pl_stall;
-  ddr_axis_cmd_valid_in <= '1' when ddr_valid_in = '1' else '0';
 
   -- Extract fifo trigger from ddr_data_in
   ddr_trigger_in <= ddr_data_in(c_acq_header_trigger_idx+c_ddr_header_bot_idx);
@@ -379,6 +382,36 @@ begin
                           c_acq_header_id_bot_idx+c_ddr_header_bot_idx);
 
   ddr_header_in <= ddr_data_id_in & ddr_trigger_in;
+
+  ----------------------------------------------------------------------------
+  -- Generate command data valid for AXIS CMD interface, when we are in multishot mode.
+  --   In this mode, we need to reissue a new command as our packet length is defined
+  --    per shot. Also, out TLAST flag is generate on each last data pakcet of each
+  --    transaction. Thus, needing to issue a new command for each TLAST on data stream.
+  -----------------------------------------------------------------------------
+  p_valid_axis_ms_cmd : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        ddr_new_shot_coming <= '0';
+      else
+        -- Current transaction finished, but not all of them -> current shot
+        -- finished and next one incoming
+        if cnt_all_pkts_ct_done_pld_p = '1' and cnt_all_trans_done_pld_p = '0' then
+          ddr_new_shot_coming <= '1';
+        -- Hold signal until it's acknowledge
+        elsif ddr_axis_cmd_valid_in = '1' then
+          ddr_new_shot_coming <= '0';
+        end if;
+      end if;
+    end if;
+  end process;
+
+  -- First address or transaction wrapped to init address
+  ddr_addr_first <= '1' when ddr_addr_cnt_axis = ddr_addr_init else '0';
+  -- First packet of transaction (new shot). Used for multishot transactions.
+  ddr_axis_cmd_valid_in <= '1' when ddr_valid_in = '1' and (ddr_addr_first = '1' or
+                                                            ddr_new_shot_coming = '1') else '0';
 
   ----------------------------------------------------------------------------
   -- Generate address to external controller
@@ -408,11 +441,11 @@ begin
           ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
           ddr_addr_init <= unsigned(wr_init_addr_alig);
           ddr_addr_max <= unsigned(wr_end_addr_alig);
-        elsif ddr_axis_cmd_valid_in = '1' then -- This represents a successful transfer
+        elsif ddr_valid_in = '1' then -- This represents a successful transfer
 
           -- To Flow Control module
           -- Get ready for the next valid transaction
-          ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis_burst;
+          ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis;
           -- Wrap counters if we go over the limit
           if ddr_addr_cnt_axis = ddr_addr_max then
             ddr_addr_cnt_axis <= ddr_addr_init;
@@ -507,7 +540,7 @@ begin
     clk_i                                   => ext_clk_i,
     rst_n_i                                 => ext_rst_n_i,
 
-    cnt_all_pkts_ct_done_p_o                => open,
+    cnt_all_pkts_ct_done_p_o                => cnt_all_pkts_ct_done_pld_p,
     cnt_all_trans_done_p_o                  => cnt_all_trans_done_pld_p,
     cnt_en_i                                => acq_pld_cnt_en,
 
@@ -573,7 +606,7 @@ begin
     clk_i                                   => ext_clk_i,
     rst_n_i                                 => ext_rst_n_i,
 
-    pl_data_i                               => ddr_header_in,
+    pl_data_i                               => (others => '0'),
     pl_addr_i                               => ddr_addr_in_axis,
     pl_valid_i                              => ddr_axis_cmd_valid_in,
 
@@ -601,25 +634,13 @@ begin
     fc_dreq_i                               => fc_dreq_cmd
   );
 
-  -- Concatenate data (header + data) + keep
-  ddr_data_keep_in <= ddr_data_in & ddr_keep_in;
-
-  -- Extract fifo trigger from fc_header_cmd
-  fc_trigger_cmd <= fc_header_cmd(c_acq_header_trigger_idx+c_fc_header_bot_idx);
-
-  -- Extract fifo data id from fc_header_cmd
-  fc_data_id_cmd <= fc_header_cmd(c_acq_header_id_top_idx+c_fc_header_bot_idx downto
-                          c_acq_header_id_bot_idx+c_fc_header_bot_idx);
-
-  ddr_axis_pld_last_out <= '1';
-
   -----------------------------------------------------------------------------
   -- DDR3 AXIS Write Interface
   -----------------------------------------------------------------------------
   cmp_fc_source_pld : fc_source
   generic map (
     g_header_in_width                       => g_ddr_header_width,
-    g_data_width                            => g_ddr_payload_width + c_ddr_keep_width,
+    g_data_width                            => c_ddr_payload_keep_width,
     g_pkt_size_width                        => c_pkt_size_width,
     g_addr_width                            => 1, -- Dummy value
     g_with_fifo_inferred                    => true,
@@ -657,6 +678,20 @@ begin
     fc_dreq_i                               => fc_dreq_pld
   );
 
+  -- Concatenate data (header + data) + keep
+  ddr_data_keep_in <= ddr_data_in & ddr_keep_in;
+
+  -- Extract fifo trigger from fc_dout
+  fc_trigger_cmd <= fc_dout(c_acq_header_trigger_idx+c_fc_header_bot_idx);
+
+  -- Extract fifo data id from fc_dout
+  fc_data_id_cmd <= fc_dout(c_acq_header_id_top_idx+c_fc_header_bot_idx downto
+                          c_acq_header_id_bot_idx+c_fc_header_bot_idx);
+
+  -----------------------------------------------------------------------------
+  -- AXIS Interface
+  -----------------------------------------------------------------------------
+
   pl_rst_trans <= '0';
 
   ddr_rdy_cmd <= axis_s2mm_cmd_tready_i;
@@ -671,17 +706,20 @@ begin
   fc_dreq_pld <= '1';
 
   -- To/From AXIS Stream to Memory Mapped Commands
-  axis_s2mm_cmd_tvalid_o <= fc_valid_cmd and fc_sof_cmd;
+  axis_s2mm_cmd_tvalid_o <= fc_valid_cmd;
 
   -- With 23 bits we can transfer up to 8GB of data, which will always be enough
-  -- for our purposes
+  -- for our purposes. We always set the datamover to transfer the maximum ammount
+  -- of data. If we finish early, we can just abort the transaction asserting
+  -- the LTAST stream signal (typical case). WARNING: the datamover MUST be
+  -- set the support Indeterminate BTT!
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_btt_top_idx downto
     c_axis_cmd_tdata_btt_bot_idx)                             <=
-    lmt_full_pkt_size_aggd_byte_s(c_axis_cmd_tdata_btt_width-1 downto 0);                     -- cmd_btt (Bytes to transfer)
+   std_logic_vector(to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width));             -- cmd_btt (Bytes to transfer)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_type_idx)            <= '1';                         -- cmd_type (1 = increment address)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_dsa_top_idx downto
     c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                    -- cmd_dsa
-  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_last_idx)            <= fc_valid_cmd and fc_sof_cmd; -- cmd_last
+  axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_last_idx)            <= fc_valid_cmd;                -- cmd_last
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_drr_idx)             <= '0';                         -- cmd_drr (0 = no realignment requested)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_addr_top_idx downto
     c_axis_cmd_tdata_addr_bot_idx)                            <=
