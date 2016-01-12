@@ -229,6 +229,7 @@ package acq_core_pkg is
   (
     g_data_in_width                           : natural := 128;
     g_acq_num_channels                        : natural := 1;
+    g_ddr_payload_width                       : natural := 256;
     g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
   );
   port
