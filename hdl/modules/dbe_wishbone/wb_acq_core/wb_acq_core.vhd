@@ -593,6 +593,7 @@ begin
   (
     g_data_in_width                         => c_acq_data_width,
     g_acq_num_channels                      => g_acq_num_channels,
+    g_ddr_payload_width                     => g_ddr_payload_width,
     g_acq_channels                          => g_acq_channels
   )
   port map
