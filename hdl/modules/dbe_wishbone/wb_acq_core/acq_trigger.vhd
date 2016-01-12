@@ -359,7 +359,7 @@ begin
       else
         if trig_d = '1' then
           trig_align <= '1';
-        elsif acq_valid_pipe(c_trig_det_delay-1) = '1' then
+        elsif acq_valid_sel_out = '1' then
           trig_align <= '0';
         end if;
       end if;
