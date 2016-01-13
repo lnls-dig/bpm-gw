@@ -442,6 +442,15 @@ begin
     end if;
   end process;
 
+  -- FOR SIMULATION ONLY
+  -- Assert error if fifo_fc_mux_cnt signal is anything different than zero after the
+  -- end of transaction
+  assert (not(fs_rst_n_i = '1' and ext_rst_n_i = '1') or ((fifo_fc_all_trans_done_lvl = '1' and
+            fifo_fc_mux_cnt = to_unsigned(0, fifo_fc_mux_cnt'length)) or -- end of transaction case
+            (fifo_fc_all_trans_done_sync = '0'))) -- every other case
+  report "[acq_fc_fifo] fifo_fc_mux_cnt signal is not 0 after the end of the transaction!"
+  severity failure;
+
   fifo_fc_mux_inc <= fifo_fc_wr_en when passthrough_en_i = '1' else fifo_fc_dpram_wr_en;
 
   -- We read the ID FIFO synchronized with the data FIFOs. So, we only need
