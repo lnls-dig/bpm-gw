@@ -388,7 +388,10 @@ begin
     end if;
   end process;
 
-  -- Hold trigger signal until a we are aligned and a valid sample is found
+  -- Hold trigger signal until a we are aligned and a valid sample is found.
+  -- The aligned term here refers to the last atom of a channel sample
+  -- (composed of atoms). For instance, if the channel is composed of 4 atoms,
+  -- the last channel atom would be number 3.
   p_trig_align : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
@@ -404,10 +407,14 @@ begin
         end if;
 
         -- Wait until we have transfered the correct (aligned) number of samples
-        -- to output trigger
-        if trig_unaligned = '1' and acq_trig_align_cnt = acq_trig_align_cnt_max and
-            acq_valid_sel_out = '1' then -- will increment
-          trig_align <= '1';
+        -- to output trigger.
+        --
+        -- By design acq_trig_align_cnt_max would be at least 1, meaning a channel
+        -- composed of 2 atoms. So the arithmetic acq_trig_align_cnt_max-1 yields
+        -- valid values in all cases.
+        if trig_unaligned = '1' and acq_trig_align_cnt = acq_trig_align_cnt_max-1 and
+            acq_valid_sel_out = '1' then -- will increment to the last atom
+          trig_align <= '1'; -- Output trigger aligned with the last atom
         elsif acq_valid_sel_out = '1' then
           trig_align <= '0';
         end if;
