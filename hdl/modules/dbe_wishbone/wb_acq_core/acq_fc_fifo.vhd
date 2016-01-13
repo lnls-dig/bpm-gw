@@ -422,7 +422,15 @@ begin
         -- Current channel ID FIFO input
         fifo_fc_id_din <= std_logic_vector(lmt_curr_chan_id);
 
-        -- Change the FIFO buffer when the previous one has been written
+        -- Change the FIFO buffer when the previous one has been written.
+        --
+        -- WARNING: If the fifo_fc_mux_cnt signal is not zero at the end of transaction,
+        -- it means we have a problem in the transaction, typically an unaligned
+        -- trigger detection (trigger asserted in a atom that is not the last one).
+        -- We have this limitation as we aggregate atoms into a sample prior to
+        -- transferring it to the next module. So a fifo_fc_mux_cnt not zero means
+        -- we have atoms not belonging in that transaction.
+        -- TODO: assert error to user if that condition is detected
         if fifo_fc_mux_inc = '1' then
           fifo_fc_mux_cnt <= fifo_fc_mux_cnt + 1;
 
@@ -703,9 +711,9 @@ begin
 
   -- Only count when in pre_trigger or post_trigger and we haven't acquire
   -- enough samples
-  fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size and
+  fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "010") or -- Pre-trigger
-                                (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "100") -- Post-trigger
                             else '0';
 
