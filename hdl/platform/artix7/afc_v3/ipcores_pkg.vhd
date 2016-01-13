@@ -857,8 +857,8 @@ Port (
   s_axis_s2mm_cmd_tdata : in STD_LOGIC_VECTOR ( 71 downto 0 );
   m_axis_s2mm_sts_tvalid : out STD_LOGIC;
   m_axis_s2mm_sts_tready : in STD_LOGIC;
-  m_axis_s2mm_sts_tdata : out STD_LOGIC_VECTOR ( 7 downto 0 );
-  m_axis_s2mm_sts_tkeep : out STD_LOGIC_VECTOR ( 0 to 0 );
+  m_axis_s2mm_sts_tdata : out STD_LOGIC_VECTOR ( 31 downto 0 );
+  m_axis_s2mm_sts_tkeep : out STD_LOGIC_VECTOR ( 3 to 0 );
   m_axis_s2mm_sts_tlast : out STD_LOGIC;
   m_axi_s2mm_awaddr : out STD_LOGIC_VECTOR ( 31 downto 0 );
   m_axi_s2mm_awlen : out STD_LOGIC_VECTOR ( 7 downto 0 );
