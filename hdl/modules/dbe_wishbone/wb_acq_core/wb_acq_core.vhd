@@ -625,6 +625,7 @@ begin
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
     lmt_valid_i                             => acq_start,
 
+    acq_wr_en_i                             => samples_wr_en,
     acq_data_o                              => acq_data,
     acq_valid_o                             => acq_valid,
     acq_trig_o                              => acq_trig

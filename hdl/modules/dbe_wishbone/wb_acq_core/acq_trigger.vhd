@@ -75,6 +75,7 @@ port
   lmt_valid_i                               : in std_logic;
 
   -- Acquisition data with data + metadata
+  acq_wr_en_i                               : in std_logic;
   acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
   acq_valid_o                               : out std_logic;
   acq_trig_o                                : out std_logic
@@ -143,6 +144,7 @@ architecture rtl of acq_trigger is
   signal acq_trig_sel_out                   : std_logic;
   signal acq_trig_out                       : std_logic;
   signal acq_trig_align_cnt                 : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
+  signal acq_trig_align_cnt_en              : std_logic;
   signal acq_trig_align_cnt_max             : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
 
   signal int_trig                           : std_logic;
@@ -377,7 +379,7 @@ begin
       if fs_rst_n_i = '0' then
         acq_trig_align_cnt <= to_unsigned(0, acq_trig_align_cnt'length);
       else
-        if acq_valid_sel_out = '1' then
+        if acq_trig_align_cnt_en = '1' then
           acq_trig_align_cnt <= acq_trig_align_cnt + 1;
 
           if acq_trig_align_cnt = acq_trig_align_cnt_max then
@@ -387,6 +389,12 @@ begin
       end if;
     end if;
   end process;
+
+  -- Only count while we are acquiring data, not before nor after. This is
+  -- necessary to acquire the desired alignment.
+  -- FIXME: here we are relying on the precise delay between "acq_valid_out"
+  -- and "acq_wr_en_i" signals, which are not clearly related
+  acq_trig_align_cnt_en <= acq_valid_out and acq_wr_en_i;
 
   -- Hold trigger signal until a we are aligned and a valid sample is found.
   -- The aligned term here refers to the last atom of a channel sample

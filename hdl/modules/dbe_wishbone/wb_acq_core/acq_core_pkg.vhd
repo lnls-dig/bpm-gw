@@ -269,6 +269,7 @@ package acq_core_pkg is
     lmt_valid_i                               : in std_logic;
 
     -- Acquisition data with data + metadata
+    acq_wr_en_i                               : in std_logic;
     acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_o                               : out std_logic;
     acq_trig_o                                : out std_logic
