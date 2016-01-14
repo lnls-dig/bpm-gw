@@ -7,6 +7,8 @@ files = [
 	"icon_6_port/chipscope_icon_6_port.vhd",
 	"ila/chipscope_ila.ngc",
 	"ila/chipscope_ila.vhd",
+        "ila/chipscope_ila_rcv.ngc",
+	"ila/chipscope_ila_rcv.vhd",
         "vio/chipscope_vio_32.vhd",
         "vio/chipscope_vio_32.ngc",
         "vio/chipscope_vio_8.vhd",
