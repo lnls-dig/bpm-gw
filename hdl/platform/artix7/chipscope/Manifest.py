@@ -11,5 +11,7 @@ files = [
 	"ila/chipscope_ila_rcv.vhd",
         "vio/chipscope_vio_32.vhd",
         "vio/chipscope_vio_32.ngc",
+	"vio/chipscope_vio_16.vhd",
+        "vio/chipscope_vio_16.ngc",
         "vio/chipscope_vio_8.vhd",
         "vio/chipscope_vio_8.ngc"]
