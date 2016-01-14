@@ -37,8 +37,6 @@ set_property IOSTANDARD LVCMOS15  [get_ports {trigger_o[7]}]
 
 #Direction
 
-#set_property PACKAGE_PIN H12 [get_ports {direction_o[0]}]
-#set_property IOSTANDARD LVCMOS33  [get_ports {direction_o[0]}]
 
 set_property PACKAGE_PIN AJ10 [get_ports {direction_o[0]}]
 set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[0]}]

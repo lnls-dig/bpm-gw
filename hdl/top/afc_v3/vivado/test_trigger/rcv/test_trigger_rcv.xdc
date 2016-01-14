@@ -9,6 +9,8 @@ set_property PACKAGE_PIN AL7 [get_ports sys_clk_n_i]
 set_property IOSTANDARD DIFF_SSTL15 [get_ports sys_clk_n_i]
 set_property IN_TERM UNTUNED_SPLIT_50 [get_ports sys_clk_n_i]
 
+# Reset synchronization path
+set_false_path -through [get_nets cmp_reset/p_0_in[2]]
 
 #Signal
 set_property PACKAGE_PIN AM9 [get_ports {trigger_i[0]}]
@@ -37,8 +39,8 @@ set_property IOSTANDARD LVCMOS15  [get_ports {trigger_i[7]}]
 
 #Direction
 
-# set_property PACKAGE_PIN AJ10 [get_ports {direction_o[0]}]
-# set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[0]}]
+set_property PACKAGE_PIN AJ10 [get_ports {direction_o[0]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[0]}]
 
 set_property PACKAGE_PIN AK11 [get_ports {direction_o[1]}]
 set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[1]}]
