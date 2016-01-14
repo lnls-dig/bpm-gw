@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-09
--- Last update: 2015-12-02
+-- Last update: 2016-01-14
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,6 +39,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
 use work.gencores_pkg.all;
 
 entity trigger_rcv is
@@ -50,7 +51,7 @@ entity trigger_rcv is
     );
   port(
     clk_i   : in  std_logic;
-    rst_i   : in  std_logic;
+    rst_n_i : in  std_logic;
     len_i   : in  std_logic_vector(g_glitch_len_width-1 downto 0);
     data_i  : in  std_logic;
     pulse_o : out std_logic
@@ -60,7 +61,7 @@ end entity trigger_rcv;
 architecture structural of trigger_rcv is
 
   signal deglitched : std_logic;
-  signal rst_n      : std_logic;
+  signal data_sync  : std_logic := '0';
 
   component gc_dyn_glitch_filt is
     generic (
@@ -87,14 +88,12 @@ architecture structural of trigger_rcv is
 
 begin
 
-  rst_n <= not(rst_i);
-
   cmp_deglitcher : gc_dyn_glitch_filt
     generic map (
       g_len_width => g_glitch_len_width)
     port map (
       clk_i   => clk_i,
-      rst_n_i => rst_n,
+      rst_n_i => rst_n_i,
       len_i   => len_i,
       dat_i   => data_i,
       dat_o   => deglitched);
@@ -104,7 +103,7 @@ begin
       g_sync_edge => g_sync_edge)
     port map(
       clk_i    => clk_i,
-      rst_n_i  => rst_n,
+      rst_n_i  => rst_n_i,
       data_i   => deglitched,
       synced_o => open,
       npulse_o => open,
