@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-03
--- Last update: 2016-01-04
+-- Last update: 2016-01-13
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package types is
-  type count_array is array(integer range 7 downto 0) of std_logic_vector(31 downto 0);
+  type count_array is array(integer range 7 downto 0) of std_logic_vector(127 downto 0);
 end types;
 
 -------------------------------------------------------------------------------

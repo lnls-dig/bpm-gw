@@ -56,7 +56,7 @@ end test_trigger_rcv;
 architecture structural of test_trigger_rcv is
 
   constant c_glitch_len_width : positive := 8;
-  constant c_count_width      : positive := 32;
+  constant c_count_width      : positive := 128;
 
   signal direction   : std_logic_vector(7 downto 0);
   signal length      : std_logic_vector(c_glitch_len_width-1 downto 0);
