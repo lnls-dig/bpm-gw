@@ -73,7 +73,7 @@ architecture structural of test_trigger_rcv is
       g_sync_edge        : string);
     port (
       clk_i   : in  std_logic;
-      rst_i   : in  std_logic;
+      rst_n_i : in  std_logic;
       len_i   : in  std_logic_vector(g_glitch_len_width-1 downto 0);
       data_i  : in  std_logic;
       pulse_o : out std_logic);
@@ -141,7 +141,9 @@ architecture structural of test_trigger_rcv is
   signal clk_100mhz, clk_200mhz : std_logic;
   signal sys_clk_gen_bufg       : std_logic;
   signal locked                 : std_logic;
-  signal rst, rst_n             : std_logic;
+  signal rst_n                  : std_logic;
+  signal rst_n_v                : std_logic_vector(c_num_clk-1 downto 0);
+  signal reset_clks             : std_logic_vector(c_num_clk-1 downto 0);
 
   -----------------------------------------------------------------------------
   -- State Machine Signals
@@ -173,8 +175,6 @@ architecture structural of test_trigger_rcv is
   end component sm_counter;
 
 begin
-
-  rst <= not(rst_n);
 
   -- Clock generation
   cmp_clk_gen : clk_gen
@@ -214,7 +214,7 @@ begin
         g_sync_edge        => "positive")
       port map (
         clk_i   => clk_100mhz,
-        rst_i   => rst,
+        rst_n_i => rst_n,
         len_i   => length,
         data_i  => trigger_i(i),
         pulse_o => pulse(i));
