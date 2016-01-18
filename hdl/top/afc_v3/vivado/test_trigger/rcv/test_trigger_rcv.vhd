@@ -64,6 +64,7 @@ architecture structural of test_trigger_rcv is
   signal direction   : std_logic_vector(7 downto 0);
   signal pulse       : std_logic_vector(7 downto 0);
   signal length       : std_logic_vector(c_glitch_len_width-1 downto 0) := "11111111";
+  signal trigger_sync : std_logic_vector(7 downto 0);
 
   type count_array is array(7 downto 0) of std_logic_vector(c_count_width-1 downto 0);
   signal count_success, count_fail, count_repeated, count_others : count_array;
@@ -224,7 +225,20 @@ begin
   --reset_clks(1) <= ckl_200mhz;
 
   rst_n <= rst_n_v(0);
+
   gen_trigger : for i in 0 to 7 generate
+
+    -- Prevent matastability problems
+    cmp_edge_detector : gc_sync_ffs
+      generic map(
+        g_sync_edge => "positive")
+      port map(
+        clk_i    => clk_100mhz,
+        rst_n_i  => rst_n,
+        data_i   => trigger_i(i),
+        synced_o => trigger_sync(i),
+        npulse_o => open,
+        ppulse_o => open);
 
     cmp_trigger_rcv : trigger_rcv
       generic map (
@@ -234,7 +248,7 @@ begin
         clk_i   => clk_100mhz,
         rst_n_i => rst_n,
         len_i   => length,
-        data_i  => trigger_i(i),
+        data_i  => trigger_sync(i),
         pulse_o => pulse(i));
 
   end generate gen_trigger;
