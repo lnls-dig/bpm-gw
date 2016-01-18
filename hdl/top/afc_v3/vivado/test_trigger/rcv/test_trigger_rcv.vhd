@@ -5,7 +5,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2016-01-06
+-- Last update: 2016-01-18
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -61,10 +61,10 @@ architecture structural of test_trigger_rcv is
   constant c_count_width      : positive := 128;
   constant c_num_clk          : positive := 1;
 
-  signal direction   : std_logic_vector(7 downto 0);
-  signal pulse       : std_logic_vector(7 downto 0);
+  signal direction    : std_logic_vector(7 downto 0);
   signal length       : std_logic_vector(c_glitch_len_width-1 downto 0) := "11111111";
   signal trigger_sync : std_logic_vector(7 downto 0);
+  signal pulse        : std_logic_vector(7 downto 0);
 
   type count_array is array(7 downto 0) of std_logic_vector(c_count_width-1 downto 0);
   signal count_success, count_fail, count_repeated, count_others : count_array;
