@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-09
--- Last update: 2015-12-17
+-- Last update: 2016-01-07
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ begin  -- architecture behav
     port map (
       CONTROL => CONTROL2,
       CLK     => clk_100mhz,
-      TRIG0   => (others => clk_100mhz),
+      TRIG0   => filler,
       TRIG1   => filler,
       TRIG2   => filler,
       TRIG3   => filler);
