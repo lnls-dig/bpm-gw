@@ -59,6 +59,7 @@ architecture structural of test_trigger_rcv is
 
   constant c_glitch_len_width : positive := 8;
   constant c_count_width      : positive := 128;
+  constant c_num_clk          : positive := 1;
 
   signal direction   : std_logic_vector(7 downto 0);
   signal pulse       : std_logic_vector(7 downto 0);
@@ -205,9 +206,24 @@ begin
       clk_i    => sys_clk_gen_bufg,
       clk0_o   => clk_100mhz,           -- 100MHz locked clock
       clk1_o   => clk_200mhz,           -- 200MHz locked clock
-      locked_o => rst_n                 -- '1' when the PLL has locked
+      locked_o => locked                -- '1' when the PLL has locked
       );
 
+  cmp_reset : gc_reset
+    generic map(
+      g_clocks => c_num_clk             -- clk_100mhz
+      )
+    port map(
+      free_clk_i => sys_clk_gen_bufg,
+      locked_i   => locked,
+      clks_i     => reset_clks,
+      rstn_o     => rst_n_v
+      );
+
+  reset_clks(0) <= clk_100mhz;
+  --reset_clks(1) <= ckl_200mhz;
+
+  rst_n <= rst_n_v(0);
   gen_trigger : for i in 0 to 7 generate
 
     cmp_trigger_rcv : trigger_rcv
