@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-11-27
--- Last update: 2016-01-05
+-- Last update: 2016-01-06
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ architecture test of trigger_rcv_tb is
   -- component ports
   signal s_clk     : std_logic                                       := '1';
   signal s_rst     : std_logic                                       := '1';
-  signal s_len_i   : std_logic_vector(g_glitch_len_width-1 downto 0) := "00111100";
+  signal s_len_i   : std_logic_vector(g_glitch_len_width-1 downto 0) := "01000001";
   signal s_data_i  : std_logic                                       := '0';
   signal s_pulse_o : std_logic;
 
@@ -121,7 +121,7 @@ begin  -- architecture test
     rst         => s_rst,
     pwm         => s_data_i,
     c_on_CYCLE  => 50,
-    c_off_CYCLE => 150);
+    c_off_CYCLE => 1550);
 
   -- component instantiation
   DUT : trigger_rcv
