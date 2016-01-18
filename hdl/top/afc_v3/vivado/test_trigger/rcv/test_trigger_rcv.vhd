@@ -147,8 +147,7 @@ architecture structural of test_trigger_rcv is
   -- State Machine Signals
   -----------------------------------------------------------------------------
 
-  subtype state_type is natural range 0 to 7;  -- types of the machine
-  signal current_s : state_type := 0;          --current state declaration.
+  signal current_s : unsigned(2 downto 0) := to_unsigned(0, 3);  --current state declaration.
 
   component sm_states_rcv is
     generic (
@@ -157,7 +156,7 @@ architecture structural of test_trigger_rcv is
       clk_i       : in  std_logic;
       rst_n_i     : in  std_logic;
       data_i      : in  std_logic_vector(g_num_states-1 downto 0);
-      current_s_o : out natural);
+      current_s_o : out unsigned(2 downto 0));
   end component sm_states_rcv;
 
   component sm_counter is
@@ -166,7 +165,7 @@ architecture structural of test_trigger_rcv is
     port (
       clk_i            : in  std_logic;
       data_i           : in  std_logic_vector(g_num_states-1 downto 0);
-      current_s_i      : in  natural;
+      current_s_i      : in  unsigned(2 downto 0);
       count_success_o  : out count_array;
       count_fail_o     : out count_array;
       count_repeated_o : out count_array;

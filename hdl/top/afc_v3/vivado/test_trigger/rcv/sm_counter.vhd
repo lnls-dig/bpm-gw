@@ -65,7 +65,7 @@ entity sm_counter is
   port (
     clk_i            : in  std_logic;
     data_i           : in  std_logic_vector(g_num_states-1 downto 0);
-    current_s_i      : in  natural;
+    current_s_i      : in  unsigned(2 downto 0);
     count_success_o  : out count_array;
     count_fail_o     : out count_array;
     count_repeated_o : out count_array;
@@ -91,14 +91,14 @@ begin  -- architecture behav
       if rising_edge(clk_i) then        -- rising clock edge
         if (data_i(i) = '1') then
           case current_s_i is
-            when i =>                   -- pulse properly received
-              count_success(i) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(i)) + 1), 32));
-            when i+1 =>                 -- repeated pulse
-              count_repeated(i) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_repeated(i)) + 1), 32));
-            when i-1 =>
-              count_fail(i-1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_fail(i-1)) + 1), 32));
+            when to_unsigned(i,3) =>                   -- pulse properly received
+              count_success(i) <= std_logic_vector(unsigned(count_success(i)) + 1);
+            when to_unsigned(i+1,3) =>                 -- repeated pulse
+              count_repeated(i) <= std_logic_vector(unsigned(count_repeated(i)) + 1);
+            when to_unsigned(i-1,3) =>
+              count_fail(i-1) <= std_logic_vector(unsigned(count_fail(i-1)) + 1);
             when others =>
-              count_others(i) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(i)) + 1), 32));
+              count_others(i) <= std_logic_vector(unsigned(count_others(i)) + 1);
           end case;
         end if;
       end if;
@@ -110,23 +110,23 @@ begin  -- architecture behav
 -- "count_repeated")
 -----------------------------------------------------------------------------
 
-  sm_counter_i : process (clk_i) is
+  sm_counter_end : process (clk_i) is
   begin  -- process sm_counter_i
     if rising_edge(clk_i) then          -- rising clock edge
       if (data_i(g_num_states-1) = '1') then
         case current_s_i is
-          when g_num_states-1 =>        -- pulse properly received
-            count_success(g_num_states-1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(g_num_states-1)) + 1), 32));
-          when 0 =>                     -- repeated pulse
-            count_repeated(g_num_states-1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_repeated(g_num_states-1)) + 1), 32));
-          when g_num_states-2 =>
-            count_fail(g_num_states-2) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_fail(g_num_states-2)) + 1), 32));
+          when to_unsigned(g_num_states-1,3) =>        -- pulse properly received
+            count_success(g_num_states-1) <= std_logic_vector(unsigned(count_success(g_num_states-1)) + 1);
+          when to_unsigned(0,3) =>                     -- repeated pulse
+            count_repeated(g_num_states-1) <= std_logic_vector(unsigned(count_repeated(g_num_states-1)) + 1);
+          when to_unsigned(g_num_states-2,3) =>
+            count_fail(g_num_states-2) <= std_logic_vector(unsigned(count_fail(g_num_states-2)) + 1);
           when others =>
-            count_others(g_num_states-1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(g_num_states-1)) + 1), 32));
+            count_others(g_num_states-1) <= std_logic_vector(unsigned(count_others(g_num_states-1)) + 1);
         end case;
       end if;
     end if;
-  end process sm_counter_i;
+  end process sm_counter_end;
 
 -----------------------------------------------------------------------------
 -- Generating for index 0 (preventing negative index on "count_fail")
@@ -137,14 +137,14 @@ begin  -- architecture behav
     if rising_edge(clk_i) then          -- rising clock edge
       if (data_i(0) = '1') then
         case current_s_i is
-          when 0 =>                     -- pulse properly received
-            count_success(0) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_success(0)) + 1), 32));
-          when 1 =>                     -- repeated pulse
-            count_repeated(1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_repeated(1)) + 1), 32));
-          when g_num_states-1 =>
-            count_fail(g_num_states-1) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_fail(g_num_states-1)) + 1), 32));
+          when to_unsigned(0,3) =>                     -- pulse properly received
+            count_success(0) <= std_logic_vector(unsigned(count_success(0)) + 1);
+          when to_unsigned(1,3) =>                     -- repeated pulse
+            count_repeated(0) <= std_logic_vector(unsigned(count_repeated(0)) + 1);
+          when to_unsigned(g_num_states-1,3) =>
+            count_fail(g_num_states-1) <= std_logic_vector(unsigned(count_fail(g_num_states-1)) + 1);
           when others =>
-            count_others(0) <= std_logic_vector(to_unsigned(to_integer(unsigned(count_others(0)) + 1), 32));
+            count_others(0) <= std_logic_vector(unsigned(count_others(0)) + 1);
         end case;
       end if;
     end if;
