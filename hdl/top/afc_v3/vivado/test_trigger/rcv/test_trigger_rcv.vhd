@@ -89,30 +89,30 @@ architecture structural of test_trigger_rcv is
 
   signal CONTROL0, CONTROL1, CONTROL2, CONTROL3 : std_logic_vector(35 downto 0);
 
-  component chipscope_icon_4_port is
+  component chipscope_icon_2_port is
     port (
       CONTROL0 : inout std_logic_vector(35 downto 0);
-      CONTROL1 : inout std_logic_vector(35 downto 0);
-      CONTROL2 : inout std_logic_vector(35 downto 0);
-      CONTROL3 : inout std_logic_vector(35 downto 0));
-  end component chipscope_icon_4_port;
+      CONTROL1 : inout std_logic_vector(35 downto 0));
+  end component chipscope_icon_2_port;
 
-  component chipscope_ila is
+  component chipscope_ila_rcv is
     port (
       CONTROL : inout std_logic_vector(35 downto 0);
       CLK     : in    std_logic;
-      TRIG0   : in    std_logic_vector(31 downto 0);
-      TRIG1   : in    std_logic_vector(31 downto 0);
+      TRIG0   : in    std_logic_vector(127 downto 0);
+      TRIG1   : in    std_logic_vector(127 downto 0);
       TRIG2   : in    std_logic_vector(31 downto 0);
-      TRIG3   : in    std_logic_vector(31 downto 0));
-  end component chipscope_ila;
+      TRIG3   : in    std_logic_vector(31 downto 0);
+      TRIG4   : in    std_logic_vector(127 downto 0);
+      TRIG5   : in    std_logic_vector(127 downto 0));
+  end component chipscope_ila_rcv;
 
-  component chipscope_vio_32 is
+  component chipscope_vio_16 is
     port (
       CONTROL  : inout std_logic_vector(35 downto 0);
       CLK      : in    std_logic;
-      SYNC_OUT : out   std_logic_vector(31 downto 0));
-  end component chipscope_vio_32;
+      SYNC_OUT : out   std_logic_vector(15 downto 0));
+  end component chipscope_vio_16;
 
   -----------------------------------------------------------------------------
   -- Clock and system
