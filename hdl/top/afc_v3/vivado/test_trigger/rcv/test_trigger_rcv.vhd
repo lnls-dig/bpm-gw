@@ -278,52 +278,30 @@ begin
       count_repeated_o => count_repeated,
       count_others_o   => count_others);
 
-  cmp_chipscope_icon_4_port : chipscope_icon_4_port
+  cmp_chipscope_icon_gen : chipscope_icon_2_port
     port map (
       CONTROL0 => CONTROL0,
-      CONTROL1 => CONTROL1,
-      CONTROL2 => CONTROL2,
-      CONTROL3 => CONTROL3);
+      CONTROL1 => CONTROL1);
 
-  cmp_chipscope_ila_0 : entity work.chipscope_ila
+  cmp_chipscope_ila_0 : chipscope_ila_rcv
     port map (
       CONTROL             => CONTROL0,
-      CLK                 => clk_200mhz,
-      TRIG0               => count_success(3),
-      TRIG1               => count_fail(3),
-      TRIG2(7 downto 0)   => trigger_i,
-      TRIG2(9 downto 8)   => filler(9 downto 8),
-      TRIG2(17 downto 10) => pulse,
-      TRIG2(18)           => filler(18),
-      TRIG2(21 downto 19) => std_logic_vector(to_unsigned(current_s, 3)),
-      TRIG2(31 downto 22) => filler(31 downto 22),
-      TRIG3               => filler);
+      CLK                 => clk_100mhz,
+      TRIG0               => count_success(7),
+      TRIG1               => count_fail(7),
+      TRIG2(7 downto 0)   => trigger_sync,
+      TRIG2(15 downto 8)  => pulse,
+      TRIG2(18 downto 16) => std_logic_vector(current_s),
+      TRIG2(31 downto 19) => filler(31 downto 19),
+      TRIG3               => filler,
+      TRIG4               => count_repeated(0),
+      TRIG5               => count_others(0));
 
-  cmp_chipscope_ila_1 : entity work.chipscope_ila
+  cmp_chipscope_vio : chipscope_vio_16
     port map (
-      CONTROL => CONTROL1,
-      CLK     => clk_200mhz,
-      TRIG0   => count_repeated(3),
-      TRIG1   => count_others(3),
-      TRIG2   => filler,
-      TRIG3   => filler);
-
-  cmp_chipscope_ila_2 : entity work.chipscope_ila
-    port map (
-      CONTROL            => CONTROL2,
-      CLK                => clk_200mhz,
-      TRIG0(7 downto 0)  => trigger_i,
-      TRIG0(31 downto 8) => filler(31 downto 8),
-      TRIG1              => filler,
-      TRIG2              => filler,
-      TRIG3              => filler);
-
-  cmp_chipscope_vio : entity work.chipscope_vio_32
-    port map (
-      CONTROL                => CONTROL3,
-      CLK                    => clk_200mhz,
-      SYNC_OUT(7 downto 0)   => length,
-      SYNC_OUT(15 downto 8)  => direction,
-      SYNC_OUT(31 downto 16) => open);
+      CONTROL               => CONTROL1,
+      CLK                   => clk_100mhz,
+      SYNC_OUT(7 downto 0)  => length,
+      SYNC_OUT(15 downto 8) => direction_o);
 
 end architecture structural;
