@@ -708,11 +708,10 @@ begin
   -- To/From AXIS Stream to Memory Mapped Commands
   axis_s2mm_cmd_tvalid_o <= fc_valid_cmd;
 
-  -- With 23 bits we can transfer up to 8GB of data, which will always be enough
-  -- for our purposes. We always set the datamover to transfer the maximum ammount
-  -- of data. If we finish early, we can just abort the transaction asserting
-  -- the LTAST stream signal (typical case). WARNING: the datamover MUST be
-  -- set the support Indeterminate BTT!
+  -- With 23 bits we can transfer up to 8MB of data.  We always set the datamover
+  -- to transfer the maximum ammount of data. If we finish early, we can just
+  -- abort the transaction asserting the LTAST stream signal (typical case).
+  -- WARNING: the datamover MUST be set the support Indeterminate BTT!
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_btt_top_idx downto
     c_axis_cmd_tdata_btt_bot_idx)                             <=
    std_logic_vector(to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width));             -- cmd_btt (Bytes to transfer)
