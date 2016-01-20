@@ -113,18 +113,25 @@ architecture rtl of acq_ddr3_axis_write is
                                                 f_log2_size_array(c_fc_payload_ratio);
   constant c_max_ddr_payload_ratio_log2     : natural := f_log2_size(c_max_payload_ratio);
   constant c_ddr_keep_width                 : natural := g_ddr_payload_width/8;
+  constant c_ddr_eop_width                  : natural := 1;
 
   alias c_ddr_payload_width                 is g_ddr_payload_width;
 
-  constant c_ddr_payload_keep_width         : natural := g_ddr_payload_width + c_ddr_keep_width;
+  constant c_ddr_payload_eop_keep_width     : natural := g_ddr_payload_width + c_ddr_eop_width + c_ddr_keep_width;
 
   -- Data increment constant
   constant c_bytes_per_word                 : natural := g_ddr_dq_width/8; -- in bytes
   constant c_bytes_per_word_log2            : natural := f_log2_size(c_bytes_per_word);
   constant c_addr_ddr_inc                   : natural := c_ddr_payload_width/g_ddr_dq_width; -- in words
   constant c_addr_ddr_inc_axis              : natural := c_ddr_payload_width/g_ddr_dq_width*c_bytes_per_word; -- in bytes
-  constant c_ddr_payload_width_byte_log2    : natural := f_log2_size(c_ddr_payload_width/8);
-  constant c_ddr_axis_max_btt               : natural := 8388607; -- 2^23 -1
+  constant c_ddr_payload_width_byte         : natural := c_ddr_payload_width/8;
+  constant c_ddr_payload_width_byte_log2    : natural := f_log2_size(c_ddr_payload_width_byte);
+
+  -- Must be power of 2
+  constant c_ddr_axis_max_btt               : natural := 4194304; -- 2^22
+  -- Maximum words to transfer
+  constant c_ddr_axis_max_wtt               : natural := c_ddr_axis_max_btt/c_ddr_payload_width_byte;
+  constant c_ddr_axis_max_wtt_width         : natural := f_log2_size(c_ddr_axis_max_wtt);
 
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
@@ -133,14 +140,18 @@ architecture rtl of acq_ddr3_axis_write is
   -- Constants for data + keep aggregate signal
   constant c_keep_low                       : natural := 0;
   constant c_keep_high                      : natural := c_ddr_keep_width + c_keep_low -1;
-  constant c_data_low                       : natural := c_keep_high + 1;
+  constant c_eop_low                        : natural := c_keep_high + 1;
+  constant c_eop_high                       : natural := c_ddr_eop_width + c_eop_low -1;
+  constant c_data_low                       : natural := c_eop_high + 1;
   constant c_data_high                      : natural := c_ddr_payload_width + c_data_low -1;
+  constant c_header_low                     : natural := c_data_high + 1;
+  constant c_header_high                    : natural := g_ddr_header_width + c_header_low -1;
 
   constant c_ddr_header_top_idx             : natural := g_ddr_header_width + g_ddr_payload_width-1;
   constant c_ddr_header_bot_idx             : natural := g_ddr_payload_width;
 
-  constant c_fc_header_top_idx              : natural := g_ddr_header_width + c_ddr_payload_keep_width -1;
-  constant c_fc_header_bot_idx              : natural := c_ddr_payload_keep_width;
+  constant c_fc_header_top_idx              : natural := g_ddr_header_width + c_ddr_payload_eop_keep_width -1;
+  constant c_fc_header_bot_idx              : natural := c_ddr_payload_eop_keep_width;
 
   -- Constants for ddr3 address bits
   constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
@@ -173,7 +184,7 @@ architecture rtl of acq_ddr3_axis_write is
   signal lmt_shots_nb                       : unsigned(c_shots_size_width-1 downto 0);
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
-  signal fc_dout                            : std_logic_vector(g_ddr_header_width+g_ddr_payload_width+c_ddr_keep_width-1 downto 0);
+  signal fc_dout                            : std_logic_vector(g_ddr_header_width+g_ddr_payload_width+c_ddr_eop_width+c_ddr_keep_width-1 downto 0);
   signal fc_valid_cmd                       : std_logic;
   signal fc_sof_cmd                         : std_logic;
   signal fc_eof_cmd                         : std_logic;
@@ -181,6 +192,7 @@ architecture rtl of acq_ddr3_axis_write is
   signal fc_valid_pld                       : std_logic;
   signal fc_sof_pld                         : std_logic;
   signal fc_eof_pld                         : std_logic;
+  signal fc_eop_pld                         : std_logic;
   signal fc_addr                            : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal fc_stall_cmd                       : std_logic;
   signal fc_dreq_cmd                        : std_logic;
@@ -232,7 +244,9 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_recv_pkt_cnt                   : unsigned(c_ddr_axis_max_wtt_width-1 downto 0);
   signal ddr_addr_first                     : std_logic;
+  signal ddr_reissue_trans                  : std_logic;
   signal ddr_new_shot_coming                : std_logic;
   signal ddr_addr_in                        : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_in_axis                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
@@ -246,8 +260,9 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_header_in                      : std_logic_vector(c_acq_header_width-1 downto 0);
   signal ddr_trig_addr                      : unsigned(g_ddr_addr_width-1 downto 0);
 
+  signal ddr_eop_in                         : std_logic_vector(c_ddr_eop_width-1 downto 0);
   signal ddr_keep_in                        : std_logic_vector(c_ddr_keep_width-1 downto 0);
-  signal ddr_data_keep_in                   : std_logic_vector(g_ddr_header_width+g_ddr_payload_width+c_ddr_keep_width-1 downto 0);
+  signal ddr_data_eop_keep_in               : std_logic_vector(g_ddr_header_width+g_ddr_payload_width+c_ddr_eop_width+c_ddr_keep_width-1 downto 0);
 
   signal ddr_rdy_cmd                        : std_logic;
   signal ddr_rdy_pld                        : std_logic;
@@ -371,6 +386,34 @@ begin
     end if;
   end process;
 
+  -- Drive PLD EOP signal. This is needed as AXIS interface PLD TLAST signal must
+  -- be asserted each time a new CMD transaction is issued.
+  p_eop_pld : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        ddr_eop_in <= "0";
+        ddr_recv_pkt_cnt <= to_unsigned(0, ddr_recv_pkt_cnt'length);
+      else
+        -- New transaction
+        if wr_start_i = '1' then
+          ddr_recv_pkt_cnt <= to_unsigned(0, ddr_recv_pkt_cnt'length);
+          ddr_eop_in <= "0";
+        elsif ddr_valid_in = '1' then
+          -- Count the number of valid packets received. This will wrap
+          -- around the maximum number of samples per AXI packet
+          ddr_recv_pkt_cnt <= ddr_recv_pkt_cnt + 1;
+
+          if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) then -- will increment to last sample
+            ddr_eop_in <= "1";
+          else
+            ddr_eop_in <= "0";
+          end if;
+        end if;
+      end if;
+    end if;
+  end process;
+
   fc_ack <= '1' when ddr_valid_in_t = '1' and pl_stall = '0' else '0';
   ddr_valid_in <= ddr_valid_in_t and not pl_stall;
 
@@ -407,11 +450,32 @@ begin
     end if;
   end process;
 
+  -- End of AXI datamover packet transaction. Reissue the packet transaction.
+  p_reissue_cmd : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      if ext_rst_n_i = '0' then
+        ddr_reissue_trans <= '0';
+      else
+        if ddr_valid_in = '1' then
+          if ddr_eop_in = "1" then -- will increment to first sample of packet
+            ddr_reissue_trans <= '1';
+          else
+            ddr_reissue_trans <= '0';
+          end if;
+        end if;
+      end if;
+    end if;
+  end process;
+
   -- First address or transaction wrapped to init address
   ddr_addr_first <= '1' when ddr_addr_cnt_axis = ddr_addr_init else '0';
-  -- First packet of transaction (new shot). Used for multishot transactions.
+  -- First packet of transaction (new shot - used for multishot transactions) or
+  -- when we make large (larger than c_ddr_axis_max_wtt words) transfers
   ddr_axis_cmd_valid_in <= '1' when ddr_valid_in = '1' and (ddr_addr_first = '1' or
-                                                            ddr_new_shot_coming = '1') else '0';
+                                                            ddr_new_shot_coming = '1' or
+                                                            ddr_reissue_trans = '1'
+                                                           ) else '0';
 
   ----------------------------------------------------------------------------
   -- Generate address to external controller
@@ -640,7 +704,7 @@ begin
   cmp_fc_source_pld : fc_source
   generic map (
     g_header_in_width                       => g_ddr_header_width,
-    g_data_width                            => c_ddr_payload_keep_width,
+    g_data_width                            => c_ddr_payload_eop_keep_width,
     g_pkt_size_width                        => c_pkt_size_width,
     g_addr_width                            => 1, -- Dummy value
     g_with_fifo_inferred                    => true,
@@ -650,7 +714,7 @@ begin
     clk_i                                   => ext_clk_i,
     rst_n_i                                 => ext_rst_n_i,
 
-    pl_data_i                               => ddr_data_keep_in,
+    pl_data_i                               => ddr_data_eop_keep_in,
     pl_addr_i                               => (others => '0'),
     pl_valid_i                              => ddr_valid_in,
 
@@ -678,8 +742,8 @@ begin
     fc_dreq_i                               => fc_dreq_pld
   );
 
-  -- Concatenate data (header + data) + keep
-  ddr_data_keep_in <= ddr_data_in & ddr_keep_in;
+  -- Concatenate data EOP + (header + data) + keep
+  ddr_data_eop_keep_in <= ddr_data_in & ddr_eop_in & ddr_keep_in;
 
   -- Extract fifo trigger from fc_dout
   fc_trigger_cmd <= fc_dout(c_acq_header_trigger_idx+c_fc_header_bot_idx);
@@ -728,9 +792,11 @@ begin
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_pad_top_idx downto
     c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');             -- cmd_pad
 
+  fc_eop_pld <= '1' when fc_dout(c_eop_high downto c_eop_low) = "1" else '0';
+
   -- To/From AXIS Memory Mapped to Stream Commands
   axis_s2mm_pld_tdata_o  <= fc_dout(c_data_high downto c_data_low);
-  axis_s2mm_pld_tlast_o  <= fc_eof_pld;
+  axis_s2mm_pld_tlast_o  <= fc_eof_pld or fc_eop_pld;
   axis_s2mm_pld_tkeep_o  <= fc_dout(c_keep_high downto c_keep_low);
   axis_s2mm_pld_tvalid_o <= fc_valid_pld;
 
