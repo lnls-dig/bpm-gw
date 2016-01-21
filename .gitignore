@@ -33,3 +33,5 @@ work/
 *.log
 *.str
 *.xpr
+*.edif
+.Xil/
