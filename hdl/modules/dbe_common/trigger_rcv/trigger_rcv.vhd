@@ -6,7 +6,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-09
--- Last update: 2016-01-14
+-- Last update: 2016-01-22
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -88,6 +88,18 @@ architecture structural of trigger_rcv is
 
 begin
 
+    -- Prevent matastability problems
+    cmp_input_sync : gc_sync_ffs
+      generic map(
+        g_sync_edge => "positive")
+      port map(
+        clk_i    => clk_i,
+        rst_n_i  => rst_n_i,
+        data_i   => data_i,
+        synced_o => data_sync,
+        npulse_o => open,
+        ppulse_o => open);
+
   cmp_deglitcher : gc_dyn_glitch_filt
     generic map (
       g_len_width => g_glitch_len_width)
@@ -95,7 +107,7 @@ begin
       clk_i   => clk_i,
       rst_n_i => rst_n_i,
       len_i   => len_i,
-      dat_i   => data_i,
+      dat_i   => data_sync,
       dat_o   => deglitched);
 
   cmp_edge_detector : gc_sync_ffs

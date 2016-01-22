@@ -5,7 +5,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2016-01-18
+-- Last update: 2016-01-22
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,7 +63,6 @@ architecture structural of test_trigger_rcv is
 
   signal direction    : std_logic_vector(7 downto 0);
   signal length       : std_logic_vector(c_glitch_len_width-1 downto 0) := "11111111";
-  signal trigger_sync : std_logic_vector(7 downto 0);
   signal pulse        : std_logic_vector(7 downto 0);
 
   type count_array is array(7 downto 0) of std_logic_vector(c_count_width-1 downto 0);
@@ -228,18 +227,6 @@ begin
 
   gen_trigger : for i in 0 to 7 generate
 
-    -- Prevent matastability problems
-    cmp_edge_detector : gc_sync_ffs
-      generic map(
-        g_sync_edge => "positive")
-      port map(
-        clk_i    => clk_100mhz,
-        rst_n_i  => rst_n,
-        data_i   => trigger_i(i),
-        synced_o => trigger_sync(i),
-        npulse_o => open,
-        ppulse_o => open);
-
     cmp_trigger_rcv : trigger_rcv
       generic map (
         g_glitch_len_width => c_glitch_len_width,
@@ -248,7 +235,7 @@ begin
         clk_i   => clk_100mhz,
         rst_n_i => rst_n,
         len_i   => length,
-        data_i  => trigger_sync(i),
+        data_i  => trigger_i(i),
         pulse_o => pulse(i));
 
   end generate gen_trigger;
@@ -289,7 +276,7 @@ begin
       CLK                 => clk_100mhz,
       TRIG0               => count_success(7),
       TRIG1               => count_fail(7),
-      TRIG2(7 downto 0)   => trigger_sync,
+      TRIG2(7 downto 0)   => trigger_i,
       TRIG2(15 downto 8)  => pulse,
       TRIG2(18 downto 16) => std_logic_vector(current_s),
       TRIG2(31 downto 19) => filler(31 downto 19),
