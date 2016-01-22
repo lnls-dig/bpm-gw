@@ -1,39 +1,35 @@
 -------------------------------------------------------------------------------
--- Title      : Dynamic Pulse width extender
--- Project    : General Cores library
+-- Title      : Dynamic pulse width extender
+-- Project    :
 -------------------------------------------------------------------------------
--- File       : gc_extend_pulse.vhd
--- Author     : Tomasz Wlostowski
--- Company    : CERN
--- Created    : 2009-09-01
--- Last update: 2012-06-19
--- Platform   : FPGA-generic
--- Standard   : VHDL '93
+-- File       : extend_pulse_dyn.vhd
+-- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
+-- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
+-- Created    : 2016-01-22
+-- Last update: 2016-01-22
+-- Platform   :
+-- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description:
 -- Synchronous pulse extender. Generates a pulse of dynamically programmable width upon
 -- detection of a rising edge in the input. The code is based on
 -- gc_extend_pulse.vhd created by Tomasz Wlostowskyt, from General Cores library.
 -------------------------------------------------------------------------------
+-- Copyright (c) 2016 Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
+
+-- This program is free software: you can redistribute it and/or
+-- modify it under the terms of the GNU Lesser General Public License
+-- as published by the Free Software Foundation, either version 3 of
+-- the License, or (at your option) any later version.
 --
--- Copyright (c) 2009-2011 CERN
+-- This program is distributed in the hope that it will be useful, but
+-- WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- Lesser General Public License for more details.
 --
--- This source file is free software; you can redistribute it
--- and/or modify it under the terms of the GNU Lesser General
--- Public License as published by the Free Software Foundation;
--- either version 2.1 of the License, or (at your option) any
--- later version.
---
--- This source is distributed in the hope that it will be
--- useful, but WITHOUT ANY WARRANTY; without even the implied
--- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
--- PURPOSE.  See the GNU Lesser General Public License for more
--- details.
---
--- You should have received a copy of the GNU Lesser General
--- Public License along with this source; if not, download it
--- from http://www.gnu.org/licenses/lgpl-2.1.html
---
+-- You should have received a copy of the GNU Lesser General Public
+-- License along with this program. If not, see
+-- <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author          Description
@@ -43,10 +39,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.NUMERIC_STD.all;
-
---library work;
---use work.gencores_pkg.all;
---use work.genram_pkg.all;
 
 entity extend_pulse_dyn is
 
@@ -65,7 +57,6 @@ end extend_pulse_dyn;
 
 architecture rtl of extend_pulse_dyn is
 
-  -- signal cntr         : unsigned(f_log2_size(g_max_width)-1 downto 0);
   signal cntr         : unsigned(32-1 downto 0);
   signal extended_int : std_logic;
 
