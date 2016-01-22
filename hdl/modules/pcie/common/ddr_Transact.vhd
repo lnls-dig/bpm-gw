@@ -79,7 +79,7 @@ entity DDR_Transact is
     --AXI4 interface
     s_axi_aclk_out : out std_logic;
     s_axi_aresetn_out : out std_logic;
-    s_axi_awid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     s_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -96,10 +96,10 @@ entity DDR_Transact is
     s_axi_wvalid : in STD_LOGIC;
     s_axi_wready : out STD_LOGIC;
     s_axi_bready : in STD_LOGIC;
-    s_axi_bid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_bvalid : out STD_LOGIC;
-    s_axi_arid : in STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     s_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     s_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -111,7 +111,7 @@ entity DDR_Transact is
     s_axi_arvalid : in STD_LOGIC;
     s_axi_arready : out STD_LOGIC;
     s_axi_rready : in STD_LOGIC;
-    s_axi_rid : out STD_LOGIC_VECTOR ( 0 downto 0 );
+    s_axi_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_rdata : out STD_LOGIC_VECTOR ( c_ddr_payload_width-1 downto 0 );
     s_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_rlast : out STD_LOGIC;
@@ -133,7 +133,7 @@ architecture Behavioral of DDR_Transact is
 -- ----------------------------------------------------------------------------
 signal ddr_ui_clk, ddr_mmcm_locked : std_logic;
 signal ddr_ui_rst, irconnect_arstn, ddr_axi_aresetn, pcie_axi_aresetn : std_logic;
-signal ddr_axi_awid, ddr_axi_arid, ddr_axi_bid, ddr_axi_rid : std_logic_vector(3 downto 0);
+signal ddr_axi_awid, ddr_axi_arid, ddr_axi_bid, ddr_axi_rid : std_logic_vector(7 downto 0);
 signal pcie_axi_awaddr, ddr_axi_awaddr : std_logic_vector(31 downto 0);
 signal pcie_axi_awlen, ddr_axi_awlen : std_logic_vector(7 downto 0);
 signal pcie_axi_awsize, ddr_axi_awsize : std_logic_vector(2 downto 0);
@@ -171,7 +171,7 @@ PORT MAP (
   INTERCONNECT_ARESETN => irconnect_arstn,
   S00_AXI_ARESET_OUT_N => pcie_axi_aresetn,
   S00_AXI_ACLK => pcie_clk,
-  S00_AXI_AWID => "0",
+  S00_AXI_AWID => "0000",
   S00_AXI_AWADDR => pcie_axi_awaddr,
   S00_AXI_AWLEN => pcie_axi_awlen,
   S00_AXI_AWSIZE => pcie_axi_awsize,
@@ -191,7 +191,7 @@ PORT MAP (
   S00_AXI_BRESP => pcie_axi_bresp,
   S00_AXI_BVALID => pcie_axi_bvalid,
   S00_AXI_BREADY => pcie_axi_bready,
-  S00_AXI_ARID => "0",
+  S00_AXI_ARID => "0000",
   S00_AXI_ARADDR => pcie_axi_araddr,
   S00_AXI_ARLEN => pcie_axi_arlen,
   S00_AXI_ARSIZE => pcie_axi_arsize,
