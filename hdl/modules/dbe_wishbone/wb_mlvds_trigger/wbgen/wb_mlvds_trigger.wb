@@ -1,0 +1,172 @@
+peripheral {
+  name = "Control and status register for the MLVDS trigger";
+  description = "Wishbone slave for control and status registers related to the MLVDS trigger";
+  hdl_entity = "wb_slave_mlvds_trigger";
+
+  prefix = "wb_trig";
+
+  reg {
+    name = "Receiver Ports - Lengths 0 to 3";
+    prefix = "rcv_len";
+
+    field {
+      name = "Length Input - Bus 0 to 3";
+      prefix = "0_3";
+      description = "Length of the deglitcher";
+      type = SLV;
+      size = 32;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Receiver Ports - Lengths 4 to 7";
+    prefix = "rcv_len";
+
+    field {
+      name = "Length Input - Bus 4 to 7";
+      prefix = "4_7";
+      description = "Length of the deglitcher";
+      type = SLV;
+      size = 32;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+  name = "Receiver Ports - Data";
+  prefix = "rcv_data";
+
+    field {
+      name = "Data Input P";
+      prefix = "data_p";
+      description = "Differential data P to be processed by the receiver";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Data Input N";
+      prefix = "data_n";
+      description = "Differential data N to be processed by the receiver";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Pulse Output";
+      prefix = "pulse";
+      description = "Pulse processed by the receiver";
+      type = SLV;
+      size = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Transmitter Ports - Lengths 0 to 3";
+    prefix = "transm_len";
+
+    field {
+      name = "Transmitter Pulse Length - Bus 0 to 3";
+      prefix = "0_3";
+      description = "Controls the length of the extended pulse";
+      type = SLV;
+      size = 32;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Transmitter Ports - Lengths 4 to 7";
+    prefix = "transm_len";
+
+    field {
+      name = "Transmitter Pulse Length - Bus 4 to 7";
+      prefix = "4_7";
+      description = "Controls the length of the extended pulse";
+      type = SLV;
+      size = 32;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Transmitter Ports";
+    prefix = "transm_data";
+
+    field {
+      name = "Pulse Input";
+      prefix = "pulse";
+      description = "Input for the transmitter";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Extended Output N";
+      prefix = "extended_n";
+      description = "Differential extended pulse N by the transmitter";
+      type = SLV;
+      size = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+    
+    field {
+      name = "Extended Output P";
+      prefix = "extended_p";
+      description = "Differential extended pulse P by the transmitter";
+      type = SLV;
+      size = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+    reg {
+    name = "Trigger control";
+    prefix = "trigger";
+
+    field {
+      name = "DIR";
+      prefix = "dir";
+      description = "Trigger direction\n0 - input\n1 - output";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Termination Control";
+      prefix = "term";
+      description = "Trigger termination 50 ohm\n0 - disable\n1 - enable";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Value";
+      prefix = "trig_val";
+      description = "Trigger value (when used in output mode)";
+      type = SLV;
+      size = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+};
