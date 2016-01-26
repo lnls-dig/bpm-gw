@@ -36,11 +36,9 @@
 <span style="margin-left: 0px; ">3. <A href="#sect_3_0">Register description</a></span><br/>
 <span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">Receiver Ports - Lengths 0 to 3</a></span><br/>
 <span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Receiver Ports - Lengths 4 to 7</a></span><br/>
-<span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Receiver Ports - Data</a></span><br/>
-<span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Transmitter Ports - Lengths 0 to 3</a></span><br/>
-<span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Transmitter Ports - Lengths 4 to 7</a></span><br/>
-<span style="margin-left: 20px; ">3.6. <A href="#sect_3_6">Transmitter Ports</a></span><br/>
-<span style="margin-left: 20px; ">3.7. <A href="#sect_3_7">Trigger control</a></span><br/>
+<span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Transmitter Ports - Lengths 0 to 3</a></span><br/>
+<span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Transmitter Ports - Lengths 4 to 7</a></span><br/>
+<span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Trigger control</a></span><br/>
 <h3><a name="sect_1_0">1. Memory map summary</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -102,23 +100,6 @@ RCV_LEN
 REG
 </td>
 <td >
-<A href="#RCV_DATA">Receiver Ports - Data</a>
-</td>
-<td  class="td_code">
-wb_trig_rcv_data
-</td>
-<td  class="td_code">
-RCV_DATA
-</td>
-</tr>
-<tr class="tr_even">
-<td  class="td_code">
-0x3
-</td>
-<td >
-REG
-</td>
-<td >
 <A href="#TRANSM_LEN">Transmitter Ports - Lengths 0 to 3</a>
 </td>
 <td  class="td_code">
@@ -128,9 +109,9 @@ wb_trig_transm_len
 TRANSM_LEN
 </td>
 </tr>
-<tr class="tr_odd">
+<tr class="tr_even">
 <td  class="td_code">
-0x4
+0x3
 </td>
 <td >
 REG
@@ -145,26 +126,9 @@ wb_trig_transm_len
 TRANSM_LEN
 </td>
 </tr>
-<tr class="tr_even">
-<td  class="td_code">
-0x5
-</td>
-<td >
-REG
-</td>
-<td >
-<A href="#TRANSM_DATA">Transmitter Ports</a>
-</td>
-<td  class="td_code">
-wb_trig_transm_data
-</td>
-<td  class="td_code">
-TRANSM_DATA
-</td>
-</tr>
 <tr class="tr_odd">
 <td  class="td_code">
-0x6
+0x4
 </td>
 <td >
 REG
@@ -296,7 +260,7 @@ wb_sel_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Receiver Ports - Data:</b>
+<b>Transmitter Ports - Lengths 0 to 3:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -313,7 +277,7 @@ wb_stb_i
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_rcv_data_data_p_o[7:0]
+wb_trig_transm_len_0_3_o[31:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -327,13 +291,13 @@ wb_trig_rcv_data_data_p_o[7:0]
 wb_we_i
 </td>
 <td  class="td_sym_center">
-
+&nbsp;
 </td>
 <td  class="td_pblock_right">
-wb_trig_rcv_data_data_n_o[7:0]
+
 </td>
 <td  class="td_arrow_right">
-&rArr;
+
 </td>
 </tr>
 <tr>
@@ -347,10 +311,10 @@ wb_ack_o
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_rcv_data_pulse_i[7:0]
+<b>Transmitter Ports - Lengths 4 to 7:</b>
 </td>
 <td  class="td_arrow_right">
-&lArr;
+
 </td>
 </tr>
 <tr>
@@ -361,91 +325,6 @@ wb_trig_rcv_data_pulse_i[7:0]
 wb_stall_o
 </td>
 <td  class="td_sym_center">
-&nbsp;
-</td>
-<td  class="td_pblock_right">
-
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-<b>Transmitter Ports - Lengths 0 to 3:</b>
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_transm_len_0_3_o[31:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-&nbsp;
-</td>
-<td  class="td_pblock_right">
-
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-<b>Transmitter Ports - Lengths 4 to 7:</b>
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
 
 </td>
 <td  class="td_pblock_right">
@@ -453,91 +332,6 @@ wb_trig_transm_len_4_7_o[31:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-&nbsp;
-</td>
-<td  class="td_pblock_right">
-
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-<b>Transmitter Ports:</b>
-</td>
-<td  class="td_arrow_right">
-
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_transm_data_pulse_o[7:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_transm_data_extended_n_i[7:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_transm_data_extended_p_i[7:0]
-</td>
-<td  class="td_arrow_right">
-&lArr;
 </td>
 </tr>
 <tr>
@@ -1144,15 +938,15 @@ RCV_LEN
 </b>[<i>read/write</i>]: Length Input - Bus 4 to 7
 <br>Length of the deglitcher
 </ul>
-<a name="RCV_DATA"></a>
-<h3><a name="sect_3_3">3.3. Receiver Ports - Data</a></h3>
+<a name="TRANSM_LEN"></a>
+<h3><a name="sect_3_3">3.3. Transmitter Ports - Lengths 0 to 3</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_trig_rcv_data
+wb_trig_transm_len
 </td>
 </tr>
 <tr>
@@ -1168,272 +962,6 @@ wb_trig_rcv_data
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-RCV_DATA
-</td>
-</tr>
-<tr>
-<td >
-<b>C offset: </b>
-</td>
-<td  class="td_code">
-0x8
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-31
-</td>
-<td  class="td_bit">
-30
-</td>
-<td  class="td_bit">
-29
-</td>
-<td  class="td_bit">
-28
-</td>
-<td  class="td_bit">
-27
-</td>
-<td  class="td_bit">
-26
-</td>
-<td  class="td_bit">
-25
-</td>
-<td  class="td_bit">
-24
-</td>
-</tr>
-<tr>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-23
-</td>
-<td  class="td_bit">
-22
-</td>
-<td  class="td_bit">
-21
-</td>
-<td  class="td_bit">
-20
-</td>
-<td  class="td_bit">
-19
-</td>
-<td  class="td_bit">
-18
-</td>
-<td  class="td_bit">
-17
-</td>
-<td  class="td_bit">
-16
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-PULSE[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-15
-</td>
-<td  class="td_bit">
-14
-</td>
-<td  class="td_bit">
-13
-</td>
-<td  class="td_bit">
-12
-</td>
-<td  class="td_bit">
-11
-</td>
-<td  class="td_bit">
-10
-</td>
-<td  class="td_bit">
-9
-</td>
-<td  class="td_bit">
-8
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-DATA_N[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-7
-</td>
-<td  class="td_bit">
-6
-</td>
-<td  class="td_bit">
-5
-</td>
-<td  class="td_bit">
-4
-</td>
-<td  class="td_bit">
-3
-</td>
-<td  class="td_bit">
-2
-</td>
-<td  class="td_bit">
-1
-</td>
-<td  class="td_bit">
-0
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-DATA_P[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<ul>
-<li><b>
-DATA_P
-</b>[<i>read/write</i>]: Data Input P
-<br>Differential data P to be processed by the receiver
-<li><b>
-DATA_N
-</b>[<i>read/write</i>]: Data Input N
-<br>Differential data N to be processed by the receiver
-<li><b>
-PULSE
-</b>[<i>read-only</i>]: Pulse Output
-<br>Pulse processed by the receiver
-</ul>
-<a name="TRANSM_LEN"></a>
-<h3><a name="sect_3_4">3.4. Transmitter Ports - Lengths 0 to 3</a></h3>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td >
-<b>HW prefix: </b>
-</td>
-<td  class="td_code">
-wb_trig_transm_len
-</td>
-</tr>
-<tr>
-<td >
-<b>HW address: </b>
-</td>
-<td  class="td_code">
-0x3
-</td>
-</tr>
-<tr>
-<td >
-<b>C prefix: </b>
-</td>
-<td  class="td_code">
 TRANSM_LEN
 </td>
 </tr>
@@ -1442,7 +970,7 @@ TRANSM_LEN
 <b>C offset: </b>
 </td>
 <td  class="td_code">
-0xc
+0x8
 </td>
 </tr>
 </table>
@@ -1669,7 +1197,7 @@ TRANSM_LEN
 <br>Controls the length of the extended pulse
 </ul>
 <a name="TRANSM_LEN"></a>
-<h3><a name="sect_3_5">3.5. Transmitter Ports - Lengths 4 to 7</a></h3>
+<h3><a name="sect_3_4">3.4. Transmitter Ports - Lengths 4 to 7</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
@@ -1684,7 +1212,7 @@ wb_trig_transm_len
 <b>HW address: </b>
 </td>
 <td  class="td_code">
-0x4
+0x3
 </td>
 </tr>
 <tr>
@@ -1700,7 +1228,7 @@ TRANSM_LEN
 <b>C offset: </b>
 </td>
 <td  class="td_code">
-0x10
+0xc
 </td>
 </tr>
 </table>
@@ -1926,274 +1454,8 @@ TRANSM_LEN
 </b>[<i>read/write</i>]: Transmitter Pulse Length - Bus 4 to 7
 <br>Controls the length of the extended pulse
 </ul>
-<a name="TRANSM_DATA"></a>
-<h3><a name="sect_3_6">3.6. Transmitter Ports</a></h3>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td >
-<b>HW prefix: </b>
-</td>
-<td  class="td_code">
-wb_trig_transm_data
-</td>
-</tr>
-<tr>
-<td >
-<b>HW address: </b>
-</td>
-<td  class="td_code">
-0x5
-</td>
-</tr>
-<tr>
-<td >
-<b>C prefix: </b>
-</td>
-<td  class="td_code">
-TRANSM_DATA
-</td>
-</tr>
-<tr>
-<td >
-<b>C offset: </b>
-</td>
-<td  class="td_code">
-0x14
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-31
-</td>
-<td  class="td_bit">
-30
-</td>
-<td  class="td_bit">
-29
-</td>
-<td  class="td_bit">
-28
-</td>
-<td  class="td_bit">
-27
-</td>
-<td  class="td_bit">
-26
-</td>
-<td  class="td_bit">
-25
-</td>
-<td  class="td_bit">
-24
-</td>
-</tr>
-<tr>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-<td  class="td_unused">
--
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-23
-</td>
-<td  class="td_bit">
-22
-</td>
-<td  class="td_bit">
-21
-</td>
-<td  class="td_bit">
-20
-</td>
-<td  class="td_bit">
-19
-</td>
-<td  class="td_bit">
-18
-</td>
-<td  class="td_bit">
-17
-</td>
-<td  class="td_bit">
-16
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-EXTENDED_P[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-15
-</td>
-<td  class="td_bit">
-14
-</td>
-<td  class="td_bit">
-13
-</td>
-<td  class="td_bit">
-12
-</td>
-<td  class="td_bit">
-11
-</td>
-<td  class="td_bit">
-10
-</td>
-<td  class="td_bit">
-9
-</td>
-<td  class="td_bit">
-8
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-EXTENDED_N[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<table cellpadding=0 cellspacing=0 border=0>
-<tr>
-<td  class="td_bit">
-7
-</td>
-<td  class="td_bit">
-6
-</td>
-<td  class="td_bit">
-5
-</td>
-<td  class="td_bit">
-4
-</td>
-<td  class="td_bit">
-3
-</td>
-<td  class="td_bit">
-2
-</td>
-<td  class="td_bit">
-1
-</td>
-<td  class="td_bit">
-0
-</td>
-</tr>
-<tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-PULSE[7:0]
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-<td >
-
-</td>
-</tr>
-</table>
-<ul>
-<li><b>
-PULSE
-</b>[<i>read/write</i>]: Pulse Input
-<br>Input for the transmitter
-<li><b>
-EXTENDED_N
-</b>[<i>read-only</i>]: Extended Output N
-<br>Differential extended pulse N by the transmitter
-<li><b>
-EXTENDED_P
-</b>[<i>read-only</i>]: Extended Output P
-<br>Differential extended pulse P by the transmitter
-</ul>
 <a name="TRIGGER"></a>
-<h3><a name="sect_3_7">3.7. Trigger control</a></h3>
+<h3><a name="sect_3_5">3.5. Trigger control</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
@@ -2208,7 +1470,7 @@ wb_trig_trigger
 <b>HW address: </b>
 </td>
 <td  class="td_code">
-0x6
+0x4
 </td>
 </tr>
 <tr>
@@ -2224,7 +1486,7 @@ TRIGGER
 <b>C offset: </b>
 </td>
 <td  class="td_code">
-0x18
+0x10
 </td>
 </tr>
 </table>

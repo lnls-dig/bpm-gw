@@ -36,41 +36,6 @@ peripheral {
   };
 
   reg {
-  name = "Receiver Ports - Data";
-  prefix = "rcv_data";
-
-    field {
-      name = "Data Input P";
-      prefix = "data_p";
-      description = "Differential data P to be processed by the receiver";
-      type = SLV;
-      size = 8;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Data Input N";
-      prefix = "data_n";
-      description = "Differential data N to be processed by the receiver";
-      type = SLV;
-      size = 8;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Pulse Output";
-      prefix = "pulse";
-      description = "Pulse processed by the receiver";
-      type = SLV;
-      size = 8;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-  };
-
-  reg {
     name = "Transmitter Ports - Lengths 0 to 3";
     prefix = "transm_len";
 
@@ -97,41 +62,6 @@ peripheral {
       size = 32;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
-    };
-  };
-
-  reg {
-    name = "Transmitter Ports";
-    prefix = "transm_data";
-
-    field {
-      name = "Pulse Input";
-      prefix = "pulse";
-      description = "Input for the transmitter";
-      type = SLV;
-      size = 8;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Extended Output N";
-      prefix = "extended_n";
-      description = "Differential extended pulse N by the transmitter";
-      type = SLV;
-      size = 8;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-    
-    field {
-      name = "Extended Output P";
-      prefix = "extended_p";
-      description = "Differential extended pulse P by the transmitter";
-      type = SLV;
-      size = 8;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
     };
   };
 

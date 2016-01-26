@@ -114,31 +114,25 @@ architecture rtl of wb_mlvds_trigger is
 
   component wb_slave_mlvds_trigger is
     port (
-      rst_n_i    : in  std_logic;
-      clk_sys_i  : in  std_logic;
-      wb_adr_i   : in  std_logic_vector(2 downto 0);
-      wb_dat_i   : in  std_logic_vector(31 downto 0);
-      wb_dat_o   : out std_logic_vector(31 downto 0);
-      wb_cyc_i   : in  std_logic;
-      wb_sel_i   : in  std_logic_vector(3 downto 0);
-      wb_stb_i   : in  std_logic;
-      wb_we_i    : in  std_logic;
-      wb_ack_o   : out std_logic;
-      wb_stall_o : out std_logic;
+      rst_n_i                    : in  std_logic;
+      clk_sys_i                  : in  std_logic;
+      wb_adr_i                   : in  std_logic_vector(2 downto 0);
+      wb_dat_i                   : in  std_logic_vector(31 downto 0);
+      wb_dat_o                   : out std_logic_vector(31 downto 0);
+      wb_cyc_i                   : in  std_logic;
+      wb_sel_i                   : in  std_logic_vector(3 downto 0);
+      wb_stb_i                   : in  std_logic;
+      wb_we_i                    : in  std_logic;
+      wb_ack_o                   : out std_logic;
+      wb_stall_o                 : out std_logic;
 
-      wb_trig_rcv_len_0_3_o            : out std_logic_vector(31 downto 0);
-      wb_trig_rcv_len_4_7_o            : out std_logic_vector(31 downto 0);
-      wb_trig_rcv_data_data_p_o        : out std_logic_vector(7 downto 0);
-      wb_trig_rcv_data_data_n_o        : out std_logic_vector(7 downto 0);
-      wb_trig_rcv_data_pulse_i         : in  std_logic_vector(7 downto 0);
-      wb_trig_transm_len_0_3_o         : out std_logic_vector(31 downto 0);
-      wb_trig_transm_len_4_7_o         : out std_logic_vector(31 downto 0);
-      wb_trig_transm_data_pulse_o      : out std_logic_vector(7 downto 0);
-      wb_trig_transm_data_extended_n_i : in  std_logic_vector(7 downto 0);
-      wb_trig_transm_data_extended_p_i : in  std_logic_vector(7 downto 0);
-      wb_trig_trigger_dir_o            : out std_logic_vector(7 downto 0);
-      wb_trig_trigger_term_o           : out std_logic_vector(7 downto 0);
-      wb_trig_trigger_trig_val_o       : out std_logic_vector(7 downto 0));
+      wb_trig_rcv_len_0_3_o      : out std_logic_vector(31 downto 0);
+      wb_trig_rcv_len_4_7_o      : out std_logic_vector(31 downto 0);
+      wb_trig_transm_len_0_3_o   : out std_logic_vector(31 downto 0);
+      wb_trig_transm_len_4_7_o   : out std_logic_vector(31 downto 0);
+      wb_trig_trigger_dir_o      : out std_logic_vector(7 downto 0);
+      wb_trig_trigger_term_o     : out std_logic_vector(7 downto 0);
+      wb_trig_trigger_trig_val_o : out std_logic_vector(7 downto 0));
   end component wb_slave_mlvds_trigger;
 
   component extend_pulse_dyn is
@@ -171,14 +165,8 @@ architecture rtl of wb_mlvds_trigger is
 
   signal wb_trig_rcv_len_0_3            : std_logic_vector(31 downto 0);
   signal wb_trig_rcv_len_4_7            : std_logic_vector(31 downto 0);
-  signal wb_trig_rcv_data_data_p        : std_logic_vector(7 downto 0);
-  signal wb_trig_rcv_data_data_n        : std_logic_vector(7 downto 0);
-  signal wb_trig_rcv_data_pulse         : std_logic_vector(7 downto 0);
   signal wb_trig_transm_len_0_3         : std_logic_vector(31 downto 0);
   signal wb_trig_transm_len_4_7         : std_logic_vector(31 downto 0);
-  signal wb_trig_transm_data_pulse      : std_logic_vector(7 downto 0);
-  signal wb_trig_transm_data_extended_n : std_logic_vector(7 downto 0);
-  signal wb_trig_transm_data_extended_p : std_logic_vector(7 downto 0);
   signal wb_trig_trigger_dir            : std_logic_vector(7 downto 0);
   signal wb_trig_trigger_term           : std_logic_vector(7 downto 0);
   signal wb_trig_trigger_trig_val       : std_logic_vector(7 downto 0);
@@ -189,38 +177,32 @@ architecture rtl of wb_mlvds_trigger is
 
 begin  -- architecture rtl
 
-  wb_slave_mlvds_trigger_1 : entity work.wb_slave_mlvds_trigger
+  wb_slave_mlvds_trigger_1: entity work.wb_slave_mlvds_trigger
     port map (
-      rst_n_i                          => rst_n_i,
-      clk_sys_i                        => clk_sys_i,
-      wb_adr_i                         => wb_adr_i,
-      wb_dat_i                         => wb_dat_i,
-      wb_dat_o                         => wb_dat_o,
-      wb_cyc_i                         => wb_cyc_i,
-      wb_sel_i                         => wb_sel_i,
-      wb_stb_i                         => wb_stb_i,
-      wb_we_i                          => wb_we_i,
-      wb_ack_o                         => wb_ack_o,
-      wb_stall_o                       => wb_stall_o,
-      wb_trig_rcv_len_0_3_o            => wb_trig_rcv_len_0_3,
-      wb_trig_rcv_len_4_7_o            => wb_trig_rcv_len_4_7,
-      wb_trig_rcv_data_data_p_o        => wb_trig_rcv_data_data_p,
-      wb_trig_rcv_data_data_n_o        => wb_trig_rcv_data_data_n,
-      wb_trig_rcv_data_pulse_i         => wb_trig_rcv_data_pulse,
-      wb_trig_transm_len_0_3_o         => wb_trig_transm_len_0_3,
-      wb_trig_transm_len_4_7_o         => wb_trig_transm_len_4_7,
-      wb_trig_transm_data_pulse_o      => wb_trig_transm_data_pulse,
-      wb_trig_transm_data_extended_n_i => wb_trig_transm_data_extended_n,
-      wb_trig_transm_data_extended_p_i => wb_trig_transm_data_extended_p,
-      wb_trig_trigger_dir_o            => wb_trig_trigger_dir,
-      wb_trig_trigger_term_o           => wb_trig_trigger_term,
-      wb_trig_trigger_trig_val_o       => wb_trig_trigger_trig_val);
+      rst_n_i                    => rst_n_i,
+      clk_sys_i                  => clk_sys_i,
+      wb_adr_i                   => wb_adr_i,
+      wb_dat_i                   => wb_dat_i,
+      wb_dat_o                   => wb_dat_o,
+      wb_cyc_i                   => wb_cyc_i,
+      wb_sel_i                   => wb_sel_i,
+      wb_stb_i                   => wb_stb_i,
+      wb_we_i                    => wb_we_i,
+      wb_ack_o                   => wb_ack_o,
+      wb_stall_o                 => wb_stall_o,
+      wb_trig_rcv_len_0_3_o      => wb_trig_rcv_len_0_3,
+      wb_trig_rcv_len_4_7_o      => wb_trig_rcv_len_4_7,
+      wb_trig_transm_len_0_3_o   => wb_trig_transm_len_0_3,
+      wb_trig_transm_len_4_7_o   => wb_trig_transm_len_4_7,
+      wb_trig_trigger_dir_o      => wb_trig_trigger_dir,
+      wb_trig_trigger_term_o     => wb_trig_trigger_term,
+      wb_trig_trigger_trig_val_o => wb_trig_trigger_trig_val);
 
   ------------------------------------
   -- Instantiation for buses 0 to 3 --
   ------------------------------------
 
-  trigger_rcv_transm_0_3 : for i in g_trig_num-1 downto 0 generate
+  trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
 
     extend_pulse_dyn_1 : entity work.extend_pulse_dyn
       generic map (
@@ -228,7 +210,7 @@ begin  -- architecture rtl
       port map (
         clk_i         => clk_sys_i,
         rst_n_i       => rst_n_i,
-        pulse_i       => wb_trig_transm_data_pulse,
+        pulse_i       => fmc_trig_pulse_b(i),
         pulse_width_i => wb_trig_transm_data_pulse_width((8*i+7) downto 8*i),
         extended_o    => );
 
