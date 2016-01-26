@@ -93,8 +93,8 @@ entity wb_mlvds_trigger is
       -----------------------------
 
       -- Trigger
-      fmc_trig_dir_o   : out   std_logic_vector(g_trig_num-1 downto 0);
-      fmc_trig_term_o  : out   std_logic_vector(g_trig_num-1 downto 0);
+      fmc_trig_dir_o  : out std_logic_vector(g_trig_num-1 downto 0);
+      fmc_trig_term_o : out std_logic_vector(g_trig_num-1 downto 0);
 
       fmc_trig_dif_p_b : inout std_logic_vector(g_trig_num-1 downto 0);
       fmc_trig_dif_n_b : inout std_logic_vector(g_trig_num-1 downto 0);
@@ -114,17 +114,17 @@ architecture rtl of wb_mlvds_trigger is
 
   component wb_slave_mlvds_trigger is
     port (
-      rst_n_i                    : in  std_logic;
-      clk_sys_i                  : in  std_logic;
-      wb_adr_i                   : in  std_logic_vector(2 downto 0);
-      wb_dat_i                   : in  std_logic_vector(31 downto 0);
-      wb_dat_o                   : out std_logic_vector(31 downto 0);
-      wb_cyc_i                   : in  std_logic;
-      wb_sel_i                   : in  std_logic_vector(3 downto 0);
-      wb_stb_i                   : in  std_logic;
-      wb_we_i                    : in  std_logic;
-      wb_ack_o                   : out std_logic;
-      wb_stall_o                 : out std_logic;
+      rst_n_i    : in  std_logic;
+      clk_sys_i  : in  std_logic;
+      wb_adr_i   : in  std_logic_vector(2 downto 0);
+      wb_dat_i   : in  std_logic_vector(31 downto 0);
+      wb_dat_o   : out std_logic_vector(31 downto 0);
+      wb_cyc_i   : in  std_logic;
+      wb_sel_i   : in  std_logic_vector(3 downto 0);
+      wb_stb_i   : in  std_logic;
+      wb_we_i    : in  std_logic;
+      wb_ack_o   : out std_logic;
+      wb_stall_o : out std_logic;
 
       wb_trig_rcv_len_0_3_o      : out std_logic_vector(31 downto 0);
       wb_trig_rcv_len_4_7_o      : out std_logic_vector(31 downto 0);
@@ -163,13 +163,13 @@ architecture rtl of wb_mlvds_trigger is
   --Signals--
   -----------
 
-  signal wb_trig_rcv_len_0_3            : std_logic_vector(31 downto 0);
-  signal wb_trig_rcv_len_4_7            : std_logic_vector(31 downto 0);
-  signal wb_trig_transm_len_0_3         : std_logic_vector(31 downto 0);
-  signal wb_trig_transm_len_4_7         : std_logic_vector(31 downto 0);
-  signal wb_trig_trigger_dir            : std_logic_vector(7 downto 0);
-  signal wb_trig_trigger_term           : std_logic_vector(7 downto 0);
-  signal wb_trig_trigger_trig_val       : std_logic_vector(7 downto 0);
+  signal wb_trig_rcv_len_0_3      : std_logic_vector(31 downto 0);
+  signal wb_trig_rcv_len_4_7      : std_logic_vector(31 downto 0);
+  signal wb_trig_transm_len_0_3   : std_logic_vector(31 downto 0);
+  signal wb_trig_transm_len_4_7   : std_logic_vector(31 downto 0);
+  signal wb_trig_trigger_dir      : std_logic_vector(7 downto 0);
+  signal wb_trig_trigger_term     : std_logic_vector(7 downto 0);
+  signal wb_trig_trigger_trig_val : std_logic_vector(7 downto 0);
 
   signal pulses_rcv   : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_rcv : std_logic_vector(g_trig_num-1 downto 0);
@@ -177,13 +177,15 @@ architecture rtl of wb_mlvds_trigger is
   signal pulses_transm   : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
-  signal trigger_dir_n   : std_logic_vector(g_trig_num-1 downto 0);
+  signal trigger_dir_n : std_logic_vector(g_trig_num-1 downto 0);
 
 begin  -- architecture rtl
 
   -- 'high' dir signal represents 'rcv', and 'low' represents 'transm' (see iobufs to understand)
   trigger_dir_n <= not(wb_trig_trigger_dir);
-  wb_slave_mlvds_trigger_1: entity work.wb_slave_mlvds_trigger
+
+
+  wb_slave_mlvds_trigger_1 : entity work.wb_slave_mlvds_trigger
     port map (
       rst_n_i                    => rst_n_i,
       clk_sys_i                  => clk_sys_i,
