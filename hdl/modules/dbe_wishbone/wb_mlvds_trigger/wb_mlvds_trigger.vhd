@@ -171,12 +171,18 @@ architecture rtl of wb_mlvds_trigger is
   signal wb_trig_trigger_term           : std_logic_vector(7 downto 0);
   signal wb_trig_trigger_trig_val       : std_logic_vector(7 downto 0);
 
-  signal inter_buf   : std_logic_vector(g_trig_num-1 downto 0);
-  signal inter_bufds : std_logic_vector(g_trig_num-1 downto 0);
+  signal pulses_rcv   : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_rcv : std_logic_vector(g_trig_num-1 downto 0);
 
+  signal pulses_transm   : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
+
+  signal trigger_dir_n   : std_logic_vector(g_trig_num-1 downto 0);
 
 begin  -- architecture rtl
 
+  -- 'high' dir signal represents 'rcv', and 'low' represents 'transm' (see iobufs to understand)
+  trigger_dir_n <= not(wb_trig_trigger_dir);
   wb_slave_mlvds_trigger_1: entity work.wb_slave_mlvds_trigger
     port map (
       rst_n_i                    => rst_n_i,
@@ -210,9 +216,9 @@ begin  -- architecture rtl
       port map (
         clk_i         => clk_sys_i,
         rst_n_i       => rst_n_i,
-        pulse_i       => fmc_trig_pulse_b(i),
+        pulse_i       => pulses_transm(i),
         pulse_width_i => wb_trig_transm_data_pulse_width((8*i+7) downto 8*i),
-        extended_o    => );
+        extended_o    => extended_transm(i));
 
     trigger_rcv_1 : entity work.trigger_rcv
       generic map (
@@ -222,18 +228,18 @@ begin  -- architecture rtl
         clk_i   => clk_sys_i,
         rst_n_i => rst_n_i,
         len_i   => wb_trig_rcv_data_len((8*i+7) downto 8*i),
-        data_i  => ,
-        pulse_o => );
+        data_i  => extended_rcv(i),
+        pulse_o => pulses_rcv(i));
 
     cmp_iobuf : iobuf
       generic map (
        --iostandard   => "BLVDS_25"      -- Specify the I/O standard
         )
       port map (
-        o  => fmc_trig_val_in,          -- Buffer output for further use
-        io => fmc_trig_val_p_b,  -- inout (connect directly to top-level port)
-        i  => fmc_trig_val_int,         -- Buffer input
-        t  =>  -- 3-state enable input, high=output, low=input
+        o  => pulses_transm(i),         -- Buffer output for further use
+        io => fmc_trig_pulse_b(i),  -- inout (connect directly to top-level port)
+        i  => pulses_rcv(i),            -- Buffer input
+        t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
         );
 
     cmp_iobufds : iobufds
@@ -243,11 +249,11 @@ begin  -- architecture rtl
         iostandard   => "BLVDS_25"      -- Specify the I/O standard
         )
       port map (
-        o   => ,                        -- Buffer output for further use
-        io  => ,  -- Diff_p inout (connect directly to top-level port)
-        iob => ,  -- Diff_n inout (connect directly to top-level port)
-        i   => ,                        -- Buffer input
-        t   => wb_trig_trigger_dir_o  -- 3-state enable input, high=output, low=input
+        o   => extended_rcv(i),         -- Buffer output for further use
+        io  => fmc_trig_dif_p_b(i),  -- Diff_p inout (connect directly to top-level port)
+        iob => fmc_trig_dif_n_b(i),  -- Diff_n inout (connect directly to top-level port)
+        i   => extended_transm(i),      -- Buffer input
+        t   => trigger_dir_n(i)  -- 3-state enable input, high=input, low=output
         );
 
   end generate trigger_rcv_transm_0_3;
