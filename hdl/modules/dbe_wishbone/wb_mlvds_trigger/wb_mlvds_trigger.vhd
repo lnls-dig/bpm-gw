@@ -204,32 +204,64 @@ begin  -- architecture rtl
       wb_trig_trigger_term_o     => wb_trig_trigger_term,
       wb_trig_trigger_trig_val_o => wb_trig_trigger_trig_val);
 
-  ------------------------------------
-  -- Instantiation for buses 0 to 3 --
-  ------------------------------------
+  ---------------------------
+  -- Instantiation Process --
+  ---------------------------
 
   trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
 
-    extend_pulse_dyn_1 : entity work.extend_pulse_dyn
-      generic map (
-        g_max_width => g_max_width)
-      port map (
-        clk_i         => clk_sys_i,
-        rst_n_i       => rst_n_i,
-        pulse_i       => pulses_transm(i),
-        pulse_width_i => wb_trig_transm_data_pulse_width((8*i+7) downto 8*i),
-        extended_o    => extended_transm(i));
+    -- Ports 0 to 3
+    ports_0_to_3 : if i <= 3 generate
 
-    trigger_rcv_1 : entity work.trigger_rcv
-      generic map (
-        g_glitch_len_width => g_rcv_len_bus_width,
-        g_sync_edge        => g_sync_edge)
-      port map (
-        clk_i   => clk_sys_i,
-        rst_n_i => rst_n_i,
-        len_i   => wb_trig_rcv_data_len((8*i+7) downto 8*i),
-        data_i  => extended_rcv(i),
-        pulse_o => pulses_rcv(i));
+      extend_pulse_dyn_1 : entity work.extend_pulse_dyn
+        generic map (
+          g_max_width => g_max_width)
+        port map (
+          clk_i         => clk_sys_i,
+          rst_n_i       => rst_n_i,
+          pulse_i       => pulses_transm(i),
+          pulse_width_i => wb_trig_transm_len_0_3((8*i+7) downto 8*i),
+          extended_o    => extended_transm(i));
+
+      trigger_rcv_1 : entity work.trigger_rcv
+        generic map (
+          g_glitch_len_width => g_rcv_len_bus_width,
+          g_sync_edge        => g_sync_edge)
+        port map (
+          clk_i   => clk_sys_i,
+          rst_n_i => rst_n_i,
+          len_i   => wb_trig_rcv_len_0_3((8*i+7) downto 8*i),
+          data_i  => extended_rcv(i),
+          pulse_o => pulses_rcv(i));
+
+    end generate ports_0_to_3;
+
+    -- Ports 4 to 7
+    ports_4_to_7 : if i > 3 generate
+
+      extend_pulse_dyn_1 : entity work.extend_pulse_dyn
+        generic map (
+          g_max_width => g_max_width)
+        port map (
+          clk_i         => clk_sys_i,
+          rst_n_i       => rst_n_i,
+          pulse_i       => pulses_transm(i),
+          pulse_width_i => wb_trig_transm_len_4_7((8*(i-4)+7) downto 8*(i-4)),
+          extended_o    => extended_transm(i));
+
+      trigger_rcv_1 : entity work.trigger_rcv
+        generic map (
+          g_glitch_len_width => g_rcv_len_bus_width,
+          g_sync_edge        => g_sync_edge)
+        port map (
+          clk_i   => clk_sys_i,
+          rst_n_i => rst_n_i,
+          len_i   => wb_trig_rcv_len_4_7((8*(i-4)+7) downto 8*(i-4)),
+          data_i  => extended_rcv(i),
+          pulse_o => pulses_rcv(i));
+
+    end generate ports_4_to_7;
+
 
     cmp_iobuf : iobuf
       generic map (
