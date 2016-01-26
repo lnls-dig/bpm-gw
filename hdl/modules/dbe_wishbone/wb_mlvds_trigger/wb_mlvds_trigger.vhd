@@ -225,8 +225,7 @@ begin  -- architecture rtl
         data_i  => ,
         pulse_o => );
 
-    -- iobuf connected to the wishbone component and to the other iobuf
-    cmp_iobuf_wb : iobuf
+    cmp_iobuf : iobuf
       generic map (
        --iostandard   => "BLVDS_25"      -- Specify the I/O standard
         )
@@ -237,35 +236,7 @@ begin  -- architecture rtl
         t  =>  -- 3-state enable input, high=output, low=input
         );
 
-    -- iobuf connected to the transm and rcv components and to the other iobuf
-    cmp_iobuf_cores : iobuf
-      generic map (
-       --iostandard   => "BLVDS_25"      -- Specify the I/O standard
-        )
-      port map (
-        o  => fmc_trig_val_in,          -- Buffer output for further use
-        io => fmc_trig_val_p_b,  -- inout (connect directly to top-level port)
-        i  => fmc_trig_val_int,         -- Buffer input
-        t  =>  -- 3-state enable input, high=output, low=input
-        );
-
-    -- iobuf connected to the transm and rcv components and to the other iobuf
-    cmp_iobufds_wb : iobufds
-      generic map (
-        diff_term    => true,   -- Differential Termination ("TRUE"/"FALSE")
-        ibuf_low_pwr => false,  -- Low Power - "TRUE", High Performance = "FALSE"
-        iostandard   => "BLVDS_25"      -- Specify the I/O standard
-        )
-      port map (
-        o   => ,                        -- Buffer output for further use
-        io  => ,  -- Diff_p inout (connect directly to top-level port)
-        iob => ,  -- Diff_n inout (connect directly to top-level port)
-        i   => ,                        -- Buffer input
-        t   => wb_trig_trigger_dir_o  -- 3-state enable input, high=output, low=input
-        );
-
-    -- iobuf connected to the transm and rcv components and to the other iobuf
-    cmp_iobufds_cores : iobufds
+    cmp_iobufds : iobufds
       generic map (
         diff_term    => true,   -- Differential Termination ("TRUE"/"FALSE")
         ibuf_low_pwr => false,  -- Low Power - "TRUE", High Performance = "FALSE"
