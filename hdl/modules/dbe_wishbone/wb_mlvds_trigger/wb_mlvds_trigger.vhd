@@ -177,7 +177,7 @@ begin  -- architecture rtl
   wb_slave_mlvds_trigger_1 : entity work.wb_slave_mlvds_trigger
     port map (
       rst_n_i                    => rst_n_i,
-      clk_sys_i                  => clk_sys_i,
+      clk_sys_i                  => clk_i,
       wb_adr_i                   => wb_adr_i,
       wb_dat_i                   => wb_dat_i,
       wb_dat_o                   => wb_dat_o,
@@ -219,7 +219,7 @@ begin  -- architecture rtl
           g_glitch_len_width => g_rcv_len_bus_width,
           g_sync_edge        => g_sync_edge)
         port map (
-          clk_i   => clk_sys_i,
+          clk_i   => clk_i,
           rst_n_i => rst_n_i,
           len_i   => wb_trig_rcv_len_0_3((8*i+7) downto 8*i),
           data_i  => extended_rcv(i),
@@ -245,7 +245,7 @@ begin  -- architecture rtl
           g_glitch_len_width => g_rcv_len_bus_width,
           g_sync_edge        => g_sync_edge)
         port map (
-          clk_i   => clk_sys_i,
+          clk_i   => clk_i,
           rst_n_i => rst_n_i,
           len_i   => wb_trig_rcv_len_4_7((8*(i-4)+7) downto 8*(i-4)),
           data_i  => extended_rcv(i),
