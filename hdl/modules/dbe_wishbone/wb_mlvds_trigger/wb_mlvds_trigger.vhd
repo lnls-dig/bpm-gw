@@ -137,12 +137,12 @@ architecture rtl of wb_mlvds_trigger is
 
   component extend_pulse_dyn is
     generic (
-      g_max_width : natural);
+      g_width_bus_size : natural);
     port (
       clk_i         : in  std_logic;
       rst_n_i       : in  std_logic;
       pulse_i       : in  std_logic;
-      pulse_width_i : in  natural;
+      pulse_width_i : in  unsigned(g_width_bus_size-1 downto 0);
       extended_o    : out std_logic := '0');
   end component extend_pulse_dyn;
 
@@ -217,12 +217,12 @@ begin  -- architecture rtl
 
       extend_pulse_dyn_1 : entity work.extend_pulse_dyn
         generic map (
-          g_max_width => g_max_width)
+          g_width_bus_size => g_width_bus_size)
         port map (
-          clk_i         => clk_sys_i,
+          clk_i         => clk_i,
           rst_n_i       => rst_n_i,
           pulse_i       => pulses_transm(i),
-          pulse_width_i => wb_trig_transm_len_0_3((8*i+7) downto 8*i),
+          pulse_width_i => unsigned(wb_trig_transm_len_0_3((8*i+7) downto 8*i)),
           extended_o    => extended_transm(i));
 
       trigger_rcv_1 : entity work.trigger_rcv
@@ -243,12 +243,12 @@ begin  -- architecture rtl
 
       extend_pulse_dyn_1 : entity work.extend_pulse_dyn
         generic map (
-          g_max_width => g_max_width)
+          g_width_bus_size => g_width_bus_size)
         port map (
-          clk_i         => clk_sys_i,
+          clk_i         => clk_i,
           rst_n_i       => rst_n_i,
           pulse_i       => pulses_transm(i),
-          pulse_width_i => wb_trig_transm_len_4_7((8*(i-4)+7) downto 8*(i-4)),
+          pulse_width_i => unsigned(wb_trig_transm_len_4_7((8*(i-4)+7) downto 8*(i-4))),
           extended_o    => extended_transm(i));
 
       trigger_rcv_1 : entity work.trigger_rcv

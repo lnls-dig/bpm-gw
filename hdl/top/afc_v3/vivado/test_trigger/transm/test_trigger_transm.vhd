@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2015-12-09
--- Last update: 2016-01-07
+-- Last update: 2016-01-27
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ architecture structure of test_trigger_transm is
 
   constant c_glitch_len_width : positive := 8;
   constant c_count_width      : positive := 32;
+  constant c_width_bus_size   : positive := 8;
 
   signal direction      : std_logic_vector(7 downto 0);
   signal length         : std_logic_vector(c_glitch_len_width-1 downto 0);
@@ -87,14 +88,15 @@ architecture structure of test_trigger_transm is
       count_o : out std_logic_vector(g_output_width-1 downto 0));
   end component counter;
 
+
   component extend_pulse_dyn is
     generic (
-      g_max_width : natural);
+      g_width_bus_size : natural);
     port (
       clk_i         : in  std_logic;
       rst_n_i       : in  std_logic;
       pulse_i       : in  std_logic;
-      pulse_width_i : in  natural;
+      pulse_width_i : in  unsigned(g_width_bus_size-1 downto 0);
       extended_o    : out std_logic := '0');
   end component extend_pulse_dyn;
 
@@ -203,14 +205,15 @@ begin  -- architecture behav
   end generate generate_counter;
 
   extender : for i in c_glitch_len_width-1 downto 0 generate
-    extend_pulse_dyn_1 : extend_pulse_dyn
+
+    extend_pulse_dyn_1: extend_pulse_dyn
       generic map (
-        g_max_width => 1000)
+        g_width_bus_size => c_width_bus_size)
       port map (
         clk_i         => clk_100mhz,
         rst_n_i       => rst_n,
         pulse_i       => pulse(i),
-        pulse_width_i => to_integer(unsigned(pulse_width)),
+        pulse_width_i => unsigned(pulse_width),
         extended_o    => pulse_extended(i));
 
   end generate extender;

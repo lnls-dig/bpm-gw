@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-01-22
+-- Last update: 2016-01-27
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -44,20 +44,20 @@ entity extend_pulse_dyn is
 
   generic (
     -- output pulse width in clk_i cycles
-    g_max_width : natural := 1000
+    g_width_bus_size : natural := 32
     );
   port (
     clk_i         : in  std_logic;
     rst_n_i       : in  std_logic;
     pulse_i       : in  std_logic;
-    pulse_width_i : in  natural;
+    pulse_width_i : in  unsigned(g_width_bus_size-1 downto 0);
     -- extended output pulse
     extended_o    : out std_logic := '0');
 end extend_pulse_dyn;
 
 architecture rtl of extend_pulse_dyn is
 
-  signal cntr         : unsigned(32-1 downto 0);
+  signal cntr         : unsigned(g_width_bus_size-1 downto 0);
   signal extended_int : std_logic;
 
 begin  -- rtl
@@ -70,7 +70,7 @@ begin  -- rtl
     elsif clk_i'event and clk_i = '1' then  -- rising clock edge
       if(pulse_i = '1') then
         extended_int <= '1';
-        cntr         <= to_unsigned(pulse_width_i - 2, cntr'length);
+        cntr         <= pulse_width_i - 2;
       elsif cntr /= to_unsigned(0, cntr'length) then
         cntr <= cntr - 1;
       else
