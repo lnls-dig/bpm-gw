@@ -80,19 +80,19 @@ entity wb_mlvds_trigger is
       -- External ports
       -----------------------------
 
-      -- Trigger
-      fmc_trig_dir_o  : out std_logic_vector(g_trig_num-1 downto 0);
-      fmc_trig_term_o : out std_logic_vector(g_trig_num-1 downto 0);
-
-      fmc_trig_dif_p_b : inout std_logic_vector(g_trig_num-1 downto 0);
-      fmc_trig_dif_n_b : inout std_logic_vector(g_trig_num-1 downto 0);
-
-      fmc_trig_pulse_b : inout std_logic_vector(g_trig_num-1 downto 0);
 
       );
 
 end wb_mlvds_trigger;
     g_width_bus_size       : positive := 8;
+    ---- Trigger
+    trig_dir_o  : out std_logic_vector(g_trig_num-1 downto 0);
+    trig_term_o : out std_logic_vector(g_trig_num-1 downto 0);
+
+    trig_pulse_b    : inout std_logic_vector(g_trig_num-1 downto 0);
+    trig_extended_b : inout std_logic_vector(g_trig_num-1 downto 0)
+    );
+
 
 architecture rtl of wb_mlvds_trigger is
 
