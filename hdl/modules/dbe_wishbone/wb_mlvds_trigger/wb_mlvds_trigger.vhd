@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-01-26
+-- Last update: 2016-01-27
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -59,32 +59,27 @@ entity wb_mlvds_trigger is
   port (
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
+
+    -------------------------------
+    ---- Wishbone Control Interface signals
+    -------------------------------
+
     wb_adr_i   : in  std_logic_vector(2 downto 0)  := (others => '0');
     wb_dat_i   : in  std_logic_vector(31 downto 0) := (others => '0');
     wb_dat_o   : out std_logic_vector(31 downto 0);
     wb_sel_i   : in  std_logic_vector(3 downto 0)  := (others => '0');
+    wb_we_i    : in  std_logic                     := '0';
+    wb_cyc_i   : in  std_logic                     := '0';
+    wb_stb_i   : in  std_logic                     := '0';
+    wb_ack_o   : out std_logic;
+    wb_err_o   : out std_logic;
+    wb_rty_o   : out std_logic;
+    wb_stall_o : out std_logic;
 
-      -----------------------------
-      -- Wishbone Control Interface signals
-      -----------------------------
+    -------------------------------
+    ---- External ports
+    -------------------------------
 
-      wb_we_i    : in  std_logic                                             := '0';
-      wb_cyc_i   : in  std_logic                                             := '0';
-      wb_stb_i   : in  std_logic                                             := '0';
-      wb_ack_o   : out std_logic;
-      wb_err_o   : out std_logic;
-      wb_rty_o   : out std_logic;
-      wb_stall_o : out std_logic;
-
-      -----------------------------
-      -- External ports
-      -----------------------------
-
-
-      );
-
-end wb_mlvds_trigger;
-    g_width_bus_size       : positive := 8;
     ---- Trigger
     trig_dir_o  : out std_logic_vector(g_trig_num-1 downto 0);
     trig_term_o : out std_logic_vector(g_trig_num-1 downto 0);
@@ -93,6 +88,7 @@ end wb_mlvds_trigger;
     trig_extended_b : inout std_logic_vector(g_trig_num-1 downto 0)
     );
 
+end entity wb_mlvds_trigger;
 
 architecture rtl of wb_mlvds_trigger is
 
