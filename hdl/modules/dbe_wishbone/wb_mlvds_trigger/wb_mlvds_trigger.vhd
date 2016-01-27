@@ -48,12 +48,13 @@ library unisim;
 use unisim.vcomponents.all;
 
 entity wb_mlvds_trigger is
-  generic
-    (
-      constant g_rcv_len_bus_width    : positive := 8;
-      constant g_transm_len_bus_width : positive := 8;
-      constant g_sync_edge            : string   := "positive";
-      constant g_trig_num             : positive := 8);
+  generic (
+    g_width_bus_size       : positive := 8;
+    g_rcv_len_bus_width    : positive := 8;
+    g_transm_len_bus_width : positive := 8;
+    g_sync_edge            : string   := "positive";
+    g_trig_num             : positive := 8
+    );
 
   port
     (
