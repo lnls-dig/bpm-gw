@@ -56,10 +56,9 @@ entity wb_mlvds_trigger is
     g_trig_num             : positive := 8
     );
 
-  port
-    (
-      sys_clk_i   : in std_logic;
-      sys_rst_n_i : in std_logic;
+  port (
+    clk_i   : in std_logic;
+    rst_n_i : in std_logic;
     wb_adr_i   : in  std_logic_vector(2 downto 0)  := (others => '0');
     wb_dat_i   : in  std_logic_vector(31 downto 0) := (others => '0');
     wb_dat_o   : out std_logic_vector(31 downto 0);
