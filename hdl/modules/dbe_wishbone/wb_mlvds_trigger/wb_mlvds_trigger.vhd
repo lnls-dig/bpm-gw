@@ -60,15 +60,15 @@ entity wb_mlvds_trigger is
     (
       sys_clk_i   : in std_logic;
       sys_rst_n_i : in std_logic;
+    wb_adr_i   : in  std_logic_vector(2 downto 0)  := (others => '0');
+    wb_dat_i   : in  std_logic_vector(31 downto 0) := (others => '0');
+    wb_dat_o   : out std_logic_vector(31 downto 0);
+    wb_sel_i   : in  std_logic_vector(3 downto 0)  := (others => '0');
 
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
 
-      wb_adr_i   : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
-      wb_dat_i   : in  std_logic_vector(c_wishbone_data_width-1 downto 0)    := (others => '0');
-      wb_dat_o   : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-      wb_sel_i   : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0)  := (others => '0');
       wb_we_i    : in  std_logic                                             := '0';
       wb_cyc_i   : in  std_logic                                             := '0';
       wb_stb_i   : in  std_logic                                             := '0';
