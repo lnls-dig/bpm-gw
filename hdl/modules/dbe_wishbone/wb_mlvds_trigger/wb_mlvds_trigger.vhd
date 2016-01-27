@@ -50,7 +50,6 @@ use unisim.vcomponents.all;
 entity wb_mlvds_trigger is
   generic
     (
-      constant g_max_width            : natural  := 1000;
       constant g_rcv_len_bus_width    : positive := 8;
       constant g_transm_len_bus_width : positive := 8;
       constant g_sync_edge            : string   := "positive";
@@ -93,6 +92,7 @@ entity wb_mlvds_trigger is
       );
 
 end wb_mlvds_trigger;
+    g_width_bus_size       : positive := 8;
 
 architecture rtl of wb_mlvds_trigger is
 
@@ -253,32 +253,31 @@ begin  -- architecture rtl
 
     end generate ports_4_to_7;
 
+    --------------------------------
+    -- Connects cores to backplane
+    --------------------------------
 
     cmp_iobuf : iobuf
-      generic map (
-       --iostandard   => "BLVDS_25"      -- Specify the I/O standard
-        )
       port map (
-        o  => pulses_transm(i),         -- Buffer output for further use
-        io => fmc_trig_pulse_b(i),  -- inout (connect directly to top-level port)
-        i  => pulses_rcv(i),            -- Buffer input
+        o  => extended_rcv(i),          -- Buffer output for further use
+        io => trig_pulse_b(i),  -- inout (connect directly to top-level port)
+        i  => extended_transm(i),       -- Buffer input
         t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
         );
 
-    cmp_iobufds : iobufds
-      generic map (
-        diff_term    => true,   -- Differential Termination ("TRUE"/"FALSE")
-        ibuf_low_pwr => false,  -- Low Power - "TRUE", High Performance = "FALSE"
-        iostandard   => "BLVDS_25"      -- Specify the I/O standard
-        )
-      port map (
-        o   => extended_rcv(i),         -- Buffer output for further use
-        io  => fmc_trig_dif_p_b(i),  -- Diff_p inout (connect directly to top-level port)
-        iob => fmc_trig_dif_n_b(i),  -- Diff_n inout (connect directly to top-level port)
-        i   => extended_transm(i),      -- Buffer input
-        t   => trigger_dir_n(i)  -- 3-state enable input, high=input, low=output
-        );
+    --------------------------------
+    -- Connects cores to FPGA
+    --------------------------------
 
-  end generate trigger_rcv_transm_0_3;
+    mux_fpga : process(wb_trig_trigger_dir(i)) is
+    begin  -- process mux_fpga
+      if wb_trig_trigger_dir(i) = '1' then
+        trig_pulse_b(i) <= pulses_rcv(i);
+      else
+        pulses_transm(i) <= trig_pulse_b(i);
+      end if;
+    end process mux_fpga;
+
+  end generate trigger_rcv_transm;
 
 end architecture rtl;
