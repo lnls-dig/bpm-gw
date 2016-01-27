@@ -49,5 +49,20 @@ package dbe_common_pkg is
       data_i  : in  std_logic;
       pulse_o : out std_logic);
   end component;
+
+component extend_pulse_dyn
+
+  generic (
+    -- output pulse width in clk_i cycles
+    g_max_width : natural
+    );
+  port (
+    clk_i         : in  std_logic;
+    rst_n_i       : in  std_logic;
+    pulse_i       : in  std_logic;
+    pulse_width_i : in  natural;
+    -- extended output pulse
+    extended_o    : out std_logic);
+end component;
   
 end dbe_common_pkg;
