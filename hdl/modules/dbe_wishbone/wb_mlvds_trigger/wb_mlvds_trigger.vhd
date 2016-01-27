@@ -38,17 +38,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
--- Main Wishbone Definitions
-use work.wishbone_pkg.all;
--- Custom Wishbone Modules
-use work.dbe_wishbone_pkg.all;
--- Wishbone Stream Interface
---use work.wb_stream_pkg.all;
-use work.wb_stream_generic_pkg.all;
--- Register interface
-use work.wb_fmc_130m_4ch_csr_wbgen2_pkg.all;
--- FMC ADC package
-use work.fmc_adc_pkg.all;
 -- Reset Synch
 use work.dbe_common_pkg.all;
 -- General common cores
