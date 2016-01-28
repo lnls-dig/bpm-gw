@@ -255,11 +255,10 @@ begin  -- architecture rtl
     cmp_iobuf : iobuf
       port map (
         o  => extended_rcv(i),          -- Buffer output for further use
-        io => trig_pulse_b(i),  -- inout (connect directly to top-level port)
+        io => trig_extended_b(i),  -- inout (connect directly to top-level port)
         i  => extended_transm(i),       -- Buffer input
         t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
         );
-
 
   end generate trigger_rcv_transm;
 
