@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-01-27
+-- Last update: 2016-01-28
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -84,8 +84,9 @@ entity wb_mlvds_trigger is
     trig_dir_o  : out std_logic_vector(g_trig_num-1 downto 0);
     trig_term_o : out std_logic_vector(g_trig_num-1 downto 0);
 
-    trig_pulse_b    : inout std_logic_vector(g_trig_num-1 downto 0);
-    trig_extended_b : inout std_logic_vector(g_trig_num-1 downto 0)
+    trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
+    trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
+    trig_extended_b     : inout std_logic_vector(g_trig_num-1 downto 0)
     );
 
 end entity wb_mlvds_trigger;
@@ -156,10 +157,8 @@ architecture rtl of wb_mlvds_trigger is
   signal wb_trig_trigger_term     : std_logic_vector(7 downto 0);
   signal wb_trig_trigger_trig_val : std_logic_vector(7 downto 0);
 
-  signal pulses_rcv   : std_logic_vector(g_trig_num-1 downto 0);
-  signal extended_rcv : std_logic_vector(g_trig_num-1 downto 0);
 
-  signal pulses_transm   : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_rcv : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
   signal trigger_dir_n : std_logic_vector(g_trig_num-1 downto 0);
@@ -200,13 +199,13 @@ begin  -- architecture rtl
     -- Ports 0 to 3
     ports_0_to_3 : if i <= 3 generate
 
-      extend_pulse_dyn_1 : entity work.extend_pulse_dyn
+      trigger_transm : entity work.extend_pulse_dyn
         generic map (
           g_width_bus_size => g_width_bus_size)
         port map (
           clk_i         => clk_i,
           rst_n_i       => rst_n_i,
-          pulse_i       => pulses_transm(i),
+          pulse_i       => trig_pulse_transm_i(i),
           pulse_width_i => unsigned(wb_trig_transm_len_0_3((8*i+7) downto 8*i)),
           extended_o    => extended_transm(i));
 
@@ -219,20 +218,20 @@ begin  -- architecture rtl
           rst_n_i => rst_n_i,
           len_i   => wb_trig_rcv_len_0_3((8*i+7) downto 8*i),
           data_i  => extended_rcv(i),
-          pulse_o => pulses_rcv(i));
+          pulse_o => trig_pulse_rcv_o(i));
 
     end generate ports_0_to_3;
 
     -- Ports 4 to 7
     ports_4_to_7 : if i > 3 generate
 
-      extend_pulse_dyn_1 : entity work.extend_pulse_dyn
+      trigger_transm : entity work.extend_pulse_dyn
         generic map (
           g_width_bus_size => g_width_bus_size)
         port map (
           clk_i         => clk_i,
           rst_n_i       => rst_n_i,
-          pulse_i       => pulses_transm(i),
+          pulse_i       => trig_pulse_transm_i(i),
           pulse_width_i => unsigned(wb_trig_transm_len_4_7((8*(i-4)+7) downto 8*(i-4))),
           extended_o    => extended_transm(i));
 
@@ -245,7 +244,7 @@ begin  -- architecture rtl
           rst_n_i => rst_n_i,
           len_i   => wb_trig_rcv_len_4_7((8*(i-4)+7) downto 8*(i-4)),
           data_i  => extended_rcv(i),
-          pulse_o => pulses_rcv(i));
+          pulse_o => trig_pulse_rcv_o(i));
 
     end generate ports_4_to_7;
 
@@ -261,18 +260,6 @@ begin  -- architecture rtl
         t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
         );
 
-    --------------------------------
-    -- Connects cores to FPGA
-    --------------------------------
-
-    mux_fpga : process(wb_trig_trigger_dir(i)) is
-    begin  -- process mux_fpga
-      if wb_trig_trigger_dir(i) = '1' then
-        trig_pulse_b(i) <= pulses_rcv(i);
-      else
-        pulses_transm(i) <= trig_pulse_b(i);
-      end if;
-    end process mux_fpga;
 
   end generate trigger_rcv_transm;
 
