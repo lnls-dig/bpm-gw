@@ -52,7 +52,6 @@ entity DMA_Calculate is
     Leng_Hi19b_True : in std_logic;
     Leng_Lo7b_True  : in std_logic;
 
-
     -- Parameters fed to DMA_FSM
     DMA_PA_Loaded : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     DMA_PA_Var    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -60,7 +59,6 @@ entity DMA_Calculate is
 
     DMA_BDA_fsm    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
     BDA_is_64b_fsm : out std_logic;
-
 
     DMA_Snout_Length : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
     DMA_Body_Length  : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
@@ -88,8 +86,6 @@ entity DMA_Calculate is
     State_Is_LoadParam : in std_logic;
     State_Is_Snout     : in std_logic;
     State_Is_Body      : in std_logic;
---      State_Is_Tail      : IN  std_logic;
-
 
     -- Additional
     Param_Max_Cfg : in std_logic_vector(2 downto 0);
@@ -100,7 +96,6 @@ entity DMA_Calculate is
     );
 
 end entity DMA_Calculate;
-
 
 
 architecture Behavioral of DMA_Calculate is
@@ -264,196 +259,173 @@ begin
 --     in case Pause command comes.
 --
   Syn_Param_Capture :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Addr_Inc_i       <= '0';
-      use_PA           <= '0';
-      Dex_is_Last      <= '0';
-      Engine_Ends      <= '1';
-      DMA_BAR_Number_i <= (others => '0');
-
-      DMA_BDA_fsm_i    <= (others => '0');
-      BDA_is_64b_fsm_i <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_Start = '1' or DMA_Start2 = '1' then
-        Addr_Inc_i       <= DMA_Control_i(CINT_BIT_DMA_CTRL_AINC);
-        use_PA           <= DMA_Control_i(CINT_BIT_DMA_CTRL_UPA);
-        Dex_is_Last      <= DMA_Control_i(CINT_BIT_DMA_CTRL_LAST);
-        Engine_Ends      <= DMA_Control_i(CINT_BIT_DMA_CTRL_END);
-        DMA_BAR_Number_i <= DMA_Control_i(CINT_BIT_DMA_CTRL_BAR_TOP downto CINT_BIT_DMA_CTRL_BAR_BOT);
-
-        DMA_BDA_fsm_i    <= DMA_BDA_i;
-        BDA_is_64b_fsm_i <= BDA_is_64b;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Addr_Inc_i       <= '0';
+        use_PA           <= '0';
+        Dex_is_Last      <= '0';
+        Engine_Ends      <= '1';
+        DMA_BAR_Number_i <= (others => '0');
+        DMA_BDA_fsm_i    <= (others => '0');
+        BDA_is_64b_fsm_i <= '0';
       else
-        Addr_Inc_i       <= Addr_Inc_i;
-        use_PA           <= use_PA;
-        Dex_is_Last      <= Dex_is_Last;
-        Engine_Ends      <= Engine_Ends;
-        DMA_BAR_Number_i <= DMA_BAR_Number_i;
-
-        DMA_BDA_fsm_i    <= DMA_BDA_fsm_i;
-        BDA_is_64b_fsm_i <= BDA_is_64b_fsm_i;
+        if DMA_Start = '1' or DMA_Start2 = '1' then
+          Addr_Inc_i       <= DMA_Control_i(CINT_BIT_DMA_CTRL_AINC);
+          use_PA           <= DMA_Control_i(CINT_BIT_DMA_CTRL_UPA);
+          Dex_is_Last      <= DMA_Control_i(CINT_BIT_DMA_CTRL_LAST);
+          Engine_Ends      <= DMA_Control_i(CINT_BIT_DMA_CTRL_END);
+          DMA_BAR_Number_i <= DMA_Control_i(CINT_BIT_DMA_CTRL_BAR_TOP downto CINT_BIT_DMA_CTRL_BAR_BOT);
+  
+          DMA_BDA_fsm_i    <= DMA_BDA_i;
+          BDA_is_64b_fsm_i <= BDA_is_64b;
+        else
+          Addr_Inc_i       <= Addr_Inc_i;
+          use_PA           <= use_PA;
+          Dex_is_Last      <= Dex_is_Last;
+          Engine_Ends      <= Engine_Ends;
+          DMA_BAR_Number_i <= DMA_BAR_Number_i;
+  
+          DMA_BDA_fsm_i    <= DMA_BDA_fsm_i;
+          BDA_is_64b_fsm_i <= BDA_is_64b_fsm_i;
+        end if;
       end if;
-
     end if;
   end process;
 
---   Addr_Inc_i         <= DMA_Control_i(CINT_BIT_DMA_CTRL_AINC);
---   use_PA             <= DMA_Control_i(CINT_BIT_DMA_CTRL_UPA);
---   Dex_is_Last        <= DMA_Control_i(CINT_BIT_DMA_CTRL_LAST);
---   Engine_Ends        <= DMA_Control_i(CINT_BIT_DMA_CTRL_END);
---   use_Irpt_Done      <= not DMA_Control_i(CINT_BIT_DMA_CTRL_EDI);
-
-
   -- Means there is consecutive descriptor(s)
   ThereIs_Dex_i <= not Dex_is_Last and not Engine_Ends;
-
 
 -- ---------------------------------------------------------------
 --  PA_i selection
 --
   Syn_Calc_DMA_PA :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_current <= (others => '0');
---         DMA_BAR_Number_i     <= (Others=>'0');
-      PA_is_taken    <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_Start = '1' and PA_is_taken = '0' then
-        DMA_PA_current <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
-        PA_is_taken    <= '1';
-      elsif DMA_Start2 = '1' and PA_is_taken = '0' and DMA_Control_i(CINT_BIT_DMA_CTRL_UPA) = '1' then
-        DMA_PA_current <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
-        PA_is_taken    <= '1';
-      elsif DMA_Start2 = '1' and PA_is_taken = '0' and DMA_Control_i(CINT_BIT_DMA_CTRL_UPA) = '0' then
-        DMA_PA_current(C_DBUS_WIDTH-1 downto 0) <= DMA_PA_next;
-        PA_is_taken                             <= '1';
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_PA_current <= (others => '0');
+        PA_is_taken    <= '0';
       else
-        DMA_PA_current <= DMA_PA_current;
-        if DMA_Start = '0' and DMA_Start2 = '0' then
-          PA_is_taken <= '0';
+        if DMA_Start = '1' and PA_is_taken = '0' then
+          DMA_PA_current <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
+          PA_is_taken    <= '1';
+        elsif DMA_Start2 = '1' and PA_is_taken = '0' and DMA_Control_i(CINT_BIT_DMA_CTRL_UPA) = '1' then
+          DMA_PA_current <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
+          PA_is_taken    <= '1';
+        elsif DMA_Start2 = '1' and PA_is_taken = '0' and DMA_Control_i(CINT_BIT_DMA_CTRL_UPA) = '0' then
+          DMA_PA_current(C_DBUS_WIDTH-1 downto 0) <= DMA_PA_next;
+          PA_is_taken                             <= '1';
         else
-          PA_is_taken <= PA_is_taken;
+          DMA_PA_current <= DMA_PA_current;
+          if DMA_Start = '0' and DMA_Start2 = '0' then
+            PA_is_taken <= '0';
+          else
+            PA_is_taken <= PA_is_taken;
+          end if;
         end if;
       end if;
-
     end if;
-
   end process;
-
 
 -- ---------------------------------------------------------------
 -- PA_next Calculation
 --
   Syn_Calc_DMA_PA_next :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_next <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_Start = '1' and PA_is_taken = '0' then
-        if DMA_Control_i(CINT_BIT_DMA_CTRL_AINC) = '1' then
-          DMA_PA_next(CBIT_CARRY-1 downto 0)            <= Carry_PA_plus_Leng(CBIT_CARRY-1 downto 0);
-          DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= Leng_Hi_plus_PA_Hi
-                                                           + Carry_PA_plus_Leng(CBIT_CARRY);
-        else
-          DMA_PA_next <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
-        end if;
-
-      elsif DMA_Start2 = '1' and PA_is_taken = '0' then
-        if DMA_Control_i(CINT_BIT_DMA_CTRL_AINC) = '1' then
-          DMA_PA_next(CBIT_CARRY-1 downto 0)            <= Carry_PAx_plus_Leng(CBIT_CARRY-1 downto 0);
-          DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= Leng_Hi_plus_PAx_Hi
-                                                           + Carry_PAx_plus_Leng(CBIT_CARRY);
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_PA_next <= (others => '0');
+      else
+        if DMA_Start = '1' and PA_is_taken = '0' then
+          if DMA_Control_i(CINT_BIT_DMA_CTRL_AINC) = '1' then
+            DMA_PA_next(CBIT_CARRY-1 downto 0)            <= Carry_PA_plus_Leng(CBIT_CARRY-1 downto 0);
+            DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= Leng_Hi_plus_PA_Hi
+                                                             + Carry_PA_plus_Leng(CBIT_CARRY);
+          else
+            DMA_PA_next <= DMA_PA_i(C_DBUS_WIDTH-1 downto 2) &"00";
+          end if;
+  
+        elsif DMA_Start2 = '1' and PA_is_taken = '0' then
+          if DMA_Control_i(CINT_BIT_DMA_CTRL_AINC) = '1' then
+            DMA_PA_next(CBIT_CARRY-1 downto 0)            <= Carry_PAx_plus_Leng(CBIT_CARRY-1 downto 0);
+            DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= Leng_Hi_plus_PAx_Hi
+                                                             + Carry_PAx_plus_Leng(CBIT_CARRY);
+          else
+            DMA_PA_next <= DMA_PA_next;
+          end if;
         else
           DMA_PA_next <= DMA_PA_next;
         end if;
-      else
-        DMA_PA_next <= DMA_PA_next;
       end if;
-
     end if;
-
   end process;
-
 
 -- ---------------------------------------------------------------
 -- Carry_PA_plus_Leng(16 downto 0)
 --
   Syn_Calc_Carry_PA_plus_Leng :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Carry_PA_plus_Leng <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Carry_PA_plus_Leng <= ('0'& DMA_PA_i(CBIT_CARRY-1 downto 2) &"00")
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Carry_PA_plus_Leng <= (others => '0');
+      else
+        Carry_PA_plus_Leng <= ('0'& DMA_PA_i(CBIT_CARRY-1 downto 2) &"00")
                                + ('0'& DMA_Length_i(CBIT_CARRY-1 downto 2) &"00");
+      end if;
     end if;
-
   end process;
-
 
 -- ---------------------------------------------------------------
 -- Carry_PAx_plus_Leng(16 downto 0)
 --
   Syn_Calc_Carry_PAx_plus_Leng :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Carry_PAx_plus_Leng <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Carry_PAx_plus_Leng <= ('0'& DMA_PA_next (CBIT_CARRY-1 downto 2) &"00")
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Carry_PAx_plus_Leng <= (others => '0');
+      else
+        Carry_PAx_plus_Leng <= ('0'& DMA_PA_next (CBIT_CARRY-1 downto 2) &"00")
                                + ('0'& DMA_Length_i(CBIT_CARRY-1 downto 2) &"00");
+      end if;
     end if;
-
   end process;
-
 
 -- ---------------------------------------------------------------
 -- Leng_Hi_plus_PA_Hi(31 downto 16)
 --
   Syn_Calc_Leng_Hi_plus_PA_Hi :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Leng_Hi_plus_PA_Hi <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Leng_Hi_plus_PA_Hi <= DMA_Length_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
-                                      + DMA_PA_i(C_DBUS_WIDTH-1 downto CBIT_CARRY);
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Leng_Hi_plus_PA_Hi <= (others => '0');
+      else
+        Leng_Hi_plus_PA_Hi <= DMA_Length_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
+                              + DMA_PA_i(C_DBUS_WIDTH-1 downto CBIT_CARRY);
+      end if;
     end if;
-
   end process;
-
 
 -- ---------------------------------------------------------------
 -- Leng_Hi_plus_PAx_Hi(31 downto 16)
 --
   Syn_Calc_Leng_Hi_plus_PAx_Hi :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Leng_Hi_plus_PAx_Hi <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Leng_Hi_plus_PAx_Hi <= DMA_Length_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
-                                      + DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY);
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Leng_Hi_plus_PAx_Hi <= (others => '0');
+      else
+        Leng_Hi_plus_PAx_Hi <= DMA_Length_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
+                                + DMA_PA_next(C_DBUS_WIDTH-1 downto CBIT_CARRY);
+      end if;
     end if;
-
   end process;
-
 
 -- -----------------------------------------------------------------------------------------------------------------------------------
   DMA_Leng_Left_Msk  <= DMA_Length_i(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_left;
@@ -478,21 +450,20 @@ begin
 -- Synchronous Register: Leng_Info(Compressed Length Information)
 ---
   Syn_Calc_Parameter_Leng_Info :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Leng_Two  <= '0';
-      Leng_One  <= '0';
-      Leng_nint <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Leng_Two  <= Leng_Hi19b_True or Lo_Leng_Left_Msk_is_True;
-      Leng_One  <= Lo_Leng_Mid_Msk_is_True;
-      Leng_nint <= Leng_Lo7b_True or Lo_Leng_Right_Msk_is_True;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Leng_Two  <= '0';
+        Leng_One  <= '0';
+        Leng_nint <= '0';
+      else
+        Leng_Two  <= Leng_Hi19b_True or Lo_Leng_Left_Msk_is_True;
+        Leng_One  <= Lo_Leng_Mid_Msk_is_True;
+        Leng_nint <= Leng_Lo7b_True or Lo_Leng_Right_Msk_is_True;
+      end if;
     end if;
   end process;
-
 
 -- -----------------------------------------------------------------------------------------------------------------------------------
   ALc_B_wire <= '0' when (ALc(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_mid) = C_ALL_ZEROS(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT)
@@ -506,23 +477,20 @@ begin
 -- Synchronous Register: ALc (Address-Length combination)
 ---
   Syn_Calc_Parameter_ALc :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      ALc   <= (others => '0');
-      ALc_B <= '0';
-      ALc_T <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      ALc   <= DMA_Length_Msk + DMA_HA_Msk;
-      ALc_B <= ALc_B_wire;
-      ALc_T <= ALc_T_wire;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        ALc   <= (others => '0');
+        ALc_B <= '0';
+        ALc_T <= '0';
+      else
+        ALc   <= DMA_Length_Msk + DMA_HA_Msk;
+        ALc_B <= ALc_B_wire;
+        ALc_T <= ALc_T_wire;
+      end if;
     end if;
-
   end process;
-
 
   -- concatenation of the Length information
   Length_analysis <= Leng_Two & Leng_One & Leng_nint;
@@ -583,145 +551,134 @@ begin
 --                       ThereIs_Tail
 --
   Syn_Calc_Parameters_SBT :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      ThereIs_Snout_i <= '0';
-      ThereIs_Body_i  <= '0';
-      ThereIs_Tail_i  <= '0';
-
-      Snout_Only <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      ThereIs_Snout_i <= Snout_Body_Tail(2);
-      ThereIs_Body_i  <= Snout_Body_Tail(1);
-      ThereIs_Tail_i  <= Snout_Body_Tail(0);
-
-      Snout_Only <= ALc_T and not Snout_Body_Tail(0);
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        ThereIs_Snout_i <= '0';
+        ThereIs_Body_i  <= '0';
+        ThereIs_Tail_i  <= '0';
+        Snout_Only <= '0';
+      else
+        ThereIs_Snout_i <= Snout_Body_Tail(2);
+        ThereIs_Body_i  <= Snout_Body_Tail(1);
+        ThereIs_Tail_i  <= Snout_Body_Tail(0);
+        Snout_Only <= ALc_T and not Snout_Body_Tail(0);
+      end if;
     end if;
-
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  HA_gap
 --
   Syn_Calc_HA_gap :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      HA_gap <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      HA_gap <= Max_TLP_Size - DMA_HA_Msk;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        HA_gap <= (others => '0');
+      else
+        HA_gap <= Max_TLP_Size - DMA_HA_Msk;
+      end if;
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_PA_Snout_Carry
 --
   FSM_Calc_DMA_PA_Snout_Carry :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_Snout_Carry <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      DMA_PA_Snout_Carry <= ('0'& DMA_PA_current(CBIT_CARRY-1 downto 0)) + HA_gap;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_PA_Snout_Carry <= (others => '0');
+      else
+        DMA_PA_Snout_Carry <= ('0'& DMA_PA_current(CBIT_CARRY-1 downto 0)) + HA_gap;
+      end if;
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_PA_Body_Carry
 --
   FSM_Calc_DMA_PA_Body_Carry :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_Body_Carry <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      DMA_PA_Body_Carry <= ('0'& DMA_PA_Var_i(CBIT_CARRY-1 downto 0)) + Max_TLP_Size;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_PA_Body_Carry <= (others => '0');
+      else
+        DMA_PA_Body_Carry <= ('0'& DMA_PA_Var_i(CBIT_CARRY-1 downto 0)) + Max_TLP_Size;
+      end if;
     end if;
   end process;
-
 
 -- ------------------------------------------------------------------
 -- Synchronous Register: Length_minus
 -- 
   Sync_Calc_Length_minus :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      Length_minus <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      Length_minus <= DMA_Length_i - Max_TLP_Size;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        Length_minus <= (others => '0');
+      else
+        Length_minus <= DMA_Length_i - Max_TLP_Size;
+      end if;
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_BC_Carry
 --
   FSM_Calc_DMA_BC_Carry :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_BC_Carry <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-      DMA_BC_Carry <= ('0'& DMA_Byte_Counter(CBIT_CARRY-1 downto 0)) - Max_TLP_Size;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_BC_Carry <= (others => '0');
+      else
+        DMA_BC_Carry <= ('0'& DMA_Byte_Counter(CBIT_CARRY-1 downto 0)) - Max_TLP_Size;
+      end if;
     end if;
   end process;
-
 
 -- --------------------------------------------
 -- Synchronous reg: DMA_Snout_Length
 --                  DMA_Tail_Length
 --
   FSM_Calc_DMA_Snout_Tail_Lengths :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_Snout_Length_i <= (others => '0');
-      DMA_Tail_Length_i  <= (others => '0');
-      raw_Tail_Length    <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      DMA_Tail_Length_i(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) <= (raw_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto C_MAXSIZE_FLD_BIT_BOT)
-                                                                and mxsz_right(C_TLP_FLD_WIDTH_OF_LENG+1 downto C_MAXSIZE_FLD_BIT_BOT)
-                                                                ) &  raw_Tail_Length( C_MAXSIZE_FLD_BIT_BOT-1 downto 0);
-      if State_Is_LoadParam = '1' then
-        raw_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) <= DMA_Length_Msk(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
-                                                               + DMA_HA_Msk(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
-        if Snout_Only = '1' then
-          DMA_Snout_Length_i <= DMA_Length_i(C_MAXSIZE_FLD_BIT_TOP downto 2) &"00";
-        else
-          DMA_Snout_Length_i <= Max_TLP_Size - DMA_HA_Msk;
-        end if;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_Snout_Length_i <= (others => '0');
+        DMA_Tail_Length_i  <= (others => '0');
+        raw_Tail_Length    <= (others => '0');
       else
-        DMA_Snout_Length_i <= DMA_Snout_Length_i;
-        raw_Tail_Length    <= raw_Tail_Length;
-
+        DMA_Tail_Length_i(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) <= (raw_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto C_MAXSIZE_FLD_BIT_BOT)
+                                                                  and mxsz_right(C_TLP_FLD_WIDTH_OF_LENG+1 downto C_MAXSIZE_FLD_BIT_BOT)
+                                                                  ) &  raw_Tail_Length( C_MAXSIZE_FLD_BIT_BOT-1 downto 0);
+        if State_Is_LoadParam = '1' then
+          raw_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0) <= DMA_Length_Msk(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0)
+                                                                 + DMA_HA_Msk(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
+          if Snout_Only = '1' then
+            DMA_Snout_Length_i <= DMA_Length_i(C_MAXSIZE_FLD_BIT_TOP downto 2) &"00";
+          else
+            DMA_Snout_Length_i <= Max_TLP_Size - DMA_HA_Msk;
+          end if;
+  
+        else
+          DMA_Snout_Length_i <= DMA_Snout_Length_i;
+          raw_Tail_Length    <= raw_Tail_Length;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous Delays: 
@@ -731,290 +688,256 @@ begin
   Syn_Delay_State_is_x :
   process (dma_clk)
   begin
-    if dma_clk'event and dma_clk = '1' then
+    if rising_edge(dma_clk) then
       State_Is_Snout_r1 <= State_Is_Snout;
       State_Is_Body_r1  <= State_Is_Body;
     end if;
-
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_HA_Carry32
 --
   FSM_Calc_DMA_HA_Carry32 :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_HA_Carry32 <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        DMA_HA_Carry32 <= '0' & DMA_HA_i(C_DBUS_WIDTH/2-1 downto 2) & "00";  -- temp
-
-      elsif State_Is_Snout = '1' or State_Is_Body = '1' then
-        DMA_HA_Carry32(C_DBUS_WIDTH/2 downto C_MAXSIZE_FLD_BIT_BOT) <= ('0'& DMA_HA_Var_i(C_DBUS_WIDTH/2-1 downto C_MAXSIZE_FLD_BIT_TOP+1) &
-                                                                         (DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and not mxsz_right)
-                                                                         ) + mxsz_mid;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+          DMA_HA_Carry32 <= (others => '0');
       else
-        DMA_HA_Carry32 <= DMA_HA_Carry32;
-
+        if State_Is_LoadParam = '1' then
+          DMA_HA_Carry32 <= '0' & DMA_HA_i(C_DBUS_WIDTH/2-1 downto 2) & "00";  -- temp
+        elsif State_Is_Snout = '1' or State_Is_Body = '1' then
+          DMA_HA_Carry32(C_DBUS_WIDTH/2 downto C_MAXSIZE_FLD_BIT_BOT) <= ('0'& DMA_HA_Var_i(C_DBUS_WIDTH/2-1 downto C_MAXSIZE_FLD_BIT_TOP+1) &
+                                                                           (DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and not mxsz_right)
+                                                                           ) + mxsz_mid;
+        else
+          DMA_HA_Carry32 <= DMA_HA_Carry32;
+        end if;
       end if;
-
     end if;
   end process;
-
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_HA_Var
 --
   FSM_Calc_DMA_HA_Var :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_HA_Var_i <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        DMA_HA_Var_i <= DMA_HA_i(C_DBUS_WIDTH-1 downto 2) & "00";  -- temp
-
-      elsif State_Is_Snout_r1 = '1' or State_Is_Body_r1 = '1' then
---         elsif State_Is_Snout = '1' or State_Is_Body  = '1' then
-        DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2) <= DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2)
-                                                               + DMA_HA_Carry32(C_DBUS_WIDTH/2);
-
-        DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_BOT) <= (DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1)
-                                                                       & (DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and not mxsz_right))
-                                                                      + mxsz_mid;
-        DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_BOT-1 downto 0) <= (others => '0');  -- MaxSize aligned
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_HA_Var_i <= (others => '0');
       else
-        DMA_HA_Var_i <= DMA_HA_Var_i;
-
+        if State_Is_LoadParam = '1' then
+          DMA_HA_Var_i <= DMA_HA_i(C_DBUS_WIDTH-1 downto 2) & "00";  -- temp
+        elsif State_Is_Snout_r1 = '1' or State_Is_Body_r1 = '1' then
+          DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2) <= DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_DBUS_WIDTH/2)
+                                                                 + DMA_HA_Carry32(C_DBUS_WIDTH/2);
+          DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_BOT) <= (DMA_HA_Var_i(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1)
+                                                                         & (DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and not mxsz_right))
+                                                                        + mxsz_mid;
+          DMA_HA_Var_i(C_MAXSIZE_FLD_BIT_BOT-1 downto 0) <= (others => '0');  -- MaxSize aligned
+        else
+          DMA_HA_Var_i <= DMA_HA_Var_i;
+  
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  HA64bit
 --
   FSM_Calc_HA64bit :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      HA64bit_i <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        HA64bit_i <= HA_is_64b;
-      elsif DMA_HA_Carry32(C_DBUS_WIDTH/2) = '1' then
-        HA64bit_i <= '1';
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        HA64bit_i <= '0';
       else
-        HA64bit_i <= HA64bit_i;
+        if State_Is_LoadParam = '1' then
+          HA64bit_i <= HA_is_64b;
+        elsif DMA_HA_Carry32(C_DBUS_WIDTH/2) = '1' then
+          HA64bit_i <= '1';
+        else
+          HA64bit_i <= HA64bit_i;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_PA_Var
 --
   FSM_Calc_DMA_PA_Var :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_Var_i <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        if Addr_Inc_i = '1' and ThereIs_Snout_i = '1' then
-          DMA_PA_Var_i(CBIT_CARRY-1 downto 0) <= DMA_PA_current(CBIT_CARRY-1 downto 0)
-                                                   + HA_gap(C_MAXSIZE_FLD_BIT_TOP downto 0);
-          DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_current(C_DBUS_WIDTH-1 downto CBIT_CARRY);
-        else
-          DMA_PA_Var_i(C_DBUS_WIDTH-1 downto 0) <= DMA_PA_current(C_DBUS_WIDTH-1 downto 0);
-        end if;
-
-      elsif State_Is_Snout_r1 = '1' then
-----         elsif State_Is_Snout = '1' then
-        if Addr_Inc_i = '1' then
-          DMA_PA_Var_i(CBIT_CARRY-1 downto 0)            <= DMA_PA_Var_i(CBIT_CARRY-1 downto 0);
-          DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
-                                                             + DMA_PA_Snout_Carry(CBIT_CARRY);
-        else
-          DMA_PA_Var_i <= DMA_PA_Var_i;
-        end if;
-
-      elsif State_Is_Body_r1 = '1' then
-----         elsif State_Is_Body  = '1' then
-        if Addr_Inc_i = '1' then
-          DMA_PA_Var_i(CBIT_CARRY-1 downto 0)            <= DMA_PA_Body_Carry(CBIT_CARRY-1 downto 0);
-          DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
-                                                             + DMA_PA_Body_Carry(CBIT_CARRY);
-        else
-          DMA_PA_Var_i <= DMA_PA_Var_i;
-        end if;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_PA_Var_i <= (others => '0');
       else
-        DMA_PA_Var_i <= DMA_PA_Var_i;
-
+        if State_Is_LoadParam = '1' then
+          if Addr_Inc_i = '1' and ThereIs_Snout_i = '1' then
+            DMA_PA_Var_i(CBIT_CARRY-1 downto 0) <= DMA_PA_current(CBIT_CARRY-1 downto 0)
+                                                   + HA_gap(C_MAXSIZE_FLD_BIT_TOP downto 0);
+            DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_current(C_DBUS_WIDTH-1 downto CBIT_CARRY);
+          else
+            DMA_PA_Var_i(C_DBUS_WIDTH-1 downto 0) <= DMA_PA_current(C_DBUS_WIDTH-1 downto 0);
+          end if;
+        elsif State_Is_Snout_r1 = '1' then
+          if Addr_Inc_i = '1' then
+            DMA_PA_Var_i(CBIT_CARRY-1 downto 0)            <= DMA_PA_Var_i(CBIT_CARRY-1 downto 0);
+            DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
+                                                               + DMA_PA_Snout_Carry(CBIT_CARRY);
+          else
+            DMA_PA_Var_i <= DMA_PA_Var_i;
+          end if;
+        elsif State_Is_Body_r1 = '1' then
+          if Addr_Inc_i = '1' then
+            DMA_PA_Var_i(CBIT_CARRY-1 downto 0)            <= DMA_PA_Body_Carry(CBIT_CARRY-1 downto 0);
+            DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_PA_Var_i(C_DBUS_WIDTH-1 downto CBIT_CARRY)
+                                                               + DMA_PA_Body_Carry(CBIT_CARRY);
+          else
+            DMA_PA_Var_i <= DMA_PA_Var_i;
+          end if;
+        else
+          DMA_PA_Var_i <= DMA_PA_Var_i;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: 
 --                  DMA_PA_Loaded_i
 --
   FSM_Calc_DMA_PA_Loaded_i :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_PA_Loaded_i <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        DMA_PA_Loaded_i <= DMA_PA_current(C_DBUS_WIDTH-1 downto 0);
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+          DMA_PA_Loaded_i <= (others => '0');
       else
-        DMA_PA_Loaded_i <= DMA_PA_Loaded_i;
+        if State_Is_LoadParam = '1' then
+          DMA_PA_Loaded_i <= DMA_PA_current(C_DBUS_WIDTH-1 downto 0);
+        else
+          DMA_PA_Loaded_i <= DMA_PA_Loaded_i;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: DMA_Byte_Counter
 ---
   FSM_Calc_DMA_Byte_Counter :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_Byte_Counter <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        if ALc_B = '0' and ALc_T = '1' then
-          DMA_Byte_Counter <= Length_minus;
-        else
-          DMA_Byte_Counter <= DMA_Length_i(C_DBUS_WIDTH-1 downto 2) & "00";
-        end if;
-
---         elsif State_Is_Body_r1 = '1' then
-      elsif State_Is_Body = '1' then
-        DMA_Byte_Counter(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_Byte_Counter(C_DBUS_WIDTH-1 downto CBIT_CARRY)
-                                                              - DMA_BC_Carry(CBIT_CARRY);
-        DMA_Byte_Counter(CBIT_CARRY-1 downto C_MAXSIZE_FLD_BIT_BOT) <= DMA_BC_Carry(CBIT_CARRY-1 downto C_MAXSIZE_FLD_BIT_BOT);
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_Byte_Counter <= (others => '0');
       else
-        DMA_Byte_Counter <= DMA_Byte_Counter;
+        if State_Is_LoadParam = '1' then
+          if ALc_B = '0' and ALc_T = '1' then
+            DMA_Byte_Counter <= Length_minus;
+          else
+            DMA_Byte_Counter <= DMA_Length_i(C_DBUS_WIDTH-1 downto 2) & "00";
+          end if;
+  
+  --         elsif State_Is_Body_r1 = '1' then
+        elsif State_Is_Body = '1' then
+          DMA_Byte_Counter(C_DBUS_WIDTH-1 downto CBIT_CARRY) <= DMA_Byte_Counter(C_DBUS_WIDTH-1 downto CBIT_CARRY)
+                                                                - DMA_BC_Carry(CBIT_CARRY);
+          DMA_Byte_Counter(CBIT_CARRY-1 downto C_MAXSIZE_FLD_BIT_BOT) <= DMA_BC_Carry(CBIT_CARRY-1 downto C_MAXSIZE_FLD_BIT_BOT);
+        else
+          DMA_Byte_Counter <= DMA_Byte_Counter;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg: No_More_Bodies
 ---
   FSM_Calc_No_More_Bodies :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      No_More_Bodies_i <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if State_Is_LoadParam = '1' then
-        No_More_Bodies_i <= not ThereIs_Body_i;
-
---         elsif State_Is_Body_r1 = '1' then
-      elsif State_Is_Body = '1' then
-        if DMA_Byte_Counter(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1) = C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1)
-          and (DMA_Byte_Counter(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_left) = C_ALL_ZEROS(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT)
-          and (DMA_Byte_Counter(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_mid) /= C_ALL_ZEROS(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT)
-        then
-          No_More_Bodies_i <= '1';
-        else
-          No_More_Bodies_i <= '0';
-        end if;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        No_More_Bodies_i <= '0';
       else
-        No_More_Bodies_i <= No_More_Bodies_i;
+        if State_Is_LoadParam = '1' then
+          No_More_Bodies_i <= not ThereIs_Body_i;
+        elsif State_Is_Body = '1' then
+          if DMA_Byte_Counter(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1) = C_ALL_ZEROS(C_DBUS_WIDTH-1 downto C_MAXSIZE_FLD_BIT_TOP+1)
+            and (DMA_Byte_Counter(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_left) = C_ALL_ZEROS(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT)
+            and (DMA_Byte_Counter(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT) and mxsz_mid) /= C_ALL_ZEROS(C_MAXSIZE_FLD_BIT_TOP downto C_MAXSIZE_FLD_BIT_BOT)
+          then
+            No_More_Bodies_i <= '1';
+          else
+            No_More_Bodies_i <= '0';
+          end if;
+        else
+          No_More_Bodies_i <= No_More_Bodies_i;
+        end if;
       end if;
-
     end if;
   end process;
-
 
   -- ------------------------------------------
   -- Configuration pamameters: Param_Max_Cfg
   --
   Syn_Config_Param_Max_Cfg :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then             -- 0x0080 Bytes
-      mxsz_left  <= "111110";           -- 6 bits
-      mxsz_mid   <= "000001";           -- 6 bits
-      mxsz_right <= "000000";           -- 6 bits
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      case Param_Max_Cfg is
-
-        when "000" =>                   -- 0x0080 Bytes
-          mxsz_left  <= "111110";
-          mxsz_mid   <= "000001";
-          mxsz_right <= "000000";
-
-        when "001" =>                   -- 0x0100 Bytes
-          mxsz_left  <= "111100";
-          mxsz_mid   <= "000010";
-          mxsz_right <= "000001";
-
-        when "010" =>                   -- 0x0200 Bytes
-          mxsz_left  <= "111000";
-          mxsz_mid   <= "000100";
-          mxsz_right <= "000011";
-
-        when "011" =>                   -- 0x0400 Bytes
-          mxsz_left  <= "110000";
-          mxsz_mid   <= "001000";
-          mxsz_right <= "000111";
-
-        when "100" =>                   -- 0x0800 Bytes
-          mxsz_left  <= "100000";
-          mxsz_mid   <= "010000";
-          mxsz_right <= "001111";
-
-        when "101" =>                   -- 0x1000 Bytes
-          mxsz_left  <= "000000";
-          mxsz_mid   <= "100000";
-          mxsz_right <= "011111";
-
-        when others =>                  -- as 0x0080 Bytes
-          mxsz_left  <= "111110";
-          mxsz_mid   <= "000001";
-          mxsz_right <= "000000";
-
-      end case;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then             -- 0x0080 Bytes
+        mxsz_left  <= "111110";           -- 6 bits
+        mxsz_mid   <= "000001";           -- 6 bits
+        mxsz_right <= "000000";           -- 6 bits
+      else
+        case Param_Max_Cfg is
+  
+          when "000" =>                   -- 0x0080 Bytes
+            mxsz_left  <= "111110";
+            mxsz_mid   <= "000001";
+            mxsz_right <= "000000";
+  
+          when "001" =>                   -- 0x0100 Bytes
+            mxsz_left  <= "111100";
+            mxsz_mid   <= "000010";
+            mxsz_right <= "000001";
+  
+          when "010" =>                   -- 0x0200 Bytes
+            mxsz_left  <= "111000";
+            mxsz_mid   <= "000100";
+            mxsz_right <= "000011";
+  
+          when "011" =>                   -- 0x0400 Bytes
+            mxsz_left  <= "110000";
+            mxsz_mid   <= "001000";
+            mxsz_right <= "000111";
+  
+          when "100" =>                   -- 0x0800 Bytes
+            mxsz_left  <= "100000";
+            mxsz_mid   <= "010000";
+            mxsz_right <= "001111";
+  
+          when "101" =>                   -- 0x1000 Bytes
+            mxsz_left  <= "000000";
+            mxsz_mid   <= "100000";
+            mxsz_right <= "011111";
+  
+          when others =>                  -- as 0x0080 Bytes
+            mxsz_left  <= "111110";
+            mxsz_mid   <= "000001";
+            mxsz_right <= "000000";
+  
+        end case;
+      end if;
     end if;
   end process;
 

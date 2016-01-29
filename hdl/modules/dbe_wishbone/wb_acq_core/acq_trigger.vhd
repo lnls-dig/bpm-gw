@@ -28,12 +28,14 @@ use ieee.numeric_std.all;
 library work;
 use work.acq_core_pkg.all;
 use work.gencores_pkg.all;
+use work.genram_pkg.all;
 
 entity acq_trigger is
 generic
 (
   g_data_in_width                           : natural := 128;
   g_acq_num_channels                        : natural := 5;
+  g_ddr_payload_width                       : natural := 256;
   g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
 );
 port
@@ -73,6 +75,7 @@ port
   lmt_valid_i                               : in std_logic;
 
   -- Acquisition data with data + metadata
+  acq_wr_en_i                               : in std_logic;
   acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
   acq_valid_o                               : out std_logic;
   acq_trig_o                                : out std_logic
@@ -87,6 +90,10 @@ architecture rtl of acq_trigger is
   constant c_narrowest_num_atoms            : natural := f_acq_chan_find_narrowest_num_atoms(g_acq_channels);
   constant c_widest_num_atoms               : natural := f_acq_chan_find_widest_num_atoms(g_acq_channels);
 
+  constant c_narrowest_channel_width        : natural := f_acq_chan_find_narrowest(g_acq_channels);
+
+  constant c_trigger_align_samples          : natural := g_ddr_payload_width/c_narrowest_channel_width;
+
   constant c_int_data_hysteresis_depth      : natural := 8;
   constant c_pipe_depth                     : natural := 5;
 
@@ -98,6 +105,12 @@ architecture rtl of acq_trigger is
       f_extract_property_array(g_acq_channels, NUM_ATOMS);
   constant c_atom_width_array                : t_property_value_array(g_acq_channels'length-1 downto 0) :=
       f_extract_property_array(g_acq_channels, ATOM_WIDTH);
+
+  constant c_acq_chan_slice                 : t_acq_chan_slice_array(g_acq_num_channels-1 downto 0) :=
+                                                 f_acq_chan_det_slice(g_acq_channels);
+  constant c_fc_payload_ratio               : t_payld_ratio_array(g_acq_num_channels-1 downto 0) :=
+                                                   f_fc_payload_ratio (g_ddr_payload_width,
+                                                                c_acq_chan_slice);
 
   -- Types
   subtype t_acq_atom is std_logic_vector(c_widest_atom_width-1 downto 0);
@@ -130,6 +143,9 @@ architecture rtl of acq_trigger is
   signal acq_trig                           : std_logic;
   signal acq_trig_sel_out                   : std_logic;
   signal acq_trig_out                       : std_logic;
+  signal acq_trig_align_cnt                 : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
+  signal acq_trig_align_cnt_en              : std_logic;
+  signal acq_trig_align_cnt_max             : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
 
   signal int_trig                           : std_logic;
   signal int_trig_over_thres                : std_logic;
@@ -146,6 +162,7 @@ architecture rtl of acq_trigger is
   signal trig_delay                         : std_logic_vector(31 downto 0);
   signal trig_delay_cnt                     : unsigned(31 downto 0);
   signal trig_d                             : std_logic;
+  signal trig_unaligned                     : std_logic;
   signal trig_align                         : std_logic;
 
 begin
@@ -176,11 +193,15 @@ begin
       if fs_rst_n_i = '0' then
         lmt_valid <= '0';
         lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
+        acq_trig_align_cnt_max <= to_unsigned(0, acq_trig_align_cnt_max'length);
       else
         lmt_valid <= lmt_valid_i;
 
         if lmt_valid_i = '1' then
           lmt_curr_chan_id <= lmt_curr_chan_id_i;
+          -- prepare the maximun fifo index to be used by the current channel
+          acq_trig_align_cnt_max <= to_unsigned(c_fc_payload_ratio(to_integer(lmt_curr_chan_id_i)),
+                                 acq_trig_align_cnt_max'length) - 1;
         end if;
       end if;
     end if;
@@ -350,16 +371,59 @@ begin
     end if;
   end process;
 
-  -- Hold trigger signal until a valid sample is found
+  -- Count number of valid samples transfered up to the alignment value.
+  -- Note that the counter will wraparound.
+  p_trig_align_counter : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        acq_trig_align_cnt <= to_unsigned(0, acq_trig_align_cnt'length);
+      else
+        if acq_trig_align_cnt_en = '1' then
+          acq_trig_align_cnt <= acq_trig_align_cnt + 1;
+
+          if acq_trig_align_cnt = acq_trig_align_cnt_max then
+            acq_trig_align_cnt <= to_unsigned(0, acq_trig_align_cnt'length);
+         end if;
+        end if;
+      end if;
+    end if;
+  end process;
+
+  -- Only count while we are acquiring data, not before nor after. This is
+  -- necessary to acquire the desired alignment.
+  -- FIXME: here we are relying on the precise delay between "acq_valid_out"
+  -- and "acq_wr_en_i" signals, which are not clearly related
+  acq_trig_align_cnt_en <= acq_valid_out and acq_wr_en_i;
+
+  -- Hold trigger signal until a we are aligned and a valid sample is found.
+  -- The aligned term here refers to the last atom of a channel sample
+  -- (composed of atoms). For instance, if the channel is composed of 4 atoms,
+  -- the last channel atom would be number 3.
   p_trig_align : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
+        trig_unaligned <= '0';
         trig_align <= '0';
       else
         if trig_d = '1' then
-          trig_align <= '1';
-        elsif acq_valid_pipe(c_trig_det_delay-1) = '1' then
+          trig_unaligned <= '1';
+        -- Trigger captured
+        elsif trig_align = '1' then
+          trig_unaligned <= '0';
+        end if;
+
+        -- Wait until we have transfered the correct (aligned) number of samples
+        -- to output trigger.
+        --
+        -- By design acq_trig_align_cnt_max would be at least 1, meaning a channel
+        -- composed of 2 atoms. So the arithmetic acq_trig_align_cnt_max-1 yields
+        -- valid values in all cases.
+        if trig_unaligned = '1' and acq_trig_align_cnt = acq_trig_align_cnt_max-1 and
+            acq_valid_sel_out = '1' then -- will increment to the last atom
+          trig_align <= '1'; -- Output trigger aligned with the last atom
+        elsif acq_valid_sel_out = '1' then
           trig_align <= '0';
         end if;
       end if;

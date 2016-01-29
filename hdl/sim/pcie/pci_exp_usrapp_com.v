@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pci_exp_usrapp_com.v
-// Version    : 1.8
+// Version    : 3.1
 //--
 //--------------------------------------------------------------------------------
 
-`include "board_common.v"
+`include "board_common.vh"
 
 module pci_exp_usrapp_com ();
 
@@ -638,6 +638,6 @@ end
                 end
    endtask // TSK_READ_DATA_128
 
-`include "pci_exp_expect_tasks.v"
+`include "pci_exp_expect_tasks.vh"
 
 endmodule // pci_exp_usrapp_com

@@ -35,6 +35,8 @@ use work.acq_core_pkg.all;
 use work.acq_core_wbgen2_pkg.all;
 -- DBE wishbone cores
 use work.dbe_wishbone_pkg.all;
+-- AXI cores
+use work.bpm_axi_pkg.all;
 
 entity xwb_acq_core is
 generic
@@ -49,7 +51,9 @@ generic
   g_ddr_addr_width                          : natural := 32;      -- be careful changing these!
   g_multishot_ram_size                      : natural := 2048;
   g_fifo_fc_size                            : natural := 64;
-  g_sim_readback                            : boolean := false
+  g_sim_readback                            : boolean := false;
+  g_ddr_interface_type                      : string  := "AXIS";
+  g_max_burst_size                          : natural := 4
 );
 port
 (
@@ -92,25 +96,39 @@ port
   ext_stall_o                               : out std_logic; -- for debbuging purposes
 
   -----------------------------
-  -- DDR3 SDRAM Interface
+  -- Xilinx UI DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
   -----------------------------
   ui_app_addr_o                             : out std_logic_vector(g_ddr_addr_width-1 downto 0);
   ui_app_cmd_o                              : out std_logic_vector(2 downto 0);
   ui_app_en_o                               : out std_logic;
-  ui_app_rdy_i                              : in std_logic;
+  ui_app_rdy_i                              : in std_logic := '0';
 
   ui_app_wdf_data_o                         : out std_logic_vector(g_ddr_payload_width-1 downto 0);
   ui_app_wdf_end_o                          : out std_logic;
   ui_app_wdf_mask_o                         : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
   ui_app_wdf_wren_o                         : out std_logic;
-  ui_app_wdf_rdy_i                          : in std_logic;
+  ui_app_wdf_rdy_i                          : in std_logic := '0';
 
-  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0);
-  ui_app_rd_data_end_i                      : in std_logic;
-  ui_app_rd_data_valid_i                    : in std_logic;
+  ui_app_rd_data_i                          : in std_logic_vector(g_ddr_payload_width-1 downto 0) := (others => '0');
+  ui_app_rd_data_end_i                      : in std_logic := '0';
+  ui_app_rd_data_valid_i                    : in std_logic := '0';
 
   ui_app_req_o                              : out std_logic;
-  ui_app_gnt_i                              : in std_logic;
+  ui_app_gnt_i                              : in std_logic := '0';
+
+  -----------------------------
+  -- AXIS DDR3 SDRAM Interface (choose between UI and AXIS with g_ddr_interface_type)
+  -----------------------------
+  -- AXIS Read Channel
+  axis_mm2s_cmd_ma_i                        : in t_axis_cmd_master_in := cc_dummy_axis_cmd_master_in;
+  axis_mm2s_cmd_ma_o                        : out t_axis_cmd_master_out;
+  axis_mm2s_pld_sl_i                        : in t_axis_pld_slave_in := cc_dummy_axis_pld_slave_in;
+  axis_mm2s_pld_sl_o                        : out t_axis_pld_slave_out;
+  -- AXIMM Write Channel
+  axis_s2mm_cmd_ma_i                        : in t_axis_cmd_master_in := cc_dummy_axis_cmd_master_in;
+  axis_s2mm_cmd_ma_o                        : out t_axis_cmd_master_out;
+  axis_s2mm_pld_ma_i                        : in t_axis_pld_master_in := cc_dummy_axis_pld_master_in;
+  axis_s2mm_pld_ma_o                        : out t_axis_pld_master_out;
 
   -----------------------------
   -- Debug Interface
@@ -145,7 +163,9 @@ begin
     g_ddr_dq_width                            => g_ddr_dq_width,
     g_multishot_ram_size                      => g_multishot_ram_size,
     g_fifo_fc_size                            => g_fifo_fc_size,
-    g_sim_readback                            => g_sim_readback
+    g_sim_readback                            => g_sim_readback,
+    g_ddr_interface_type                      => g_ddr_interface_type,
+    g_max_burst_size                          => g_max_burst_size
   )
   port map
   (
@@ -201,7 +221,7 @@ begin
     ext_stall_o                               => ext_stall_o,
 
     -----------------------------
-    -- DDR3 SDRAM Interface
+    -- Xilinx UI DDR3 SDRAM Interface
     -----------------------------
     ui_app_addr_o                             => ui_app_addr_o,
     ui_app_cmd_o                              => ui_app_cmd_o,
@@ -220,6 +240,29 @@ begin
 
     ui_app_req_o                              => ui_app_req_o,
     ui_app_gnt_i                              => ui_app_gnt_i,
+
+    -----------------------------
+    -- AXIS UI DDR3 SDRAM Interface
+    -----------------------------
+    axis_mm2s_cmd_tdata_o                     => axis_mm2s_cmd_ma_o.tdata,
+    axis_mm2s_cmd_tvalid_o                    => axis_mm2s_cmd_ma_o.tvalid,
+    axis_mm2s_cmd_tready_i                    => axis_mm2s_cmd_ma_i.tready,
+
+    axis_mm2s_pld_tdata_i                     => axis_mm2s_pld_sl_i.tdata,
+    axis_mm2s_pld_tkeep_i                     => axis_mm2s_pld_sl_i.tkeep,
+    axis_mm2s_pld_tlast_i                     => axis_mm2s_pld_sl_i.tlast,
+    axis_mm2s_pld_tvalid_i                    => axis_mm2s_pld_sl_i.tvalid,
+    axis_mm2s_pld_tready_o                    => axis_mm2s_pld_sl_o.tready,
+
+    axis_s2mm_cmd_tdata_o                     => axis_s2mm_cmd_ma_o.tdata,
+    axis_s2mm_cmd_tvalid_o                    => axis_s2mm_cmd_ma_o.tvalid,
+    axis_s2mm_cmd_tready_i                    => axis_s2mm_cmd_ma_i.tready,
+
+    axis_s2mm_pld_tdata_o                     => axis_s2mm_pld_ma_o.tdata,
+    axis_s2mm_pld_tkeep_o                     => axis_s2mm_pld_ma_o.tkeep,
+    axis_s2mm_pld_tlast_o                     => axis_s2mm_pld_ma_o.tlast,
+    axis_s2mm_pld_tvalid_o                    => axis_s2mm_pld_ma_o.tvalid,
+    axis_s2mm_pld_tready_i                    => axis_s2mm_pld_ma_i.tready,
 
     -----------------------------
     -- Debug Interface

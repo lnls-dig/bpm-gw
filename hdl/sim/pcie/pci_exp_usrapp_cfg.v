@@ -49,11 +49,11 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pci_exp_usrapp_cfg.v
-// Version    : 1.8
+// Version    : 3.1
 //--
 //--------------------------------------------------------------------------------
 
-`include "board_common.v"
+`include "board_common.vh"
 
 module pci_exp_usrapp_cfg (
 

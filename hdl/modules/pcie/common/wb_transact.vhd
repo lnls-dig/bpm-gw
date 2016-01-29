@@ -94,7 +94,7 @@ architecture Behavioral of wb_transact is
   signal rpipec_wen   : std_logic;
   signal rpipec_qout  : std_logic_vector(C_ASYNFIFO_WIDTH-1 downto 0);
   signal rpipec_valid : std_logic;
-  signal rpipec_ren   : std_logic;
+  signal rpipec_ren   : std_logic := '0';
   signal rpipec_empty : std_logic;
   signal rpipec_full  : std_logic;
   signal rpipec_afull : std_logic;
@@ -121,10 +121,17 @@ architecture Behavioral of wb_transact is
 
 begin
 
-  rst_i   <= wb_rst or rst;
   rst_rd_i <= rst_i or rd_tout;
   rst_n_i <= not rst_i;
   rst_rd_n_i <= not rst_rd_i;
+  
+  process (wb_clk)
+  begin
+  -- sync reset signal
+   if rising_edge(wb_clk) then
+    rst_i <= wb_rst or rst;
+   end if;
+  end process;
 
   --Wishbone interface FSM
   WB_fsm :
@@ -139,6 +146,7 @@ begin
         wb_sel    <= (others => '0');
         wpipe_ren <= '0';
         rpiped_we <= '0';
+        rpipec_ren <= '0';
       else
         case wb_state is
           when st_RESET =>

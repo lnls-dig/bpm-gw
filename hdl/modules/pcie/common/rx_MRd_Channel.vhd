@@ -44,6 +44,7 @@ entity rx_MRd_Transact is
     m_axis_rx_tkeep    : in  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
     m_axis_rx_terrfwd  : in  std_logic;
     m_axis_rx_tvalid   : in  std_logic;
+    m_axis_rx_tready   : in  std_logic;
 --      m_axis_rx_tready     : OUT std_logic;
     rx_np_ok           : out std_logic;
     rx_np_req          : out std_logic;
@@ -165,7 +166,7 @@ begin
   rx_np_req_i <= rx_np_ok_i;
 
   -- ( m_axis_rx_tvalid seems never deasserted during packet)
-  trn_rx_throttle <= not m_axis_rx_tvalid;  --  or m_axis_rx_tready_i;
+  trn_rx_throttle <= not(m_axis_rx_tvalid) or not(m_axis_rx_tready);
 
 -- ------------------------------------------------
 -- Synchronous Delay: m_axis_rx_tdata + m_axis_rx_tbar_hit
@@ -173,25 +174,25 @@ begin
   Synch_Delay_m_axis_rx_tdata :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       m_axis_rx_tdata_r1    <= m_axis_rx_tdata_i;
       m_axis_rx_tbar_hit_r1 <= m_axis_rx_tbar_hit_i;
     end if;
-
   end process;
 
 -- ------------------------------------------------
 -- States synchronous
 --
   Syn_RxTrn_States :
-  process (user_clk, local_Reset)
+  process (user_clk)
   begin
-    if local_Reset = '1' then
-      RxMRdTrn_State <= ST_MRd_RESET;
-    elsif user_clk'event and user_clk = '1' then
-      RxMRdTrn_State <= RxMRdTrn_NextState;
+    if rising_edge(user_clk) then
+      if local_Reset = '1' then
+        RxMRdTrn_State <= ST_MRd_RESET;
+      else
+        RxMRdTrn_State <= RxMRdTrn_NextState;
+      end if;
     end if;
-
   end process;
 
 
@@ -211,7 +212,7 @@ begin
 
       when ST_MRd_IDLE =>
 
-        if rx_np_ok_i = '1' then
+        if rx_np_ok_i = '1' and trn_rx_throttle = '0' then
 
           case MRd_Type is
 
@@ -241,7 +242,7 @@ begin
 
       when ST_MRd_Tail =>               -- support back-to-back transactions
 
-        if rx_np_ok_i = '1' then
+        if rx_np_ok_i = '1' and trn_rx_throttle = '0' then
 
           case MRd_Type is
 
@@ -270,39 +271,36 @@ begin
   end process;
 
 
-
 -- ------------------------------------------------
 -- Synchronous calculation: Encoded_BAR_Index
 --
   Syn_Calc_Encoded_BAR_Index :
-  process (user_clk, local_Reset)
+  process (user_clk)
   begin
-    if local_Reset = '1' then
-      Encoded_BAR_Index <= (others => '1');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if m_axis_rx_tbar_hit(0) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(0, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(1) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(1, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(2) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(2, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(3) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(3, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(4) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(4, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(5) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(5, C_ENCODE_BAR_NUMBER);
-      elsif m_axis_rx_tbar_hit(6) = '1' then
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(6, C_ENCODE_BAR_NUMBER);
+    if rising_edge(user_clk) then
+      if local_Reset = '1' then
+        Encoded_BAR_Index <= (others => '1');
       else
-        Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(7, C_ENCODE_BAR_NUMBER);
+        if m_axis_rx_tbar_hit(0) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(0, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(1) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(1, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(2) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(2, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(3) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(3, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(4) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(4, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(5) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(5, C_ENCODE_BAR_NUMBER);
+        elsif m_axis_rx_tbar_hit(6) = '1' then
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(6, C_ENCODE_BAR_NUMBER);
+        else
+          Encoded_BAR_Index <= CONV_STD_LOGIC_VECTOR(7, C_ENCODE_BAR_NUMBER);
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- ----------------------------------------------------------------------------------
 --
@@ -332,117 +330,105 @@ begin
 --    9 ~   0 : Length
 --
   RxFSM_Output_pioCplD_WR :
-  process (user_clk, local_Reset)
+  process (user_clk)
   begin
-    if local_Reset = '1' then
-      pioCplD_we  <= '0';
-      pioCplD_din <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case RxMRdTrn_State is
-
-
-        when ST_MRd_HEAD2 =>
-          pioCplD_we <= '0';
-
-          if Illegal_Leng_on_FIFO = '1' then  -- Cpl : unsupported request
-            pioCplD_din(C_CHBUF_FMT_BIT_TOP downto C_CHBUF_FMT_BIT_BOT) <= C_FMT3_NO_DATA;
-            pioCplD_din(C_CHBUF_CPLD_CS_BIT_TOP downto C_CHBUF_CPLD_CS_BIT_BOT) <= "001";
-          else
-            pioCplD_din(C_CHBUF_FMT_BIT_TOP downto C_CHBUF_FMT_BIT_BOT) <= C_FMT3_WITH_DATA;
-            pioCplD_din(C_CHBUF_CPLD_CS_BIT_TOP downto C_CHBUF_CPLD_CS_BIT_BOT) <= "000";
-          end if;
-
-          pioCplD_din(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_TC_BIT_TOP downto C_TLP_TC_BIT_BOT);
-
-          pioCplD_din(C_CHBUF_TD_BIT) <= '0';
-
-          pioCplD_din(C_CHBUF_EP_BIT) <= '0';
-
-          pioCplD_din(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_ATTR_BIT_TOP downto C_TLP_ATTR_BIT_BOT);
---                           <= m_axis_rx_tdata_r1(C_TLP_ATTR_BIT_TOP) & C_NO_SNOOP;  -- downto C_TLP_ATTR_BIT_BOT);
-
-          pioCplD_din(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
-
-          pioCplD_din(C_CHBUF_QVALID_BIT) <= '1';
-
-          pioCplD_din(C_CHBUF_CPLD_REQID_BIT_TOP downto C_CHBUF_CPLD_REQID_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_REQID_BIT_TOP downto C_TLP_REQID_BIT_BOT);
-
-          pioCplD_din(C_CHBUF_CPLD_TAG_BIT_TOP downto C_CHBUF_CPLD_TAG_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_TAG_BIT_TOP downto C_TLP_TAG_BIT_BOT);
-
-          pioCplD_din(C_CHBUF_0LENG_BIT) <= Tlp_is_Zero_Length;
-
-          if Tlp_is_Zero_Length = '1' then
-            pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT) <= CONV_STD_LOGIC_VECTOR(0, C_ENCODE_BAR_NUMBER);
-          else
-            pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT) <= Encoded_BAR_Index;
-          end if;
-
-        when ST_MRd_Tail =>
-
-          if MRd_Has_4DW_Header = '1' then
-            pioCplD_din(C_CHBUF_CPLD_LA_BIT_TOP downto C_CHBUF_CPLD_LA_BIT_BOT)
-              <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT+32 downto 0+32);
-
-            if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT+32 downto 0+32);
-            elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
-                <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
-                   m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1+32 downto 0+32);
-            elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
-                <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
-                   m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1+32 downto 0+32);
-            else
-              pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
-                <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
-            end if;
-
-          else
-            pioCplD_din(C_CHBUF_CPLD_LA_BIT_TOP downto C_CHBUF_CPLD_LA_BIT_BOT)
-              <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT downto 0);
-
-            if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
-                <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT downto 0);
-            elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
-                <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
-                   m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1 downto 0);
-            elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
-              pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
-                <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
-                   m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1 downto 0);
-            else
-              pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
-                <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
-            end if;
-          end if;
-
-
-          if pioCplD_din(C_CHBUF_0LENG_BIT) = '1' then  --  Zero-length
-            pioCplD_din(C_CHBUF_CPLD_BC_BIT_TOP downto C_CHBUF_CPLD_BC_BIT_BOT)
-              <= CONV_STD_LOGIC_VECTOR(1, C_CHBUF_CPLD_BC_BIT_TOP-C_CHBUF_CPLD_BC_BIT_BOT+1);
-          else
-            pioCplD_din(C_CHBUF_CPLD_BC_BIT_TOP downto C_CHBUF_CPLD_BC_BIT_BOT)
-              <= pioCplD_din(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) &"00";
-          end if;
-
-          if m_axis_rx_tbar_hit_r1(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0) then
-            pioCplD_we <= not Tlp_straddles_4KB;  --'1';
-          else
+    if rising_edge(user_clk) then
+      if local_Reset = '1' then
+        pioCplD_we  <= '0';
+        pioCplD_din <= (others => '0');
+      else
+        case RxMRdTrn_State is
+  
+          when ST_MRd_HEAD2 =>
             pioCplD_we <= '0';
-          end if;
-
-        when others =>
-          pioCplD_we  <= '0';
-          pioCplD_din <= pioCplD_din;
-
-      end case;
-
+  
+            if Illegal_Leng_on_FIFO = '1' then  -- Cpl : unsupported request
+              pioCplD_din(C_CHBUF_FMT_BIT_TOP downto C_CHBUF_FMT_BIT_BOT) <= C_FMT3_NO_DATA;
+              pioCplD_din(C_CHBUF_CPLD_CS_BIT_TOP downto C_CHBUF_CPLD_CS_BIT_BOT) <= "001";
+            else
+              pioCplD_din(C_CHBUF_FMT_BIT_TOP downto C_CHBUF_FMT_BIT_BOT) <= C_FMT3_WITH_DATA;
+              pioCplD_din(C_CHBUF_CPLD_CS_BIT_TOP downto C_CHBUF_CPLD_CS_BIT_BOT) <= "000";
+            end if;
+  
+            pioCplD_din(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_TC_BIT_TOP downto C_TLP_TC_BIT_BOT);
+            pioCplD_din(C_CHBUF_TD_BIT) <= '0';
+            pioCplD_din(C_CHBUF_EP_BIT) <= '0';
+            pioCplD_din(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_ATTR_BIT_TOP downto C_TLP_ATTR_BIT_BOT);
+            pioCplD_din(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT);
+            pioCplD_din(C_CHBUF_QVALID_BIT) <= '1';
+            pioCplD_din(C_CHBUF_CPLD_REQID_BIT_TOP downto C_CHBUF_CPLD_REQID_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_REQID_BIT_TOP downto C_TLP_REQID_BIT_BOT);
+            pioCplD_din(C_CHBUF_CPLD_TAG_BIT_TOP downto C_CHBUF_CPLD_TAG_BIT_BOT) <= m_axis_rx_tdata_r1(C_TLP_TAG_BIT_TOP downto C_TLP_TAG_BIT_BOT);
+            pioCplD_din(C_CHBUF_0LENG_BIT) <= Tlp_is_Zero_Length;
+  
+            if Tlp_is_Zero_Length = '1' then
+              pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT) <= CONV_STD_LOGIC_VECTOR(0, C_ENCODE_BAR_NUMBER);
+            else
+              pioCplD_din(C_CHBUF_CPLD_BAR_BIT_TOP downto C_CHBUF_CPLD_BAR_BIT_BOT) <= Encoded_BAR_Index;
+            end if;
+  
+          when ST_MRd_Tail =>
+  
+            if MRd_Has_4DW_Header = '1' then
+              pioCplD_din(C_CHBUF_CPLD_LA_BIT_TOP downto C_CHBUF_CPLD_LA_BIT_BOT)
+                <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT+32 downto 0+32);
+  
+              if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
+                  <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT+32 downto 0+32);
+              elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
+                  <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
+                     m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1+32 downto 0+32);
+              elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
+                  <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
+                     m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1+32 downto 0+32);
+              else
+                pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
+                  <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
+              end if;
+  
+            else
+              pioCplD_din(C_CHBUF_CPLD_LA_BIT_TOP downto C_CHBUF_CPLD_LA_BIT_BOT)
+                <= m_axis_rx_tdata_r1(C_CHBUF_CPLD_LA_BIT_TOP-C_CHBUF_CPLD_LA_BIT_BOT downto 0);
+  
+              if m_axis_rx_tbar_hit_r1(CINT_REGS_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
+                  <= m_axis_rx_tdata_r1(C_CHBUF_PA_BIT_TOP-C_CHBUF_PA_BIT_BOT downto 0);
+              elsif m_axis_rx_tbar_hit_r1(CINT_DDR_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT)
+                  <= sdram_pg(C_CHBUF_DDA_BIT_TOP-C_CHBUF_DDA_BIT_BOT-C_DDR_PG_WIDTH downto 0) &
+                     m_axis_rx_tdata_r1(C_DDR_PG_WIDTH-1 downto 0);
+              elsif m_axis_rx_tbar_hit_r1(CINT_FIFO_SPACE_BAR) = '1' then
+                pioCplD_din(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT)
+                  <= wb_pg(C_CHBUF_WB_BIT_TOP-C_CHBUF_WB_BIT_BOT-C_WB_PG_WIDTH downto 0) &
+                     m_axis_rx_tdata_r1(C_WB_PG_WIDTH-1 downto 0);
+              else
+                pioCplD_din(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT)
+                  <= C_ALL_ZEROS(C_CHBUF_PA_BIT_TOP downto C_CHBUF_PA_BIT_BOT);
+              end if;
+            end if;
+  
+            if pioCplD_din(C_CHBUF_0LENG_BIT) = '1' then  --  Zero-length
+              pioCplD_din(C_CHBUF_CPLD_BC_BIT_TOP downto C_CHBUF_CPLD_BC_BIT_BOT)
+                <= CONV_STD_LOGIC_VECTOR(1, C_CHBUF_CPLD_BC_BIT_TOP-C_CHBUF_CPLD_BC_BIT_BOT+1);
+            else
+              pioCplD_din(C_CHBUF_CPLD_BC_BIT_TOP downto C_CHBUF_CPLD_BC_BIT_BOT)
+                <= pioCplD_din(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) &"00";
+            end if;
+  
+            if m_axis_rx_tbar_hit_r1(CINT_BAR_SPACES-1 downto 0) /= C_ALL_ZEROS(CINT_BAR_SPACES-1 downto 0) then
+              pioCplD_we <= not Tlp_straddles_4KB;  --'1';
+            else
+              pioCplD_we <= '0';
+            end if;
+  
+          when others =>
+            pioCplD_we  <= '0';
+            pioCplD_din <= pioCplD_din;
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -451,36 +437,38 @@ begin
 --        : Tlp_is_Zero_Length
 --
   Syn_Capture_MRd_Has_4DW_Header :
-  process (user_clk, user_reset)
+  process (user_clk)
   begin
-    if user_reset = '1' then
-      MRd_Has_3DW_Header   <= '0';
-      MRd_Has_4DW_Header   <= '0';
-      Tlp_is_Zero_Length   <= '0';
-      Illegal_Leng_on_FIFO <= '0';
-    elsif user_clk'event and user_clk = '1' then
-      if trn_rsof_n_i = '0' then
-        MRd_Has_3DW_Header <= not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT) and not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT+1);
-        MRd_Has_4DW_Header <= m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT) and not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT+1);
-        --Tlp_is_Zero_Length   <= not (m_axis_rx_tdata_i(3) or m_axis_rx_tdata_i(2) or m_axis_rx_tdata_i(1) or m_axis_rx_tdata_i(0));
-        if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) = C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG - 1 downto 0) then
-          Tlp_is_Zero_Length <= '1';
-        else
-          Tlp_is_Zero_Length <= '0';
-        end if;
-        if m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) /= CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG)
-          and m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) /= CONV_STD_LOGIC_VECTOR(2, C_TLP_FLD_WIDTH_OF_LENG)
-          and m_axis_rx_tbar_hit(CINT_FIFO_SPACE_BAR) = '1'
-        then
-          Illegal_Leng_on_FIFO <= '1';
-        else
-          Illegal_Leng_on_FIFO <= '0';
-        end if;
+    if rising_edge(user_clk) then
+      if user_reset = '1' then
+        MRd_Has_3DW_Header   <= '0';
+        MRd_Has_4DW_Header   <= '0';
+        Tlp_is_Zero_Length   <= '0';
+        Illegal_Leng_on_FIFO <= '0';
       else
-        MRd_Has_3DW_Header   <= MRd_Has_3DW_Header;
-        MRd_Has_4DW_Header   <= MRd_Has_4DW_Header;
-        Tlp_is_Zero_Length   <= Tlp_is_Zero_Length;
-        Illegal_Leng_on_FIFO <= Illegal_Leng_on_FIFO;
+        if trn_rsof_n_i = '0' then
+          MRd_Has_3DW_Header <= not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT) and not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT+1);
+          MRd_Has_4DW_Header <= m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT) and not m_axis_rx_tdata_i(C_TLP_FMT_BIT_BOT+1);
+          --Tlp_is_Zero_Length   <= not (m_axis_rx_tdata_i(3) or m_axis_rx_tdata_i(2) or m_axis_rx_tdata_i(1) or m_axis_rx_tdata_i(0));
+          if m_axis_rx_tdata(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) = C_ALL_ZEROS(C_TLP_FLD_WIDTH_OF_LENG - 1 downto 0) then
+            Tlp_is_Zero_Length <= '1';
+          else
+            Tlp_is_Zero_Length <= '0';
+          end if;
+          if m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) /= CONV_STD_LOGIC_VECTOR(1, C_TLP_FLD_WIDTH_OF_LENG)
+            and m_axis_rx_tdata_i(C_TLP_LENG_BIT_TOP downto C_TLP_LENG_BIT_BOT) /= CONV_STD_LOGIC_VECTOR(2, C_TLP_FLD_WIDTH_OF_LENG)
+            and m_axis_rx_tbar_hit(CINT_FIFO_SPACE_BAR) = '1'
+          then
+            Illegal_Leng_on_FIFO <= '1';
+          else
+            Illegal_Leng_on_FIFO <= '0';
+          end if;
+        else
+          MRd_Has_3DW_Header   <= MRd_Has_3DW_Header;
+          MRd_Has_4DW_Header   <= MRd_Has_4DW_Header;
+          Tlp_is_Zero_Length   <= Tlp_is_Zero_Length;
+          Illegal_Leng_on_FIFO <= Illegal_Leng_on_FIFO;
+        end if;
       end if;
     end if;
   end process;
@@ -518,67 +506,66 @@ begin
 --  Request for arbitration
 --
   Synch_Req_Proc :
-  process (local_Reset, user_clk)
+  process (user_clk)
   begin
-    if local_Reset = '1' then
-      pioCplD_RE_i     <= '0';
-      pioCplD_Qout_i   <= (others => '0');
-      pioCplD_Qout_reg <= (others => '0');
-      pioCplD_Req_i    <= '0';
-      FSM_REQ_pio      <= REQST_IDLE;
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case FSM_REQ_pio is
-
-        when REQST_IDLE =>
-          if pioCplD_empty_i = '0' then
-            pioCplD_RE_i   <= '1';
-            pioCplD_Req_i  <= '0';
-            pioCplD_Qout_i <= pioCplD_Qout_i;
-            FSM_REQ_pio    <= REQST_1Read;
-          else
+    if rising_edge(user_clk) then
+      if local_Reset = '1' then
+        pioCplD_RE_i     <= '0';
+        pioCplD_Qout_i   <= (others => '0');
+        pioCplD_Qout_reg <= (others => '0');
+        pioCplD_Req_i    <= '0';
+        FSM_REQ_pio      <= REQST_IDLE;
+      else
+        case FSM_REQ_pio is
+  
+          when REQST_IDLE =>
+            if pioCplD_empty_i = '0' then
+              pioCplD_RE_i   <= '1';
+              pioCplD_Req_i  <= '0';
+              pioCplD_Qout_i <= pioCplD_Qout_i;
+              FSM_REQ_pio    <= REQST_1Read;
+            else
+              pioCplD_RE_i   <= '0';
+              pioCplD_Req_i  <= '0';
+              pioCplD_Qout_i <= pioCplD_Qout_i;
+              FSM_REQ_pio    <= REQST_IDLE;
+            end if;
+  
+          when REQST_1Read =>
             pioCplD_RE_i   <= '0';
             pioCplD_Req_i  <= '0';
             pioCplD_Qout_i <= pioCplD_Qout_i;
-            FSM_REQ_pio    <= REQST_IDLE;
-          end if;
-
-        when REQST_1Read =>
-          pioCplD_RE_i   <= '0';
-          pioCplD_Req_i  <= '0';
-          pioCplD_Qout_i <= pioCplD_Qout_i;
-          FSM_REQ_pio    <= REQST_Decision;
-
-        when REQST_Decision =>
-          pioCplD_Qout_reg <= pioCplD_Qout_wire;
-          pioCplD_Qout_i   <= pioCplD_Qout_i;
-          pioCplD_RE_i     <= '0';
-          pioCplD_Req_i    <= '1';
-          FSM_REQ_pio      <= REQST_nFIFO_Req;
-
-        when REQST_nFIFO_Req =>
-          if pioCplD_RE = '1' then
-            pioCplD_RE_i   <= '0';
-            pioCplD_Qout_i <= pioCplD_Qout_reg;
-            pioCplD_Req_i  <= '0';
-            FSM_REQ_pio    <= REQST_IDLE;
-          else
-            pioCplD_RE_i   <= '0';
-            pioCplD_Qout_i <= pioCplD_Qout_i;
-            pioCplD_Req_i  <= '1';
-            FSM_REQ_pio    <= REQST_nFIFO_Req;
-          end if;
-
-        when others =>
-          pioCplD_RE_i     <= '0';
-          pioCplD_Qout_i   <= (others => '0');
-          pioCplD_Qout_reg <= (others => '0');
-          pioCplD_Req_i    <= '0';
-          FSM_REQ_pio      <= REQST_IDLE;
-
-      end case;
-
+            FSM_REQ_pio    <= REQST_Decision;
+  
+          when REQST_Decision =>
+            pioCplD_Qout_reg <= pioCplD_Qout_wire;
+            pioCplD_Qout_i   <= pioCplD_Qout_i;
+            pioCplD_RE_i     <= '0';
+            pioCplD_Req_i    <= '1';
+            FSM_REQ_pio      <= REQST_nFIFO_Req;
+  
+          when REQST_nFIFO_Req =>
+            if pioCplD_RE = '1' then
+              pioCplD_RE_i   <= '0';
+              pioCplD_Qout_i <= pioCplD_Qout_reg;
+              pioCplD_Req_i  <= '0';
+              FSM_REQ_pio    <= REQST_IDLE;
+            else
+              pioCplD_RE_i   <= '0';
+              pioCplD_Qout_i <= pioCplD_Qout_i;
+              pioCplD_Req_i  <= '1';
+              FSM_REQ_pio    <= REQST_nFIFO_Req;
+            end if;
+  
+          when others =>
+            pioCplD_RE_i     <= '0';
+            pioCplD_Qout_i   <= (others => '0');
+            pioCplD_Qout_reg <= (others => '0');
+            pioCplD_Req_i    <= '0';
+            FSM_REQ_pio      <= REQST_IDLE;
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -588,7 +575,7 @@ begin
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       pioCplD_prog_full_r1 <= pioCplD_prog_Full;
     end if;
   end process;

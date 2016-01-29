@@ -10,17 +10,13 @@ modules = {"local" : [
                     "../../../../../../modules/rffe_top",
                     "../../../../../../modules/fabric",
                     "../../../../../../modules/fmc_adc_common",
-                    "../../../../../../modules/pcie",
+#                    "../../../../../../modules/pcie",
                     "../../../../../../ip_cores/general-cores",
                     "../../../../../../ip_cores/etherbone-core",
-#                    "../../../../../../platform/virtex6/chipscope",
-#                    "../../../../../../platform/virtex6/ip_cores",
                     "../../../../../../platform",
                     "../../../../../../sim",
                     "../../../../../../sim/ddr_model",
-#                    "../../../../../../ip_cores/pcie/7a200ffg1156/ddr_core_1_8/user_design/"]}
-#                     "../../../../../../ip_cores/pcie/7a200ffg1156/ddr_core/user_design/"]}
-                     "../../../../../../ip_cores/pcie/7a200ffg1156/ddr_core_2_3/user_design/"]}
+                     "../../../../../../platform/artix7/afc_v3"]}
 
 files = ["wb_acq_core_tb.v", "ddr_core_wrapper.vhd", "defines.v", "timescale.v",
 			"clk_rst.v", "../../../../../../sim/wishbone_test_master.v",

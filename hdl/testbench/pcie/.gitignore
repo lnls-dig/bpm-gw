@@ -6,7 +6,8 @@ xilinxsim.ini
 *.wdb
 #ignore temporary simulation files
 *.dat
-work*
+work/*
+msim/
 fuse*
 glbl.v
 #modelsim stuff
@@ -14,4 +15,5 @@ transcript
 modelsim.in*
 *.wlf
 *.version
+*.dbg
 

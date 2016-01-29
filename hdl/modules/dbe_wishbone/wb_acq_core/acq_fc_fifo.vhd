@@ -422,7 +422,15 @@ begin
         -- Current channel ID FIFO input
         fifo_fc_id_din <= std_logic_vector(lmt_curr_chan_id);
 
-        -- Change the FIFO buffer when the previous one has been written
+        -- Change the FIFO buffer when the previous one has been written.
+        --
+        -- WARNING: If the fifo_fc_mux_cnt signal is not zero at the end of transaction,
+        -- it means we have a problem in the transaction, typically an unaligned
+        -- trigger detection (trigger asserted in a atom that is not the last one).
+        -- We have this limitation as we aggregate atoms into a sample prior to
+        -- transferring it to the next module. So a fifo_fc_mux_cnt not zero means
+        -- we have atoms not belonging in that transaction.
+        -- TODO: assert error to user if that condition is detected
         if fifo_fc_mux_inc = '1' then
           fifo_fc_mux_cnt <= fifo_fc_mux_cnt + 1;
 
@@ -433,6 +441,15 @@ begin
       end if;
     end if;
   end process;
+
+  -- FOR SIMULATION ONLY
+  -- Assert error if fifo_fc_mux_cnt signal is anything different than zero after the
+  -- end of transaction
+  assert (not(fs_rst_n_i = '1' and ext_rst_n_i = '1') or ((fifo_fc_all_trans_done_lvl = '1' and
+            fifo_fc_mux_cnt = to_unsigned(0, fifo_fc_mux_cnt'length)) or -- end of transaction case
+            (fifo_fc_all_trans_done_sync = '0'))) -- every other case
+  report "[acq_fc_fifo] fifo_fc_mux_cnt signal is not 0 after the end of the transaction!"
+  severity failure;
 
   fifo_fc_mux_inc <= fifo_fc_wr_en when passthrough_en_i = '1' else fifo_fc_dpram_wr_en;
 
@@ -703,9 +720,9 @@ begin
 
   -- Only count when in pre_trigger or post_trigger and we haven't acquire
   -- enough samples
-  fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size and
+  fifo_pkt_cnt_en <= '1' when (unsigned(dbg_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "010") or -- Pre-trigger
-                                (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fifo_fc_data_id(c_fc_payload_ratio(to_integer(lmt_curr_chan_id))-1) = "100") -- Post-trigger
                             else '0';
 

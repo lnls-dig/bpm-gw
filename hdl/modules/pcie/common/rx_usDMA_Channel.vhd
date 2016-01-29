@@ -105,72 +105,6 @@ architecture Behavioral of usDMA_Transact is
   signal cfg_MPS         : std_logic_vector(C_CFG_MPS_BIT_TOP-C_CFG_MPS_BIT_BOT downto 0);
   signal usDMA_MWr_Tag   : std_logic_vector(C_TAG_WIDTH-1 downto 0);
 
-  -- DMA calculation
-  component DMA_Calculate
-    port(
-      -- Downstream Registers from MWr Channel
-      DMA_PA      : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);  -- EP   (local)
-      DMA_HA      : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);  -- Host (remote)
-      DMA_BDA     : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_Length  : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_Control : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Calculation in advance, for better timing
-      HA_is_64b  : in std_logic;
-      BDA_is_64b : in std_logic;
-
-      -- Calculation in advance, for better timing
-      Leng_Hi19b_True : in std_logic;
-      Leng_Lo7b_True  : in std_logic;
-
-
-      -- Parameters fed to DMA_FSM
-      DMA_PA_Loaded : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_PA_Var    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_HA_Var    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      DMA_BDA_fsm    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      BDA_is_64b_fsm : out std_logic;
-
-      -- Only for downstream channel
-      DMA_PA_Snout   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_BAR_Number : out std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
-
-      --
-      DMA_Snout_Length : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Body_Length  : out std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Tail_Length  : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
-
-
-      -- Engine control signals
-      DMA_Start  : in std_logic;
-      DMA_Start2 : in std_logic;        -- out of consecutive dex
-
-      -- Control signals to FSM
-      No_More_Bodies : out std_logic;
-      ThereIs_Snout  : out std_logic;
-      ThereIs_Body   : out std_logic;
-      ThereIs_Tail   : out std_logic;
-      ThereIs_Dex    : out std_logic;
-      HA64bit        : out std_logic;
-      Addr_Inc       : out std_logic;
-
-      -- FSM indicators
-      State_Is_LoadParam : in std_logic;
-      State_Is_Snout     : in std_logic;
-      State_Is_Body      : in std_logic;
---      State_Is_Tail      : IN  std_logic;
-
-
-      -- Additional
-      Param_Max_Cfg : in std_logic_vector(2 downto 0);
-
-      -- Common ports
-      dma_clk   : in std_logic;
-      dma_reset : in std_logic
-      );
-  end component;
-
   signal usDMA_PA_Loaded : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal usDMA_PA_Var    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
   signal usDMA_HA_Var    : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
@@ -191,80 +125,6 @@ architecture Behavioral of usDMA_Transact is
   signal usThereIs_Dex    : std_logic;
   signal usHA64bit        : std_logic;
   signal us_AInc          : std_logic;
-
-
-  -- DMA state machine
-  component DMA_FSM
-    port(
-      -- Fixed information for 1st header of TLP: MRd/MWr
-      TLP_Has_Payload : in std_logic;
-      TLP_Hdr_is_4DW  : in std_logic;
-      DMA_Addr_Inc    : in std_logic;
-
-      DMA_BAR_Number : in std_logic_vector(C_TAGBAR_BIT_TOP-C_TAGBAR_BIT_BOT downto 0);
-
-      -- FSM control signals
-      DMA_Start  : in std_logic;
-      DMA_Start2 : in std_logic;
-      DMA_Stop   : in std_logic;
-      DMA_Stop2  : in std_logic;
-
-      No_More_Bodies : in std_logic;
-      ThereIs_Snout  : in std_logic;
-      ThereIs_Body   : in std_logic;
-      ThereIs_Tail   : in std_logic;
-      ThereIs_Dex    : in std_logic;
-
-      -- Parameters to be written into ChBuf
-      DMA_PA_Loaded : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_PA_Var    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_HA_Var    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      DMA_BDA_fsm    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      BDA_is_64b_fsm : in std_logic;
-
-      DMA_Snout_Length : in std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Body_Length  : in std_logic_vector(C_MAXSIZE_FLD_BIT_TOP downto 0);
-      DMA_Tail_Length  : in std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+1 downto 0);
-
-      -- Busy/Done conditions
-      Done_Condition_1 : in std_logic;
-      Done_Condition_2 : in std_logic;
-      Done_Condition_3 : in std_logic;
-      Done_Condition_4 : in std_logic;
-      Done_Condition_5 : in std_logic;
-
-      -- Channel buffer write
-      us_MWr_Param_Vec : in  std_logic_vector(6-1 downto 0);
-      ChBuf_aFull      : in  std_logic;
-      ChBuf_WrEn       : out std_logic;
-      ChBuf_WrDin      : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-      -- FSM indicators
-      State_Is_LoadParam : out std_logic;
-      State_Is_Snout     : out std_logic;
-      State_Is_Body      : out std_logic;
-      State_Is_Tail      : out std_logic;
-      DMA_Cmd_Ack        : out std_logic;
-
-      -- To Tx Port
-      ChBuf_ValidRd : in  std_logic;
-      BDA_nAligned  : out std_logic;
-      DMA_TimeOut   : out std_logic;
-      DMA_Busy      : out std_logic;
-      DMA_Done      : out std_logic;
---      DMA_Done_Rise      : OUT std_logic;
-
-      -- Tags
-      Pkt_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-      Dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- Common ports
-      dma_clk   : in std_logic;
-      dma_reset : in std_logic
-      );
-  end component;
-
 
   -- FSM state indicators
   signal usState_Is_LoadParam : std_logic;
@@ -338,7 +198,7 @@ begin
 
   -- Kernel Engine
   us_DMA_Calculation :
-    DMA_Calculate
+    entity work.DMA_Calculate
       port map(
 
         DMA_PA      => DMA_us_PA ,
@@ -395,7 +255,7 @@ begin
 
   -- Kernel FSM
   us_DMA_StateMachine :
-    DMA_FSM
+    entity work.DMA_FSM
       port map(
         TLP_Has_Payload => '1' ,
         TLP_Hdr_is_4DW  => usHA64bit ,
@@ -468,21 +328,21 @@ begin
 -- Synchronous output: DMA_Status_i
 --
   US_DMA_Status_Concat :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      DMA_Status_i <= (others => '0');
-    elsif user_clk'event and user_clk = '1' then
-
-      DMA_Status_i <= (
-        CINT_BIT_DMA_STAT_NALIGN  => usBDA_nAligned,
-        CINT_BIT_DMA_STAT_TIMEOUT => usDMA_TimeOut_i,
-        CINT_BIT_DMA_STAT_BDANULL => usDMA_BDA_eq_Null,
-        CINT_BIT_DMA_STAT_BUSY    => usDMA_Busy_i,
-        CINT_BIT_DMA_STAT_DONE    => usDMA_Done_i,
-        others                    => '0'
-        );
-
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        DMA_Status_i <= (others => '0');
+      else
+        DMA_Status_i <= (
+          CINT_BIT_DMA_STAT_NALIGN  => usBDA_nAligned,
+          CINT_BIT_DMA_STAT_TIMEOUT => usDMA_TimeOut_i,
+          CINT_BIT_DMA_STAT_BDANULL => usDMA_BDA_eq_Null,
+          CINT_BIT_DMA_STAT_BUSY    => usDMA_Busy_i,
+          CINT_BIT_DMA_STAT_DONE    => usDMA_Done_i,
+          others                    => '0'
+          );
+      end if;
     end if;
   end process;
 
@@ -490,25 +350,21 @@ begin
 -- -----------------------------------
 -- Synchronous Register: usDMA_MWr_Tag
   FSM_usDMA_usDMA_MWr_Tag :
-  process (user_clk, Local_Reset_i)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      usDMA_MWr_Tag <= C_TAG0_DMA_US_MWR;
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if usState_Is_Snout = '1'
-        or usState_Is_Body = '1'
-        or usState_Is_Tail = '1'
-      then
-        -- Only 4 lower bits increment, higher 4 stay
-        usDMA_MWr_Tag(C_TAG_WIDTH-C_TAG_DECODE_BITS-1 downto 0)
- <= usDMA_MWr_Tag(C_TAG_WIDTH-C_TAG_DECODE_BITS-1 downto 0)
-          + CONV_STD_LOGIC_VECTOR(1, C_TAG_WIDTH-C_TAG_DECODE_BITS);
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        usDMA_MWr_Tag <= C_TAG0_DMA_US_MWR;
       else
-        usDMA_MWr_Tag <= usDMA_MWr_Tag;
+        if usState_Is_Snout = '1' or usState_Is_Body = '1' or usState_Is_Tail = '1' then
+          -- Only 4 lower bits increment, higher 4 stay
+          usDMA_MWr_Tag(C_TAG_WIDTH-C_TAG_DECODE_BITS-1 downto 0) <=
+             usDMA_MWr_Tag(C_TAG_WIDTH-C_TAG_DECODE_BITS-1 downto 0)
+             + CONV_STD_LOGIC_VECTOR(1, C_TAG_WIDTH-C_TAG_DECODE_BITS);
+        else
+          usDMA_MWr_Tag <= usDMA_MWr_Tag;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -549,31 +405,31 @@ begin
 --  Synchronous delay
 --
   Synch_Delay_ren_Qout :
-  process (Local_Reset_i, user_clk)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      FIFO_Reading_r1  <= '0';
-      FIFO_Reading_r2  <= '0';
-      FIFO_Reading_r3p <= '0';
-      usTlp_RE_i_r1    <= '0';
-      usTlp_nReq_r1    <= '0';
-      usTlp_Qout_reg   <= (others => '0');
-      usTlp_MWr_Leng   <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-      FIFO_Reading_r1  <= FIFO_Reading;
-      FIFO_Reading_r2  <= FIFO_Reading_r1;
-      FIFO_Reading_r3p <= FIFO_Reading_r1 or FIFO_Reading_r2;
-      usTlp_RE_i_r1    <= usTlp_RE_i;
-      usTlp_nReq_r1    <= not usTlp_Req_i;
-      if usTlp_RE_i_r1 = '1' then
-        usTlp_Qout_reg <= usTlp_Qout_wire;
-        usTlp_MWr_Leng <= usTlp_Qout_wire(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT);
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        FIFO_Reading_r1  <= '0';
+        FIFO_Reading_r2  <= '0';
+        FIFO_Reading_r3p <= '0';
+        usTlp_RE_i_r1    <= '0';
+        usTlp_nReq_r1    <= '0';
+        usTlp_Qout_reg   <= (others => '0');
+        usTlp_MWr_Leng   <= (others => '0');
       else
-        usTlp_Qout_reg <= usTlp_Qout_reg;
-        usTlp_MWr_Leng <= usTlp_MWr_Leng;
+        FIFO_Reading_r1  <= FIFO_Reading;
+        FIFO_Reading_r2  <= FIFO_Reading_r1;
+        FIFO_Reading_r3p <= FIFO_Reading_r1 or FIFO_Reading_r2;
+        usTlp_RE_i_r1    <= usTlp_RE_i;
+        usTlp_nReq_r1    <= not usTlp_Req_i;
+        if usTlp_RE_i_r1 = '1' then
+          usTlp_Qout_reg <= usTlp_Qout_wire;
+          usTlp_MWr_Leng <= usTlp_Qout_wire(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT);
+        else
+          usTlp_Qout_reg <= usTlp_Qout_reg;
+          usTlp_MWr_Leng <= usTlp_MWr_Leng;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -581,84 +437,83 @@ begin
 --  Request for arbitration
 --
   Synch_Req_Proc :
-  process (Local_Reset_i, user_clk)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      usTlp_RE_i  <= '0';
-      usTlp_Req_i <= '0';
-      FSM_REQ_us  <= REQST_IDLE;
-
-    elsif user_clk'event and user_clk = '1' then
-
-      case FSM_REQ_us is
-
-        when REQST_IDLE =>
-          if usTlp_empty_i = '0' then
-            usTlp_RE_i  <= '1';
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        usTlp_RE_i  <= '0';
+        usTlp_Req_i <= '0';
+        FSM_REQ_us  <= REQST_IDLE;
+      else
+        case FSM_REQ_us is
+  
+          when REQST_IDLE =>
+            if usTlp_empty_i = '0' then
+              usTlp_RE_i  <= '1';
+              usTlp_Req_i <= '0';
+              FSM_REQ_us  <= REQST_1Read;
+            else
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= '0';
+              FSM_REQ_us  <= REQST_IDLE;
+            end if;
+  
+          when REQST_1Read =>
+            usTlp_RE_i  <= '0';
             usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_1Read;
-          else
+            FSM_REQ_us  <= REQST_Decision;
+  
+          when REQST_Decision =>
+            usTlp_RE_i  <= '0';
+            usTlp_Req_i <= not usDMA_Stop and not usDMA_Stop2 and not us_FC_stop;
+            FSM_REQ_us  <= REQST_nFIFO_Req;
+  
+          when REQST_nFIFO_Req =>
+            if usTlp_RE = '1' then
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= '0';
+              FSM_REQ_us  <= REQST_IDLE;
+            else
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= not usDMA_Stop
+                               and not usDMA_Stop2
+                               and not us_FC_stop;
+              FSM_REQ_us <= REQST_nFIFO_Req;
+            end if;
+  
+          when REQST_Quantity =>
+            if usTlp_RE = '1' then
+              usTlp_RE_i  <= '1';
+              usTlp_Req_i <= '0';
+              FSM_REQ_us  <= REQST_Quantity;
+            else
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= not usDMA_Stop
+                               and not usDMA_Stop2
+                               and not us_FC_stop;
+              FSM_REQ_us <= REQST_FIFO_Req;
+            end if;
+  
+          when REQST_FIFO_Req =>
+            if usTlp_RE = '1' then
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= '0';
+              FSM_REQ_us  <= REQST_IDLE;
+            else
+              usTlp_RE_i  <= '0';
+              usTlp_Req_i <= not usDMA_Stop
+                               and not usDMA_Stop2
+                               and not us_FC_stop;
+              FSM_REQ_us <= REQST_FIFO_Req;
+            end if;
+  
+          when others =>
             usTlp_RE_i  <= '0';
             usTlp_Req_i <= '0';
             FSM_REQ_us  <= REQST_IDLE;
-          end if;
-
-        when REQST_1Read =>
-          usTlp_RE_i  <= '0';
-          usTlp_Req_i <= '0';
-          FSM_REQ_us  <= REQST_Decision;
-
-        when REQST_Decision =>
-          usTlp_RE_i  <= '0';
-          usTlp_Req_i <= not usDMA_Stop and not usDMA_Stop2 and not us_FC_stop;
-          FSM_REQ_us  <= REQST_nFIFO_Req;
-
-        when REQST_nFIFO_Req =>
-          if usTlp_RE = '1' then
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_IDLE;
-          else
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= not usDMA_Stop
-                             and not usDMA_Stop2
-                             and not us_FC_stop;
-            FSM_REQ_us <= REQST_nFIFO_Req;
-          end if;
-
-        when REQST_Quantity =>
-          if usTlp_RE = '1' then
-            usTlp_RE_i  <= '1';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_Quantity;
-          else
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= not usDMA_Stop
-                             and not usDMA_Stop2
-                             and not us_FC_stop;
-            FSM_REQ_us <= REQST_FIFO_Req;
-          end if;
-
-        when REQST_FIFO_Req =>
-          if usTlp_RE = '1' then
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= '0';
-            FSM_REQ_us  <= REQST_IDLE;
-          else
-            usTlp_RE_i  <= '0';
-            usTlp_Req_i <= not usDMA_Stop
-                             and not usDMA_Stop2
-                             and not us_FC_stop;
-            FSM_REQ_us <= REQST_FIFO_Req;
-          end if;
-
-        when others =>
-          usTlp_RE_i  <= '0';
-          usTlp_Req_i <= '0';
-          FSM_REQ_us  <= REQST_IDLE;
-
-      end case;
-
+  
+        end case;
+      end if;
     end if;
   end process;
 
@@ -666,19 +521,18 @@ begin
 --  Sending usTlp_Qout
 --
   Synch_usTlp_Qout :
-  process (Local_Reset_i, user_clk)
+  process (user_clk)
   begin
-    if Local_Reset_i = '1' then
-      usTlp_Qout_i <= (others => '0');
-
-    elsif user_clk'event and user_clk = '1' then
-
-      if usTlp_RE = '1' then
-        usTlp_Qout_i <= usTlp_Qout_reg;
+    if rising_edge(user_clk) then
+      if Local_Reset_i = '1' then
+        usTlp_Qout_i <= (others => '0');
       else
-        usTlp_Qout_i <= usTlp_Qout_i;
+        if usTlp_RE = '1' then
+          usTlp_Qout_i <= usTlp_Qout_reg;
+        else
+          usTlp_Qout_i <= usTlp_Qout_i;
+        end if;
       end if;
-
     end if;
   end process;
 
@@ -688,7 +542,7 @@ begin
   Synch_Delay_empty_and_full :
   process (user_clk)
   begin
-    if user_clk'event and user_clk = '1' then
+    if rising_edge(user_clk) then
       usTlp_Npempty_r1   <= not usTlp_pempty;
       usTlp_Nempty_r1    <= not usTlp_empty_i;
       usTlp_empty_r1     <= usTlp_empty_i;

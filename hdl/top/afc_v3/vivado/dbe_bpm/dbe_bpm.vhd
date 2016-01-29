@@ -42,12 +42,12 @@ use work.machine_pkg.all;
 use work.genram_pkg.all;
 -- Data Acquisition core
 use work.acq_core_pkg.all;
--- PCIe Core
-use work.bpm_pcie_a7_pkg.all;
--- PCIe Core Constants
-use work.bpm_pcie_a7_const_pkg.all;
+-- IP cores constants
+use work.ipcores_pkg.all;
 -- Meta Package
 use work.synthesis_descriptor_pkg.all;
+-- AXI cores
+use work.bpm_axi_pkg.all;
 
 entity dbe_bpm is
 port(
@@ -272,10 +272,10 @@ port(
   ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
 
   -- PCIe transceivers
-  pci_exp_rxp_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_rxn_i                             : in  std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_txp_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
-  pci_exp_txn_o                             : out std_logic_vector(c_pcie_lanes - 1 downto 0);
+  pci_exp_rxp_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_rxn_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_txp_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
+  pci_exp_txn_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
 
   -- PCI clock and reset signals
   pcie_clk_p_i                              : in std_logic;
@@ -307,10 +307,10 @@ architecture rtl of dbe_bpm is
   constant c_slv_dpram_sys_port1_id        : natural := 1;
   constant c_slv_pos_calc_1_id             : natural := 2;
   constant c_slv_fmc130m_4ch_1_id          : natural := 3;
-  constant c_slv_acq_core_1_id             : natural := 4;
+  constant c_slv_acq_core_0_id             : natural := 4;
   constant c_slv_pos_calc_2_id             : natural := 5;
   constant c_slv_fmc130m_4ch_2_id          : natural := 6;
-  constant c_slv_acq_core_2_id             : natural := 7;
+  constant c_slv_acq_core_1_id             : natural := 7;
   constant c_slv_periph_id                 : natural := 8;
   constant c_slv_afc_diag_id               : natural := 9;
   constant c_slv_sdb_repo_url_id           : natural := 10;
@@ -351,6 +351,17 @@ architecture rtl of dbe_bpm is
   constant c_acq_monit_1_pos_id             : natural := 16;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
+
+  -- Number of acquisition cores
+  constant c_acq_num_cores                  : natural := 2;
+  -- Type of DDR3 core interface
+  constant c_ddr_interface_type             : string := "AXIS";
+
+  -- Acquisition core IDs
+  constant c_acq_core_0_id                  : natural := 0;
+  constant c_acq_core_1_id                  : natural := 1;
+
+  -- Number of channels per acquisition core
   constant c_acq_num_channels               : natural := 17; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT_1 POS
                                                             -- for each FMC
@@ -425,11 +436,11 @@ architecture rtl of dbe_bpm is
      c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00308000"),   -- Position Calc Core 1 control port
      c_slv_fmc130m_4ch_1_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00310000"),   -- FMC130m_4ch control 1 port
-     c_slv_acq_core_1_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
+     c_slv_acq_core_0_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
      c_slv_pos_calc_2_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00340000"),   -- Position Calc Core 2 control port
      c_slv_fmc130m_4ch_2_id    => f_sdb_embed_bridge(c_fmc130m_4ch_bridge_sdb,   x"00350000"),   -- FMC130m_4ch control 2 port
-     c_slv_acq_core_2_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
+     c_slv_acq_core_1_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
      c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
      c_slv_afc_diag_id         => f_sdb_embed_device(c_xwb_afc_diag_sdb,         x"00380000"),   -- AFC Diagnostics control port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
@@ -459,6 +470,8 @@ architecture rtl of dbe_bpm is
   signal cbar_slave_o                       : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_i                      : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_o                      : t_wishbone_master_out_array(c_slaves-1 downto 0);
+  signal acq_core_slave_i                   : t_wishbone_slave_in_array (c_acq_num_cores-1 downto 0);
+  signal acq_core_slave_o                   : t_wishbone_slave_out_array(c_acq_num_cores-1 downto 0);
 
   -- LM32 signals
   signal clk_sys                            : std_logic;
@@ -509,35 +522,25 @@ architecture rtl of dbe_bpm is
   signal dbg_arb_gnt                        : std_logic_vector(1 downto 0);
 
   -- To/From Acquisition Core
-  signal acq1_chan_array                    : t_acq_chan_array(c_acq_num_channels-1 downto 0);
-  signal acq2_chan_array                    : t_acq_chan_array(c_acq_num_channels-1 downto 0);
+  signal acq_chan_array                     : t_acq_chan_array2d(c_acq_num_cores-1 downto 0, c_acq_num_channels-1 downto 0);
 
-  signal bpm_acq_dpram_dout                 : std_logic_vector(f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
-  signal bpm_acq_dpram_valid                : std_logic;
+  signal bpm_acq_dpram_dout_array           : std_logic_vector(c_acq_num_cores*f_acq_chan_find_widest(c_acq_channels)-1 downto 0);
+  signal bpm_acq_dpram_valid_array          : std_logic_vector(c_acq_num_cores-1 downto 0);
 
-  signal bpm_acq_ext_dout                   : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal bpm_acq_ext_valid                  : std_logic;
-  signal bpm_acq_ext_addr                   : std_logic_vector(c_acq_addr_width-1 downto 0);
-  signal bpm_acq_ext_sof                    : std_logic;
-  signal bpm_acq_ext_eof                    : std_logic;
-  signal bpm_acq_ext_dreq                   : std_logic;
-  signal bpm_acq_ext_stall                  : std_logic;
+  signal bpm_acq_ext_dout_array             : std_logic_vector(c_acq_num_cores*c_ddr_payload_width-1 downto 0);
+  signal bpm_acq_ext_valid_array            : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal bpm_acq_ext_addr_array             : std_logic_vector(c_acq_num_cores*c_acq_addr_width-1 downto 0);
+  signal bpm_acq_ext_sof_array              : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal bpm_acq_ext_eof_array              : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal bpm_acq_ext_dreq_array             : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal bpm_acq_ext_stall_array            : std_logic_vector(c_acq_num_cores-1 downto 0);
 
-  signal memc_ui_clk                        : std_logic;
-  signal memc_ui_rst                        : std_logic;
-  signal memc_ui_rstn                       : std_logic;
-  signal memc_cmd_rdy                       : std_logic;
-  signal memc_cmd_en                        : std_logic;
-  signal memc_cmd_instr                     : std_logic_vector(2 downto 0);
-  signal memc_cmd_addr_resized              : std_logic_vector(c_acq_ddr_addr_res_width-1 downto 0);
-  signal memc_cmd_addr                      : std_logic_vector(c_ddr_addr_width-1 downto 0);
-  signal memc_wr_en                         : std_logic;
-  signal memc_wr_end                        : std_logic;
-  signal memc_wr_mask                       : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
-  signal memc_wr_data                       : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal memc_wr_rdy                        : std_logic;
-  signal memc_rd_data                       : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal memc_rd_valid                      : std_logic;
+  signal ddr_aximm_clk                      : std_logic;
+  signal ddr_aximm_rstn                     : std_logic;
+  signal ddr_aximm_r_ma_in                  : t_aximm_r_master_in;
+  signal ddr_aximm_r_ma_out                 : t_aximm_r_master_out;
+  signal ddr_aximm_w_ma_in                  : t_aximm_w_master_in;
+  signal ddr_aximm_w_ma_out                 : t_aximm_w_master_out;
 
   signal dbg_ddr_rb_data                    : std_logic_vector(c_ddr_payload_width-1 downto 0);
   signal dbg_ddr_rb_addr                    : std_logic_vector(c_acq_addr_width-1 downto 0);
@@ -576,12 +579,15 @@ architecture rtl of dbe_bpm is
   signal clk_200mhz                         : std_logic;
 
   -- ADC clock
-  signal fs_clk_dbg                         : std_logic;
-  signal fs_clk2x_dbg                       : std_logic;
   signal fs1_clk                            : std_logic;
   signal fs1_clk2x                          : std_logic;
   signal fs2_clk                            : std_logic;
   signal fs2_clk2x                          : std_logic;
+  signal fs_clk_dbg                         : std_logic;
+  signal fs_clk2x_dbg                       : std_logic;
+  signal fs_clk_array                       : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal fs_rst_n_array                     : std_logic_vector(c_acq_num_cores-1 downto 0);
+  signal fs_ce_array                        : std_logic_vector(c_acq_num_cores-1 downto 0);
 
    -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
@@ -1171,12 +1177,11 @@ begin
   --         PCIe Core            --
   ----------------------------------
 
-  cmp_xwb_bpm_pcie_a7 : xwb_bpm_pcie_a7
+  cmp_xwb_bpm_pcie : xwb_bpm_pcie
   generic map (
     g_ma_interface_mode                       => PIPELINED,
     g_ma_address_granularity                  => BYTE,
-    g_ext_rst_pin                             => false,
-    g_sim_bypass_init_cal                     => "OFF"
+    g_simulation                              => "FALSE"
   )
   port map (
     -- DDR3 memory pins
@@ -1203,30 +1208,19 @@ begin
     pci_exp_txn_o                             => pci_exp_txn_o,
 
     -- Necessity signals
-    ddr_clk_p_i                               => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
-    ddr_clk_n_i                               => '0',          --200 MHz DDR core clock (connect through BUFG or PLL)
+    ddr_clk_i                                 => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
+    ddr_rst_i                                 => clk_sys_pcie_rst,
     pcie_clk_p_i                              => pcie_clk_p_i, --100 MHz PCIe Clock (connect directly to input pin)
     pcie_clk_n_i                              => pcie_clk_n_i, --100 MHz PCIe Clock
     pcie_rst_n_i                              => clk_sys_pcie_rstn, -- PCIe core reset
 
     -- DDR memory controller interface --
-    ddr_core_rst_i                            => clk_sys_pcie_rst,
-    memc_ui_clk_o                             => memc_ui_clk,
-    memc_ui_rst_o                             => memc_ui_rst,
-    memc_cmd_rdy_o                            => memc_cmd_rdy,
-    memc_cmd_en_i                             => memc_cmd_en,
-    memc_cmd_instr_i                          => memc_cmd_instr,
-    memc_cmd_addr_i                           => memc_cmd_addr_resized,
-    memc_wr_en_i                              => memc_wr_en,
-    memc_wr_end_i                             => memc_wr_end,
-    memc_wr_mask_i                            => memc_wr_mask,
-    memc_wr_data_i                            => memc_wr_data,
-    memc_wr_rdy_o                             => memc_wr_rdy,
-    memc_rd_data_o                            => memc_rd_data,
-    memc_rd_valid_o                           => memc_rd_valid,
-    ---- memory arbiter interface
-    memarb_acc_req_i                          => memarb_acc_req,
-    memarb_acc_gnt_o                          => memarb_acc_gnt,
+    ddr_aximm_sl_aclk_o                       => ddr_aximm_clk,
+    ddr_aximm_sl_aresetn_o                    => ddr_aximm_rstn,
+    ddr_aximm_r_sl_i                          => ddr_aximm_r_ma_out,
+    ddr_aximm_r_sl_o                          => ddr_aximm_r_ma_in,
+    ddr_aximm_w_sl_i                          => ddr_aximm_w_ma_out,
+    ddr_aximm_w_sl_o                          => ddr_aximm_w_ma_in,
 
     -- Wishbone interface --
     wb_clk_i                                  => clk_sys,
@@ -1236,26 +1230,7 @@ begin
     wb_ma_i                                   => cbar_slave_o(c_ma_pcie_id),
     wb_ma_o                                   => cbar_slave_i(c_ma_pcie_id),
     -- Additional exported signals for instantiation
-    wb_ma_pcie_rst_o                          => wb_ma_pcie_rst,
-
-    -- Debug signals
-    dbg_app_addr_o                            => dbg_app_addr,
-    dbg_app_cmd_o                             => dbg_app_cmd,
-    dbg_app_en_o                              => dbg_app_en,
-    dbg_app_wdf_data_o                        => dbg_app_wdf_data,
-    dbg_app_wdf_end_o                         => dbg_app_wdf_end,
-    dbg_app_wdf_wren_o                        => dbg_app_wdf_wren,
-    dbg_app_wdf_mask_o                        => dbg_app_wdf_mask,
-    dbg_app_rd_data_o                         => dbg_app_rd_data,
-    dbg_app_rd_data_end_o                     => dbg_app_rd_data_end,
-    dbg_app_rd_data_valid_o                   => dbg_app_rd_data_valid,
-    dbg_app_rdy_o                             => dbg_app_rdy,
-    dbg_app_wdf_rdy_o                         => dbg_app_wdf_rdy,
-    dbg_ddr_ui_clk_o                          => dbg_ddr_ui_clk,
-    dbg_ddr_ui_reset_o                        => dbg_ddr_ui_reset,
-
-    dbg_arb_req_o                             => dbg_arb_req,
-    dbg_arb_gnt_o                             => dbg_arb_gnt
+    wb_ma_pcie_rst_o                          => wb_ma_pcie_rst
   );
 
   wb_ma_pcie_rstn                             <= not wb_ma_pcie_rst;
@@ -2161,401 +2136,401 @@ begin
   --------------------
   -- ADC 1 data
   --------------------
-  acq1_chan_array(c_acq_adc_id).val_low       <= fmc1_adc_data_ch3 &
-                                                fmc1_adc_data_ch2 &
-                                                fmc1_adc_data_ch1 &
-                                                fmc1_adc_data_ch0;
-  acq1_chan_array(c_acq_adc_id).val_high      <= (others => '0');
-  acq1_chan_array(c_acq_adc_id).dvalid        <= '1';
-  acq1_chan_array(c_acq_adc_id).trig          <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).val_low       <= fmc1_adc_data_ch3 &
+                                                                       fmc1_adc_data_ch2 &
+                                                                       fmc1_adc_data_ch1 &
+                                                                       fmc1_adc_data_ch0;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).val_high      <= (others => '0');
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= fmc1_trig_hw;
 
   --------------------
   -- ADC SWAP 1 data
   --------------------
-  acq1_chan_array(c_acq_adc_swap_id).val_low       <= dsp1_adc_ch3_data &
-                                                     dsp1_adc_ch2_data &
-                                                     dsp1_adc_ch1_data &
-                                                     dsp1_adc_ch0_data;
-  acq1_chan_array(c_acq_adc_swap_id).val_high      <= (others => '0');
-  acq1_chan_array(c_acq_adc_swap_id).dvalid        <= '1';
-  acq1_chan_array(c_acq_adc_swap_id).trig          <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).val_low       <= dsp1_adc_ch3_data &
+                                                                            dsp1_adc_ch2_data &
+                                                                            dsp1_adc_ch1_data &
+                                                                            dsp1_adc_ch0_data;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).val_high      <= (others => '0');
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig          <= fmc1_trig_hw;
 
   --------------------
   -- MIXER I/Q 1/2 1 data
   --------------------
-  acq1_chan_array(c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch0), 32));
 
-  acq1_chan_array(c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch1), 32));
 
-  acq1_chan_array(c_acq_mixiq12_id).dvalid    <= dsp1_mix_valid;
-  acq1_chan_array(c_acq_mixiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).dvalid    <= dsp1_mix_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- MIXER I/Q 3/4 1 data
   --------------------
-  acq1_chan_array(c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch2), 32));
 
-  acq1_chan_array(c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch3), 32));
 
-  acq1_chan_array(c_acq_mixiq34_id).dvalid    <= dsp1_mix_valid;
-  acq1_chan_array(c_acq_mixiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).dvalid    <= dsp1_mix_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- TBT I/Q 1/2 1 data
   --------------------
-  acq1_chan_array(c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
 
-  acq1_chan_array(c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch1), 32));
 
-  acq1_chan_array(c_acq_tbtdecimiq12_id).dvalid    <= dsp1_tbtdecim_valid;
-  acq1_chan_array(c_acq_tbtdecimiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp1_tbtdecim_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- TBT I/Q 3/4 1 data
   --------------------
-  acq1_chan_array(c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32));
 
-  acq1_chan_array(c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch3), 32));
 
-  acq1_chan_array(c_acq_tbtdecimiq34_id).dvalid    <= dsp1_tbtdecim_valid;
-  acq1_chan_array(c_acq_tbtdecimiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).dvalid    <= dsp1_tbtdecim_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- TBT AMP 1 data
   --------------------
-  acq1_chan_array(c_acq_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch0), 32));
 
-  acq1_chan_array(c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch2), 32));
 
-  acq1_chan_array(c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
-  acq1_chan_array(c_acq_tbt_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- TBT PHASE 1 data
   --------------------
-  acq1_chan_array(c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq1_chan_array(c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq1_chan_array(c_acq_tbt_phase_id).dvalid    <= dsp1_tbt_pha_valid;
-  acq1_chan_array(c_acq_tbt_phase_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).dvalid    <= dsp1_tbt_pha_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- TBT POS 1 data
   --------------------
-  acq1_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbt_pos_y), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbt_pos_y), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_x), 32));
 
-  acq1_chan_array(c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbt_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbt_pos_sum), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_q), 32));
 
-  acq1_chan_array(c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
-  acq1_chan_array(c_acq_tbt_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- FOFB I/Q 1/2 1 data
   --------------------
-  acq1_chan_array(c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
 
-  acq1_chan_array(c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch1), 32));
 
-  acq1_chan_array(c_acq_fofbdecimiq12_id).dvalid    <= dsp1_fofbdecim_valid;
-  acq1_chan_array(c_acq_fofbdecimiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp1_fofbdecim_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- FOFB I/Q 3/4 1 data
   --------------------
-  acq1_chan_array(c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32));
 
-  acq1_chan_array(c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch3), 32));
 
-  acq1_chan_array(c_acq_fofbdecimiq34_id).dvalid    <= dsp1_fofbdecim_valid;
-  acq1_chan_array(c_acq_fofbdecimiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).dvalid    <= dsp1_fofbdecim_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- FOFB AMP 1 data
   --------------------
-  acq1_chan_array(c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch0), 32));
 
-  acq1_chan_array(c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch3), 32)) &
                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch2), 32));
 
-  acq1_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp1_fofb_amp_valid;
-  acq1_chan_array(c_acq_fofb_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).dvalid    <= dsp1_fofb_amp_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- FOFB PHASE 1 data
   --------------------
-  acq1_chan_array(c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq1_chan_array(c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq1_chan_array(c_acq_fofb_phase_id).dvalid    <= dsp1_fofb_pha_valid;
-  acq1_chan_array(c_acq_fofb_phase_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).dvalid    <= dsp1_fofb_pha_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- FOFB POS 1 data
   --------------------
-  acq1_chan_array(c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofb_pos_y), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofb_pos_y), 32)) &
                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_x), 32));
 
-  acq1_chan_array(c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofb_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofb_pos_sum), 32)) &
                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_q), 32));
 
-  acq1_chan_array(c_acq_fofb_pos_id).dvalid    <= dsp1_fofb_pos_valid;
-  acq1_chan_array(c_acq_fofb_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).dvalid    <= dsp1_fofb_pos_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- MONIT AMP 1 data
   --------------------
-  acq1_chan_array(c_acq_monit_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_monit_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).val_low   <= std_logic_vector(resize(signed(dsp1_monit_amp_ch1), 32)) &
                                                   std_logic_vector(resize(signed(dsp1_monit_amp_ch0), 32));
 
-  acq1_chan_array(c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_monit_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp1_monit_amp_ch3), 32)) &
                                                   std_logic_vector(resize(signed(dsp1_monit_amp_ch2), 32));
 
-  acq1_chan_array(c_acq_monit_amp_id).dvalid    <= dsp1_monit_amp_valid;
-  acq1_chan_array(c_acq_monit_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).dvalid    <= dsp1_monit_amp_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- MONIT POS 1 data
   --------------------
-  acq1_chan_array(c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_monit_pos_y), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp1_monit_pos_y), 32)) &
                                                   std_logic_vector(resize(signed(dsp1_monit_pos_x), 32));
 
-  acq1_chan_array(c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_monit_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp1_monit_pos_sum), 32)) &
                                                   std_logic_vector(resize(signed(dsp1_monit_pos_q), 32));
 
-  acq1_chan_array(c_acq_monit_pos_id).dvalid    <= dsp1_monit_pos_valid;
-  acq1_chan_array(c_acq_monit_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).dvalid    <= dsp1_monit_pos_valid;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- MONIT1 POS 1 data
   --------------------
-  acq1_chan_array(c_acq_monit_1_pos_id).val_low   <= (others => '0');
-  acq1_chan_array(c_acq_monit_1_pos_id).val_low   <= (others => '0');
-  acq1_chan_array(c_acq_monit_1_pos_id).val_high  <= (others => '0');
-  acq1_chan_array(c_acq_monit_1_pos_id).dvalid    <= '0';
-  acq1_chan_array(c_acq_monit_1_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).val_low   <= (others => '0');
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).val_low   <= (others => '0');
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).val_high  <= (others => '0');
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).dvalid    <= '0';
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).trig      <= fmc1_trig_hw;
 
   --------------------
   -- ADC 2 data
   --------------------
-  acq2_chan_array(c_acq_adc_id).val_low       <= fmc2_adc_data_ch3 &
-                                                fmc2_adc_data_ch2 &
-                                                fmc2_adc_data_ch1 &
-                                                fmc2_adc_data_ch0;
-  acq2_chan_array(c_acq_adc_id).val_high      <= (others => '0');
-  acq2_chan_array(c_acq_adc_id).dvalid        <= '1';
-  acq2_chan_array(c_acq_adc_id).trig          <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val_low       <= fmc2_adc_data_ch3 &
+                                                                       fmc2_adc_data_ch2 &
+                                                                       fmc2_adc_data_ch1 &
+                                                                       fmc2_adc_data_ch0;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val_high      <= (others => '0');
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= fmc2_trig_hw;
 
   --------------------
   -- ADC SWAP 1 data
   --------------------
-  acq2_chan_array(c_acq_adc_swap_id).val_low       <= dsp2_adc_ch3_data &
-                                                     dsp2_adc_ch2_data &
-                                                     dsp2_adc_ch1_data &
-                                                     dsp2_adc_ch0_data;
-  acq2_chan_array(c_acq_adc_swap_id).val_high      <= (others => '0');
-  acq2_chan_array(c_acq_adc_swap_id).dvalid        <= '1';
-  acq2_chan_array(c_acq_adc_swap_id).trig          <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).val_low       <= dsp2_adc_ch3_data &
+                                                                            dsp2_adc_ch2_data &
+                                                                            dsp2_adc_ch1_data &
+                                                                            dsp2_adc_ch0_data;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).val_high      <= (others => '0');
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig          <= fmc2_trig_hw;
 
   --------------------
   -- MIXER I/Q 1/2 2 data
   --------------------
-  acq2_chan_array(c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch0), 32));
 
-  acq2_chan_array(c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch1), 32));
 
-  acq2_chan_array(c_acq_mixiq12_id).dvalid    <= dsp2_mix_valid;
-  acq2_chan_array(c_acq_mixiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).dvalid    <= dsp2_mix_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- MIXER I/Q 3/4 2 data
   --------------------
-  acq2_chan_array(c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch2), 32));
 
-  acq2_chan_array(c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch3), 32));
 
-  acq2_chan_array(c_acq_mixiq34_id).dvalid    <= dsp2_mix_valid;
-  acq2_chan_array(c_acq_mixiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).dvalid    <= dsp2_mix_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- TBT I/Q 1/2 2 data
   --------------------
-  acq2_chan_array(c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
 
-  acq2_chan_array(c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch1), 32));
 
-  acq2_chan_array(c_acq_tbtdecimiq12_id).dvalid    <= dsp2_tbtdecim_valid;
-  acq2_chan_array(c_acq_tbtdecimiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp2_tbtdecim_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- TBT I/Q 3/4 2 data
   --------------------
-  acq2_chan_array(c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32));
 
-  acq2_chan_array(c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch3), 32));
 
-  acq2_chan_array(c_acq_tbtdecimiq34_id).dvalid    <= dsp2_tbtdecim_valid;
-  acq2_chan_array(c_acq_tbtdecimiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).dvalid    <= dsp2_tbtdecim_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- TBT AMP 2 data
   --------------------
-  acq2_chan_array(c_acq_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbt_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbt_amp_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch0), 32));
 
-  acq2_chan_array(c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbt_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbt_amp_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch2), 32));
 
-  acq2_chan_array(c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
-  acq2_chan_array(c_acq_tbt_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- TBT PHASE 2 data
   --------------------
-  acq2_chan_array(c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq2_chan_array(c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq2_chan_array(c_acq_tbt_phase_id).dvalid    <= dsp2_tbt_pha_valid;
-  acq2_chan_array(c_acq_tbt_phase_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).dvalid    <= dsp2_tbt_pha_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- TBT POS 2 data
   --------------------
-  acq2_chan_array(c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbt_pos_y), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbt_pos_y), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_x), 32));
 
-  acq2_chan_array(c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbt_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbt_pos_sum), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_q), 32));
 
-  acq2_chan_array(c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
-  acq2_chan_array(c_acq_tbt_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- FOFB I/Q 1/2 2 data
   --------------------
-  acq2_chan_array(c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
 
-  acq2_chan_array(c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch1), 32));
 
-  acq2_chan_array(c_acq_fofbdecimiq12_id).dvalid    <= dsp2_fofbdecim_valid;
-  acq2_chan_array(c_acq_fofbdecimiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp2_fofbdecim_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- FOFB I/Q 3/4 2 data
   --------------------
-  acq2_chan_array(c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32));
 
-  acq2_chan_array(c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch3), 32));
 
-  acq2_chan_array(c_acq_fofbdecimiq34_id).dvalid    <= dsp2_fofbdecim_valid;
-  acq2_chan_array(c_acq_fofbdecimiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).dvalid    <= dsp2_fofbdecim_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- FOFB AMP 2 data
   --------------------
-  acq2_chan_array(c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch0), 32));
 
-  acq2_chan_array(c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch3), 32)) &
                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch2), 32));
 
-  acq2_chan_array(c_acq_fofb_amp_id).dvalid    <= dsp2_fofb_amp_valid;
-  acq2_chan_array(c_acq_fofb_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).dvalid    <= dsp2_fofb_amp_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- FOFB PHASE 2 data
   --------------------
-  acq2_chan_array(c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).val_low   <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq2_chan_array(c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).val_high  <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
-  acq2_chan_array(c_acq_fofb_phase_id).dvalid    <= dsp2_fofb_pha_valid;
-  acq2_chan_array(c_acq_fofb_phase_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).dvalid    <= dsp2_fofb_pha_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- FOFB POS 2 data
   --------------------
-  acq2_chan_array(c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofb_pos_y), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofb_pos_y), 32)) &
                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_x), 32));
 
-  acq2_chan_array(c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofb_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofb_pos_sum), 32)) &
                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_q), 32));
 
-  acq2_chan_array(c_acq_fofb_pos_id).dvalid    <= dsp2_fofb_pos_valid;
-  acq2_chan_array(c_acq_fofb_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).dvalid    <= dsp2_fofb_pos_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- MONIT AMP 2 data
   --------------------
-  acq2_chan_array(c_acq_monit_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_monit_amp_ch1), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).val_low   <= std_logic_vector(resize(signed(dsp2_monit_amp_ch1), 32)) &
                                                   std_logic_vector(resize(signed(dsp2_monit_amp_ch0), 32));
 
-  acq2_chan_array(c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_monit_amp_ch3), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).val_high  <= std_logic_vector(resize(signed(dsp2_monit_amp_ch3), 32)) &
                                                   std_logic_vector(resize(signed(dsp2_monit_amp_ch2), 32));
 
-  acq2_chan_array(c_acq_monit_amp_id).dvalid    <= dsp2_monit_amp_valid;
-  acq2_chan_array(c_acq_monit_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).dvalid    <= dsp2_monit_amp_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- MONIT POS 2 data
   --------------------
-  acq2_chan_array(c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_monit_pos_y), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).val_low   <= std_logic_vector(resize(signed(dsp2_monit_pos_y), 32)) &
                                                   std_logic_vector(resize(signed(dsp2_monit_pos_x), 32));
 
-  acq2_chan_array(c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_monit_pos_sum), 32)) &
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).val_high  <= std_logic_vector(resize(signed(dsp2_monit_pos_sum), 32)) &
                                                   std_logic_vector(resize(signed(dsp2_monit_pos_q), 32));
 
-  acq2_chan_array(c_acq_monit_pos_id).dvalid    <= dsp2_monit_pos_valid;
-  acq2_chan_array(c_acq_monit_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).dvalid    <= dsp2_monit_pos_valid;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).trig      <= fmc2_trig_hw;
 
   --------------------
   -- MONIT1 POS 2 data
   --------------------
-  acq2_chan_array(c_acq_monit_1_pos_id).val_low   <= (others => '0');
-  acq2_chan_array(c_acq_monit_1_pos_id).val_high  <= (others => '0');
-  acq2_chan_array(c_acq_monit_1_pos_id).dvalid    <= '0';
-  acq2_chan_array(c_acq_monit_1_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).val_low   <= (others => '0');
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).val_high  <= (others => '0');
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).dvalid    <= '0';
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).trig      <= fmc2_trig_hw;
 
-  cmp_xwb_acq_core_2_to_1_mux : xwb_acq_core_2_to_1_mux
+  cmp_xwb_acq_core_mux : xwb_acq_core_mux
   generic map
   (
     g_interface_mode                          => PIPELINED,
@@ -2567,114 +2542,83 @@ begin
     g_ddr_dq_width                            => c_ddr_dq_width,
     g_ddr_addr_width                          => c_ddr_addr_width,
     --g_multishot_ram_size                      => 2048,
-    g_fifo_fc_size                            => c_acq_fifo_size -- avoid fifo overflow
+    g_fifo_fc_size                            => c_acq_fifo_size,
     --g_sim_readback                            => false
+    g_acq_num_cores                           => c_acq_num_cores,
+    g_ddr_interface_type                      => c_ddr_interface_type,
+    g_max_burst_size                          => c_ddr_datamover_bpm_burst_size
   )
   port map
   (
-    -- Clock signals for acquisition core 1
-    fs1_clk_i                                 => fs1_clk,
-    fs1_ce_i                                  => '1',
-    fs1_rst_n_i                               => fs1_rstn,
-
-    -- Clock signals for acquisition core 2
-    fs2_clk_i                                 => fs2_clk,
-    fs2_ce_i                                  => '1',
-    fs2_rst_n_i                               => fs2_rstn,
+    fs_clk_array_i                            => fs_clk_array,
+    fs_ce_array_i                             => fs_ce_array,
+    fs_rst_n_array_i                          => fs_rst_n_array,
 
     -- Clock signals for Wishbone
     sys_clk_i                                 => clk_sys,
     sys_rst_n_i                               => clk_sys_rstn,
 
     -- From DDR3 Controller
-    ext_clk_i                                 => memc_ui_clk,
-    ext_rst_n_i                               => memc_ui_rstn,
+    ext_clk_i                                 => ddr_aximm_clk,
+    ext_rst_n_i                               => ddr_aximm_rstn,
 
     -----------------------------
     -- Wishbone Control Interface signals
     -----------------------------
-    wb0_slv_i                                  => cbar_master_o(c_slv_acq_core_1_id),
-    wb0_slv_o                                  => cbar_master_i(c_slv_acq_core_1_id),
-
-    wb1_slv_i                                  => cbar_master_o(c_slv_acq_core_2_id),
-    wb1_slv_o                                  => cbar_master_i(c_slv_acq_core_2_id),
+    wb_slv_i                                  => acq_core_slave_i,
+    wb_slv_o                                  => acq_core_slave_o,
 
     -----------------------------
     -- External Interface
     -----------------------------
-    acq0_chan_array_i                         => acq1_chan_array,
-    acq1_chan_array_i                         => acq2_chan_array,
+    acq_chan_array_i                           => acq_chan_array,
 
     -----------------------------
     -- DRRAM Interface
     -----------------------------
-    dpram0_dout_o                              => bpm_acq_dpram_dout , -- to chipscope
-    dpram0_valid_o                             => bpm_acq_dpram_valid, -- to chipscope
-
-    dpram1_dout_o                              => open,
-    dpram1_valid_o                             => open,
+    dpram_dout_array_o                         => bpm_acq_dpram_dout_array, -- to chipscope
+    dpram_valid_array_o                        => bpm_acq_dpram_valid_array, -- to chipscope
 
     -----------------------------
     -- External Interface (w/ FLow Control)
     -----------------------------
-    ext0_dout_o                                => bpm_acq_ext_dout, -- to chipscope
-    ext0_valid_o                               => bpm_acq_ext_valid, -- to chipscope
-    ext0_addr_o                                => bpm_acq_ext_addr, -- to chipscope
-    ext0_sof_o                                 => bpm_acq_ext_sof, -- to chipscope
-    ext0_eof_o                                 => bpm_acq_ext_eof, -- to chipscope
-    ext0_dreq_o                                => bpm_acq_ext_dreq, -- to chipscope
-    ext0_stall_o                               => bpm_acq_ext_stall, -- to chipscope
-
-    ext1_dout_o                                => open,
-    ext1_valid_o                               => open,
-    ext1_addr_o                                => open,
-    ext1_sof_o                                 => open,
-    ext1_eof_o                                 => open,
-    ext1_dreq_o                                => open,
-    ext1_stall_o                               => open,
-
-    -----------------------------
-    -- DDR3 SDRAM Interface
-    -----------------------------
-    ui_app_addr_o                             => memc_cmd_addr,
-    ui_app_cmd_o                              => memc_cmd_instr,
-    ui_app_en_o                               => memc_cmd_en,
-    ui_app_rdy_i                              => memc_cmd_rdy,
-
-    ui_app_wdf_data_o                         => memc_wr_data,
-    ui_app_wdf_end_o                          => memc_wr_end,
-    ui_app_wdf_mask_o                         => memc_wr_mask,
-    ui_app_wdf_wren_o                         => memc_wr_en,
-    ui_app_wdf_rdy_i                          => memc_wr_rdy,
-
-    ui_app_rd_data_i                          => memc_rd_data,  -- not used!
-    ui_app_rd_data_end_i                      => '0',  -- not used!
-    ui_app_rd_data_valid_i                    => memc_rd_valid,  -- not used!
-
-    -- DDR3 arbitrer for multiple accesses
-    ui_app_req_o                              => memarb_acc_req,
-    ui_app_gnt_i                              => memarb_acc_gnt,
+    ext_dout_array_o                           => bpm_acq_ext_dout_array, -- to chipscope
+    ext_valid_array_o                          => bpm_acq_ext_valid_array, -- to chipscope
+    ext_addr_array_o                           => bpm_acq_ext_addr_array, -- to chipscope
+    ext_sof_array_o                            => bpm_acq_ext_sof_array, -- to chipscope
+    ext_eof_array_o                            => bpm_acq_ext_eof_array, -- to chipscope
+    ext_dreq_array_o                           => bpm_acq_ext_dreq_array, -- to chipscope
+    ext_stall_array_o                          => bpm_acq_ext_stall_array, -- to chipscope
 
     -----------------------------
     -- Debug Interface
     -----------------------------
-    dbg_ddr_rb0_start_p_i                     => '0',
-    dbg_ddr_rb0_rdy_o                         => open,
-    dbg_ddr_rb0_data_o                        => dbg_ddr_rb_data,
-    dbg_ddr_rb0_addr_o                        => dbg_ddr_rb_addr,
-    dbg_ddr_rb0_valid_o                       => dbg_ddr_rb_valid,
+    dbg_ddr_rb_start_p_array_i                => (others => '0'),
+    dbg_ddr_rb_rdy_array_o                    => open,
+    dbg_ddr_rb_data_array_o                   => open,
+    dbg_ddr_rb_addr_array_o                   => open,
+    dbg_ddr_rb_valid_array_o                  => open,
 
-    dbg_ddr_rb1_start_p_i                     => '0',
-    dbg_ddr_rb1_rdy_o                         => open,
-    dbg_ddr_rb1_data_o                        => open,
-    dbg_ddr_rb1_addr_o                        => open,
-    dbg_ddr_rb1_valid_o                       => open
+    -----------------------------
+    -- DDR3 SDRAM Interface
+    -----------------------------
+    -- AXIMM Read Channel
+    ddr_aximm_r_ma_i                          => ddr_aximm_r_ma_in,
+    ddr_aximm_r_ma_o                          => ddr_aximm_r_ma_out,
+    -- AXIMM Write Channel
+    ddr_aximm_w_ma_i                          => ddr_aximm_w_ma_in,
+    ddr_aximm_w_ma_o                          => ddr_aximm_w_ma_out
   );
 
-  memc_ui_rstn <= not(memc_ui_rst);
+  fs_clk_array   <= fs2_clk & fs1_clk;
+  fs_ce_array    <= "11";
+  fs_rst_n_array <= fs2_rstn & fs1_rstn;
 
-  memc_cmd_addr_resized <= f_gen_std_logic_vector(c_acq_ddr_addr_diff, '0') &
-                               memc_cmd_addr;
+  -- c_slv_acq_core_*_id is Wishbone slave index
+  -- c_acq_core_*_id is Acquisition core index
+  acq_core_slave_i <= cbar_master_o(c_slv_acq_core_1_id) & cbar_master_o(c_slv_acq_core_0_id);
+  cbar_master_i(c_slv_acq_core_0_id) <= acq_core_slave_o(c_acq_core_0_id);
+  cbar_master_i(c_slv_acq_core_1_id) <= acq_core_slave_o(c_acq_core_1_id);
 
   ----------------------------------------------------------------------
   --                      DSP Chipscope                               --
@@ -3122,7 +3066,7 @@ begin
   --cmp_chipscope_ila_1_ddr_acq : chipscope_ila
   --port map (
   --  CONTROL                                 => CONTROL1,
-  --  CLK                                     => memc_ui_clk,
+  --  CLK                                     => ddr_aximm_clk,
   --  TRIG0                                   => TRIG_ILA1_0,
   --  TRIG1                                   => TRIG_ILA1_1,
   --  TRIG2                                   => TRIG_ILA1_2,
@@ -3136,7 +3080,7 @@ begin
 
   --TRIG_ILA1_2                               <= memc_cmd_addr_resized;
   --TRIG_ILA1_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA1_3(27 downto 0)                  <= memc_ui_rst &
+  --TRIG_ILA1_3(27 downto 0)                  <= ddr_aximm_rstn &
   --                                               clk_200mhz_rstn &
   --                                               memc_cmd_instr & -- std_logic_vector(2 downto 0);
   --                                               memc_cmd_en &
@@ -3198,7 +3142,7 @@ begin
   --cmp_chipscope_ila_3_pcie_ddr_read : chipscope_ila
   --port map (
   --  CONTROL                                 => CONTROL3,
-  --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
+  --  CLK                                     => ddr_aximm_clk, -- DDR3 controller clk
   --  TRIG0                                   => TRIG_ILA3_0,
   --  TRIG1                                   => TRIG_ILA3_1,
   --  TRIG2                                   => TRIG_ILA3_2,
@@ -3224,7 +3168,7 @@ begin
   --cmp_chipscope_ila_5_pcie_ddr_write : chipscope_ila
   --port map (
   --  CONTROL                                 => CONTROL4,
-  --  CLK                                     => memc_ui_clk, -- DDR3 controller clk
+  --  CLK                                     => ddr_aximm_clk, -- DDR3 controller clk
   --  TRIG0                                   => TRIG_ILA4_0,
   --  TRIG1                                   => TRIG_ILA4_1,
   --  TRIG2                                   => TRIG_ILA4_2,
@@ -3238,7 +3182,7 @@ begin
 
   --TRIG_ILA4_2                               <= dbg_app_addr;
   --TRIG_ILA4_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA4_3(29 downto 0)                  <= memc_ui_rst &
+  --TRIG_ILA4_3(29 downto 0)                  <= ddr_aximm_rstn &
   --                                               clk_200mhz_rstn &
   --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
   --                                               dbg_app_en &

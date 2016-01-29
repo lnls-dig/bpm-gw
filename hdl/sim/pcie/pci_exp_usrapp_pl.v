@@ -49,10 +49,10 @@
 //-----------------------------------------------------------------------------
 // Project    : Series-7 Integrated Block for PCI Express
 // File       : pci_exp_usrapp_pl.v
-// Version    : 1.8
+// Version    : 3.1
 //--
 //--------------------------------------------------------------------------------
-
+`timescale 1ns/1ns
 module pci_exp_usrapp_pl (
 
                           pl_initial_link_width,
@@ -100,7 +100,7 @@ input                    trn_clk;
 input                    trn_reset_n;
 
 parameter                Tcq = 1;
-parameter                LINK_CAP_MAX_LINK_SPEED = 4'h1;
+parameter                LINK_CAP_MAX_LINK_SPEED = 4'h2;
 
 reg                      pl_directed_link_auton;
 reg [1:0]                pl_directed_link_change;

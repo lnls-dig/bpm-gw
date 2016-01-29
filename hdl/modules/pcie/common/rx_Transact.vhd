@@ -184,21 +184,14 @@ entity rx_Transact is
     Regs_WrDin1  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
 
     -- DDR write port
-    DDR_wr_sof_A   : out std_logic;
-    DDR_wr_eof_A   : out std_logic;
-    DDR_wr_v_A     : out std_logic;
-    DDR_wr_Shift_A : out std_logic;
-    DDR_wr_Mask_A  : out std_logic_vector(2-1 downto 0);
-    DDR_wr_din_A   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-    DDR_wr_sof_B   : out std_logic;
-    DDR_wr_eof_B   : out std_logic;
-    DDR_wr_v_B     : out std_logic;
-    DDR_wr_Shift_B : out std_logic;
-    DDR_wr_Mask_B  : out std_logic_vector(2-1 downto 0);
-    DDR_wr_din_B   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-    DDR_wr_full : in std_logic;
+    ddr_s2mm_cmd_tvalid : out STD_LOGIC;
+    ddr_s2mm_cmd_tready : in STD_LOGIC;
+    ddr_s2mm_cmd_tdata : out STD_LOGIC_VECTOR(71 DOWNTO 0);
+    ddr_s2mm_tdata : out STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ddr_s2mm_tkeep : out STD_LOGIC_VECTOR(7 DOWNTO 0);
+    ddr_s2mm_tlast : out STD_LOGIC;
+    ddr_s2mm_tvalid : out STD_LOGIC;
+    ddr_s2mm_tready : in STD_LOGIC;
 
     -- Interrupt generator signals
     IG_Reset        : in  std_logic;
@@ -222,67 +215,6 @@ architecture Behavioral of rx_Transact is
   signal wb_FIFO_wsof_i : std_logic;
   signal wb_FIFO_weof_i : std_logic;
   signal wb_FIFO_din_i  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-  ------------------------------------------------------------------
-  --  Rx input delay
-  --  some calculation in advance, to achieve better timing
-  --
-  component
-    RxIn_Delay
-    port (
-      -- Common ports
-      user_clk    : in std_logic;
-      user_reset  : in std_logic;
-      user_lnk_up : in std_logic;
-
-      -- Transaction receive interface
-      m_axis_rx_tlast    : in  std_logic;
-      m_axis_rx_tdata    : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      m_axis_rx_tkeep    : in  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
-      m_axis_rx_terrfwd  : in  std_logic;
-      m_axis_rx_tvalid   : in  std_logic;
-      m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
-      m_axis_rx_tready   : out std_logic;
-      Pool_wrBuf_full    : in  std_logic;
-      wb_FIFO_full       : in  std_logic;
-
-      -- Delayed
-      m_axis_rx_tlast_dly    : out std_logic;
-      m_axis_rx_tdata_dly    : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      m_axis_rx_tkeep_dly    : out std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
-      m_axis_rx_terrfwd_dly  : out std_logic;
-      m_axis_rx_tvalid_dly   : out std_logic;
-      m_axis_rx_tready_dly   : out std_logic;
-      m_axis_rx_tbar_hit_dly : out std_logic_vector(C_BAR_NUMBER-1 downto 0);
-
-      -- TLP resolution
-      MRd_Type  : out std_logic_vector(3 downto 0);
-      MWr_Type  : out std_logic_vector(1 downto 0);
-      CplD_Type : out std_logic_vector(3 downto 0);
-
-      -- From Cpl/D channel
-      usDMA_dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-      dsDMA_dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- To Memory request process modules
-      Tlp_straddles_4KB : out std_logic;
-
-      -- To Cpl/D channel
-      Tlp_has_4KB       : out std_logic;
-      Tlp_has_1DW       : out std_logic;
-      CplD_is_the_Last  : out std_logic;
-      CplD_on_Pool      : out std_logic;
-      CplD_on_EB        : out std_logic;
-      Req_ID_Match      : out std_logic;
-      usDex_Tag_Matched : out std_logic;
-      dsDex_Tag_Matched : out std_logic;
-      CplD_Tag          : out std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- Additional
-      cfg_dcommand : in std_logic_vector(C_CFG_COMMAND_DWIDTH-1 downto 0);
-      localID      : in std_logic_vector(C_ID_WIDTH-1 downto 0)
-      );
-  end component;
 
   -- One clock delayed
   signal m_axis_rx_tlast_dly    : std_logic;
@@ -310,172 +242,25 @@ architecture Behavioral of rx_Transact is
   signal usDex_Tag_Matched : std_logic;
   signal dsDex_Tag_Matched : std_logic;
   signal CplD_Tag          : std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-
-  ------------------------------------------------------------------
-  --  MRd TLP processing
-  --   contains channel buffer for PIO Completions
-  --
-  component
-    rx_MRd_Transact
-    port(
-      m_axis_rx_tlast    : in  std_logic;
-      m_axis_rx_tdata    : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      m_axis_rx_tkeep    : in  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
---              m_axis_rx_tready            : OUT std_logic;
-      rx_np_ok           : out std_logic;  -----------------
-      rx_np_req          : out std_logic;
-      m_axis_rx_terrfwd  : in  std_logic;
-      m_axis_rx_tvalid   : in  std_logic;
-      m_axis_rx_tbar_hit : in  std_logic_vector(C_BAR_NUMBER-1 downto 0);
-
-      sdram_pg : in std_logic_vector(31 downto 0);
-      wb_pg    : in std_logic_vector(31 downto 0);
-
-      MRd_Type          : in std_logic_vector(3 downto 0);
-      Tlp_straddles_4KB : in std_logic;
-
-      pioCplD_RE         : in  std_logic;
-      pioCplD_Req        : out std_logic;
-      pioCplD_Qout       : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-      Channel_Rst : in std_logic;
-
-      user_clk    : in std_logic;
-      user_reset  : in std_logic;
-      user_lnk_up : in std_logic
-      );
-  end component;
-
-  ------------------------------------------------------------------
-  --  MWr TLP processing
-  --
-  component
-    rx_MWr_Transact
-    port(
-      --
-      m_axis_rx_tlast    : in std_logic;
-      m_axis_rx_tdata    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      m_axis_rx_tkeep    : in std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
-      m_axis_rx_tready   : in std_logic;  -- !!
-      m_axis_rx_terrfwd  : in std_logic;
-      m_axis_rx_tvalid   : in std_logic;
-      m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
-
-      sdram_pg : in std_logic_vector(31 downto 0);
-      wb_pg    : in std_logic_vector(31 downto 0);
-
-      MWr_Type    : in std_logic_vector(1 downto 0);
-      Tlp_has_4KB : in std_logic;
-
-      -- Event Buffer write port
-      wb_FIFO_we   : out std_logic;
-      wb_FIFO_wsof : out std_logic;
-      wb_FIFO_weof : out std_logic;
-      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Registers Write Port
-      Regs_WrEn   : out std_logic;
-      Regs_WrMask : out std_logic_vector(2-1 downto 0);
-      Regs_WrAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
-      Regs_WrDin  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- DDR write port
-      DDR_wr_sof   : out std_logic;
-      DDR_wr_eof   : out std_logic;
-      DDR_wr_v     : out std_logic;
-      DDR_wr_Shift : out std_logic;
-      DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
-      DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DDR_wr_full  : in  std_logic;
-
-      -- Common
-      user_clk    : in std_logic;
-      user_reset  : in std_logic;
-      user_lnk_up : in std_logic
-
-      );
-  end component;
+  
+  --DDR AXI interface
+  signal mwr_s2mm_cmd_tvalid : STD_LOGIC;
+  signal mwr_s2mm_cmd_tdata : STD_LOGIC_VECTOR(71 DOWNTO 0);
+  signal mwr_s2mm_tdata : STD_LOGIC_VECTOR(63 DOWNTO 0);
+  signal mwr_s2mm_tkeep : STD_LOGIC_VECTOR(7 DOWNTO 0);
+  signal mwr_s2mm_tlast : STD_LOGIC;
+  signal mwr_s2mm_tvalid : STD_LOGIC;
+  signal cpld_s2mm_cmd_tvalid : STD_LOGIC;
+  signal cpld_s2mm_cmd_tdata : STD_LOGIC_VECTOR(71 DOWNTO 0);
+  signal cpld_s2mm_tdata : STD_LOGIC_VECTOR(63 DOWNTO 0);
+  signal cpld_s2mm_tkeep : STD_LOGIC_VECTOR(7 DOWNTO 0);
+  signal cpld_s2mm_tlast : STD_LOGIC;
+  signal cpld_s2mm_tvalid : STD_LOGIC;
 
   signal wb_FIFO_we_MWr   : std_logic;
   signal wb_FIFO_wsof_MWr : std_logic;
   signal wb_FIFO_weof_MWr : std_logic;
   signal wb_FIFO_din_MWr  : std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-
-  ------------------------------------------------------------------
-  --  Cpl/D TLP processing
-  --
-  component
-    rx_CplD_Transact
-    port(
-      m_axis_rx_tlast    : in std_logic;
-      m_axis_rx_tdata    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      m_axis_rx_tkeep    : in std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
-      m_axis_rx_tready   : in std_logic;
-      m_axis_rx_terrfwd  : in std_logic;
-      m_axis_rx_tvalid   : in std_logic;
-      m_axis_rx_tbar_hit : in std_logic_vector(C_BAR_NUMBER-1 downto 0);
-
-      CplD_Type : in std_logic_vector(3 downto 0);
-
-      Req_ID_Match      : in std_logic;
-      usDex_Tag_Matched : in std_logic;
-      dsDex_Tag_Matched : in std_logic;
-
-      Tlp_has_4KB      : in  std_logic;
-      Tlp_has_1DW      : in  std_logic;
-      CplD_is_the_Last : in  std_logic;
-      CplD_on_Pool     : in  std_logic;
-      CplD_on_EB       : in  std_logic;
-      CplD_Tag         : in  std_logic_vector(C_TAG_WIDTH-1 downto 0);
-      FC_pop           : out std_logic;
-
-      -- Downstream DMA transferred bytes count up
-      ds_DMA_Bytes_Add : out std_logic;
-      ds_DMA_Bytes     : out std_logic_vector(C_TLP_FLD_WIDTH_OF_LENG+2 downto 0);
-
-      -- for descriptor of the downstream DMA
-      dsDMA_Dex_Tag : out std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- Downstream Handshake Signals with ds Channel for Busy/Done
-      Tag_Map_Clear : out std_logic_vector(C_TAG_MAP_WIDTH-1 downto 0);
-
-      -- Downstream tRAM port A write request
-      tRAM_weB   : in std_logic;
-      tRAM_addrB : in std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
-      tRAM_dinB  : in std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-
-      -- for descriptor of the upstream DMA
-      usDMA_dex_Tag : out std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- Event Buffer write port
-      wb_FIFO_we   : out std_logic;
-      wb_FIFO_wsof : out std_logic;
-      wb_FIFO_weof : out std_logic;
-      wb_FIFO_din  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Registers Write Port
-      Regs_WrEn   : out std_logic;
-      Regs_WrMask : out std_logic_vector(2-1 downto 0);
-      Regs_WrAddr : out std_logic_vector(C_EP_AWIDTH-1 downto 0);
-      Regs_WrDin  : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- DDR write port
-      DDR_wr_sof   : out std_logic;
-      DDR_wr_eof   : out std_logic;
-      DDR_wr_v     : out std_logic;
-      DDR_wr_Shift : out std_logic;
-      DDR_wr_Mask  : out std_logic_vector(2-1 downto 0);
-      DDR_wr_din   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DDR_wr_full  : in  std_logic;
-
-      -- Common signals
-      user_clk    : in std_logic;
-      user_reset  : in std_logic;
-      user_lnk_up : in std_logic
-      );
-  end component;
 
   signal wb_FIFO_we_CplD   : std_logic;
   signal wb_FIFO_wsof_CplD : std_logic;
@@ -488,202 +273,39 @@ architecture Behavioral of rx_Transact is
   signal Tag_Map_Clear : std_logic_vector(C_TAG_MAP_WIDTH-1 downto 0);
   signal FC_pop        : std_logic;
 
-  ------------------------------------------------------------------
-  --  Interrupts generation
-  --
-  component
-    Interrupts
-    port(
-      Sys_IRQ : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Interrupt generator signals
-      IG_Reset        : in  std_logic;
-      IG_Host_Clear   : in  std_logic;
-      IG_Latency      : in  std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      IG_Num_Assert   : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      IG_Num_Deassert : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      IG_Asserting    : out std_logic;
-
-      -- cfg interface
-      cfg_interrupt            : out std_logic;
-      cfg_interrupt_rdy        : in  std_logic;
-      cfg_interrupt_mmenable   : in  std_logic_vector(2 downto 0);
-      cfg_interrupt_msienable  : in  std_logic;
-      cfg_interrupt_msixenable : in std_logic;
-      cfg_interrupt_msixfm     : in std_logic;
-      cfg_interrupt_di         : out std_logic_vector(7 downto 0);
-      cfg_interrupt_do         : in  std_logic_vector(7 downto 0);
-      cfg_interrupt_assert     : out std_logic;
-
-      -- Irpt Channel
-      Irpt_Req  : out std_logic;
-      Irpt_RE   : in  std_logic;
-      Irpt_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-      user_clk   : in std_logic;
-      user_reset : in std_logic
-      );
-  end component;
-
-  ------------------------------------------------------------------
-  --  Upstream DMA Channel
-  --   contains channel buffer for upstream DMA
-  --
-  component
-    usDMA_Transact
-    port(
-      -- command buffer
-      usTlp_Req  : out std_logic;
-      usTlp_RE   : in  std_logic;
-      usTlp_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-      FIFO_Reading : in std_logic;
-
-      -- Upstream DMA Control Signals from MWr Channel
-      usDMA_Start       : in std_logic;
-      usDMA_Stop        : in std_logic;
-      usDMA_Channel_Rst : in std_logic;
-      us_FC_stop        : in std_logic;
-      us_Last_sof       : in std_logic;
-      us_Last_eof       : in std_logic;
-
-      --- Upstream registers from CplD channel
-      DMA_us_PA         : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_us_HA         : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_us_BDA        : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_us_Length     : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_us_Control    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      usDMA_BDA_eq_Null : in std_logic;
-      us_MWr_Param_Vec  : in std_logic_vector(6-1 downto 0);
-
-      -- Calculation in advance, for better timing
-      usHA_is_64b  : in std_logic;
-      usBDA_is_64b : in std_logic;
-
-      -- Calculation in advance, for better timing
-      usLeng_Hi19b_True : in std_logic;
-      usLeng_Lo7b_True  : in std_logic;
-
-      --- Upstream commands from CplD channel
-      usDMA_Start2 : in std_logic;
-      usDMA_Stop2  : in std_logic;
-
-      -- DMA Acknowledge to the start command
-      DMA_Cmd_Ack : out std_logic;
-
-      --- Tag for descriptor
-      usDMA_dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- To Interrupt module
-      DMA_Done    : out std_logic;
-      DMA_TimeOut : out std_logic;
-      DMA_Busy    : out std_logic;
-
-      -- To Tx channel
-      DMA_us_Status : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Additional
-      cfg_dcommand : in std_logic_vector(C_CFG_COMMAND_DWIDTH-1 downto 0);
-
-      -- common
-      user_clk : in std_logic
-      );
-  end component;
-
-  ------------------------------------------------------------------
-  --  Downstream DMA Channel
-  --   contains channel buffer for downstream DMA
-  --
-  component
-    dsDMA_Transact
-    port(
-      -- command buffer
-      MRd_dsp_RE   : in  std_logic;
-      MRd_dsp_Req  : out std_logic;
-      MRd_dsp_Qout : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
-      -- Downstream tRAM port A write request, to CplD channel
-      tRAM_weB   : out std_logic;
-      tRAM_addrB : out std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
-      tRAM_dinB  : out std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
-
-      -- Downstream Registers from MWr Channel
-      DMA_ds_PA         : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_ds_HA         : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_ds_BDA        : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_ds_Length     : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      DMA_ds_Control    : in std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-      dsDMA_BDA_eq_Null : in std_logic;
-
-      -- Calculation in advance, for better timing
-      dsHA_is_64b  : in std_logic;
-      dsBDA_is_64b : in std_logic;
-
-      -- Calculation in advance, for better timing
-      dsLeng_Hi19b_True : in std_logic;
-      dsLeng_Lo7b_True  : in std_logic;
-
-      -- Downstream Control Signals from MWr Channel
-      dsDMA_Start : in std_logic;
-      dsDMA_Stop  : in std_logic;
-
-      -- DMA Acknowledge to the start command
-      DMA_Cmd_Ack : out std_logic;
-
-      dsDMA_Channel_Rst : in std_logic;
-
-      -- Downstream Control Signals from CplD Channel, out of consecutive dex
-      dsDMA_Start2 : in std_logic;
-      dsDMA_Stop2  : in std_logic;
-
-      -- Downstream Handshake Signals with CplD Channel for Busy/Done
-      Tag_Map_Clear : in std_logic_vector(C_TAG_MAP_WIDTH-1 downto 0);
-      FC_pop        : in std_logic;
-
-
-      -- Tag for descriptor
-      dsDMA_dex_Tag : in std_logic_vector(C_TAG_WIDTH-1 downto 0);
-
-      -- To Interrupt module
-      DMA_Done    : out std_logic;
-      DMA_TimeOut : out std_logic;
-      DMA_Busy    : out std_logic;
-
-      -- To Cpl/D channel
-      DMA_ds_Status : out std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-
-      -- Additional
-      cfg_dcommand : in std_logic_vector(C_CFG_COMMAND_DWIDTH-1 downto 0);
-
-      -- common
-      user_clk : in std_logic
-      );
-  end component;
-
   -- tag RAM port A write request
   signal tRAM_weB   : std_logic;
   signal tRAM_addrB : std_logic_vector(C_TAGRAM_AWIDTH-1 downto 0);
   signal tRAM_dinB  : std_logic_vector(C_TAGRAM_DWIDTH-1 downto 0);
 
-
+  --transmission ready signals from CplD, MWr
+  signal cpld_ready, mwr_ready : std_logic;
+  
 begin
+
+  ddr_s2mm_cmd_tvalid <= mwr_s2mm_cmd_tvalid or cpld_s2mm_cmd_tvalid;
+  ddr_s2mm_cmd_tdata <= cpld_s2mm_cmd_tdata when cpld_s2mm_cmd_tvalid = '1' else mwr_s2mm_cmd_tdata;
+  ddr_s2mm_tvalid <= mwr_s2mm_tvalid or cpld_s2mm_tvalid;
+  ddr_s2mm_tdata <= cpld_s2mm_tdata when cpld_s2mm_tvalid = '1' else mwr_s2mm_tdata;
+  ddr_s2mm_tkeep <= cpld_s2mm_tkeep when cpld_s2mm_tvalid = '1' else mwr_s2mm_tkeep;
+  ddr_s2mm_tlast <= cpld_s2mm_tlast when cpld_s2mm_tvalid = '1' else mwr_s2mm_tlast;
 
   wb_FIFO_we   <= wb_FIFO_we_i;
   wb_FIFO_wsof <= wb_FIFO_wsof_i;
   wb_FIFO_weof <= wb_FIFO_weof_i;
   wb_FIFO_din  <= wb_FIFO_din_i;
 
-
   wb_FIFO_we_i   <= wb_FIFO_we_MWr or wb_FIFO_we_CplD;
   wb_FIFO_wsof_i <= wb_FIFO_wsof_CplD when wb_FIFO_we_CplD = '1' else wb_FIFO_wsof_MWr;
   wb_FIFO_weof_i <= wb_FIFO_weof_CplD when wb_FIFO_we_CplD = '1' else wb_FIFO_weof_MWr;
   wb_FIFO_din_i  <= wb_FIFO_din_CplD  when wb_FIFO_we_CplD = '1' else wb_FIFO_din_MWr;
 
-  -- ------------------------------------------------
-  -- Delay of Rx inputs
-  -- ------------------------------------------------
+ ------------------------------------------------------------------
+ --  Rx input delay
+ --  some calculation in advance, to achieve better timing
+ --
   Rx_Input_Delays :
-    RxIn_Delay
+    entity work.RxIn_Delay
       port map(
         -- Common ports
         user_clk    => user_clk ,       -- IN  std_logic;
@@ -698,8 +320,9 @@ begin
         m_axis_rx_tvalid   => m_axis_rx_tvalid ,    -- IN  std_logic;
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit ,  -- IN  std_logic_vector(C_BAR_NUMBER-1 downto 0);
         m_axis_rx_tready   => m_axis_rx_tready ,    -- OUT std_logic;
-        Pool_wrBuf_full    => DDR_wr_full ,      -- IN  std_logic;
-        wb_FIFO_full       => wb_FIFO_full ,    -- IN  std_logic;
+        ddr_s2mm_cmd_tready => ddr_s2mm_cmd_tready,
+        cpld_ready         => cpld_ready,
+        mwr_ready          => mwr_ready,
 
         -- Delayed
         m_axis_rx_tlast_dly    => m_axis_rx_tlast_dly ,  -- OUT std_logic;
@@ -738,12 +361,12 @@ begin
         localID      => localID         -- IN  std_logic_vector(15 downto 0)
         );
 
-
   -- ------------------------------------------------
   -- Processing MRd Requests
+  -- contains memory buffer for TLP completions
   -- ------------------------------------------------
   MRd_Channel :
-    rx_MRd_Transact
+    entity work.rx_MRd_Transact
       port map(
         --
         m_axis_rx_tlast    => m_axis_rx_tlast_dly,  -- IN  std_logic;
@@ -751,6 +374,7 @@ begin
         m_axis_rx_tkeep    => m_axis_rx_tkeep_dly,  -- IN  std_logic_vector(C_DBUS_WIDTH/8-1 downto 0);
         m_axis_rx_terrfwd  => m_axis_rx_terrfwd_dly,   -- IN  std_logic;
         m_axis_rx_tvalid   => m_axis_rx_tvalid_dly,    -- IN  std_logic;
+        m_axis_rx_tready   => m_axis_rx_tready_dly,
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
 --      m_axis_rx_tready      =>  open,  -- m_axis_rx_tready_MRd,            -- OUT std_logic;
         rx_np_ok           => rx_np_ok,             -- OUT std_logic;
@@ -778,7 +402,7 @@ begin
   -- Processing MWr Requests
   -- ------------------------------------------------
   MWr_Channel :
-    rx_MWr_Transact
+    entity work.rx_MWr_Transact
       port map(
         --
         m_axis_rx_tlast    => m_axis_rx_tlast_dly,  -- IN  std_logic;
@@ -794,12 +418,14 @@ begin
 
         MWr_Type    => MWr_Type ,  -- IN  std_logic_vector(1 downto 0);
         Tlp_has_4KB => Tlp_has_4KB ,        -- IN  std_logic;
+        mwr_ready   => mwr_ready,
 
         -- Event Buffer write port
         wb_FIFO_we   => wb_FIFO_we_MWr ,   -- OUT std_logic;
         wb_FIFO_wsof => wb_FIFO_wsof_MWr ,  -- OUT std_logic;
         wb_FIFO_weof => wb_FIFO_weof_MWr ,  -- OUT std_logic;
         wb_FIFO_din  => wb_FIFO_din_MWr ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_fifo_full => wb_fifo_full,
 
         -- To registers module
         Regs_WrEn   => Regs_WrEn0 ,     -- OUT std_logic;
@@ -808,26 +434,25 @@ begin
         Regs_WrDin  => Regs_WrDin0 ,    -- OUT std_logic_vector(32-1 downto 0);
 
         -- DDR write port
-        DDR_wr_sof   => DDR_wr_sof_A ,  --        OUT   std_logic;
-        DDR_wr_eof   => DDR_wr_eof_A ,  --        OUT   std_logic;
-        DDR_wr_v     => DDR_wr_v_A ,    --        OUT   std_logic;
-        DDR_wr_Shift => DDR_wr_Shift_A ,  --        OUT   std_logic;
-        DDR_wr_din   => DDR_wr_din_A ,  --        OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        DDR_wr_Mask  => DDR_wr_Mask_A ,  --        OUT   std_logic_vector(2-1 downto 0);
-        DDR_wr_full  => DDR_wr_full ,   --        IN    std_logic;
-
+        ddr_s2mm_cmd_tvalid => mwr_s2mm_cmd_tvalid,
+        ddr_s2mm_cmd_tready => ddr_s2mm_cmd_tready,
+        ddr_s2mm_cmd_tdata => mwr_s2mm_cmd_tdata,
+        ddr_s2mm_tdata => mwr_s2mm_tdata,
+        ddr_s2mm_tkeep => mwr_s2mm_tkeep,
+        ddr_s2mm_tlast => mwr_s2mm_tlast,
+        ddr_s2mm_tvalid => mwr_s2mm_tvalid,
+        ddr_s2mm_tready => ddr_s2mm_tready,
         -- Common
         user_clk    => user_clk ,       --        IN  std_logic;
         user_reset  => user_reset ,     --        IN  std_logic;
         user_lnk_up => user_lnk_up      --        IN  std_logic;
         );
 
-
   -- ---------------------------------------------------
   -- Processing Completions
   -- ---------------------------------------------------
   CplD_Channel :
-    rx_CplD_Transact
+    entity work.rx_CplD_Transact
       port map(
         --
         m_axis_rx_tlast    => m_axis_rx_tlast_dly,  -- IN  std_logic;
@@ -838,6 +463,7 @@ begin
         m_axis_rx_tready   => m_axis_rx_tready_dly,    -- IN  std_logic;
         m_axis_rx_tbar_hit => m_axis_rx_tbar_hit_dly,  -- IN  std_logic_vector(6 downto 0);
 
+        cpld_ready => cpld_ready,
         CplD_Type => CplD_Type,         -- IN  std_logic_vector(3 downto 0);
 
         Req_ID_Match      => Req_ID_Match,       -- IN  std_logic;
@@ -875,6 +501,7 @@ begin
         wb_FIFO_wsof => wb_FIFO_wsof_CplD ,  -- OUT std_logic;
         wb_FIFO_weof => wb_FIFO_weof_CplD ,  -- OUT std_logic;
         wb_FIFO_din  => wb_FIFO_din_CplD ,  -- OUT std_logic_vector(C_DBUS_WIDTH-1 downto 0);
+        wb_fifo_full => wb_fifo_full,
 
         -- To registers module
         Regs_WrEn   => Regs_WrEn1,      -- OUT std_logic;
@@ -883,14 +510,14 @@ begin
         Regs_WrDin  => Regs_WrDin1,     -- OUT std_logic_vector(32-1 downto 0);
 
         -- DDR write port
-        DDR_wr_sof   => DDR_wr_sof_B ,  --        OUT   std_logic;
-        DDR_wr_eof   => DDR_wr_eof_B ,  --        OUT   std_logic;
-        DDR_wr_v     => DDR_wr_v_B ,    --        OUT   std_logic;
-        DDR_wr_Shift => DDR_wr_Shift_B ,  --        OUT   std_logic;
-        DDR_wr_Mask  => DDR_wr_Mask_B ,  --        OUT   std_logic_vector(2-1 downto 0);
-        DDR_wr_din   => DDR_wr_din_B ,  --        OUT   std_logic_vector(C_DBUS_WIDTH-1 downto 0);
-        DDR_wr_full  => DDR_wr_full ,   --        IN    std_logic;
-
+        ddr_s2mm_cmd_tvalid => cpld_s2mm_cmd_tvalid,
+        ddr_s2mm_cmd_tready => ddr_s2mm_cmd_tready,
+        ddr_s2mm_cmd_tdata => cpld_s2mm_cmd_tdata,
+        ddr_s2mm_tdata => cpld_s2mm_tdata,
+        ddr_s2mm_tkeep => cpld_s2mm_tkeep,
+        ddr_s2mm_tlast => cpld_s2mm_tlast,
+        ddr_s2mm_tvalid => cpld_s2mm_tvalid,
+        ddr_s2mm_tready => ddr_s2mm_tready,
         -- Common
         user_clk    => user_clk,        -- IN std_logic;
         user_reset  => user_reset,      -- IN std_logic;
@@ -899,9 +526,10 @@ begin
 
   -- ------------------------------------------------
   -- Processing upstream DMA Requests
-  -- ------------------------------------------------
+  --   contains channel buffer for upstream DMA
+  --
   Upstream_DMA_Engine :
-    usDMA_Transact
+    entity work.usDMA_Transact
       port map(
         -- TLP buffer
         usTlp_RE   => usTlp_RE,         -- IN std_logic;
@@ -959,7 +587,7 @@ begin
   -- Processing downstream DMA Requests
   -- ------------------------------------------------
   Downstream_DMA_Engine :
-    dsDMA_Transact
+    entity work.dsDMA_Transact
       port map(
         -- Downstream tRAM port A write request
         tRAM_weB   => tRAM_weB,         -- OUT std_logic;
@@ -1024,7 +652,7 @@ begin
   --   Interrupts generation
   -- ------------------------------------------------
   Intrpt_Handle :
-    Interrupts
+    entity work.Interrupts
       port map(
         Sys_IRQ => Sys_IRQ ,            -- IN  std_logic_vector(31 downto 0);
 
