@@ -7,8 +7,7 @@ files = [ "dbe_bpm.vhd",
           "dbe_bpm.xcf" ];
 
 modules = { "local" :
-             ["../../../..",
-              "../../../../ip_cores/pcie/7a200ffg1156"
+             ["../../../.."
              ]
           };
 
