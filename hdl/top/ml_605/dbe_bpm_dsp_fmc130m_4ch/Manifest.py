@@ -6,8 +6,7 @@ files = [ "dbe_bpm_dsp.vhd",
           "dbe_bpm_dsp.xcf" ];
 
 modules = { "local" :
-             ["../../..",
-              "../../../ip_cores/pcie/ml605"
+             ["../../.."
              ]
           };
 

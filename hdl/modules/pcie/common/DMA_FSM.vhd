@@ -73,13 +73,11 @@ entity DMA_FSM is
     Done_Condition_4 : in std_logic;
     Done_Condition_5 : in std_logic;
 
-
     -- Channel buffer write
     us_MWr_Param_Vec : in  std_logic_vector(6-1 downto 0);
     ChBuf_aFull      : in  std_logic;
     ChBuf_WrEn       : out std_logic;
     ChBuf_WrDin      : out std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
-
 
     -- FSM indicators
     State_Is_LoadParam : out std_logic;
@@ -202,12 +200,10 @@ architecture Behavioral of DMA_FSM is
   --  Acknowledge for DMA_Start command
   signal DMA_Cmd_Ack_i : std_logic;
 
-
   -- channel FIFO Write control
   signal ChBuf_WrDin_i : std_logic_vector(C_CHANNEL_BUF_WIDTH-1 downto 0);
   signal ChBuf_WrEn_i  : std_logic;
   signal ChBuf_aFull_i : std_logic;
-
 
   --  ---------------------------------------------------------------------------------
   --    Time-out calculation :  invisible to the user, so moved out of the abbPackage
@@ -252,14 +248,11 @@ begin
   Syn_Delay_DMA_Starts :
   process (dma_clk)
   begin
-    if dma_clk'event and dma_clk = '1' then
+    if rising_edge(dma_clk) then
       DMA_Start_r1  <= DMA_Start;
       DMA_Start2_r1 <= DMA_Start2;
     end if;
-
   end process;
-
-
 
 ---- -----------------------------------------
 ---- -----------------------------------------
@@ -267,17 +260,16 @@ begin
 -- States synchronous: DMA
 ----
   Syn_DMA_States :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_State <= dmaST_Init;
-    elsif dma_clk'event and dma_clk = '1' then
-      DMA_State <= DMA_NextState;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_State <= dmaST_Init;
+      else
+        DMA_State <= DMA_NextState;
+      end if;
     end if;
-
   end process;
-
-
 
 -- Next States: DMA
   Comb_DMA_NextState :
@@ -286,10 +278,8 @@ begin
     , DMA_Start_r1
     , DMA_Start2_r1
     , ChBuf_aFull_i
-
     , No_More_Bodies
     , ThereIs_Snout                     --_reg
---           , ThereIs_Body
     , ThereIs_Tail_reg
     , ThereIs_Dex_reg
     )
@@ -303,7 +293,6 @@ begin
           DMA_NextState <= dmaST_Init;
         end if;
 
-
       when dmaST_Load_Param =>
         if ChBuf_aFull_i = '1' then
           DMA_NextState <= dmaST_Load_Param;
@@ -311,12 +300,9 @@ begin
           DMA_NextState <= dmaST_NextDex;
         elsif ThereIs_Snout = '1' then
           DMA_NextState <= dmaST_Snout;
---          elsif ThereIs_Body = '1' then
---             DMA_NextState <= dmaST_Stomp;
         else
           DMA_NextState <= dmaST_Stomp;
         end if;
-
 
       when dmaST_NextDex =>
         if ThereIs_Snout = '1' then
@@ -327,10 +313,8 @@ begin
           DMA_NextState <= dmaST_Await_Dex;
         end if;
 
-
       when dmaST_Snout =>
         DMA_NextState <= dmaST_Stomp;
-
 
       when dmaST_Stomp =>
         if ChBuf_aFull_i = '1' then
@@ -345,10 +329,8 @@ begin
           DMA_NextState <= dmaST_Init;
         end if;
 
-
       when dmaST_Body =>
         DMA_NextState <= dmaST_Stomp;
-
 
       when dmaST_Tail =>
         if ThereIs_Dex_reg = '1' then
@@ -357,7 +339,6 @@ begin
           DMA_NextState <= dmaST_Init;
         end if;
 
-
       when dmaST_Await_Dex =>
         if DMA_Start2_r1 = '1' then
           DMA_NextState <= dmaST_Load_Param;
@@ -365,71 +346,63 @@ begin
           DMA_NextState <= dmaST_Await_Dex;
         end if;
 
-
       when others =>
         DMA_NextState <= dmaST_Init;
-
 
     end case;  -- DMA_State
 
   end process;
-
-
 
 -- ----------------------------------------------------
 -- States synchronous: DMA_Cmd_Ack
 --                     equivalent to State_Is_LoadParam
 --
   Syn_DMA_Cmd_Ack :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_Cmd_Ack_i <= '0';
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_NextState = dmaST_Load_Param then
-        DMA_Cmd_Ack_i <= '1';
-      else
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
         DMA_Cmd_Ack_i <= '0';
+      else
+        if DMA_NextState = dmaST_Load_Param then
+          DMA_Cmd_Ack_i <= '1';
+        else
+          DMA_Cmd_Ack_i <= '0';
+        end if;
       end if;
     end if;
-
   end process;
-
 
 -- ----------------------------------------------------
 -- States synchronous: ThereIs_Dex_reg
 --
   Syn_ThereIs_Dex_reg :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      ThereIs_Dex_reg   <= '0';
-      ThereIs_Snout_reg <= '0';
-      ThereIs_Body_reg  <= '0';
-      ThereIs_Tail_reg  <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_Start = '1'
-        or State_Is_LoadParam_i = '1'
-        or State_Is_AwaitDex_i = '1'
-      then
-        ThereIs_Dex_reg   <= ThereIs_Dex;
-        ThereIs_Snout_reg <= ThereIs_Snout;
-        ThereIs_Body_reg  <= ThereIs_Body;
-        ThereIs_Tail_reg  <= ThereIs_Tail;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        ThereIs_Dex_reg   <= '0';
+        ThereIs_Snout_reg <= '0';
+        ThereIs_Body_reg  <= '0';
+        ThereIs_Tail_reg  <= '0';
       else
-        ThereIs_Dex_reg   <= ThereIs_Dex_reg;
-        ThereIs_Snout_reg <= ThereIs_Snout_reg;
-        ThereIs_Body_reg  <= ThereIs_Body_reg;
-        ThereIs_Tail_reg  <= ThereIs_Tail_reg;
+        if DMA_Start = '1'
+          or State_Is_LoadParam_i = '1'
+          or State_Is_AwaitDex_i = '1'
+        then
+          ThereIs_Dex_reg   <= ThereIs_Dex;
+          ThereIs_Snout_reg <= ThereIs_Snout;
+          ThereIs_Body_reg  <= ThereIs_Body;
+          ThereIs_Tail_reg  <= ThereIs_Tail;
+        else
+          ThereIs_Dex_reg   <= ThereIs_Dex_reg;
+          ThereIs_Snout_reg <= ThereIs_Snout_reg;
+          ThereIs_Body_reg  <= ThereIs_Body_reg;
+          ThereIs_Tail_reg  <= ThereIs_Tail_reg;
+        end if;
       end if;
     end if;
-
   end process;
-
-
 
 -- -------------------------------------------------------------
 -- Synchronous reg:
@@ -440,51 +413,48 @@ begin
 --                  State_Is_AwaitDex
 --
   FSM_State_Is_i :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      State_Is_LoadParam_i <= '0';
-      State_Is_Snout_i     <= '0';
-      State_Is_Body_i      <= '0';
-      State_Is_Tail_i      <= '0';
-      State_Is_AwaitDex_i  <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      if DMA_NextState = dmaST_Load_Param then
-        State_Is_LoadParam_i <= '1';
-      else
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
         State_Is_LoadParam_i <= '0';
-      end if;
-
-      if DMA_NextState = dmaST_Snout then
-        State_Is_Snout_i <= '1';
+        State_Is_Snout_i     <= '0';
+        State_Is_Body_i      <= '0';
+        State_Is_Tail_i      <= '0';
+        State_Is_AwaitDex_i  <= '0';
       else
-        State_Is_Snout_i <= '0';
+        if DMA_NextState = dmaST_Load_Param then
+          State_Is_LoadParam_i <= '1';
+        else
+          State_Is_LoadParam_i <= '0';
+        end if;
+  
+        if DMA_NextState = dmaST_Snout then
+          State_Is_Snout_i <= '1';
+        else
+          State_Is_Snout_i <= '0';
+        end if;
+  
+        if DMA_NextState = dmaST_Body then
+          State_Is_Body_i <= '1';
+        else
+          State_Is_Body_i <= '0';
+        end if;
+  
+        if DMA_NextState = dmaST_Tail then
+          State_Is_Tail_i <= '1';
+        else
+          State_Is_Tail_i <= '0';
+        end if;
+  
+        if DMA_NextState = dmaST_Await_Dex then
+          State_Is_AwaitDex_i <= '1';
+        else
+          State_Is_AwaitDex_i <= '0';
+        end if;
       end if;
-
-      if DMA_NextState = dmaST_Body then
-        State_Is_Body_i <= '1';
-      else
-        State_Is_Body_i <= '0';
-      end if;
-
-      if DMA_NextState = dmaST_Tail then
-        State_Is_Tail_i <= '1';
-      else
-        State_Is_Tail_i <= '0';
-      end if;
-
-      if DMA_NextState = dmaST_Await_Dex then
-        State_Is_AwaitDex_i <= '1';
-      else
-        State_Is_AwaitDex_i <= '0';
-      end if;
-
     end if;
   end process;
-
-
 
 -------------------------------------------------------------------
 -- Synchronous Output: DMA_Abstract_Buffer_Write
@@ -508,177 +478,158 @@ begin
 --    9 ~   0 : Length
 --
   FSM_DMA_Abstract_Buffer_Write :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      ChBuf_WrEn_i  <= '0';
-      ChBuf_WrDin_i <= (others => '0');
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      case DMA_State is
-
-        when dmaST_NextDex =>
-          ChBuf_WrEn_i <= '1';
-
-          ChBuf_WrDin_i                                                         <= (others => '0');  -- must be the first argument
-          ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT)           <= DMA_BDA_fsm;
-          ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT)           <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);  -- any value
-          ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Dex_Tag;
-          ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
-
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP)                              <= C_TLP_HAS_NO_DATA;  --C_MRD_HEAD0_WORD(C_TLP_FMT_BIT_TOP);
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT)                              <= BDA_is_64b_fsm;
-          ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= C_NEXT_BD_LENGTH(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
-
-          ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
-          ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;  -- any value
-
-          ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= C_RELAXED_ORDERING & C_NO_SNOOP;
-
-        when dmaST_Snout =>
-          ChBuf_WrEn_i <= '1';
-
-          ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
-          ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Loaded(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Loaded(C_DDR_IAWIDTH-1 downto 0);
-          else
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
-          ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
-
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Snout_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
-          else
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Snout_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
-          ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
-
-          ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
-          ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
-
-        when dmaST_Body =>
-          ChBuf_WrEn_i <= '1';
-
-          ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
-          ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
-          else
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
-          ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
-
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
-          else
-              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
-          ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
-
-          ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
-          ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
-
-
-        when dmaST_Tail =>
-          ChBuf_WrEn_i <= '1';
-
-          ChBuf_WrDin_i                                               <= (others => '0');  -- must be the first argument
-          ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
-          elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
-          else
-            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
-          ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
-
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
-          ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
-
-          if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
-          else
-            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
-          end if;
-
-          ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
-          ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
-
-          ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
-          ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
-
-
-        when others =>
-          ChBuf_WrEn_i  <= '0';
-          ChBuf_WrDin_i <= ChBuf_WrDin_i;
-
-      end case;
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        ChBuf_WrEn_i  <= '0';
+        ChBuf_WrDin_i <= (others => '0');
+      else
+        case DMA_State is
+  
+          when dmaST_NextDex =>
+            ChBuf_WrEn_i <= '1';
+            ChBuf_WrDin_i <= (others => '0');  -- must be the first argument
+            ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT)           <= DMA_BDA_fsm;
+            ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT)           <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);  -- any value
+            ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Dex_Tag;
+            ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP)                              <= C_TLP_HAS_NO_DATA;  --C_MRD_HEAD0_WORD(C_TLP_FMT_BIT_TOP);
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT)                              <= BDA_is_64b_fsm;
+            ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= C_NEXT_BD_LENGTH(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
+            ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
+            ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;  -- any value
+            ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= C_RELAXED_ORDERING & C_NO_SNOOP;
+  
+          when dmaST_Snout =>
+            ChBuf_WrEn_i <= '1';
+            ChBuf_WrDin_i <= (others => '0');  -- must be the first argument
+            ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Loaded(C_WB_AWIDTH-1 downto 0);
+            elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Loaded(C_DDR_IAWIDTH-1 downto 0);
+            else
+              ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
+            ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
+  
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Snout_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
+            else
+              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Snout_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
+            ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
+            ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
+  
+          when dmaST_Body =>
+            ChBuf_WrEn_i <= '1';
+            ChBuf_WrDin_i <= (others => '0');  -- must be the first argument
+            ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
+            elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
+            else
+              ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
+            ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
+  
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
+            else
+                ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Body_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
+            ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
+            ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
+  
+  
+          when dmaST_Tail =>
+            ChBuf_WrEn_i <= '1';
+            ChBuf_WrDin_i <= (others => '0');  -- must be the first argument
+            ChBuf_WrDin_i(C_CHBUF_HA_BIT_TOP downto C_CHBUF_HA_BIT_BOT) <= DMA_HA_Var;
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_WB_BIT_TOP downto C_CHBUF_WB_BIT_BOT) <= DMA_PA_Var(C_WB_AWIDTH-1 downto 0);
+            elsif DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_DDR_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_DDA_BIT_TOP downto C_CHBUF_DDA_BIT_BOT) <= DMA_PA_Var(C_DDR_IAWIDTH-1 downto 0);
+            else
+              ChBuf_WrDin_i(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT) <= C_ALL_ZEROS(C_CHBUF_MA_BIT_TOP downto C_CHBUF_MA_BIT_BOT);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_TAG_BIT_TOP downto C_CHBUF_TAG_BIT_BOT)         <= Pkt_Tag;
+            ChBuf_WrDin_i(C_CHBUF_DMA_BAR_BIT_TOP downto C_CHBUF_DMA_BAR_BIT_BOT) <= DMA_BAR_Number;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_TOP) <= TLP_Has_Payload;
+            ChBuf_WrDin_i(C_CHBUF_FMT_BIT_BOT) <= TLP_Hdr_is_4DW;
+  
+            if DMA_BAR_Number = CONV_STD_LOGIC_VECTOR(CINT_FIFO_SPACE_BAR, C_ENCODE_BAR_NUMBER) then
+              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 3) & '0';
+            else
+              ChBuf_WrDin_i(C_CHBUF_LENG_BIT_TOP downto C_CHBUF_LENG_BIT_BOT) <= DMA_Tail_Length(C_TLP_FLD_WIDTH_OF_LENG+1 downto 2);
+            end if;
+  
+            ChBuf_WrDin_i(C_CHBUF_QVALID_BIT) <= '1';
+            ChBuf_WrDin_i(C_CHBUF_AINC_BIT)   <= DMA_Addr_Inc;
+            ChBuf_WrDin_i(C_CHBUF_TC_BIT_TOP downto C_CHBUF_TC_BIT_BOT)     <= us_MWr_Param_Vec(2 downto 0);
+            ChBuf_WrDin_i(C_CHBUF_ATTR_BIT_TOP downto C_CHBUF_ATTR_BIT_BOT) <= us_MWr_Param_Vec(5 downto 4);  -- C_RELAXED_ORDERING & C_NO_SNOOP;
+  
+          when others =>
+            ChBuf_WrEn_i  <= '0';
+            ChBuf_WrDin_i <= ChBuf_WrDin_i;
+  
+        end case;
+      end if;
     end if;
   end process;
-
-
 
 -- ----------------------------------------------
 -- Synchronous Latch: BDA_nAligned_i
 --                  : Capture design defect
 --
   Latch_BDA_nAligned :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      BDA_nAligned_i <= '0';
-
-    elsif dma_clk'event and dma_clk = '1' then
-      -- If the lowest 2 bits are not zero, error bit set accordingly,
-      --   because the logic can not deal with this situation.
-      --   can be removed.
-
-      if DMA_BDA_fsm(1) = '1' or DMA_BDA_fsm(0) = '1' then
-        BDA_nAligned_i <= '1';
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        BDA_nAligned_i <= '0';
       else
-        BDA_nAligned_i <= BDA_nAligned_i;
+        -- If the lowest 2 bits are not zero, error bit set accordingly,
+        --   because the logic can not deal with this situation.
+        --   can be removed.
+        if DMA_BDA_fsm(1) = '1' or DMA_BDA_fsm(0) = '1' then
+          BDA_nAligned_i <= '1';
+        else
+          BDA_nAligned_i <= BDA_nAligned_i;
+        end if;
       end if;
-
     end if;
   end process;
-
 
 -- States synchronous: BusyDone_States
   Syn_BusyDone_States :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      BusyDone_State <= FSM_Idle;
-    elsif dma_clk'event and dma_clk = '1' then
-      BusyDone_State <= BusyDone_NextState;
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        BusyDone_State <= FSM_Idle;
+      else
+        BusyDone_State <= BusyDone_NextState;
+      end if;
     end if;
-
   end process;
-
 
 -- Next States: BusyDone_State
   Comb_BusyDone_State :
@@ -755,180 +706,136 @@ begin
 
   end process;
 
-
-
 -- Synchronous Output: DMA_Busy_i
   FSM_Output_DMA_Busy :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_Busy_i <= '0';
-    elsif dma_clk'event and dma_clk = '1' then
-
-      case BusyDone_State is
-
-        when FSM_Idle =>
-          DMA_Busy_i <= '0';
-
-        when FSM_Busy1 =>
-          DMA_Busy_i <= '1';
-
-        when FSM_Busy2 =>
-          DMA_Busy_i <= '1';
-
-        when FSM_Busy3 =>
-          DMA_Busy_i <= '1';
-
-        when FSM_Busy4 =>
-          DMA_Busy_i <= '1';
-
-        when FSM_Busy5 =>
-          DMA_Busy_i <= '1';
-
-        when FSM_Done =>
-          DMA_Busy_i <= '0';
-
-        when others =>
-          DMA_Busy_i <= '0';
-
-      end case;  -- BusyDone_State
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_Busy_i <= '0';
+      else
+        case BusyDone_State is
+  
+          when FSM_Idle =>
+            DMA_Busy_i <= '0';
+  
+          when FSM_Busy1 =>
+            DMA_Busy_i <= '1';
+  
+          when FSM_Busy2 =>
+            DMA_Busy_i <= '1';
+  
+          when FSM_Busy3 =>
+            DMA_Busy_i <= '1';
+  
+          when FSM_Busy4 =>
+            DMA_Busy_i <= '1';
+  
+          when FSM_Busy5 =>
+            DMA_Busy_i <= '1';
+  
+          when FSM_Done =>
+            DMA_Busy_i <= '0';
+  
+          when others =>
+            DMA_Busy_i <= '0';
+  
+        end case;  -- BusyDone_State
+      end if;
     end if;
   end process;
-
 
 -- Synchronous Output: DMA_Done_i
   FSM_Output_DMA_Done :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_Done_i <= '0';
-    elsif dma_clk'event and dma_clk = '1' then
-
-      case BusyDone_State is
-
---          when FSM_Busy1 =>
---            DMA_Done_i  <= '0';
---
---          when FSM_Busy2 =>
---            DMA_Done_i  <= '0';
---
---          when FSM_Busy3 =>
---            DMA_Done_i  <= '0';
---
-        when FSM_Done =>
-          DMA_Done_i <= '1';
-
-        when others =>
-          DMA_Done_i <= DMA_Done_i;
-
-      end case;  -- BusyDone_State
-
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_Done_i <= '0';
+      else
+        case BusyDone_State is
+  
+          when FSM_Done =>
+            DMA_Done_i <= '1';
+  
+          when others =>
+            DMA_Done_i <= DMA_Done_i;
+  
+        end case;  -- BusyDone_State
+      end if;
     end if;
   end process;
-
-
 
 -- ----------------------------------------------
 -- Time out counter
 -- Synchronous Output: Counter_DMA_TimeOut_i
   FSM_Counter_DMA_TimeOut_i :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      cnt_DMA_TO        <= (others => '0');
-      Tout_Lo_Carry     <= '0';
-      DMA_TimeOut_State <= toutSt_Idle;
-
-    elsif dma_clk'event and dma_clk = '1' then
-
-      case DMA_TimeOut_State is
-
-        when toutSt_Idle =>
-          cnt_DMA_TO    <= (others => '0');
-          Tout_Lo_Carry <= '0';
-          if DMA_Start = '1' then
-            DMA_TimeOut_State <= toutSt_CountUp;
-          else
-            DMA_TimeOut_State <= toutSt_Idle;
-          end if;
-
-        when toutSt_CountUp =>
-          if DMA_Done_i = '1' or DMA_Start = '1' then
-            cnt_DMA_TO        <= (others => '0');
-            Tout_Lo_Carry     <= '0';
-            DMA_TimeOut_State <= toutSt_Idle;
-          elsif DMA_Stop = '1' then
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        cnt_DMA_TO        <= (others => '0');
+        Tout_Lo_Carry     <= '0';
+        DMA_TimeOut_State <= toutSt_Idle;
+      else
+        case DMA_TimeOut_State is
+  
+          when toutSt_Idle =>
+            cnt_DMA_TO    <= (others => '0');
+            Tout_Lo_Carry <= '0';
+            if DMA_Start = '1' then
+              DMA_TimeOut_State <= toutSt_CountUp;
+            else
+              DMA_TimeOut_State <= toutSt_Idle;
+            end if;
+  
+          when toutSt_CountUp =>
+            if DMA_Done_i = '1' or DMA_Start = '1' then
+              cnt_DMA_TO        <= (others => '0');
+              Tout_Lo_Carry     <= '0';
+              DMA_TimeOut_State <= toutSt_Idle;
+            elsif DMA_Stop = '1' then
+              cnt_DMA_TO        <= cnt_DMA_TO;
+              Tout_Lo_Carry     <= Tout_Lo_Carry;
+              DMA_TimeOut_State <= toutSt_Pause;
+            elsif ChBuf_ValidRd = '1' then
+              cnt_DMA_TO        <= (others => '0');
+              Tout_Lo_Carry     <= '0';
+              DMA_TimeOut_State <= toutSt_CountUp;
+            else
+              cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) <= cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) + '1';
+              if cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) = C_ALL_ONES(CBIT_TOUT_CARRY-1 downto 0) then
+                Tout_Lo_Carry <= '1';
+              else
+                Tout_Lo_Carry <= '0';
+              end if;
+              if Tout_Lo_Carry = '1' then
+                cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) + '1';
+              else
+                cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY);
+              end if;
+              DMA_TimeOut_State <= toutSt_CountUp;
+            end if;
+  
+          when toutSt_Pause =>
+            cnt_DMA_TO    <= cnt_DMA_TO;
+            Tout_Lo_Carry <= Tout_Lo_Carry;
+            if DMA_Start = '1' then
+              DMA_TimeOut_State <= toutSt_CountUp;
+            elsif DMA_Done_i = '1' then
+              DMA_TimeOut_State <= toutSt_Idle;
+            else
+              DMA_TimeOut_State <= toutSt_Pause;
+            end if;
+  
+          when others =>
             cnt_DMA_TO        <= cnt_DMA_TO;
             Tout_Lo_Carry     <= Tout_Lo_Carry;
-            DMA_TimeOut_State <= toutSt_Pause;
-          elsif ChBuf_ValidRd = '1' then
-            cnt_DMA_TO        <= (others => '0');
-            Tout_Lo_Carry     <= '0';
-            DMA_TimeOut_State <= toutSt_CountUp;
-          else
-            cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) <= cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) + '1';
-            if cnt_DMA_TO(CBIT_TOUT_CARRY-1 downto 0) = C_ALL_ONES(CBIT_TOUT_CARRY-1 downto 0) then
-              Tout_Lo_Carry <= '1';
-            else
-              Tout_Lo_Carry <= '0';
-            end if;
-            if Tout_Lo_Carry = '1' then
-              cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) + '1';
-            else
-              cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY) <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_CARRY);
-            end if;
-            DMA_TimeOut_State <= toutSt_CountUp;
-          end if;
-
-        when toutSt_Pause =>
-          cnt_DMA_TO    <= cnt_DMA_TO;
-          Tout_Lo_Carry <= Tout_Lo_Carry;
-          if DMA_Start = '1' then
-            DMA_TimeOut_State <= toutSt_CountUp;
-          elsif DMA_Done_i = '1' then
             DMA_TimeOut_State <= toutSt_Idle;
-          else
-            DMA_TimeOut_State <= toutSt_Pause;
-          end if;
-
-        when others =>
-          cnt_DMA_TO        <= cnt_DMA_TO;
-          Tout_Lo_Carry     <= Tout_Lo_Carry;
-          DMA_TimeOut_State <= toutSt_Idle;
-
-      end case;
-
-
-
---        case DMA_State is
---
---          when dmaST_Init =>
---            cnt_DMA_TO       <= (Others=>'0');
---            Tout_Lo_Carry    <= '0';
---
---          when dmaST_Snout =>
---            cnt_DMA_TO       <= (Others=>'0');
---            Tout_Lo_Carry    <= '0';
---
---
---          when Others =>
---            cnt_DMA_TO(CBIT_CARRY-1 downto 0)  <= cnt_DMA_TO(CBIT_CARRY-1 downto 0) + '1';
---
---            if cnt_DMA_TO(CBIT_CARRY-1 downto 0)=C_ALL_ONES(CBIT_CARRY-1 downto 0) then
---               Tout_Lo_Carry    <= '1';
---            else
---               Tout_Lo_Carry    <= '0';
---            end if;
---
---            if Tout_Lo_Carry='1' then
---               cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_CARRY)  <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_CARRY) + '1';
---            else
---               cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_CARRY)  <= cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_CARRY);
---            end if;
---
---        end case;
-
+  
+        end case;
+  
+      end if;
     end if;
   end process;
 
@@ -937,19 +844,19 @@ begin
 -- Time out state bit
 -- Synchronous Output: DMA_TimeOut_i
   FSM_DMA_TimeOut :
-  process (dma_clk, dma_reset)
+  process (dma_clk)
   begin
-    if dma_reset = '1' then
-      DMA_TimeOut_i <= '0';
-    elsif dma_clk'event and dma_clk = '1' then
-      -- Capture the time-out trigger
---         if cnt_DMA_TO(CBIT_TOUT_BOT downto 0) = C_TIME_OUT_VALUE then
-      if cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_BOT) = C_TIME_OUT_VALUE then
-        DMA_TimeOut_i <= '1';
+    if rising_edge(dma_clk) then
+      if dma_reset = '1' then
+        DMA_TimeOut_i <= '0';
       else
-        DMA_TimeOut_i <= DMA_TimeOut_i;
+        -- Capture the time-out trigger
+        if cnt_DMA_TO(C_TOUT_WIDTH-1 downto CBIT_TOUT_BOT) = C_TIME_OUT_VALUE then
+          DMA_TimeOut_i <= '1';
+        else
+          DMA_TimeOut_i <= DMA_TimeOut_i;
+        end if;
       end if;
-
     end if;
   end process;
 

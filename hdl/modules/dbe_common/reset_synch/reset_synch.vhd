@@ -9,7 +9,7 @@ generic
   -- pipeline stages
   g_pipeline                               : natural := 4
 );
-port 
+port
 (
   clk_i                                    : in  std_logic;
   arst_n_i                                 : in  std_logic;
@@ -19,12 +19,20 @@ end reset_synch;
 
 architecture rtl of reset_synch is
   signal s_ff                              : std_logic_vector(g_pipeline-1 downto 0) := (others => '0');
-  
-  -- Try to reduce fanout of reset signal
- -- FIXME:  In vivado, MAX_FANOUT is a integer and "REDUCE" was removed. To soft-limit the fanout, 
- -- this property should be set outside the VHDL. Check issue #47 on github.
-  -- attribute MAX_FANOUT			   : string;
-  -- attribute MAX_FANOUT of s_ff             : signal is "REDUCE";
+
+  -- force tool to not remove pipeline registers
+  attribute equivalent_register_removal    : string;
+  attribute equivalent_register_removal of s_ff
+                                           : signal is "no";
+  -- force tool to not infer shift-register
+  attribute shreg_extract                  : string;
+  attribute shreg_extract of s_ff          : signal is "no";
+  -- force tool to keep register
+  attribute keep                           : string;
+  attribute keep of s_ff                   : signal is "true";
+  -- try to reduce fanout of reset signal
+  attribute max_fanout                     : string;
+  attribute max_fanout of s_ff             : signal is "reduce";
 begin
 
   assert (g_pipeline >= 1)
@@ -44,7 +52,7 @@ begin
     -- Shift reg
     p_rst_pipe : process (clk_i)
     begin
-      if rising_edge(clk_i) then 
+      if rising_edge(clk_i) then
         for i in 0 to g_pipeline-2 loop
           s_ff(i+1) <= s_ff(i);
         end loop;

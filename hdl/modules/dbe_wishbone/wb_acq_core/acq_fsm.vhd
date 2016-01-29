@@ -34,6 +34,8 @@ use work.wishbone_pkg.all;
 use work.gencores_pkg.all;
 -- Genrams cores
 use work.genram_pkg.all;
+-- DBE common cores
+use work.dbe_common_pkg.all;
 -- Acquisition cores
 use work.acq_core_pkg.all;
 
@@ -43,6 +45,9 @@ port
   fs_clk_i                                  : in std_logic;
   fs_ce_i                                   : in std_logic;
   fs_rst_n_i                                : in std_logic;
+
+  ext_clk_i                                 : in std_logic;
+  ext_rst_n_i                               : in std_logic;
 
   -----------------------------
   -- FSM Commands (Inputs)
@@ -72,7 +77,19 @@ port
   acq_pre_trig_done_o                       : out std_logic;
   acq_wait_trig_skip_done_o                 : out std_logic;
   acq_post_trig_done_o                      : out std_logic;
+  acq_fsm_req_rst_o                         : out std_logic;
   acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
+  acq_fsm_rstn_fs_sync_o                    : out std_logic;
+  acq_fsm_rstn_ext_sync_o                   : out std_logic;
+
+  -----------------------------
+  -- Acquistion limits
+  -----------------------------
+  lmt_acq_pre_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_acq_pos_pkt_size_o                    : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_acq_full_pkt_size_o                   : out unsigned(c_acq_samples_size-1 downto 0);
+  lmt_shots_nb_o                            : out unsigned(15 downto 0);
+  lmt_valid_o                               : out std_logic;
 
   -----------------------------
   -- FSM Outputs
@@ -89,16 +106,27 @@ architecture rtl of acq_fsm is
   type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG,
                                  POST_TRIG_SKIP, DECR_SHOT);
 
+  -- FSM reset pulse width
+  constant c_ext_fsm_pulse_width            : natural := 16;
+
+  -- FSM resets
+  signal acq_stop_extend_fs_sync            : std_logic;
+  signal acq_stop_n_extend_fs_sync          : std_logic;
+  signal acq_stop_rst_n_fs_sync             : std_logic;
+  signal acq_stop_rst_n_ext_sync            : std_logic;
+
   -- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
   signal acq_start                          : std_logic;
   signal acq_stop                           : std_logic;
+  signal acq_stop_n                         : std_logic;
   signal acq_trig                           : std_logic;
   signal acq_end                            : std_logic;
   signal acq_end_t                          : std_logic;
   signal acq_in_pre_trig                    : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
+  signal acq_fsm_req_rst                    : std_logic;
   signal samples_wr_en                      : std_logic;
 
   -- Pre/Post trigger and shots counters
@@ -113,6 +141,13 @@ architecture rtl of acq_fsm is
   signal shots_done                         : std_logic;
   signal shots_decr                         : std_logic;
   signal single_shot                        : std_logic;
+
+  -- Packet size for ext interface
+  signal lmt_acq_pre_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_pos_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_acq_full_pkt_size              : unsigned(c_acq_samples_size-1 downto 0);
+  signal lmt_shots_nb                       : unsigned(15 downto 0);
+  signal lmt_valid                          : std_logic;
 
 begin
 
@@ -243,6 +278,37 @@ begin
   samples_cnt_o <= samples_cnt;
 
   ------------------------------------------------------------------------------
+  -- Packet samples generation
+  ------------------------------------------------------------------------------
+
+  p_total_acq_sample : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        lmt_acq_pre_pkt_size <= to_unsigned(0, lmt_acq_pre_pkt_size'length);
+        lmt_acq_pos_pkt_size <= to_unsigned(0, lmt_acq_pos_pkt_size'length);
+        lmt_acq_full_pkt_size <= to_unsigned(0, lmt_acq_full_pkt_size'length);
+        lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
+      else
+        lmt_acq_pre_pkt_size <= unsigned(pre_trig_samples_i(lmt_acq_pre_pkt_size'left downto 0));
+        lmt_acq_pos_pkt_size <= unsigned(post_trig_samples_i(lmt_acq_pos_pkt_size'left downto 0));
+        lmt_acq_full_pkt_size <= unsigned(pre_trig_samples_i(pre_trig_samples_i'left downto 0)) +
+                            unsigned(post_trig_samples_i(post_trig_samples_i'left downto 0));
+        lmt_shots_nb <= shots_nb_i;
+      end if;
+    end if;
+  end process;
+
+  lmt_valid <= acq_start_i;
+
+  -- Output assignments
+  lmt_acq_pre_pkt_size_o <= lmt_acq_pre_pkt_size;
+  lmt_acq_pos_pkt_size_o <= lmt_acq_pos_pkt_size;
+  lmt_acq_full_pkt_size_o <= lmt_acq_full_pkt_size;
+  lmt_shots_nb_o <= lmt_shots_nb;
+  lmt_valid_o <= lmt_valid;
+
+  ------------------------------------------------------------------------------
   -- Aqcuisition FSM
   ------------------------------------------------------------------------------
 
@@ -268,7 +334,10 @@ begin
   acq_start <= acq_start_i;
   acq_stop  <= acq_stop_i;
   acq_trig  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
-  acq_end_t   <= shots_done and post_trig_done;
+  acq_end_t <= shots_done and post_trig_done;
+
+  -- When FSM in IDLE, request reset
+  acq_fsm_req_rst <= '1' when acq_fsm_state = "001" else '0';
 
   -- FSM transitions + outputs
   p_acq_fsm : process(fs_clk_i)
@@ -454,5 +523,43 @@ begin
   acq_in_post_trig_o <= acq_in_post_trig;
   samples_wr_en_o    <= samples_wr_en;
   acq_fsm_state_o    <= acq_fsm_state;
+  acq_fsm_req_rst_o  <= acq_fsm_req_rst;
+
+  ------------------------------------------------------------------------------
+  -- FSM resets to rest of ACQ logic
+  ------------------------------------------------------------------------------
+
+  cmp_fsm_stop_extended_fs_pulse : gc_extend_pulse
+  generic map (
+    g_width                                 => c_ext_fsm_pulse_width
+  )
+  port map(
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+    -- input pulse (synchronous to clk_i)
+    pulse_i                                 => acq_stop,
+    -- extended output pulse
+    extended_o                              => acq_stop_extend_fs_sync
+  );
+
+  acq_stop_n_extend_fs_sync <= not acq_stop_extend_fs_sync;
+
+  -- Sync and pipeline reset signals
+  cmp_reset_fs_synch : reset_synch
+  port map(
+    clk_i                                   => fs_clk_i,
+    arst_n_i                                => acq_stop_n_extend_fs_sync,
+    rst_n_o                                 => acq_stop_rst_n_fs_sync
+  );
+
+  cmp_reset_ext_synch : reset_synch
+  port map(
+    clk_i                                   => ext_clk_i,
+    arst_n_i                                => acq_stop_n_extend_fs_sync,
+    rst_n_o                                 => acq_stop_rst_n_ext_sync
+  );
+
+  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
+  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
 
 end rtl;
