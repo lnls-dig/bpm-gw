@@ -1,16 +1,16 @@
 ------------------------------------------------------------------------
--- Title      : Wishbone MLVDS Trigger Interface
+-- Title      : Wishbone Trigger Interface
 -- Project    :
 -------------------------------------------------------------------------------
--- File       : wb_mlvds_trigger.vhd
+-- File       : wb_trigger.vhd
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-01-28
+-- Last update: 2016-01-29
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: Top module for the MLVDS Trigger AFC board interface
+-- Description: Top module for the Wishbone Trigger AFC board interface
 -------------------------------------------------------------------------------
 -- Copyright (c) 2016 Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 
@@ -47,7 +47,7 @@ use work.gencores_pkg.all;
 library unisim;
 use unisim.vcomponents.all;
 
-entity wb_mlvds_trigger is
+entity wb_trigger is
   generic (
     g_width_bus_size       : positive := 8;
     g_rcv_len_bus_width    : positive := 8;
@@ -89,16 +89,16 @@ entity wb_mlvds_trigger is
     trig_extended_b     : inout std_logic_vector(g_trig_num-1 downto 0)
     );
 
-end entity wb_mlvds_trigger;
+end entity wb_trigger;
 
-architecture rtl of wb_mlvds_trigger is
+architecture rtl of wb_trigger is
 
 
   --------------------------
   --Component Declarations--
   --------------------------
 
-  component wb_slave_mlvds_trigger is
+  component wb_slave_trigger is
     port (
       rst_n_i    : in  std_logic;
       clk_sys_i  : in  std_logic;
@@ -119,7 +119,7 @@ architecture rtl of wb_mlvds_trigger is
       wb_trig_trigger_dir_o      : out std_logic_vector(7 downto 0);
       wb_trig_trigger_term_o     : out std_logic_vector(7 downto 0);
       wb_trig_trigger_trig_val_o : out std_logic_vector(7 downto 0));
-  end component wb_slave_mlvds_trigger;
+  end component wb_slave_trigger;
 
   component extend_pulse_dyn is
     generic (
@@ -169,7 +169,7 @@ begin  -- architecture rtl
   trigger_dir_n <= not(wb_trig_trigger_dir);
 
 
-  wb_slave_mlvds_trigger_1 : entity work.wb_slave_mlvds_trigger
+  wb_slave_trigger_1 : entity work.wb_slave_trigger
     port map (
       rst_n_i                    => rst_n_i,
       clk_sys_i                  => clk_i,
