@@ -38,6 +38,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
+-- Main Wishbone Definitions
+--use work.wishbone_pkg.all;
+-- Custom Wishbone Modules
+--use work.dbe_wishbone_pkg.all;
+-- Wishbone Register Interface
+use work.wb_trig_wbgen2_pkg.all;
 -- Reset Synch
 use work.dbe_common_pkg.all;
 -- General common cores
