@@ -70,7 +70,7 @@ entity wb_trigger is
     ---- Wishbone Control Interface signals
     -------------------------------
 
-    wb_adr_i   : in  std_logic_vector(2 downto 0)  := (others => '0');
+    wb_adr_i   : in  std_logic_vector(5 downto 0)  := (others => '0');
     wb_dat_i   : in  std_logic_vector(31 downto 0) := (others => '0');
     wb_dat_o   : out std_logic_vector(31 downto 0);
     wb_sel_i   : in  std_logic_vector(3 downto 0)  := (others => '0');
@@ -108,7 +108,7 @@ architecture rtl of wb_trigger is
     port (
       rst_n_i    : in  std_logic;
       clk_sys_i  : in  std_logic;
-      wb_adr_i   : in  std_logic_vector(2 downto 0);
+      wb_adr_i   : in  std_logic_vector(5 downto 0);
       wb_dat_i   : in  std_logic_vector(31 downto 0);
       wb_dat_o   : out std_logic_vector(31 downto 0);
       wb_cyc_i   : in  std_logic;
@@ -117,14 +117,9 @@ architecture rtl of wb_trigger is
       wb_we_i    : in  std_logic;
       wb_ack_o   : out std_logic;
       wb_stall_o : out std_logic;
-
-      wb_trig_rcv_len_0_3_o      : out std_logic_vector(31 downto 0);
-      wb_trig_rcv_len_4_7_o      : out std_logic_vector(31 downto 0);
-      wb_trig_transm_len_0_3_o   : out std_logic_vector(31 downto 0);
-      wb_trig_transm_len_4_7_o   : out std_logic_vector(31 downto 0);
-      wb_trig_trigger_dir_o      : out std_logic_vector(7 downto 0);
-      wb_trig_trigger_term_o     : out std_logic_vector(7 downto 0);
-      wb_trig_trigger_trig_val_o : out std_logic_vector(7 downto 0));
+      fs_clk_i   : in  std_logic;
+      regs_i     : in  t_wb_trig_in_registers;
+      regs_o     : out t_wb_trig_out_registers);
   end component wb_slave_trigger;
 
   component extend_pulse_dyn is
@@ -155,46 +150,53 @@ architecture rtl of wb_trigger is
   --Signals--
   -----------
 
-  signal wb_trig_rcv_len_0_3      : std_logic_vector(31 downto 0);
-  signal wb_trig_rcv_len_4_7      : std_logic_vector(31 downto 0);
-  signal wb_trig_transm_len_0_3   : std_logic_vector(31 downto 0);
-  signal wb_trig_transm_len_4_7   : std_logic_vector(31 downto 0);
-  signal wb_trig_trigger_dir      : std_logic_vector(7 downto 0);
-  signal wb_trig_trigger_term     : std_logic_vector(7 downto 0);
-  signal wb_trig_trigger_trig_val : std_logic_vector(7 downto 0);
+  signal regs_in  : t_wb_trig_in_registers;
+  signal regs_out : t_wb_trig_out_registers;
 
+  type t_wb_trig_out_channel is record
+    ch_ctl_dir              : std_logic;
+    ch_ctl_rcv_count_rst    : std_logic;
+    ch_ctl_transm_count_rst : std_logic;
+    ch_cfg_rcv_len          : std_logic_vector(7 downto 0);
+    ch_cfg_transm_len       : std_logic_vector(7 downto 0);
+  end record;
 
-  signal extended_rcv : std_logic_vector(g_trig_num-1 downto 0);
+  type t_wb_trig_out_array is array(15 downto 0) of t_wb_trig_out_channel;
+
+  type t_wb_trig_in_channel is record
+    ch_count_rcv    : std_logic_vector(15 downto 0);
+    ch_count_transm : std_logic_vector(15 downto 0);
+  end record;
+
+  type t_wb_trig_in_array is array(15 downto 0) of t_wb_trig_in_channel;
+
+  signal ch_regs_out : t_wb_trig_out_array;
+  signal ch_regs_in  : t_wb_trig_in_array;
+
+  signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
-  signal trigger_dir_n : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_pulse_rcv    : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_pulse_transm : std_logic_vector(g_trig_num-1 downto 0);
 
 begin  -- architecture rtl
 
-  -- 'high' dir signal represents 'rcv', and 'low' represents 'transm' (see iobufs to understand)
-  trigger_dir_n <= not(wb_trig_trigger_dir);
-
-
   wb_slave_trigger_1 : entity work.wb_slave_trigger
     port map (
-      rst_n_i                    => rst_n_i,
-      clk_sys_i                  => clk_i,
-      wb_adr_i                   => wb_adr_i,
-      wb_dat_i                   => wb_dat_i,
-      wb_dat_o                   => wb_dat_o,
-      wb_cyc_i                   => wb_cyc_i,
-      wb_sel_i                   => wb_sel_i,
-      wb_stb_i                   => wb_stb_i,
-      wb_we_i                    => wb_we_i,
-      wb_ack_o                   => wb_ack_o,
-      wb_stall_o                 => wb_stall_o,
-      wb_trig_rcv_len_0_3_o      => wb_trig_rcv_len_0_3,
-      wb_trig_rcv_len_4_7_o      => wb_trig_rcv_len_4_7,
-      wb_trig_transm_len_0_3_o   => wb_trig_transm_len_0_3,
-      wb_trig_transm_len_4_7_o   => wb_trig_transm_len_4_7,
-      wb_trig_trigger_dir_o      => wb_trig_trigger_dir,
-      wb_trig_trigger_term_o     => wb_trig_trigger_term,
-      wb_trig_trigger_trig_val_o => wb_trig_trigger_trig_val);
+      rst_n_i    => rst_n_i,
+      clk_sys_i  => clk_i,
+      fs_clk_i   => fs_clk_i,
+      wb_adr_i   => wb_adr_i,
+      wb_dat_i   => wb_dat_i,
+      wb_dat_o   => wb_dat_o,
+      wb_cyc_i   => wb_cyc_i,
+      wb_sel_i   => wb_sel_i,
+      wb_stb_i   => wb_stb_i,
+      wb_we_i    => wb_we_i,
+      wb_ack_o   => wb_ack_o,
+      wb_stall_o => wb_stall_o,
+      regs_i     => regs_in,
+      regs_o     => regs_out);
 
   ---------------------------
   -- Instantiation Process --
