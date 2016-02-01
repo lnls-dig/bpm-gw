@@ -148,6 +148,18 @@ architecture rtl of wb_trigger is
       pulse_o : out std_logic);
   end component trigger_rcv;
 
+  component counter_simple is
+    generic (
+      g_output_width : positive);
+    port (
+      clk_i   : in  std_logic;
+      rst_n_i : in  std_logic;
+      ce_i    : in  std_logic;
+      up_i    : in  std_logic;
+      down_i  : in  std_logic;
+      count_o : out std_logic_vector(g_output_width-1 downto 0));
+  end component counter_simple;
+
 
   -----------
   --Signals--
@@ -355,6 +367,9 @@ begin  -- architecture rtl
   -- Instantiation Process --
   ---------------------------
 
+  trig_pulse_rcv_o  <= trig_pulse_rcv;
+  trig_pulse_transm <= trig_pulse_transm_i;
+
   trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
 
     -- Ports 0 to 3
@@ -420,6 +435,32 @@ begin  -- architecture rtl
         i  => extended_transm(i),       -- Buffer input
         t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
         );
+
+    --------------------------------
+    -- Pulse counters
+    --------------------------------
+
+    counter_rcv : entity work.counter_simple
+      generic map (
+        g_output_width => g_counter_wid)
+      port map (
+        clk_i   => fs_clk_i,
+        rst_n_i => fs_rst_n_i,
+        ce_i    => '1',
+        up_i    => trig_pulse_rcv(i),
+        down_i  => '0',
+        count_o => ch_regs_in(i).ch_count_rcv);
+
+    counter_transm : entity work.counter_simple
+      generic map (
+        g_output_width => g_counter_wid)
+      port map (
+        clk_i   => fs_clk_i,
+        rst_n_i => fs_rst_n_i,
+        ce_i    => '1',
+        up_i    => trig_pulse_transm(i),
+        down_i  => '0',
+        count_o => ch_regs_in(i).ch_count_transm);
 
   end generate trigger_rcv_transm;
 
