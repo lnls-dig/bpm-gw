@@ -59,7 +59,8 @@ entity wb_trigger is
     g_rcv_len_bus_width    : positive := 8;
     g_transm_len_bus_width : positive := 8;
     g_sync_edge            : string   := "positive";
-    g_trig_num             : positive := 8
+    g_trig_num             : positive := 8;
+    g_counter_wid          : positive := 16
     );
 
   port (
