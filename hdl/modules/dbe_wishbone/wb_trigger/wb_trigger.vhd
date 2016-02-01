@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-01-29
+-- Last update: 2016-02-01
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -372,57 +372,36 @@ begin  -- architecture rtl
 
   trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
 
-    -- Ports 0 to 3
-    ports_0_to_3 : if i <= 3 generate
+    --------------------------------
+    -- Connecting signals
+    --------------------------------
 
-      trigger_transm : entity work.extend_pulse_dyn
-        generic map (
-          g_width_bus_size => g_width_bus_size)
-        port map (
-          clk_i         => clk_i,
-          rst_n_i       => rst_n_i,
-          pulse_i       => trig_pulse_transm_i(i),
-          pulse_width_i => unsigned(wb_trig_transm_len_0_3((8*i+7) downto 8*i)),
-          extended_o    => extended_transm(i));
+    trig_dir_o(i) <= ch_regs_out(i).ch_ctl_dir;
 
-      trigger_rcv_1 : entity work.trigger_rcv
-        generic map (
-          g_glitch_len_width => g_rcv_len_bus_width,
-          g_sync_edge        => g_sync_edge)
-        port map (
-          clk_i   => clk_i,
-          rst_n_i => rst_n_i,
-          len_i   => wb_trig_rcv_len_0_3((8*i+7) downto 8*i),
-          data_i  => extended_rcv(i),
-          pulse_o => trig_pulse_rcv_o(i));
+    --------------------------------
+    -- Transmitter and Receiver Cores
+    --------------------------------
 
-    end generate ports_0_to_3;
+    trigger_transm : entity work.extend_pulse_dyn
+      generic map (
+        g_width_bus_size => g_width_bus_size)
+      port map (
+        clk_i         => fs_clk_i,
+        rst_n_i       => fs_rst_n_i,
+        pulse_i       => trig_pulse_transm(i),
+        pulse_width_i => unsigned(ch_regs_out(i).ch_cfg_transm_len),
+        extended_o    => extended_transm(i));
 
-    -- Ports 4 to 7
-    ports_4_to_7 : if i > 3 generate
-
-      trigger_transm : entity work.extend_pulse_dyn
-        generic map (
-          g_width_bus_size => g_width_bus_size)
-        port map (
-          clk_i         => clk_i,
-          rst_n_i       => rst_n_i,
-          pulse_i       => trig_pulse_transm_i(i),
-          pulse_width_i => unsigned(wb_trig_transm_len_4_7((8*(i-4)+7) downto 8*(i-4))),
-          extended_o    => extended_transm(i));
-
-      trigger_rcv_1 : entity work.trigger_rcv
-        generic map (
-          g_glitch_len_width => g_rcv_len_bus_width,
-          g_sync_edge        => g_sync_edge)
-        port map (
-          clk_i   => clk_i,
-          rst_n_i => rst_n_i,
-          len_i   => wb_trig_rcv_len_4_7((8*(i-4)+7) downto 8*(i-4)),
-          data_i  => extended_rcv(i),
-          pulse_o => trig_pulse_rcv_o(i));
-
-    end generate ports_4_to_7;
+    trigger_rcv_1 : entity work.trigger_rcv
+      generic map (
+        g_glitch_len_width => g_rcv_len_bus_width,
+        g_sync_edge        => g_sync_edge)
+      port map (
+        clk_i   => fs_clk_i,
+        rst_n_i => fs_rst_n_i,
+        len_i   => ch_regs_out(i).ch_cfg_rcv_len,
+        data_i  => extended_rcv(i),
+        pulse_o => trig_pulse_rcv(i));
 
     --------------------------------
     -- Connects cores to backplane
@@ -433,7 +412,7 @@ begin  -- architecture rtl
         o  => extended_rcv(i),          -- Buffer output for further use
         io => trig_extended_b(i),  -- inout (connect directly to top-level port)
         i  => extended_transm(i),       -- Buffer input
-        t  => wb_trig_trigger_dir(i)  -- 3-state enable input, high=input, low=output
+        t  => ch_regs_out(i).ch_ctl_dir  -- 3-state enable input, high=input, low=output
         );
 
     --------------------------------
