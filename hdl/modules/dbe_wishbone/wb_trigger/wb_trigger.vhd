@@ -66,6 +66,9 @@ entity wb_trigger is
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
 
+    fs_clk_i   : in std_logic;
+    fs_rst_n_i : in std_logic;
+
     -------------------------------
     ---- Wishbone Control Interface signals
     -------------------------------
