@@ -220,98 +220,98 @@ begin  -- architecture rtl
   -----------------------------------------------------------------
 
   ch_regs_out(0).ch_ctl_dir              <= regs_out.ch0_ctl_dir_o;
-  ch_regs_out(0).ch_ctl_rcv_count_rst    <= regs_out.ch0_ctl_rcv_count_rst_o;
-  ch_regs_out(0).ch_ctl_transm_count_rst <= regs_out.ch0_ctl_transm_count_rst_o;
+  ch_regs_out(0).ch_ctl_rcv_count_rst    <= not(regs_out.ch0_ctl_rcv_count_rst_o);
+  ch_regs_out(0).ch_ctl_transm_count_rst <= not(regs_out.ch0_ctl_transm_count_rst_o);
   ch_regs_out(0).ch_cfg_rcv_len          <= regs_out.ch0_cfg_rcv_len_o;
   ch_regs_out(0).ch_cfg_transm_len       <= regs_out.ch0_cfg_transm_len_o;
 
   ch_regs_out(1).ch_ctl_dir              <= regs_out.ch1_ctl_dir_o;
-  ch_regs_out(1).ch_ctl_rcv_count_rst    <= regs_out.ch1_ctl_rcv_count_rst_o;
-  ch_regs_out(1).ch_ctl_transm_count_rst <= regs_out.ch1_ctl_transm_count_rst_o;
+  ch_regs_out(1).ch_ctl_rcv_count_rst    <= not(regs_out.ch1_ctl_rcv_count_rst_o);
+  ch_regs_out(1).ch_ctl_transm_count_rst <= not(regs_out.ch1_ctl_transm_count_rst_o);
   ch_regs_out(1).ch_cfg_rcv_len          <= regs_out.ch1_cfg_rcv_len_o;
   ch_regs_out(1).ch_cfg_transm_len       <= regs_out.ch1_cfg_transm_len_o;
 
   ch_regs_out(2).ch_ctl_dir              <= regs_out.ch2_ctl_dir_o;
-  ch_regs_out(2).ch_ctl_rcv_count_rst    <= regs_out.ch2_ctl_rcv_count_rst_o;
-  ch_regs_out(2).ch_ctl_transm_count_rst <= regs_out.ch2_ctl_transm_count_rst_o;
+  ch_regs_out(2).ch_ctl_rcv_count_rst    <= not(regs_out.ch2_ctl_rcv_count_rst_o);
+  ch_regs_out(2).ch_ctl_transm_count_rst <= not(regs_out.ch2_ctl_transm_count_rst_o);
   ch_regs_out(2).ch_cfg_rcv_len          <= regs_out.ch2_cfg_rcv_len_o;
   ch_regs_out(2).ch_cfg_transm_len       <= regs_out.ch2_cfg_transm_len_o;
 
   ch_regs_out(3).ch_ctl_dir              <= regs_out.ch3_ctl_dir_o;
-  ch_regs_out(3).ch_ctl_rcv_count_rst    <= regs_out.ch3_ctl_rcv_count_rst_o;
-  ch_regs_out(3).ch_ctl_transm_count_rst <= regs_out.ch3_ctl_transm_count_rst_o;
+  ch_regs_out(3).ch_ctl_rcv_count_rst    <= not(regs_out.ch3_ctl_rcv_count_rst_o);
+  ch_regs_out(3).ch_ctl_transm_count_rst <= not(regs_out.ch3_ctl_transm_count_rst_o);
   ch_regs_out(3).ch_cfg_rcv_len          <= regs_out.ch3_cfg_rcv_len_o;
   ch_regs_out(3).ch_cfg_transm_len       <= regs_out.ch3_cfg_transm_len_o;
 
   ch_regs_out(4).ch_ctl_dir              <= regs_out.ch4_ctl_dir_o;
-  ch_regs_out(4).ch_ctl_rcv_count_rst    <= regs_out.ch4_ctl_rcv_count_rst_o;
-  ch_regs_out(4).ch_ctl_transm_count_rst <= regs_out.ch4_ctl_transm_count_rst_o;
+  ch_regs_out(4).ch_ctl_rcv_count_rst    <= not(regs_out.ch4_ctl_rcv_count_rst_o);
+  ch_regs_out(4).ch_ctl_transm_count_rst <= not(regs_out.ch4_ctl_transm_count_rst_o);
   ch_regs_out(4).ch_cfg_rcv_len          <= regs_out.ch4_cfg_rcv_len_o;
   ch_regs_out(4).ch_cfg_transm_len       <= regs_out.ch4_cfg_transm_len_o;
 
   ch_regs_out(5).ch_ctl_dir              <= regs_out.ch5_ctl_dir_o;
-  ch_regs_out(5).ch_ctl_rcv_count_rst    <= regs_out.ch5_ctl_rcv_count_rst_o;
-  ch_regs_out(5).ch_ctl_transm_count_rst <= regs_out.ch5_ctl_transm_count_rst_o;
+  ch_regs_out(5).ch_ctl_rcv_count_rst    <= not(regs_out.ch5_ctl_rcv_count_rst_o);
+  ch_regs_out(5).ch_ctl_transm_count_rst <= not(regs_out.ch5_ctl_transm_count_rst_o);
   ch_regs_out(5).ch_cfg_rcv_len          <= regs_out.ch5_cfg_rcv_len_o;
   ch_regs_out(5).ch_cfg_transm_len       <= regs_out.ch5_cfg_transm_len_o;
 
   ch_regs_out(6).ch_ctl_dir              <= regs_out.ch6_ctl_dir_o;
-  ch_regs_out(6).ch_ctl_rcv_count_rst    <= regs_out.ch6_ctl_rcv_count_rst_o;
-  ch_regs_out(6).ch_ctl_transm_count_rst <= regs_out.ch6_ctl_transm_count_rst_o;
+  ch_regs_out(6).ch_ctl_rcv_count_rst    <= not(regs_out.ch6_ctl_rcv_count_rst_o);
+  ch_regs_out(6).ch_ctl_transm_count_rst <= not(regs_out.ch6_ctl_transm_count_rst_o);
   ch_regs_out(6).ch_cfg_rcv_len          <= regs_out.ch6_cfg_rcv_len_o;
   ch_regs_out(6).ch_cfg_transm_len       <= regs_out.ch6_cfg_transm_len_o;
 
   ch_regs_out(7).ch_ctl_dir              <= regs_out.ch7_ctl_dir_o;
-  ch_regs_out(7).ch_ctl_rcv_count_rst    <= regs_out.ch7_ctl_rcv_count_rst_o;
-  ch_regs_out(7).ch_ctl_transm_count_rst <= regs_out.ch7_ctl_transm_count_rst_o;
+  ch_regs_out(7).ch_ctl_rcv_count_rst    <= not(regs_out.ch7_ctl_rcv_count_rst_o);
+  ch_regs_out(7).ch_ctl_transm_count_rst <= not(regs_out.ch7_ctl_transm_count_rst_o);
   ch_regs_out(7).ch_cfg_rcv_len          <= regs_out.ch7_cfg_rcv_len_o;
   ch_regs_out(7).ch_cfg_transm_len       <= regs_out.ch7_cfg_transm_len_o;
 
   ch_regs_out(8).ch_ctl_dir              <= regs_out.ch8_ctl_dir_o;
-  ch_regs_out(8).ch_ctl_rcv_count_rst    <= regs_out.ch8_ctl_rcv_count_rst_o;
-  ch_regs_out(8).ch_ctl_transm_count_rst <= regs_out.ch8_ctl_transm_count_rst_o;
+  ch_regs_out(8).ch_ctl_rcv_count_rst    <= not(regs_out.ch8_ctl_rcv_count_rst_o);
+  ch_regs_out(8).ch_ctl_transm_count_rst <= not(regs_out.ch8_ctl_transm_count_rst_o);
   ch_regs_out(8).ch_cfg_rcv_len          <= regs_out.ch8_cfg_rcv_len_o;
   ch_regs_out(8).ch_cfg_transm_len       <= regs_out.ch8_cfg_transm_len_o;
 
   ch_regs_out(9).ch_ctl_dir              <= regs_out.ch9_ctl_dir_o;
-  ch_regs_out(9).ch_ctl_rcv_count_rst    <= regs_out.ch9_ctl_rcv_count_rst_o;
-  ch_regs_out(9).ch_ctl_transm_count_rst <= regs_out.ch9_ctl_transm_count_rst_o;
+  ch_regs_out(9).ch_ctl_rcv_count_rst    <= not(regs_out.ch9_ctl_rcv_count_rst_o);
+  ch_regs_out(9).ch_ctl_transm_count_rst <= not(regs_out.ch9_ctl_transm_count_rst_o);
   ch_regs_out(9).ch_cfg_rcv_len          <= regs_out.ch9_cfg_rcv_len_o;
   ch_regs_out(9).ch_cfg_transm_len       <= regs_out.ch9_cfg_transm_len_o;
 
   ch_regs_out(10).ch_ctl_dir              <= regs_out.ch10_ctl_dir_o;
-  ch_regs_out(10).ch_ctl_rcv_count_rst    <= regs_out.ch10_ctl_rcv_count_rst_o;
-  ch_regs_out(10).ch_ctl_transm_count_rst <= regs_out.ch10_ctl_transm_count_rst_o;
+  ch_regs_out(10).ch_ctl_rcv_count_rst    <= not(regs_out.ch10_ctl_rcv_count_rst_o);
+  ch_regs_out(10).ch_ctl_transm_count_rst <= not(regs_out.ch10_ctl_transm_count_rst_o);
   ch_regs_out(10).ch_cfg_rcv_len          <= regs_out.ch10_cfg_rcv_len_o;
   ch_regs_out(10).ch_cfg_transm_len       <= regs_out.ch10_cfg_transm_len_o;
 
   ch_regs_out(11).ch_ctl_dir              <= regs_out.ch11_ctl_dir_o;
-  ch_regs_out(11).ch_ctl_rcv_count_rst    <= regs_out.ch11_ctl_rcv_count_rst_o;
-  ch_regs_out(11).ch_ctl_transm_count_rst <= regs_out.ch11_ctl_transm_count_rst_o;
+  ch_regs_out(11).ch_ctl_rcv_count_rst    <= not(regs_out.ch11_ctl_rcv_count_rst_o);
+  ch_regs_out(11).ch_ctl_transm_count_rst <= not(regs_out.ch11_ctl_transm_count_rst_o);
   ch_regs_out(11).ch_cfg_rcv_len          <= regs_out.ch11_cfg_rcv_len_o;
   ch_regs_out(11).ch_cfg_transm_len       <= regs_out.ch11_cfg_transm_len_o;
 
   ch_regs_out(12).ch_ctl_dir              <= regs_out.ch12_ctl_dir_o;
-  ch_regs_out(12).ch_ctl_rcv_count_rst    <= regs_out.ch12_ctl_rcv_count_rst_o;
-  ch_regs_out(12).ch_ctl_transm_count_rst <= regs_out.ch12_ctl_transm_count_rst_o;
+  ch_regs_out(12).ch_ctl_rcv_count_rst    <= not(regs_out.ch12_ctl_rcv_count_rst_o);
+  ch_regs_out(12).ch_ctl_transm_count_rst <= not(regs_out.ch12_ctl_transm_count_rst_o);
   ch_regs_out(12).ch_cfg_rcv_len          <= regs_out.ch12_cfg_rcv_len_o;
   ch_regs_out(12).ch_cfg_transm_len       <= regs_out.ch12_cfg_transm_len_o;
 
   ch_regs_out(13).ch_ctl_dir              <= regs_out.ch13_ctl_dir_o;
-  ch_regs_out(13).ch_ctl_rcv_count_rst    <= regs_out.ch13_ctl_rcv_count_rst_o;
-  ch_regs_out(13).ch_ctl_transm_count_rst <= regs_out.ch13_ctl_transm_count_rst_o;
+  ch_regs_out(13).ch_ctl_rcv_count_rst    <= not(regs_out.ch13_ctl_rcv_count_rst_o);
+  ch_regs_out(13).ch_ctl_transm_count_rst <= not(regs_out.ch13_ctl_transm_count_rst_o);
   ch_regs_out(13).ch_cfg_rcv_len          <= regs_out.ch13_cfg_rcv_len_o;
   ch_regs_out(13).ch_cfg_transm_len       <= regs_out.ch13_cfg_transm_len_o;
 
   ch_regs_out(14).ch_ctl_dir              <= regs_out.ch14_ctl_dir_o;
-  ch_regs_out(14).ch_ctl_rcv_count_rst    <= regs_out.ch14_ctl_rcv_count_rst_o;
-  ch_regs_out(14).ch_ctl_transm_count_rst <= regs_out.ch14_ctl_transm_count_rst_o;
+  ch_regs_out(14).ch_ctl_rcv_count_rst    <= not(regs_out.ch14_ctl_rcv_count_rst_o);
+  ch_regs_out(14).ch_ctl_transm_count_rst <= not(regs_out.ch14_ctl_transm_count_rst_o);
   ch_regs_out(14).ch_cfg_rcv_len          <= regs_out.ch14_cfg_rcv_len_o;
   ch_regs_out(14).ch_cfg_transm_len       <= regs_out.ch14_cfg_transm_len_o;
 
   ch_regs_out(15).ch_ctl_dir              <= regs_out.ch15_ctl_dir_o;
-  ch_regs_out(15).ch_ctl_rcv_count_rst    <= regs_out.ch15_ctl_rcv_count_rst_o;
-  ch_regs_out(15).ch_ctl_transm_count_rst <= regs_out.ch15_ctl_transm_count_rst_o;
+  ch_regs_out(15).ch_ctl_rcv_count_rst    <= not(regs_out.ch15_ctl_rcv_count_rst_o);
+  ch_regs_out(15).ch_ctl_transm_count_rst <= not(regs_out.ch15_ctl_transm_count_rst_o);
   ch_regs_out(15).ch_cfg_rcv_len          <= regs_out.ch15_cfg_rcv_len_o;
   ch_regs_out(15).ch_cfg_transm_len       <= regs_out.ch15_cfg_transm_len_o;
 
@@ -426,7 +426,7 @@ begin  -- architecture rtl
         g_output_width => g_counter_wid)
       port map (
         clk_i   => fs_clk_i,
-        rst_n_i => fs_rst_n_i,
+        rst_n_i => ch_regs_out(i).ch_ctl_rcv_count_rst,
         ce_i    => '1',
         up_i    => trig_pulse_rcv(i),
         down_i  => '0',
@@ -437,7 +437,7 @@ begin  -- architecture rtl
         g_output_width => g_counter_wid)
       port map (
         clk_i   => fs_clk_i,
-        rst_n_i => fs_rst_n_i,
+        rst_n_i => ch_regs_out(i).ch_ctl_transm_count_rst,
         ce_i    => '1',
         up_i    => trig_pulse_transm(i),
         down_i  => '0',
