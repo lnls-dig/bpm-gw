@@ -19,7 +19,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -30,7 +29,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -41,7 +40,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -87,6 +86,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -98,6 +98,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -117,7 +118,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -128,7 +128,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -139,7 +139,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -185,6 +185,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -196,6 +197,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -215,7 +217,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -226,7 +227,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -237,7 +238,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -283,6 +284,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -294,6 +296,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -313,7 +316,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -324,7 +326,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -335,7 +337,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -381,6 +383,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -392,6 +395,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -410,8 +414,7 @@ peripheral {
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
-      ---size = 1;
-      align = 0;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -422,7 +425,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -433,7 +436,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -479,6 +482,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -490,6 +494,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -509,7 +514,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -520,7 +524,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -531,7 +535,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -577,6 +581,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -588,6 +593,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -607,7 +613,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -618,7 +623,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -629,7 +634,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -675,6 +680,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -686,6 +692,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -705,7 +712,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -716,7 +722,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -727,7 +733,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -773,6 +779,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -784,6 +791,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -803,7 +811,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -814,7 +821,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -825,7 +832,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -871,6 +878,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -882,6 +890,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -901,7 +910,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -912,7 +920,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -923,7 +931,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -969,6 +977,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -980,6 +989,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -999,7 +1009,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1010,7 +1019,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1021,7 +1030,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1067,6 +1076,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1078,6 +1088,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1097,7 +1108,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1108,7 +1118,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1119,7 +1129,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1165,6 +1175,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1176,6 +1187,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1195,7 +1207,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1206,7 +1217,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1217,7 +1228,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1263,6 +1274,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1274,6 +1286,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1293,7 +1306,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1304,7 +1316,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1315,7 +1327,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1361,6 +1373,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1372,6 +1385,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1391,7 +1405,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1402,7 +1415,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1413,7 +1426,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1459,6 +1472,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1470,6 +1484,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1489,7 +1504,6 @@ peripheral {
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
       type = BIT;
       --size = 1;
-      align = 0;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1500,7 +1514,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 1;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1511,7 +1525,7 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      align = 2;
+      clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1557,6 +1571,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 0;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1568,6 +1583,7 @@ peripheral {
       type = SLV;
       size = 16;
       align = 16;
+      clock = "wb_clk_i";
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };

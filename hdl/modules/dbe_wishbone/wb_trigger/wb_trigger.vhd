@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-02-01
+-- Last update: 2016-02-02
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -121,6 +121,7 @@ architecture rtl of wb_trigger is
       wb_ack_o   : out std_logic;
       wb_stall_o : out std_logic;
       fs_clk_i   : in  std_logic;
+      wb_clk_i   : in  std_logic;
       regs_i     : in  t_wb_trig_in_registers;
       regs_o     : out t_wb_trig_out_registers);
   end component wb_slave_trigger;
@@ -201,6 +202,7 @@ begin  -- architecture rtl
       rst_n_i    => rst_n_i,
       clk_sys_i  => clk_i,
       fs_clk_i   => fs_clk_i,
+      wb_clk_i   => clk_i,
       wb_adr_i   => wb_adr_i,
       wb_dat_i   => wb_dat_i,
       wb_dat_o   => wb_dat_o,
