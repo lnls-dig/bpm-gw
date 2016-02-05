@@ -165,6 +165,11 @@ architecture rtl of wb_trigger is
   end component counter_simple;
 
 
+
+  constant c_periph_addr_size : natural := 6+2;
+
+
+
   -----------
   --Signals--
   -----------
@@ -198,6 +203,13 @@ architecture rtl of wb_trigger is
   signal trig_pulse_rcv    : std_logic_vector(g_trig_num-1 downto 0);
   signal trig_pulse_transm : std_logic_vector(g_trig_num-1 downto 0);
 
+  -----------------------------
+  -- Wishbone slave adapter signals/structures
+  -----------------------------
+  signal wb_slv_adp_out : t_wishbone_master_out;
+  signal wb_slv_adp_in  : t_wishbone_master_in;
+  signal resized_addr   : std_logic_vector(c_wishbone_address_width-1 downto 0);
+
 begin  -- architecture rtl
 
   -----------------------------
@@ -229,23 +241,27 @@ begin  -- architecture rtl
     sl_err_o                                => open,
     sl_int_o                                => open,
     sl_stall_o                              => wb_stall_o
+  );
+
   resized_addr(c_periph_addr_size-1 downto 0) <= wb_adr_i(c_periph_addr_size-1 downto 0);
   resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size) <= (others => '0');
+
+
   wb_slave_trigger_1 : entity work.wb_slave_trigger
     port map (
       rst_n_i    => rst_n_i,
       clk_sys_i  => clk_i,
       fs_clk_i   => fs_clk_i,
       wb_clk_i   => clk_i,
-      wb_adr_i   => wb_adr_i,
-      wb_dat_i   => wb_dat_i,
-      wb_dat_o   => wb_dat_o,
-      wb_cyc_i   => wb_cyc_i,
-      wb_sel_i   => wb_sel_i,
-      wb_stb_i   => wb_stb_i,
-      wb_we_i    => wb_we_i,
-      wb_ack_o   => wb_ack_o,
-      wb_stall_o => wb_stall_o,
+      wb_adr_i   => wb_slv_adp_out.adr(5 downto 0),
+      wb_dat_i   => wb_slv_adp_out.dat,
+      wb_dat_o   => wb_slv_adp_in.dat,
+      wb_cyc_i   => wb_slv_adp_out.cyc,
+      wb_sel_i   => wb_slv_adp_out.sel,
+      wb_stb_i   => wb_slv_adp_out.stb,
+      wb_we_i    => wb_slv_adp_out.we,
+      wb_ack_o   => wb_slv_adp_in.ack,
+      wb_stall_o => wb_slv_adp_in.stall,
       regs_i     => regs_in,
       regs_o     => regs_out);
 
