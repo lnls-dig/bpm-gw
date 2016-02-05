@@ -98,7 +98,7 @@ entity wb_trigger is
 
     trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
     trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
-    trig_extended_b     : inout std_logic_vector(g_trig_num-1 downto 0)
+    trig_b              : inout std_logic_vector(g_trig_num-1 downto 0)
     );
 
 end entity wb_trigger;
@@ -446,7 +446,7 @@ begin  -- architecture rtl
     cmp_iobuf : iobuf
       port map (
         o  => extended_rcv(i),          -- Buffer output for further use
-        io => trig_extended_b(i),  -- inout (connect directly to top-level port)
+        io => trig_b(i),  -- inout (connect directly to top-level port)
         i  => extended_transm(i),       -- Buffer input
         t  => ch_regs_out(i).ch_ctl_dir  -- 3-state enable input, high=input, low=output
         );
