@@ -39,9 +39,9 @@ use ieee.numeric_std.all;
 
 library work;
 -- Main Wishbone Definitions
---use work.wishbone_pkg.all;
+use work.wishbone_pkg.all;
 -- Custom Wishbone Modules
---use work.dbe_wishbone_pkg.all;
+use work.dbe_wishbone_pkg.all;
 -- Wishbone Register Interface
 use work.wb_trig_wbgen2_pkg.all;
 -- Reset Synch
@@ -49,18 +49,21 @@ use work.dbe_common_pkg.all;
 -- General common cores
 use work.gencores_pkg.all;
 
+
 -- For Xilinx primitives
 library unisim;
 use unisim.vcomponents.all;
 
 entity wb_trigger is
   generic (
-    g_width_bus_size       : positive := 8;
-    g_rcv_len_bus_width    : positive := 8;
-    g_transm_len_bus_width : positive := 8;
-    g_sync_edge            : string   := "positive";
-    g_trig_num             : positive := 8;
-    g_counter_wid          : positive := 16
+    g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity  : t_wishbone_address_granularity := WORD;
+    g_width_bus_size       : positive                       := 8;
+    g_rcv_len_bus_width    : positive                       := 8;
+    g_transm_len_bus_width : positive                       := 8;
+    g_sync_edge            : string                         := "positive";
+    g_trig_num             : positive                       := 8;
+    g_counter_wid          : positive                       := 16
     );
 
   port (
@@ -197,6 +200,37 @@ architecture rtl of wb_trigger is
 
 begin  -- architecture rtl
 
+  -----------------------------
+  -- Slave adapter for Wishbone Register Interface
+  -----------------------------
+  cmp_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => true,
+    g_master_mode                           => PIPELINED,
+    g_master_granularity                    => WORD,
+    g_slave_use_struct                      => false,
+    g_slave_mode                            => g_interface_mode,
+    g_slave_granularity                     => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => clk_i,
+    rst_n_i                                 => rst_n_i,
+    master_i                                => wb_slv_adp_in,
+    master_o                                => wb_slv_adp_out,
+    sl_adr_i                                => resized_addr,
+    sl_dat_i                                => wb_dat_i,
+    sl_sel_i                                => wb_sel_i,
+    sl_cyc_i                                => wb_cyc_i,
+    sl_stb_i                                => wb_stb_i,
+    sl_we_i                                 => wb_we_i,
+    sl_dat_o                                => wb_dat_o,
+    sl_ack_o                                => wb_ack_o,
+    sl_rty_o                                => open,
+    sl_err_o                                => open,
+    sl_int_o                                => open,
+    sl_stall_o                              => wb_stall_o
+  resized_addr(c_periph_addr_size-1 downto 0) <= wb_adr_i(c_periph_addr_size-1 downto 0);
+  resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size) <= (others => '0');
   wb_slave_trigger_1 : entity work.wb_slave_trigger
     port map (
       rst_n_i    => rst_n_i,
