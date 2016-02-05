@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-02-02
+-- Last update: 2016-02-03
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -77,13 +77,13 @@ entity wb_trigger is
     ---- Wishbone Control Interface signals
     -------------------------------
 
-    wb_adr_i   : in  std_logic_vector(5 downto 0)  := (others => '0');
-    wb_dat_i   : in  std_logic_vector(31 downto 0) := (others => '0');
-    wb_dat_o   : out std_logic_vector(31 downto 0);
-    wb_sel_i   : in  std_logic_vector(3 downto 0)  := (others => '0');
-    wb_we_i    : in  std_logic                     := '0';
-    wb_cyc_i   : in  std_logic                     := '0';
-    wb_stb_i   : in  std_logic                     := '0';
+    wb_adr_i   : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i   : in  std_logic_vector(c_wishbone_data_width-1 downto 0)    := (others => '0');
+    wb_dat_o   : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i   : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0)  := (others => '0');
+    wb_we_i    : in  std_logic                                             := '0';
+    wb_cyc_i   : in  std_logic                                             := '0';
+    wb_stb_i   : in  std_logic                                             := '0';
     wb_ack_o   : out std_logic;
     wb_err_o   : out std_logic;
     wb_rty_o   : out std_logic;
