@@ -827,6 +827,7 @@ DDRs_ctrl_module: entity work.DDR_Transact
     ddr_sys_clk   => ddr_sys_clk,
     --clocking & reset
     pcie_clk   => user_clk,
+    pcie_lnk_up => user_lnk_up,
     sys_reset => ddr_sys_rst
   );
   

@@ -123,6 +123,7 @@ entity DDR_Transact is
 
     --clocking & reset
     pcie_clk : in std_logic;
+    pcie_lnk_up : in std_logic;
     sys_reset : in std_logic
   );
 end entity DDR_Transact;
@@ -454,8 +455,8 @@ begin
   -- This should provide a reliable reset chain where global reset correctly sets up all interfaces
   -- and PCIe core or DDR core reset correctly reset all AXI interfaces (as required by Interconnect IP)
   
-  ddr_sys_rst <= sys_reset or ddr_reset;
-  irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset);
+  ddr_sys_rst <= sys_reset or ddr_reset or not(pcie_lnk_up);
+  irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset) and pcie_lnk_up;
   
   s_axi_aclk_out <= ddr_ui_clk;
 
