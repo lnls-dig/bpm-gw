@@ -119,6 +119,7 @@ entity bpm_pcie is
     CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
+    pcie_user_clk : out std_logic;
     ext_rst_o : out std_logic
     );
 end entity bpm_pcie;
@@ -878,6 +879,8 @@ Wishbone_intf: entity work.wb_transact
   STB_O      <= wbone_stb;
   CYC_O      <= wbone_cyc;
   ext_rst_o  <= wb_fifo_rst;
+  
+  pcie_user_clk <= user_clk;
 
 
 end Behavioral;
