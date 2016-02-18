@@ -275,7 +275,7 @@ architecture Behavioral of bpm_pcie is
   signal cfg_err_aer_headerlog_set     : std_logic := '0';
   signal cfg_aer_ecrc_check_en         : std_logic := '0';
   signal cfg_aer_ecrc_gen_en           : std_logic := '0';
-  signal cfg_pm_halt_aspm_l0s          : std_logic := '0';
+  signal cfg_pm_halt_aspm_l0s          : std_logic := '1';
   signal cfg_pm_halt_aspm_l1           : std_logic := '1';
   signal cfg_pm_force_state_en         : std_logic := '0';
   signal cfg_pm_force_state            : std_logic_vector(1 downto 0) := "00";
