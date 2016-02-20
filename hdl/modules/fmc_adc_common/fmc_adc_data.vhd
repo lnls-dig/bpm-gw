@@ -192,7 +192,7 @@ begin
   -- ADC data signal datapath
   -----------------------------
 
-  gen_adc_data : for i in 0 to c_num_in_adc_pins-1 generate
+  gen_adc_data : for i in 0 to f_num_adc_pins(g_with_data_sdr)-1 generate
 
     gen_adc_data_virtex6_iodelay : if (g_fpga_device = "VIRTEX6") generate
       gen_adc_data_var_loadable_iodelay : if (g_delay_type = "VAR_LOADABLE") generate
