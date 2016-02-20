@@ -253,7 +253,7 @@ architecture rtl of wb_fmc250m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := true;
 
-  -- Using 130 MHz parameters for now. Generate 1x input clock
+  -- Using 130 MHz parameters for now. Generate 2x input clock
   constant c_mmcm_param                     : t_mmcm_param :=
                                    (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
 
@@ -972,7 +972,7 @@ begin
     adc_data_ch3_o                          => adc_data_ch3
   );
 
-  cmp_fmc250m_adc_iface : fmc_adc_iface
+  cmp_fmc_adc_iface : fmc_adc_iface
   generic map(
       -- The only supported values are VIRTEX6 and 7SERIES
     g_fpga_device                           => g_fpga_device,
