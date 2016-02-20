@@ -433,7 +433,7 @@ architecture rtl of dbe_bpm2 is
 
   -- number of the ADC reference clock used for all downstream
   -- FPGA logic
-  constant c_adc_ref_clk                    : natural := 0;
+  constant c_adc_ref_clk                    : natural := 2;
 
   -- Number of top level clocks
   constant c_num_tlvl_clks                  : natural := 2; -- CLK_SYS and CLK_200 MHz
