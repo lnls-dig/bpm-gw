@@ -1025,7 +1025,7 @@ package dbe_wishbone_pkg is
     -- ADC clock (half of the sampling frequency) divider reset
     adc_clk_div_rst_p_o                       : out std_logic;
     adc_clk_div_rst_n_o                       : out std_logic;
-    adc_ext_rst_n_o                               : out std_logic;
+    adc_ext_rst_n_o                           : out std_logic;
     adc_sleep_o                               : out std_logic;
 
     -- ADC clocks. One clock per ADC channel.
@@ -1109,9 +1109,9 @@ package dbe_wishbone_pkg is
     -----------------------------
     -- Optional external reference clock ports
     -----------------------------
-    fmc_ext_ref_clk_i                        : in std_logic := '0';
-    fmc_ext_ref_clk2x_i                      : in std_logic := '0';
-    fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+    fmc_ext_ref_clk_i                         : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                       : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                 : in std_logic := '0';
 
     -----------------------------
     -- ADC output signals. Continuous flow
@@ -1196,7 +1196,7 @@ package dbe_wishbone_pkg is
     -- ADC clock (half of the sampling frequency) divider reset
     adc_clk_div_rst_p_o                       : out std_logic;
     adc_clk_div_rst_n_o                       : out std_logic;
-    adc_ext_rst_n_o                               : out std_logic;
+    adc_ext_rst_n_o                           : out std_logic;
     adc_sleep_o                               : out std_logic;
 
     -- ADC clocks. One clock per ADC channel.
