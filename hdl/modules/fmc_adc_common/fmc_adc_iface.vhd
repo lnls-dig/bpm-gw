@@ -175,6 +175,8 @@ begin
       adc_in_t(i).adc_clk                   <= adc_in_sdr_i(i).adc_clk;
       adc_in_t(i).adc_rst_n                 <= adc_in_sdr_i(i).adc_rst_n;
 
+    end generate;
+
     -- DDR data structure
     gen_without_data_sdr : if (not g_with_data_sdr) generate
 
@@ -185,7 +187,6 @@ begin
 
     end generate;
 
-    end generate;
   end generate;
 
   -- idelay control for var_loadable iodelay mode
