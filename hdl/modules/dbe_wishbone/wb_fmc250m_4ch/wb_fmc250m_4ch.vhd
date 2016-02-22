@@ -854,6 +854,8 @@ begin
   fmc_pll_function_o                        <= regs_out.clk_distrib_pll_function_o;
   fmc_clk_sel_o                             <= regs_out.clk_distrib_clk_sel_o;
 
+  adc_sleep_o                               <= regs_out.adc_ctl_sleep_adcs_o;
+
   fmc_led1_int                              <= regs_out.monitor_led1_o;
   fmc_led2_int                              <= regs_out.monitor_led2_o;
   fmc_led3_int                              <= regs_out.monitor_led3_o;
