@@ -2506,6 +2506,9 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="source/pcie_core-PCIE_X0Y0.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
       </File>
       <Config>
         <Option Name="TopModule" Val="cos_lut_uvx_35_148"/>
