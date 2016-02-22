@@ -1055,7 +1055,24 @@ wb_fmc_250m_4ch_csr_adc_ctl_rst_div_adcs_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_adc_ctl_reserved_i[27:0]
+wb_fmc_250m_4ch_csr_adc_ctl_sleep_adcs_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_250m_4ch_csr_adc_ctl_reserved_i[26:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -4269,7 +4286,7 @@ Global ADC control register.
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[27:20]
+RESERVED[26:19]
 </td>
 <td >
 
@@ -4323,7 +4340,7 @@ RESERVED[27:20]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[19:12]
+RESERVED[18:11]
 </td>
 <td >
 
@@ -4377,7 +4394,7 @@ RESERVED[19:12]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[11:4]
+RESERVED[10:3]
 </td>
 <td >
 
@@ -4430,8 +4447,11 @@ RESERVED[11:4]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=4  class="td_field">
-RESERVED[3:0]
+<td style="border: solid 1px black;" colspan=3  class="td_field">
+RESERVED[2:0]
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+SLEEP_ADCS
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RST_DIV_ADCS
@@ -4444,9 +4464,6 @@ UPDATE_DATA_DLY
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 UPDATE_CLK_DLY
-</td>
-<td >
-
 </td>
 <td >
 
@@ -4473,6 +4490,10 @@ RST_ADCS
 RST_DIV_ADCS
 </b>[<i>read/write</i>]: Reset Div ADCs
 <br>Reset for synchronization between multiple ADCs <br>                      write 0: no reset <br>                      write 1: enable ADC div reset
+<li><b>
+SLEEP_ADCS
+</b>[<i>read/write</i>]: Sleep ADCs
+<br>Sleep for ADCs <br>                      write 0: normal operation <br>                      write 1: enable sleep mode
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
