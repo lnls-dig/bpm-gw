@@ -139,17 +139,17 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_clk_o]
 # LA14_N
 set_property PACKAGE_PIN H8 [get_ports fmc1_adc_spi_data_b]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_data_b]
-# LA10_N
-set_property PACKAGE_PIN G2 [get_ports fmc1_adc_spi_cs_adc0_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc0_n_o]
-# LA09_N
-set_property PACKAGE_PIN J3 [get_ports fmc1_adc_spi_cs_adc1_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc1_n_o]
-# LA10_P
-set_property PACKAGE_PIN H2 [get_ports fmc1_adc_spi_cs_adc2_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc2_n_o]
 # LA09_P
-set_property PACKAGE_PIN J4 [get_ports fmc1_adc_spi_cs_adc3_n_o]
+set_property PACKAGE_PIN J4 [get_ports fmc1_adc_spi_cs_adc0_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc0_n_o]
+# LA10_P
+set_property PACKAGE_PIN H2 [get_ports fmc1_adc_spi_cs_adc1_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc1_n_o]
+# LA09_N
+set_property PACKAGE_PIN J3 [get_ports fmc1_adc_spi_cs_adc2_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc2_n_o]
+# LA10_N
+set_property PACKAGE_PIN G2 [get_ports fmc1_adc_spi_cs_adc3_n_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc3_n_o]
 # HA12_N
 set_property PACKAGE_PIN G34 [get_ports fmc1_adc_sleep_o]
@@ -272,17 +272,17 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_clk_o]
 # LA14_N
 set_property PACKAGE_PIN AF33 [get_ports fmc2_adc_spi_data_b]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_data_b]
-# LA10_N
-set_property PACKAGE_PIN AH32 [get_ports fmc2_adc_spi_cs_adc0_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc0_n_o]
-# LA09_N
-set_property PACKAGE_PIN AG25 [get_ports fmc2_adc_spi_cs_adc1_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc1_n_o]
-# LA10_P
-set_property PACKAGE_PIN AG32 [get_ports fmc2_adc_spi_cs_adc2_n_o]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc2_n_o]
 # LA09_P
-set_property PACKAGE_PIN AF25 [get_ports fmc2_adc_spi_cs_adc3_n_o]
+set_property PACKAGE_PIN AF25 [get_ports fmc2_adc_spi_cs_adc0_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc0_n_o]
+# LA10_P
+set_property PACKAGE_PIN AG32 [get_ports fmc2_adc_spi_cs_adc1_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc1_n_o]
+# LA09_N
+set_property PACKAGE_PIN AG25 [get_ports fmc2_adc_spi_cs_adc2_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc2_n_o]
+# LA10_N
+set_property PACKAGE_PIN AH32 [get_ports fmc2_adc_spi_cs_adc3_n_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc3_n_o]
 # HA12_N
 set_property PACKAGE_PIN AN29 [get_ports fmc2_adc_sleep_o]
@@ -316,231 +316,231 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led3_o]
 #######################################################################
 
 # ADC0
-# HA00_CC_P
-set_property PACKAGE_PIN J29 [get_ports fmc1_adc_clk0_p_i]
+# HB06_CC_P
+set_property PACKAGE_PIN V4 [get_ports fmc1_adc_clk0_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk0_p_i]
-# HA00_CC_N
-set_property PACKAGE_PIN H29 [get_ports fmc1_adc_clk0_n_i]
+# HB06_CC_N
+set_property PACKAGE_PIN W4 [get_ports fmc1_adc_clk0_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk0_n_i]
 
-# HA01_CC_P
-set_property PACKAGE_PIN L28 [get_ports fmc1_adc_data_ch0_p_i[0]]
+# HB00_CC_P
+set_property PACKAGE_PIN W5 [get_ports fmc1_adc_data_ch0_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[0]]
-# HA01_CC_N
-set_property PACKAGE_PIN K28 [get_ports fmc1_adc_data_ch0_n_i[0]]
+# HB00_CC_N
+set_property PACKAGE_PIN Y5 [get_ports fmc1_adc_data_ch0_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[0]]
-# HA04_P
-set_property PACKAGE_PIN L33 [get_ports fmc1_adc_data_ch0_p_i[1]]
+# HB11_P
+set_property PACKAGE_PIN W1 [get_ports fmc1_adc_data_ch0_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[1]]
-# HA04_N
-set_property PACKAGE_PIN L34 [get_ports fmc1_adc_data_ch0_n_i[1]]
+# HB11_N
+set_property PACKAGE_PIN Y1 [get_ports fmc1_adc_data_ch0_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[1]]
-# HA05_P
-set_property PACKAGE_PIN J33 [get_ports fmc1_adc_data_ch0_p_i[2]]
+# HB12_P
+set_property PACKAGE_PIN AC7 [get_ports fmc1_adc_data_ch0_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[2]]
-# HA05_N
-set_property PACKAGE_PIN H34 [get_ports fmc1_adc_data_ch0_n_i[2]]
+# HB12_N
+set_property PACKAGE_PIN AC6 [get_ports fmc1_adc_data_ch0_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[2]]
-# HA09_P
-set_property PACKAGE_PIN K31 [get_ports fmc1_adc_data_ch0_p_i[3]]
+# HB10_P
+set_property PACKAGE_PIN V7 [get_ports fmc1_adc_data_ch0_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[3]]
-# HA09_N
-set_property PACKAGE_PIN J31 [get_ports fmc1_adc_data_ch0_n_i[3]]
+# HB10_N
+set_property PACKAGE_PIN V6 [get_ports fmc1_adc_data_ch0_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[3]]
-# HA03_P
-set_property PACKAGE_PIN K30 [get_ports fmc1_adc_data_ch0_p_i[4]]
+# HB15_P
+set_property PACKAGE_PIN AC9 [get_ports fmc1_adc_data_ch0_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[4]]
-# HA03_N
-set_property PACKAGE_PIN J30 [get_ports fmc1_adc_data_ch0_n_i[4]]
+# HB15_N
+set_property PACKAGE_PIN AC8 [get_ports fmc1_adc_data_ch0_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[4]]
-# HA02_P
-set_property PACKAGE_PIN K33 [get_ports fmc1_adc_data_ch0_p_i[5]]
+# HB14_P
+set_property PACKAGE_PIN AC2 [get_ports fmc1_adc_data_ch0_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[5]]
-# HA02_N
-set_property PACKAGE_PIN J34 [get_ports fmc1_adc_data_ch0_n_i[5]]
+# HB14_N
+set_property PACKAGE_PIN AC1 [get_ports fmc1_adc_data_ch0_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[5]]
-# HA07_P
-set_property PACKAGE_PIN L32 [get_ports fmc1_adc_data_ch0_p_i[6]]
+# HB18_P
+set_property PACKAGE_PIN AB7 [get_ports fmc1_adc_data_ch0_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[6]]
-# HA07_N
-set_property PACKAGE_PIN K32 [get_ports fmc1_adc_data_ch0_n_i[6]]
+# HB18_N
+set_property PACKAGE_PIN AB6 [get_ports fmc1_adc_data_ch0_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[6]]
-# HA06_P
-set_property PACKAGE_PIN L27 [get_ports fmc1_adc_data_ch0_p_i[7]]
+# HB17_CC_P
+set_property PACKAGE_PIN AA5 [get_ports fmc1_adc_data_ch0_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_p_i[7]]
-# HA06_N
-set_property PACKAGE_PIN K27 [get_ports fmc1_adc_data_ch0_n_i[7]]
+# HB17_CC_N
+set_property PACKAGE_PIN AA4 [get_ports fmc1_adc_data_ch0_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch0_n_i[7]]
 
 # ADC1
-# LA01_CC_P
-set_property PACKAGE_PIN J6 [get_ports fmc1_adc_clk1_p_i]
+# LA18_CC_P
+set_property PACKAGE_PIN P4 [get_ports fmc1_adc_clk1_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk1_p_i]
-# LA01_CC_N
-set_property PACKAGE_PIN J5 [get_ports fmc1_adc_clk1_n_i]
+# LA18_CC_N
+set_property PACKAGE_PIN P3 [get_ports fmc1_adc_clk1_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk1_n_i]
 
-# LA04_P
-set_property PACKAGE_PIN K1 [get_ports fmc1_adc_data_ch1_p_i[0]]
+# LA17_CC_P
+set_property PACKAGE_PIN T5 [get_ports fmc1_adc_data_ch1_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[0]]
-# LA04_N
-set_property PACKAGE_PIN J1 [get_ports fmc1_adc_data_ch1_n_i[0]]
+# LA17_CC_N
+set_property PACKAGE_PIN T4 [get_ports fmc1_adc_data_ch1_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[0]]
-# LA03_P
-set_property PACKAGE_PIN H1 [get_ports fmc1_adc_data_ch1_p_i[1]]
+# LA20_P
+set_property PACKAGE_PIN R10 [get_ports fmc1_adc_data_ch1_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[1]]
-# LA03_N
-set_property PACKAGE_PIN G1 [get_ports fmc1_adc_data_ch1_n_i[1]]
+# LA20_N
+set_property PACKAGE_PIN P10 [get_ports fmc1_adc_data_ch1_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[1]]
-# LA08_P
-set_property PACKAGE_PIN F3 [get_ports fmc1_adc_data_ch1_p_i[2]]
+# LA23_P
+set_property PACKAGE_PIN N3 [get_ports fmc1_adc_data_ch1_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[2]]
-# LA08_N
-set_property PACKAGE_PIN F2 [get_ports fmc1_adc_data_ch1_n_i[2]]
+# LA23_N
+set_property PACKAGE_PIN N2 [get_ports fmc1_adc_data_ch1_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[2]]
-# LA07_P
-set_property PACKAGE_PIN K3 [get_ports fmc1_adc_data_ch1_p_i[3]]
+# LA19_P
+set_property PACKAGE_PIN U5 [get_ports fmc1_adc_data_ch1_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[3]]
-# LA07_N
-set_property PACKAGE_PIN K2 [get_ports fmc1_adc_data_ch1_n_i[3]]
+# LA19_N
+set_property PACKAGE_PIN U4 [get_ports fmc1_adc_data_ch1_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[3]]
-# LA12_P
-set_property PACKAGE_PIN L8 [get_ports fmc1_adc_data_ch1_p_i[4]]
+# LA22_P
+set_property PACKAGE_PIN M5 [get_ports fmc1_adc_data_ch1_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[4]]
-# LA12_N
-set_property PACKAGE_PIN K8 [get_ports fmc1_adc_data_ch1_n_i[4]]
+# LA22_N
+set_property PACKAGE_PIN M4 [get_ports fmc1_adc_data_ch1_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[4]]
-# LA13_P
-set_property PACKAGE_PIN G10 [get_ports fmc1_adc_data_ch1_p_i[5]]
+# LA21_P
+set_property PACKAGE_PIN M7 [get_ports fmc1_adc_data_ch1_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[5]]
-# LA13_N
-set_property PACKAGE_PIN G9 [get_ports fmc1_adc_data_ch1_n_i[5]]
+# LA21_N
+set_property PACKAGE_PIN M6 [get_ports fmc1_adc_data_ch1_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[5]]
-# LA11_P
-set_property PACKAGE_PIN M2 [get_ports fmc1_adc_data_ch1_p_i[6]]
+# LA25_P
+set_property PACKAGE_PIN N8 [get_ports fmc1_adc_data_ch1_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[6]]
-# LA11_N
-set_property PACKAGE_PIN L2 [get_ports fmc1_adc_data_ch1_n_i[6]]
+# LA25_N
+set_property PACKAGE_PIN N7 [get_ports fmc1_adc_data_ch1_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[6]]
-# LA16_P
-set_property PACKAGE_PIN L10 [get_ports fmc1_adc_data_ch1_p_i[7]]
+# LA26_P
+set_property PACKAGE_PIN T3 [get_ports fmc1_adc_data_ch1_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_p_i[7]]
-# LA16_N
-set_property PACKAGE_PIN L9 [get_ports fmc1_adc_data_ch1_n_i[7]]
+# LA26_N
+set_property PACKAGE_PIN T2 [get_ports fmc1_adc_data_ch1_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch1_n_i[7]]
 
 # ADC2
-# LA18_CC_P
-set_property PACKAGE_PIN P4 [get_ports fmc1_adc_clk2_p_i]
+# LA01_CC_P
+set_property PACKAGE_PIN J6 [get_ports fmc1_adc_clk2_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk2_p_i]
-# LA18_CC_N
-set_property PACKAGE_PIN P3 [get_ports fmc1_adc_clk2_n_i]
+# LA01_CC_N
+set_property PACKAGE_PIN J5 [get_ports fmc1_adc_clk2_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk2_n_i]
 
-# LA17_CC_P
-set_property PACKAGE_PIN T5 [get_ports fmc1_adc_data_ch2_p_i[0]]
+# LA04_P
+set_property PACKAGE_PIN K1 [get_ports fmc1_adc_data_ch2_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[0]]
-# LA17_CC_N
-set_property PACKAGE_PIN T4 [get_ports fmc1_adc_data_ch2_n_i[0]]
+# LA04_N
+set_property PACKAGE_PIN J1 [get_ports fmc1_adc_data_ch2_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[0]]
-# LA20_P
-set_property PACKAGE_PIN R10 [get_ports fmc1_adc_data_ch2_p_i[1]]
+# LA03_P
+set_property PACKAGE_PIN H1 [get_ports fmc1_adc_data_ch2_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[1]]
-# LA20_N
-set_property PACKAGE_PIN P10 [get_ports fmc1_adc_data_ch2_n_i[1]]
+# LA03_N
+set_property PACKAGE_PIN G1 [get_ports fmc1_adc_data_ch2_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[1]]
-# LA23_P
-set_property PACKAGE_PIN N3 [get_ports fmc1_adc_data_ch2_p_i[2]]
+# LA08_P
+set_property PACKAGE_PIN F3 [get_ports fmc1_adc_data_ch2_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[2]]
-# LA23_N
-set_property PACKAGE_PIN N2 [get_ports fmc1_adc_data_ch2_n_i[2]]
+# LA08_N
+set_property PACKAGE_PIN F2 [get_ports fmc1_adc_data_ch2_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[2]]
-# LA19_P
-set_property PACKAGE_PIN U5 [get_ports fmc1_adc_data_ch2_p_i[3]]
+# LA07_P
+set_property PACKAGE_PIN K3 [get_ports fmc1_adc_data_ch2_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[3]]
-# LA19_N
-set_property PACKAGE_PIN U4 [get_ports fmc1_adc_data_ch2_n_i[3]]
+# LA07_N
+set_property PACKAGE_PIN K2 [get_ports fmc1_adc_data_ch2_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[3]]
-# LA22_P
-set_property PACKAGE_PIN M5 [get_ports fmc1_adc_data_ch2_p_i[4]]
+# LA12_P
+set_property PACKAGE_PIN L8 [get_ports fmc1_adc_data_ch2_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[4]]
-# LA22_N
-set_property PACKAGE_PIN M4 [get_ports fmc1_adc_data_ch2_n_i[4]]
+# LA12_N
+set_property PACKAGE_PIN K8 [get_ports fmc1_adc_data_ch2_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[4]]
-# LA21_P
-set_property PACKAGE_PIN M7 [get_ports fmc1_adc_data_ch2_p_i[5]]
+# LA13_P
+set_property PACKAGE_PIN G10 [get_ports fmc1_adc_data_ch2_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[5]]
-# LA21_N
-set_property PACKAGE_PIN M6 [get_ports fmc1_adc_data_ch2_n_i[5]]
+# LA13_N
+set_property PACKAGE_PIN G9 [get_ports fmc1_adc_data_ch2_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[5]]
-# LA25_P
-set_property PACKAGE_PIN N8 [get_ports fmc1_adc_data_ch2_p_i[6]]
+# LA11_P
+set_property PACKAGE_PIN M2 [get_ports fmc1_adc_data_ch2_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[6]]
-# LA25_N
-set_property PACKAGE_PIN N7 [get_ports fmc1_adc_data_ch2_n_i[6]]
+# LA11_N
+set_property PACKAGE_PIN L2 [get_ports fmc1_adc_data_ch2_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[6]]
-# LA26_P
-set_property PACKAGE_PIN T3 [get_ports fmc1_adc_data_ch2_p_i[7]]
+# LA16_P
+set_property PACKAGE_PIN L10 [get_ports fmc1_adc_data_ch2_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_p_i[7]]
-# LA26_N
-set_property PACKAGE_PIN T2 [get_ports fmc1_adc_data_ch2_n_i[7]]
+# LA16_N
+set_property PACKAGE_PIN L9 [get_ports fmc1_adc_data_ch2_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch2_n_i[7]]
 
 # ADC3
-# HB06_CC_P
-set_property PACKAGE_PIN V4 [get_ports fmc1_adc_clk3_p_i]
+# HA00_CC_P
+set_property PACKAGE_PIN J29 [get_ports fmc1_adc_clk3_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk3_p_i]
-# HB06_CC_N
-set_property PACKAGE_PIN W4 [get_ports fmc1_adc_clk3_n_i]
+# HA00_CC_N
+set_property PACKAGE_PIN H29 [get_ports fmc1_adc_clk3_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_clk3_n_i]
 
-# HB00_CC_P
-set_property PACKAGE_PIN W5 [get_ports fmc1_adc_data_ch3_p_i[0]]
+# HA01_CC_P
+set_property PACKAGE_PIN L28 [get_ports fmc1_adc_data_ch3_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[0]]
-# HB00_CC_N
-set_property PACKAGE_PIN Y5 [get_ports fmc1_adc_data_ch3_n_i[0]]
+# HA01_CC_N
+set_property PACKAGE_PIN K28 [get_ports fmc1_adc_data_ch3_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[0]]
-# HB11_P
-set_property PACKAGE_PIN W1 [get_ports fmc1_adc_data_ch3_p_i[1]]
+# HA04_P
+set_property PACKAGE_PIN L33 [get_ports fmc1_adc_data_ch3_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[1]]
-# HB11_N
-set_property PACKAGE_PIN Y1 [get_ports fmc1_adc_data_ch3_n_i[1]]
+# HA04_N
+set_property PACKAGE_PIN L34 [get_ports fmc1_adc_data_ch3_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[1]]
-# HB12_P
-set_property PACKAGE_PIN AC7 [get_ports fmc1_adc_data_ch3_p_i[2]]
+# HA05_P
+set_property PACKAGE_PIN J33 [get_ports fmc1_adc_data_ch3_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[2]]
-# HB12_N
-set_property PACKAGE_PIN AC6 [get_ports fmc1_adc_data_ch3_n_i[2]]
+# HA05_N
+set_property PACKAGE_PIN H34 [get_ports fmc1_adc_data_ch3_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[2]]
-# HB10_P
-set_property PACKAGE_PIN V7 [get_ports fmc1_adc_data_ch3_p_i[3]]
+# HA09_P
+set_property PACKAGE_PIN K31 [get_ports fmc1_adc_data_ch3_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[3]]
-# HB10_N
-set_property PACKAGE_PIN V6 [get_ports fmc1_adc_data_ch3_n_i[3]]
+# HA09_N
+set_property PACKAGE_PIN J31 [get_ports fmc1_adc_data_ch3_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[3]]
-# HB15_P
-set_property PACKAGE_PIN AC9 [get_ports fmc1_adc_data_ch3_p_i[4]]
+# HA03_P
+set_property PACKAGE_PIN K30 [get_ports fmc1_adc_data_ch3_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[4]]
-# HB15_N
-set_property PACKAGE_PIN AC8 [get_ports fmc1_adc_data_ch3_n_i[4]]
+# HA03_N
+set_property PACKAGE_PIN J30 [get_ports fmc1_adc_data_ch3_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[4]]
-# HB14_P
-set_property PACKAGE_PIN AC2 [get_ports fmc1_adc_data_ch3_p_i[5]]
+# HA02_P
+set_property PACKAGE_PIN K33 [get_ports fmc1_adc_data_ch3_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[5]]
-# HB14_N
-set_property PACKAGE_PIN AC1 [get_ports fmc1_adc_data_ch3_n_i[5]]
+# HA02_N
+set_property PACKAGE_PIN J34 [get_ports fmc1_adc_data_ch3_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[5]]
-# HB18_P
-set_property PACKAGE_PIN AB7 [get_ports fmc1_adc_data_ch3_p_i[6]]
+# HA07_P
+set_property PACKAGE_PIN L32 [get_ports fmc1_adc_data_ch3_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[6]]
-# HB18_N
-set_property PACKAGE_PIN AB6 [get_ports fmc1_adc_data_ch3_n_i[6]]
+# HA07_N
+set_property PACKAGE_PIN K32 [get_ports fmc1_adc_data_ch3_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[6]]
-# HB17_CC_P
-set_property PACKAGE_PIN AA5 [get_ports fmc1_adc_data_ch3_p_i[7]]
+# HA06_P
+set_property PACKAGE_PIN L27 [get_ports fmc1_adc_data_ch3_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_p_i[7]]
-# HB17_CC_N
-set_property PACKAGE_PIN AA4 [get_ports fmc1_adc_data_ch3_n_i[7]]
+# HA06_N
+set_property PACKAGE_PIN K27 [get_ports fmc1_adc_data_ch3_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[7]]
 
 #######################################################################
@@ -549,231 +549,231 @@ set_property IOSTANDARD LVDS_25 [get_ports fmc1_adc_data_ch3_n_i[7]]
 #######################################################################
 
 # ADC0
-# HA00_CC_P
-set_property PACKAGE_PIN AL30 [get_ports fmc2_adc_clk0_p_i]
+# HB06_CC_P
+set_property PACKAGE_PIN R30 [get_ports fmc2_adc_clk0_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk0_p_i]
-# HA00_CC_N
-set_property PACKAGE_PIN AM30 [get_ports fmc2_adc_clk0_n_i]
+# HB06_CC_N
+set_property PACKAGE_PIN P30 [get_ports fmc2_adc_clk0_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk0_n_i]
 
-# HA01_CC_P
-set_property PACKAGE_PIN AL28 [get_ports fmc2_adc_data_ch0_p_i[0]]
+# HB00_CC_P
+set_property PACKAGE_PIN U29 [get_ports fmc2_adc_data_ch0_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[0]]
-# HA01_CC_N
-set_property PACKAGE_PIN AL29 [get_ports fmc2_adc_data_ch0_n_i[0]]
+# HB00_CC_N
+set_property PACKAGE_PIN T29 [get_ports fmc2_adc_data_ch0_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[0]]
-# HA04_P
-set_property PACKAGE_PIN AJ25 [get_ports fmc2_adc_data_ch0_p_i[1]]
+# HB11_P
+set_property PACKAGE_PIN T27 [get_ports fmc2_adc_data_ch0_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[1]]
-# HA04_N
-set_property PACKAGE_PIN AK25 [get_ports fmc2_adc_data_ch0_n_i[1]]
+# HB11_N
+set_property PACKAGE_PIN R27 [get_ports fmc2_adc_data_ch0_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[1]]
-# HA05_P
-set_property PACKAGE_PIN AL25 [get_ports fmc2_adc_data_ch0_p_i[2]]
+# HB12_P
+set_property PACKAGE_PIN N31 [get_ports fmc2_adc_data_ch0_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[2]]
-# HA05_N
-set_property PACKAGE_PIN AM25 [get_ports fmc2_adc_data_ch0_n_i[2]]
+# HB12_N
+set_property PACKAGE_PIN M32 [get_ports fmc2_adc_data_ch0_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[2]]
-# HA09_P
-set_property PACKAGE_PIN AJ26 [get_ports fmc2_adc_data_ch0_p_i[3]]
+# HB10_P
+set_property PACKAGE_PIN U25 [get_ports fmc2_adc_data_ch0_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[3]]
-# HA09_N
-set_property PACKAGE_PIN AK26 [get_ports fmc2_adc_data_ch0_n_i[3]]
+# HB10_N
+set_property PACKAGE_PIN T25 [get_ports fmc2_adc_data_ch0_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[3]]
-# HA03_P
-set_property PACKAGE_PIN AM26 [get_ports fmc2_adc_data_ch0_p_i[4]]
+# HB15_P
+set_property PACKAGE_PIN U30 [get_ports fmc2_adc_data_ch0_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[4]]
-# HA03_N
-set_property PACKAGE_PIN AN26 [get_ports fmc2_adc_data_ch0_n_i[4]]
+# HB15_N
+set_property PACKAGE_PIN T30 [get_ports fmc2_adc_data_ch0_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[4]]
-# HA02_P
-set_property PACKAGE_PIN AN31 [get_ports fmc2_adc_data_ch0_p_i[5]]
+# HB14_P
+set_property PACKAGE_PIN R31 [get_ports fmc2_adc_data_ch0_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[5]]
-# HA02_N
-set_property PACKAGE_PIN AP31 [get_ports fmc2_adc_data_ch0_n_i[5]]
+# HB14_N
+set_property PACKAGE_PIN P31 [get_ports fmc2_adc_data_ch0_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[5]]
-# HA07_P
-set_property PACKAGE_PIN AM31 [get_ports fmc2_adc_data_ch0_p_i[6]]
+# HB18_P
+set_property PACKAGE_PIN N29 [get_ports fmc2_adc_data_ch0_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[6]]
-# HA07_N
-set_property PACKAGE_PIN AN32 [get_ports fmc2_adc_data_ch0_n_i[6]]
+# HB18_N
+set_property PACKAGE_PIN M29 [get_ports fmc2_adc_data_ch0_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[6]]
-# HA06_P
-set_property PACKAGE_PIN AL32 [get_ports fmc2_adc_data_ch0_p_i[7]]
+# HB17_CC_P
+set_property PACKAGE_PIN P28 [get_ports fmc2_adc_data_ch0_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_p_i[7]]
-# HA06_N
-set_property PACKAGE_PIN AM32 [get_ports fmc2_adc_data_ch0_n_i[7]]
+# HB17_CC_N
+set_property PACKAGE_PIN P29 [get_ports fmc2_adc_data_ch0_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch0_n_i[7]]
 
 # ADC1
-# LA01_CC_P
-set_property PACKAGE_PIN AF29 [get_ports fmc2_adc_clk1_p_i]
+# LA18_CC_P
+set_property PACKAGE_PIN W30 [get_ports fmc2_adc_clk1_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk1_p_i]
-# LA01_CC_N
-set_property PACKAGE_PIN AF30 [get_ports fmc2_adc_clk1_n_i]
+# LA18_CC_N
+set_property PACKAGE_PIN W31 [get_ports fmc2_adc_clk1_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk1_n_i]
 
-# LA04_P
-set_property PACKAGE_PIN AC26 [get_ports fmc2_adc_data_ch1_p_i[0]]
+# LA17_CC_P
+set_property PACKAGE_PIN AB31 [get_ports fmc2_adc_data_ch1_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[0]]
-# LA04_N
-set_property PACKAGE_PIN AC27 [get_ports fmc2_adc_data_ch1_n_i[0]]
+# LA17_CC_N
+set_property PACKAGE_PIN AB32 [get_ports fmc2_adc_data_ch1_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[0]]
-# LA03_P
-set_property PACKAGE_PIN AG24 [get_ports fmc2_adc_data_ch1_p_i[1]]
+# LA20_P
+set_property PACKAGE_PIN AB24 [get_ports fmc2_adc_data_ch1_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[1]]
-# LA03_N
-set_property PACKAGE_PIN AH24 [get_ports fmc2_adc_data_ch1_n_i[1]]
+# LA20_N
+set_property PACKAGE_PIN AB25 [get_ports fmc2_adc_data_ch1_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[1]]
-# LA08_P
-set_property PACKAGE_PIN AD25 [get_ports fmc2_adc_data_ch1_p_i[2]]
+# LA23_P
+set_property PACKAGE_PIN W25 [get_ports fmc2_adc_data_ch1_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[2]]
-# LA08_N
-set_property PACKAGE_PIN AE25 [get_ports fmc2_adc_data_ch1_n_i[2]]
+# LA23_N
+set_property PACKAGE_PIN Y25 [get_ports fmc2_adc_data_ch1_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[2]]
-# LA07_P
-set_property PACKAGE_PIN AG27 [get_ports fmc2_adc_data_ch1_p_i[3]]
+# LA19_P
+set_property PACKAGE_PIN AB26 [get_ports fmc2_adc_data_ch1_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[3]]
-# LA07_N
-set_property PACKAGE_PIN AH27 [get_ports fmc2_adc_data_ch1_n_i[3]]
+# LA19_N
+set_property PACKAGE_PIN AB27 [get_ports fmc2_adc_data_ch1_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[3]]
-# LA12_P
-set_property PACKAGE_PIN AE27 [get_ports fmc2_adc_data_ch1_p_i[4]]
+# LA22_P
+set_property PACKAGE_PIN AA24 [get_ports fmc2_adc_data_ch1_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[4]]
-# LA12_N
-set_property PACKAGE_PIN AF27 [get_ports fmc2_adc_data_ch1_n_i[4]]
+# LA22_N
+set_property PACKAGE_PIN AA25 [get_ports fmc2_adc_data_ch1_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[4]]
-# LA13_P
-set_property PACKAGE_PIN AF34 [get_ports fmc2_adc_data_ch1_p_i[5]]
+# LA21_P
+set_property PACKAGE_PIN AA32 [get_ports fmc2_adc_data_ch1_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[5]]
-# LA13_N
-set_property PACKAGE_PIN AG34 [get_ports fmc2_adc_data_ch1_n_i[5]]
+# LA21_N
+set_property PACKAGE_PIN AA33 [get_ports fmc2_adc_data_ch1_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[5]]
-# LA11_P
-set_property PACKAGE_PIN AD30 [get_ports fmc2_adc_data_ch1_p_i[6]]
+# LA25_P
+set_property PACKAGE_PIN AA29 [get_ports fmc2_adc_data_ch1_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[6]]
-# LA11_N
-set_property PACKAGE_PIN AE30 [get_ports fmc2_adc_data_ch1_n_i[6]]
+# LA25_N
+set_property PACKAGE_PIN AB29 [get_ports fmc2_adc_data_ch1_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[6]]
-# LA16_P
-set_property PACKAGE_PIN AD33 [get_ports fmc2_adc_data_ch1_p_i[7]]
+# LA26_P
+set_property PACKAGE_PIN AC31 [get_ports fmc2_adc_data_ch1_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_p_i[7]]
-# LA16_N
-set_property PACKAGE_PIN AD34 [get_ports fmc2_adc_data_ch1_n_i[7]]
+# LA26_N
+set_property PACKAGE_PIN AC32 [get_ports fmc2_adc_data_ch1_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch1_n_i[7]]
 
 # ADC2
-# LA18_CC_P
-set_property PACKAGE_PIN W30 [get_ports fmc2_adc_clk2_p_i]
+# LA01_CC_P
+set_property PACKAGE_PIN AF29 [get_ports fmc2_adc_clk2_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk2_p_i]
-# LA18_CC_N
-set_property PACKAGE_PIN W31 [get_ports fmc2_adc_clk2_n_i]
+# LA01_CC_N
+set_property PACKAGE_PIN AF30 [get_ports fmc2_adc_clk2_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk2_n_i]
 
-# LA17_CC_P
-set_property PACKAGE_PIN AB31 [get_ports fmc2_adc_data_ch2_p_i[0]]
+# LA04_P
+set_property PACKAGE_PIN AC26 [get_ports fmc2_adc_data_ch2_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[0]]
-# LA17_CC_N
-set_property PACKAGE_PIN AB32 [get_ports fmc2_adc_data_ch2_n_i[0]]
+# LA04_N
+set_property PACKAGE_PIN AC27 [get_ports fmc2_adc_data_ch2_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[0]]
-# LA20_P
-set_property PACKAGE_PIN AB24 [get_ports fmc2_adc_data_ch2_p_i[1]]
+# LA03_P
+set_property PACKAGE_PIN AG24 [get_ports fmc2_adc_data_ch2_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[1]]
-# LA20_N
-set_property PACKAGE_PIN AB25 [get_ports fmc2_adc_data_ch2_n_i[1]]
+# LA03_N
+set_property PACKAGE_PIN AH24 [get_ports fmc2_adc_data_ch2_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[1]]
-# LA23_P
-set_property PACKAGE_PIN W25 [get_ports fmc2_adc_data_ch2_p_i[2]]
+# LA08_P
+set_property PACKAGE_PIN AD25 [get_ports fmc2_adc_data_ch2_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[2]]
-# LA23_N
-set_property PACKAGE_PIN Y25 [get_ports fmc2_adc_data_ch2_n_i[2]]
+# LA08_N
+set_property PACKAGE_PIN AE25 [get_ports fmc2_adc_data_ch2_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[2]]
-# LA19_P
-set_property PACKAGE_PIN AB26 [get_ports fmc2_adc_data_ch2_p_i[3]]
+# LA07_P
+set_property PACKAGE_PIN AG27 [get_ports fmc2_adc_data_ch2_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[3]]
-# LA19_N
-set_property PACKAGE_PIN AB27 [get_ports fmc2_adc_data_ch2_n_i[3]]
+# LA07_N
+set_property PACKAGE_PIN AH27 [get_ports fmc2_adc_data_ch2_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[3]]
-# LA22_P
-set_property PACKAGE_PIN AA24 [get_ports fmc2_adc_data_ch2_p_i[4]]
+# LA12_P
+set_property PACKAGE_PIN AE27 [get_ports fmc2_adc_data_ch2_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[4]]
-# LA22_N
-set_property PACKAGE_PIN AA25 [get_ports fmc2_adc_data_ch2_n_i[4]]
+# LA12_N
+set_property PACKAGE_PIN AF27 [get_ports fmc2_adc_data_ch2_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[4]]
-# LA21_P
-set_property PACKAGE_PIN AA32 [get_ports fmc2_adc_data_ch2_p_i[5]]
+# LA13_P
+set_property PACKAGE_PIN AF34 [get_ports fmc2_adc_data_ch2_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[5]]
-# LA21_N
-set_property PACKAGE_PIN AA33 [get_ports fmc2_adc_data_ch2_n_i[5]]
+# LA13_N
+set_property PACKAGE_PIN AG34 [get_ports fmc2_adc_data_ch2_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[5]]
-# LA25_P
-set_property PACKAGE_PIN AA29 [get_ports fmc2_adc_data_ch2_p_i[6]]
+# LA11_P
+set_property PACKAGE_PIN AD30 [get_ports fmc2_adc_data_ch2_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[6]]
-# LA25_N
-set_property PACKAGE_PIN AB29 [get_ports fmc2_adc_data_ch2_n_i[6]]
+# LA11_N
+set_property PACKAGE_PIN AE30 [get_ports fmc2_adc_data_ch2_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[6]]
-# LA26_P
-set_property PACKAGE_PIN AC31 [get_ports fmc2_adc_data_ch2_p_i[7]]
+# LA16_P
+set_property PACKAGE_PIN AD33 [get_ports fmc2_adc_data_ch2_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_p_i[7]]
-# LA26_N
-set_property PACKAGE_PIN AC32 [get_ports fmc2_adc_data_ch2_n_i[7]]
+# LA16_N
+set_property PACKAGE_PIN AD34 [get_ports fmc2_adc_data_ch2_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch2_n_i[7]]
 
 # ADC3
-# HB06_CC_P
-set_property PACKAGE_PIN R30 [get_ports fmc2_adc_clk3_p_i]
+# HA00_CC_P
+set_property PACKAGE_PIN AL30 [get_ports fmc2_adc_clk3_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk3_p_i]
-# HB06_CC_N
-set_property PACKAGE_PIN P30 [get_ports fmc2_adc_clk3_n_i]
+# HA00_CC_N
+set_property PACKAGE_PIN AM30 [get_ports fmc2_adc_clk3_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_clk3_n_i]
 
-# HB00_CC_P
-set_property PACKAGE_PIN U29 [get_ports fmc2_adc_data_ch3_p_i[0]]
+# HA01_CC_P
+set_property PACKAGE_PIN AL28 [get_ports fmc2_adc_data_ch3_p_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[0]]
-# HB00_CC_N
-set_property PACKAGE_PIN T29 [get_ports fmc2_adc_data_ch3_n_i[0]]
+# HA01_CC_N
+set_property PACKAGE_PIN AL29 [get_ports fmc2_adc_data_ch3_n_i[0]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[0]]
-# HB11_P
-set_property PACKAGE_PIN T27 [get_ports fmc2_adc_data_ch3_p_i[1]]
+# HA04_P
+set_property PACKAGE_PIN AJ25 [get_ports fmc2_adc_data_ch3_p_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[1]]
-# HB11_N
-set_property PACKAGE_PIN R27 [get_ports fmc2_adc_data_ch3_n_i[1]]
+# HA04_N
+set_property PACKAGE_PIN AK25 [get_ports fmc2_adc_data_ch3_n_i[1]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[1]]
-# HB12_P
-set_property PACKAGE_PIN N31 [get_ports fmc2_adc_data_ch3_p_i[2]]
+# HA05_P
+set_property PACKAGE_PIN AL25 [get_ports fmc2_adc_data_ch3_p_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[2]]
-# HB12_N
-set_property PACKAGE_PIN M32 [get_ports fmc2_adc_data_ch3_n_i[2]]
+# HA05_N
+set_property PACKAGE_PIN AM25 [get_ports fmc2_adc_data_ch3_n_i[2]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[2]]
-# HB10_P
-set_property PACKAGE_PIN U25 [get_ports fmc2_adc_data_ch3_p_i[3]]
+# HA09_P
+set_property PACKAGE_PIN AJ26 [get_ports fmc2_adc_data_ch3_p_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[3]]
-# HB10_N
-set_property PACKAGE_PIN T25 [get_ports fmc2_adc_data_ch3_n_i[3]]
+# HA09_N
+set_property PACKAGE_PIN AK26 [get_ports fmc2_adc_data_ch3_n_i[3]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[3]]
-# HB15_P
-set_property PACKAGE_PIN U30 [get_ports fmc2_adc_data_ch3_p_i[4]]
+# HA03_P
+set_property PACKAGE_PIN AM26 [get_ports fmc2_adc_data_ch3_p_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[4]]
-# HB15_N
-set_property PACKAGE_PIN T30 [get_ports fmc2_adc_data_ch3_n_i[4]]
+# HA03_N
+set_property PACKAGE_PIN AN26 [get_ports fmc2_adc_data_ch3_n_i[4]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[4]]
-# HB14_P
-set_property PACKAGE_PIN R31 [get_ports fmc2_adc_data_ch3_p_i[5]]
+# HA02_P
+set_property PACKAGE_PIN AN31 [get_ports fmc2_adc_data_ch3_p_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[5]]
-# HB14_N
-set_property PACKAGE_PIN P31 [get_ports fmc2_adc_data_ch3_n_i[5]]
+# HA02_N
+set_property PACKAGE_PIN AP31 [get_ports fmc2_adc_data_ch3_n_i[5]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[5]]
-# HB18_P
-set_property PACKAGE_PIN N29 [get_ports fmc2_adc_data_ch3_p_i[6]]
+# HA07_P
+set_property PACKAGE_PIN AM31 [get_ports fmc2_adc_data_ch3_p_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[6]]
-# HB18_N
-set_property PACKAGE_PIN M29 [get_ports fmc2_adc_data_ch3_n_i[6]]
+# HA07_N
+set_property PACKAGE_PIN AN32 [get_ports fmc2_adc_data_ch3_n_i[6]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[6]]
-# HB17_CC_P
-set_property PACKAGE_PIN P28 [get_ports fmc2_adc_data_ch3_p_i[7]]
+# HA06_P
+set_property PACKAGE_PIN AL32 [get_ports fmc2_adc_data_ch3_p_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_p_i[7]]
-# HB17_CC_N
-set_property PACKAGE_PIN P29 [get_ports fmc2_adc_data_ch3_n_i[7]]
+# HA06_N
+set_property PACKAGE_PIN AM32 [get_ports fmc2_adc_data_ch3_n_i[7]]
 set_property IOSTANDARD LVDS_25 [get_ports fmc2_adc_data_ch3_n_i[7]]
 
 
@@ -928,7 +928,7 @@ set_clock_groups -asynchronous \
   -group [get_clocks -include_generated_clocks clk_200mhz]
 
 #######################################################################
-##                         Cross Clock Constraints		     ##
+##                         Cross Clock Constraints                   ##
 #######################################################################
 
 # Reset synchronization path
@@ -1026,9 +1026,9 @@ set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc250m_4c
 #######################################################################
 
 #PCIe clock
-# MGT216_CLK1_N	-> MGTREFCLK0N_216
+# MGT216_CLK1_N -> MGTREFCLK0N_216
 set_property PACKAGE_PIN G18 [get_ports pcie_clk_n_i]
-# MGT216_CLK1_P	-> MGTREFCLK0P_216
+# MGT216_CLK1_P -> MGTREFCLK0P_216
 set_property PACKAGE_PIN H18 [get_ports pcie_clk_p_i]
 #PCIe lane 0
 # TX216_0_P            -> MGTPTXP0_216
