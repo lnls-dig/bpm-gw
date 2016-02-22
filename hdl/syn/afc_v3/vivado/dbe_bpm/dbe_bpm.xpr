@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="5" Path="/home/lerwys/Repos/bpm-sw/hdl/syn/afc_v3/vivado/dbe_bpm/dbe_bpm.xpr">
+<Project Version="7" Minor="5" Path="/home/lerwys/Repos/bpm-gw/hdl/syn/afc_v3/vivado/dbe_bpm/dbe_bpm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="96ca6d9a77034d48a4aba88faf50ee90"/>
@@ -2403,10 +2403,10 @@
           <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.upgrade_log"/>
+      <File Path="$PPRDIR/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.upgrade_log"/>
       <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.upgrade_log"/>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.upgrade_log"/>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"/>
+      <File Path="$PPRDIR/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.upgrade_log"/>
+      <File Path="$PPRDIR/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"/>
       <File Path="$PPRDIR/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2455,6 +2455,9 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="pcie_core.xci" FileRelPathName="source/pcie_core-PCIE_X0Y0.xdc">
+          <Attr Name="UserDisabled" Val="1"/>
+        </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.xci">
         <FileInfo>
