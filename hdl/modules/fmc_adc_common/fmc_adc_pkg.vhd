@@ -581,6 +581,23 @@ package fmc_adc_pkg is
     date          => x"20132008",
     name          => "LNLS_FMC130M_REGS  ")));
 
+  -- FMC250M_4CH
+  constant c_xwb_fmc250m_4ch_regs_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"68e3b1af",
+    version       => x"00000001",
+    date          => x"20132008",
+    name          => "LNLS_FMC250M_REGS  ")));
+
 end fmc_adc_pkg;
 
 

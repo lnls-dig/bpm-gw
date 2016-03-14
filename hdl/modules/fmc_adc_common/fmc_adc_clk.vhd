@@ -510,6 +510,13 @@ begin
 
   end generate;
 
+  gen_noref_clks : if (not g_with_ref_clk) generate
+
+    adc_clk_chain_glob_o.adc_clk_bufg           <= '0';
+    adc_clk_chain_glob_o.adc_clk2x_bufg         <= '0';
+
+  end generate;
+
   gen_true_mmcm_lock_ref_clk : if (g_with_ref_clk) generate
     adc_clk_chain_glob_o.mmcm_adc_locked      <= mmcm_adc_locked_int;
   end generate;

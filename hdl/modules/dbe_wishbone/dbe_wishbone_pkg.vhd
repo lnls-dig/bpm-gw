@@ -976,6 +976,349 @@ package dbe_wishbone_pkg is
   );
   end component;
 
+  component wb_fmc250m_4ch
+  generic
+  (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
+    g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
+    g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
+    g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
+    g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_with_idelayctrl                         : boolean := true;
+    g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+    g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
+    g_packet_size                             : natural := 32;
+    g_sim                                     : integer := 0
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- ADC clock (half of the sampling frequency) divider reset
+    adc_clk_div_rst_p_o                       : out std_logic;
+    adc_clk_div_rst_n_o                       : out std_logic;
+    adc_ext_rst_n_o                           : out std_logic;
+    adc_sleep_o                               : out std_logic;
+
+    -- ADC clocks. One clock per ADC channel.
+    -- Only ch1 clock is used as all data chains
+    -- are sampled at the same frequency
+    adc_clk0_p_i                              : in std_logic := '0';
+    adc_clk0_n_i                              : in std_logic := '0';
+    adc_clk1_p_i                              : in std_logic := '0';
+    adc_clk1_n_i                              : in std_logic := '0';
+    adc_clk2_p_i                              : in std_logic := '0';
+    adc_clk2_n_i                              : in std_logic := '0';
+    adc_clk3_p_i                              : in std_logic := '0';
+    adc_clk3_n_i                              : in std_logic := '0';
+
+    -- DDR ADC data channels.
+    adc_data_ch0_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch0_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch1_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch1_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch2_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch2_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch3_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch3_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+
+    -- FMC General Status
+    fmc_prsnt_i                               : in std_logic := '0';
+    fmc_pg_m2c_i                              : in std_logic := '0';
+    --fmc_clk_dir_i                           : in std_logic;
+
+    -- Trigger
+    fmc_trig_dir_o                            : out std_logic;
+    fmc_trig_term_o                           : out std_logic;
+    fmc_trig_val_p_b                          : inout std_logic;
+    fmc_trig_val_n_b                          : inout std_logic;
+
+    -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
+    adc_spi_clk_o                             : out std_logic;
+    adc_spi_data_b                            : inout std_logic;
+    adc_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
+    adc_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
+    adc_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
+    adc_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic := '0';
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic := '0';
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic := '0';
+    fmc_fpga_clk_n_i                          : in std_logic := '0';
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -- EEPROM
+    eeprom_scl_pad_b                          : inout std_logic;
+    eeprom_sda_pad_b                          : inout std_logic;
+
+    -- AMC7823 temperature monitor
+    amc7823_spi_cs_o                          : out std_logic;
+    amc7823_spi_sclk_o                        : out std_logic;
+    amc7823_spi_mosi_o                        : out std_logic;
+    amc7823_spi_miso_i                        : in std_logic;
+    amc7823_davn_i                            : in std_logic;
+
+    -- FMC LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
+    fmc_led3_o                                : out std_logic;
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                         : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                       : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                 : in std_logic := '0';
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst2x_n_o                             : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+    -- Trigger to other FPGA logic
+    trig_hw_o                                 : out std_logic;
+    trig_hw_i                                 : in std_logic := '0';
+
+    -- General board status
+    fmc_mmcm_lock_o                           : out std_logic;
+    fmc_pll_status_o                          : out std_logic;
+
+    -----------------------------
+    -- Wishbone Streaming Interface Source
+    -----------------------------
+    wbs_adr_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_adr4_width-1 downto 0);
+    wbs_dat_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_dat16_width-1 downto 0);
+    wbs_cyc_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_stb_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_we_o                                  : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    wbs_sel_o                                 : out std_logic_vector(c_num_adc_channels*c_wbs_sel16_width-1 downto 0);
+    wbs_ack_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_stall_i                               : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_err_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+    wbs_rty_i                                 : in std_logic_vector(c_num_adc_channels-1 downto 0) := (others => '0');
+
+    adc_dly_debug_o                           : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+  );
+  end component;
+
+  component xwb_fmc250m_4ch
+  generic
+  (
+    -- The only supported values are VIRTEX6 and 7SERIES
+    g_fpga_device                             : string := "VIRTEX6";
+    g_delay_type                              : string := "VARIABLE";
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
+    g_adc_clk_period_values                   : t_clk_values_array := default_adc_clk_period_values;
+    g_use_clk_chains                          : t_clk_use_chain := default_clk_use_chain;
+    g_with_bufio_clk_chains                   : t_clk_use_bufio_chain := default_clk_use_bufio_chain;
+    g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
+    g_with_idelayctrl                         : boolean := true;
+    g_use_data_chains                         : t_data_use_chain := default_data_use_chain;
+    g_map_clk_data_chains                     : t_map_clk_data_chain := default_map_clk_data_chain;
+    g_ref_clk                                 : t_ref_adc_clk := default_ref_adc_clk;
+    g_packet_size                             : natural := 32;
+    g_sim                                     : integer := 0
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_slv_i                                  : in t_wishbone_slave_in;
+    wb_slv_o                                  : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- ADC clock (half of the sampling frequency) divider reset
+    adc_clk_div_rst_p_o                       : out std_logic;
+    adc_clk_div_rst_n_o                       : out std_logic;
+    adc_ext_rst_n_o                           : out std_logic;
+    adc_sleep_o                               : out std_logic;
+
+    -- ADC clocks. One clock per ADC channel.
+    -- Only ch1 clock is used as all data chains
+    -- are sampled at the same frequency
+    adc_clk0_p_i                              : in std_logic := '0';
+    adc_clk0_n_i                              : in std_logic := '0';
+    adc_clk1_p_i                              : in std_logic := '0';
+    adc_clk1_n_i                              : in std_logic := '0';
+    adc_clk2_p_i                              : in std_logic := '0';
+    adc_clk2_n_i                              : in std_logic := '0';
+    adc_clk3_p_i                              : in std_logic := '0';
+    adc_clk3_n_i                              : in std_logic := '0';
+
+    -- DDR ADC data channels.
+    adc_data_ch0_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch0_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch1_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch1_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch2_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch2_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch3_p_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    adc_data_ch3_n_i                          : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+
+    -- FMC General Status
+    fmc_prsnt_i                               : in std_logic := '0';
+    fmc_pg_m2c_i                              : in std_logic := '0';
+    --fmc_clk_dir_i                           : in std_logic;
+
+    -- Trigger
+    fmc_trig_dir_o                            : out std_logic;
+    fmc_trig_term_o                           : out std_logic;
+    fmc_trig_val_p_b                          : inout std_logic;
+    fmc_trig_val_n_b                          : inout std_logic;
+
+    -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
+    adc_spi_clk_o                             : out std_logic;
+    adc_spi_data_b                            : inout std_logic;
+    adc_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
+    adc_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
+    adc_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
+    adc_spi_cs_adc3_n_o                       : out std_logic;  -- SPI ADC CS channel 3
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic := '0';
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic := '0';
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic := '0';
+    fmc_fpga_clk_n_i                          : in std_logic := '0';
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -- EEPROM
+    eeprom_scl_pad_b                          : inout std_logic;
+    eeprom_sda_pad_b                          : inout std_logic;
+
+    -- AMC7823 temperature monitor
+    amc7823_spi_cs_o                          : out std_logic;
+    amc7823_spi_sclk_o                        : out std_logic;
+    amc7823_spi_mosi_o                        : out std_logic;
+    amc7823_spi_miso_i                        : in std_logic;
+    amc7823_davn_i                            : in std_logic;
+
+    -- FMC LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
+    fmc_led3_o                                : out std_logic;
+
+    -----------------------------
+    -- Optional external reference clock ports
+    -----------------------------
+    fmc_ext_ref_clk_i                        : in std_logic := '0';
+    fmc_ext_ref_clk2x_i                      : in std_logic := '0';
+    fmc_ext_ref_mmcm_locked_i                : in std_logic := '0';
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    adc_clk_o                                 : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_clk2x_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst_n_o                               : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_rst2x_n_o                             : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    adc_data_o                                : out std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(c_num_adc_channels-1 downto 0);
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+    -- Trigger to other FPGA logic
+    trig_hw_o                                 : out std_logic;
+    trig_hw_i                                 : in std_logic := '0';
+
+    -- General board status
+    fmc_mmcm_lock_o                           : out std_logic;
+    fmc_pll_status_o                          : out std_logic;
+
+    -----------------------------
+    -- Wishbone Streaming Interface Source
+    -----------------------------
+    wbs_source_i                              : in t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
+    wbs_source_o                              : out t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
+
+    adc_dly_debug_o                           : out t_adc_fn_dly_array(c_num_adc_channels-1 downto 0);
+
+    fifo_debug_valid_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_full_o                         : out std_logic_vector(c_num_adc_channels-1 downto 0);
+    fifo_debug_empty_o                        : out std_logic_vector(c_num_adc_channels-1 downto 0)
+  );
+  end component;
+
   component xwb_ethmac_adapter
   port(
     clk_i                                     : in std_logic;
