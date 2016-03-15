@@ -215,6 +215,8 @@ architecture Behavioral of RxIn_Delay is
   --old interface helper signals
   signal in_packet_reg : std_logic;
   signal trn_rsof_n    : std_logic;
+  
+  signal mwr_ready_r, cpld_ready_r : std_logic;
 
 begin
 
@@ -536,6 +538,8 @@ begin
       m_axis_rx_tvalid_r1   <= m_axis_rx_tvalid;
       m_axis_rx_tready_r1   <= m_axis_rx_tready_i;
       m_axis_rx_tbar_hit_r1 <= m_axis_rx_tbar_hit;
+      mwr_ready_r           <= mwr_ready;
+      cpld_ready_r          <= cpld_ready;
     end if;
   end process;
 
@@ -778,7 +782,8 @@ begin
             end if;
   
           when TK_Body =>
-            m_axis_rx_tready_i <= ((TLP_is_MWr_H4DW or TLP_is_MWr_H3DW) and mwr_ready) or (TLP_is_CplD and cpld_ready);
+            m_axis_rx_tready_i <= ((TLP_is_MWr_H4DW or TLP_is_MWr_H3DW) and mwr_ready and mwr_ready_r)
+                                  or (TLP_is_CplD and cpld_ready and cpld_ready_r);
             --for TLP body we can't wait for rising edge because there is a chance that TLP EOF
             --will hit when *_tready_i = 0 which will cause deadlock
             if m_axis_rx_tlast = '1' and m_axis_rx_tvalid = '1' and m_axis_rx_tready_i = '1' then

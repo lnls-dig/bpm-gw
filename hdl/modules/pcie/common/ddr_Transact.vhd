@@ -123,6 +123,7 @@ entity DDR_Transact is
 
     --clocking & reset
     pcie_clk : in std_logic;
+    pcie_lnk_up : in std_logic;
     sys_reset : in std_logic
   );
 end entity DDR_Transact;
@@ -171,7 +172,7 @@ PORT MAP (
   INTERCONNECT_ARESETN => irconnect_arstn,
   S00_AXI_ARESET_OUT_N => pcie_axi_aresetn,
   S00_AXI_ACLK => pcie_clk,
-  S00_AXI_AWID => "0000",
+  S00_AXI_AWID => (C_AXI_SLAVE_TID_WIDTH-1 downto 0 => '0'),
   S00_AXI_AWADDR => pcie_axi_awaddr,
   S00_AXI_AWLEN => pcie_axi_awlen,
   S00_AXI_AWSIZE => pcie_axi_awsize,
@@ -191,7 +192,7 @@ PORT MAP (
   S00_AXI_BRESP => pcie_axi_bresp,
   S00_AXI_BVALID => pcie_axi_bvalid,
   S00_AXI_BREADY => pcie_axi_bready,
-  S00_AXI_ARID => "0000",
+  S00_AXI_ARID => (C_AXI_SLAVE_TID_WIDTH-1 downto 0 => '0'),
   S00_AXI_ARADDR => pcie_axi_araddr,
   S00_AXI_ARLEN => pcie_axi_arlen,
   S00_AXI_ARSIZE => pcie_axi_arsize,
@@ -210,7 +211,7 @@ PORT MAP (
   S00_AXI_RREADY => pcie_axi_rready,
   S01_AXI_ARESET_OUT_N => s_axi_aresetn_out,
   S01_AXI_ACLK => ddr_ui_clk,
-  S01_AXI_AWID => s_axi_awid,
+  S01_AXI_AWID => s_axi_awid(C_AXI_SLAVE_TID_WIDTH-1 downto 0),
   S01_AXI_AWADDR => s_axi_awaddr,
   S01_AXI_AWLEN => s_axi_awlen,
   S01_AXI_AWSIZE => s_axi_awsize,
@@ -226,11 +227,11 @@ PORT MAP (
   S01_AXI_WLAST => s_axi_wlast,
   S01_AXI_WVALID => s_axi_wvalid,
   S01_AXI_WREADY => s_axi_wready,
-  S01_AXI_BID => s_axi_bid,
+  S01_AXI_BID => s_axi_bid(C_AXI_SLAVE_TID_WIDTH-1 downto 0),
   S01_AXI_BRESP => s_axi_bresp,
   S01_AXI_BVALID => s_axi_bvalid,
   S01_AXI_BREADY => s_axi_bready,
-  S01_AXI_ARID => s_axi_arid,
+  S01_AXI_ARID => s_axi_arid(C_AXI_SLAVE_TID_WIDTH-1 downto 0),
   S01_AXI_ARADDR => s_axi_araddr,
   S01_AXI_ARLEN => s_axi_arlen,
   S01_AXI_ARSIZE => s_axi_arsize,
@@ -241,7 +242,7 @@ PORT MAP (
   S01_AXI_ARQOS => s_axi_arqos,
   S01_AXI_ARVALID => s_axi_arvalid,
   S01_AXI_ARREADY => s_axi_arready,
-  S01_AXI_RID => s_axi_rid,
+  S01_AXI_RID => s_axi_rid(C_AXI_SLAVE_TID_WIDTH-1 downto 0),
   S01_AXI_RDATA => s_axi_rdata,
   S01_AXI_RRESP => s_axi_rresp,
   S01_AXI_RLAST => s_axi_rlast,
@@ -249,7 +250,7 @@ PORT MAP (
   S01_AXI_RREADY => s_axi_rready,
   M00_AXI_ARESET_OUT_N => ddr_axi_aresetn,
   M00_AXI_ACLK => ddr_ui_clk,
-  M00_AXI_AWID => ddr_axi_awid,
+  M00_AXI_AWID => ddr_axi_awid(C_DDR_TID_WIDTH-1 downto 0),
   M00_AXI_AWADDR => ddr_axi_awaddr,
   M00_AXI_AWLEN => ddr_axi_awlen,
   M00_AXI_AWSIZE => ddr_axi_awsize,
@@ -265,11 +266,11 @@ PORT MAP (
   M00_AXI_WLAST => ddr_axi_wlast,
   M00_AXI_WVALID => ddr_axi_wvalid,
   M00_AXI_WREADY => ddr_axi_wready,
-  M00_AXI_BID => ddr_axi_bid,
+  M00_AXI_BID => ddr_axi_bid(C_DDR_TID_WIDTH-1 downto 0),
   M00_AXI_BRESP => ddr_axi_bresp,
   M00_AXI_BVALID => ddr_axi_bvalid,
   M00_AXI_BREADY => ddr_axi_bready,
-  M00_AXI_ARID => ddr_axi_arid,
+  M00_AXI_ARID => ddr_axi_arid(C_DDR_TID_WIDTH-1 downto 0),
   M00_AXI_ARADDR => ddr_axi_araddr,
   M00_AXI_ARLEN => ddr_axi_arlen,
   M00_AXI_ARSIZE => ddr_axi_arsize,
@@ -280,7 +281,7 @@ PORT MAP (
   M00_AXI_ARQOS => ddr_axi_arqos,
   M00_AXI_ARVALID => ddr_axi_arvalid,
   M00_AXI_ARREADY => ddr_axi_arready,
-  M00_AXI_RID => ddr_axi_rid,
+  M00_AXI_RID => ddr_axi_rid(C_DDR_TID_WIDTH-1 downto 0),
   M00_AXI_RDATA => ddr_axi_rdata,
   M00_AXI_RRESP => ddr_axi_rresp,
   M00_AXI_RLAST => ddr_axi_rlast,
@@ -396,7 +397,7 @@ begin
     app_ref_ack => open,
     app_zq_ack => open,
     -- Slave Interface Write Address Ports
-    s_axi_awid => ddr_axi_awid,
+    s_axi_awid => ddr_axi_awid(C_DDR_TID_WIDTH-1 downto 0),
     s_axi_awaddr => ddr_axi_awaddr(c_ddr_addr_width-1 downto 0),
     s_axi_awlen => ddr_axi_awlen,
     s_axi_awsize => ddr_axi_awsize,
@@ -414,12 +415,12 @@ begin
     s_axi_wvalid => ddr_axi_wvalid,
     s_axi_wready => ddr_axi_wready,
     -- Slave Interface Write Response Ports
-    s_axi_bid => ddr_axi_bid,
+    s_axi_bid => ddr_axi_bid(C_DDR_TID_WIDTH-1 downto 0),
     s_axi_bresp => ddr_axi_bresp,
     s_axi_bvalid => ddr_axi_bvalid,
     s_axi_bready => ddr_axi_bready,
     -- Slave Interface Read Address Ports
-    s_axi_arid => ddr_axi_arid,
+    s_axi_arid => ddr_axi_arid(C_DDR_TID_WIDTH-1 downto 0),
     s_axi_araddr => ddr_axi_araddr(c_ddr_addr_width-1 downto 0),
     s_axi_arlen => ddr_axi_arlen,
     s_axi_arsize => ddr_axi_arsize,
@@ -431,7 +432,7 @@ begin
     s_axi_arvalid => ddr_axi_arvalid,
     s_axi_arready => ddr_axi_arready,
     -- Slave Interface Read Data Ports
-    s_axi_rid => ddr_axi_rid,
+    s_axi_rid => ddr_axi_rid(C_DDR_TID_WIDTH-1 downto 0),
     s_axi_rdata => ddr_axi_rdata,
     s_axi_rresp => ddr_axi_rresp,
     s_axi_rlast => ddr_axi_rlast,
@@ -454,8 +455,8 @@ begin
   -- This should provide a reliable reset chain where global reset correctly sets up all interfaces
   -- and PCIe core or DDR core reset correctly reset all AXI interfaces (as required by Interconnect IP)
   
-  ddr_sys_rst <= sys_reset or ddr_reset;
-  irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset);
+  ddr_sys_rst <= sys_reset or ddr_reset or not(pcie_lnk_up);
+  irconnect_arstn <= not(ddr_ui_rst) and not(axi_reset) and pcie_lnk_up;
   
   s_axi_aclk_out <= ddr_ui_clk;
 
