@@ -2225,8 +2225,8 @@ begin
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
 
-  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch1), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp1_tbtdecim_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).trig      <= fmc1_trig_hw;
@@ -2234,8 +2234,8 @@ begin
   --------------------
   -- TBT I/Q 3/4 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_tbtdecimi_ch1), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch3), 32));
@@ -2285,8 +2285,8 @@ begin
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
 
-  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch1), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp1_fofbdecim_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).trig      <= fmc1_trig_hw;
@@ -2294,8 +2294,8 @@ begin
   --------------------
   -- FOFB I/Q 3/4 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
-                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp1_fofbdecimi_ch1), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch3), 32));
@@ -2424,8 +2424,8 @@ begin
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
 
-  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch1), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp2_tbtdecim_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).trig      <= fmc2_trig_hw;
@@ -2433,8 +2433,8 @@ begin
   --------------------
   -- TBT I/Q 3/4 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_tbtdecimi_ch1), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch3), 32));
@@ -2484,8 +2484,8 @@ begin
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
 
-  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch1), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp2_fofbdecim_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).trig      <= fmc2_trig_hw;
@@ -2493,8 +2493,8 @@ begin
   --------------------
   -- FOFB I/Q 3/4 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
-                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).val_low   <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
+                                                std_logic_vector(resize(signed(dsp2_fofbdecimi_ch1), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).val_high  <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch3), 32)) &
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch3), 32));
