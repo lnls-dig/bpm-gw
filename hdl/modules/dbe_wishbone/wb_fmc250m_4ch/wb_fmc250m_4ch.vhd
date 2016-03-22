@@ -426,7 +426,7 @@ architecture rtl of wb_fmc250m_4ch is
   signal adc_spi_dout                       : std_logic;
   signal adc_spi_ss_int                     : std_logic_vector(7 downto 0);
   signal adc_spi_clk                        : std_logic;
-  signal adc_spi_miosio_oe_n                : std_logic;
+  signal adc_spi_miosio_oe                  : std_logic;
 
   -----------------------------
   -- AD9510 SPI signals
@@ -1163,9 +1163,8 @@ begin
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   -- ADC SPI is slave number 2, word addressed
 
-  cmp_fmc_spi : xwb_spi
+  cmp_fmc_spi : xwb_spi_bidir
   generic map(
-    g_three_wire_mode                       => 1,
     g_interface_mode                        => g_interface_mode,
     g_address_granularity                   => g_address_granularity
   )
@@ -1180,13 +1179,14 @@ begin
     pad_cs_o                                => adc_spi_ss_int,
     pad_sclk_o                              => adc_spi_clk,
     pad_mosi_o                              => adc_spi_dout,
-    pad_miso_i                              => adc_spi_din,
-    pad_oen_o                               => adc_spi_miosio_oe_n
+    pad_mosi_i                              => '0',
+    pad_mosi_en_o                           => adc_spi_miosio_oe,
+    pad_miso_i                              => adc_spi_din
   );
 
   -- Output SPI clock
   adc_spi_clk_o <= adc_spi_clk;
-  adc_spi_data_b  <= adc_spi_dout when adc_spi_miosio_oe_n = '0' else 'Z';
+  adc_spi_data_b  <= adc_spi_dout when adc_spi_miosio_oe = '1' else 'Z';
   adc_spi_din <= adc_spi_data_b;
 
   -- Assign slave select lines
