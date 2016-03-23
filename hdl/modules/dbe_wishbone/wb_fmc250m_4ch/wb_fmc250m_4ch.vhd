@@ -1179,9 +1179,9 @@ begin
     pad_cs_o                                => adc_spi_ss_int,
     pad_sclk_o                              => adc_spi_clk,
     pad_mosi_o                              => adc_spi_dout,
-    pad_mosi_i                              => '0',
+    pad_mosi_i                              => adc_spi_din,
     pad_mosi_en_o                           => adc_spi_miosio_oe,
-    pad_miso_i                              => adc_spi_din
+    pad_miso_i                              => '0'
   );
 
   -- Output SPI clock
