@@ -1063,7 +1063,8 @@ package dbe_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     adc_spi_clk_o                             : out std_logic;
-    adc_spi_data_b                            : inout std_logic;
+    adc_spi_mosi_o                            : out std_logic;
+    adc_spi_miso_i                            : in std_logic;
     adc_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     adc_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     adc_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
@@ -1234,7 +1235,8 @@ package dbe_wishbone_pkg is
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     adc_spi_clk_o                             : out std_logic;
-    adc_spi_data_b                            : inout std_logic;
+    adc_spi_mosi_o                            : out std_logic;
+    adc_spi_miso_i                            : in std_logic;
     adc_spi_cs_adc0_n_o                       : out std_logic;  -- SPI ADC CS channel 0
     adc_spi_cs_adc1_n_o                       : out std_logic;  -- SPI ADC CS channel 1
     adc_spi_cs_adc2_n_o                       : out std_logic;  -- SPI ADC CS channel 2
