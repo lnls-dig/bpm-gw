@@ -123,7 +123,8 @@ port(
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   fmc1_adc_spi_clk_o                         : out std_logic;
-  fmc1_adc_spi_data_b                        : inout std_logic;
+  fmc1_adc_spi_mosi_o                        : out std_logic;
+  fmc1_adc_spi_miso_i                        : in std_logic;
   fmc1_adc_spi_cs_adc0_n_o                   : out std_logic;  -- SPI ADC CS channel 0
   fmc1_adc_spi_cs_adc1_n_o                   : out std_logic;  -- SPI ADC CS channel 1
   fmc1_adc_spi_cs_adc2_n_o                   : out std_logic;  -- SPI ADC CS channel 2
@@ -212,7 +213,8 @@ port(
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
   fmc2_adc_spi_clk_o                         : out std_logic;
-  fmc2_adc_spi_data_b                        : inout std_logic;
+  fmc2_adc_spi_mosi_o                        : out std_logic;
+  fmc2_adc_spi_miso_i                        : in std_logic;
   fmc2_adc_spi_cs_adc0_n_o                   : out std_logic;  -- SPI ADC CS channel 0
   fmc2_adc_spi_cs_adc1_n_o                   : out std_logic;  -- SPI ADC CS channel 1
   fmc2_adc_spi_cs_adc2_n_o                   : out std_logic;  -- SPI ADC CS channel 2
@@ -1397,9 +1399,10 @@ begin
     fmc_trig_val_p_b                        => fmc1_trig_val_p_b,
     fmc_trig_val_n_b                        => fmc1_trig_val_n_b,
 
-    -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
+    -- ADC SPI control interface.
     adc_spi_clk_o                           => fmc1_adc_spi_clk_o,
-    adc_spi_data_b                          => fmc1_adc_spi_data_b,
+    adc_spi_mosi_o                          => fmc1_adc_spi_mosi_o,
+    adc_spi_miso_i                          => fmc1_adc_spi_miso_i,
     adc_spi_cs_adc0_n_o                     => fmc1_adc_spi_cs_adc0_n_o,
     adc_spi_cs_adc1_n_o                     => fmc1_adc_spi_cs_adc1_n_o,
     adc_spi_cs_adc2_n_o                     => fmc1_adc_spi_cs_adc2_n_o,
@@ -1597,7 +1600,8 @@ begin
 
     -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
     adc_spi_clk_o                           => fmc2_adc_spi_clk_o,
-    adc_spi_data_b                          => fmc2_adc_spi_data_b,
+    adc_spi_mosi_o                          => fmc2_adc_spi_mosi_o,
+    adc_spi_miso_i                          => fmc2_adc_spi_miso_i,
     adc_spi_cs_adc0_n_o                     => fmc2_adc_spi_cs_adc0_n_o,
     adc_spi_cs_adc1_n_o                     => fmc2_adc_spi_cs_adc1_n_o,
     adc_spi_cs_adc2_n_o                     => fmc2_adc_spi_cs_adc2_n_o,

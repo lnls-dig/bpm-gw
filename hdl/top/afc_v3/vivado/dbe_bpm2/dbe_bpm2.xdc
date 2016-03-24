@@ -134,11 +134,11 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc1_amc7823_davn_i]
 set_property PACKAGE_PIN H9 [get_ports fmc1_adc_spi_clk_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_clk_o]
 ## LA05_N
-#set_property PACKAGE_PIN H3 [get_ports fmc1_adc_spi_miso_i]
-#set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_miso_i]
+set_property PACKAGE_PIN H3 [get_ports fmc1_adc_spi_miso_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_miso_i]
 # LA14_N
-set_property PACKAGE_PIN H8 [get_ports fmc1_adc_spi_data_b]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_data_b]
+set_property PACKAGE_PIN H8 [get_ports fmc1_adc_spi_mosi_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_mosi_o]
 # LA09_P
 set_property PACKAGE_PIN J4 [get_ports fmc1_adc_spi_cs_adc0_n_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_spi_cs_adc0_n_o]
@@ -267,11 +267,11 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_amc7823_davn_i]
 set_property PACKAGE_PIN AE33 [get_ports fmc2_adc_spi_clk_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_clk_o]
 ## LA05_N
-#set_property PACKAGE_PIN AH34 [get_ports fmc2_adc_spi_miso_i]
-#set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_miso_i]
+set_property PACKAGE_PIN AH34 [get_ports fmc2_adc_spi_miso_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_miso_i]
 # LA14_N
-set_property PACKAGE_PIN AF33 [get_ports fmc2_adc_spi_data_b]
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_data_b]
+set_property PACKAGE_PIN AF33 [get_ports fmc2_adc_spi_mosi_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_mosi_o]
 # LA09_P
 set_property PACKAGE_PIN AF25 [get_ports fmc2_adc_spi_cs_adc0_n_o]
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_spi_cs_adc0_n_o]
