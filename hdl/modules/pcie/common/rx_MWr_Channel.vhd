@@ -261,7 +261,7 @@ begin
         g_with_almost_empty => false,
         g_with_almost_full => true,
         g_with_count => false,
-        g_almost_full_threshold => 26,
+        g_almost_full_threshold => 24,
         g_with_fifo_inferred => true)
       port map(
         rst_n_i => user_reset_n,
