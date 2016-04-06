@@ -254,9 +254,13 @@ architecture rtl of wb_fmc250m_4ch is
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := true;
 
-  -- Using 130 MHz parameters for now. Generate 2x input clock
+  -- 250 MHz parameters. Generate 2x input clock
   constant c_mmcm_param                     : t_mmcm_param :=
-                                   (1, 8.000, g_adc_clk_period_values(c_ref_clk), 8.000, 4);
+                                   (divclk               => 2,
+                                    clkbout_mult_f       => 8.000,
+                                    clk0_in_period       => g_adc_clk_period_values(c_ref_clk),
+                                    clk0_out_div_f       => 4.000,
+                                    clk1_out_div         => 2);
 
   -----------------------------
   -- Crossbar component constants
