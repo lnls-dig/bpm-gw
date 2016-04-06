@@ -1327,7 +1327,7 @@ begin
     g_address_granularity                   => BYTE,
     g_with_extra_wb_reg	                    => true,
     --g_adc_clk_period_values                 => default_adc_clk_period_values,
-    g_adc_clk_period_values                 => (8.88, 8.88, 8.88, 8.88),
+    g_adc_clk_period_values                 => (4.00, 4.00, 4.00, 4.00),
     --g_use_clk_chains                        => default_clk_use_chain,
     -- using clock1 from fmc250m_4ch (CLK2_ M2C_P, CLK2_ M2C_M pair)
     -- using clock0 from fmc250m_4ch.
@@ -1527,7 +1527,7 @@ begin
     g_address_granularity                   => BYTE,
     g_with_extra_wb_reg                     => true,
     --g_adc_clk_period_values                 => default_adc_clk_period_values,
-    g_adc_clk_period_values                 => (8.88, 8.88, 8.88, 8.88),
+    g_adc_clk_period_values                 => (4.00, 4.00, 4.00, 4.00),
     --g_use_clk_chains                        => default_clk_use_chain,
     -- using clock1 from fmc250m_4ch (CLK2_ M2C_P, CLK2_ M2C_M pair)
     -- using clock0 from fmc250m_4ch.
