@@ -2704,7 +2704,7 @@
         <Step Id="post_place_power_opt_design"/>
         <Step Id="phys_opt_design" EnableStepBool="1">
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
-          <Option Id="Directive">1</Option>
+          <Option Id="Directive">6</Option>
         </Step>
         <Step Id="route_design">
           <Option Id="MoreOptsStr"><![CDATA[-verbose]]></Option>
