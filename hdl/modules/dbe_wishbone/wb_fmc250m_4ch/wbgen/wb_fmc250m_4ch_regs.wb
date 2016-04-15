@@ -6,7 +6,7 @@ peripheral {
 
   reg {
     name = "Status register";
-    prefix = "fmc_sta";
+    prefix = "fmc_status";
 
     field {
       name = "MMCM locked status";
@@ -50,14 +50,14 @@ peripheral {
     };
   };
 
- reg {
-    name = "Clock distribution control register";
-    prefix = "clk_distrib";
+  reg {
+    name = "Trigger control";
+    prefix = "trigger";
 
     field {
-      name = "Si 571 Output Enable";
-      prefix = "si571_oe";
-      description = "Si571 output enable pin, check datasheet for proper voltage standard and signal polarity";
+      name = "Direction";
+      prefix = "dir";
+      description = "Trigger direction\n0 - output\n1 - input";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -65,9 +65,9 @@ peripheral {
     };
 
     field {
-      name = "AD9510 PLL function";
-      prefix = "pll_function";
-      description = "AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)";
+      name = "Termination Control";
+      prefix = "term";
+      description = "Trigger termination 50 ohm\n0 - disable\n1 - enable";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -75,19 +75,9 @@ peripheral {
     };
 
     field {
-      name = "AD9510 PLL Status";
-      prefix = "pll_status";
-      description = "AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Reference Clock Selection";
-      prefix = "clk_sel";
-      description = "TS3USB221 clock select (for FMC REFIN line)\n0 - clock from external source (MMCX J4)\n1 - clock from FPGA (FMC_CLK line)";
+      name = "Trigger Value";
+      prefix = "trig_val";
+      description = "Trigger value (when used in output mode)";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -99,10 +89,11 @@ peripheral {
       description = "Ignore on read, write with 0's.";
       prefix = "reserved";
       type = SLV;
-      size = 28;
+      size = 29;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
+
   };
 
   reg {
@@ -170,14 +161,14 @@ peripheral {
 
   };
 
-  reg {
-    name = "Trigger control";
-    prefix = "trigger";
+ reg {
+    name = "Clock distribution control register";
+    prefix = "clk_distrib";
 
     field {
-      name = "Direction";
-      prefix = "dir";
-      description = "Trigger direction\n0 - output\n1 - input";
+      name = "Si 571 Output Enable";
+      prefix = "si571_oe";
+      description = "Si571 output enable pin, check datasheet for proper voltage standard and signal polarity";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -185,9 +176,9 @@ peripheral {
     };
 
     field {
-      name = "Termination Control";
-      prefix = "term";
-      description = "Trigger termination 50 ohm\n0 - disable\n1 - enable";
+      name = "AD9510 PLL function";
+      prefix = "pll_function";
+      description = "AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -195,9 +186,19 @@ peripheral {
     };
 
     field {
-      name = "Trigger Value";
-      prefix = "trig_val";
-      description = "Trigger value (when used in output mode)";
+      name = "AD9510 PLL Status";
+      prefix = "pll_status";
+      description = "AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reference Clock Selection";
+      prefix = "clk_sel";
+      description = "TS3USB221 clock select (for FMC REFIN line)\n0 - clock from external source (MMCX J4)\n1 - clock from FPGA (FMC_CLK line)";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -209,27 +210,12 @@ peripheral {
       description = "Ignore on read, write with 0's.";
       prefix = "reserved";
       type = SLV;
-      size = 29;
+      size = 28;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
-
   };
 
-  --reg {
-  --  name = "Trigger delay";
-  --  prefix = "trig_dly";
-  --
-  --  field {
-  --    name = "Trigger delay value";
-  --    description = "Delay to apply on the trigger in sampling clock period. \
-  --                    \nThe default clock frequency is 100MHz (period = 10ns).";
-  --    type = SLV;
-  --    size = 32;
-  --    access_bus = READ_WRITE;
-  --    access_dev = READ_ONLY;
-  --  };
-  --};
 
   reg {
     name = "Global ADC Status register";

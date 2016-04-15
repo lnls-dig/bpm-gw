@@ -719,10 +719,10 @@ begin
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
   regs_in.monitor_mon_dev_i                 <= amc7823_davn_i;
-  regs_in.fmc_sta_mmcm_locked_i             <= mmcm_adc_locked;
-  regs_in.fmc_sta_pwr_good_i                <= fmc_pg_m2c_i;
-  regs_in.fmc_sta_prst_i                    <= fmc_prsnt_i;
-  regs_in.fmc_sta_reserved_i                <= (others => '0');
+  regs_in.fmc_status_mmcm_locked_i          <= mmcm_adc_locked;
+  regs_in.fmc_status_pwr_good_i             <= fmc_pg_m2c_i;
+  regs_in.fmc_status_prst_i                 <= fmc_prsnt_i;
+  regs_in.fmc_status_reserved_i             <= (others => '0');
   regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
   regs_in.clk_distrib_reserved_i            <= (others => '0');
   regs_in.adc_sta_clk_chains_i              <= g_use_clk_chains;

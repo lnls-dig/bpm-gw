@@ -35,9 +35,9 @@
 <span style="margin-left: 0px; ">2. <A href="#sect_2_0">HDL symbol</a></span><br/>
 <span style="margin-left: 0px; ">3. <A href="#sect_3_0">Register description</a></span><br/>
 <span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">Status register</a></span><br/>
-<span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Clock distribution control register</a></span><br/>
+<span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Trigger control</a></span><br/>
 <span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Monitor and FMC status control register</a></span><br/>
-<span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Trigger control</a></span><br/>
+<span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Clock distribution control register</a></span><br/>
 <span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Global ADC Status register</a></span><br/>
 <span style="margin-left: 20px; ">3.6. <A href="#sect_3_6">Global ADC Control register</a></span><br/>
 <span style="margin-left: 20px; ">3.7. <A href="#sect_3_7">Channel 0 status register</a></span><br/>
@@ -79,13 +79,13 @@ C prefix
 REG
 </td>
 <td >
-<A href="#FMC_STA">Status register</a>
+<A href="#FMC_STATUS">Status register</a>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_fmc_sta
+wb_fmc_250m_4ch_csr_fmc_status
 </td>
 <td  class="td_code">
-FMC_STA
+FMC_STATUS
 </td>
 </tr>
 <tr class="tr_even">
@@ -96,13 +96,13 @@ FMC_STA
 REG
 </td>
 <td >
-<A href="#CLK_DISTRIB">Clock distribution control register</a>
+<A href="#TRIGGER">Trigger control</a>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_clk_distrib
+wb_fmc_250m_4ch_csr_trigger
 </td>
 <td  class="td_code">
-CLK_DISTRIB
+TRIGGER
 </td>
 </tr>
 <tr class="tr_odd">
@@ -130,13 +130,13 @@ MONITOR
 REG
 </td>
 <td >
-<A href="#TRIGGER">Trigger control</a>
+<A href="#CLK_DISTRIB">Clock distribution control register</a>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_trigger
+wb_fmc_250m_4ch_csr_clk_distrib
 </td>
 <td  class="td_code">
-TRIGGER
+CLK_DISTRIB
 </td>
 </tr>
 <tr class="tr_odd">
@@ -409,7 +409,7 @@ clk_sys_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_fmc_sta_mmcm_locked_i
+wb_fmc_250m_4ch_csr_fmc_status_mmcm_locked_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -426,7 +426,7 @@ wb_adr_i[4:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_fmc_sta_pwr_good_i
+wb_fmc_250m_4ch_csr_fmc_status_pwr_good_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -443,7 +443,7 @@ wb_dat_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_fmc_sta_prst_i
+wb_fmc_250m_4ch_csr_fmc_status_prst_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -460,7 +460,7 @@ wb_dat_o[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_fmc_sta_reserved_i[27:0]
+wb_fmc_250m_4ch_csr_fmc_status_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -494,7 +494,7 @@ wb_sel_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Clock distribution control register:</b>
+<b>Trigger control:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -511,7 +511,7 @@ wb_stb_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_clk_distrib_si571_oe_o
+wb_fmc_250m_4ch_csr_trigger_dir_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -528,7 +528,7 @@ wb_we_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_clk_distrib_pll_function_o
+wb_fmc_250m_4ch_csr_trigger_term_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -545,10 +545,10 @@ wb_ack_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_clk_distrib_pll_status_i
+wb_fmc_250m_4ch_csr_trigger_trig_val_o
 </td>
 <td  class="td_arrow_right">
-&larr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -562,24 +562,7 @@ wb_stall_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_clk_distrib_clk_sel_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_clk_distrib_reserved_i[27:0]
+wb_fmc_250m_4ch_csr_trigger_reserved_i[28:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -749,7 +732,7 @@ wb_fmc_250m_4ch_csr_monitor_reserved_i[26:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Trigger control:</b>
+<b>Clock distribution control register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -766,24 +749,7 @@ wb_fmc_250m_4ch_csr_monitor_reserved_i[26:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_trigger_dir_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_trigger_term_o
+wb_fmc_250m_4ch_csr_clk_distrib_si571_oe_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -800,7 +766,7 @@ wb_fmc_250m_4ch_csr_trigger_term_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_trigger_trig_val_o
+wb_fmc_250m_4ch_csr_clk_distrib_pll_function_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -817,7 +783,41 @@ wb_fmc_250m_4ch_csr_trigger_trig_val_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_250m_4ch_csr_trigger_reserved_i[28:0]
+wb_fmc_250m_4ch_csr_clk_distrib_pll_status_i
+</td>
+<td  class="td_arrow_right">
+&larr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_250m_4ch_csr_clk_distrib_clk_sel_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_250m_4ch_csr_clk_distrib_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2849,7 +2849,7 @@ wb_fmc_250m_4ch_csr_ch3_cs_dly_reserved_rg_dly_o[21:0]
 </table>
 
 <h3><a name="sect_3_0">3. Register description</a></h3>
-<a name="FMC_STA"></a>
+<a name="FMC_STATUS"></a>
 <h3><a name="sect_3_1">3.1. Status register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -2857,7 +2857,7 @@ wb_fmc_250m_4ch_csr_ch3_cs_dly_reserved_rg_dly_o[21:0]
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_fmc_sta
+wb_fmc_250m_4ch_csr_fmc_status
 </td>
 </tr>
 <tr>
@@ -2873,7 +2873,7 @@ wb_fmc_250m_4ch_csr_fmc_sta
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-FMC_STA
+FMC_STATUS
 </td>
 </tr>
 <tr>
@@ -3119,15 +3119,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
 </ul>
-<a name="CLK_DISTRIB"></a>
-<h3><a name="sect_3_2">3.2. Clock distribution control register</a></h3>
+<a name="TRIGGER"></a>
+<h3><a name="sect_3_2">3.2. Trigger control</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_clk_distrib
+wb_fmc_250m_4ch_csr_trigger
 </td>
 </tr>
 <tr>
@@ -3143,7 +3143,7 @@ wb_fmc_250m_4ch_csr_clk_distrib
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-CLK_DISTRIB
+TRIGGER
 </td>
 </tr>
 <tr>
@@ -3184,7 +3184,7 @@ CLK_DISTRIB
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[27:20]
+RESERVED[28:21]
 </td>
 <td >
 
@@ -3238,7 +3238,7 @@ RESERVED[27:20]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[19:12]
+RESERVED[20:13]
 </td>
 <td >
 
@@ -3292,7 +3292,7 @@ RESERVED[19:12]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[11:4]
+RESERVED[12:5]
 </td>
 <td >
 
@@ -3345,20 +3345,20 @@ RESERVED[11:4]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=4  class="td_field">
-RESERVED[3:0]
+<td style="border: solid 1px black;" colspan=5  class="td_field">
+RESERVED[4:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-CLK_SEL
+TRIG_VAL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-PLL_STATUS
+TERM
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-PLL_FUNCTION
+DIR
 </td>
-<td style="border: solid 1px black;" colspan=1  class="td_field">
-SI571_OE
+<td >
+
 </td>
 <td >
 
@@ -3373,21 +3373,17 @@ SI571_OE
 </table>
 <ul>
 <li><b>
-SI571_OE
-</b>[<i>read/write</i>]: Si 571 Output Enable
-<br>Si571 output enable pin, check datasheet for proper voltage standard and signal polarity
+DIR
+</b>[<i>read/write</i>]: Direction
+<br>Trigger direction<br>0 - output<br>1 - input
 <li><b>
-PLL_FUNCTION
-</b>[<i>read/write</i>]: AD9510 PLL function
-<br>AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)
+TERM
+</b>[<i>read/write</i>]: Termination Control
+<br>Trigger termination 50 ohm<br>0 - disable<br>1 - enable
 <li><b>
-PLL_STATUS
-</b>[<i>read-only</i>]: AD9510 PLL Status
-<br>AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)
-<li><b>
-CLK_SEL
-</b>[<i>read/write</i>]: Reference Clock Selection
-<br>TS3USB221 clock select (for FMC REFIN line)<br>0 - clock from external source (MMCX J4)<br>1 - clock from FPGA (FMC_CLK line)
+TRIG_VAL
+</b>[<i>read/write</i>]: Trigger Value
+<br>Trigger value (when used in output mode)
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
@@ -3671,15 +3667,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on read, write with 0's.
 </ul>
-<a name="TRIGGER"></a>
-<h3><a name="sect_3_4">3.4. Trigger control</a></h3>
+<a name="CLK_DISTRIB"></a>
+<h3><a name="sect_3_4">3.4. Clock distribution control register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_250m_4ch_csr_trigger
+wb_fmc_250m_4ch_csr_clk_distrib
 </td>
 </tr>
 <tr>
@@ -3695,7 +3691,7 @@ wb_fmc_250m_4ch_csr_trigger
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-TRIGGER
+CLK_DISTRIB
 </td>
 </tr>
 <tr>
@@ -3736,7 +3732,7 @@ TRIGGER
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[28:21]
+RESERVED[27:20]
 </td>
 <td >
 
@@ -3790,7 +3786,7 @@ RESERVED[28:21]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[20:13]
+RESERVED[19:12]
 </td>
 <td >
 
@@ -3844,7 +3840,7 @@ RESERVED[20:13]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[12:5]
+RESERVED[11:4]
 </td>
 <td >
 
@@ -3897,20 +3893,20 @@ RESERVED[12:5]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=5  class="td_field">
-RESERVED[4:0]
+<td style="border: solid 1px black;" colspan=4  class="td_field">
+RESERVED[3:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-TRIG_VAL
+CLK_SEL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-TERM
+PLL_STATUS
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-DIR
+PLL_FUNCTION
 </td>
-<td >
-
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+SI571_OE
 </td>
 <td >
 
@@ -3925,17 +3921,21 @@ DIR
 </table>
 <ul>
 <li><b>
-DIR
-</b>[<i>read/write</i>]: Direction
-<br>Trigger direction<br>0 - output<br>1 - input
+SI571_OE
+</b>[<i>read/write</i>]: Si 571 Output Enable
+<br>Si571 output enable pin, check datasheet for proper voltage standard and signal polarity
 <li><b>
-TERM
-</b>[<i>read/write</i>]: Termination Control
-<br>Trigger termination 50 ohm<br>0 - disable<br>1 - enable
+PLL_FUNCTION
+</b>[<i>read/write</i>]: AD9510 PLL function
+<br>AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)
 <li><b>
-TRIG_VAL
-</b>[<i>read/write</i>]: Trigger Value
-<br>Trigger value (when used in output mode)
+PLL_STATUS
+</b>[<i>read-only</i>]: AD9510 PLL Status
+<br>AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)
+<li><b>
+CLK_SEL
+</b>[<i>read/write</i>]: Reference Clock Selection
+<br>TS3USB221 clock select (for FMC REFIN line)<br>0 - clock from external source (MMCX J4)<br>1 - clock from FPGA (FMC_CLK line)
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
