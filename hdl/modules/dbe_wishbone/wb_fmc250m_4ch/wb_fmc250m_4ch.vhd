@@ -280,11 +280,11 @@ architecture rtl of wb_fmc250m_4ch is
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
   ( 0 => f_sdb_embed_device(c_xwb_fmc250m_4ch_regs_sdb, x"00000000"),   -- Register interface
-    1 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000100"),   -- AMC7823 SPI
-    2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- ADC SPI
-    3 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000300"),   -- AD9510 SPI
-    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000400"),   -- VCXO Si571 I2C
-    5 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000500")    -- EEPROM I2C
+    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),   -- VCXO Si571 I2C
+    2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- AD9510 SPI
+    3 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000300"),   -- EEPROM I2C
+    4 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000400"),   -- AMC7823 SPI
+    5 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000500")    -- ADC SPI
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
@@ -618,11 +618,11 @@ begin
   -----------------------------
   -- Internal crossbar layout
   -- 0 -> FMC250 Register Wishbone Interface
-  -- 1 -> AMC7823 SPI. Temperature sensor.
-  -- 2 -> ADC SPI control interface. Three-wire mode. Tri-stated data pin.
-  -- 3 -> PLL and Clock Distribution AD9510 SPI
-  -- 4 -> VCXO Si571 I2C Bus.
-  -- 5 -> EEPROM I2C Bus.
+  -- 1 -> VCXO Si571 I2C Bus.
+  -- 2 -> PLL and Clock Distribution AD9510 SPI
+  -- 3 -> EEPROM I2C Bus.
+  -- 4 -> AMC7823 SPI. Temperature sensor.
+  -- 5 -> ADC SPI control interface. Three-wire mode. Tri-stated data pin.
 
   -- The Internal Wishbone B.4 crossbar
   cmp_interconnect : xwb_sdb_crossbar
@@ -1131,8 +1131,118 @@ begin
   end generate;
 
   -----------------------------
+  -- I2C Programmable Si571 VCXO
+  -----------------------------
+  -- I2C Programmable VCXO control interface.
+  -- I2C Programmable VCXO is slave number 1, word addressed
+  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
+
+  cmp_vcxo_i2c : xwb_i2c_master
+  generic map(
+    g_interface_mode                        => g_interface_mode,
+    g_address_granularity                   => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(1),
+    slave_o                                 => cbar_master_in(1),
+    desc_o                                  => open,
+
+    scl_pad_i                               => si571_i2c_scl_in,
+    scl_pad_o                               => si571_i2c_scl_out,
+    scl_padoen_o                            => si571_i2c_scl_oe_n,
+    sda_pad_i                               => si571_i2c_sda_in,
+    sda_pad_o                               => si571_i2c_sda_out,
+    sda_padoen_o                            => si571_i2c_sda_oe_n
+  );
+
+  si571_scl_pad_b  <= si571_i2c_scl_out when si571_i2c_scl_oe_n = '0' else 'Z';
+  si571_i2c_scl_in <= si571_scl_pad_b;
+
+  si571_sda_pad_b  <= si571_i2c_sda_out when si571_i2c_sda_oe_n = '0' else 'Z';
+  si571_i2c_sda_in <= si571_sda_pad_b;
+
+  -- Not used wishbone signals
+  --cbar_master_in(1).err                     <= '0';
+  --cbar_master_in(1).rty                     <= '0';
+
+  -----------------------------
+  -- AD9510 SPI Bus
+  -----------------------------
+  -- AD9510 control interface. Four-wire mode.
+  -- AD9510 is slave number 2, word addressed
+
+  cmp_ad9510_spi : xwb_spi_bidir
+  generic map(
+    g_interface_mode                        => g_interface_mode,
+    g_address_granularity                   => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(2),
+    slave_o                                 => cbar_master_in(2),
+    desc_o                                  => open,
+
+    pad_cs_o                                => ad9510_spi_ss_int,
+    pad_sclk_o                              => ad9510_spi_clk, --spi_ad9510_sclk_o,
+    pad_mosi_o                              => ad9510_spi_dout, --spi_ad9510_mosi_o,
+    pad_mosi_i                              => '0',
+    pad_mosi_en_o                           => open,
+    pad_miso_i                              => ad9510_spi_din --spi_ad9510_miso_i
+  );
+
+  spi_ad9510_cs_o                           <= ad9510_spi_ss_int(0);
+  spi_ad9510_sclk_o                         <= ad9510_spi_clk;
+  spi_ad9510_mosi_o                         <= ad9510_spi_dout;
+  ad9510_spi_din                            <= spi_ad9510_miso_i;
+
+  -- Not used wishbone signals
+  --cbar_master_in(2).err                     <= '0';
+  --cbar_master_in(2).rty                     <= '0';
+
+  -----------------------------
+  --  I2C EEPROM 24AA64T-I
+  -----------------------------
+  -- I2C EEPROM is slave number 3, word addressed
+
+  cmp_eeprom_i2c : xwb_i2c_master
+  generic map(
+    g_interface_mode                        => g_interface_mode,
+    g_address_granularity                   => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+
+    slave_i                                 => cbar_master_out(3),
+    slave_o                                 => cbar_master_in(3),
+    desc_o                                  => open,
+
+    scl_pad_i                               => eeprom_i2c_scl_in,
+    scl_pad_o                               => eeprom_i2c_scl_out,
+    scl_padoen_o                            => eeprom_i2c_scl_oe_n,
+    sda_pad_i                               => eeprom_i2c_sda_in,
+    sda_pad_o                               => eeprom_i2c_sda_out,
+    sda_padoen_o                            => eeprom_i2c_sda_oe_n
+  );
+
+  eeprom_scl_pad_b  <= eeprom_i2c_scl_out when eeprom_i2c_scl_oe_n = '0' else 'Z';
+  eeprom_i2c_scl_in <= eeprom_scl_pad_b;
+
+  eeprom_sda_pad_b  <= eeprom_i2c_sda_out when eeprom_i2c_sda_oe_n = '0' else 'Z';
+  eeprom_i2c_sda_in <= eeprom_sda_pad_b;
+
+  -- Not used wishbone signals
+  --cbar_master_in(3).err                     <= '0';
+  --cbar_master_in(3).rty                     <= '0';
+
+  -----------------------------
   -- AMC7823 SPI. Four-wire mode.
-  -- Slave number, word addressed
+  -- Slave number 4, word addressed
   -----------------------------
   cmp_amc7823_spi : xwb_spi
   generic map(
@@ -1144,8 +1254,8 @@ begin
     clk_sys_i                               => sys_clk_i,
     rst_n_i                                 => sys_rst_sync_n,
 
-    slave_i                                 => cbar_master_out(1),
-    slave_o                                 => cbar_master_in(1),
+    slave_i                                 => cbar_master_out(4),
+    slave_o                                 => cbar_master_in(4),
     desc_o                                  => open,
 
     pad_cs_o                                => amc7823_spi_ss_int,
@@ -1159,14 +1269,14 @@ begin
   amc7823_spi_cs_o                          <= amc7823_spi_ss_int(0);
 
   -- Not used wishbone signals
-  --cbar_master_in(1).err                     <= '0';
-  --cbar_master_in(1).rty                     <= '0';
+  --cbar_master_in(4).err                     <= '0';
+  --cbar_master_in(4).rty                     <= '0';
 
   -----------------------------
   -- ADC SPI Bus
   -----------------------------
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-  -- ADC SPI is slave number 2, word addressed
+  -- ADC SPI is slave number 5, word addressed
 
   cmp_fmc_spi : xwb_spi_bidir
   generic map(
@@ -1177,8 +1287,8 @@ begin
     clk_sys_i                               => sys_clk_i,
     rst_n_i                                 => sys_rst_sync_n,
 
-    slave_i                                 => cbar_master_out(2),
-    slave_o                                 => cbar_master_in(2),
+    slave_i                                 => cbar_master_out(5),
+    slave_o                                 => cbar_master_in(5),
     desc_o                                  => open,
 
     pad_cs_o                                => adc_spi_ss_int,
@@ -1201,116 +1311,6 @@ begin
   adc_spi_cs_adc1_n_o <= adc_spi_ss_int(1);           -- SPI ADC CS channel 1
   adc_spi_cs_adc2_n_o <= adc_spi_ss_int(2);           -- SPI ADC CS channel 2
   adc_spi_cs_adc3_n_o <= adc_spi_ss_int(3);           -- SPI ADC CS channel 3
-
-  -- Not used wishbone signals
-  --cbar_master_in(2).err                     <= '0';
-  --cbar_master_in(2).rty                     <= '0';
-
-  -----------------------------
-  -- AD9510 SPI Bus
-  -----------------------------
-  -- AD9510 control interface. Four-wire mode.
-  -- AD9510 is slave number 3, word addressed
-
-  cmp_ad9510_spi : xwb_spi_bidir
-  generic map(
-    g_interface_mode                        => g_interface_mode,
-    g_address_granularity                   => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-
-    slave_i                                 => cbar_master_out(3),
-    slave_o                                 => cbar_master_in(3),
-    desc_o                                  => open,
-
-    pad_cs_o                                => ad9510_spi_ss_int,
-    pad_sclk_o                              => ad9510_spi_clk, --spi_ad9510_sclk_o,
-    pad_mosi_o                              => ad9510_spi_dout, --spi_ad9510_mosi_o,
-    pad_mosi_i                              => '0',
-    pad_mosi_en_o                           => open,
-    pad_miso_i                              => ad9510_spi_din --spi_ad9510_miso_i
-  );
-
-  spi_ad9510_cs_o                           <= ad9510_spi_ss_int(0);
-  spi_ad9510_sclk_o                         <= ad9510_spi_clk;
-  spi_ad9510_mosi_o                         <= ad9510_spi_dout;
-  ad9510_spi_din                            <= spi_ad9510_miso_i;
-
-  -- Not used wishbone signals
-  --cbar_master_in(3).err                     <= '0';
-  --cbar_master_in(3).rty                     <= '0';
-
-  -----------------------------
-  -- I2C Programmable Si571 VCXO
-  -----------------------------
-  -- I2C Programmable VCXO control interface.
-  -- I2C Programmable VCXO is slave number 4, word addressed
-  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
-
-  cmp_vcxo_i2c : xwb_i2c_master
-  generic map(
-    g_interface_mode                        => g_interface_mode,
-    g_address_granularity                   => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-
-    slave_i                                 => cbar_master_out(4),
-    slave_o                                 => cbar_master_in(4),
-    desc_o                                  => open,
-
-    scl_pad_i                               => si571_i2c_scl_in,
-    scl_pad_o                               => si571_i2c_scl_out,
-    scl_padoen_o                            => si571_i2c_scl_oe_n,
-    sda_pad_i                               => si571_i2c_sda_in,
-    sda_pad_o                               => si571_i2c_sda_out,
-    sda_padoen_o                            => si571_i2c_sda_oe_n
-  );
-
-  si571_scl_pad_b  <= si571_i2c_scl_out when si571_i2c_scl_oe_n = '0' else 'Z';
-  si571_i2c_scl_in <= si571_scl_pad_b;
-
-  si571_sda_pad_b  <= si571_i2c_sda_out when si571_i2c_sda_oe_n = '0' else 'Z';
-  si571_i2c_sda_in <= si571_sda_pad_b;
-
-  -- Not used wishbone signals
-  --cbar_master_in(4).err                     <= '0';
-  --cbar_master_in(4).rty                     <= '0';
-
-  -----------------------------
-  --  I2C EEPROM 24AA64T-I
-  -----------------------------
-  -- I2C EEPROM is slave number 5, word addressed
-
-  cmp_eeprom_i2c : xwb_i2c_master
-  generic map(
-    g_interface_mode                        => g_interface_mode,
-    g_address_granularity                   => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-
-    slave_i                                 => cbar_master_out(5),
-    slave_o                                 => cbar_master_in(5),
-    desc_o                                  => open,
-
-    scl_pad_i                               => eeprom_i2c_scl_in,
-    scl_pad_o                               => eeprom_i2c_scl_out,
-    scl_padoen_o                            => eeprom_i2c_scl_oe_n,
-    sda_pad_i                               => eeprom_i2c_sda_in,
-    sda_pad_o                               => eeprom_i2c_sda_out,
-    sda_padoen_o                            => eeprom_i2c_sda_oe_n
-  );
-
-  eeprom_scl_pad_b  <= eeprom_i2c_scl_out when eeprom_i2c_scl_oe_n = '0' else 'Z';
-  eeprom_i2c_scl_in <= eeprom_scl_pad_b;
-
-  eeprom_sda_pad_b  <= eeprom_i2c_sda_out when eeprom_i2c_sda_oe_n = '0' else 'Z';
-  eeprom_i2c_sda_in <= eeprom_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(5).err                     <= '0';
