@@ -97,17 +97,26 @@ peripheral {
       access_dev = WRITE_ONLY;
     };
 
-
   };
 
- reg {
-    name = "ADC LTC2208 control register (4 chips)";
-    prefix = "adc";
+  reg {
+    name = "Monitor and FMC status control register";
+    prefix = "monitor";
 
     field {
-      name = "RAND";
-      prefix = "rand";
-      description = "RAND pin";
+      name = "Temperate Alarm";
+      prefix = "temp_alarm";
+      description = "Temperature alarm from LM75 chips";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Led 1";
+      prefix = "led1";
+      description = "FMC LED1 (blue) - configuration in progress indicator\n0 - LED off\1 - LED on";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -115,9 +124,9 @@ peripheral {
     };
 
     field {
-      name = "DITH";
-      prefix = "dith";
-      description = "DITH pin";
+      name = "Led 2";
+      prefix = "led2";
+      description = "FMC LED2 (red) - data acquisition in progress indicator\n0 - LED off\1 - LED on";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -125,24 +134,15 @@ peripheral {
     };
 
     field {
-      name = "SHDN";
-      prefix = "shdn";
-      description = "SHDN pin";
+      name = "Led 3";
+      prefix = "led3";
+      description = "FMC LED3 (green) - trigger status indicator\n0 - LED off\1 - LED on";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
 
-    field {
-      name = "PGA";
-      prefix = "pga";
-      description = "PGA pin";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
 
     field {
       name = "Reserved";
@@ -211,24 +211,14 @@ peripheral {
     };
   };
 
-  reg {
-    name = "Monitor and FMC status control register";
-    prefix = "monitor";
+ reg {
+    name = "ADC LTC2208 control register (4 chips)";
+    prefix = "adc";
 
     field {
-      name = "Temperate Alarm";
-      prefix = "temp_alarm";
-      description = "Temperature alarm from LM75 chips";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Led 1";
-      prefix = "led1";
-      description = "FMC LED1 (blue) - configuration in progress indicator\n0 - LED off\1 - LED on";
+      name = "RAND";
+      prefix = "rand";
+      description = "RAND pin";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -236,9 +226,9 @@ peripheral {
     };
 
     field {
-      name = "Led 2";
-      prefix = "led2";
-      description = "FMC LED2 (red) - data acquisition in progress indicator\n0 - LED off\1 - LED on";
+      name = "DITH";
+      prefix = "dith";
+      description = "DITH pin";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -246,15 +236,24 @@ peripheral {
     };
 
     field {
-      name = "Led 3";
-      prefix = "led3";
-      description = "FMC LED3 (green) - trigger status indicator\n0 - LED off\1 - LED on";
+      name = "SHDN";
+      prefix = "shdn";
+      description = "SHDN pin";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
 
+    field {
+      name = "PGA";
+      prefix = "pga";
+      description = "PGA pin";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
 
     field {
       name = "Reserved";
@@ -267,6 +266,7 @@ peripheral {
     };
 
   };
+
 
  reg {
     name = "FPGA control";

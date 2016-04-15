@@ -36,9 +36,9 @@
 <span style="margin-left: 0px; ">3. <A href="#sect_3_0">Register description</a></span><br/>
 <span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">FMC Status</a></span><br/>
 <span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Trigger control</a></span><br/>
-<span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">ADC LTC2208 control register (4 chips)</a></span><br/>
+<span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Monitor and FMC status control register</a></span><br/>
 <span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Clock distribution control register</a></span><br/>
-<span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">Monitor and FMC status control register</a></span><br/>
+<span style="margin-left: 20px; ">3.5. <A href="#sect_3_5">ADC LTC2208 control register (4 chips)</a></span><br/>
 <span style="margin-left: 20px; ">3.6. <A href="#sect_3_6">FPGA control</a></span><br/>
 <span style="margin-left: 20px; ">3.7. <A href="#sect_3_7">IDELAY ADC0 calibration</a></span><br/>
 <span style="margin-left: 20px; ">3.8. <A href="#sect_3_8">IDELAY ADC1 calibration</a></span><br/>
@@ -110,13 +110,13 @@ TRIGGER
 REG
 </td>
 <td >
-<A href="#ADC">ADC LTC2208 control register (4 chips)</a>
+<A href="#MONITOR">Monitor and FMC status control register</a>
 </td>
 <td  class="td_code">
-wb_fmc_130m_4ch_csr_adc
+wb_fmc_130m_4ch_csr_monitor
 </td>
 <td  class="td_code">
-ADC
+MONITOR
 </td>
 </tr>
 <tr class="tr_even">
@@ -144,13 +144,13 @@ CLK_DISTRIB
 REG
 </td>
 <td >
-<A href="#MONITOR">Monitor and FMC status control register</a>
+<A href="#ADC">ADC LTC2208 control register (4 chips)</a>
 </td>
 <td  class="td_code">
-wb_fmc_130m_4ch_csr_monitor
+wb_fmc_130m_4ch_csr_adc
 </td>
 <td  class="td_code">
-MONITOR
+ADC
 </td>
 </tr>
 <tr class="tr_even">
@@ -542,7 +542,7 @@ wb_fmc_130m_4ch_csr_trigger_reserved_i[28:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>ADC LTC2208 control register (4 chips):</b>
+<b>Monitor and FMC status control register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -559,10 +559,10 @@ wb_fmc_130m_4ch_csr_trigger_reserved_i[28:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_adc_rand_o
+wb_fmc_130m_4ch_csr_monitor_temp_alarm_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -576,24 +576,7 @@ wb_fmc_130m_4ch_csr_adc_rand_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_adc_dith_o
-</td>
-<td  class="td_arrow_right">
-&rarr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_adc_shdn_o
+wb_fmc_130m_4ch_csr_monitor_led1_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -610,7 +593,7 @@ wb_fmc_130m_4ch_csr_adc_shdn_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_adc_pga_o
+wb_fmc_130m_4ch_csr_monitor_led2_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -627,7 +610,24 @@ wb_fmc_130m_4ch_csr_adc_pga_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_adc_reserved_i[27:0]
+wb_fmc_130m_4ch_csr_monitor_led3_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_130m_4ch_csr_monitor_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -780,7 +780,7 @@ wb_fmc_130m_4ch_csr_clk_distrib_reserved_i[27:0]
 
 </td>
 <td  class="td_pblock_right">
-<b>Monitor and FMC status control register:</b>
+<b>ADC LTC2208 control register (4 chips):</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -797,24 +797,7 @@ wb_fmc_130m_4ch_csr_clk_distrib_reserved_i[27:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_temp_alarm_i
-</td>
-<td  class="td_arrow_right">
-&larr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-
-</td>
-<td  class="td_pblock_left">
-
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_led1_o
+wb_fmc_130m_4ch_csr_adc_rand_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -831,7 +814,7 @@ wb_fmc_130m_4ch_csr_monitor_led1_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_led2_o
+wb_fmc_130m_4ch_csr_adc_dith_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -848,7 +831,7 @@ wb_fmc_130m_4ch_csr_monitor_led2_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_led3_o
+wb_fmc_130m_4ch_csr_adc_shdn_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -865,7 +848,24 @@ wb_fmc_130m_4ch_csr_monitor_led3_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_reserved_i[27:0]
+wb_fmc_130m_4ch_csr_adc_pga_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_130m_4ch_csr_adc_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -2485,15 +2485,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on read, write with 0's.
 </ul>
-<a name="ADC"></a>
-<h3><a name="sect_3_3">3.3. ADC LTC2208 control register (4 chips)</a></h3>
+<a name="MONITOR"></a>
+<h3><a name="sect_3_3">3.3. Monitor and FMC status control register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_130m_4ch_csr_adc
+wb_fmc_130m_4ch_csr_monitor
 </td>
 </tr>
 <tr>
@@ -2509,7 +2509,7 @@ wb_fmc_130m_4ch_csr_adc
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-ADC
+MONITOR
 </td>
 </tr>
 <tr>
@@ -2715,16 +2715,16 @@ RESERVED[11:4]
 RESERVED[3:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-PGA
+LED3
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-SHDN
+LED2
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-DITH
+LED1
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-RAND
+TEMP_ALARM
 </td>
 <td >
 
@@ -2739,21 +2739,21 @@ RAND
 </table>
 <ul>
 <li><b>
-RAND
-</b>[<i>read/write</i>]: RAND
-<br>RAND pin
+TEMP_ALARM
+</b>[<i>read-only</i>]: Temperate Alarm
+<br>Temperature alarm from LM75 chips
 <li><b>
-DITH
-</b>[<i>read/write</i>]: DITH
-<br>DITH pin
+LED1
+</b>[<i>read/write</i>]: Led 1
+<br>FMC LED1 (blue) - configuration in progress indicator<br>0 - LED off - LED on
 <li><b>
-SHDN
-</b>[<i>read/write</i>]: SHDN
-<br>SHDN pin
+LED2
+</b>[<i>read/write</i>]: Led 2
+<br>FMC LED2 (red) - data acquisition in progress indicator<br>0 - LED off - LED on
 <li><b>
-PGA
-</b>[<i>read/write</i>]: PGA
-<br>PGA pin
+LED3
+</b>[<i>read/write</i>]: Led 3
+<br>FMC LED3 (green) - trigger status indicator<br>0 - LED off - LED on
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
@@ -3033,15 +3033,15 @@ RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on read, write with 0's.
 </ul>
-<a name="MONITOR"></a>
-<h3><a name="sect_3_5">3.5. Monitor and FMC status control register</a></h3>
+<a name="ADC"></a>
+<h3><a name="sect_3_5">3.5. ADC LTC2208 control register (4 chips)</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_130m_4ch_csr_monitor
+wb_fmc_130m_4ch_csr_adc
 </td>
 </tr>
 <tr>
@@ -3057,7 +3057,7 @@ wb_fmc_130m_4ch_csr_monitor
 <b>C prefix: </b>
 </td>
 <td  class="td_code">
-MONITOR
+ADC
 </td>
 </tr>
 <tr>
@@ -3263,16 +3263,16 @@ RESERVED[11:4]
 RESERVED[3:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-LED3
+PGA
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-LED2
+SHDN
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-LED1
+DITH
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-TEMP_ALARM
+RAND
 </td>
 <td >
 
@@ -3287,21 +3287,21 @@ TEMP_ALARM
 </table>
 <ul>
 <li><b>
-TEMP_ALARM
-</b>[<i>read-only</i>]: Temperate Alarm
-<br>Temperature alarm from LM75 chips
+RAND
+</b>[<i>read/write</i>]: RAND
+<br>RAND pin
 <li><b>
-LED1
-</b>[<i>read/write</i>]: Led 1
-<br>FMC LED1 (blue) - configuration in progress indicator<br>0 - LED off - LED on
+DITH
+</b>[<i>read/write</i>]: DITH
+<br>DITH pin
 <li><b>
-LED2
-</b>[<i>read/write</i>]: Led 2
-<br>FMC LED2 (red) - data acquisition in progress indicator<br>0 - LED off - LED on
+SHDN
+</b>[<i>read/write</i>]: SHDN
+<br>SHDN pin
 <li><b>
-LED3
-</b>[<i>read/write</i>]: Led 3
-<br>FMC LED3 (green) - trigger status indicator<br>0 - LED off - LED on
+PGA
+</b>[<i>read/write</i>]: PGA
+<br>PGA pin
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
