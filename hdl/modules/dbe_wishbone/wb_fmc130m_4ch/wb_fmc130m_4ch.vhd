@@ -879,10 +879,6 @@ begin
   fmc_adc_shdn_o                            <= regs_out.adc_shdn_o;
   fmc_adc_pga_o                             <= regs_out.adc_pga_o;
 
-  fmc_led1_int                              <= regs_out.monitor_led1_o;
-  fmc_led2_int                              <= regs_out.monitor_led2_o;
-  fmc_led3_int                              <= regs_out.monitor_led3_o;
-
   adc_rst                                   <= regs_out.fpga_ctrl_fmc_idelay_rst_o;
   --regs_out.fpga_ctrl_fmc_fifo_rst_o; -- Unused
 
