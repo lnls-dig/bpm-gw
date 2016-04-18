@@ -720,11 +720,6 @@ begin
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
-  regs_in.trigger_reserved_i                <= (others => '0');
-  regs_in.adc_reserved_i                    <= (others => '0');
-  regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
-  regs_in.clk_distrib_reserved_i            <= (others => '0');
-  regs_in.monitor_reserved_i                <= (others => '0');
   regs_in.fpga_ctrl_fmc_idelay0_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_fmc_idelay1_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_fmc_idelay2_rdy_i       <= adc_idelay_rdy;
