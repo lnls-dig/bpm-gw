@@ -4,7 +4,7 @@ peripheral {
   hdl_entity = "wb_fmc_active_clk_csr";
   prefix = "wb_fmc_active_clk_csr";
 
- reg {
+  reg {
     name = "Clock distribution control register";
     prefix = "clk_distrib";
 
@@ -54,6 +54,21 @@ peripheral {
       prefix = "reserved";
       type = SLV;
       size = 28;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Dummy";
+    prefix = "dummy";
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 32;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
