@@ -15,10 +15,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package wb_fmc_adc_common_csr_wbgen2_pkg is
-  
-  
+
+
   -- Input registers (user design -> WB slave)
-  
+
   type t_wb_fmc_adc_common_csr_in_registers is record
     fmc_status_mmcm_locked_i                 : std_logic;
     fmc_status_pwr_good_i                    : std_logic;
@@ -27,7 +27,7 @@ package wb_fmc_adc_common_csr_wbgen2_pkg is
     trigger_reserved_i                       : std_logic_vector(28 downto 0);
     monitor_reserved_i                       : std_logic_vector(27 downto 0);
     end record;
-  
+
   constant c_wb_fmc_adc_common_csr_in_registers_init_value: t_wb_fmc_adc_common_csr_in_registers := (
     fmc_status_mmcm_locked_i => '0',
     fmc_status_pwr_good_i => '0',
@@ -36,9 +36,9 @@ package wb_fmc_adc_common_csr_wbgen2_pkg is
     trigger_reserved_i => (others => '0'),
     monitor_reserved_i => (others => '0')
     );
-    
+
     -- Output registers (WB slave -> user design)
-    
+
     type t_wb_fmc_adc_common_csr_out_registers is record
       trigger_dir_o                            : std_logic;
       trigger_term_o                           : std_logic;
@@ -48,7 +48,7 @@ package wb_fmc_adc_common_csr_wbgen2_pkg is
       monitor_led2_o                           : std_logic;
       monitor_led3_o                           : std_logic;
       end record;
-    
+
     constant c_wb_fmc_adc_common_csr_out_registers_init_value: t_wb_fmc_adc_common_csr_out_registers := (
       trigger_dir_o => '0',
       trigger_term_o => '0',
@@ -80,8 +80,8 @@ if(x(i) = 'X' or x(i) = 'U') then
 tmp(i):= '0';
 else
 tmp(i):=x(i);
-end if; 
-end loop; 
+end if;
+end loop;
 return tmp;
 end function;
 function "or" (left, right: t_wb_fmc_adc_common_csr_in_registers) return t_wb_fmc_adc_common_csr_in_registers is

@@ -12,5 +12,6 @@ modules = { "local" : [
                         "wb_rs232_syscon",
                         "wb_acq_core",
                         "wb_acq_core_mux",
-                        "wb_pcie"
+                        "wb_pcie",
+                        "wb_fmc_adc_common"
                       ] };
