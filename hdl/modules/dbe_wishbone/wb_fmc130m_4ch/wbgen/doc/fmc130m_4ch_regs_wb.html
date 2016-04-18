@@ -559,10 +559,10 @@ wb_fmc_130m_4ch_csr_trigger_reserved_i[28:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_monitor_temp_alarm_i
+wb_fmc_130m_4ch_csr_monitor_test_data_en_o
 </td>
 <td  class="td_arrow_right">
-&larr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -1035,10 +1035,10 @@ wb_fmc_130m_4ch_csr_fpga_ctrl_reserved1_i[1:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_fpga_ctrl_test_data_en_o
+wb_fmc_130m_4ch_csr_fpga_ctrl_temp_alarm_i
 </td>
 <td  class="td_arrow_right">
-&rarr;
+&larr;
 </td>
 </tr>
 <tr>
@@ -2724,7 +2724,7 @@ LED2
 LED1
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-TEMP_ALARM
+TEST_DATA_EN
 </td>
 <td >
 
@@ -2739,9 +2739,9 @@ TEMP_ALARM
 </table>
 <ul>
 <li><b>
-TEMP_ALARM
-</b>[<i>read-only</i>]: Temperate Alarm
-<br>Temperature alarm from LM75 chips
+TEST_DATA_EN
+</b>[<i>read/write</i>]: Enable test data
+<br>Write the address counter value instead of ADC data to Wishbone Streaming Interface
 <li><b>
 LED1
 </b>[<i>read/write</i>]: Led 1
@@ -3483,7 +3483,7 @@ RESERVED2[14:7]
 RESERVED2[6:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-TEST_DATA_EN
+TEMP_ALARM
 </td>
 <td >
 
@@ -3589,9 +3589,9 @@ RESERVED1
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on read, write with 0's.
 <li><b>
-TEST_DATA_EN
-</b>[<i>read/write</i>]: Enable test data
-<br>Write the address counter value instead of ADC data to Wishbone Streaming Interface
+TEMP_ALARM
+</b>[<i>read-only</i>]: Temperature Alarm
+<br>Temperature alarm from LM75 chips
 <li><b>
 RESERVED2
 </b>[<i>read-only</i>]: Reserved

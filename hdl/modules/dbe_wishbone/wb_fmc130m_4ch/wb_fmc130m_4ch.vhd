@@ -711,13 +711,13 @@ begin
   regs_in.adc_reserved_i                    <= (others => '0');
   regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
   regs_in.clk_distrib_reserved_i            <= (others => '0');
-  regs_in.monitor_temp_alarm_i              <= fmc_lm75_temp_alarm_i;
   regs_in.monitor_reserved_i                <= (others => '0');
   regs_in.fpga_ctrl_fmc_idelay0_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_fmc_idelay1_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_fmc_idelay2_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_fmc_idelay3_rdy_i       <= adc_idelay_rdy;
   regs_in.fpga_ctrl_reserved1_i             <= (others => '0');
+  regs_in.fpga_ctrl_temp_alarm_i            <= fmc_lm75_temp_alarm_i;
   regs_in.fpga_ctrl_reserved2_i             <= (others => '0');
   regs_in.idelay0_cal_val_i                 <= adc_fn_dly_out(0).data_chain.idelay.val;
   regs_in.idelay0_cal_reserved_i            <= (others => '0');
@@ -1069,10 +1069,10 @@ begin
     fs_clk(i)                               <= adc_out(i).adc_clk;
     fs_clk2x(i)                             <= adc_out(i).adc_clk2x;
     adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i) <=
-      adc_out(i).adc_data when regs_out.fpga_ctrl_test_data_en_o = '0'
+      adc_out(i).adc_data when regs_out.monitor_test_data_en_o = '0'
                       else std_logic_vector(wbs_test_data(i));
     adc_valid(i) <=
-      adc_out(i).adc_data_valid when regs_out.fpga_ctrl_test_data_en_o = '0'
+      adc_out(i).adc_data_valid when regs_out.monitor_test_data_en_o = '0'
                       else '1';
   end generate;
 
@@ -1286,9 +1286,9 @@ begin
         end if;
       end process;
 
-      wbs_dat(i) <= adc_out(i).adc_data when regs_out.fpga_ctrl_test_data_en_o = '0'
+      wbs_dat(i) <= adc_out(i).adc_data when regs_out.monitor_test_data_en_o = '0'
                       else std_logic_vector(wbs_test_data(i));
-      wbs_valid(i) <= adc_out(i).adc_data_valid when regs_out.fpga_ctrl_test_data_en_o = '0'
+      wbs_valid(i) <= adc_out(i).adc_data_valid when regs_out.monitor_test_data_en_o = '0'
                         else '1';
     end generate;
   end generate;
