@@ -246,7 +246,7 @@ architecture rtl of wb_fmc250m_4ch is
   -- Number packet size counter bits
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
   -- Number of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
-  constant c_periph_addr_size               : natural := 5+2;
+  constant c_periph_addr_size               : natural := 4+2;
   constant c_periph_acommon_addr_size       : natural := 2+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
   constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
@@ -495,7 +495,7 @@ architecture rtl of wb_fmc250m_4ch is
   port (
     rst_n_i                                  : in     std_logic;
     clk_sys_i                                : in     std_logic;
-    wb_adr_i                                 : in     std_logic_vector(4 downto 0);
+    wb_adr_i                                 : in     std_logic_vector(3 downto 0);
     wb_dat_i                                 : in     std_logic_vector(31 downto 0);
     wb_dat_o                                 : out    std_logic_vector(31 downto 0);
     wb_cyc_i                                 : in     std_logic;
@@ -711,7 +711,7 @@ begin
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => wb_slv_adp_out.adr(4 downto 0),
+    wb_adr_i                                => wb_slv_adp_out.adr(3 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
     wb_cyc_i                                => wb_slv_adp_out.cyc,
