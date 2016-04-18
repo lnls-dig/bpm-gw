@@ -1240,8 +1240,8 @@ begin
     -- Wishbone Control Interface signals
     -----------------------------
 
-    wb_slv_i                                  => cbar_master_out(3),
-    wb_slv_o                                  => cbar_master_in(3),
+    wb_slv_i                                  => cbar_master_out(2),
+    wb_slv_o                                  => cbar_master_in(2),
 
     -----------------------------
     -- External ports
