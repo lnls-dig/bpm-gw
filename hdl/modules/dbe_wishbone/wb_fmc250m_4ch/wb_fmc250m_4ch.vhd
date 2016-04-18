@@ -734,8 +734,6 @@ begin
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
-  regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
-  regs_in.clk_distrib_reserved_i            <= (others => '0');
   regs_in.adc_sta_clk_chains_i              <= g_use_clk_chains;
   regs_in.adc_sta_reserved_clk_chains_i     <= (others => '0');
   regs_in.adc_sta_data_chains_i             <= g_use_data_chains;
