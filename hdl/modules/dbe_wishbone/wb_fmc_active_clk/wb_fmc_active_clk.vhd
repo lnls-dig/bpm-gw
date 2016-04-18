@@ -352,6 +352,7 @@ begin
   -- Wishbone Interface Register input assignments.
   regs_in.clk_distrib_pll_status_i          <= fmc_pll_status;
   regs_in.clk_distrib_reserved_i            <= (others => '0');
+  regs_in.dummy_reserved_i                  <= (others => '0');
 
   -- Wishbone Interface Register output assignments.
   fmc_si571_oe_o                            <= regs_out.clk_distrib_si571_oe_o;
