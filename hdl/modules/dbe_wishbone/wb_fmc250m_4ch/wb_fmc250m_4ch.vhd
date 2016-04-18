@@ -718,7 +718,6 @@ begin
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
-  regs_in.monitor_mon_dev_i                 <= amc7823_davn_i;
   regs_in.fmc_status_mmcm_locked_i          <= mmcm_adc_locked;
   regs_in.fmc_status_pwr_good_i             <= fmc_pg_m2c_i;
   regs_in.fmc_status_prst_i                 <= fmc_prsnt_i;
@@ -861,6 +860,9 @@ begin
   adc_cs_dly_in_int(2).adc_data_rg_d2_en    <= regs_out.ch2_cs_dly_rg_dly_o(1);
   adc_cs_dly_in_int(3).adc_data_rg_d1_en    <= regs_out.ch3_cs_dly_rg_dly_o(0);
   adc_cs_dly_in_int(3).adc_data_rg_d2_en    <= regs_out.ch3_cs_dly_rg_dly_o(1);
+
+  -- Temperature monitor
+  regs_in.temp_mon_dev_i                    <= amc7823_davn_i;
 
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.

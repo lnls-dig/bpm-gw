@@ -140,21 +140,11 @@ peripheral {
     };
 
     field {
-      name = "Monitor device";
-      prefix = "mon_dev";
-      description = "Data valid from AMC7823 chip (monitor, active low)\n0 - data available \n1 - data not valid or DAV deactivated";
-      type = SLV;
-      size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
       name = "Reserved";
       description = "Ignore on read, write with 0's.";
       prefix = "reserved";
       type = SLV;
-      size = 27;
+      size = 28;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -1198,4 +1188,20 @@ peripheral {
       access_dev = READ_ONLY;
     };
   };
+
+  reg {
+    name = "FMC temperature monitor register";
+    prefix = "temp";
+
+    field {
+      name = "Monitor device";
+      prefix = "mon_dev";
+      description = "Data valid from AMC7823 chip (monitor, active low)\n0 - data available \n1 - data not valid or DAV deactivated";
+      type = SLV;
+      size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+ };
+
 };
