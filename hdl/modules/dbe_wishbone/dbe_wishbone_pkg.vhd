@@ -2155,6 +2155,129 @@ package dbe_wishbone_pkg is
   );
   end component;
 
+  component wb_fmc_active_clk
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic := '0';
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic := '0';
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic := '0';
+    fmc_fpga_clk_n_i                          : in std_logic := '0';
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+
+    -- General board status
+    fmc_pll_status_o                          : out std_logic;
+
+    -- fmc_fpga_clk_*_i bypass signals
+    fmc_fpga_clk_p_o                          : out std_logic;
+    fmc_fpga_clk_n_o                          : out std_logic
+  );
+  end component;
+
+  component xwb_fmc_active_clk
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_slv_i                                  : in t_wishbone_slave_in;
+    wb_slv_o                                  : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           : inout std_logic;
+    si571_sda_pad_b                           : inout std_logic;
+    fmc_si571_oe_o                            : out std_logic;
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           : out std_logic;
+    spi_ad9510_sclk_o                         : out std_logic;
+    spi_ad9510_mosi_o                         : out std_logic;
+    spi_ad9510_miso_i                         : in std_logic := '0';
+
+    fmc_pll_function_o                        : out std_logic;
+    fmc_pll_status_i                          : in std_logic := '0';
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          : in std_logic := '0';
+    fmc_fpga_clk_n_i                          : in std_logic := '0';
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             : out std_logic;
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+
+    -- General board status
+    fmc_pll_status_o                          : out std_logic;
+
+    -- fmc_fpga_clk_*_i bypass signals
+    fmc_fpga_clk_p_o                          : out std_logic;
+    fmc_fpga_clk_n_o                          : out std_logic
+  );
+  end component;
+
   --------------------------------------------------------------------
   -- SDB Devices Structures
   --------------------------------------------------------------------
@@ -2311,4 +2434,22 @@ package dbe_wishbone_pkg is
     version       => x"00000001",
     date          => x"20160418",
     name          => "LNLS_ACOMMON_REGS  ")));
+
+  -- FMC Active Clock
+  constant c_xwb_fmc_active_clk_regs_sdb : t_sdb_device := (
+    abi_class     => x"0000",                   -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                      -- 32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",       -- LNLS
+    device_id     => x"88c67d9c",
+    version       => x"00000001",
+    date          => x"20160418",
+    name          => "LNLS_ACLK_REGS     ")));
+
 end dbe_wishbone_pkg;
