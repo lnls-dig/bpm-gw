@@ -34,7 +34,7 @@
 <span style="margin-left: 0px; ">1. <A href="#sect_1_0">Memory map summary</a></span><br/>
 <span style="margin-left: 0px; ">2. <A href="#sect_2_0">HDL symbol</a></span><br/>
 <span style="margin-left: 0px; ">3. <A href="#sect_3_0">Register description</a></span><br/>
-<span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">FMC Status</a></span><br/>
+<span style="margin-left: 20px; ">3.1. <A href="#sect_3_1">Status register</a></span><br/>
 <span style="margin-left: 20px; ">3.2. <A href="#sect_3_2">Trigger control</a></span><br/>
 <span style="margin-left: 20px; ">3.3. <A href="#sect_3_3">Monitor and FMC status control register</a></span><br/>
 <span style="margin-left: 20px; ">3.4. <A href="#sect_3_4">Clock distribution control register</a></span><br/>
@@ -76,7 +76,7 @@ C prefix
 REG
 </td>
 <td >
-<A href="#FMC_STATUS">FMC Status</a>
+<A href="#FMC_STATUS">Status register</a>
 </td>
 <td  class="td_code">
 wb_fmc_130m_4ch_csr_fmc_status
@@ -338,7 +338,7 @@ rst_n_i
 
 </td>
 <td  class="td_pblock_right">
-<b>FMC Status:</b>
+<b>Status register:</b>
 </td>
 <td  class="td_arrow_right">
 
@@ -355,7 +355,7 @@ clk_sys_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_fmc_status_prsnt_i
+wb_fmc_130m_4ch_csr_fmc_status_mmcm_locked_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -372,7 +372,7 @@ wb_adr_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_fmc_status_pg_m2c_i
+wb_fmc_130m_4ch_csr_fmc_status_pwr_good_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -389,7 +389,7 @@ wb_dat_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_fmc_status_clk_dir_i
+wb_fmc_130m_4ch_csr_fmc_status_prst_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -406,7 +406,7 @@ wb_dat_o[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_130m_4ch_csr_fmc_status_firmware_id_i[28:0]
+wb_fmc_130m_4ch_csr_fmc_status_reserved_i[27:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1946,7 +1946,7 @@ wb_fmc_130m_4ch_csr_dcm_reserved_i[26:0]
 
 <h3><a name="sect_3_0">3. Register description</a></h3>
 <a name="FMC_STATUS"></a>
-<h3><a name="sect_3_1">3.1. FMC Status</a></h3>
+<h3><a name="sect_3_1">3.1. Status register</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
 <td >
@@ -2009,11 +2009,11 @@ FMC_STATUS
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-FIRMWARE_ID[28:21]
+<td  class="td_unused">
+-
 </td>
-<td >
-
+<td style="border: solid 1px black;" colspan=7  class="td_field">
+RESERVED[27:21]
 </td>
 <td >
 
@@ -2064,7 +2064,7 @@ FIRMWARE_ID[28:21]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-FIRMWARE_ID[20:13]
+RESERVED[20:13]
 </td>
 <td >
 
@@ -2118,7 +2118,7 @@ FIRMWARE_ID[20:13]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-FIRMWARE_ID[12:5]
+RESERVED[12:5]
 </td>
 <td >
 
@@ -2172,16 +2172,16 @@ FIRMWARE_ID[12:5]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=5  class="td_field">
-FIRMWARE_ID[4:0]
+RESERVED[4:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-CLK_DIR
+PRST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-PG_M2C
+PWR_GOOD
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
-PRSNT
+MMCM_LOCKED
 </td>
 <td >
 
@@ -2199,21 +2199,21 @@ PRSNT
 </table>
 <ul>
 <li><b>
-PRSNT
-</b>[<i>read-only</i>]: FMC Present
-<br>FMC PRSNT_M2C Pin<br>0 - FMC card present<br>1 - no FMC card on carrier
+MMCM_LOCKED
+</b>[<i>read-only</i>]: MMCM locked status
+<br>ADC Clock Chain MMCM locked status.  <br>                      read 0: not locked  <br>                      read 1: locked
 <li><b>
-PG_M2C
-</b>[<i>read-only</i>]: Power Good from mezzanine
-<br>FMC Power Good Pin<br>Not used
+PWR_GOOD
+</b>[<i>read-only</i>]: FMC power good status
+<br>FMC power good status. <br>                      read 0: power not good  <br>                      read 1: power good
 <li><b>
-CLK_DIR
-</b>[<i>read-only</i>]: Clock Direction
-<br>Clock direction (RES1)
+PRST
+</b>[<i>read-only</i>]: FMC board present status
+<br>FMC board present status.<br>0: not present<br>1: present
 <li><b>
-FIRMWARE_ID
-</b>[<i>read-only</i>]: Firware ID
-<br>Should be 0x01332A11 on read (20130321)
+RESERVED
+</b>[<i>read-only</i>]: Reserved
+<br>Ignore on write, read as 0's
 </ul>
 <a name="TRIGGER"></a>
 <h3><a name="sect_3_2">3.2. Trigger control</a></h3>

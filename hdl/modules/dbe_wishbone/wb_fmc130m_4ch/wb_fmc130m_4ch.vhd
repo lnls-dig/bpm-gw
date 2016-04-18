@@ -703,10 +703,10 @@ begin
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
-  regs_in.fmc_status_prsnt_i                <= fmc_prsnt_i;
-  regs_in.fmc_status_pg_m2c_i               <= fmc_pg_m2c_i;
-  regs_in.fmc_status_clk_dir_i              <= '0';
-  regs_in.fmc_status_firmware_id_i          <= '0' & x"1332A11"; -- Should be the current date
+  regs_in.fmc_status_mmcm_locked_i          <= mmcm_adc_locked;
+  regs_in.fmc_status_prst_i                 <= fmc_prsnt_i;
+  regs_in.fmc_status_pwr_good_i             <= fmc_pg_m2c_i;
+  regs_in.fmc_status_reserved_i             <= (others => '0');
   regs_in.trigger_reserved_i                <= (others => '0');
   regs_in.adc_reserved_i                    <= (others => '0');
   regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
