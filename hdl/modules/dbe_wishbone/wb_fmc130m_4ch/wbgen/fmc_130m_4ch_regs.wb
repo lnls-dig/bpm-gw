@@ -57,7 +57,7 @@ peripheral {
     prefix = "trigger";
 
     field {
-      name = "DIR";
+      name = "Direction";
       prefix = "dir";
       description = "Trigger direction\n0 - output\n1 - input";
       type = BIT;
@@ -85,7 +85,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
 
     field {
       name = "Reserved";
