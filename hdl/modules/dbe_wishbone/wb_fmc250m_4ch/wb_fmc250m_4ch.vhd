@@ -30,6 +30,8 @@ use work.dbe_wishbone_pkg.all;
 use work.wb_stream_generic_pkg.all;
 -- Wishbone Register Interface
 use work.wb_fmc_250m_4ch_csr_wbgen2_pkg.all;
+-- Wishbone FMC ADC Common Register Interface
+use work.wb_fmc_adc_common_csr_wbgen2_pkg.all;
 -- FMC ADC package
 use work.fmc_adc_pkg.all;
 -- Reset Synch
@@ -245,6 +247,7 @@ architecture rtl of wb_fmc250m_4ch is
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
   -- Number of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
   constant c_periph_addr_size               : natural := 5+2;
+  constant c_periph_acommon_addr_size       : natural := 2+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
   constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
   constant c_with_clk_single_ended          : boolean := false;
@@ -267,28 +270,31 @@ architecture rtl of wb_fmc250m_4ch is
   -----------------------------
   -- Internal crossbar layout
   -- 0 -> FMC250 Register Wishbone Interface
-  -- 1 -> AMC7823 SPI. Temperature sensor.
-  -- 2 -> ADC SPI control interface. Three-wire mode. Tri-stated data pin.
-  -- 3 -> PLL and Clock Distribution AD9510 SPI
-  -- 4 -> VCXO Si571 I2C Bus.
-  -- 5 -> EEPROM I2C Bus.
+  -- 1 -> FMC ADC Common
+  -- 2 -> FMC Active Clock
+  -- 3 -> EEPROM I2C Bus
+  -- 4 -> AMC7823. Temperature Sensor
+  -- 5 -> ADC SPI control interface
   -- Number of slaves
   constant c_slaves                         : natural := 6;
   -- Number of masters
   constant c_masters                        : natural := 1;            -- Top master.
 
-  -- WB SDB (Self describing bus) layout
+  constant c_fmc_active_clk_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"000003FF", x"00000300");
+
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
   ( 0 => f_sdb_embed_device(c_xwb_fmc250m_4ch_regs_sdb, x"00000000"),   -- Register interface
-    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000100"),   -- VCXO Si571 I2C
-    2 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000200"),   -- AD9510 SPI
-    3 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000300"),   -- EEPROM I2C
-    4 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000400"),   -- AMC7823 SPI
-    5 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000500")    -- ADC SPI
+    1 => f_sdb_embed_device(c_xwb_fmc_adc_common_regs_sdb,
+                                                        x"00000100"),   -- FMC ADC Common
+    2 => f_sdb_embed_bridge(c_fmc_active_clk_bridge_sdb,
+                                                        x"00000200"),   -- FMC Active Clock
+    3 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000600"),   -- EEPROM I2C
+    4 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000700"),   -- AMC7823 SPI
+    5 => f_sdb_embed_device(c_xwb_spi_sdb,              x"00000800")    -- ADC SPI
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
-  constant c_sdb_address                    : t_wishbone_address := x"00000800";
+  constant c_sdb_address                    : t_wishbone_address := x"00000A00";
 
   -----------------------------
   -- Clock and reset signals
@@ -302,6 +308,10 @@ architecture rtl of wb_fmc250m_4ch is
   -- FMC250 reg structure
   signal regs_out                           : t_wb_fmc_250m_4ch_csr_out_registers;
   signal regs_in                            : t_wb_fmc_250m_4ch_csr_in_registers;
+
+  -- FMC ADC Common reg structure
+  signal regs_acommon_out                   : t_wb_fmc_adc_common_csr_out_registers;
+  signal regs_acommon_in                    : t_wb_fmc_adc_common_csr_in_registers;
 
   -----------------------------
   -- ADC Interface signals
@@ -343,6 +353,9 @@ architecture rtl of wb_fmc250m_4ch is
   signal adc_cs_dly_in_int                  : t_adc_cs_dly_array(c_num_adc_channels-1 downto 0);
   -- ADC output signals.
   signal adc_out                            : t_adc_out_array(c_num_adc_channels-1 downto 0);
+
+  -- ADC test data enable
+  signal adc_test_data_en                   : std_logic;
 
   -- ADC Clock/Data variable delay interface internal structure
   --signal adc_dly_pulse_clk_int              : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -402,6 +415,10 @@ architecture rtl of wb_fmc250m_4ch is
   signal wb_slv_adp_in                      : t_wishbone_master_in;
   signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
 
+  signal wb_slv_adp_acommon_out             : t_wishbone_master_out;
+  signal wb_slv_adp_acommon_in              : t_wishbone_master_in;
+  signal resized_acommon_addr               : std_logic_vector(c_wishbone_address_width-1 downto 0);
+
   -----------------------------
   -- Wishbone crossbar signals
   -----------------------------
@@ -432,25 +449,6 @@ architecture rtl of wb_fmc250m_4ch is
   signal adc_spi_ss_int                     : std_logic_vector(7 downto 0);
   signal adc_spi_clk                        : std_logic;
   signal adc_spi_miosio_oe                  : std_logic;
-
-  -----------------------------
-  -- AD9510 SPI signals
-  -----------------------------
-  signal ad9510_spi_din                     : std_logic;
-  signal ad9510_spi_dout                    : std_logic;
-  signal ad9510_spi_ss_int                  : std_logic_vector(7 downto 0);
-  signal ad9510_spi_clk                     : std_logic;
-  signal ad9510_spi_miosio_oe_n             : std_logic;
-
-  -----------------------------
-  -- VCXO Si571 I2C Signals
-  -----------------------------
-  signal si571_i2c_scl_in                   : std_logic;
-  signal si571_i2c_scl_out                  : std_logic;
-  signal si571_i2c_scl_oe_n                 : std_logic;
-  signal si571_i2c_sda_in                   : std_logic;
-  signal si571_i2c_sda_out                  : std_logic;
-  signal si571_i2c_sda_oe_n                 : std_logic;
 
   -----------------------------
   -- EEPROM I2C Signals
@@ -509,6 +507,24 @@ architecture rtl of wb_fmc250m_4ch is
     fs_clk_i                                 : in     std_logic;
     regs_i                                   : in     t_wb_fmc_250m_4ch_csr_in_registers;
     regs_o                                   : out    t_wb_fmc_250m_4ch_csr_out_registers
+  );
+  end component;
+
+  component wb_fmc_adc_common_csr
+  port (
+    rst_n_i                                  : in     std_logic;
+    clk_sys_i                                : in     std_logic;
+    wb_adr_i                                 : in     std_logic_vector(1 downto 0);
+    wb_dat_i                                 : in     std_logic_vector(31 downto 0);
+    wb_dat_o                                 : out    std_logic_vector(31 downto 0);
+    wb_cyc_i                                 : in     std_logic;
+    wb_sel_i                                 : in     std_logic_vector(3 downto 0);
+    wb_stb_i                                 : in     std_logic;
+    wb_we_i                                  : in     std_logic;
+    wb_ack_o                                 : out    std_logic;
+    wb_stall_o                               : out    std_logic;
+    regs_i                                   : in     t_wb_fmc_adc_common_csr_in_registers;
+    regs_o                                   : out    t_wb_fmc_adc_common_csr_out_registers
   );
   end component;
 
@@ -618,11 +634,11 @@ begin
   -----------------------------
   -- Internal crossbar layout
   -- 0 -> FMC250 Register Wishbone Interface
-  -- 1 -> VCXO Si571 I2C Bus.
-  -- 2 -> PLL and Clock Distribution AD9510 SPI
-  -- 3 -> EEPROM I2C Bus.
-  -- 4 -> AMC7823 SPI. Temperature sensor.
-  -- 5 -> ADC SPI control interface. Three-wire mode. Tri-stated data pin.
+  -- 1 -> FMC ADC Common
+  -- 2 -> FMC Active Clock
+  -- 3 -> EEPROM I2C Bus
+  -- 4 -> AMC7823. Temperature Sensor
+  -- 5 -> ADC SPI control interface
 
   -- The Internal Wishbone B.4 crossbar
   cmp_interconnect : xwb_sdb_crossbar
@@ -718,10 +734,6 @@ begin
 
   -- Wishbone Interface Register input assignments. There are others registers
   -- not assigned here.
-  regs_in.fmc_status_mmcm_locked_i          <= mmcm_adc_locked;
-  regs_in.fmc_status_pwr_good_i             <= fmc_pg_m2c_i;
-  regs_in.fmc_status_prst_i                 <= fmc_prsnt_i;
-  regs_in.fmc_status_reserved_i             <= (others => '0');
   regs_in.clk_distrib_pll_status_i          <= fmc_pll_status_i;
   regs_in.clk_distrib_reserved_i            <= (others => '0');
   regs_in.adc_sta_clk_chains_i              <= g_use_clk_chains;
@@ -866,19 +878,96 @@ begin
 
   -- Wishbone Interface Register output assignments. There are others registers
   -- not assigned here.
-  fmc_trig_dir_int                          <= regs_out.trigger_dir_o;
-  fmc_trig_term_o                           <= regs_out.trigger_term_o;
-  fmc_trig_val_int_reg                      <= regs_out.trigger_trig_val_o;
-
-  fmc_si571_oe_o                            <= regs_out.clk_distrib_si571_oe_o;
-  fmc_pll_function_o                        <= regs_out.clk_distrib_pll_function_o;
-  fmc_clk_sel_o                             <= regs_out.clk_distrib_clk_sel_o;
-
   adc_sleep_o                               <= regs_out.adc_ctl_sleep_adcs_o;
 
-  fmc_led1_int                              <= regs_out.monitor_led1_o;
-  fmc_led2_int                              <= regs_out.monitor_led2_o;
-  fmc_led3_int                              <= regs_out.monitor_led3_o;
+  -----------------------------
+  -- Slave adapter for Wishbone Register Interface FMC ADC common
+  -----------------------------
+  cmp_acommon_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => true,
+    g_master_mode                           => PIPELINED,
+    g_master_granularity                    => WORD,
+    g_slave_use_struct                      => false,
+    g_slave_mode                            => g_interface_mode,
+    g_slave_granularity                     => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+    master_i                                => wb_slv_adp_acommon_in,
+    master_o                                => wb_slv_adp_acommon_out,
+    sl_adr_i                                => resized_acommon_addr,
+    sl_dat_i                                => cbar_master_out(1).dat,
+    sl_sel_i                                => cbar_master_out(1).sel,
+    sl_cyc_i                                => cbar_master_out(1).cyc,
+    sl_stb_i                                => cbar_master_out(1).stb,
+    sl_we_i                                 => cbar_master_out(1).we,
+    sl_dat_o                                => cbar_master_in(1).dat,
+    sl_ack_o                                => cbar_master_in(1).ack,
+    sl_rty_o                                => cbar_master_in(1).rty,
+    sl_err_o                                => cbar_master_in(1).err,
+    sl_int_o                                => cbar_master_in(1).int,
+    sl_stall_o                              => cbar_master_in(1).stall
+  );
+
+  -- By doing this zeroing we avoid the issue related to BYTE -> WORD  conversion
+  -- slave addressing (possibly performed by the slave adapter component)
+  -- in which a bit in the MSB of the peripheral addressing part (31 - 5 in our case)
+  -- is shifted to the internal register adressing part (4 - 0 in our case).
+  -- Therefore, possibly changing the these bits!
+  -- See wb_fmc250m_4ch_port.vhd for register bank addresses
+  resized_acommon_addr(c_periph_acommon_addr_size-1 downto 0)
+                                            <= cbar_master_out(1).adr(c_periph_acommon_addr_size-1 downto 0);
+  resized_acommon_addr(c_wishbone_address_width-1 downto c_periph_acommon_addr_size)
+                                            <= (others => '0');
+
+  -----------------------------
+  -- FMC ADC Common Register Wishbone Interface. Word addressed!
+  -----------------------------
+  --FMC ADC Common register interface is the slave number 1, word addressed
+  cmp_wb_fmc_adc_common_port : wb_fmc_adc_common_csr
+  port map(
+    rst_n_i                                 => sys_rst_sync_n,
+    clk_sys_i                               => sys_clk_i,
+    wb_adr_i                                => wb_slv_adp_acommon_out.adr(1 downto 0),
+    wb_dat_i                                => wb_slv_adp_acommon_out.dat,
+    wb_dat_o                                => wb_slv_adp_acommon_in.dat,
+    wb_cyc_i                                => wb_slv_adp_acommon_out.cyc,
+    wb_sel_i                                => wb_slv_adp_acommon_out.sel,
+    wb_stb_i                                => wb_slv_adp_acommon_out.stb,
+    wb_we_i                                 => wb_slv_adp_acommon_out.we,
+    wb_ack_o                                => wb_slv_adp_acommon_in.ack,
+    wb_stall_o                              => wb_slv_adp_acommon_in.stall,
+    -- Check if this clock is necessary!
+    --wb_clk_i                                => sys_clk_i,
+    regs_i                                  => regs_acommon_in,
+    regs_o                                  => regs_acommon_out
+  );
+
+  -- Unused wishbone signals
+  wb_slv_adp_acommon_in.int                 <= '0';
+  wb_slv_adp_acommon_in.err                 <= '0';
+  wb_slv_adp_acommon_in.rty                 <= '0';
+
+  -- Wishbone Interface Register input assignments. There are others registers
+  -- not assigned here.
+  regs_acommon_in.fmc_status_mmcm_locked_i  <= mmcm_adc_locked;
+  regs_acommon_in.fmc_status_pwr_good_i     <= fmc_pg_m2c_i;
+  regs_acommon_in.fmc_status_prst_i         <= fmc_prsnt_i;
+  regs_acommon_in.fmc_status_reserved_i     <= (others => '0');
+
+  -- Wishbone Interface Register output assignments. There are others registers
+  -- not assigned here.
+  fmc_trig_dir_int                          <= regs_acommon_out.trigger_dir_o;
+  fmc_trig_term_o                           <= regs_acommon_out.trigger_term_o;
+  fmc_trig_val_int_reg                      <= regs_acommon_out.trigger_trig_val_o;
+
+  fmc_led1_int                              <= regs_acommon_out.monitor_led1_o;
+  fmc_led2_int                              <= regs_acommon_out.monitor_led2_o;
+  fmc_led3_int                              <= regs_acommon_out.monitor_led3_o;
+
+  adc_test_data_en                          <= regs_acommon_out.monitor_test_data_en_o;
 
   -----------------------------
   -- Pins connections for ADC interface structures
@@ -1073,10 +1162,10 @@ begin
     fs_clk(i)                               <= adc_out(i).adc_clk;
     fs_clk2x(i)                             <= adc_out(i).adc_clk2x;
     adc_data(c_num_adc_bits*(i+1)-1 downto c_num_adc_bits*i) <=
-      adc_out(i).adc_data when regs_out.monitor_test_data_en_o = '0'
+      adc_out(i).adc_data when adc_test_data_en = '0'
                       else std_logic_vector(wbs_test_data(i));
     adc_valid(i) <=
-      adc_out(i).adc_data_valid when regs_out.monitor_test_data_en_o = '0'
+      adc_out(i).adc_data_valid when adc_test_data_en = '0'
                       else '1';
   end generate;
 
@@ -1133,78 +1222,67 @@ begin
   end generate;
 
   -----------------------------
-  -- I2C Programmable Si571 VCXO
+  --  FMC Active Clock
   -----------------------------
-  -- I2C Programmable VCXO control interface.
-  -- I2C Programmable VCXO is slave number 1, word addressed
-  -- Note: I2C registers are 8-bit wide, but accessed as 32-bit registers
+  -- FMC Active Clock is slave number 2, word addressed
 
-  cmp_vcxo_i2c : xwb_i2c_master
+  cmp_fmc_active_clk : xwb_fmc_active_clk
   generic map(
     g_interface_mode                        => g_interface_mode,
-    g_address_granularity                   => g_address_granularity
+    g_address_granularity                   => g_address_granularity,
+    g_with_extra_wb_reg                     => g_with_extra_wb_reg
   )
   port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
+    sys_clk_i                                 => sys_clk_i,
+    sys_rst_n_i                               => sys_rst_n_i,
 
-    slave_i                                 => cbar_master_out(1),
-    slave_o                                 => cbar_master_in(1),
-    desc_o                                  => open,
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
 
-    scl_pad_i                               => si571_i2c_scl_in,
-    scl_pad_o                               => si571_i2c_scl_out,
-    scl_padoen_o                            => si571_i2c_scl_oe_n,
-    sda_pad_i                               => si571_i2c_sda_in,
-    sda_pad_o                               => si571_i2c_sda_out,
-    sda_padoen_o                            => si571_i2c_sda_oe_n
+    wb_slv_i                                  => cbar_master_out(3),
+    wb_slv_o                                  => cbar_master_in(3),
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    -- Si571 clock gen
+    si571_scl_pad_b                           => si571_scl_pad_b,
+    si571_sda_pad_b                           => si571_sda_pad_b,
+    fmc_si571_oe_o                            => fmc_si571_oe_o,
+
+    -- AD9510 clock distribution PLL
+    spi_ad9510_cs_o                           => spi_ad9510_cs_o,
+    spi_ad9510_sclk_o                         => spi_ad9510_sclk_o,
+    spi_ad9510_mosi_o                         => spi_ad9510_mosi_o,
+    spi_ad9510_miso_i                         => spi_ad9510_miso_i,
+
+    fmc_pll_function_o                        => fmc_pll_function_o,
+    fmc_pll_status_i                          => fmc_pll_status_i,
+
+    -- AD9510 clock copy
+    fmc_fpga_clk_p_i                          => fmc_fpga_clk_p_i,
+    fmc_fpga_clk_n_i                          => fmc_fpga_clk_n_i,
+
+    -- Clock reference selection (TS3USB221)
+    fmc_clk_sel_o                             => fmc_clk_sel_o,
+
+    -----------------------------
+    -- General ADC output signals and status
+    -----------------------------
+
+    -- General board status
+    fmc_pll_status_o                          => fmc_pll_status_o,
+
+    -- fmc_fpga_clk_*_i bypass signals
+    fmc_fpga_clk_p_o                          => open,
+    fmc_fpga_clk_n_o                          => open
   );
 
-  si571_scl_pad_b  <= si571_i2c_scl_out when si571_i2c_scl_oe_n = '0' else 'Z';
-  si571_i2c_scl_in <= si571_scl_pad_b;
-
-  si571_sda_pad_b  <= si571_i2c_sda_out when si571_i2c_sda_oe_n = '0' else 'Z';
-  si571_i2c_sda_in <= si571_sda_pad_b;
-
   -- Not used wishbone signals
-  --cbar_master_in(1).err                     <= '0';
-  --cbar_master_in(1).rty                     <= '0';
-
-  -----------------------------
-  -- AD9510 SPI Bus
-  -----------------------------
-  -- AD9510 control interface. Four-wire mode.
-  -- AD9510 is slave number 2, word addressed
-
-  cmp_ad9510_spi : xwb_spi_bidir
-  generic map(
-    g_interface_mode                        => g_interface_mode,
-    g_address_granularity                   => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
-
-    slave_i                                 => cbar_master_out(2),
-    slave_o                                 => cbar_master_in(2),
-    desc_o                                  => open,
-
-    pad_cs_o                                => ad9510_spi_ss_int,
-    pad_sclk_o                              => ad9510_spi_clk, --spi_ad9510_sclk_o,
-    pad_mosi_o                              => ad9510_spi_dout, --spi_ad9510_mosi_o,
-    pad_mosi_i                              => '0',
-    pad_mosi_en_o                           => open,
-    pad_miso_i                              => ad9510_spi_din --spi_ad9510_miso_i
-  );
-
-  spi_ad9510_cs_o                           <= ad9510_spi_ss_int(0);
-  spi_ad9510_sclk_o                         <= ad9510_spi_clk;
-  spi_ad9510_mosi_o                         <= ad9510_spi_dout;
-  ad9510_spi_din                            <= spi_ad9510_miso_i;
-
-  -- Not used wishbone signals
-  --cbar_master_in(2).err                     <= '0';
-  --cbar_master_in(2).rty                     <= '0';
+  --cbar_master_in(3).err                     <= '0';
+  --cbar_master_in(3).rty                     <= '0';
 
   -----------------------------
   --  I2C EEPROM 24AA64T-I
@@ -1377,9 +1455,9 @@ begin
         end if;
       end process;
 
-      wbs_dat(i) <= adc_out(i).adc_data when regs_out.monitor_test_data_en_o = '0'
+      wbs_dat(i) <= adc_out(i).adc_data when adc_test_data_en = '0'
                       else std_logic_vector(wbs_test_data(i));
-      wbs_valid(i) <= adc_out(i).adc_data_valid when regs_out.monitor_test_data_en_o = '0'
+      wbs_valid(i) <= adc_out(i).adc_data_valid when adc_test_data_en = '0'
                         else '1';
     end generate;
   end generate;
