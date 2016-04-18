@@ -158,6 +158,8 @@ architecture rtl of wb_fmc_active_clk is
   signal ad9510_spi_clk                     : std_logic;
   signal ad9510_spi_miosio_oe_n             : std_logic;
 
+  signal fmc_pll_status                     : std_logic;
+
   -----------------------------
   -- VCXO Si571 I2C Signals
   -----------------------------
@@ -195,7 +197,9 @@ begin
   -- General status board pins
   -----------------------------
   -- PLL status available through a regular core pin
-  fmc_pll_status_o                          <= fmc_pll_status_i;
+  fmc_pll_status                            <= fmc_pll_status_i;
+
+  fmc_pll_status_o                          <= fmc_pll_status;
   fmc_fpga_clk_p_o                          <= fmc_fpga_clk_p_i;
   fmc_fpga_clk_n_o                          <= fmc_fpga_clk_n_i;
 
@@ -344,6 +348,10 @@ begin
   wb_slv_adp_in.int                         <= '0';
   wb_slv_adp_in.err                         <= '0';
   wb_slv_adp_in.rty                         <= '0';
+
+  -- Wishbone Interface Register input assignments.
+  regs_in.clk_distrib_pll_status_i          <= fmc_pll_status;
+  regs_in.clk_distrib_reserved_i            <= (others => '0');
 
   -- Wishbone Interface Register output assignments.
   fmc_si571_oe_o                            <= regs_out.clk_distrib_si571_oe_o;
