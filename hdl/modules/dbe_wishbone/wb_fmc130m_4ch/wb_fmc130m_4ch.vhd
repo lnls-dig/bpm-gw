@@ -266,21 +266,21 @@ architecture rtl of wb_fmc130m_4ch is
   -- Number of masters
   constant c_masters                        : natural := 1;            -- Top master.
 
-  constant c_fmc_active_clk_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"000003FF", x"00000300");
+  constant c_fmc_active_clk_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"000004FF", x"00000300");
 
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
   ( 0 => f_sdb_embed_device(c_xwb_fmc130m_4ch_regs_sdb, x"00000000"),   -- Register interface
     1 => f_sdb_embed_device(c_xwb_fmc_adc_common_regs_sdb,
-                                                        x"00000100"),   -- FMC ADC Common
+                                                        x"00001000"),   -- FMC ADC Common
     2 => f_sdb_embed_bridge(c_fmc_active_clk_bridge_sdb,
-                                                        x"00000200"),   -- FMC Active Clock
-    3 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000600"),   -- EEPROM I2C
-    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00000700")    -- LM75A I2C
+                                                        x"00002000"),   -- FMC Active Clock
+    3 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00003000"),   -- EEPROM I2C
+    4 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00004000")    -- LM75A I2C
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
-  constant c_sdb_address                    : t_wishbone_address := x"00000A00";
+  constant c_sdb_address                    : t_wishbone_address := x"00005000";
 
   -----------------------------
   -- Clock and reset signals
