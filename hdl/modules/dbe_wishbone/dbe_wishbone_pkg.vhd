@@ -2444,7 +2444,7 @@ package dbe_wishbone_pkg is
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (
     addr_first    => x"0000000000000000",
-    addr_last     => x"00000000000000FF",
+    addr_last     => x"00000000000003FF",
     product => (
     vendor_id     => x"1000000000001215",       -- LNLS
     device_id     => x"88c67d9c",
