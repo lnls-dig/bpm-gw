@@ -421,7 +421,7 @@ architecture rtl of dbe_bpm is
 
   -- FMC130m_4ch layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
-  constant c_fmc130m_4ch_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000A00");
+  constant c_fmc130m_4ch_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"0000FFFF", x"00005000");
 
   -- Position CAlC. layout. Regs, SWAP
   constant c_pos_calc_core_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000600");
