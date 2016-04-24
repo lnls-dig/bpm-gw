@@ -457,8 +457,8 @@ architecture rtl of dbe_bpm2 is
     (c_slv_dpram_sys_port0_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 16KB RAM
      c_slv_dpram_sys_port1_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00100000"),   -- Second port to the same memory
      c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
-                                                                                 x"00308000"),   -- Position Calc Core 1 control port
-     c_slv_fmc250m_4ch_1_id    => f_sdb_embed_bridge(c_fmc250m_4ch_bridge_sdb,   x"00310000"),   -- FMC250m_4ch control 1 port
+                                                                                 x"00310000"),   -- Position Calc Core 1 control port
+     c_slv_fmc250m_4ch_1_id    => f_sdb_embed_bridge(c_fmc250m_4ch_bridge_sdb,   x"00320000"),   -- FMC250m_4ch control 1 port
      c_slv_acq_core_0_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
      c_slv_pos_calc_2_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00340000"),   -- Position Calc Core 2 control port
