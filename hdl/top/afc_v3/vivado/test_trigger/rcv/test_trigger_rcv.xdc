@@ -62,3 +62,29 @@ set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[6]}]
 
 set_property PACKAGE_PIN AP9 [get_ports {direction_o[7]}]
 set_property IOSTANDARD LVCMOS15  [get_ports {direction_o[7]}]
+
+#Pulses output to FMC
+
+set_property PACKAGE_PIN L5 [get_ports {pulse_o[0]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[0]}]
+
+set_property PACKAGE_PIN K5 [get_ports {pulse_o[1]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[1]}]
+
+set_property PACKAGE_PIN K3 [get_ports {pulse_o[2]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[2]}]
+
+set_property PACKAGE_PIN K2 [get_ports {pulse_o[3]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[3]}]
+
+set_property PACKAGE_PIN F3 [get_ports {pulse_o[4]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[4]}]
+
+set_property PACKAGE_PIN F2 [get_ports {pulse_o[5]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[5]}]
+
+set_property PACKAGE_PIN J4 [get_ports {pulse_o[6]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[6]}]
+
+set_property PACKAGE_PIN J3 [get_ports {pulse_o[7]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {pulse_o[7]}]

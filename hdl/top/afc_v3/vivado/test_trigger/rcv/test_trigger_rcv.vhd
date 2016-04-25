@@ -5,7 +5,7 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2015-11-11
--- Last update: 2016-01-22
+-- Last update: 2016-04-25
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,7 +51,8 @@ entity test_trigger_rcv is
     sys_clk_p_i : in  std_logic;
     sys_clk_n_i : in  std_logic;
     trigger_i   : in  std_logic_vector(7 downto 0);
-    direction_o : out std_logic_vector(7 downto 0)
+    direction_o : out std_logic_vector(7 downto 0);
+    pulse_o     : out std_logic_vector(7 downto 0)
     );
 end test_trigger_rcv;
 
@@ -239,6 +240,9 @@ begin
         pulse_o => pulse(i));
 
   end generate gen_trigger;
+
+  -- Connect pulses signals to the output
+  pulse_o <= pulse;
 
   -----------------------------------------------------------------------------
   -- State Machine
