@@ -1663,6 +1663,61 @@ package dbe_wishbone_pkg is
   );
   end component;
 
+  component wb_trigger is
+    generic (
+      g_interface_mode      : t_wishbone_interface_mode      := CLASSIC;
+      g_address_granularity : t_wishbone_address_granularity := WORD;
+      g_width_bus_size      : positive;
+      g_rcv_len_bus_width   : positive;
+      g_transm_len_bus_width : positive;
+      g_sync_edge            : string;
+      g_trig_num             : positive;
+      g_counter_wid          : positive);
+    port (
+      clk_i               : in    std_logic;
+      rst_n_i             : in    std_logic;
+      fs_clk_i            : in    std_logic;
+      fs_rst_n_i          : in    std_logic;
+      wb_adr_i            : in    std_logic_vector(5 downto 0)  := (others => '0');
+      wb_dat_i            : in    std_logic_vector(31 downto 0) := (others => '0');
+      wb_dat_o            : out   std_logic_vector(31 downto 0);
+      wb_sel_i            : in    std_logic_vector(3 downto 0)  := (others => '0');
+      wb_we_i             : in    std_logic                     := '0';
+      wb_cyc_i            : in    std_logic                     := '0';
+      wb_stb_i            : in    std_logic                     := '0';
+      wb_ack_o            : out   std_logic;
+      wb_err_o            : out   std_logic;
+      wb_rty_o            : out   std_logic;
+      wb_stall_o          : out   std_logic;
+      trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
+      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
+  end component wb_trigger;
+
+  component xwb_trigger
+    generic (
+      g_width_bus_size       : positive;
+      g_rcv_len_bus_width    : positive;
+      g_transm_len_bus_width : positive;
+      g_sync_edge            : string;
+      g_trig_num             : positive;
+      g_counter_wid          : positive);
+    port (
+      rst_n_i             : in    std_logic;
+      clk_i               : in    std_logic;
+      fs_clk_i            : in    std_logic;
+      fs_rst_n_i          : in    std_logic;
+      wb_slv_i            : in    t_wishbone_slave_in;
+      wb_slv_o            : out   t_wishbone_slave_out;
+      trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
+      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
+  end component ;
+
+
+
   --------------------------------------------------------------------
   -- SDB Devices Structures
   --------------------------------------------------------------------
@@ -1802,5 +1857,22 @@ package dbe_wishbone_pkg is
     version       => x"00000001",
     date          => x"20150309",
     name          => "LNLS_AFCDIAG       ")));
+
+  -- Trigger interface device
+  constant c_xwb_trigger_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"84b6a5ac",
+    version       => x"00000001",
+    date          => x"20160203",
+    name          => "LNLS_TRIGGER       ")));
 
 end dbe_wishbone_pkg;

@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.NUMERIC_STD.all;
 
 package dbe_common_pkg is
 
@@ -49,5 +50,18 @@ package dbe_common_pkg is
       data_i  : in  std_logic;
       pulse_o : out std_logic);
   end component;
-  
+
+
+  component extend_pulse_dyn is
+    generic (
+      g_width_bus_size : natural);
+    port (
+      clk_i         : in  std_logic;
+      rst_n_i       : in  std_logic;
+      pulse_i       : in  std_logic;
+      pulse_width_i : in  unsigned(g_width_bus_size-1 downto 0);
+      extended_o    : out std_logic := '0');
+  end component extend_pulse_dyn;
+
+
 end dbe_common_pkg;
