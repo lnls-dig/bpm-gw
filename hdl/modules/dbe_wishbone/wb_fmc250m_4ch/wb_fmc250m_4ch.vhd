@@ -280,7 +280,7 @@ architecture rtl of wb_fmc250m_4ch is
   -- Number of masters
   constant c_masters                        : natural := 1;            -- Top master.
 
-  constant c_fmc_active_clk_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"000004FF", x"00000300");
+  constant c_fmc_active_clk_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000300");
 
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
   ( 0 => f_sdb_embed_device(c_xwb_fmc250m_4ch_regs_sdb, x"00000000"),   -- Register interface
