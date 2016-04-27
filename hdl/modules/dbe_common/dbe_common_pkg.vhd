@@ -51,7 +51,6 @@ package dbe_common_pkg is
       pulse_o : out std_logic);
   end component;
 
-
   component extend_pulse_dyn is
     generic (
       g_width_bus_size : natural);
@@ -62,6 +61,18 @@ package dbe_common_pkg is
       pulse_width_i : in  unsigned(g_width_bus_size-1 downto 0);
       extended_o    : out std_logic := '0');
   end component extend_pulse_dyn;
+
+  component counter_simple is
+    generic (
+      g_output_width : positive);
+    port (
+      clk_i   : in  std_logic;
+      rst_n_i : in  std_logic;
+      ce_i    : in  std_logic;
+      up_i    : in  std_logic;
+      down_i  : in  std_logic;
+      count_o : out std_logic_vector(g_output_width-1 downto 0));
+  end component counter_simple;
 
 
 end dbe_common_pkg;
