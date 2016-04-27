@@ -1693,7 +1693,7 @@ package dbe_wishbone_pkg is
       trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
       trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
       trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
-  end component wb_trigger;
+  end component;
 
   component xwb_trigger
     generic (
