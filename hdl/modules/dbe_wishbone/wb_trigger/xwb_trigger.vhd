@@ -7,8 +7,6 @@ library work;
 use work.wishbone_pkg.all;
 -- Custom Wishbone Modules
 use work.dbe_wishbone_pkg.all;
--- Wishbone Stream Interface
-use work.wb_stream_pkg.all;
 
 entity xwb_trigger is
   generic
