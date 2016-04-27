@@ -55,7 +55,7 @@ end xwb_trigger;
 architecture rtl of xwb_trigger is
 begin
 
-  cmp_wb_trigger : entity work.wb_trigger
+  cmp_wb_trigger : wb_trigger
     generic map (
       g_interface_mode       => g_interface_mode,
       g_address_granularity  => g_address_granularity,

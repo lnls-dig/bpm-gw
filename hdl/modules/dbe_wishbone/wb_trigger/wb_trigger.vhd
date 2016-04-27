@@ -210,7 +210,7 @@ begin  -- architecture rtl
   resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size) <= (others => '0');
 
 
-  wb_slave_trigger_1 : entity work.wb_slave_trigger
+  wb_slave_trigger_1 : wb_slave_trigger
     port map (
       rst_n_i    => rst_n_i,
       clk_sys_i  => clk_i,
@@ -397,7 +397,7 @@ begin  -- architecture rtl
     -- Transmitter and Receiver Cores
     --------------------------------
 
-    trigger_transm : entity work.extend_pulse_dyn
+    trigger_transm : extend_pulse_dyn
       generic map (
         g_width_bus_size => g_width_bus_size)
       port map (
@@ -407,7 +407,7 @@ begin  -- architecture rtl
         pulse_width_i => unsigned(ch_regs_out(i).ch_cfg_transm_len),
         extended_o    => extended_transm(i));
 
-    trigger_rcv_1 : entity work.trigger_rcv
+    trigger_rcv_1 : trigger_rcv
       generic map (
         g_glitch_len_width => g_rcv_len_bus_width,
         g_sync_edge        => g_sync_edge)
@@ -434,7 +434,7 @@ begin  -- architecture rtl
     -- Pulse counters
     --------------------------------
 
-    counter_rcv : entity work.counter_simple
+    counter_rcv : counter_simple
       generic map (
         g_output_width => g_counter_wid)
       port map (
@@ -445,7 +445,7 @@ begin  -- architecture rtl
         down_i  => '0',
         count_o => ch_regs_in(i).ch_count_rcv);
 
-    counter_transm : entity work.counter_simple
+    counter_transm : counter_simple
       generic map (
         g_output_width => g_counter_wid)
       port map (
