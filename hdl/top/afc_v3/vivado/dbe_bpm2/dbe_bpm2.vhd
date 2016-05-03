@@ -1744,10 +1744,12 @@ begin
     g_monit1_cic_delay                      => c_pos_calc_monit1_cic_delay,
     g_monit1_cic_stages                     => c_pos_calc_monit1_cic_stages,
     g_monit1_ratio                          => c_pos_calc_monit1_ratio,
+    g_monit1_cic_ratio                      => c_pos_calc_monit1_cic_ratio,
 
     g_monit2_cic_delay                      => c_pos_calc_monit2_cic_delay,
     g_monit2_cic_stages                     => c_pos_calc_monit2_cic_stages,
     g_monit2_ratio                          => c_pos_calc_monit2_ratio,
+    g_monit2_cic_ratio                      => c_pos_calc_monit2_cic_ratio,
 
     -- Cordic setup
     g_tbt_cordic_stages                     => c_pos_calc_tbt_cordic_stages,
@@ -1935,10 +1937,12 @@ begin
     g_monit1_cic_delay                      => c_pos_calc_monit1_cic_delay,
     g_monit1_cic_stages                     => c_pos_calc_monit1_cic_stages,
     g_monit1_ratio                          => c_pos_calc_monit1_ratio,
+    g_monit1_cic_ratio                      => c_pos_calc_monit1_cic_ratio,
 
     g_monit2_cic_delay                      => c_pos_calc_monit2_cic_delay,
     g_monit2_cic_stages                     => c_pos_calc_monit2_cic_stages,
     g_monit2_ratio                          => c_pos_calc_monit2_ratio,
+    g_monit2_cic_ratio                      => c_pos_calc_monit2_cic_ratio,
 
     g_monit_decim_width                     => c_pos_calc_monit_decim_width,
 
