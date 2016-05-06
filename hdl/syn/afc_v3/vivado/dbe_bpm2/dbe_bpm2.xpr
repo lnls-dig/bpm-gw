@@ -1362,12 +1362,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cic/strobe_gen.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -2425,37 +2419,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.mif">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.mif">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.mif">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/dds_cos_lut.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2495,19 +2465,31 @@
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.upgrade_log"/>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.upgrade_log"/>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"/>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.coe">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.coe">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_18_65/cos_lut_uvx_18_65.coe">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -2536,18 +2518,6 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.coe">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.coe">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <Config>
@@ -2648,8 +2618,8 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="cos_lut_uvx_16_65" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cos_lut_uvx_16_65">
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.xci">
+    <FileSet Name="cos_lut_uvx_18_65" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cos_lut_uvx_18_65">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_18_65/cos_lut_uvx_18_65.xci">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -2657,12 +2627,12 @@
         </FileInfo>
       </File>
       <Config>
-        <Option Name="TopModule" Val="cos_lut_uvx_16_65"/>
+        <Option Name="TopModule" Val="cos_lut_uvx_18_65"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="sin_lut_uvx_16_65" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sin_lut_uvx_16_65">
-      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.xci">
+    <FileSet Name="sin_lut_uvx_18_65" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sin_lut_uvx_18_65">
+      <File Path="$PPRDIR/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.xci">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -2670,7 +2640,7 @@
         </FileInfo>
       </File>
       <Config>
-        <Option Name="TopModule" Val="sin_lut_uvx_16_65"/>
+        <Option Name="TopModule" Val="sin_lut_uvx_18_65"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -2742,13 +2712,13 @@
         <Step Id="synth_design"/>
       </Strategy>
     </Run>
-    <Run Id="cos_lut_uvx_16_65_synth_1" Type="Ft3:Synth" SrcSet="cos_lut_uvx_16_65" Part="xc7a200tffg1156-2" ConstrsSet="cos_lut_uvx_16_65" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/cos_lut_uvx_16_65_synth_1">
+    <Run Id="cos_lut_uvx_18_65_synth_1" Type="Ft3:Synth" SrcSet="cos_lut_uvx_18_65" Part="xc7a200tffg1156-2" ConstrsSet="cos_lut_uvx_18_65" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/cos_lut_uvx_18_65_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
         <Step Id="synth_design"/>
       </Strategy>
     </Run>
-    <Run Id="sin_lut_uvx_16_65_synth_1" Type="Ft3:Synth" SrcSet="sin_lut_uvx_16_65" Part="xc7a200tffg1156-2" ConstrsSet="sin_lut_uvx_16_65" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/sin_lut_uvx_16_65_synth_1">
+    <Run Id="sin_lut_uvx_18_65_synth_1" Type="Ft3:Synth" SrcSet="sin_lut_uvx_18_65" Part="xc7a200tffg1156-2" ConstrsSet="sin_lut_uvx_18_65" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/sin_lut_uvx_18_65_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
         <Step Id="synth_design"/>
@@ -2870,7 +2840,7 @@
         <Step Id="write_bitstream"/>
       </Strategy>
     </Run>
-    <Run Id="cos_lut_uvx_16_65_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-2" ConstrsSet="cos_lut_uvx_16_65" Description="Vivado Implementation Defaults" SynthRun="cos_lut_uvx_16_65_synth_1">
+    <Run Id="cos_lut_uvx_18_65_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-2" ConstrsSet="cos_lut_uvx_18_65" Description="Vivado Implementation Defaults" SynthRun="cos_lut_uvx_18_65_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
         <Step Id="init_design"/>
@@ -2884,7 +2854,7 @@
         <Step Id="write_bitstream"/>
       </Strategy>
     </Run>
-    <Run Id="sin_lut_uvx_16_65_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-2" ConstrsSet="sin_lut_uvx_16_65" Description="Vivado Implementation Defaults" SynthRun="sin_lut_uvx_16_65_synth_1">
+    <Run Id="sin_lut_uvx_18_65_impl_1" Type="Ft2:EntireDesign" Part="xc7a200tffg1156-2" ConstrsSet="sin_lut_uvx_18_65" Description="Vivado Implementation Defaults" SynthRun="sin_lut_uvx_18_65_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
         <Step Id="init_design"/>
