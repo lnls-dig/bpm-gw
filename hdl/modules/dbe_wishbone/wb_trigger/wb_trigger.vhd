@@ -62,7 +62,9 @@ entity wb_trigger is
     g_rcv_len_bus_width    : positive                       := 8;
     g_transm_len_bus_width : positive                       := 8;
     g_sync_edge            : string                         := "positive";
-    g_trig_num             : positive                       := 8;
+    g_trig_num             : positive                       := 8; -- channels facing outside the FPGA
+    g_intern_num           : positive                       := 8; -- channels facing inside the FPGA
+    g_rcv_intern_num       : positive                       := 2; -- signals from inside the FPGA that can be used as input at a rcv mux
     g_counter_wid          : positive                       := 16
     );
 
@@ -97,7 +99,8 @@ entity wb_trigger is
     trig_dir_o : out std_logic_vector(g_trig_num-1 downto 0);
 
     trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-    trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
+    trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0);
+    trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
     trig_b              : inout std_logic_vector(g_trig_num-1 downto 0)
     );
 

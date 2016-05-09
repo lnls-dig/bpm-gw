@@ -18,6 +18,8 @@ entity xwb_trigger is
       g_transm_len_bus_width : positive                       := 8;
       g_sync_edge            : string                         := "positive";
       g_trig_num             : positive                       := 8;
+      g_intern_num           : positive                       := 8;
+      g_rcv_intern_num       : positive                       := 2;
       g_counter_wid          : positive                       := 16
       );
   port
@@ -34,16 +36,19 @@ entity xwb_trigger is
       wb_slv_i : in  t_wishbone_slave_in;
       wb_slv_o : out t_wishbone_slave_out;
 
+      -----------------------------
+      -- External ports
+      -----------------------------
 
       trig_b     : inout std_logic_vector(g_trig_num-1 downto 0);
       trig_dir_o : out   std_logic_vector(g_trig_num-1 downto 0);
 
       -----------------------------
-      -- External ports
+      -- Internal ports
       -----------------------------
 
+      trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);
 
-      ---- Trigger
       trig_pulse_transm_i : in  std_logic_vector(g_trig_num-1 downto 0);
       trig_pulse_rcv_o    : out std_logic_vector(g_trig_num-1 downto 0)
       );
@@ -62,6 +67,8 @@ begin
       g_transm_len_bus_width => g_transm_len_bus_width,
       g_sync_edge            => g_sync_edge,
       g_trig_num             => g_trig_num,
+      g_intern_num           => g_intern_num,
+      g_rcv_intern_num       => g_rcv_intern_num,
       g_counter_wid          => g_counter_wid)
     port map (
       clk_i      => clk_i,
@@ -84,6 +91,7 @@ begin
       trig_dir_o          => trig_dir_o,
       trig_pulse_transm_i => trig_pulse_transm_i,
       trig_pulse_rcv_o    => trig_pulse_rcv_o,
+      trig_rcv_intern_i   => trig_rcv_intern_i,
       trig_b              => trig_b);
 
   wb_slv_o.int <= '0';

@@ -1665,43 +1665,50 @@ package dbe_wishbone_pkg is
 
   component wb_trigger is
     generic (
-      g_interface_mode      : t_wishbone_interface_mode      := CLASSIC;
-      g_address_granularity : t_wishbone_address_granularity := WORD;
-      g_width_bus_size      : positive;
-      g_rcv_len_bus_width   : positive;
+      g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
+      g_address_granularity  : t_wishbone_address_granularity := WORD;
+      g_width_bus_size       : positive;
+      g_rcv_len_bus_width    : positive;
       g_transm_len_bus_width : positive;
       g_sync_edge            : string;
       g_trig_num             : positive;
+      g_intern_num           : positive;
+      g_rcv_intern_num       : positive;
       g_counter_wid          : positive);
     port (
       clk_i               : in    std_logic;
       rst_n_i             : in    std_logic;
       fs_clk_i            : in    std_logic;
       fs_rst_n_i          : in    std_logic;
-      wb_adr_i            : in    std_logic_vector(5 downto 0)  := (others => '0');
-      wb_dat_i            : in    std_logic_vector(31 downto 0) := (others => '0');
-      wb_dat_o            : out   std_logic_vector(31 downto 0);
-      wb_sel_i            : in    std_logic_vector(3 downto 0)  := (others => '0');
-      wb_we_i             : in    std_logic                     := '0';
-      wb_cyc_i            : in    std_logic                     := '0';
-      wb_stb_i            : in    std_logic                     := '0';
+      wb_adr_i            : in    std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+      wb_dat_i            : in    std_logic_vector(c_wishbone_data_width-1 downto 0)    := (others => '0');
+      wb_dat_o            : out   std_logic_vector(c_wishbone_data_width-1 downto 0);
+      wb_sel_i            : in    std_logic_vector(c_wishbone_data_width/8-1 downto 0)  := (others => '0');
+      wb_we_i             : in    std_logic                                             := '0';
+      wb_cyc_i            : in    std_logic                                             := '0';
+      wb_stb_i            : in    std_logic                                             := '0';
       wb_ack_o            : out   std_logic;
       wb_err_o            : out   std_logic;
       wb_rty_o            : out   std_logic;
       wb_stall_o          : out   std_logic;
       trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
       trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0);
+      trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);
       trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
-  end component;
+  end component wb_trigger;
 
-  component xwb_trigger
+  component xwb_trigger is
     generic (
+      g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
+      g_address_granularity  : t_wishbone_address_granularity := WORD;
       g_width_bus_size       : positive;
       g_rcv_len_bus_width    : positive;
       g_transm_len_bus_width : positive;
       g_sync_edge            : string;
       g_trig_num             : positive;
+      g_intern_num           : positive;
+      g_rcv_intern_num       : positive;
       g_counter_wid          : positive);
     port (
       rst_n_i             : in    std_logic;
@@ -1710,12 +1717,12 @@ package dbe_wishbone_pkg is
       fs_rst_n_i          : in    std_logic;
       wb_slv_i            : in    t_wishbone_slave_in;
       wb_slv_o            : out   t_wishbone_slave_out;
+      trig_b              : inout std_logic_vector(g_trig_num-1 downto 0);
       trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
+      trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);
       trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
-      trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
-  end component ;
-
+      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0));
+  end component xwb_trigger;
 
 
   --------------------------------------------------------------------
