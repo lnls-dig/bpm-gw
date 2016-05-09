@@ -997,13 +997,13 @@ wb_trig_ch0_ctl_transm_count_rst_o
 wb_dat_o[31:0]
 </td>
 <td  class="td_sym_center">
-&nbsp;
+
 </td>
 <td  class="td_pblock_right">
-
+wb_trig_ch0_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
-
+&rArr;
 </td>
 </tr>
 <tr>
@@ -1017,10 +1017,10 @@ wb_cyc_i
 
 </td>
 <td  class="td_pblock_right">
-<b>Channel 0 Configuration Parameters:</b>
+wb_trig_ch0_ctl_transm_out_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
-
+&rArr;
 </td>
 </tr>
 <tr>
@@ -1029,40 +1029,6 @@ wb_cyc_i
 </td>
 <td  class="td_pblock_left">
 wb_sel_i[3:0]
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_ch0_cfg_rcv_len_o[7:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-&rarr;
-</td>
-<td  class="td_pblock_left">
-wb_stb_i
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-wb_trig_ch0_cfg_transm_len_o[7:0]
-</td>
-<td  class="td_arrow_right">
-&rArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-&rarr;
-</td>
-<td  class="td_pblock_left">
-wb_we_i
 </td>
 <td  class="td_sym_center">
 &nbsp;
@@ -1076,10 +1042,78 @@ wb_we_i
 </tr>
 <tr>
 <td  class="td_arrow_left">
+&rarr;
+</td>
+<td  class="td_pblock_left">
+wb_stb_i
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 0 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+&rarr;
+</td>
+<td  class="td_pblock_left">
+wb_we_i
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch0_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
 &larr;
 </td>
 <td  class="td_pblock_left">
 wb_ack_o
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch0_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+&larr;
+</td>
+<td  class="td_pblock_left">
+wb_stall_o
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
 </td>
 <td  class="td_sym_center">
 
@@ -1093,10 +1127,10 @@ wb_ack_o
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&larr;
+
 </td>
 <td  class="td_pblock_left">
-wb_stall_o
+
 </td>
 <td  class="td_sym_center">
 
@@ -1208,6 +1242,40 @@ wb_trig_ch1_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch1_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch1_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -1439,6 +1507,40 @@ wb_trig_ch2_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch2_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch2_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -1650,6 +1752,40 @@ wb_trig_ch3_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch3_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch3_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -1881,6 +2017,40 @@ wb_trig_ch4_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch4_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch4_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -2092,6 +2262,40 @@ wb_trig_ch5_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch5_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch5_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -2323,6 +2527,40 @@ wb_trig_ch6_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch6_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch6_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -2534,6 +2772,40 @@ wb_trig_ch7_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch7_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch7_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -2765,6 +3037,40 @@ wb_trig_ch8_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch8_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch8_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -2976,6 +3282,40 @@ wb_trig_ch9_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch9_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch9_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -3207,6 +3547,40 @@ wb_trig_ch10_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch10_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch10_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -3418,6 +3792,40 @@ wb_trig_ch11_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch11_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch11_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -3649,6 +4057,40 @@ wb_trig_ch12_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch12_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch12_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -3860,6 +4302,40 @@ wb_trig_ch13_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch13_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch13_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
 </td>
 </tr>
 <tr>
@@ -4091,6 +4567,40 @@ wb_trig_ch14_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch14_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch14_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -4312,6 +4822,40 @@ wb_trig_ch15_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch15_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch15_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
 &nbsp;
 </td>
 <td  class="td_pblock_right">
@@ -4507,29 +5051,29 @@ CH0_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -4561,29 +5105,29 @@ CH0_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -4708,6 +5252,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH0_CFG"></a>
 <h3><a name="sect_3_2">3.2. Channel 0 Configuration Parameters</a></h3>
@@ -5297,29 +5849,29 @@ CH1_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -5351,29 +5903,29 @@ CH1_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -5498,6 +6050,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH1_CFG"></a>
 <h3><a name="sect_3_5">3.5. Channel 1 Configuration Parameters</a></h3>
@@ -6087,29 +6647,29 @@ CH2_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -6141,29 +6701,29 @@ CH2_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -6288,6 +6848,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH2_CFG"></a>
 <h3><a name="sect_3_8">3.8. Channel 2 Configuration Parameters</a></h3>
@@ -6877,29 +7445,29 @@ CH3_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -6931,29 +7499,29 @@ CH3_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -7078,6 +7646,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH3_CFG"></a>
 <h3><a name="sect_3_11">3.11. Channel 3 Configuration Parameters</a></h3>
@@ -7667,29 +8243,29 @@ CH4_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -7721,29 +8297,29 @@ CH4_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -7868,6 +8444,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH4_CFG"></a>
 <h3><a name="sect_3_14">3.14. Channel 4 Configuration Parameters</a></h3>
@@ -8457,29 +9041,29 @@ CH5_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -8511,29 +9095,29 @@ CH5_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -8658,6 +9242,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH5_CFG"></a>
 <h3><a name="sect_3_17">3.17. Channel 5 Configuration Parameters</a></h3>
@@ -9247,29 +9839,29 @@ CH6_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -9301,29 +9893,29 @@ CH6_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -9448,6 +10040,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH6_CFG"></a>
 <h3><a name="sect_3_20">3.20. Channel 6 Configuration Parameters</a></h3>
@@ -10037,29 +10637,29 @@ CH7_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -10091,29 +10691,29 @@ CH7_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -10238,6 +10838,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH7_CFG"></a>
 <h3><a name="sect_3_23">3.23. Channel 7 Configuration Parameters</a></h3>
@@ -10827,29 +11435,29 @@ CH8_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -10881,29 +11489,29 @@ CH8_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -11028,6 +11636,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH8_CFG"></a>
 <h3><a name="sect_3_26">3.26. Channel 8 Configuration Parameters</a></h3>
@@ -11617,29 +12233,29 @@ CH9_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -11671,29 +12287,29 @@ CH9_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -11818,6 +12434,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH9_CFG"></a>
 <h3><a name="sect_3_29">3.29. Channel 9 Configuration Parameters</a></h3>
@@ -12407,29 +13031,29 @@ CH10_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -12461,29 +13085,29 @@ CH10_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -12608,6 +13232,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH10_CFG"></a>
 <h3><a name="sect_3_32">3.32. Channel 10 Configuration Parameters</a></h3>
@@ -13197,29 +13829,29 @@ CH11_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -13251,29 +13883,29 @@ CH11_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -13398,6 +14030,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH11_CFG"></a>
 <h3><a name="sect_3_35">3.35. Channel 11 Configuration Parameters</a></h3>
@@ -13987,29 +14627,29 @@ CH12_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -14041,29 +14681,29 @@ CH12_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -14188,6 +14828,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH12_CFG"></a>
 <h3><a name="sect_3_38">3.38. Channel 12 Configuration Parameters</a></h3>
@@ -14777,29 +15425,29 @@ CH13_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -14831,29 +15479,29 @@ CH13_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -14978,6 +15626,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH13_CFG"></a>
 <h3><a name="sect_3_41">3.41. Channel 13 Configuration Parameters</a></h3>
@@ -15567,29 +16223,29 @@ CH14_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -15621,29 +16277,29 @@ CH14_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -15768,6 +16424,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH14_CFG"></a>
 <h3><a name="sect_3_44">3.44. Channel 14 Configuration Parameters</a></h3>
@@ -16357,29 +17021,29 @@ CH15_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -16411,29 +17075,29 @@ CH15_CTL
 </td>
 </tr>
 <tr>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
-<td  class="td_unused">
--
+<td >
+
 </td>
 </tr>
 </table>
@@ -16558,6 +17222,14 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
 </ul>
 <a name="CH15_CFG"></a>
 <h3><a name="sect_3_47">3.47. Channel 15 Configuration Parameters</a></h3>
