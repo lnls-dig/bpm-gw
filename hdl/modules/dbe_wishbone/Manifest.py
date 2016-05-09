@@ -2,6 +2,7 @@ files = [ "dbe_wishbone_pkg.vhd" ];
 
 modules = { "local" : [
                         "wb_stream",
+			"wb_trigger",
                         "wb_fmc150",
                         "wb_fmc516",
                         "wb_fmc130m_4ch",
