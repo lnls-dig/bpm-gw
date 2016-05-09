@@ -39,17 +39,17 @@ package dbe_common_pkg is
   end component;
 
 
-  component trigger_rcv
+  component trigger_rcv is
     generic (
       g_glitch_len_width : positive;
-      g_pulse_width      : positive);
+      g_sync_edge        : string);
     port (
       clk_i   : in  std_logic;
-      rst_i   : in  std_logic;
+      rst_n_i : in  std_logic;
       len_i   : in  std_logic_vector(g_glitch_len_width-1 downto 0);
       data_i  : in  std_logic;
       pulse_o : out std_logic);
-  end component;
+  end component trigger_rcv;
 
   component extend_pulse_dyn is
     generic (
