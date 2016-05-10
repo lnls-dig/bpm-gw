@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-02-02
--- Last update: 2016-02-04
+-- Last update: 2016-05-10
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -116,31 +116,6 @@ entity wb_trigger_top is
 end wb_trigger_top;
 
 architecture structural of wb_trigger_top is
-
-  -------------------------------------------------------------------------------
-  -- Core
-  -------------------------------------------------------------------------------
-
-  component xwb_trigger is
-    generic (
-      g_width_bus_size       : positive;
-      g_rcv_len_bus_width    : positive;
-      g_transm_len_bus_width : positive;
-      g_sync_edge            : string;
-      g_trig_num             : positive;
-      g_counter_wid          : positive);
-    port (
-      rst_n_i             : in    std_logic;
-      clk_i               : in    std_logic;
-      fs_clk_i            : in    std_logic;
-      fs_rst_n_i          : in    std_logic;
-      wb_slv_i            : in    t_wishbone_slave_in;
-      wb_slv_o            : out   t_wishbone_slave_out;
-      trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0);
-      trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
-  end component xwb_trigger;
 
 
 -------------------------------------------------------------------------------
