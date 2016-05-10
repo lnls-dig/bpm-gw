@@ -526,4 +526,25 @@ begin  -- architecture rtl
       end if;
     end process;
   end generate mux_rcv;
+
+  -------------------------------------
+  --Generate transmitter multiplexers--
+  -------------------------------------
+  mux_transm: for it in g_trig_num-1 downto 0 generate
+    process is
+      variable sel : integer := 0;
+    begin  -- process
+      sel := to_integer(unsigned(ch_regs_out(it).ch_ctl_transm_out_sel));
+
+      -- check if sel is bigger than internal channels
+      if (sel >= g_intern_num)   then
+        transm_mux_out(it) <= transm_mux_bus(0);
+
+      else
+        transm_mux_out(it) <= transm_mux_bus(sel);
+
+      end if;
+    end process;
+  end generate mux_transm;
+
 end architecture rtl;
