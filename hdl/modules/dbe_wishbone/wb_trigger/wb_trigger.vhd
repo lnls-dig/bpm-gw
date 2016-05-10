@@ -153,6 +153,7 @@ architecture rtl of wb_trigger is
     ch_ctl_dir                : std_logic;
     ch_ctl_rcv_count_rst_n    : std_logic;
     ch_ctl_transm_count_rst_n : std_logic;
+    ch_ctl_rcv_src            : std_logic;
     ch_ctl_rcv_in_sel         : std_logic_vector(rcv_sel_buf_len-1 downto 0);
     ch_ctl_transm_out_sel     : std_logic_vector(transm_sel_buf_len-1 downto 0);
     ch_cfg_rcv_len            : std_logic_vector(7 downto 0);
@@ -174,7 +175,7 @@ architecture rtl of wb_trigger is
   signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
-  signal rcv_mux_bus : std_logic_vector((g_trig_num + g_rcv_intern_num)-1 downto 0);  -- input of rcv multiplexers
+  signal rcv_mux_bus    : std_logic_vector(g_trig_num-1 downto 0);  -- input of rcv multiplexers
   signal transm_mux_bus : std_logic_vector(g_intern_num-1 downto 0);  -- input of transm multiplexers
 
   signal rcv_mux_out    : std_logic_vector(g_intern_num-1 downto 0);
@@ -249,6 +250,7 @@ begin  -- architecture rtl
   ch_regs_out(0).ch_ctl_dir                <= regs_out.ch0_ctl_dir_o;
   ch_regs_out(0).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch0_ctl_rcv_count_rst_o);
   ch_regs_out(0).ch_ctl_transm_count_rst_n <= not(regs_out.ch0_ctl_transm_count_rst_o);
+  ch_regs_out(0).ch_ctl_rcv_src            <= regs_out.ch0_ctl_rcv_src_o;
   ch_regs_out(0).ch_ctl_rcv_in_sel         <= regs_out.ch0_ctl_rcv_in_sel_o;
   ch_regs_out(0).ch_ctl_transm_out_sel     <= regs_out.ch0_ctl_transm_out_sel_o;
   ch_regs_out(0).ch_cfg_rcv_len            <= regs_out.ch0_cfg_rcv_len_o;
@@ -257,6 +259,7 @@ begin  -- architecture rtl
   ch_regs_out(1).ch_ctl_dir                <= regs_out.ch1_ctl_dir_o;
   ch_regs_out(1).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch1_ctl_rcv_count_rst_o);
   ch_regs_out(1).ch_ctl_transm_count_rst_n <= not(regs_out.ch1_ctl_transm_count_rst_o);
+  ch_regs_out(1).ch_ctl_rcv_src            <= regs_out.ch1_ctl_rcv_src_o;
   ch_regs_out(1).ch_ctl_rcv_in_sel         <= regs_out.ch1_ctl_rcv_in_sel_o;
   ch_regs_out(1).ch_ctl_transm_out_sel     <= regs_out.ch1_ctl_transm_out_sel_o;
   ch_regs_out(1).ch_cfg_rcv_len            <= regs_out.ch1_cfg_rcv_len_o;
@@ -265,6 +268,7 @@ begin  -- architecture rtl
   ch_regs_out(2).ch_ctl_dir                <= regs_out.ch2_ctl_dir_o;
   ch_regs_out(2).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch2_ctl_rcv_count_rst_o);
   ch_regs_out(2).ch_ctl_transm_count_rst_n <= not(regs_out.ch2_ctl_transm_count_rst_o);
+  ch_regs_out(2).ch_ctl_rcv_src            <= regs_out.ch2_ctl_rcv_src_o;
   ch_regs_out(2).ch_ctl_rcv_in_sel         <= regs_out.ch2_ctl_rcv_in_sel_o;
   ch_regs_out(2).ch_ctl_transm_out_sel     <= regs_out.ch2_ctl_transm_out_sel_o;
   ch_regs_out(2).ch_cfg_rcv_len            <= regs_out.ch2_cfg_rcv_len_o;
@@ -273,6 +277,7 @@ begin  -- architecture rtl
   ch_regs_out(3).ch_ctl_dir                <= regs_out.ch3_ctl_dir_o;
   ch_regs_out(3).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch3_ctl_rcv_count_rst_o);
   ch_regs_out(3).ch_ctl_transm_count_rst_n <= not(regs_out.ch3_ctl_transm_count_rst_o);
+  ch_regs_out(3).ch_ctl_rcv_src            <= regs_out.ch3_ctl_rcv_src_o;
   ch_regs_out(3).ch_ctl_rcv_in_sel         <= regs_out.ch3_ctl_rcv_in_sel_o;
   ch_regs_out(3).ch_ctl_transm_out_sel     <= regs_out.ch3_ctl_transm_out_sel_o;
   ch_regs_out(3).ch_cfg_rcv_len            <= regs_out.ch3_cfg_rcv_len_o;
@@ -281,6 +286,7 @@ begin  -- architecture rtl
   ch_regs_out(4).ch_ctl_dir                <= regs_out.ch4_ctl_dir_o;
   ch_regs_out(4).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch4_ctl_rcv_count_rst_o);
   ch_regs_out(4).ch_ctl_transm_count_rst_n <= not(regs_out.ch4_ctl_transm_count_rst_o);
+  ch_regs_out(4).ch_ctl_rcv_src            <= regs_out.ch4_ctl_rcv_src_o;
   ch_regs_out(4).ch_ctl_rcv_in_sel         <= regs_out.ch4_ctl_rcv_in_sel_o;
   ch_regs_out(4).ch_ctl_transm_out_sel     <= regs_out.ch4_ctl_transm_out_sel_o;
   ch_regs_out(4).ch_cfg_rcv_len            <= regs_out.ch4_cfg_rcv_len_o;
@@ -289,6 +295,7 @@ begin  -- architecture rtl
   ch_regs_out(5).ch_ctl_dir                <= regs_out.ch5_ctl_dir_o;
   ch_regs_out(5).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch5_ctl_rcv_count_rst_o);
   ch_regs_out(5).ch_ctl_transm_count_rst_n <= not(regs_out.ch5_ctl_transm_count_rst_o);
+  ch_regs_out(5).ch_ctl_rcv_src            <= regs_out.ch5_ctl_rcv_src_o;
   ch_regs_out(5).ch_ctl_rcv_in_sel         <= regs_out.ch5_ctl_rcv_in_sel_o;
   ch_regs_out(5).ch_ctl_transm_out_sel     <= regs_out.ch5_ctl_transm_out_sel_o;
   ch_regs_out(5).ch_cfg_rcv_len            <= regs_out.ch5_cfg_rcv_len_o;
@@ -297,6 +304,7 @@ begin  -- architecture rtl
   ch_regs_out(6).ch_ctl_dir                <= regs_out.ch6_ctl_dir_o;
   ch_regs_out(6).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch6_ctl_rcv_count_rst_o);
   ch_regs_out(6).ch_ctl_transm_count_rst_n <= not(regs_out.ch6_ctl_transm_count_rst_o);
+  ch_regs_out(6).ch_ctl_rcv_src            <= regs_out.ch6_ctl_rcv_src_o;
   ch_regs_out(6).ch_ctl_rcv_in_sel         <= regs_out.ch6_ctl_rcv_in_sel_o;
   ch_regs_out(6).ch_ctl_transm_out_sel     <= regs_out.ch6_ctl_transm_out_sel_o;
   ch_regs_out(6).ch_cfg_rcv_len            <= regs_out.ch6_cfg_rcv_len_o;
@@ -305,6 +313,7 @@ begin  -- architecture rtl
   ch_regs_out(7).ch_ctl_dir                <= regs_out.ch7_ctl_dir_o;
   ch_regs_out(7).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch7_ctl_rcv_count_rst_o);
   ch_regs_out(7).ch_ctl_transm_count_rst_n <= not(regs_out.ch7_ctl_transm_count_rst_o);
+  ch_regs_out(7).ch_ctl_rcv_src            <= regs_out.ch7_ctl_rcv_src_o;
   ch_regs_out(7).ch_ctl_rcv_in_sel         <= regs_out.ch7_ctl_rcv_in_sel_o;
   ch_regs_out(7).ch_ctl_transm_out_sel     <= regs_out.ch7_ctl_transm_out_sel_o;
   ch_regs_out(7).ch_cfg_rcv_len            <= regs_out.ch7_cfg_rcv_len_o;
@@ -313,6 +322,7 @@ begin  -- architecture rtl
   ch_regs_out(8).ch_ctl_dir                <= regs_out.ch8_ctl_dir_o;
   ch_regs_out(8).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch8_ctl_rcv_count_rst_o);
   ch_regs_out(8).ch_ctl_transm_count_rst_n <= not(regs_out.ch8_ctl_transm_count_rst_o);
+  ch_regs_out(8).ch_ctl_rcv_src            <= regs_out.ch8_ctl_rcv_src_o;
   ch_regs_out(8).ch_ctl_rcv_in_sel         <= regs_out.ch8_ctl_rcv_in_sel_o;
   ch_regs_out(8).ch_ctl_transm_out_sel     <= regs_out.ch8_ctl_transm_out_sel_o;
   ch_regs_out(8).ch_cfg_rcv_len            <= regs_out.ch8_cfg_rcv_len_o;
@@ -321,6 +331,7 @@ begin  -- architecture rtl
   ch_regs_out(9).ch_ctl_dir                <= regs_out.ch9_ctl_dir_o;
   ch_regs_out(9).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch9_ctl_rcv_count_rst_o);
   ch_regs_out(9).ch_ctl_transm_count_rst_n <= not(regs_out.ch9_ctl_transm_count_rst_o);
+  ch_regs_out(9).ch_ctl_rcv_src            <= regs_out.ch9_ctl_rcv_src_o;
   ch_regs_out(9).ch_ctl_rcv_in_sel         <= regs_out.ch9_ctl_rcv_in_sel_o;
   ch_regs_out(9).ch_ctl_transm_out_sel     <= regs_out.ch9_ctl_transm_out_sel_o;
   ch_regs_out(9).ch_cfg_rcv_len            <= regs_out.ch9_cfg_rcv_len_o;
@@ -329,6 +340,7 @@ begin  -- architecture rtl
   ch_regs_out(10).ch_ctl_dir                <= regs_out.ch10_ctl_dir_o;
   ch_regs_out(10).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch10_ctl_rcv_count_rst_o);
   ch_regs_out(10).ch_ctl_transm_count_rst_n <= not(regs_out.ch10_ctl_transm_count_rst_o);
+  ch_regs_out(10).ch_ctl_rcv_src            <= regs_out.ch10_ctl_rcv_src_o;
   ch_regs_out(10).ch_ctl_rcv_in_sel         <= regs_out.ch10_ctl_rcv_in_sel_o;
   ch_regs_out(10).ch_ctl_transm_out_sel     <= regs_out.ch10_ctl_transm_out_sel_o;
   ch_regs_out(10).ch_cfg_rcv_len            <= regs_out.ch10_cfg_rcv_len_o;
@@ -337,6 +349,7 @@ begin  -- architecture rtl
   ch_regs_out(11).ch_ctl_dir                <= regs_out.ch11_ctl_dir_o;
   ch_regs_out(11).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch11_ctl_rcv_count_rst_o);
   ch_regs_out(11).ch_ctl_transm_count_rst_n <= not(regs_out.ch11_ctl_transm_count_rst_o);
+  ch_regs_out(11).ch_ctl_rcv_src            <= regs_out.ch11_ctl_rcv_src_o;
   ch_regs_out(11).ch_ctl_rcv_in_sel         <= regs_out.ch11_ctl_rcv_in_sel_o;
   ch_regs_out(11).ch_ctl_transm_out_sel     <= regs_out.ch11_ctl_transm_out_sel_o;
   ch_regs_out(11).ch_cfg_rcv_len            <= regs_out.ch11_cfg_rcv_len_o;
@@ -345,6 +358,7 @@ begin  -- architecture rtl
   ch_regs_out(12).ch_ctl_dir                <= regs_out.ch12_ctl_dir_o;
   ch_regs_out(12).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch12_ctl_rcv_count_rst_o);
   ch_regs_out(12).ch_ctl_transm_count_rst_n <= not(regs_out.ch12_ctl_transm_count_rst_o);
+  ch_regs_out(12).ch_ctl_rcv_src            <= regs_out.ch12_ctl_rcv_src_o;
   ch_regs_out(12).ch_ctl_rcv_in_sel         <= regs_out.ch12_ctl_rcv_in_sel_o;
   ch_regs_out(12).ch_ctl_transm_out_sel     <= regs_out.ch12_ctl_transm_out_sel_o;
   ch_regs_out(12).ch_cfg_rcv_len            <= regs_out.ch12_cfg_rcv_len_o;
@@ -353,6 +367,7 @@ begin  -- architecture rtl
   ch_regs_out(13).ch_ctl_dir                <= regs_out.ch13_ctl_dir_o;
   ch_regs_out(13).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch13_ctl_rcv_count_rst_o);
   ch_regs_out(13).ch_ctl_transm_count_rst_n <= not(regs_out.ch13_ctl_transm_count_rst_o);
+  ch_regs_out(13).ch_ctl_rcv_src            <= regs_out.ch13_ctl_rcv_src_o;
   ch_regs_out(13).ch_ctl_rcv_in_sel         <= regs_out.ch13_ctl_rcv_in_sel_o;
   ch_regs_out(13).ch_ctl_transm_out_sel     <= regs_out.ch13_ctl_transm_out_sel_o;
   ch_regs_out(13).ch_cfg_rcv_len            <= regs_out.ch13_cfg_rcv_len_o;
@@ -361,6 +376,7 @@ begin  -- architecture rtl
   ch_regs_out(14).ch_ctl_dir                <= regs_out.ch14_ctl_dir_o;
   ch_regs_out(14).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch14_ctl_rcv_count_rst_o);
   ch_regs_out(14).ch_ctl_transm_count_rst_n <= not(regs_out.ch14_ctl_transm_count_rst_o);
+  ch_regs_out(14).ch_ctl_rcv_src            <= regs_out.ch14_ctl_rcv_src_o;
   ch_regs_out(14).ch_ctl_rcv_in_sel         <= regs_out.ch14_ctl_rcv_in_sel_o;
   ch_regs_out(14).ch_ctl_transm_out_sel     <= regs_out.ch14_ctl_transm_out_sel_o;
   ch_regs_out(14).ch_cfg_rcv_len            <= regs_out.ch14_cfg_rcv_len_o;
@@ -369,6 +385,7 @@ begin  -- architecture rtl
   ch_regs_out(15).ch_ctl_dir                <= regs_out.ch15_ctl_dir_o;
   ch_regs_out(15).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch15_ctl_rcv_count_rst_o);
   ch_regs_out(15).ch_ctl_transm_count_rst_n <= not(regs_out.ch15_ctl_transm_count_rst_o);
+  ch_regs_out(15).ch_ctl_rcv_src            <= regs_out.ch15_ctl_rcv_src_o;
   ch_regs_out(15).ch_ctl_rcv_in_sel         <= regs_out.ch15_ctl_rcv_in_sel_o;
   ch_regs_out(15).ch_ctl_transm_out_sel     <= regs_out.ch15_ctl_transm_out_sel_o;
   ch_regs_out(15).ch_cfg_rcv_len            <= regs_out.ch15_cfg_rcv_len_o;
@@ -429,7 +446,7 @@ begin  -- architecture rtl
   ---------------------------
 
   -- data signals
-  rcv_mux_bus <= trig_rcv_intern_i & trig_pulse_transm_i;
+  rcv_mux_bus <= trig_pulse_transm_i;
   -- transm_mux_bus is declared in the process
 
   trigger_generate : for i in g_trig_num-1 downto 0 generate
@@ -505,12 +522,6 @@ begin  -- architecture rtl
 
   end generate;
 
-  ----------------------------------------------------------
-  --Connect internal signals to receiver multiplexer input--
-  ----------------------------------------------------------
-
-  rcv_mux_bus(rcv_mux_bus'LENGTH-1 downto (rcv_mux_bus'LENGTH-g_rcv_intern_num)) <= trig_rcv_intern_i;
-
   ----------------------------------
   --Generate receiver multiplexers--
   ----------------------------------
@@ -524,11 +535,23 @@ begin  -- architecture rtl
         if fs_rst_n_i = '0' then        -- synchronous reset (active low)
           rcv_mux_out(ir) <= rcv_mux_bus(0);
         else
-          -- check if sel is bigger than internal channels + internal rcv signals
-          if (sel >= g_trig_num + g_rcv_intern_num) then
-            rcv_mux_out(ir) <= rcv_mux_bus(0);
+
+          if (ch_regs_out(ir).ch_ctl_rcv_src = '0') then -- checks the source of receiver (triggers/internal)
+            -- check if sel is bigger than internal channels
+            if (sel >= g_trig_num) then
+              rcv_mux_out(ir) <= rcv_mux_bus(0);
+            else
+              rcv_mux_out(ir) <= rcv_mux_bus(sel);
+            end if;
+
           else
-            rcv_mux_out(ir) <= rcv_mux_bus(sel);
+            -- check if sel is bigger than  internal rcv signals
+            if (sel >= g_rcv_intern_num) then
+              rcv_mux_out(ir) <= trig_rcv_intern_i(0);
+            else
+              rcv_mux_out(ir) <= trig_rcv_intern_i(sel);
+            end if;
+
           end if;
         end if;
       end if;

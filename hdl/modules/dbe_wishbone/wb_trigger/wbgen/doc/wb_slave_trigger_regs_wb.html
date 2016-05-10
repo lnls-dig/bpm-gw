@@ -1000,10 +1000,10 @@ wb_dat_o[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_ch0_ctl_rcv_in_sel_o[7:0]
+wb_trig_ch0_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
-&rArr;
+&rarr;
 </td>
 </tr>
 <tr>
@@ -1017,7 +1017,7 @@ wb_cyc_i
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_ch0_ctl_transm_out_sel_o[7:0]
+wb_trig_ch0_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1029,6 +1029,23 @@ wb_trig_ch0_ctl_transm_out_sel_o[7:0]
 </td>
 <td  class="td_pblock_left">
 wb_sel_i[3:0]
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch0_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+&rarr;
+</td>
+<td  class="td_pblock_left">
+wb_stb_i
 </td>
 <td  class="td_sym_center">
 &nbsp;
@@ -1045,7 +1062,7 @@ wb_sel_i[3:0]
 &rarr;
 </td>
 <td  class="td_pblock_left">
-wb_stb_i
+wb_we_i
 </td>
 <td  class="td_sym_center">
 
@@ -1059,10 +1076,10 @@ wb_stb_i
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rarr;
+&larr;
 </td>
 <td  class="td_pblock_left">
-wb_we_i
+wb_ack_o
 </td>
 <td  class="td_sym_center">
 
@@ -1079,7 +1096,7 @@ wb_trig_ch0_cfg_rcv_len_o[7:0]
 &larr;
 </td>
 <td  class="td_pblock_left">
-wb_ack_o
+wb_stall_o
 </td>
 <td  class="td_sym_center">
 
@@ -1093,10 +1110,10 @@ wb_trig_ch0_cfg_transm_len_o[7:0]
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&larr;
+
 </td>
 <td  class="td_pblock_left">
-wb_stall_o
+
 </td>
 <td  class="td_sym_center">
 &nbsp;
@@ -1239,6 +1256,23 @@ wb_trig_ch1_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch1_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch1_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1510,6 +1544,23 @@ wb_trig_ch2_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch2_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch2_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -1749,6 +1800,23 @@ wb_trig_ch3_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch3_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch3_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2020,6 +2088,23 @@ wb_trig_ch4_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch4_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch4_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -2259,6 +2344,23 @@ wb_trig_ch5_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch5_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch5_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2530,6 +2632,23 @@ wb_trig_ch6_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch6_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch6_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -2769,6 +2888,23 @@ wb_trig_ch7_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch7_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch7_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -3040,6 +3176,23 @@ wb_trig_ch8_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch8_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch8_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -3279,6 +3432,23 @@ wb_trig_ch9_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch9_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch9_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -3550,6 +3720,23 @@ wb_trig_ch10_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch10_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch10_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -3789,6 +3976,23 @@ wb_trig_ch11_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch11_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch11_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -4060,6 +4264,23 @@ wb_trig_ch12_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch12_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch12_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -4299,6 +4520,23 @@ wb_trig_ch13_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch13_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch13_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -4570,6 +4808,23 @@ wb_trig_ch14_ctl_transm_count_rst_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_ch14_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_ch14_ctl_rcv_in_sel_o[7:0]
 </td>
 <td  class="td_arrow_right">
@@ -4809,6 +5064,23 @@ wb_trig_ch15_ctl_rcv_count_rst_o
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch15_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch15_ctl_rcv_src_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -5225,8 +5497,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -5252,6 +5524,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -6023,8 +6299,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -6050,6 +6326,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -6821,8 +7101,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -6848,6 +7128,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -7619,8 +7903,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -7646,6 +7930,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -8417,8 +8705,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -8444,6 +8732,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -9215,8 +9507,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -9242,6 +9534,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -10013,8 +10309,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -10040,6 +10336,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -10811,8 +11111,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -10838,6 +11138,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -11609,8 +11913,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -11636,6 +11940,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -12407,8 +12715,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -12434,6 +12742,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -13205,8 +13517,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -13232,6 +13544,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -14003,8 +14319,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -14030,6 +14346,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -14801,8 +15121,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -14828,6 +15148,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -15599,8 +15923,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -15626,6 +15950,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -16397,8 +16725,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -16424,6 +16752,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input
@@ -17195,8 +17527,8 @@ RCV_IN_SEL[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
@@ -17222,6 +17554,10 @@ RCV_COUNT_RST
 TRANSM_COUNT_RST
 </b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
 <br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
 <li><b>
 RCV_IN_SEL
 </b>[<i>read/write</i>]: Select Receiver Input

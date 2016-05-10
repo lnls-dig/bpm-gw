@@ -46,6 +46,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -164,6 +174,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -292,6 +312,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -410,6 +440,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -538,6 +578,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -656,6 +706,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -784,6 +844,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -902,6 +972,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1030,6 +1110,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -1148,6 +1238,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1276,6 +1376,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -1394,6 +1504,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1522,6 +1642,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -1640,6 +1770,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
@@ -1768,6 +1908,16 @@ peripheral {
     };
 
     field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Select Receiver Input";
       prefix = "rcv_in_sel";
       description = "Select input that will be used by the receiver";
@@ -1886,6 +2036,16 @@ peripheral {
       type = MONOSTABLE;
       size = 1;
       clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Source";
+      prefix = "rcv_src";
+      description = "1 - Internal Signals\n0 - Triggers";
+      type = BIT;
+      --size = 1;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
