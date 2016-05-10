@@ -95,13 +95,17 @@ entity wb_trigger is
     ---- External ports
     -------------------------------
 
-    ---- Trigger
     trig_dir_o : out std_logic_vector(g_trig_num-1 downto 0);
+    trig_b              : inout std_logic_vector(g_trig_num-1 downto 0);
+
+    -------------------------------
+    ---- Internal ports
+    -------------------------------
+
+    trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
 
     trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-    trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0);
-    trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
-    trig_b              : inout std_logic_vector(g_trig_num-1 downto 0)
+    trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0)
     );
 
 end entity wb_trigger;
