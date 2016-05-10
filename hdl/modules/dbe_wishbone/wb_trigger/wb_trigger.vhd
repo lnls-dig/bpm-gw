@@ -135,6 +135,8 @@ architecture rtl of wb_trigger is
 
   constant c_periph_addr_size : natural := 6+2;
 
+  constant rcv_sel_buf_len    : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant transm_sel_buf_len : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
 
   -----------
   --Signals--
