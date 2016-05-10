@@ -188,6 +188,8 @@ architecture structural of wb_trigger_top is
   constant c_transm_len_bus_width : positive := 8;
   constant c_sync_edge            : string   := "positive";
   constant c_trig_num             : positive := 8;
+  constant c_intern_num           : positive := 8;
+  constant c_rcv_intern_num       : positive := 2;
   constant c_counter_wid          : positive := 16;
   constant c_num_tlvl_clks        : natural  := 3;
 
@@ -245,6 +247,7 @@ architecture structural of wb_trigger_top is
   signal wb_slv_in  : t_wishbone_slave_in;
   signal wb_slv_out : t_wishbone_slave_out;
 
+  signal trig_rcv_intern : std_logic_vector(1 downto 0);
   signal trig_pulse_transm : std_logic_vector(7 downto 0);
   signal trig_pulse_rcv : std_logic_vector(7 downto 0);
 
@@ -516,6 +519,8 @@ begin
       g_transm_len_bus_width => c_transm_len_bus_width,
       g_sync_edge            => c_sync_edge,
       g_trig_num             => c_trig_num,
+      g_intern_num           => c_intern_num,
+      g_rcv_intern_num       => c_rcv_intern_num,
       g_counter_wid          => c_counter_wid)
     port map (
       rst_n_i             => clk_sys_rstn,
@@ -525,6 +530,7 @@ begin
       wb_slv_i            => wb_slv_in,
       wb_slv_o            => wb_slv_out,
       trig_dir_o          => trig_dir_int,
+      trig_rcv_intern_i   => trig_rcv_intern,
       trig_pulse_transm_i => trig_pulse_transm,
       trig_pulse_rcv_o    => trig_pulse_rcv,
       trig_b              => trig_b);
