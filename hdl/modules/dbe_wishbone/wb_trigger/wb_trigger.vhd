@@ -170,8 +170,9 @@ architecture rtl of wb_trigger is
   signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
-  signal trig_pulse_rcv    : std_logic_vector(g_trig_num-1 downto 0);
+  signal rcv_mux_bus : std_logic_vector((g_trig_num + g_rcv_intern_num)-1 downto 0);  -- input of rcv multiplexers
   signal trig_pulse_transm : std_logic_vector(g_trig_num-1 downto 0);
+  signal rcv_mux_out    : std_logic_vector(g_intern_num-1 downto 0);
 
   -----------------------------
   -- Wishbone slave adapter signals/structures
