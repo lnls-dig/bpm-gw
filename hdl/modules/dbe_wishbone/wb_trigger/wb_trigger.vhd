@@ -428,7 +428,7 @@ begin  -- architecture rtl
   rcv_mux_bus <= trig_rcv_intern_i & trig_pulse_transm_i;
   -- transm_mux_bus is declared in the process
 
-  trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
+  trigger_generate : for i in g_trig_num-1 downto 0 generate
 
     --------------------------------
     -- Connecting signals
@@ -499,6 +499,6 @@ begin  -- architecture rtl
         down_i  => '0',
         count_o => ch_regs_in(i).ch_count_transm);
 
-  end generate trigger_rcv_transm;
+  end generate;
 
 end architecture rtl;
