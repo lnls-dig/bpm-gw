@@ -6,7 +6,7 @@
 -- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 -- Created    : 2016-01-22
--- Last update: 2016-05-09
+-- Last update: 2016-05-10
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -546,5 +546,7 @@ begin  -- architecture rtl
       end if;
     end process;
   end generate mux_transm;
+
+  trig_pulse_rcv_o <= rcv_mux_out;
 
 end architecture rtl;
