@@ -514,39 +514,47 @@ begin  -- architecture rtl
   ----------------------------------
   --Generate receiver multiplexers--
   ----------------------------------
-  mux_rcv: for ir in g_intern_num -1 downto 0 generate
-    process is
+  mux_rcv : for ir in g_intern_num -1 downto 0 generate
+    process (fs_clk_i)is
       variable sel : integer := 0;
     begin  -- process
       sel := to_integer(unsigned(ch_regs_out(ir).ch_ctl_rcv_in_sel));
 
-      -- check if sel is bigger than internal channels + internal rcv signals
-      if (sel >= g_trig_num + g_rcv_intern_num)   then
-        rcv_mux_out(ir) <= rcv_mux_bus(0);
-
-      else
-        rcv_mux_out(ir) <= rcv_mux_bus(sel);
-
+      if rising_edge(fs_clk_i) then     -- rising clock edge
+        if fs_rst_n_i = '0' then        -- synchronous reset (active low)
+          rcv_mux_out(ir) <= rcv_mux_bus(0);
+        else
+          -- check if sel is bigger than internal channels + internal rcv signals
+          if (sel >= g_trig_num + g_rcv_intern_num) then
+            rcv_mux_out(ir) <= rcv_mux_bus(0);
+          else
+            rcv_mux_out(ir) <= rcv_mux_bus(sel);
+          end if;
+        end if;
       end if;
+
     end process;
   end generate mux_rcv;
 
   -------------------------------------
   --Generate transmitter multiplexers--
   -------------------------------------
-  mux_transm: for it in g_trig_num-1 downto 0 generate
-    process is
+  mux_transm : for it in g_trig_num-1 downto 0 generate
+    process (fs_clk_i) is
       variable sel : integer := 0;
     begin  -- process
       sel := to_integer(unsigned(ch_regs_out(it).ch_ctl_transm_out_sel));
-
-      -- check if sel is bigger than internal channels
-      if (sel >= g_intern_num)   then
-        transm_mux_out(it) <= transm_mux_bus(0);
-
-      else
-        transm_mux_out(it) <= transm_mux_bus(sel);
-
+      if rising_edge(fs_clk_i) then     -- rising clock edge
+        if fs_rst_n_i = '0' then        -- synchronous reset (active low)
+          transm_mux_out(it) <= transm_mux_bus(0);
+        else
+          -- check if sel is bigger than internal channels
+          if (sel >= g_intern_num) then
+            transm_mux_out(it) <= transm_mux_bus(0);
+          else
+            transm_mux_out(it) <= transm_mux_bus(sel);
+          end if;
+        end if;
       end if;
     end process;
   end generate mux_transm;
