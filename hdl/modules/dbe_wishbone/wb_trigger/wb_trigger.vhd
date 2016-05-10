@@ -501,4 +501,9 @@ begin  -- architecture rtl
 
   end generate;
 
+  ----------------------------------------------------------
+  --Connect internal signals to receiver multiplexer input--
+  ----------------------------------------------------------
+
+  rcv_mux_bus(rcv_mux_bus'LENGTH-1 downto (rcv_mux_bus'LENGTH-g_rcv_intern_num)) <= trig_rcv_intern_i;
 end architecture rtl;
