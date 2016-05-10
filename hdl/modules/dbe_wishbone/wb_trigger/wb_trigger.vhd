@@ -424,8 +424,9 @@ begin  -- architecture rtl
   -- Instantiation Process --
   ---------------------------
 
-  trig_pulse_rcv_o  <= trig_pulse_rcv;
-  trig_pulse_transm <= trig_pulse_transm_i;
+  -- data signals
+  rcv_mux_bus <= trig_rcv_intern_i & trig_pulse_transm_i;
+  -- transm_mux_bus is declared in the process
 
   trigger_rcv_transm : for i in g_trig_num-1 downto 0 generate
 
