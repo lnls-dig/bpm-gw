@@ -506,4 +506,24 @@ begin  -- architecture rtl
   ----------------------------------------------------------
 
   rcv_mux_bus(rcv_mux_bus'LENGTH-1 downto (rcv_mux_bus'LENGTH-g_rcv_intern_num)) <= trig_rcv_intern_i;
+
+  ----------------------------------
+  --Generate receiver multiplexers--
+  ----------------------------------
+  mux_rcv: for ir in g_intern_num -1 downto 0 generate
+    process is
+      variable sel : integer := 0;
+    begin  -- process
+      sel := to_integer(unsigned(ch_regs_out(ir).ch_ctl_rcv_in_sel));
+
+      -- check if sel is bigger than internal channels + internal rcv signals
+      if (sel >= g_trig_num + g_rcv_intern_num)   then
+        rcv_mux_out(ir) <= rcv_mux_bus(0);
+
+      else
+        rcv_mux_out(ir) <= rcv_mux_bus(sel);
+
+      end if;
+    end process;
+  end generate mux_rcv;
 end architecture rtl;
