@@ -446,7 +446,7 @@ begin  -- architecture rtl
       port map (
         clk_i         => fs_clk_i,
         rst_n_i       => fs_rst_n_i,
-        pulse_i       => trig_pulse_transm(i),
+        pulse_i       => transm_mux_out(i),
         pulse_width_i => unsigned(ch_regs_out(i).ch_cfg_transm_len),
         extended_o    => extended_transm(i));
 
@@ -459,7 +459,7 @@ begin  -- architecture rtl
         rst_n_i => fs_rst_n_i,
         len_i   => ch_regs_out(i).ch_cfg_rcv_len,
         data_i  => extended_rcv(i),
-        pulse_o => trig_pulse_rcv(i));
+        pulse_o => rcv_mux_bus(i));
 
     --------------------------------
     -- Connects cores to backplane
@@ -484,7 +484,7 @@ begin  -- architecture rtl
         clk_i   => fs_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_rcv_count_rst_n,
         ce_i    => '1',
-        up_i    => trig_pulse_rcv(i),
+        up_i    => rcv_mux_bus(i),
         down_i  => '0',
         count_o => ch_regs_in(i).ch_count_rcv);
 
@@ -495,7 +495,7 @@ begin  -- architecture rtl
         clk_i   => fs_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_transm_count_rst_n,
         ce_i    => '1',
-        up_i    => trig_pulse_transm(i),
+        up_i    => transm_mux_out(i),
         down_i  => '0',
         count_o => ch_regs_in(i).ch_count_transm);
 
