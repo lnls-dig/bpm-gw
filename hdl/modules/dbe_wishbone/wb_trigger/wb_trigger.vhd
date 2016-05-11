@@ -446,8 +446,7 @@ begin  -- architecture rtl
   ---------------------------
 
   -- data signals
-  rcv_mux_bus <= trig_pulse_transm_i;
-  -- transm_mux_bus is declared in the process
+  transm_mux_bus <= trig_pulse_transm_i;
 
   trigger_generate : for i in g_trig_num-1 downto 0 generate
 
