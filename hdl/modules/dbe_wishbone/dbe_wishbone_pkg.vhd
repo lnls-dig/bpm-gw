@@ -1668,9 +1668,9 @@ package dbe_wishbone_pkg is
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
       g_sync_edge            : string                         := "positive";
-      g_trig_num             : positive                       := 8;
-      g_intern_num           : positive                       := 8;
-      g_rcv_intern_num       : positive                       := 2);
+      g_trig_num             : natural range 1 to 16          := 8;
+      g_intern_num           : natural range 1 to 16          := 8;
+      g_rcv_intern_num       : natural range 1 to 16          := 2);
     port (
       clk_i               : in    std_logic;
       rst_n_i             : in    std_logic;
@@ -1699,9 +1699,9 @@ package dbe_wishbone_pkg is
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
       g_sync_edge            : string                         := "positive";
-      g_trig_num             : positive                       := 8;
-      g_intern_num           : positive                       := 8;
-      g_rcv_intern_num       : positive                       := 2);
+      g_trig_num             : natural range 1 to 16          := 8;
+      g_intern_num           : natural range 1 to 16          := 8;
+      g_rcv_intern_num       : natural range 1 to 16          := 2);
     port (
       rst_n_i             : in    std_logic;
       clk_i               : in    std_logic;
