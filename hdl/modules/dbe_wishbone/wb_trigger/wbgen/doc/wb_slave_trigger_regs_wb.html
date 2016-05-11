@@ -82,6 +82,30 @@
 <span style="margin-left: 20px; ">3.46. <A href="#sect_3_46">Channel 15 Control</a></span><br/>
 <span style="margin-left: 20px; ">3.47. <A href="#sect_3_47">Channel 15 Configuration Parameters</a></span><br/>
 <span style="margin-left: 20px; ">3.48. <A href="#sect_3_48">Channel 15 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.49. <A href="#sect_3_49">Channel 16 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.50. <A href="#sect_3_50">Channel 16 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.51. <A href="#sect_3_51">Channel 16 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.52. <A href="#sect_3_52">Channel 17 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.53. <A href="#sect_3_53">Channel 17 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.54. <A href="#sect_3_54">Channel 17 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.55. <A href="#sect_3_55">Channel 18 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.56. <A href="#sect_3_56">Channel 18 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.57. <A href="#sect_3_57">Channel 18 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.58. <A href="#sect_3_58">Channel 19 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.59. <A href="#sect_3_59">Channel 19 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.60. <A href="#sect_3_60">Channel 19 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.61. <A href="#sect_3_61">Channel 20 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.62. <A href="#sect_3_62">Channel 20 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.63. <A href="#sect_3_63">Channel 20 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.64. <A href="#sect_3_64">Channel 21 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.65. <A href="#sect_3_65">Channel 21 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.66. <A href="#sect_3_66">Channel 21 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.67. <A href="#sect_3_67">Channel 22 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.68. <A href="#sect_3_68">Channel 22 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.69. <A href="#sect_3_69">Channel 22 Transmitter/Receiver Pulses Counter</a></span><br/>
+<span style="margin-left: 20px; ">3.70. <A href="#sect_3_70">Channel 23 Control</a></span><br/>
+<span style="margin-left: 20px; ">3.71. <A href="#sect_3_71">Channel 23 Configuration Parameters</a></span><br/>
+<span style="margin-left: 20px; ">3.72. <A href="#sect_3_72">Channel 23 Transmitter/Receiver Pulses Counter</a></span><br/>
 <h3><a name="sect_1_0">1. Memory map summary</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -917,6 +941,414 @@ wb_trig_ch15_count
 CH15_COUNT
 </td>
 </tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x30
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH16_CTL">Channel 16 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch16_ctl
+</td>
+<td  class="td_code">
+CH16_CTL
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x31
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH16_CFG">Channel 16 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch16_cfg
+</td>
+<td  class="td_code">
+CH16_CFG
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x32
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH16_COUNT">Channel 16 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch16_count
+</td>
+<td  class="td_code">
+CH16_COUNT
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x33
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH17_CTL">Channel 17 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch17_ctl
+</td>
+<td  class="td_code">
+CH17_CTL
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x34
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH17_CFG">Channel 17 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch17_cfg
+</td>
+<td  class="td_code">
+CH17_CFG
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x35
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH17_COUNT">Channel 17 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch17_count
+</td>
+<td  class="td_code">
+CH17_COUNT
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x36
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH18_CTL">Channel 18 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch18_ctl
+</td>
+<td  class="td_code">
+CH18_CTL
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x37
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH18_CFG">Channel 18 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch18_cfg
+</td>
+<td  class="td_code">
+CH18_CFG
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x38
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH18_COUNT">Channel 18 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch18_count
+</td>
+<td  class="td_code">
+CH18_COUNT
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x39
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH19_CTL">Channel 19 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch19_ctl
+</td>
+<td  class="td_code">
+CH19_CTL
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x3a
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH19_CFG">Channel 19 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch19_cfg
+</td>
+<td  class="td_code">
+CH19_CFG
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x3b
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH19_COUNT">Channel 19 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch19_count
+</td>
+<td  class="td_code">
+CH19_COUNT
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x3c
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH20_CTL">Channel 20 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch20_ctl
+</td>
+<td  class="td_code">
+CH20_CTL
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x3d
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH20_CFG">Channel 20 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch20_cfg
+</td>
+<td  class="td_code">
+CH20_CFG
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x3e
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH20_COUNT">Channel 20 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch20_count
+</td>
+<td  class="td_code">
+CH20_COUNT
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x3f
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH21_CTL">Channel 21 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch21_ctl
+</td>
+<td  class="td_code">
+CH21_CTL
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x40
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH21_CFG">Channel 21 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch21_cfg
+</td>
+<td  class="td_code">
+CH21_CFG
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x41
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH21_COUNT">Channel 21 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch21_count
+</td>
+<td  class="td_code">
+CH21_COUNT
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x42
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH22_CTL">Channel 22 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch22_ctl
+</td>
+<td  class="td_code">
+CH22_CTL
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x43
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH22_CFG">Channel 22 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch22_cfg
+</td>
+<td  class="td_code">
+CH22_CFG
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x44
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH22_COUNT">Channel 22 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch22_count
+</td>
+<td  class="td_code">
+CH22_COUNT
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x45
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH23_CTL">Channel 23 Control</a>
+</td>
+<td  class="td_code">
+wb_trig_ch23_ctl
+</td>
+<td  class="td_code">
+CH23_CTL
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0x46
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH23_CFG">Channel 23 Configuration Parameters</a>
+</td>
+<td  class="td_code">
+wb_trig_ch23_cfg
+</td>
+<td  class="td_code">
+CH23_CFG
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0x47
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#CH23_COUNT">Channel 23 Transmitter/Receiver Pulses Counter</a>
+</td>
+<td  class="td_code">
+wb_trig_ch23_count
+</td>
+<td  class="td_code">
+CH23_COUNT
+</td>
+</tr>
 </table>
 
 <h3><a name="sect_2_0">2. HDL symbol</a></h3>
@@ -960,7 +1392,7 @@ wb_trig_ch0_ctl_dir_o
 &rArr;
 </td>
 <td  class="td_pblock_left">
-wb_adr_i[5:0]
+wb_adr_i[6:0]
 </td>
 <td  class="td_sym_center">
 
@@ -5251,6 +5683,2182 @@ wb_trig_ch15_count_rcv_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_ch15_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 16 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 16 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 16 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch16_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 17 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 17 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 17 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch17_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 18 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 18 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 18 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch18_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 19 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 19 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 19 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch19_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 20 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 20 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 20 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch20_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 21 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 21 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 21 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch21_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 22 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 22 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 22 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch22_count_transm_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 23 Control:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_rcv_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_transm_count_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_rcv_src_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_rcv_in_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_ctl_transm_out_sel_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 23 Configuration Parameters:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_cfg_rcv_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Channel 23 Transmitter/Receiver Pulses Counter:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_count_rcv_i[15:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_ch23_count_transm_i[15:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -17862,6 +20470,6422 @@ CH15_COUNT
 </td>
 <td  class="td_code">
 0xbc
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH16_CTL"></a>
+<h3><a name="sect_3_49">3.49. Channel 16 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch16_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x30
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH16_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xc0
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH16_CFG"></a>
+<h3><a name="sect_3_50">3.50. Channel 16 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch16_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x31
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH16_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xc4
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH16_COUNT"></a>
+<h3><a name="sect_3_51">3.51. Channel 16 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch16_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x32
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH16_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xc8
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH17_CTL"></a>
+<h3><a name="sect_3_52">3.52. Channel 17 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch17_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x33
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH17_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xcc
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH17_CFG"></a>
+<h3><a name="sect_3_53">3.53. Channel 17 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch17_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x34
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH17_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xd0
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH17_COUNT"></a>
+<h3><a name="sect_3_54">3.54. Channel 17 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch17_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x35
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH17_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xd4
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH18_CTL"></a>
+<h3><a name="sect_3_55">3.55. Channel 18 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch18_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x36
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH18_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xd8
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH18_CFG"></a>
+<h3><a name="sect_3_56">3.56. Channel 18 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch18_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x37
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH18_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xdc
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH18_COUNT"></a>
+<h3><a name="sect_3_57">3.57. Channel 18 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch18_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x38
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH18_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xe0
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH19_CTL"></a>
+<h3><a name="sect_3_58">3.58. Channel 19 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch19_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x39
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH19_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xe4
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH19_CFG"></a>
+<h3><a name="sect_3_59">3.59. Channel 19 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch19_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3a
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH19_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xe8
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH19_COUNT"></a>
+<h3><a name="sect_3_60">3.60. Channel 19 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch19_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3b
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH19_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xec
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH20_CTL"></a>
+<h3><a name="sect_3_61">3.61. Channel 20 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch20_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3c
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH20_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xf0
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH20_CFG"></a>
+<h3><a name="sect_3_62">3.62. Channel 20 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch20_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3d
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH20_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xf4
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH20_COUNT"></a>
+<h3><a name="sect_3_63">3.63. Channel 20 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch20_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3e
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH20_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xf8
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH21_CTL"></a>
+<h3><a name="sect_3_64">3.64. Channel 21 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch21_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x3f
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH21_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0xfc
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH21_CFG"></a>
+<h3><a name="sect_3_65">3.65. Channel 21 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch21_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x40
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH21_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x100
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH21_COUNT"></a>
+<h3><a name="sect_3_66">3.66. Channel 21 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch21_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x41
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH21_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x104
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH22_CTL"></a>
+<h3><a name="sect_3_67">3.67. Channel 22 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch22_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x42
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH22_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x108
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH22_CFG"></a>
+<h3><a name="sect_3_68">3.68. Channel 22 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch22_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x43
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH22_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x10c
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH22_COUNT"></a>
+<h3><a name="sect_3_69">3.69. Channel 22 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch22_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x44
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH22_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x110
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV
+</b>[<i>read-only</i>]: Receiver Counter
+<br>Counts the pulses received
+<li><b>
+TRANSM
+</b>[<i>read-only</i>]: Transmitter Counter
+<br>Counts the pulses that will be transmitted
+</ul>
+<a name="CH23_CTL"></a>
+<h3><a name="sect_3_70">3.70. Channel 23 Control</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch23_ctl
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x45
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH23_CTL
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x114
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_OUT_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_IN_SEL[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_SRC
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+TRANSM_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+DIR
+</b>[<i>read/write</i>]: Trigger Direction
+<br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+RCV_COUNT_RST
+</b>[<i>read/write</i>]: Receiver Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+TRANSM_COUNT_RST
+</b>[<i>read/write</i>]: Transmitter Pulse Counter Reset
+<br>1 - Reset<br>0 - Normal
+<li><b>
+RCV_SRC
+</b>[<i>read/write</i>]: Receiver Source
+<br>1 - Internal Signals<br>0 - Triggers
+<li><b>
+RCV_IN_SEL
+</b>[<i>read/write</i>]: Select Receiver Input
+<br>Select input that will be used by the receiver
+<li><b>
+TRANSM_OUT_SEL
+</b>[<i>read/write</i>]: Select Transmitter Output
+<br>Select output that will be used by the transmitter
+</ul>
+<a name="CH23_CFG"></a>
+<h3><a name="sect_3_71">3.71. Channel 23 Configuration Parameters</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch23_cfg
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x46
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH23_CFG
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x118
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+<td  class="td_unused">
+-
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANSM_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+RCV_LEN[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+RCV_LEN
+</b>[<i>read/write</i>]: Receiver Pulse Length
+<br>Controls the length of the receiver deglitcher
+<li><b>
+TRANSM_LEN
+</b>[<i>read/write</i>]: Transmitter Pulse Length
+<br>Controls the length of the transmitter output pulse
+</ul>
+<a name="CH23_COUNT"></a>
+<h3><a name="sect_3_72">3.72. Channel 23 Transmitter/Receiver Pulses Counter</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+wb_trig_ch23_count
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0x47
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+CH23_COUNT
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x11c
 </td>
 </tr>
 </table>
