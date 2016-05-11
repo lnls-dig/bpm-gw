@@ -1667,11 +1667,11 @@ package dbe_wishbone_pkg is
     generic (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
-      g_sync_edge            : string;
-      g_trig_num             : positive;
-      g_intern_num           : positive;
-      g_rcv_intern_num       : positive;
-      g_counter_wid          : positive);
+      g_sync_edge            : string                         := "positive";
+      g_trig_num             : positive                       := 8;
+      g_intern_num           : positive                       := 8;
+      g_rcv_intern_num       : positive                       := 2;
+      g_counter_wid          : positive                       := 16);
     port (
       clk_i               : in    std_logic;
       rst_n_i             : in    std_logic;
@@ -1699,11 +1699,11 @@ package dbe_wishbone_pkg is
     generic (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
-      g_sync_edge            : string;
-      g_trig_num             : positive;
-      g_intern_num           : positive;
-      g_rcv_intern_num       : positive;
-      g_counter_wid          : positive);
+      g_sync_edge            : string                         := "positive";
+      g_trig_num             : positive                       := 8; -- channels facing outside the FPGA
+      g_intern_num           : positive                       := 8; -- channels facing inside the FPGA
+      g_rcv_intern_num       : positive                       := 2; -- signals from inside the FPGA that can be used as input at a rcv mux
+      g_counter_wid          : positive                       := 16);
     port (
       rst_n_i             : in    std_logic;
       clk_i               : in    std_logic;
