@@ -1692,8 +1692,8 @@ package dbe_wishbone_pkg is
       wb_rty_o            : out   std_logic;
       wb_stall_o          : out   std_logic;
       trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0);
+      trig_pulse_transm_i : in    std_logic_vector(g_intern_num-1 downto 0);
+      trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0)
       trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);
       trig_b              : inout std_logic_vector(g_trig_num-1 downto 0));
   end component wb_trigger;
@@ -1720,8 +1720,8 @@ package dbe_wishbone_pkg is
       trig_b              : inout std_logic_vector(g_trig_num-1 downto 0);
       trig_dir_o          : out   std_logic_vector(g_trig_num-1 downto 0);
       trig_rcv_intern_i   : in    std_logic_vector(g_rcv_intern_num-1 downto 0);
-      trig_pulse_transm_i : in    std_logic_vector(g_trig_num-1 downto 0);
-      trig_pulse_rcv_o    : out   std_logic_vector(g_trig_num-1 downto 0));
+      trig_pulse_transm_i : in    std_logic_vector(g_intern_num-1 downto 0);
+      trig_pulse_rcv_o    : out   std_logic_vector(g_intern_num-1 downto 0));
   end component xwb_trigger;
 
 
