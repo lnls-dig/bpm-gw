@@ -1667,9 +1667,6 @@ package dbe_wishbone_pkg is
     generic (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
-      g_width_bus_size       : positive;
-      g_rcv_len_bus_width    : positive;
-      g_transm_len_bus_width : positive;
       g_sync_edge            : string;
       g_trig_num             : positive;
       g_intern_num           : positive;
@@ -1702,9 +1699,6 @@ package dbe_wishbone_pkg is
     generic (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
-      g_width_bus_size       : positive;
-      g_rcv_len_bus_width    : positive;
-      g_transm_len_bus_width : positive;
       g_sync_edge            : string;
       g_trig_num             : positive;
       g_intern_num           : positive;

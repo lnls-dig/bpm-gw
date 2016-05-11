@@ -58,9 +58,6 @@ entity wb_trigger is
   generic (
     g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity  : t_wishbone_address_granularity := WORD;
-    g_width_bus_size       : positive                       := 8;
-    g_rcv_len_bus_width    : positive                       := 8;
-    g_transm_len_bus_width : positive                       := 8;
     g_sync_edge            : string                         := "positive";
     g_trig_num             : positive                       := 8; -- channels facing outside the FPGA
     g_intern_num           : positive                       := 8; -- channels facing inside the FPGA
@@ -139,8 +136,10 @@ architecture rtl of wb_trigger is
 
   constant c_periph_addr_size : natural := 6+2;
 
-  constant rcv_sel_buf_len    : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-  constant transm_sel_buf_len : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant c_rcv_pulse_len      : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant c_transm_pulse_len   : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant c_rcv_sel_buf_len    : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant c_transm_sel_buf_len : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
 
   -----------
   --Signals--
@@ -154,10 +153,10 @@ architecture rtl of wb_trigger is
     ch_ctl_rcv_count_rst_n    : std_logic;
     ch_ctl_transm_count_rst_n : std_logic;
     ch_ctl_rcv_src            : std_logic;
-    ch_ctl_rcv_in_sel         : std_logic_vector(rcv_sel_buf_len-1 downto 0);
-    ch_ctl_transm_out_sel     : std_logic_vector(transm_sel_buf_len-1 downto 0);
-    ch_cfg_rcv_len            : std_logic_vector(7 downto 0);
-    ch_cfg_transm_len         : std_logic_vector(7 downto 0);
+    ch_ctl_rcv_in_sel         : std_logic_vector(c_rcv_sel_buf_len-1 downto 0);
+    ch_ctl_transm_out_sel     : std_logic_vector(c_transm_sel_buf_len-1 downto 0);
+    ch_cfg_rcv_len            : std_logic_vector(c_rcv_pulse_len-1 downto 0);
+    ch_cfg_transm_len         : std_logic_vector(c_transm_pulse_len-1 downto 0);
   end record;
 
   type t_wb_trig_out_array is array(15 downto 0) of t_wb_trig_out_channel;
@@ -462,7 +461,7 @@ begin  -- architecture rtl
 
     trigger_transm : extend_pulse_dyn
       generic map (
-        g_width_bus_size => g_width_bus_size)
+        g_width_bus_size => c_transm_pulse_len)
       port map (
         clk_i         => fs_clk_i,
         rst_n_i       => fs_rst_n_i,
@@ -472,7 +471,7 @@ begin  -- architecture rtl
 
     trigger_rcv_1 : trigger_rcv
       generic map (
-        g_glitch_len_width => g_rcv_len_bus_width,
+        g_glitch_len_width => c_recv_pulse_len,
         g_sync_edge        => g_sync_edge)
       port map (
         clk_i   => fs_clk_i,

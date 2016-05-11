@@ -13,9 +13,6 @@ entity xwb_trigger is
     (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
       g_address_granularity  : t_wishbone_address_granularity := WORD;
-      g_width_bus_size       : positive                       := 8;
-      g_rcv_len_bus_width    : positive                       := 8;
-      g_transm_len_bus_width : positive                       := 8;
       g_sync_edge            : string                         := "positive";
       g_trig_num             : positive                       := 8;
       g_intern_num           : positive                       := 8;
