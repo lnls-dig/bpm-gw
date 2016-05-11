@@ -61,8 +61,7 @@ entity wb_trigger is
     g_sync_edge            : string                         := "positive";
     g_trig_num             : positive                       := 8; -- channels facing outside the FPGA
     g_intern_num           : positive                       := 8; -- channels facing inside the FPGA
-    g_rcv_intern_num       : positive                       := 2; -- signals from inside the FPGA that can be used as input at a rcv mux
-    g_counter_wid          : positive                       := 16
+    g_rcv_intern_num       : positive                       := 2  -- signals from inside the FPGA that can be used as input at a rcv mux
     );
 
   port (
@@ -140,6 +139,7 @@ architecture rtl of wb_trigger is
   constant c_transm_pulse_len   : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
   constant c_rcv_sel_buf_len    : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
   constant c_transm_sel_buf_len : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
+  constant c_counter_width      : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
 
   -----------
   --Signals--
@@ -498,7 +498,7 @@ begin  -- architecture rtl
 
     counter_rcv : counter_simple
       generic map (
-        g_output_width => g_counter_wid)
+        g_output_width => c_counter_width)
       port map (
         clk_i   => fs_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_rcv_count_rst_n,
@@ -509,7 +509,7 @@ begin  -- architecture rtl
 
     counter_transm : counter_simple
       generic map (
-        g_output_width => g_counter_wid)
+        g_output_width => c_counter_width)
       port map (
         clk_i   => fs_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_transm_count_rst_n,

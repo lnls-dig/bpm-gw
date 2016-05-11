@@ -16,8 +16,7 @@ entity xwb_trigger is
       g_sync_edge            : string                         := "positive";
       g_trig_num             : positive                       := 8;
       g_intern_num           : positive                       := 8;
-      g_rcv_intern_num       : positive                       := 2;
-      g_counter_wid          : positive                       := 16
+      g_rcv_intern_num       : positive                       := 2
       );
   port
     (
