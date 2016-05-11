@@ -59,9 +59,9 @@ entity wb_trigger is
     g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity  : t_wishbone_address_granularity := WORD;
     g_sync_edge            : string                         := "positive";
-    g_trig_num             : natural range 1 to 16          := 8; -- channels facing outside the FPGA. Limit defined by wb_slave_trigger.vhd
-    g_intern_num           : natural range 1 to 16          := 8; -- channels facing inside the FPGA. Limit defined by wb_slave_trigger.vhd
-    g_rcv_intern_num       : natural range 1 to 16          := 2  -- signals from inside the FPGA that can be used as input at a rcv mux.
+    g_trig_num             : natural range 1 to 24          := 8; -- channels facing outside the FPGA. Limit defined by wb_slave_trigger.vhd
+    g_intern_num           : natural range 1 to 24          := 8; -- channels facing inside the FPGA. Limit defined by wb_slave_trigger.vhd
+    g_rcv_intern_num       : natural range 1 to 24          := 2  -- signals from inside the FPGA that can be used as input at a rcv mux.
                                                                   -- Limit defined by wb_slave_trigger.vhd
     );
 
@@ -118,7 +118,7 @@ architecture rtl of wb_trigger is
     port (
       rst_n_i    : in  std_logic;
       clk_sys_i  : in  std_logic;
-      wb_adr_i   : in  std_logic_vector(5 downto 0);
+      wb_adr_i   : in  std_logic_vector(6 downto 0);
       wb_dat_i   : in  std_logic_vector(31 downto 0);
       wb_dat_o   : out std_logic_vector(31 downto 0);
       wb_cyc_i   : in  std_logic;
@@ -134,7 +134,7 @@ architecture rtl of wb_trigger is
   end component wb_slave_trigger;
 
 
-  constant c_periph_addr_size : natural := 6+2;
+  constant c_periph_addr_size : natural := 7+2;
 
   constant c_rcv_pulse_len      : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
   constant c_transm_pulse_len   : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
@@ -191,28 +191,28 @@ architecture rtl of wb_trigger is
 begin  -- architecture rtl
 
   -- Test for maximum number of interfaces defined in wb_slave_trigger.vhd
-  assert (g_trig_num <= 16) -- number of wb_slave_trigger.vhd registers
+  assert (g_trig_num <= 24) -- number of wb_slave_trigger.vhd registers
   report "[wb_trigger] Only g_trig_num less or equal 16 is supported!"
   severity failure;
 
-  assert (g_intern_num <= 16) -- number of wb_slave_trigger.vhd registers
+  assert (g_intern_num <= 24) -- number of wb_slave_trigger.vhd registers
   report "[wb_trigger] Only g_intern_num less or equal 16 is supported!"
   severity failure;
 
-  assert (g_rcv_intern_num <= 16) -- number of wb_slave_trigger.vhd registers
+  assert (g_rcv_intern_num <= 24) -- number of wb_slave_trigger.vhd registers
   report "[wb_trigger] Only g_rcv_intern_num less or equal 16 is supported!"
   severity failure;
 
   -- Test for maximum width of multiplexor selector wb_slave_trigger.vhd
-  assert (f_log2_size(g_trig_num) <= 8) -- sel width
+  assert (f_log2_size(g_trig_num) <= 24) -- sel width
   report "[wb_trigger] log2(g_trig_num) must be less than the selector width (8)!"
   severity failure;
 
-  assert (f_log2_size(g_intern_num) <= 8) -- sel width
+  assert (f_log2_size(g_intern_num) <= 24) -- sel width
   report "[wb_trigger] log2(g_intern_num) must be less than the selector width (8)!"
   severity failure;
 
-  assert (f_log2_size(g_rcv_intern_num) <= 8) -- sel width
+  assert (f_log2_size(g_rcv_intern_num) <= 24) -- sel width
   report "[wb_trigger] log2(g_rcv_intern_num) must be less than the selector width (8)!"
   severity failure;
 
