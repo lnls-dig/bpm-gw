@@ -3,14 +3,14 @@
 -- Project    :
 -------------------------------------------------------------------------------
 -- File       : wb_trigger.vhd
--- Author     : Vitor Finotti Ferreira  <vfinotti@finotti-Inspiron-7520>
+-- Author     : Lucas Russo  <lerwys@gmail.com>
 -- Company    : Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
--- Created    : 2016-01-22
--- Last update: 2016-05-10
+-- Created    : 2016-05-11
+-- Last update:
 -- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: Top module for the Wishbone Trigger AFC board interface
+-- Description: Top module for the Wishbone Trigger MUX interface
 -------------------------------------------------------------------------------
 -- Copyright (c) 2016 Brazilian Synchrotron Light Laboratory, LNLS/CNPEM
 
@@ -30,7 +30,7 @@
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author          Description
--- 2016-01-22  1.0      vfinotti        Created
+-- 2016-05-11  1.0      lerwys          Created
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -43,28 +43,27 @@ use work.wishbone_pkg.all;
 -- Custom Wishbone Modules
 use work.dbe_wishbone_pkg.all;
 -- Wishbone Register Interface
-use work.wb_trig_wbgen2_pkg.all;
+use work.wb_trig_mux_wbgen2_pkg.all;
 -- Reset Synch
 use work.dbe_common_pkg.all;
 -- General common cores
 use work.gencores_pkg.all;
-
-
--- For Xilinx primitives
-library unisim;
-use unisim.vcomponents.all;
+-- Trigger package
+use work.trigger_pkg.all;
 
 entity wb_trigger is
   generic (
     g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity  : t_wishbone_address_granularity := WORD;
     g_sync_edge            : string                         := "positive";
-    g_trig_num             : natural range 1 to 24          := 8; -- channels facing outside the FPGA. Limit defined by wb_slave_trigger.vhd
-    g_intern_num           : natural range 1 to 24          := 8; -- channels facing inside the FPGA. Limit defined by wb_slave_trigger.vhd
-    g_rcv_intern_num       : natural range 1 to 24          := 2  -- signals from inside the FPGA that can be used as input at a rcv mux.
-                                                                  -- Limit defined by wb_slave_trigger.vhd
-    );
-
+    g_trig_num             : natural range 1 to 24          := 8; -- channels facing outside the FPGA. Limit defined by wb_trigger_regs.vhd
+    g_intern_num           : natural range 1 to 24          := 8; -- channels facing inside the FPGA. Limit defined by wb_trigger_regs.vhd
+    g_rcv_intern_num       : natural range 1 to 24          := 2; -- signals from inside the FPGA that can be used as input at a rcv mux.
+                                                                  -- Limit defined by wb_trigger_regs.vhd
+    g_num_mux_interfaces   : natural                        := 2;  -- Number of wb_trigger_mux modules
+    g_out_resolver         : string                         := "fanout"; -- Resolver policy for output triggers
+    g_in_resolver          : string                         := "or"      -- Resolver policy for input triggers
+  );
   port (
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
@@ -76,537 +75,157 @@ entity wb_trigger is
     ---- Wishbone Control Interface signals
     -------------------------------
 
-    wb_adr_i   : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
-    wb_dat_i   : in  std_logic_vector(c_wishbone_data_width-1 downto 0)    := (others => '0');
-    wb_dat_o   : out std_logic_vector(c_wishbone_data_width-1 downto 0);
-    wb_sel_i   : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0)  := (others => '0');
-    wb_we_i    : in  std_logic                                             := '0';
-    wb_cyc_i   : in  std_logic                                             := '0';
-    wb_stb_i   : in  std_logic                                             := '0';
-    wb_ack_o   : out std_logic;
-    wb_err_o   : out std_logic;
-    wb_rty_o   : out std_logic;
-    wb_stall_o : out std_logic;
+    wb_trigger_iface_adr_i   : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_trigger_iface_dat_i   : in  std_logic_vector(c_wishbone_data_width-1 downto 0)    := (others => '0');
+    wb_trigger_iface_dat_o   : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_trigger_iface_sel_i   : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0)  := (others => '0');
+    wb_trigger_iface_we_i    : in  std_logic                                             := '0';
+    wb_trigger_iface_cyc_i   : in  std_logic                                             := '0';
+    wb_trigger_iface_stb_i   : in  std_logic                                             := '0';
+    wb_trigger_iface_ack_o   : out std_logic;
+    wb_trigger_iface_err_o   : out std_logic;
+    wb_trigger_iface_rty_o   : out std_logic;
+    wb_trigger_iface_stall_o : out std_logic;
+
+    wb_trigger_mux_adr_i   : in  std_logic_vector(g_num_mux_interfaces*c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_trigger_mux_dat_i   : in  std_logic_vector(g_num_mux_interfaces*c_wishbone_data_width-1 downto 0)    := (others => '0');
+    wb_trigger_mux_dat_o   : out std_logic_vector(g_num_mux_interfaces*c_wishbone_data_width-1 downto 0);
+    wb_trigger_mux_sel_i   : in  std_logic_vector(g_num_mux_interfaces*c_wishbone_data_width/8-1 downto 0)  := (others => '0');
+    wb_trigger_mux_we_i    : in  std_logic_vector(g_num_mux_interfaces-1 downto 0)                          := (others => '0');
+    wb_trigger_mux_cyc_i   : in  std_logic_vector(g_num_mux_interfaces-1 downto 0)                          := (others => '0');
+    wb_trigger_mux_stb_i   : in  std_logic_vector(g_num_mux_interfaces-1 downto 0)                          := (others => '0');
+    wb_trigger_mux_ack_o   : out std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    wb_trigger_mux_err_o   : out std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    wb_trigger_mux_rty_o   : out std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    wb_trigger_mux_stall_o : out std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
     -------------------------------
     ---- External ports
     -------------------------------
 
-    trig_b     : inout std_logic_vector(g_trig_num-1 downto 0);
-    trig_dir_o : out   std_logic_vector(g_trig_num-1 downto 0);
+    trig_b      : inout std_logic_vector(g_trig_num-1 downto 0);
+    trig_dir_o  : out   std_logic_vector(g_trig_num-1 downto 0);
 
     -------------------------------
     ---- Internal ports
     -------------------------------
 
-    trig_rcv_intern_i   : in  std_logic_vector(g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
+    trig_rcv_intern_i   : in  t_trig_channel_array(g_num_mux_interfaces*g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
 
-    trig_pulse_transm_i : in  std_logic_vector(g_intern_num-1 downto 0);
-    trig_pulse_rcv_o    : out std_logic_vector(g_intern_num-1 downto 0)
+    trig_pulse_transm_i : in  t_trig_channel_array(g_num_mux_interfaces*g_intern_num-1 downto 0);
+    trig_pulse_rcv_o    : out t_trig_channel_array(g_num_mux_interfaces*g_intern_num-1 downto 0)
     );
 
 end entity wb_trigger;
 
 architecture rtl of wb_trigger is
 
+  -- Trigger 2d <-> 1d conversion
+  type t_trig_channel_compat_array2d is array (natural range <>) of t_trig_channel_array(g_trig_num-1 downto 0);
 
-  --------------------------
-  --Component Declarations--
-  --------------------------
+  signal trig_out_int_compat_array : t_trig_channel_compat_array2d(g_num_mux_interfaces-1 downto 0);
+  signal trig_in_int_compat_array : t_trig_channel_compat_array2d(g_num_mux_interfaces-1 downto 0);
 
-  component wb_slave_trigger is
-    port (
-      rst_n_i    : in  std_logic;
-      clk_sys_i  : in  std_logic;
-      wb_adr_i   : in  std_logic_vector(6 downto 0);
-      wb_dat_i   : in  std_logic_vector(31 downto 0);
-      wb_dat_o   : out std_logic_vector(31 downto 0);
-      wb_cyc_i   : in  std_logic;
-      wb_sel_i   : in  std_logic_vector(3 downto 0);
-      wb_stb_i   : in  std_logic;
-      wb_we_i    : in  std_logic;
-      wb_ack_o   : out std_logic;
-      wb_stall_o : out std_logic;
-      fs_clk_i   : in  std_logic;
-      wb_clk_i   : in  std_logic;
-      regs_i     : in  t_wb_trig_in_registers;
-      regs_o     : out t_wb_trig_out_registers);
-  end component wb_slave_trigger;
+  signal trig_out_int_array2d : t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_trig_num-1 downto 0);
+  signal trig_in_int_array2d : t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_trig_num-1 downto 0);
 
-
-  constant c_periph_addr_size : natural := 7+2;
-
-  constant c_rcv_pulse_len      : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-  constant c_transm_pulse_len   : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-  constant c_rcv_sel_buf_len    : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-  constant c_transm_sel_buf_len : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-  constant c_counter_width      : positive := 8;  -- Defined according to the wb_slave_trigger.vhd
-
-  -----------
-  --Signals--
-  -----------
-
-  signal regs_in  : t_wb_trig_in_registers;
-  signal regs_out : t_wb_trig_out_registers;
-
-  type t_wb_trig_out_channel is record
-    ch_ctl_dir                : std_logic;
-    ch_ctl_rcv_count_rst_n    : std_logic;
-    ch_ctl_transm_count_rst_n : std_logic;
-    ch_ctl_rcv_src            : std_logic;
-    ch_ctl_rcv_in_sel         : std_logic_vector(c_rcv_sel_buf_len-1 downto 0);
-    ch_ctl_transm_out_sel     : std_logic_vector(c_transm_sel_buf_len-1 downto 0);
-    ch_cfg_rcv_len            : std_logic_vector(c_rcv_pulse_len-1 downto 0);
-    ch_cfg_transm_len         : std_logic_vector(c_transm_pulse_len-1 downto 0);
-  end record;
-
-  type t_wb_trig_out_array is array(15 downto 0) of t_wb_trig_out_channel;
-
-  type t_wb_trig_in_channel is record
-    ch_count_rcv    : std_logic_vector(15 downto 0);
-    ch_count_transm : std_logic_vector(15 downto 0);
-  end record;
-
-  type t_wb_trig_in_array is array(15 downto 0) of t_wb_trig_in_channel;
-
-  signal ch_regs_out : t_wb_trig_out_array;
-  signal ch_regs_in  : t_wb_trig_in_array;
-
-  signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
-  signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
-
-  signal rcv_mux_bus    : std_logic_vector(g_trig_num-1 downto 0);  -- input of rcv multiplexers
-  signal transm_mux_bus : std_logic_vector(g_intern_num-1 downto 0);  -- input of transm multiplexers
-
-  signal rcv_mux_out    : std_logic_vector(g_intern_num-1 downto 0);
-  signal transm_mux_out : std_logic_vector(g_trig_num-1 downto 0);
-
-  -----------------------------
-  -- Wishbone slave adapter signals/structures
-  -----------------------------
-  signal wb_slv_adp_out : t_wishbone_master_out;
-  signal wb_slv_adp_in  : t_wishbone_master_in;
-  signal resized_addr   : std_logic_vector(c_wishbone_address_width-1 downto 0);
+  signal trig_out_resolved : t_trig_channel_array(g_trig_num-1 downto 0);
+  signal trig_in_resolved  : t_trig_channel_array(g_trig_num-1 downto 0);
 
 begin  -- architecture rtl
 
-  -- Test for maximum number of interfaces defined in wb_slave_trigger.vhd
-  assert (g_trig_num <= 24) -- number of wb_slave_trigger.vhd registers
-  report "[wb_trigger] Only g_trig_num less or equal 16 is supported!"
-  severity failure;
-
-  assert (g_intern_num <= 24) -- number of wb_slave_trigger.vhd registers
-  report "[wb_trigger] Only g_intern_num less or equal 16 is supported!"
-  severity failure;
-
-  assert (g_rcv_intern_num <= 24) -- number of wb_slave_trigger.vhd registers
-  report "[wb_trigger] Only g_rcv_intern_num less or equal 16 is supported!"
-  severity failure;
-
-  -- Test for maximum width of multiplexor selector wb_slave_trigger.vhd
-  assert (f_log2_size(g_trig_num) <= 24) -- sel width
-  report "[wb_trigger] log2(g_trig_num) must be less than the selector width (8)!"
-  severity failure;
-
-  assert (f_log2_size(g_intern_num) <= 24) -- sel width
-  report "[wb_trigger] log2(g_intern_num) must be less than the selector width (8)!"
-  severity failure;
-
-  assert (f_log2_size(g_rcv_intern_num) <= 24) -- sel width
-  report "[wb_trigger] log2(g_rcv_intern_num) must be less than the selector width (8)!"
-  severity failure;
-
-  -----------------------------
-  -- Slave adapter for Wishbone Register Interface
-  -----------------------------
-  cmp_slave_adapter : wb_slave_adapter
-  generic map (
-    g_master_use_struct                     => true,
-    g_master_mode                           => PIPELINED,
-    g_master_granularity                    => WORD,
-    g_slave_use_struct                      => false,
-    g_slave_mode                            => g_interface_mode,
-    g_slave_granularity                     => g_address_granularity
-  )
-  port map (
-    clk_sys_i                               => clk_i,
-    rst_n_i                                 => rst_n_i,
-    master_i                                => wb_slv_adp_in,
-    master_o                                => wb_slv_adp_out,
-    sl_adr_i                                => resized_addr,
-    sl_dat_i                                => wb_dat_i,
-    sl_sel_i                                => wb_sel_i,
-    sl_cyc_i                                => wb_cyc_i,
-    sl_stb_i                                => wb_stb_i,
-    sl_we_i                                 => wb_we_i,
-    sl_dat_o                                => wb_dat_o,
-    sl_ack_o                                => wb_ack_o,
-    sl_rty_o                                => open,
-    sl_err_o                                => open,
-    sl_int_o                                => open,
-    sl_stall_o                              => wb_stall_o
-  );
-
-  resized_addr(c_periph_addr_size-1 downto 0) <= wb_adr_i(c_periph_addr_size-1 downto 0);
-  resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size) <= (others => '0');
-
-
-  wb_slave_trigger_1 : wb_slave_trigger
+  cmp_wb_trigger_iface : wb_trigger_iface
+    generic map (
+      g_interface_mode       => g_interface_mode,
+      g_address_granularity  => g_address_granularity,
+      g_sync_edge            => g_sync_edge,
+      g_trig_num             => g_trig_num
+    )
     port map (
+      clk_i      => clk_i,
       rst_n_i    => rst_n_i,
-      clk_sys_i  => clk_i,
       fs_clk_i   => fs_clk_i,
-      wb_clk_i   => clk_i,
-      wb_adr_i   => wb_slv_adp_out.adr(5 downto 0),
-      wb_dat_i   => wb_slv_adp_out.dat,
-      wb_dat_o   => wb_slv_adp_in.dat,
-      wb_cyc_i   => wb_slv_adp_out.cyc,
-      wb_sel_i   => wb_slv_adp_out.sel,
-      wb_stb_i   => wb_slv_adp_out.stb,
-      wb_we_i    => wb_slv_adp_out.we,
-      wb_ack_o   => wb_slv_adp_in.ack,
-      wb_stall_o => wb_slv_adp_in.stall,
-      regs_i     => regs_in,
-      regs_o     => regs_out);
+      fs_rst_n_i => fs_rst_n_i,
 
-  -----------------------------------------------------------------
-  -- Connecting slave ports to signals
-  -----------------------------------------------------------------
+      wb_adr_i   => wb_trigger_iface_adr_i,
+      wb_dat_i   => wb_trigger_iface_dat_i,
+      wb_dat_o   => wb_trigger_iface_dat_o,
+      wb_sel_i   => wb_trigger_iface_sel_i,
+      wb_we_i    => wb_trigger_iface_we_i,
+      wb_cyc_i   => wb_trigger_iface_cyc_i,
+      wb_stb_i   => wb_trigger_iface_stb_i,
+      wb_ack_o   => wb_trigger_iface_ack_o,
+      wb_err_o   => wb_trigger_iface_err_o,
+      wb_rty_o   => wb_trigger_iface_rty_o,
+      wb_stall_o => wb_trigger_iface_stall_o,
 
-  ch_regs_out(0).ch_ctl_dir                <= regs_out.ch0_ctl_dir_o;
-  ch_regs_out(0).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch0_ctl_rcv_count_rst_o);
-  ch_regs_out(0).ch_ctl_transm_count_rst_n <= not(regs_out.ch0_ctl_transm_count_rst_o);
-  ch_regs_out(0).ch_ctl_rcv_src            <= regs_out.ch0_ctl_rcv_src_o;
-  ch_regs_out(0).ch_ctl_rcv_in_sel         <= regs_out.ch0_ctl_rcv_in_sel_o;
-  ch_regs_out(0).ch_ctl_transm_out_sel     <= regs_out.ch0_ctl_transm_out_sel_o;
-  ch_regs_out(0).ch_cfg_rcv_len            <= regs_out.ch0_cfg_rcv_len_o;
-  ch_regs_out(0).ch_cfg_transm_len         <= regs_out.ch0_cfg_transm_len_o;
+      trig_b      => trig_b,
+      trig_dir_o  => trig_dir_o,
+      trig_out_o  => trig_out_resolved,
+      trig_in_i   => trig_in_resolved
+    );
 
-  ch_regs_out(1).ch_ctl_dir                <= regs_out.ch1_ctl_dir_o;
-  ch_regs_out(1).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch1_ctl_rcv_count_rst_o);
-  ch_regs_out(1).ch_ctl_transm_count_rst_n <= not(regs_out.ch1_ctl_transm_count_rst_o);
-  ch_regs_out(1).ch_ctl_rcv_src            <= regs_out.ch1_ctl_rcv_src_o;
-  ch_regs_out(1).ch_ctl_rcv_in_sel         <= regs_out.ch1_ctl_rcv_in_sel_o;
-  ch_regs_out(1).ch_ctl_transm_out_sel     <= regs_out.ch1_ctl_transm_out_sel_o;
-  ch_regs_out(1).ch_cfg_rcv_len            <= regs_out.ch1_cfg_rcv_len_o;
-  ch_regs_out(1).ch_cfg_transm_len         <= regs_out.ch1_cfg_transm_len_o;
+  cmp_trigger_resolver : trigger_resolver
+    generic map (
+      g_trig_num             => g_trig_num,
+      g_num_mux_interfaces   => g_num_mux_interfaces,
+      g_out_resolver         => g_out_resolver,
+      g_in_resolver          => g_in_resolver
+   )
+    port map (
+      clk_i      => fs_clk_i,
+      rst_n_i    => fs_rst_n_i,
 
-  ch_regs_out(2).ch_ctl_dir                <= regs_out.ch2_ctl_dir_o;
-  ch_regs_out(2).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch2_ctl_rcv_count_rst_o);
-  ch_regs_out(2).ch_ctl_transm_count_rst_n <= not(regs_out.ch2_ctl_transm_count_rst_o);
-  ch_regs_out(2).ch_ctl_rcv_src            <= regs_out.ch2_ctl_rcv_src_o;
-  ch_regs_out(2).ch_ctl_rcv_in_sel         <= regs_out.ch2_ctl_rcv_in_sel_o;
-  ch_regs_out(2).ch_ctl_transm_out_sel     <= regs_out.ch2_ctl_transm_out_sel_o;
-  ch_regs_out(2).ch_cfg_rcv_len            <= regs_out.ch2_cfg_rcv_len_o;
-  ch_regs_out(2).ch_cfg_transm_len         <= regs_out.ch2_cfg_transm_len_o;
+      trig_resolved_out_o => trig_in_resolved,
+      trig_resolved_in_i  => trig_out_resolved,
 
-  ch_regs_out(3).ch_ctl_dir                <= regs_out.ch3_ctl_dir_o;
-  ch_regs_out(3).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch3_ctl_rcv_count_rst_o);
-  ch_regs_out(3).ch_ctl_transm_count_rst_n <= not(regs_out.ch3_ctl_transm_count_rst_o);
-  ch_regs_out(3).ch_ctl_rcv_src            <= regs_out.ch3_ctl_rcv_src_o;
-  ch_regs_out(3).ch_ctl_rcv_in_sel         <= regs_out.ch3_ctl_rcv_in_sel_o;
-  ch_regs_out(3).ch_ctl_transm_out_sel     <= regs_out.ch3_ctl_transm_out_sel_o;
-  ch_regs_out(3).ch_cfg_rcv_len            <= regs_out.ch3_cfg_rcv_len_o;
-  ch_regs_out(3).ch_cfg_transm_len         <= regs_out.ch3_cfg_transm_len_o;
+      trig_mux_out_o => trig_out_int_array2d,
+      trig_mux_in_i  => trig_in_int_array2d
+    );
 
-  ch_regs_out(4).ch_ctl_dir                <= regs_out.ch4_ctl_dir_o;
-  ch_regs_out(4).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch4_ctl_rcv_count_rst_o);
-  ch_regs_out(4).ch_ctl_transm_count_rst_n <= not(regs_out.ch4_ctl_transm_count_rst_o);
-  ch_regs_out(4).ch_ctl_rcv_src            <= regs_out.ch4_ctl_rcv_src_o;
-  ch_regs_out(4).ch_ctl_rcv_in_sel         <= regs_out.ch4_ctl_rcv_in_sel_o;
-  ch_regs_out(4).ch_ctl_transm_out_sel     <= regs_out.ch4_ctl_transm_out_sel_o;
-  ch_regs_out(4).ch_cfg_rcv_len            <= regs_out.ch4_cfg_rcv_len_o;
-  ch_regs_out(4).ch_cfg_transm_len         <= regs_out.ch4_cfg_transm_len_o;
+  gen_input_interfaces : for i in 0 to g_num_mux_interfaces-1 generate
+    gen_reorder_trigger_channels : for j in 0 to g_trig_num-1 generate
 
-  ch_regs_out(5).ch_ctl_dir                <= regs_out.ch5_ctl_dir_o;
-  ch_regs_out(5).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch5_ctl_rcv_count_rst_o);
-  ch_regs_out(5).ch_ctl_transm_count_rst_n <= not(regs_out.ch5_ctl_transm_count_rst_o);
-  ch_regs_out(5).ch_ctl_rcv_src            <= regs_out.ch5_ctl_rcv_src_o;
-  ch_regs_out(5).ch_ctl_rcv_in_sel         <= regs_out.ch5_ctl_rcv_in_sel_o;
-  ch_regs_out(5).ch_ctl_transm_out_sel     <= regs_out.ch5_ctl_transm_out_sel_o;
-  ch_regs_out(5).ch_cfg_rcv_len            <= regs_out.ch5_cfg_rcv_len_o;
-  ch_regs_out(5).ch_cfg_transm_len         <= regs_out.ch5_cfg_transm_len_o;
+      trig_out_int_compat_array(i)(j) <= trig_out_int_array2d(i, j);
+      trig_in_int_array2d(i, j) <= trig_in_int_compat_array(i)(j);
 
-  ch_regs_out(6).ch_ctl_dir                <= regs_out.ch6_ctl_dir_o;
-  ch_regs_out(6).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch6_ctl_rcv_count_rst_o);
-  ch_regs_out(6).ch_ctl_transm_count_rst_n <= not(regs_out.ch6_ctl_transm_count_rst_o);
-  ch_regs_out(6).ch_ctl_rcv_src            <= regs_out.ch6_ctl_rcv_src_o;
-  ch_regs_out(6).ch_ctl_rcv_in_sel         <= regs_out.ch6_ctl_rcv_in_sel_o;
-  ch_regs_out(6).ch_ctl_transm_out_sel     <= regs_out.ch6_ctl_transm_out_sel_o;
-  ch_regs_out(6).ch_cfg_rcv_len            <= regs_out.ch6_cfg_rcv_len_o;
-  ch_regs_out(6).ch_cfg_transm_len         <= regs_out.ch6_cfg_transm_len_o;
-
-  ch_regs_out(7).ch_ctl_dir                <= regs_out.ch7_ctl_dir_o;
-  ch_regs_out(7).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch7_ctl_rcv_count_rst_o);
-  ch_regs_out(7).ch_ctl_transm_count_rst_n <= not(regs_out.ch7_ctl_transm_count_rst_o);
-  ch_regs_out(7).ch_ctl_rcv_src            <= regs_out.ch7_ctl_rcv_src_o;
-  ch_regs_out(7).ch_ctl_rcv_in_sel         <= regs_out.ch7_ctl_rcv_in_sel_o;
-  ch_regs_out(7).ch_ctl_transm_out_sel     <= regs_out.ch7_ctl_transm_out_sel_o;
-  ch_regs_out(7).ch_cfg_rcv_len            <= regs_out.ch7_cfg_rcv_len_o;
-  ch_regs_out(7).ch_cfg_transm_len         <= regs_out.ch7_cfg_transm_len_o;
-
-  ch_regs_out(8).ch_ctl_dir                <= regs_out.ch8_ctl_dir_o;
-  ch_regs_out(8).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch8_ctl_rcv_count_rst_o);
-  ch_regs_out(8).ch_ctl_transm_count_rst_n <= not(regs_out.ch8_ctl_transm_count_rst_o);
-  ch_regs_out(8).ch_ctl_rcv_src            <= regs_out.ch8_ctl_rcv_src_o;
-  ch_regs_out(8).ch_ctl_rcv_in_sel         <= regs_out.ch8_ctl_rcv_in_sel_o;
-  ch_regs_out(8).ch_ctl_transm_out_sel     <= regs_out.ch8_ctl_transm_out_sel_o;
-  ch_regs_out(8).ch_cfg_rcv_len            <= regs_out.ch8_cfg_rcv_len_o;
-  ch_regs_out(8).ch_cfg_transm_len         <= regs_out.ch8_cfg_transm_len_o;
-
-  ch_regs_out(9).ch_ctl_dir                <= regs_out.ch9_ctl_dir_o;
-  ch_regs_out(9).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch9_ctl_rcv_count_rst_o);
-  ch_regs_out(9).ch_ctl_transm_count_rst_n <= not(regs_out.ch9_ctl_transm_count_rst_o);
-  ch_regs_out(9).ch_ctl_rcv_src            <= regs_out.ch9_ctl_rcv_src_o;
-  ch_regs_out(9).ch_ctl_rcv_in_sel         <= regs_out.ch9_ctl_rcv_in_sel_o;
-  ch_regs_out(9).ch_ctl_transm_out_sel     <= regs_out.ch9_ctl_transm_out_sel_o;
-  ch_regs_out(9).ch_cfg_rcv_len            <= regs_out.ch9_cfg_rcv_len_o;
-  ch_regs_out(9).ch_cfg_transm_len         <= regs_out.ch9_cfg_transm_len_o;
-
-  ch_regs_out(10).ch_ctl_dir                <= regs_out.ch10_ctl_dir_o;
-  ch_regs_out(10).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch10_ctl_rcv_count_rst_o);
-  ch_regs_out(10).ch_ctl_transm_count_rst_n <= not(regs_out.ch10_ctl_transm_count_rst_o);
-  ch_regs_out(10).ch_ctl_rcv_src            <= regs_out.ch10_ctl_rcv_src_o;
-  ch_regs_out(10).ch_ctl_rcv_in_sel         <= regs_out.ch10_ctl_rcv_in_sel_o;
-  ch_regs_out(10).ch_ctl_transm_out_sel     <= regs_out.ch10_ctl_transm_out_sel_o;
-  ch_regs_out(10).ch_cfg_rcv_len            <= regs_out.ch10_cfg_rcv_len_o;
-  ch_regs_out(10).ch_cfg_transm_len         <= regs_out.ch10_cfg_transm_len_o;
-
-  ch_regs_out(11).ch_ctl_dir                <= regs_out.ch11_ctl_dir_o;
-  ch_regs_out(11).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch11_ctl_rcv_count_rst_o);
-  ch_regs_out(11).ch_ctl_transm_count_rst_n <= not(regs_out.ch11_ctl_transm_count_rst_o);
-  ch_regs_out(11).ch_ctl_rcv_src            <= regs_out.ch11_ctl_rcv_src_o;
-  ch_regs_out(11).ch_ctl_rcv_in_sel         <= regs_out.ch11_ctl_rcv_in_sel_o;
-  ch_regs_out(11).ch_ctl_transm_out_sel     <= regs_out.ch11_ctl_transm_out_sel_o;
-  ch_regs_out(11).ch_cfg_rcv_len            <= regs_out.ch11_cfg_rcv_len_o;
-  ch_regs_out(11).ch_cfg_transm_len         <= regs_out.ch11_cfg_transm_len_o;
-
-  ch_regs_out(12).ch_ctl_dir                <= regs_out.ch12_ctl_dir_o;
-  ch_regs_out(12).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch12_ctl_rcv_count_rst_o);
-  ch_regs_out(12).ch_ctl_transm_count_rst_n <= not(regs_out.ch12_ctl_transm_count_rst_o);
-  ch_regs_out(12).ch_ctl_rcv_src            <= regs_out.ch12_ctl_rcv_src_o;
-  ch_regs_out(12).ch_ctl_rcv_in_sel         <= regs_out.ch12_ctl_rcv_in_sel_o;
-  ch_regs_out(12).ch_ctl_transm_out_sel     <= regs_out.ch12_ctl_transm_out_sel_o;
-  ch_regs_out(12).ch_cfg_rcv_len            <= regs_out.ch12_cfg_rcv_len_o;
-  ch_regs_out(12).ch_cfg_transm_len         <= regs_out.ch12_cfg_transm_len_o;
-
-  ch_regs_out(13).ch_ctl_dir                <= regs_out.ch13_ctl_dir_o;
-  ch_regs_out(13).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch13_ctl_rcv_count_rst_o);
-  ch_regs_out(13).ch_ctl_transm_count_rst_n <= not(regs_out.ch13_ctl_transm_count_rst_o);
-  ch_regs_out(13).ch_ctl_rcv_src            <= regs_out.ch13_ctl_rcv_src_o;
-  ch_regs_out(13).ch_ctl_rcv_in_sel         <= regs_out.ch13_ctl_rcv_in_sel_o;
-  ch_regs_out(13).ch_ctl_transm_out_sel     <= regs_out.ch13_ctl_transm_out_sel_o;
-  ch_regs_out(13).ch_cfg_rcv_len            <= regs_out.ch13_cfg_rcv_len_o;
-  ch_regs_out(13).ch_cfg_transm_len         <= regs_out.ch13_cfg_transm_len_o;
-
-  ch_regs_out(14).ch_ctl_dir                <= regs_out.ch14_ctl_dir_o;
-  ch_regs_out(14).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch14_ctl_rcv_count_rst_o);
-  ch_regs_out(14).ch_ctl_transm_count_rst_n <= not(regs_out.ch14_ctl_transm_count_rst_o);
-  ch_regs_out(14).ch_ctl_rcv_src            <= regs_out.ch14_ctl_rcv_src_o;
-  ch_regs_out(14).ch_ctl_rcv_in_sel         <= regs_out.ch14_ctl_rcv_in_sel_o;
-  ch_regs_out(14).ch_ctl_transm_out_sel     <= regs_out.ch14_ctl_transm_out_sel_o;
-  ch_regs_out(14).ch_cfg_rcv_len            <= regs_out.ch14_cfg_rcv_len_o;
-  ch_regs_out(14).ch_cfg_transm_len         <= regs_out.ch14_cfg_transm_len_o;
-
-  ch_regs_out(15).ch_ctl_dir                <= regs_out.ch15_ctl_dir_o;
-  ch_regs_out(15).ch_ctl_rcv_count_rst_n    <= not(regs_out.ch15_ctl_rcv_count_rst_o);
-  ch_regs_out(15).ch_ctl_transm_count_rst_n <= not(regs_out.ch15_ctl_transm_count_rst_o);
-  ch_regs_out(15).ch_ctl_rcv_src            <= regs_out.ch15_ctl_rcv_src_o;
-  ch_regs_out(15).ch_ctl_rcv_in_sel         <= regs_out.ch15_ctl_rcv_in_sel_o;
-  ch_regs_out(15).ch_ctl_transm_out_sel     <= regs_out.ch15_ctl_transm_out_sel_o;
-  ch_regs_out(15).ch_cfg_rcv_len            <= regs_out.ch15_cfg_rcv_len_o;
-  ch_regs_out(15).ch_cfg_transm_len         <= regs_out.ch15_cfg_transm_len_o;
-
-
-
-  regs_in.ch0_count_rcv_i    <= ch_regs_in(0).ch_count_rcv;
-  regs_in.ch0_count_transm_i <= ch_regs_in(0).ch_count_transm;
-
-  regs_in.ch1_count_rcv_i    <= ch_regs_in(1).ch_count_rcv;
-  regs_in.ch1_count_transm_i <= ch_regs_in(1).ch_count_transm;
-
-  regs_in.ch2_count_rcv_i    <= ch_regs_in(2).ch_count_rcv;
-  regs_in.ch2_count_transm_i <= ch_regs_in(2).ch_count_transm;
-
-  regs_in.ch3_count_rcv_i    <= ch_regs_in(3).ch_count_rcv;
-  regs_in.ch3_count_transm_i <= ch_regs_in(3).ch_count_transm;
-
-  regs_in.ch4_count_rcv_i    <= ch_regs_in(4).ch_count_rcv;
-  regs_in.ch4_count_transm_i <= ch_regs_in(4).ch_count_transm;
-
-  regs_in.ch5_count_rcv_i    <= ch_regs_in(5).ch_count_rcv;
-  regs_in.ch5_count_transm_i <= ch_regs_in(5).ch_count_transm;
-
-  regs_in.ch6_count_rcv_i    <= ch_regs_in(6).ch_count_rcv;
-  regs_in.ch6_count_transm_i <= ch_regs_in(6).ch_count_transm;
-
-  regs_in.ch7_count_rcv_i    <= ch_regs_in(7).ch_count_rcv;
-  regs_in.ch7_count_transm_i <= ch_regs_in(7).ch_count_transm;
-
-  regs_in.ch8_count_rcv_i    <= ch_regs_in(8).ch_count_rcv;
-  regs_in.ch8_count_transm_i <= ch_regs_in(8).ch_count_transm;
-
-  regs_in.ch9_count_rcv_i    <= ch_regs_in(9).ch_count_rcv;
-  regs_in.ch9_count_transm_i <= ch_regs_in(9).ch_count_transm;
-
-  regs_in.ch10_count_rcv_i    <= ch_regs_in(10).ch_count_rcv;
-  regs_in.ch10_count_transm_i <= ch_regs_in(10).ch_count_transm;
-
-  regs_in.ch11_count_rcv_i    <= ch_regs_in(11).ch_count_rcv;
-  regs_in.ch11_count_transm_i <= ch_regs_in(11).ch_count_transm;
-
-  regs_in.ch12_count_rcv_i    <= ch_regs_in(12).ch_count_rcv;
-  regs_in.ch12_count_transm_i <= ch_regs_in(12).ch_count_transm;
-
-  regs_in.ch13_count_rcv_i    <= ch_regs_in(13).ch_count_rcv;
-  regs_in.ch13_count_transm_i <= ch_regs_in(13).ch_count_transm;
-
-  regs_in.ch14_count_rcv_i    <= ch_regs_in(14).ch_count_rcv;
-  regs_in.ch14_count_transm_i <= ch_regs_in(14).ch_count_transm;
-
-  regs_in.ch15_count_rcv_i    <= ch_regs_in(15).ch_count_rcv;
-  regs_in.ch15_count_transm_i <= ch_regs_in(15).ch_count_transm;
-
-  ---------------------------
-  -- Instantiation Process --
-  ---------------------------
-
-  -- data signals
-  transm_mux_bus <= trig_pulse_transm_i;
-
-  trigger_generate : for i in g_trig_num-1 downto 0 generate
-
-    --------------------------------
-    -- Connecting signals
-    --------------------------------
-
-    trig_dir_o(i) <= ch_regs_out(i).ch_ctl_dir;
-
-    --------------------------------
-    -- Transmitter and Receiver Cores
-    --------------------------------
-
-    trigger_transm : extend_pulse_dyn
-      generic map (
-        g_width_bus_size => c_transm_pulse_len)
-      port map (
-        clk_i         => fs_clk_i,
-        rst_n_i       => fs_rst_n_i,
-        pulse_i       => transm_mux_out(i),
-        pulse_width_i => unsigned(ch_regs_out(i).ch_cfg_transm_len),
-        extended_o    => extended_transm(i));
-
-    trigger_rcv_1 : trigger_rcv
-      generic map (
-        g_glitch_len_width => c_recv_pulse_len,
-        g_sync_edge        => g_sync_edge)
-      port map (
-        clk_i   => fs_clk_i,
-        rst_n_i => fs_rst_n_i,
-        len_i   => ch_regs_out(i).ch_cfg_rcv_len,
-        data_i  => extended_rcv(i),
-        pulse_o => rcv_mux_bus(i));
-
-    --------------------------------
-    -- Connects cores to backplane
-    --------------------------------
-
-    cmp_iobuf : iobuf
-      port map (
-        o  => extended_rcv(i),          -- Buffer output for further use
-        io => trig_b(i),  -- inout (connect directly to top-level port)
-        i  => extended_transm(i),       -- Buffer input
-        t  => ch_regs_out(i).ch_ctl_dir  -- 3-state enable input, high=input, low=output
-        );
-
-    --------------------------------
-    -- Pulse counters
-    --------------------------------
-
-    counter_rcv : counter_simple
-      generic map (
-        g_output_width => c_counter_width)
-      port map (
-        clk_i   => fs_clk_i,
-        rst_n_i => ch_regs_out(i).ch_ctl_rcv_count_rst_n,
-        ce_i    => '1',
-        up_i    => rcv_mux_bus(i),
-        down_i  => '0',
-        count_o => ch_regs_in(i).ch_count_rcv);
-
-    counter_transm : counter_simple
-      generic map (
-        g_output_width => c_counter_width)
-      port map (
-        clk_i   => fs_clk_i,
-        rst_n_i => ch_regs_out(i).ch_ctl_transm_count_rst_n,
-        ce_i    => '1',
-        up_i    => transm_mux_out(i),
-        down_i  => '0',
-        count_o => ch_regs_in(i).ch_count_transm);
-
+    end generate;
   end generate;
 
-  ----------------------------------
-  --Generate receiver multiplexers--
-  ----------------------------------
-  mux_rcv : for ir in g_intern_num -1 downto 0 generate
-    process (fs_clk_i)is
-      variable sel : integer := 0;
-    begin  -- process
-      sel := to_integer(unsigned(ch_regs_out(ir).ch_ctl_rcv_in_sel));
+  gen_mux_interfaces : for i in 0 to g_num_mux_interfaces-1 generate
+    cmp_wb_trigger : wb_trigger_mux
+      generic map (
+        g_interface_mode       => g_interface_mode,
+        g_address_granularity  => g_address_granularity,
+        g_trig_num             => g_trig_num,
+        g_intern_num           => g_intern_num,
+        g_rcv_intern_num       => g_rcv_intern_num
+     )
+      port map (
+        clk_i      => clk_i,
+        rst_n_i    => rst_n_i,
+        fs_clk_i   => fs_clk_i,
+        fs_rst_n_i => fs_rst_n_i,
 
-      if rising_edge(fs_clk_i) then     -- rising clock edge
-        if fs_rst_n_i = '0' then        -- synchronous reset (active low)
-          rcv_mux_out(ir) <= rcv_mux_bus(0);
-        else
+        wb_adr_i   => wb_trigger_mux_adr_i((i+1)*c_wishbone_address_width-1 downto i*c_wishbone_address_width),
+        wb_dat_i   => wb_trigger_mux_dat_i((i+1)*c_wishbone_data_width-1 downto i*c_wishbone_data_width),
+        wb_dat_o   => wb_trigger_mux_dat_o((i+1)*c_wishbone_data_width-1 downto i*c_wishbone_data_width),
+        wb_sel_i   => wb_trigger_mux_sel_i((i+1)*c_wishbone_data_width/8-1 downto i*c_wishbone_data_width/8),
+        wb_we_i    => wb_trigger_mux_we_i(i),
+        wb_cyc_i   => wb_trigger_mux_cyc_i(i),
+        wb_stb_i   => wb_trigger_mux_stb_i(i),
+        wb_ack_o   => wb_trigger_mux_ack_o(i),
+        wb_err_o   => wb_trigger_mux_err_o(i),
+        wb_rty_o   => wb_trigger_mux_rty_o(i),
+        wb_stall_o => wb_trigger_mux_stall_o(i),
 
-          if (ch_regs_out(ir).ch_ctl_rcv_src = '0') then -- checks the source of receiver (triggers/internal)
-            -- check if sel is bigger than internal channels
-            if (sel >= g_trig_num) then
-              rcv_mux_out(ir) <= rcv_mux_bus(0);
-            else
-              rcv_mux_out(ir) <= rcv_mux_bus(sel);
-            end if;
+        trig_out_o => trig_in_int_compat_array(i),
+        trig_in_i  => trig_out_int_compat_array(i),
 
-          else
-            -- check if sel is bigger than  internal rcv signals
-            if (sel >= g_rcv_intern_num) then
-              rcv_mux_out(ir) <= trig_rcv_intern_i(0);
-            else
-              rcv_mux_out(ir) <= trig_rcv_intern_i(sel);
-            end if;
-
-          end if;
-        end if;
-      end if;
-
-    end process;
-  end generate mux_rcv;
-
-  -------------------------------------
-  --Generate transmitter multiplexers--
-  -------------------------------------
-  mux_transm : for it in g_trig_num-1 downto 0 generate
-    process (fs_clk_i) is
-      variable sel : integer := 0;
-    begin  -- process
-      sel := to_integer(unsigned(ch_regs_out(it).ch_ctl_transm_out_sel));
-      if rising_edge(fs_clk_i) then     -- rising clock edge
-        if fs_rst_n_i = '0' then        -- synchronous reset (active low)
-          transm_mux_out(it) <= transm_mux_bus(0);
-        else
-          -- check if sel is bigger than internal channels
-          if (sel >= g_intern_num) then
-            transm_mux_out(it) <= transm_mux_bus(0);
-          else
-            transm_mux_out(it) <= transm_mux_bus(sel);
-          end if;
-        end if;
-      end if;
-    end process;
-  end generate mux_transm;
-
-  trig_pulse_rcv_o <= rcv_mux_out;
+        trig_rcv_intern_i   => trig_rcv_intern_i ((i+1)*g_rcv_intern_num-1 downto i*g_rcv_intern_num),
+        trig_pulse_transm_i => trig_pulse_transm_i ((i+1)*g_intern_num-1 downto i*g_intern_num),
+        trig_pulse_rcv_o    => trig_pulse_rcv_o ((i+1)*g_intern_num-1 downto i*g_intern_num)
+      );
+  end generate;
 
 end architecture rtl;

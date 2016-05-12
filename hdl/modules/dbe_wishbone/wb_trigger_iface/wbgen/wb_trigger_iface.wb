@@ -1,9 +1,9 @@
 peripheral {
   name = "Control and status register for the MLVDS trigger";
   description = "Wishbone slave for control and status registers related to the MLVDS trigger";
-  hdl_entity = "wb_slave_trigger";
+  hdl_entity = "wb_trigger_iface_regs";
 
-  prefix = "wb_trig";
+  prefix = "wb_trig_iface";
 
   ---------------------------------------------------------------------------
   -- CHANNEL 0
@@ -40,40 +40,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -177,40 +143,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -306,40 +238,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -443,40 +341,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -572,40 +436,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -709,40 +539,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -838,40 +634,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -975,40 +737,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -1104,40 +832,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -1241,40 +935,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -1370,40 +1030,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -1507,40 +1133,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -1636,40 +1228,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -1773,40 +1331,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -1902,40 +1426,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -2039,40 +1529,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -2168,40 +1624,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -2305,40 +1727,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -2434,40 +1822,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -2571,40 +1925,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -2700,40 +2020,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -2837,40 +2123,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -2970,40 +2222,6 @@ peripheral {
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
   };
 
   reg {
@@ -3099,40 +2317,6 @@ peripheral {
       description = "1 - Reset\n0 - Normal";
       type = MONOSTABLE;
       size = 1;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Receiver Source";
-      prefix = "rcv_src";
-      description = "1 - Internal Signals\n0 - Triggers";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Receiver Input";
-      prefix = "rcv_in_sel";
-      description = "Select input that will be used by the receiver";
-      type = SLV;
-      size = 8;
-      align = 16;
-      clock = "fs_clk_i";
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Select Transmitter Output";
-      prefix = "transm_out_sel";
-      description = "Select output that will be used by the transmitter";
-      type = SLV;
-      size = 8;
-      align = 24;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
