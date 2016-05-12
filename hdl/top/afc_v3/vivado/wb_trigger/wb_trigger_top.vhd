@@ -547,8 +547,12 @@ begin
     port map (
       rst_n_i             => clk_sys_rstn,
       clk_i               => clk_sys,
-      fs_clk_i            => clk_133mhz,
-      fs_rst_n_i          => clk_133mhz_rstn,
+
+      ref_clk_i         => clk_133mhz,
+      ref_rst_n_i       => clk_133mhz_rstn,
+
+      fs_clk_array_i    => (clk_133mhz, clk_133mhz),
+      fs_rst_n_array_i  => (clk_133mhz_rstn, clk_133mhz_rstn),
 
       wb_slv_trigger_iface_i => cc_dummy_slave_in,
       wb_slv_trigger_iface_o => open,
