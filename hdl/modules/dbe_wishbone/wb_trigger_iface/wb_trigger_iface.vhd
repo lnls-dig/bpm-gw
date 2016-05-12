@@ -69,8 +69,8 @@ entity wb_trigger_iface is
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
 
-    fs_clk_i   : in std_logic;
-    fs_rst_n_i : in std_logic;
+    ref_clk_i   : in std_logic;
+    ref_rst_n_i : in std_logic;
 
     -------------------------------
     ---- Wishbone Control Interface signals
@@ -234,7 +234,7 @@ begin  -- architecture rtl
     port map (
       rst_n_i    => rst_n_i,
       clk_sys_i  => clk_i,
-      fs_clk_i   => fs_clk_i,
+      fs_clk_i   => ref_clk_i,
       wb_clk_i   => clk_i,
       wb_adr_i   => wb_slv_adp_out.adr(6 downto 0),
       wb_dat_i   => wb_slv_adp_out.dat,
@@ -492,8 +492,8 @@ begin  -- architecture rtl
       generic map (
         g_width_bus_size => c_transm_pulse_len)
       port map (
-        clk_i         => fs_clk_i,
-        rst_n_i       => fs_rst_n_i,
+        clk_i         => ref_clk_i,
+        rst_n_i       => ref_rst_n_i,
         pulse_i       => transm_pulse_bus(i).pulse,
         pulse_width_i => unsigned(ch_regs_out(i).ch_cfg_transm_len),
         extended_o    => extended_transm(i));
@@ -503,8 +503,8 @@ begin  -- architecture rtl
         g_glitch_len_width => c_rcv_pulse_len,
         g_sync_edge        => g_sync_edge)
       port map (
-        clk_i   => fs_clk_i,
-        rst_n_i => fs_rst_n_i,
+        clk_i   => ref_clk_i,
+        rst_n_i => ref_rst_n_i,
         len_i   => ch_regs_out(i).ch_cfg_rcv_len,
         data_i  => extended_rcv(i),
         pulse_o => rcv_pulse_bus(i).pulse);
@@ -529,7 +529,7 @@ begin  -- architecture rtl
       generic map (
         g_output_width => c_counter_width)
       port map (
-        clk_i   => fs_clk_i,
+        clk_i   => ref_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_rcv_count_rst_n,
         ce_i    => '1',
         up_i    => rcv_pulse_bus(i).pulse,
@@ -540,7 +540,7 @@ begin  -- architecture rtl
       generic map (
         g_output_width => c_counter_width)
       port map (
-        clk_i   => fs_clk_i,
+        clk_i   => ref_clk_i,
         rst_n_i => ch_regs_out(i).ch_ctl_transm_count_rst_n,
         ce_i    => '1',
         up_i    => transm_pulse_bus(i).pulse,

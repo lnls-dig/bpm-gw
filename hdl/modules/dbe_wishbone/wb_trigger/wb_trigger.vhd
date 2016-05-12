@@ -62,14 +62,19 @@ entity wb_trigger is
                                                                   -- Limit defined by wb_trigger_regs.vhd
     g_num_mux_interfaces   : natural                        := 2;  -- Number of wb_trigger_mux modules
     g_out_resolver         : string                         := "fanout"; -- Resolver policy for output triggers
-    g_in_resolver          : string                         := "or"      -- Resolver policy for input triggers
+    g_in_resolver          : string                         := "or";     -- Resolver policy for input triggers
+    g_with_input_sync      : boolean                        := true;
+    g_with_output_sync     : boolean                        := true
   );
   port (
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
 
-    fs_clk_i   : in std_logic;
-    fs_rst_n_i : in std_logic;
+    ref_clk_i   : in std_logic;
+    ref_rst_n_i : in std_logic;
+
+    fs_clk_array_i    : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    fs_rst_n_array_i  : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
     -------------------------------
     ---- Wishbone Control Interface signals
@@ -144,8 +149,9 @@ begin  -- architecture rtl
     port map (
       clk_i      => clk_i,
       rst_n_i    => rst_n_i,
-      fs_clk_i   => fs_clk_i,
-      fs_rst_n_i => fs_rst_n_i,
+
+      ref_clk_i   => ref_clk_i,
+      ref_rst_n_i => ref_rst_n_i,
 
       wb_adr_i   => wb_trigger_iface_adr_i,
       wb_dat_i   => wb_trigger_iface_dat_i,
@@ -170,11 +176,16 @@ begin  -- architecture rtl
       g_trig_num             => g_trig_num,
       g_num_mux_interfaces   => g_num_mux_interfaces,
       g_out_resolver         => g_out_resolver,
-      g_in_resolver          => g_in_resolver
+      g_in_resolver          => g_in_resolver,
+      g_with_input_sync      => g_with_input_sync,
+      g_with_output_sync     => g_with_output_sync
    )
     port map (
-      clk_i      => fs_clk_i,
-      rst_n_i    => fs_rst_n_i,
+      ref_clk_i      => ref_clk_i,
+      ref_rst_n_i    => ref_rst_n_i,
+
+      fs_clk_array_i    => fs_clk_array_i,
+      fs_rst_n_array_i  => fs_rst_n_array_i,
 
       trig_resolved_out_o => trig_in_resolved,
       trig_resolved_in_i  => trig_out_resolved,
@@ -204,8 +215,9 @@ begin  -- architecture rtl
       port map (
         clk_i      => clk_i,
         rst_n_i    => rst_n_i,
-        fs_clk_i   => fs_clk_i,
-        fs_rst_n_i => fs_rst_n_i,
+
+        fs_clk_i   => fs_clk_array_i(i),
+        fs_rst_n_i => fs_rst_n_array_i(i),
 
         wb_adr_i   => wb_trigger_mux_adr_i((i+1)*c_wishbone_address_width-1 downto i*c_wishbone_address_width),
         wb_dat_i   => wb_trigger_mux_dat_i((i+1)*c_wishbone_data_width-1 downto i*c_wishbone_data_width),

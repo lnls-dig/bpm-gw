@@ -22,14 +22,20 @@ entity xwb_trigger is
                                                                     -- Limit defined by wb_trigger_regs.vhd
       g_num_mux_interfaces   : natural                        := 2;  -- Number of wb_trigger_mux modules
       g_out_resolver         : string                         := "fanout"; -- Resolver policy for output triggers
-      g_in_resolver          : string                         := "or"      -- Resolver policy for input triggers
+      g_in_resolver          : string                         := "or";     -- Resolver policy for input triggers
+      g_with_input_sync      : boolean                        := true;
+      g_with_output_sync     : boolean                        := true
     );
   port
     (
-      rst_n_i    : in std_logic;
-      clk_i      : in std_logic;
-      fs_clk_i   : in std_logic;
-      fs_rst_n_i : in std_logic;
+      clk_i   : in std_logic;
+      rst_n_i : in std_logic;
+
+      ref_clk_i   : in std_logic;
+      ref_rst_n_i : in std_logic;
+
+      fs_clk_array_i    : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
+      fs_rst_n_array_i  : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
       -----------------------------
       -- Wishbone signals
@@ -93,14 +99,19 @@ begin
       g_rcv_intern_num       => g_rcv_intern_num,
       g_num_mux_interfaces   => g_num_mux_interfaces,
       g_out_resolver         => g_out_resolver,
-      g_in_resolver          => g_in_resolver
+      g_in_resolver          => g_in_resolver,
+      g_with_input_sync      => g_with_input_sync,
+      g_with_output_sync     => g_with_output_sync
     )
     port map (
-      clk_i      => clk_i,
-      rst_n_i    => rst_n_i,
+      clk_i             => clk_i,
+      rst_n_i           => rst_n_i,
 
-      fs_clk_i   => fs_clk_i,
-      fs_rst_n_i => fs_rst_n_i,
+      ref_clk_i         => ref_clk_i,
+      ref_rst_n_i       => ref_rst_n_i,
+
+      fs_clk_array_i    => fs_clk_array_i,
+      fs_rst_n_array_i  => fs_rst_n_array_i,
 
       wb_trigger_iface_adr_i   => wb_slv_trigger_iface_i.adr,
       wb_trigger_iface_dat_i   => wb_slv_trigger_iface_i.dat,

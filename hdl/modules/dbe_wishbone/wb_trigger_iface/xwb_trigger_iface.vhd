@@ -22,8 +22,9 @@ entity xwb_trigger_iface is
     (
       rst_n_i    : in std_logic;
       clk_i      : in std_logic;
-      fs_clk_i   : in std_logic;
-      fs_rst_n_i : in std_logic;
+
+      ref_clk_i   : in std_logic;
+      ref_rst_n_i : in std_logic;
 
       -----------------------------
       -- Wishbone signals

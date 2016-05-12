@@ -30,11 +30,18 @@ package trigger_pkg is
     g_trig_num             : natural := 8;
     g_num_mux_interfaces   : natural := 2;
     g_out_resolver         : string := "fanout";
-    g_in_resolver          : string := "or"
+    g_in_resolver          : string := "or";
+    g_with_input_sync      : boolean := true;
+    g_with_output_sync     : boolean := true
   );
   port (
-    clk_i   : in std_logic;
-    rst_n_i : in std_logic;
+    -- Reference clock for physical component (e.g., backplane, board)
+    ref_clk_i   : in std_logic;
+    ref_rst_n_i : in std_logic;
+
+    -- Synchronization clocks for different domains
+    fs_clk_array_i    : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    fs_rst_n_array_i  : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
     -------------------------------
     --- Trigger ports

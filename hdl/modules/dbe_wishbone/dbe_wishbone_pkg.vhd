@@ -1731,8 +1731,8 @@ package dbe_wishbone_pkg is
       clk_i   : in std_logic;
       rst_n_i : in std_logic;
 
-      fs_clk_i   : in std_logic;
-      fs_rst_n_i : in std_logic;
+      ref_clk_i   : in std_logic;
+      ref_rst_n_i : in std_logic;
 
       -------------------------------
       ---- Wishbone Control Interface signals
@@ -1778,8 +1778,9 @@ package dbe_wishbone_pkg is
     (
       rst_n_i    : in std_logic;
       clk_i      : in std_logic;
-      fs_clk_i   : in std_logic;
-      fs_rst_n_i : in std_logic;
+
+      ref_clk_i   : in std_logic;
+      ref_rst_n_i : in std_logic;
 
       -----------------------------
       -- Wishbone signals
@@ -1815,14 +1816,19 @@ package dbe_wishbone_pkg is
                                                                   -- Limit defined by wb_trigger_regs.vhd
     g_num_mux_interfaces   : natural                        := 2;  -- Number of wb_trigger_mux modules
     g_out_resolver         : string                         := "fanout"; -- Resolver policy for output triggers
-    g_in_resolver          : string                         := "or"      -- Resolver policy for input triggers
+    g_in_resolver          : string                         := "or";     -- Resolver policy for input triggers
+    g_with_input_sync      : boolean                        := true;
+    g_with_output_sync     : boolean                        := true
   );
   port (
     clk_i   : in std_logic;
     rst_n_i : in std_logic;
 
-    fs_clk_i   : in std_logic;
-    fs_rst_n_i : in std_logic;
+    ref_clk_i   : in std_logic;
+    ref_rst_n_i : in std_logic;
+
+    fs_clk_array_i    : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
+    fs_rst_n_array_i  : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
     -------------------------------
     ---- Wishbone Control Interface signals
@@ -1882,14 +1888,20 @@ package dbe_wishbone_pkg is
                                                                     -- Limit defined by wb_trigger_regs.vhd
       g_num_mux_interfaces   : natural                        := 2;  -- Number of wb_trigger_mux modules
       g_out_resolver         : string                         := "fanout"; -- Resolver policy for output triggers
-      g_in_resolver          : string                         := "or"      -- Resolver policy for input triggers
+      g_in_resolver          : string                         := "or";     -- Resolver policy for input triggers
+      g_with_input_sync      : boolean                        := true;
+      g_with_output_sync     : boolean                        := true
     );
   port
     (
-      rst_n_i    : in std_logic;
-      clk_i      : in std_logic;
-      fs_clk_i   : in std_logic;
-      fs_rst_n_i : in std_logic;
+      clk_i   : in std_logic;
+      rst_n_i : in std_logic;
+
+      ref_clk_i   : in std_logic;
+      ref_rst_n_i : in std_logic;
+
+      fs_clk_array_i    : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
+      fs_rst_n_array_i  : in std_logic_vector(g_num_mux_interfaces-1 downto 0);
 
       -----------------------------
       -- Wishbone signals
