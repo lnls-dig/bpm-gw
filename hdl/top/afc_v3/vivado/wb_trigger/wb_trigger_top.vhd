@@ -47,12 +47,8 @@ use work.gencores_pkg.all;
 use work.dbe_wishbone_pkg.all;
 -- Custom common cores
 use work.dbe_common_pkg.all;
--- Wishbone stream modules and interface
-
--- FMC516 definitions
-
--- DSP definitions
-
+-- Trigger definitons
+use work.trigger_pkg.all;
 -- Positicon Calc constants
 use work.machine_pkg.all;
 -- Genrams
@@ -194,16 +190,24 @@ architecture structural of wb_trigger_top is
   constant c_num_tlvl_clks        : natural  := 3;
 
   constant c_masters : natural := 1;
-  constant c_slaves  : natural := 1;
+  constant c_slaves  : natural := 3;
 
-  constant c_slv_trigger_id   : natural := 0;
+  constant c_slv_trigger_iface_id  : natural := 0;
+  constant c_slv_trigger_mux0_id   : natural := 1;
+  constant c_slv_trigger_mux1_id   : natural := 2;
+
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-    (c_slv_trigger_id => f_sdb_embed_device(c_xwb_trigger_sdb, x"10000000")  -- 16KB RAM
-     );
+    (
+      c_slv_trigger_iface_id => f_sdb_embed_device(c_xwb_trigger_iface_sdb, x"10000000"),
+      c_slv_trigger_mux0_id => f_sdb_embed_device(c_xwb_trigger_mux_sdb, x"20000000"),
+      c_slv_trigger_mux1_id => f_sdb_embed_device(c_xwb_trigger_mux_sdb, x"30000000")
+    );
 
   constant c_button_rst_width : natural            := 255;
   constant c_sdb_address      : t_wishbone_address := x"00000000";
   constant c_ma_pcie_id       : natural            := 0;
+
+  constant c_num_mux_interfaces : natural          := 2;
 
 
   signal c_clk_sys_id    : natural := 0;
@@ -247,9 +251,9 @@ architecture structural of wb_trigger_top is
   signal wb_slv_in  : t_wishbone_slave_in;
   signal wb_slv_out : t_wishbone_slave_out;
 
-  signal trig_rcv_intern : std_logic_vector(1 downto 0);
-  signal trig_pulse_transm : std_logic_vector(7 downto 0);
-  signal trig_pulse_rcv : std_logic_vector(7 downto 0);
+  signal trig_rcv_intern    : t_trig_channel_array2d(1 downto 0, 1 downto 0);
+  signal trig_pulse_transm  : t_trig_channel_array2d(1 downto 0, 7 downto 0);
+  signal trig_pulse_rcv     : t_trig_channel_array2d(1 downto 0, 7 downto 0);
 
   signal trig_dir_int : std_logic_vector(7 downto 0);
 
@@ -264,10 +268,26 @@ begin
     port map (
       CONTROL             => CONTROL0,
       CLK                 => clk_133mhz,
-      TRIG0(7 downto 0)   => trig_pulse_rcv,
-      TRIG0(15 downto 8)  => trig_pulse_transm,
-      TRIG0(23 downto 16) => (others => '0'),
       TRIG0(31 downto 24) => trig_dir_int,
+      TRIG0(23) => trig_pulse_rcv(0, 7).pulse,
+      TRIG0(22) => trig_pulse_rcv(0, 6).pulse,
+      TRIG0(21) => trig_pulse_rcv(0, 5).pulse,
+      TRIG0(20) => trig_pulse_rcv(0, 4).pulse,
+      TRIG0(19) => trig_pulse_rcv(0, 3).pulse,
+      TRIG0(18) => trig_pulse_rcv(0, 2).pulse,
+      TRIG0(17) => trig_pulse_rcv(0, 1).pulse,
+      TRIG0(16) => trig_pulse_rcv(0, 0).pulse,
+      TRIG0(15) => trig_pulse_transm(0, 7).pulse,
+      TRIG0(14) => trig_pulse_transm(0, 6).pulse,
+      TRIG0(13) => trig_pulse_transm(0, 5).pulse,
+      TRIG0(12) => trig_pulse_transm(0, 4).pulse,
+      TRIG0(11) => trig_pulse_transm(0, 3).pulse,
+      TRIG0(10) => trig_pulse_transm(0, 2).pulse,
+      TRIG0(9)  => trig_pulse_transm(0, 1).pulse,
+      TRIG0(8)  => trig_pulse_transm(0, 0).pulse,
+      TRIG0(7 downto 2)   => (others => '0'),
+      TRIG0(1)   => trig_rcv_intern(0, 1).pulse,
+      TRIG0(0)   => trig_rcv_intern(0, 0).pulse,
       TRIG1               => (others => '0'),
       TRIG2               => (others => '0'),
       TRIG3               => (others => '0'));
@@ -512,23 +532,30 @@ begin
       rst_n_o  => wb_ma_pcie_rstn_sync
       );
 
-  xwb_trigger_1 : xwb_trigger
+  cmp_xwb_trigger : xwb_trigger
     generic map (
-      g_width_bus_size       => c_width_bus_size,
-      g_rcv_len_bus_width    => c_rcv_len_bus_width,
-      g_transm_len_bus_width => c_transm_len_bus_width,
+      g_interface_mode       => PIPELINED,
+      g_address_granularity  => BYTE,
       g_sync_edge            => c_sync_edge,
       g_trig_num             => c_trig_num,
       g_intern_num           => c_intern_num,
       g_rcv_intern_num       => c_rcv_intern_num,
-      g_counter_wid          => c_counter_wid)
+      g_num_mux_interfaces   => c_num_mux_interfaces,
+      g_out_resolver         => "fanout",
+      g_in_resolver          => "or"
+    )
     port map (
       rst_n_i             => clk_sys_rstn,
       clk_i               => clk_sys,
       fs_clk_i            => clk_133mhz,
       fs_rst_n_i          => clk_133mhz_rstn,
-      wb_slv_i            => wb_slv_in,
-      wb_slv_o            => wb_slv_out,
+
+      wb_slv_trigger_iface_i => cc_dummy_slave_in,
+      wb_slv_trigger_iface_o => open,
+
+      wb_slv_trigger_mux_i => (cc_dummy_slave_in, cc_dummy_slave_in),
+      wb_slv_trigger_mux_o => open,
+
       trig_dir_o          => trig_dir_int,
       trig_rcv_intern_i   => trig_rcv_intern,
       trig_pulse_transm_i => trig_pulse_transm,
