@@ -10,7 +10,7 @@ use work.dbe_wishbone_pkg.all;
 -- Trigger definitions
 use work.trigger_pkg.all;
 
-entity xwb_trigger is
+entity xwb_trigger_mux is
   generic
     (
       g_interface_mode       : t_wishbone_interface_mode      := CLASSIC;
@@ -50,12 +50,12 @@ entity xwb_trigger is
       trig_pulse_rcv_o    : out t_trig_channel_array(g_intern_num-1 downto 0)
       );
 
-end xwb_trigger;
+end xwb_trigger_mux;
 
-architecture rtl of xwb_trigger is
+architecture rtl of xwb_trigger_mux is
 begin
 
-  cmp_wb_trigger : wb_trigger
+  cmp_wb_trigger_mux : wb_trigger_mux
     generic map (
       g_interface_mode       => g_interface_mode,
       g_address_granularity  => g_address_granularity,
