@@ -61,10 +61,10 @@ begin
       g_trig_num             => g_trig_num
     )
     port map (
-      clk_i      => clk_i,
-      rst_n_i    => rst_n_i,
-      fs_clk_i   => fs_clk_i,
-      fs_rst_n_i => fs_rst_n_i,
+      clk_i       => clk_i,
+      rst_n_i     => rst_n_i,
+      ref_clk_i   => ref_clk_i,
+      ref_rst_n_i => ref_rst_n_i,
 
       wb_adr_i   => wb_slv_i.adr,
       wb_dat_i   => wb_slv_i.dat,
