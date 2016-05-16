@@ -29,6 +29,58 @@ set_property IOSTANDARD LVCMOS25 [get_ports sys_rst_button_n_i]
 set_property PULLUP true [get_ports sys_rst_button_n_i]
 
 #######################################################################
+##                           Trigger	                             ##
+#######################################################################
+
+set_property PACKAGE_PIN AM9 [get_ports {trig_b[0]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[0]}]
+
+set_property PACKAGE_PIN AP11 [get_ports {trig_b[1]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[1]}]
+
+set_property PACKAGE_PIN AP10 [get_ports {trig_b[2]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[2]}]
+
+set_property PACKAGE_PIN AM11 [get_ports {trig_b[3]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[3]}]
+
+set_property PACKAGE_PIN AN8 [get_ports {trig_b[4]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[4]}]
+
+set_property PACKAGE_PIN AP8 [get_ports {trig_b[5]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[5]}]
+
+set_property PACKAGE_PIN AL8 [get_ports {trig_b[6]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[6]}]
+
+set_property PACKAGE_PIN AL9 [get_ports {trig_b[7]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_b[7]}]
+
+set_property PACKAGE_PIN AJ10 [get_ports {trig_dir_o[0]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[0]}]
+
+set_property PACKAGE_PIN AK11 [get_ports {trig_dir_o[1]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[1]}]
+
+set_property PACKAGE_PIN AJ11 [get_ports {trig_dir_o[2]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[2]}]
+
+set_property PACKAGE_PIN AL10 [get_ports {trig_dir_o[3]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[3]}]
+
+set_property PACKAGE_PIN AM10 [get_ports {trig_dir_o[4]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[4]}]
+
+set_property PACKAGE_PIN AN11 [get_ports {trig_dir_o[5]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[5]}]
+
+set_property PACKAGE_PIN AN9 [get_ports {trig_dir_o[6]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[6]}]
+
+set_property PACKAGE_PIN AP9 [get_ports {trig_dir_o[7]}]
+set_property IOSTANDARD LVCMOS15  [get_ports {trig_dir_o[7]}]
+
+#######################################################################
 ##                      AFC Diagnostics Contraints                   ##
 #######################################################################
 
