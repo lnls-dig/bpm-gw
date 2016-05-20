@@ -1572,7 +1572,23 @@ begin
   -- manual led control
   fmc_led1_o <= led1_extd_p or fmc_led1_int;
 
-  fmc_led2_o <= fmc_led2_int;
+  -- FMC LED2
+  cmp_led2_extende_pulse : gc_extend_pulse
+  generic map (
+    -- Input clock = 100MHz
+    -- 20000000 clock pulses =  0.2s pulse
+    g_width => 20000000
+  )
+  port map(
+    clk_i                                   => sys_clk_i,
+    rst_n_i                                 => sys_rst_sync_n,
+    -- input pulse (synchronous to clk_i)
+    pulse_i                                 => trig_hw_i,
+    -- extended output pulse
+    extended_o                              => led2_extd_p
+  );
+
+  fmc_led2_o <= led2_extd_p or fmc_led2_int;
   fmc_led3_o <= fmc_led3_int;
 
 end rtl;
