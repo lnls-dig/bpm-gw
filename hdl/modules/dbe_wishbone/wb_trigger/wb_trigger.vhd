@@ -118,7 +118,13 @@ entity wb_trigger is
     trig_rcv_intern_i   : in  t_trig_channel_array(g_num_mux_interfaces*g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
 
     trig_pulse_transm_i : in  t_trig_channel_array(g_num_mux_interfaces*g_intern_num-1 downto 0);
-    trig_pulse_rcv_o    : out t_trig_channel_array(g_num_mux_interfaces*g_intern_num-1 downto 0)
+    trig_pulse_rcv_o    : out t_trig_channel_array(g_num_mux_interfaces*g_intern_num-1 downto 0);
+
+    -------------------------------
+    ---- Debug ports
+    -------------------------------
+
+    trig_dbg_o          : out std_logic_vector(g_trig_num-1 downto 0)
     );
 
 end entity wb_trigger;
@@ -168,7 +174,8 @@ begin  -- architecture rtl
       trig_b      => trig_b,
       trig_dir_o  => trig_dir_o,
       trig_out_o  => trig_out_resolved,
-      trig_in_i   => trig_in_resolved
+      trig_in_i   => trig_in_resolved,
+      trig_dbg_o  => trig_dbg_o
     );
 
   cmp_trigger_resolver : trigger_resolver

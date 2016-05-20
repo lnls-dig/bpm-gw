@@ -100,7 +100,12 @@ entity wb_trigger_iface is
     -------------------------------
 
     trig_out_o : out t_trig_channel_array(g_trig_num-1 downto 0);
-    trig_in_i  : in  t_trig_channel_array(g_trig_num-1 downto 0)
+    trig_in_i  : in  t_trig_channel_array(g_trig_num-1 downto 0);
+
+    -------------------------------
+    ---- Debug ports
+    -------------------------------
+    trig_dbg_o : out std_logic_vector(g_trig_num-1 downto 0)
     );
 
 end entity wb_trigger_iface;
@@ -520,6 +525,8 @@ begin  -- architecture rtl
         i  => extended_transm(i),       -- Buffer input
         t  => ch_regs_out(i).ch_ctl_dir -- 3-state enable input, high=input, low=output
         );
+
+    trig_dbg_o(i) <= extended_rcv(i);
 
     --------------------------------
     -- Pulse counters

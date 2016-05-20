@@ -45,7 +45,12 @@ entity xwb_trigger_iface is
       -----------------------------
 
       trig_out_o : out t_trig_channel_array(g_trig_num-1 downto 0);
-      trig_in_i  : in  t_trig_channel_array(g_trig_num-1 downto 0)
+      trig_in_i  : in  t_trig_channel_array(g_trig_num-1 downto 0);
+
+    -------------------------------
+    ---- Debug ports
+    -------------------------------
+      trig_dbg_o : out std_logic_vector(g_trig_num-1 downto 0)
       );
 
 end xwb_trigger_iface;
@@ -81,7 +86,8 @@ begin
       trig_b      => trig_b,
       trig_dir_o  => trig_dir_o,
       trig_out_o  => trig_out_o,
-      trig_in_i   => trig_in_i
+      trig_in_i   => trig_in_i,
+      trig_dbg_o  => trig_dbg_o
     );
 
 end rtl;

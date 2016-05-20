@@ -61,7 +61,13 @@ entity xwb_trigger is
       trig_rcv_intern_i   : in  t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_rcv_intern_num-1 downto 0);  -- signals from inside the FPGA that can be used as input at a rcv mux
 
       trig_pulse_transm_i : in  t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_intern_num-1 downto 0);
-      trig_pulse_rcv_o    : out t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_intern_num-1 downto 0)
+      trig_pulse_rcv_o    : out t_trig_channel_array2d(g_num_mux_interfaces-1 downto 0, g_intern_num-1 downto 0);
+
+    -------------------------------
+    ---- Debug ports
+    -------------------------------
+
+    trig_dbg_o          : out std_logic_vector(g_trig_num-1 downto 0)
     );
 
 end xwb_trigger;
@@ -142,7 +148,8 @@ begin
 
       trig_rcv_intern_i   => trig_rcv_intern_compat,
       trig_pulse_transm_i => trig_pulse_transm_compat,
-      trig_pulse_rcv_o    => trig_pulse_rcv_compat
+      trig_pulse_rcv_o    => trig_pulse_rcv_compat,
+      trig_dbg_o          => trig_dbg_o
     );
 
   gen_wb_slv_trigger_interfaces : for i in 0 to g_num_mux_interfaces-1 generate
