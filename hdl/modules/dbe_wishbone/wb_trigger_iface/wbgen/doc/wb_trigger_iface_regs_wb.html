@@ -1398,7 +1398,7 @@ wb_adr_i[6:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_iface_ch0_ctl_rcv_count_rst_o
+wb_trig_iface_ch0_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1415,7 +1415,7 @@ wb_dat_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_iface_ch0_ctl_transm_count_rst_o
+wb_trig_iface_ch0_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1429,13 +1429,13 @@ wb_trig_iface_ch0_ctl_transm_count_rst_o
 wb_dat_o[31:0]
 </td>
 <td  class="td_sym_center">
-&nbsp;
+
 </td>
 <td  class="td_pblock_right">
-
+wb_trig_iface_ch0_ctl_transm_count_rst_o
 </td>
 <td  class="td_arrow_right">
-
+&rarr;
 </td>
 </tr>
 <tr>
@@ -1446,10 +1446,10 @@ wb_dat_o[31:0]
 wb_cyc_i
 </td>
 <td  class="td_sym_center">
-
+&nbsp;
 </td>
 <td  class="td_pblock_right">
-<b>Channel 0 Configuration Parameters:</b>
+
 </td>
 <td  class="td_arrow_right">
 
@@ -1466,10 +1466,10 @@ wb_sel_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_iface_ch0_cfg_rcv_len_o[7:0]
+<b>Channel 0 Configuration Parameters:</b>
 </td>
 <td  class="td_arrow_right">
-&rArr;
+
 </td>
 </tr>
 <tr>
@@ -1483,7 +1483,7 @@ wb_stb_i
 
 </td>
 <td  class="td_pblock_right">
-wb_trig_iface_ch0_cfg_transm_len_o[7:0]
+wb_trig_iface_ch0_cfg_rcv_len_o[7:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -1495,6 +1495,23 @@ wb_trig_iface_ch0_cfg_transm_len_o[7:0]
 </td>
 <td  class="td_pblock_left">
 wb_we_i
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch0_cfg_transm_len_o[7:0]
+</td>
+<td  class="td_arrow_right">
+&rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+&larr;
+</td>
+<td  class="td_pblock_left">
+wb_ack_o
 </td>
 <td  class="td_sym_center">
 &nbsp;
@@ -1511,7 +1528,7 @@ wb_we_i
 &larr;
 </td>
 <td  class="td_pblock_left">
-wb_ack_o
+wb_stall_o
 </td>
 <td  class="td_sym_center">
 
@@ -1525,10 +1542,10 @@ wb_ack_o
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&larr;
+
 </td>
 <td  class="td_pblock_left">
-wb_stall_o
+
 </td>
 <td  class="td_sym_center">
 
@@ -1603,6 +1620,23 @@ wb_trig_iface_ch0_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch1_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch1_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -1840,6 +1874,23 @@ wb_trig_iface_ch2_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch2_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch2_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -2045,6 +2096,23 @@ wb_trig_iface_ch2_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch3_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch3_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2282,6 +2350,23 @@ wb_trig_iface_ch4_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch4_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch4_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -2487,6 +2572,23 @@ wb_trig_iface_ch4_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch5_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch5_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -2724,6 +2826,23 @@ wb_trig_iface_ch6_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch6_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch6_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -2929,6 +3048,23 @@ wb_trig_iface_ch6_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch7_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch7_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -3166,6 +3302,23 @@ wb_trig_iface_ch8_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch8_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch8_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -3371,6 +3524,23 @@ wb_trig_iface_ch8_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch9_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch9_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -3608,6 +3778,23 @@ wb_trig_iface_ch10_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch10_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch10_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -3813,6 +4000,23 @@ wb_trig_iface_ch10_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch11_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch11_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -4050,6 +4254,23 @@ wb_trig_iface_ch12_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch12_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch12_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -4255,6 +4476,23 @@ wb_trig_iface_ch12_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch13_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch13_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -4492,6 +4730,23 @@ wb_trig_iface_ch14_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch14_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch14_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -4697,6 +4952,23 @@ wb_trig_iface_ch14_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch15_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch15_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -4934,6 +5206,23 @@ wb_trig_iface_ch16_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch16_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch16_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -5139,6 +5428,23 @@ wb_trig_iface_ch16_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch17_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch17_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -5376,6 +5682,23 @@ wb_trig_iface_ch18_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch18_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch18_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -5581,6 +5904,23 @@ wb_trig_iface_ch18_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch19_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch19_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -5818,6 +6158,23 @@ wb_trig_iface_ch20_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch20_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch20_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -6023,6 +6380,23 @@ wb_trig_iface_ch20_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch21_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch21_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -6260,6 +6634,23 @@ wb_trig_iface_ch22_ctl_dir_o
 
 </td>
 <td  class="td_pblock_right">
+wb_trig_iface_ch22_ctl_dir_pol_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
 wb_trig_iface_ch22_ctl_rcv_count_rst_o
 </td>
 <td  class="td_arrow_right">
@@ -6465,6 +6856,23 @@ wb_trig_iface_ch22_count_transm_i[15:0]
 </td>
 <td  class="td_pblock_right">
 wb_trig_iface_ch23_ctl_dir_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_trig_iface_ch23_ctl_dir_pol_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -6881,14 +7289,14 @@ CH0_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -6900,6 +7308,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -7671,14 +8083,14 @@ CH1_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -7690,6 +8102,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -8461,14 +8877,14 @@ CH2_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -8480,6 +8896,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -9251,14 +9671,14 @@ CH3_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -9270,6 +9690,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -10041,14 +10465,14 @@ CH4_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -10060,6 +10484,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -10831,14 +11259,14 @@ CH5_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -10850,6 +11278,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -11621,14 +12053,14 @@ CH6_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -11640,6 +12072,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -12411,14 +12847,14 @@ CH7_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -12430,6 +12866,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -13201,14 +13641,14 @@ CH8_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -13220,6 +13660,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -13991,14 +14435,14 @@ CH9_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -14010,6 +14454,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -14781,14 +15229,14 @@ CH10_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -14800,6 +15248,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -15571,14 +16023,14 @@ CH11_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -15590,6 +16042,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -16361,14 +16817,14 @@ CH12_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -16380,6 +16836,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -17151,14 +17611,14 @@ CH13_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -17170,6 +17630,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -17941,14 +18405,14 @@ CH14_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -17960,6 +18424,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -18731,14 +19199,14 @@ CH15_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -18750,6 +19218,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -19521,14 +19993,14 @@ CH16_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -19540,6 +20012,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -20311,14 +20787,14 @@ CH17_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -20330,6 +20806,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -21101,14 +21581,14 @@ CH18_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -21120,6 +21600,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -21891,14 +22375,14 @@ CH19_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -21910,6 +22394,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -22681,14 +23169,14 @@ CH20_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -22700,6 +23188,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -23471,14 +23963,14 @@ CH21_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -23490,6 +23982,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -24261,14 +24757,14 @@ CH22_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -24280,6 +24776,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset
@@ -25051,14 +25551,14 @@ CH23_CTL
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
-</td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TRANSM_COUNT_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 RCV_COUNT_RST
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+DIR_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 DIR
@@ -25070,6 +25570,10 @@ DIR
 DIR
 </b>[<i>read/write</i>]: Trigger Direction
 <br>1 - Receiver Mode<br>0 - Transmitter Mode
+<li><b>
+DIR_POL
+</b>[<i>read/write</i>]: Trigger Direction Polarity
+<br>1 - Backplane trigger direction value will be reversed<br>0 - Backplane Trigger direction value will be the same
 <li><b>
 RCV_COUNT_RST
 </b>[<i>read/write</i>]: Receiver Pulse Counter Reset

@@ -24,6 +24,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -116,6 +126,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -222,6 +242,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -314,6 +344,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -420,6 +460,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -512,6 +562,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -618,6 +678,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -710,6 +780,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -816,6 +896,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -908,6 +998,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -1014,6 +1114,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -1106,6 +1216,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -1212,6 +1332,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -1304,6 +1434,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -1410,6 +1550,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -1502,6 +1652,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -1608,6 +1768,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -1700,6 +1870,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -1806,6 +1986,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -1898,6 +2088,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -2004,6 +2204,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -2096,6 +2306,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
@@ -2202,6 +2422,16 @@ peripheral {
     };
 
     field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
       name = "Receiver Pulse Counter Reset";
       prefix = "rcv_count_rst";
       description = "1 - Reset\n0 - Normal";
@@ -2294,6 +2524,16 @@ peripheral {
       name = "Trigger Direction";
       prefix = "dir";
       description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
       type = BIT;
       --size = 1;
       access_bus = READ_WRITE;
