@@ -464,6 +464,7 @@ architecture rtl of wb_fmc250m_4ch is
   -- Trigger signals
   -----------------------------
   signal fmc_trig_val_in                    : std_logic;
+  signal fmc_trig_val_in_buf                : std_logic;
   signal fmc_trig_val_in_sync               : std_logic;
   signal fmc_trig_dir_int                   : std_logic;
   signal fmc_trig_term_int                  : std_logic;
@@ -1508,7 +1509,7 @@ begin
     iostandard                              => "BLVDS_25" -- Specify the I/O standard
   )
   port map (
-    o                                       => fmc_trig_val_in,     -- Buffer output for further use
+    o                                       => fmc_trig_val_in_buf, -- Buffer output for further use
     io                                      => fmc_trig_val_p_b,    -- Diff_p inout (connect directly to top-level port)
     iob                                     => fmc_trig_val_n_b,    -- Diff_n inout (connect directly to top-level port)
     i                                       => fmc_trig_val_int,    -- Buffer input
@@ -1516,6 +1517,12 @@ begin
   );
 
   fmc_trig_dir_o                            <= fmc_trig_dir_int;
+  -- Only assign FMC internal trigger if the buffer direction is set to 1 (FPGA is input).
+  -- Otherwise, an external logic driving fmc_trig_val_int signal would be fed out to
+  -- the same fmc_triv_val_in_buf, which is not desirable in most cases.
+  -- Maybe, in the future, we add a register field to control this, but for now this is
+  -- enough
+  fmc_trig_val_in                           <= fmc_trig_val_in_buf when fmc_trig_dir_int = '1' else '0';
 
   -- External hardware trigger synchronization
   cmp_trig_sync : gc_ext_pulse_sync
