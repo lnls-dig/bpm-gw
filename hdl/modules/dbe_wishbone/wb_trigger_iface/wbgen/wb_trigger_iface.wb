@@ -1,0 +1,2624 @@
+peripheral {
+  name = "Control and status register for the MLVDS trigger";
+  description = "Wishbone slave for control and status registers related to the MLVDS trigger";
+  hdl_entity = "wb_trigger_iface_regs";
+
+  prefix = "wb_trig_iface";
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 0
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 0 Control";
+    prefix = "ch0_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 Configuration Parameters";
+    prefix = "ch0_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 Transmitter/Receiver Pulses Counter";
+    prefix = "ch0_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 1
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 1 Control";
+    prefix = "ch1_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 Configuration Parameters";
+    prefix = "ch1_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 Transmitter/Receiver Pulses Counter";
+    prefix = "ch1_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 2
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 2 Control";
+    prefix = "ch2_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 2 Configuration Parameters";
+    prefix = "ch2_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 2 Transmitter/Receiver Pulses Counter";
+    prefix = "ch2_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 3
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 3 Control";
+    prefix = "ch3_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 Configuration Parameters";
+    prefix = "ch3_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 Transmitter/Receiver Pulses Counter";
+    prefix = "ch3_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 4
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 4 Control";
+    prefix = "ch4_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 4 Configuration Parameters";
+    prefix = "ch4_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 4 Transmitter/Receiver Pulses Counter";
+    prefix = "ch4_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 5
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 5 Control";
+    prefix = "ch5_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 5 Configuration Parameters";
+    prefix = "ch5_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 5 Transmitter/Receiver Pulses Counter";
+    prefix = "ch5_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 6
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 6 Control";
+    prefix = "ch6_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 6 Configuration Parameters";
+    prefix = "ch6_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 6 Transmitter/Receiver Pulses Counter";
+    prefix = "ch6_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 7
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 7 Control";
+    prefix = "ch7_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 7 Configuration Parameters";
+    prefix = "ch7_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 7 Transmitter/Receiver Pulses Counter";
+    prefix = "ch7_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 8
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 8 Control";
+    prefix = "ch8_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 8 Configuration Parameters";
+    prefix = "ch8_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 8 Transmitter/Receiver Pulses Counter";
+    prefix = "ch8_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 9
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 9 Control";
+    prefix = "ch9_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 9 Configuration Parameters";
+    prefix = "ch9_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 9 Transmitter/Receiver Pulses Counter";
+    prefix = "ch9_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 10
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 10 Control";
+    prefix = "ch10_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 10 Configuration Parameters";
+    prefix = "ch10_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 10 Transmitter/Receiver Pulses Counter";
+    prefix = "ch10_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 11
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 11 Control";
+    prefix = "ch11_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 11 Configuration Parameters";
+    prefix = "ch11_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 11 Transmitter/Receiver Pulses Counter";
+    prefix = "ch11_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 12
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 12 Control";
+    prefix = "ch12_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 12 Configuration Parameters";
+    prefix = "ch12_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 12 Transmitter/Receiver Pulses Counter";
+    prefix = "ch12_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 13
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 13 Control";
+    prefix = "ch13_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 13 Configuration Parameters";
+    prefix = "ch13_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 13 Transmitter/Receiver Pulses Counter";
+    prefix = "ch13_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 14
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 14 Control";
+    prefix = "ch14_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 14 Configuration Parameters";
+    prefix = "ch14_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 14 Transmitter/Receiver Pulses Counter";
+    prefix = "ch14_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 15
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 15 Control";
+    prefix = "ch15_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 15 Configuration Parameters";
+    prefix = "ch15_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 15 Transmitter/Receiver Pulses Counter";
+    prefix = "ch15_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 16
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 16 Control";
+    prefix = "ch16_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 16 Configuration Parameters";
+    prefix = "ch16_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 16 Transmitter/Receiver Pulses Counter";
+    prefix = "ch16_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 17
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 17 Control";
+    prefix = "ch17_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 17 Configuration Parameters";
+    prefix = "ch17_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 17 Transmitter/Receiver Pulses Counter";
+    prefix = "ch17_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 18
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 18 Control";
+    prefix = "ch18_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 18 Configuration Parameters";
+    prefix = "ch18_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 18 Transmitter/Receiver Pulses Counter";
+    prefix = "ch18_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 19
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 19 Control";
+    prefix = "ch19_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 19 Configuration Parameters";
+    prefix = "ch19_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 19 Transmitter/Receiver Pulses Counter";
+    prefix = "ch19_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 20
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 20 Control";
+    prefix = "ch20_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 20 Configuration Parameters";
+    prefix = "ch20_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 20 Transmitter/Receiver Pulses Counter";
+    prefix = "ch20_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 21
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 21 Control";
+    prefix = "ch21_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 21 Configuration Parameters";
+    prefix = "ch21_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 21 Transmitter/Receiver Pulses Counter";
+    prefix = "ch21_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 22
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 22 Control";
+    prefix = "ch22_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 22 Configuration Parameters";
+    prefix = "ch22_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 22 Transmitter/Receiver Pulses Counter";
+    prefix = "ch22_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  ---------------------------------------------------------------------------
+  -- CHANNEL 23
+  ---------------------------------------------------------------------------
+
+  reg {
+    name = "Channel 23 Control";
+    prefix = "ch23_ctl";
+
+    field {
+      name = "Trigger Direction";
+      prefix = "dir";
+      description = "1 - Receiver Mode\n0 - Transmitter Mode";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Trigger Direction Polarity";
+      prefix = "dir_pol";
+      description = "1 - Backplane trigger direction value will be reversed\n0 - Backplane Trigger direction value will be the same";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Receiver Pulse Counter Reset";
+      prefix = "rcv_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Counter Reset";
+      prefix = "transm_count_rst";
+      description = "1 - Reset\n0 - Normal";
+      type = MONOSTABLE;
+      size = 1;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 23 Configuration Parameters";
+    prefix = "ch23_cfg";
+
+    field {
+      name = "Receiver Pulse Length";
+      prefix = "rcv_len";
+      description = "Controls the length of the receiver deglitcher";
+      type = SLV;
+      size = 8;
+      align = 0;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Transmitter Pulse Length";
+      prefix = "transm_len";
+      description = "Controls the length of the transmitter output pulse";
+      type = SLV;
+      size = 8;
+      align = 8;
+      clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 23 Transmitter/Receiver Pulses Counter";
+    prefix = "ch23_count";
+
+    field {
+      name = "Receiver Counter";
+      prefix = "rcv";
+      description = "Counts the pulses received";
+      type = SLV;
+      size = 16;
+      align = 0;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Transmitter Counter";
+      prefix = "transm";
+      description = "Counts the pulses that will be transmitted";
+      type = SLV;
+      size = 16;
+      align = 16;
+      clock = "wb_clk_i";
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+};

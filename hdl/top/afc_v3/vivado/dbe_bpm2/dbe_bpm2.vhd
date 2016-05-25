@@ -48,6 +48,8 @@ use work.ipcores_pkg.all;
 use work.synthesis_descriptor_pkg.all;
 -- AXI cores
 use work.bpm_axi_pkg.all;
+-- Trigger Modules
+use work.trigger_pkg.all;
 
 entity dbe_bpm2 is
 port(
@@ -68,6 +70,13 @@ port(
 
   rs232_txd_o                                : out std_logic;
   rs232_rxd_i                                : in std_logic;
+
+  -----------------------------------------
+  -- Trigger pins
+  -----------------------------------------
+
+  trig_dir_o                                 : out   std_logic_vector(7 downto 0);
+  trig_b                                     : inout std_logic_vector(7 downto 0);
 
   -----------------------------
   -- AFC Diagnostics
@@ -320,9 +329,10 @@ architecture rtl of dbe_bpm2 is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 14;
+  constant c_slaves                         : natural := 17;
   -- General Dual-port memory, FMC130_1, FMC130_2, Acq_Core 1, Acq_Core 2,
-  -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, Repo URL,
+  -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
+  -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Repo URL,
   -- SDB synthesis top, general-cores, dsp-cores
 
   -- Slaves indexes
@@ -336,10 +346,13 @@ architecture rtl of dbe_bpm2 is
   constant c_slv_acq_core_1_id             : natural := 7;
   constant c_slv_periph_id                 : natural := 8;
   constant c_slv_afc_diag_id               : natural := 9;
-  constant c_slv_sdb_repo_url_id           : natural := 10;
-  constant c_slv_sdb_top_syn_id            : natural := 11;
-  constant c_slv_sdb_dsp_cores_id          : natural := 12;
-  constant c_slv_sdb_gen_cores_id          : natural := 13;
+  constant c_slv_trig_iface_id             : natural := 10;
+  constant c_slv_trig_mux_0_id             : natural := 11;
+  constant c_slv_trig_mux_1_id             : natural := 12;
+  constant c_slv_sdb_repo_url_id           : natural := 13;
+  constant c_slv_sdb_top_syn_id            : natural := 14;
+  constant c_slv_sdb_dsp_cores_id          : natural := 15;
+  constant c_slv_sdb_gen_cores_id          : natural := 16;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -372,6 +385,7 @@ architecture rtl of dbe_bpm2 is
   constant c_acq_monit_amp_id               : natural := 14;
   constant c_acq_monit_pos_id               : natural := 15;
   constant c_acq_monit_1_pos_id             : natural := 16;
+  constant c_trigger_sw_clk_id              : natural := 17;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
 
@@ -420,6 +434,25 @@ architecture rtl of dbe_bpm2 is
      c_acq_monit_1_pos_id    => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32)
   );
 
+  -- Trigger
+  constant c_trig_sync_edge                 : string   := "positive";
+  constant c_trig_trig_num                  : positive := 8; -- 8 MLVDS triggers
+  constant c_trig_intern_num                : positive := 18; -- 17 acquisition channels + 1 switching clock channel
+  constant c_trig_rcv_intern_num            : positive := 2; -- 2 FMCs
+  constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
+  constant c_trig_out_resolver              : string := "fanout";
+  constant c_trig_in_resolver               : string := "or";
+  constant c_trig_with_input_sync           : boolean := true;
+  constant c_trig_with_output_sync          : boolean := true;
+
+  -- Trigger RCV intern IDs
+  constant c_trig_rcv_intern_chan_1_id      : positive := 0; -- Internal Channel 1
+  constant c_trig_rcv_intern_chan_2_id      : positive := 1; -- Internal Channel 2
+
+  -- Trigger core IDs
+  constant c_trig_mux_0_id                  : natural := 0;
+  constant c_trig_mux_1_id                  : natural := 1;
+
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 8;
   constant c_buttons_num_pins               : natural := 8;
@@ -466,6 +499,9 @@ architecture rtl of dbe_bpm2 is
      c_slv_acq_core_1_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
      c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
      c_slv_afc_diag_id         => f_sdb_embed_device(c_xwb_afc_diag_sdb,         x"00380000"),   -- AFC Diagnostics control port
+     c_slv_trig_iface_id       => f_sdb_embed_device(c_xwb_trigger_iface_sdb,    x"00390000"),   -- Trigger Interface port
+     c_slv_trig_mux_0_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00400000"),   -- Trigger Mux 1 port
+     c_slv_trig_mux_1_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00410000"),   -- Trigger Mux 2 port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
@@ -473,7 +509,7 @@ architecture rtl of dbe_bpm2 is
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
-  constant c_sdb_address                    : t_wishbone_address := x"00300000";
+  constant c_sdb_address                    : t_wishbone_address := x"00200000";
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
@@ -642,6 +678,9 @@ architecture rtl of dbe_bpm2 is
   signal fmc1_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   signal fmc1_trig_hw                        : std_logic;
+  signal fmc1_trig_hw_in                     : std_logic;
+
+  signal trig_dir_int                       : std_logic_vector(7 downto 0);
 
   -- FMC130M 1 Debug
   signal fmc1_debug_valid_int                : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -676,6 +715,7 @@ architecture rtl of dbe_bpm2 is
   signal fmc2_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   signal fmc2_trig_hw                        : std_logic;
+  signal fmc2_trig_hw_in                     : std_logic;
 
   -- FMC130M 2 Debug
   signal fmc2_debug_valid_int                : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -879,6 +919,23 @@ architecture rtl of dbe_bpm2 is
   signal dsp2_dbg_adc_ch1_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
   signal dsp2_dbg_adc_ch2_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
   signal dsp2_dbg_adc_ch3_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
+
+  -- Trigger
+  signal trig_core_slave_i                  : t_wishbone_slave_in_array (c_trig_num_mux_interfaces-1 downto 0);
+  signal trig_core_slave_o                  : t_wishbone_slave_out_array(c_trig_num_mux_interfaces-1 downto 0);
+  signal trig_ref_clk                       : std_logic;
+  signal trig_ref_rst_n                     : std_logic;
+
+  signal trig_rcv_intern                    : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_rcv_intern_num-1 downto 0);
+  signal trig_pulse_transm                  : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
+  signal trig_pulse_rcv                     : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
+
+  signal trig_fmc1_channel_1                : t_trig_channel;
+  signal trig_fmc1_channel_2                : t_trig_channel;
+  signal trig_fmc2_channel_1                : t_trig_channel;
+  signal trig_fmc2_channel_2                : t_trig_channel;
+
+  signal trig_dbg                           : std_logic_vector(7 downto 0);
 
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
@@ -1469,7 +1526,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => fmc1_trig_hw,
-    trig_hw_i                               => dsp1_clk_rffe_swap,  -- To FMC1 Trigger Front Panel
+    trig_hw_i                               => fmc1_trig_hw_in,
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc1_mmcm_lock_int,
@@ -1508,6 +1565,9 @@ begin
   fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
   fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
   fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
+
+  -- Use ADC trigger for testing
+  fmc1_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_0_id, c_trigger_sw_clk_id).pulse;
 
   -- Debug clock for chipscope
   fs_clk_dbg                                 <= fs1_clk;
@@ -1668,7 +1728,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => fmc2_trig_hw,
-    trig_hw_i                               => dsp2_clk_rffe_swap,  -- To FMC2 Trigger Front Panel
+    trig_hw_i                               => fmc2_trig_hw_in,
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc2_mmcm_lock_int,
@@ -1708,6 +1768,9 @@ begin
   fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
   fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
   fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+
+  -- Use ADC trigger for testing
+  fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
 
   ----------------------------------------------------------------------
   --                      DSP Chain 1 Core                            --
@@ -2190,7 +2253,7 @@ begin
                                                                        fmc1_adc_data_ch0;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_id).val_high      <= (others => '0');
   acq_chan_array(c_acq_core_0_id, c_acq_adc_id).dvalid        <= '1';
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 1 data
@@ -2201,7 +2264,7 @@ begin
                                                                             dsp1_adc_ch0_data;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).val_high      <= (others => '0');
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid        <= '1';
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig          <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig          <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 1/2 1 data
@@ -2213,7 +2276,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch1), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).dvalid    <= dsp1_mix_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_mixiq12_id).pulse;
 
   --------------------
   -- MIXER I/Q 3/4 1 data
@@ -2225,7 +2288,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_mixi_ch3), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).dvalid    <= dsp1_mix_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_mixiq34_id).pulse;
 
   --------------------
   -- TBT I/Q 1/2 1 data
@@ -2237,7 +2300,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp1_tbtdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbtdecimiq12_id).pulse;
 
   --------------------
   -- TBT I/Q 3/4 1 data
@@ -2249,7 +2312,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch3), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).dvalid    <= dsp1_tbtdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbtdecimiq34_id).pulse;
 
   --------------------
   -- TBT AMP 1 data
@@ -2261,7 +2324,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 1 data
@@ -2273,7 +2336,7 @@ begin
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).dvalid    <= dsp1_tbt_pha_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 1 data
@@ -2285,7 +2348,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_q), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 1/2 1 data
@@ -2297,7 +2360,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp1_fofbdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofbdecimiq12_id).pulse;
 
   --------------------
   -- FOFB I/Q 3/4 1 data
@@ -2309,7 +2372,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp1_fofbdecimi_ch3), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).dvalid    <= dsp1_fofbdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbtdecimiq34_id).pulse;
 
   --------------------
   -- FOFB AMP 1 data
@@ -2321,7 +2384,7 @@ begin
                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).dvalid    <= dsp1_fofb_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 1 data
@@ -2333,7 +2396,7 @@ begin
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).dvalid    <= dsp1_fofb_pha_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 1 data
@@ -2345,7 +2408,7 @@ begin
                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_q), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).dvalid    <= dsp1_fofb_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 1 data
@@ -2357,7 +2420,7 @@ begin
                                                   std_logic_vector(resize(signed(dsp1_monit_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).dvalid    <= dsp1_monit_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 1 data
@@ -2369,7 +2432,7 @@ begin
                                                   std_logic_vector(resize(signed(dsp1_monit_pos_q), 32));
 
   acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).dvalid    <= dsp1_monit_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit_pos_id).pulse;
 
   --------------------
   -- MONIT1 POS 1 data
@@ -2378,7 +2441,7 @@ begin
   acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).val_low   <= (others => '0');
   acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).val_high  <= (others => '0');
   acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).dvalid    <= '0';
-  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).trig      <= fmc1_trig_hw;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_1_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit_1_pos_id).pulse;
 
   --------------------
   -- ADC 2 data
@@ -2389,7 +2452,7 @@ begin
                                                                        fmc2_adc_data_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val_high      <= (others => '0');
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).dvalid        <= '1';
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 1 data
@@ -2400,7 +2463,7 @@ begin
                                                                             dsp2_adc_ch0_data;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).val_high      <= (others => '0');
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid        <= '1';
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig          <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig          <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 1/2 2 data
@@ -2412,7 +2475,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch1), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).dvalid    <= dsp2_mix_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_mixiq12_id).pulse;
 
   --------------------
   -- MIXER I/Q 3/4 2 data
@@ -2424,7 +2487,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_mixi_ch3), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).dvalid    <= dsp2_mix_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_mixiq34_id).pulse;
 
   --------------------
   -- TBT I/Q 1/2 2 data
@@ -2436,7 +2499,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).dvalid    <= dsp2_tbtdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbtdecimiq12_id).pulse;
 
   --------------------
   -- TBT I/Q 3/4 2 data
@@ -2448,7 +2511,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch3), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).dvalid    <= dsp2_tbtdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbtdecimiq34_id).pulse;
 
   --------------------
   -- TBT AMP 2 data
@@ -2460,7 +2523,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 2 data
@@ -2472,7 +2535,7 @@ begin
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).dvalid    <= dsp2_tbt_pha_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 2 data
@@ -2484,7 +2547,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_q), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 1/2 2 data
@@ -2496,7 +2559,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).dvalid    <= dsp2_fofbdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq12_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofbdecimiq12_id).pulse;
 
   --------------------
   -- FOFB I/Q 3/4 2 data
@@ -2508,7 +2571,7 @@ begin
                                                 std_logic_vector(resize(signed(dsp2_fofbdecimi_ch3), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).dvalid    <= dsp2_fofbdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq34_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofbdecimiq34_id).pulse;
 
   --------------------
   -- FOFB AMP 2 data
@@ -2520,7 +2583,7 @@ begin
                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).dvalid    <= dsp2_fofb_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 2 data
@@ -2532,7 +2595,7 @@ begin
                                                   std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).dvalid    <= dsp2_fofb_pha_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 2 data
@@ -2544,7 +2607,7 @@ begin
                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_q), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).dvalid    <= dsp2_fofb_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 2 data
@@ -2556,7 +2619,7 @@ begin
                                                   std_logic_vector(resize(signed(dsp2_monit_amp_ch2), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).dvalid    <= dsp2_monit_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 2 data
@@ -2568,7 +2631,7 @@ begin
                                                   std_logic_vector(resize(signed(dsp2_monit_pos_q), 32));
 
   acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).dvalid    <= dsp2_monit_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_pos_id).pulse;
 
   --------------------
   -- MONIT1 POS 2 data
@@ -2576,7 +2639,7 @@ begin
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).val_low   <= (others => '0');
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).val_high  <= (others => '0');
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).dvalid    <= '0';
-  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).trig      <= fmc2_trig_hw;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_1_pos_id).pulse;
 
   cmp_xwb_acq_core_mux : xwb_acq_core_mux
   generic map
@@ -2667,6 +2730,172 @@ begin
   acq_core_slave_i <= cbar_master_o(c_slv_acq_core_1_id) & cbar_master_o(c_slv_acq_core_0_id);
   cbar_master_i(c_slv_acq_core_0_id) <= acq_core_slave_o(c_acq_core_0_id);
   cbar_master_i(c_slv_acq_core_1_id) <= acq_core_slave_o(c_acq_core_1_id);
+
+  ----------------------------------------------------------------------
+  --                          Trigger                                 --
+  ----------------------------------------------------------------------
+  trig_ref_clk <= fs1_clk;
+  trig_ref_rst_n <= fs1_rstn;
+
+  cmp_xwb_trigger : xwb_trigger
+    generic map (
+      g_address_granularity                => BYTE,
+      g_interface_mode                     => PIPELINED,
+      g_sync_edge                          => c_trig_sync_edge,
+      g_trig_num                           => c_trig_trig_num,
+      g_intern_num                         => c_trig_intern_num,
+      g_rcv_intern_num                     => c_trig_rcv_intern_num,
+      g_num_mux_interfaces                 => c_trig_num_mux_interfaces,
+      g_out_resolver                       => c_trig_out_resolver,
+      g_in_resolver                        => c_trig_in_resolver,
+      g_with_input_sync                    => c_trig_with_input_sync,
+      g_with_output_sync                   => c_trig_with_output_sync
+    )
+    port map (
+      clk_i                                => clk_sys,
+      rst_n_i                              => clk_sys_rstn,
+
+      ref_clk_i                            => trig_ref_clk,
+      ref_rst_n_i                          => trig_ref_rst_n,
+
+      fs_clk_array_i                       => fs_clk_array,
+      fs_rst_n_array_i                     => fs_rst_n_array,
+
+      wb_slv_trigger_iface_i               => cbar_master_o(c_slv_trig_iface_id),
+      wb_slv_trigger_iface_o               => cbar_master_i(c_slv_trig_iface_id),
+
+      wb_slv_trigger_mux_i                 => trig_core_slave_i,
+      wb_slv_trigger_mux_o                 => trig_core_slave_o,
+
+      trig_dir_o                           => trig_dir_int,
+      trig_rcv_intern_i                    => trig_rcv_intern,
+      trig_pulse_transm_i                  => trig_pulse_transm,
+      trig_pulse_rcv_o                     => trig_pulse_rcv,
+      trig_b                               => trig_b,
+      trig_dbg_o                           => trig_dbg
+  );
+
+  trig_core_slave_i <= cbar_master_o(c_slv_trig_mux_1_id) & cbar_master_o(c_slv_trig_mux_0_id);
+  cbar_master_i(c_slv_trig_mux_0_id) <= trig_core_slave_o(c_trig_mux_0_id);
+  cbar_master_i(c_slv_trig_mux_1_id) <= trig_core_slave_o(c_trig_mux_1_id);
+
+  -- Assign FMCs trigger pulses to trigger channel interfaces
+  trig_fmc1_channel_1.pulse <= fmc1_trig_hw;
+  trig_fmc1_channel_2.pulse <= dsp1_clk_rffe_swap;
+
+  trig_fmc2_channel_1.pulse <= fmc2_trig_hw;
+  trig_fmc2_channel_2.pulse <= dsp2_clk_rffe_swap;
+
+  -- Assign intern triggers to trigger module
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_channel_1;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_channel_2;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_channel_1;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_channel_2;
+
+  trig_dir_o <= trig_dir_int;
+
+  ----------------------------------------------------------------------
+  --                      Triggers Chipscope                          --
+  ----------------------------------------------------------------------
+  --cmp_chipscope_icon_0 : chipscope_icon_1_port
+  --port map (
+  --  CONTROL0                                => CONTROL0
+  --);
+
+  --cmp_chipscope_ila_0 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL0,
+  --  CLK                                    => fs_clk_array(0),
+  --  TRIG0                                  => TRIG_ILA0_0,
+  --  TRIG1                                  => TRIG_ILA0_1,
+  --  TRIG2                                  => TRIG_ILA0_2,
+  --  TRIG3                                  => TRIG_ILA0_3
+  --);
+
+  --TRIG_ILA0_0(31 downto 30)                 <= (others => '0');
+  --TRIG_ILA0_0(29 downto 12)                 <= trig_pulse_transm(c_trig_mux_0_id, 0 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 1 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 2 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 3 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 4 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 5 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 6 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 7 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 8 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 9 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 10).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 11).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 12).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 13).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 14).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 15).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 16).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 17).pulse;
+
+  --TRIG_ILA0_0(11 downto 8)                  <= trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id).pulse;
+  --TRIG_ILA0_0(7 downto 0)                   <= trig_dir_int;
+
+  --TRIG_ILA0_1(31 downto 26)                 <= (others => '0');
+  --TRIG_ILA0_1(25 downto 18)                 <= trig_dbg;
+  --TRIG_ILA0_1(17 downto 0)                  <= trig_pulse_transm(c_trig_mux_1_id, 0 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 1 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 2 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 3 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 4 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 5 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 6 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 7 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 8 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 9 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 10).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 11).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 12).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 13).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 14).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 15).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 16).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 17).pulse;
+  --TRIG_ILA0_2 (31 downto 18)                <= (others => '0');
+  --TRIG_ILA0_2 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_0_id, 0 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 1 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 2 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 3 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 4 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 5 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 6 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 7 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 8 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 9 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 10).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 11).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 12).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 13).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 14).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 15).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 16).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 17).pulse;
+  --TRIG_ILA0_3 (31 downto 18)                <= (others => '0');
+  --TRIG_ILA0_3 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_1_id, 0 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 1 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 2 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 3 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 4 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 5 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 6 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 7 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 8 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 9 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 10).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 11).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 12).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 13).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 14).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 15).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 16).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 17).pulse;
 
   ----------------------------------------------------------------------
   --                      DSP Chipscope                               --
@@ -2996,23 +3225,6 @@ begin
   --  CONTROL2                                => CONTROL2,
   --  CONTROL3                                => CONTROL3
   --);
-
-  --cmp_chipscope_ila_0 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL0,
-  --  CLK                                    => clk_sys,
-  --  TRIG0                                  => TRIG_ILA0_0,
-  --  TRIG1                                  => TRIG_ILA0_1,
-  --  TRIG2                                  => TRIG_ILA0_2,
-  --  TRIG3                                  => TRIG_ILA0_3
-  --);
-
-  --TRIG_ILA0_0(31 downto 4)                  <= (others => '0');
-  --TRIG_ILA0_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
-  --TRIG_ILA0_1(31 downto 11)                 <= (others => '0');
-  --TRIG_ILA0_1(10 downto 0)                  <= dbg_addr & dbg_en & dbg_spi_valid & dbg_spi_clk;
-  --TRIG_ILA0_2                               <= dbg_serial_data;
-  --TRIG_ILA0_3                               <= dbg_spi_data;
 
   --cmp_chipscope_ila_1 : chipscope_ila
   --port map (
