@@ -2981,17 +2981,17 @@
   <spirit:choices>
     <spirit:choice>
       <spirit:name>choices_0</spirit:name>
-      <spirit:enumeration spirit:text="Full">Full</spirit:enumeration>
-      <spirit:enumeration spirit:text="Basic">Basic</spirit:enumeration>
+      <spirit:enumeration>Basic</spirit:enumeration>
+      <spirit:enumeration>Full</spirit:enumeration>
     </spirit:choice>
     <spirit:choice>
       <spirit:name>choices_1</spirit:name>
-      <spirit:enumeration spirit:text="32">32</spirit:enumeration>
-      <spirit:enumeration spirit:text="64">64</spirit:enumeration>
-      <spirit:enumeration spirit:text="128">128</spirit:enumeration>
-      <spirit:enumeration spirit:text="256">256</spirit:enumeration>
-      <spirit:enumeration spirit:text="512">512</spirit:enumeration>
-      <spirit:enumeration spirit:text="1024">1024</spirit:enumeration>
+      <spirit:enumeration>32</spirit:enumeration>
+      <spirit:enumeration>64</spirit:enumeration>
+      <spirit:enumeration>128</spirit:enumeration>
+      <spirit:enumeration>256</spirit:enumeration>
+      <spirit:enumeration>512</spirit:enumeration>
+      <spirit:enumeration>1024</spirit:enumeration>
     </spirit:choice>
     <spirit:choice>
       <spirit:name>choices_2</spirit:name>
@@ -3014,17 +3014,17 @@
     </spirit:choice>
     <spirit:choice>
       <spirit:name>choices_4</spirit:name>
-      <spirit:enumeration spirit:text="Full">Full</spirit:enumeration>
-      <spirit:enumeration spirit:text="Basic">Basic</spirit:enumeration>
+      <spirit:enumeration>Basic</spirit:enumeration>
+      <spirit:enumeration>Full</spirit:enumeration>
     </spirit:choice>
     <spirit:choice>
       <spirit:name>choices_5</spirit:name>
-      <spirit:enumeration spirit:text="32">32</spirit:enumeration>
-      <spirit:enumeration spirit:text="64">64</spirit:enumeration>
-      <spirit:enumeration spirit:text="128">128</spirit:enumeration>
-      <spirit:enumeration spirit:text="256">256</spirit:enumeration>
-      <spirit:enumeration spirit:text="512">512</spirit:enumeration>
-      <spirit:enumeration spirit:text="1024">1024</spirit:enumeration>
+      <spirit:enumeration>32</spirit:enumeration>
+      <spirit:enumeration>64</spirit:enumeration>
+      <spirit:enumeration>128</spirit:enumeration>
+      <spirit:enumeration>256</spirit:enumeration>
+      <spirit:enumeration>512</spirit:enumeration>
+      <spirit:enumeration>1024</spirit:enumeration>
     </spirit:choice>
     <spirit:choice>
       <spirit:name>choices_6</spirit:name>
@@ -3576,23 +3576,23 @@
       </xilinx:upgrades>
       <xilinx:coreCreationDateTime>2015-07-27T09:00:52Z</xilinx:coreCreationDateTime>
       <xilinx:configElementInfos>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_mm2s_data_width" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axis_mm2s_tdata_width" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_dre" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_burst_size" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_btt_used" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_s2mm_data_width" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s_axis_s2mm_tdata_width" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_s2mm_dre" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_burst_size" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_mm2s_id_width" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_s2mm_id_width" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_enable_mm2s" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_stsfifo" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_include_sf" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_dre" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_btt_used" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_s2mm_id_width" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_include_mm2s_stsfifo" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_btt_used" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s_axis_s2mm_tdata_width" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_s2mm_data_width" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_mm2s_id_width" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_m_axi_mm2s_data_width" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_support_indet_btt" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_burst_size" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_mm2s_burst_size" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_enable_mm2s" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.c_s2mm_include_sf" xilinx:valueSource="user"/>
       </xilinx:configElementInfos>
     </xilinx:coreExtensions>
