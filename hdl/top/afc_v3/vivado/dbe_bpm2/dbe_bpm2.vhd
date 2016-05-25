@@ -385,6 +385,7 @@ architecture rtl of dbe_bpm2 is
   constant c_acq_monit_amp_id               : natural := 14;
   constant c_acq_monit_pos_id               : natural := 15;
   constant c_acq_monit_1_pos_id             : natural := 16;
+  constant c_trigger_sw_clk_id              : natural := 17;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
 
@@ -436,7 +437,7 @@ architecture rtl of dbe_bpm2 is
   -- Trigger
   constant c_trig_sync_edge                 : string   := "positive";
   constant c_trig_trig_num                  : positive := 8; -- 8 MLVDS triggers
-  constant c_trig_intern_num                : positive := 17; -- 17 acquisition channels
+  constant c_trig_intern_num                : positive := 18; -- 17 acquisition channels + 1 switching clock channel
   constant c_trig_rcv_intern_num            : positive := 2; -- 2 FMCs
   constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
   constant c_trig_out_resolver              : string := "fanout";
@@ -445,8 +446,8 @@ architecture rtl of dbe_bpm2 is
   constant c_trig_with_output_sync          : boolean := true;
 
   -- Trigger RCV intern IDs
-  constant c_trig_rcv_intern_fmc_1_id       : positive := 0; -- FMC 1
-  constant c_trig_rcv_intern_fmc_2_id       : positive := 1; -- FMC 2
+  constant c_trig_rcv_intern_chan_1_id      : positive := 0; -- Internal Channel 1
+  constant c_trig_rcv_intern_chan_2_id      : positive := 1; -- Internal Channel 2
 
   -- Trigger core IDs
   constant c_trig_mux_0_id                  : natural := 0;
@@ -508,7 +509,7 @@ architecture rtl of dbe_bpm2 is
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
-  constant c_sdb_address                    : t_wishbone_address := x"00300000";
+  constant c_sdb_address                    : t_wishbone_address := x"00200000";
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
@@ -677,6 +678,9 @@ architecture rtl of dbe_bpm2 is
   signal fmc1_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   signal fmc1_trig_hw                        : std_logic;
+  signal fmc1_trig_hw_in                     : std_logic;
+
+  signal trig_dir_int                       : std_logic_vector(7 downto 0);
 
   -- FMC130M 1 Debug
   signal fmc1_debug_valid_int                : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -711,6 +715,7 @@ architecture rtl of dbe_bpm2 is
   signal fmc2_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
 
   signal fmc2_trig_hw                        : std_logic;
+  signal fmc2_trig_hw_in                     : std_logic;
 
   -- FMC130M 2 Debug
   signal fmc2_debug_valid_int                : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -925,8 +930,12 @@ architecture rtl of dbe_bpm2 is
   signal trig_pulse_transm                  : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
   signal trig_pulse_rcv                     : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
 
-  signal trig_fmc1_channel                  : t_trig_channel;
-  signal trig_fmc2_channel                  : t_trig_channel;
+  signal trig_fmc1_channel_1                : t_trig_channel;
+  signal trig_fmc1_channel_2                : t_trig_channel;
+  signal trig_fmc2_channel_1                : t_trig_channel;
+  signal trig_fmc2_channel_2                : t_trig_channel;
+
+  signal trig_dbg                           : std_logic_vector(7 downto 0);
 
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
@@ -1517,7 +1526,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => fmc1_trig_hw,
-    trig_hw_i                               => dsp1_clk_rffe_swap,  -- To FMC1 Trigger Front Panel
+    trig_hw_i                               => fmc1_trig_hw_in,
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc1_mmcm_lock_int,
@@ -1556,6 +1565,9 @@ begin
   fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
   fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
   fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
+
+  -- Use ADC trigger for testing
+  fmc1_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_0_id, c_trigger_sw_clk_id).pulse;
 
   -- Debug clock for chipscope
   fs_clk_dbg                                 <= fs1_clk;
@@ -1716,7 +1728,7 @@ begin
     -----------------------------
     -- Trigger to other FPGA logic
     trig_hw_o                               => fmc2_trig_hw,
-    trig_hw_i                               => dsp2_clk_rffe_swap,  -- To FMC2 Trigger Front Panel
+    trig_hw_i                               => fmc2_trig_hw_in,
 
     -- General board status
     fmc_mmcm_lock_o                         => fmc2_mmcm_lock_int,
@@ -1756,6 +1768,9 @@ begin
   fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
   fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
   fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+
+  -- Use ADC trigger for testing
+  fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
 
   ----------------------------------------------------------------------
   --                      DSP Chain 1 Core                            --
@@ -2752,11 +2767,12 @@ begin
       wb_slv_trigger_mux_i                 => trig_core_slave_i,
       wb_slv_trigger_mux_o                 => trig_core_slave_o,
 
-      trig_dir_o                           => trig_dir_o,
+      trig_dir_o                           => trig_dir_int,
       trig_rcv_intern_i                    => trig_rcv_intern,
       trig_pulse_transm_i                  => trig_pulse_transm,
       trig_pulse_rcv_o                     => trig_pulse_rcv,
-      trig_b                               => trig_b
+      trig_b                               => trig_b,
+      trig_dbg_o                           => trig_dbg
   );
 
   trig_core_slave_i <= cbar_master_o(c_slv_trig_mux_1_id) & cbar_master_o(c_slv_trig_mux_0_id);
@@ -2764,16 +2780,122 @@ begin
   cbar_master_i(c_slv_trig_mux_1_id) <= trig_core_slave_o(c_trig_mux_1_id);
 
   -- Assign FMCs trigger pulses to trigger channel interfaces
-  trig_fmc1_channel.pulse <= fmc1_trig_hw;
-  trig_fmc2_channel.pulse <= fmc2_trig_hw;
+  trig_fmc1_channel_1.pulse <= fmc1_trig_hw;
+  trig_fmc1_channel_2.pulse <= dsp1_clk_rffe_swap;
+
+  trig_fmc2_channel_1.pulse <= fmc2_trig_hw;
+  trig_fmc2_channel_2.pulse <= dsp2_clk_rffe_swap;
 
   -- Assign intern triggers to trigger module
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_fmc_1_id) <= trig_fmc1_channel;
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_fmc_2_id) <= trig_fmc2_channel;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_fmc_1_id) <= trig_fmc1_channel;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_fmc_2_id) <= trig_fmc2_channel;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_channel_1;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_channel_2;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_channel_1;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_channel_2;
 
-  -- Assign transmitter triggers to trigger module
+  trig_dir_o <= trig_dir_int;
+
+  ----------------------------------------------------------------------
+  --                      Triggers Chipscope                          --
+  ----------------------------------------------------------------------
+  --cmp_chipscope_icon_0 : chipscope_icon_1_port
+  --port map (
+  --  CONTROL0                                => CONTROL0
+  --);
+
+  --cmp_chipscope_ila_0 : chipscope_ila
+  --port map (
+  --  CONTROL                                => CONTROL0,
+  --  CLK                                    => fs_clk_array(0),
+  --  TRIG0                                  => TRIG_ILA0_0,
+  --  TRIG1                                  => TRIG_ILA0_1,
+  --  TRIG2                                  => TRIG_ILA0_2,
+  --  TRIG3                                  => TRIG_ILA0_3
+  --);
+
+  --TRIG_ILA0_0(31 downto 30)                 <= (others => '0');
+  --TRIG_ILA0_0(29 downto 12)                 <= trig_pulse_transm(c_trig_mux_0_id, 0 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 1 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 2 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 3 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 4 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 5 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 6 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 7 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 8 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 9 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 10).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 11).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 12).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 13).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 14).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 15).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 16).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_0_id, 17).pulse;
+
+  --TRIG_ILA0_0(11 downto 8)                  <= trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id).pulse &
+  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id).pulse;
+  --TRIG_ILA0_0(7 downto 0)                   <= trig_dir_int;
+
+  --TRIG_ILA0_1(31 downto 26)                 <= (others => '0');
+  --TRIG_ILA0_1(25 downto 18)                 <= trig_dbg;
+  --TRIG_ILA0_1(17 downto 0)                  <= trig_pulse_transm(c_trig_mux_1_id, 0 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 1 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 2 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 3 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 4 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 5 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 6 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 7 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 8 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 9 ).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 10).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 11).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 12).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 13).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 14).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 15).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 16).pulse &
+  --                                             trig_pulse_transm(c_trig_mux_1_id, 17).pulse;
+  --TRIG_ILA0_2 (31 downto 18)                <= (others => '0');
+  --TRIG_ILA0_2 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_0_id, 0 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 1 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 2 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 3 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 4 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 5 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 6 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 7 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 8 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 9 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 10).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 11).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 12).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 13).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 14).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 15).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 16).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_0_id, 17).pulse;
+  --TRIG_ILA0_3 (31 downto 18)                <= (others => '0');
+  --TRIG_ILA0_3 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_1_id, 0 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 1 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 2 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 3 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 4 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 5 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 6 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 7 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 8 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 9 ).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 10).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 11).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 12).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 13).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 14).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 15).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 16).pulse &
+  --                                             trig_pulse_rcv(c_trig_mux_1_id, 17).pulse;
 
   ----------------------------------------------------------------------
   --                      DSP Chipscope                               --
@@ -3103,23 +3225,6 @@ begin
   --  CONTROL2                                => CONTROL2,
   --  CONTROL3                                => CONTROL3
   --);
-
-  --cmp_chipscope_ila_0 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL0,
-  --  CLK                                    => clk_sys,
-  --  TRIG0                                  => TRIG_ILA0_0,
-  --  TRIG1                                  => TRIG_ILA0_1,
-  --  TRIG2                                  => TRIG_ILA0_2,
-  --  TRIG3                                  => TRIG_ILA0_3
-  --);
-
-  --TRIG_ILA0_0(31 downto 4)                  <= (others => '0');
-  --TRIG_ILA0_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
-  --TRIG_ILA0_1(31 downto 11)                 <= (others => '0');
-  --TRIG_ILA0_1(10 downto 0)                  <= dbg_addr & dbg_en & dbg_spi_valid & dbg_spi_clk;
-  --TRIG_ILA0_2                               <= dbg_serial_data;
-  --TRIG_ILA0_3                               <= dbg_spi_data;
 
   --cmp_chipscope_ila_1 : chipscope_ila
   --port map (
