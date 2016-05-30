@@ -1555,13 +1555,12 @@ begin
   -- Green FMC front led
   cmp_led1_extende_pulse : gc_extend_pulse
   generic map (
-    -- Input clock = 100MHz
-    -- 20000000 clock pulses =  0.2s pulse
+    -- 20000000 clock pulses
     g_width => 20000000
   )
   port map (
-    clk_i                                   => sys_clk_i,
-    rst_n_i                                 => sys_rst_sync_n,
+    clk_i                                   => fs_clk(c_ref_clk),
+    rst_n_i                                 => fs_rst_sync_n(c_ref_clk),
     -- input pulse (synchronous to clk_i)
     pulse_i                                 => m2c_trig_sync,
     -- extended output pulse
