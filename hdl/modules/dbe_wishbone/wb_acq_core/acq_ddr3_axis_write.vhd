@@ -518,6 +518,8 @@ begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
         ddr_addr_cnt_axis <= to_unsigned(0, ddr_addr_cnt_axis'length);
+        ddr_addr_init <= to_unsigned(0, ddr_addr_init'length);
+        ddr_addr_max <= to_unsigned(0, ddr_addr_max'length);
       else
 
         if wr_start_i = '1' then
@@ -531,7 +533,7 @@ begin
           -- Get ready for the next valid transaction
           ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis;
           -- Wrap counters if we go over the limit
-          if ddr_addr_cnt_axis = ddr_addr_max then
+          if ddr_addr_cnt_axis >= ddr_addr_max then
             ddr_addr_cnt_axis <= ddr_addr_init;
           end if;
         end if;
