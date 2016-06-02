@@ -26,6 +26,7 @@ package bpm_axi_pkg is
   -- AXIS CMD constants
   constant c_axis_cmd_tdata_width            : natural := 72;
   constant c_axis_cmd_tkeep_width            : natural := c_axis_cmd_tdata_width/8;
+  constant c_axis_cmd_wr_len_width           : natural := 8;
 
   -- CMD Data Ranges
   constant c_axis_cmd_tdata_btt_width        : natural := 23;
@@ -60,6 +61,7 @@ package bpm_axi_pkg is
   constant c_axi_slv_zero                    : std_logic_vector(0 downto 0) := "0";
   constant c_axi_qos_zeros                   : std_logic_vector(c_aximm_qos_width-1 downto 0) := (others => '0');
   constant c_axi_sl_one                      : std_logic := '1';
+  constant c_axi_dbg_sel_zeros               : std_logic_vector(3 downto 0) := (others => '0');
 
   -- AXIMM subtypes
   subtype t_aximm_id is
@@ -111,9 +113,12 @@ package bpm_axi_pkg is
     std_logic_vector(c_axis_cmd_tdata_width-1 downto 0);
   subtype t_axis_cmd_tkeep is
     std_logic_vector(c_axis_cmd_tkeep_width-1 downto 0);
+  subtype t_axis_cmd_wr_len is
+    std_logic_vector(c_axis_cmd_wr_len_width-1 downto 0);
 
   type t_axis_cmd_tdata_array is array(natural range <>) of t_axis_cmd_tdata;
   type t_axis_cmd_tkeep_array is array(natural range <>) of t_axis_cmd_tkeep;
+  type t_axis_cmd_wr_len_array is array(natural range <>) of t_axis_cmd_wr_len;
 
   -- AXI PLD subtypes
   subtype t_axis_pld_tdata is
@@ -216,16 +221,24 @@ package bpm_axi_pkg is
 
   -- AXIS CMD records
   type t_axis_cmd_slave_out is record
-    tready  : std_logic;
+    tready          : std_logic;
+    halt_cmplt      : std_logic;
+    addr_req_posted : std_logic;
+    wr_xfer_cmplt   : std_logic;
+    ld_nxt_len      : std_logic;
+    wr_len          : t_axis_cmd_wr_len;
   end record t_axis_cmd_slave_out;
 
   subtype t_axis_cmd_master_in is t_axis_cmd_slave_out;
 
   type t_axis_cmd_slave_in is record
-    tvalid : std_logic;
-    tdata  : t_axis_cmd_tdata;
-    tkeep  : t_axis_cmd_tkeep;
-    tlast  : std_logic;
+    tvalid         : std_logic;
+    tdata          : t_axis_cmd_tdata;
+    tkeep          : t_axis_cmd_tkeep;
+    tlast          : std_logic;
+    rstn           : std_logic;
+    halt           : std_logic;
+    allow_addr_req : std_logic;
   end record t_axis_cmd_slave_in;
 
   subtype t_axis_cmd_master_out is t_axis_cmd_slave_in;
@@ -311,10 +324,13 @@ package bpm_axi_pkg is
     (others => 'X');
   constant cc_dummy_axis_cmd_tkeep : std_logic_vector(c_axis_cmd_tkeep_width-1 downto 0) :=
     (others => 'X');
+  constant cc_dummy_axis_cmd_wr_len : std_logic_vector(c_axis_cmd_wr_len_width-1 downto 0) :=
+    (others => 'X');
 
   constant cc_dummy_axis_cmd_slave_in : t_axis_cmd_slave_in :=
-    ('0', cc_dummy_axis_cmd_tdata, cc_dummy_axis_cmd_tkeep, 'X');
-  constant cc_dummy_axis_cmd_master_in : t_axis_cmd_master_in := (tready => 'X');
+    ('0', cc_dummy_axis_cmd_tdata, cc_dummy_axis_cmd_tkeep, 'X', '1', '0', '1');
+  constant cc_dummy_axis_cmd_master_in : t_axis_cmd_master_in := ('X',
+    '0', 'X', 'X', 'X', cc_dummy_axis_cmd_wr_len);
 
   -- AXIS PLD dummy constants
   constant cc_dummy_axis_pld_tdata : std_logic_vector(c_axis_pld_tdata_width-1 downto 0) :=

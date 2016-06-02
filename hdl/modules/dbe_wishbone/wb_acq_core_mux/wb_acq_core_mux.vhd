@@ -173,6 +173,8 @@ architecture rtl of wb_acq_core_mux is
 
   -- AXI Data mover signals
   signal axi_rst_n_array                    : std_logic_vector(c_num_max_acq_cores-1 downto 0);
+  signal axis_s2mm_rst_n_array_or           : std_logic_vector(c_num_max_acq_cores-1 downto 0);
+  signal axis_mm2s_rst_n_array_or           : std_logic_vector(c_num_max_acq_cores-1 downto 0);
 
   signal axis_mm2s_cmd_mo_array             : t_axis_cmd_master_out_array(g_acq_num_cores-1 downto 0);
   signal axis_mm2s_cmd_mi_array             : t_axis_cmd_master_in_array(g_acq_num_cores-1 downto 0);
@@ -300,6 +302,15 @@ begin
       axis_s2mm_cmd_tvalid_o                    => axis_s2mm_cmd_mo_array(i).tvalid,
       axis_s2mm_cmd_tready_i                    => axis_s2mm_cmd_mi_array(i).tready,
 
+      axis_s2mm_rstn_o                          => axis_s2mm_cmd_mo_array(i).rstn,
+      axis_s2mm_halt_o                          => axis_s2mm_cmd_mo_array(i).halt,
+      axis_s2mm_halt_cmplt_i                    => axis_s2mm_cmd_mi_array(i).halt_cmplt,
+      axis_s2mm_allow_addr_req_o                => axis_s2mm_cmd_mo_array(i).allow_addr_req,
+      axis_s2mm_addr_req_posted_i               => axis_s2mm_cmd_mi_array(i).addr_req_posted,
+      axis_s2mm_wr_xfer_cmplt_i                 => axis_s2mm_cmd_mi_array(i).wr_xfer_cmplt,
+      axis_s2mm_ld_nxt_len_i                    => axis_s2mm_cmd_mi_array(i).ld_nxt_len,
+      axis_s2mm_wr_len_i                        => axis_s2mm_cmd_mi_array(i).wr_len,
+
       axis_s2mm_pld_tdata_o                     => axis_s2mm_pld_mo_array(i).tdata,
       axis_s2mm_pld_tkeep_o                     => axis_s2mm_pld_mo_array(i).tkeep,
       axis_s2mm_pld_tlast_o                     => axis_s2mm_pld_mo_array(i).tlast,
@@ -336,14 +347,24 @@ begin
     port map (
       -- Memory Mapped to Stream
       m_axi_mm2s_aclk                          => ext_clk_i,
-      m_axi_mm2s_aresetn                       => axi_rst_n_array(i),
+      m_axi_mm2s_aresetn                       => axis_mm2s_rst_n_array_or(i),
       mm2s_err                                 => open,
       m_axis_mm2s_cmdsts_aclk                  => ext_clk_i,
-      m_axis_mm2s_cmdsts_aresetn               => axi_rst_n_array(i),
+      m_axis_mm2s_cmdsts_aresetn               => axis_mm2s_rst_n_array_or(i),
 
       s_axis_mm2s_cmd_tvalid                   => axis_mm2s_cmd_mo_array(i).tvalid,
       s_axis_mm2s_cmd_tready                   => axis_mm2s_cmd_mi_array(i).tready,
       s_axis_mm2s_cmd_tdata                    => axis_mm2s_cmd_mo_array(i).tdata,
+
+      s2mm_halt                                => axis_s2mm_cmd_mo_array(i).halt,
+      s2mm_halt_cmplt                          => axis_s2mm_cmd_mi_array(i).halt_cmplt,
+      s2mm_allow_addr_req                      => axis_s2mm_cmd_mo_array(i).allow_addr_req,
+      s2mm_addr_req_posted                     => axis_s2mm_cmd_mi_array(i).addr_req_posted,
+      s2mm_wr_xfer_cmplt                       => axis_s2mm_cmd_mi_array(i).wr_xfer_cmplt,
+      s2mm_ld_nxt_len                          => axis_s2mm_cmd_mi_array(i).ld_nxt_len,
+      s2mm_wr_len                              => axis_s2mm_cmd_mi_array(i).wr_len,
+      s2mm_dbg_sel                             => c_axi_dbg_sel_zeros,
+      s2mm_dbg_data                            => open,
 
       m_axis_mm2s_sts_tvalid                   => open,
       m_axis_mm2s_sts_tready                   => c_axi_sl_one,
@@ -374,10 +395,10 @@ begin
 
       -- Stream to Memory Mapped
       m_axi_s2mm_aclk                          => ext_clk_i,
-      m_axi_s2mm_aresetn                       => axi_rst_n_array(i),
+      m_axi_s2mm_aresetn                       => axis_s2mm_rst_n_array_or(i),
       s2mm_err                                 => open,
       m_axis_s2mm_cmdsts_awclk                 => ext_clk_i,
-      m_axis_s2mm_cmdsts_aresetn               => axi_rst_n_array(i),
+      m_axis_s2mm_cmdsts_aresetn               => axis_s2mm_rst_n_array_or(i),
 
       s_axis_s2mm_cmd_tvalid                   => axis_s2mm_cmd_mo_array(i).tvalid,
       s_axis_s2mm_cmd_tready                   => axis_s2mm_cmd_mi_array(i).tready,
@@ -413,6 +434,9 @@ begin
       s_axis_s2mm_tvalid                       => axis_s2mm_pld_mo_array(i).tvalid,
       s_axis_s2mm_tready                       => axis_s2mm_pld_mi_array(i).tready
     );
+
+    axis_s2mm_rst_n_array_or(i) <= axi_rst_n_array(i) and axis_s2mm_cmd_mo_array(i).rstn;
+    axis_mm2s_rst_n_array_or(i) <= axi_rst_n_array(i);
   end generate;
 
   -- Assign dummy data to other unassigned records. We just need to assign signals

@@ -156,6 +156,15 @@ port
   axis_s2mm_pld_tvalid_o                    : out std_logic;
   axis_s2mm_pld_tready_i                    : in std_logic := '0';
 
+  axis_s2mm_rstn_o                          : out std_logic;
+  axis_s2mm_halt_o                          : out std_logic;
+  axis_s2mm_halt_cmplt_i                    : in  std_logic := '0';
+  axis_s2mm_allow_addr_req_o                : out std_logic;
+  axis_s2mm_addr_req_posted_i               : in  std_logic := '0';
+  axis_s2mm_wr_xfer_cmplt_i                 : in  std_logic := '0';
+  axis_s2mm_ld_nxt_len_i                    : in  std_logic := '0';
+  axis_s2mm_wr_len_i                        : in  std_logic_vector(7 downto 0) := (others => '0');
+
   axis_mm2s_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
   axis_mm2s_cmd_tvalid_o                    : out std_logic;
   axis_mm2s_cmd_tready_i                    : in std_logic := '0';
@@ -376,6 +385,10 @@ architecture rtl of wb_acq_core is
   signal test_data_en                       : std_logic;
   signal ddr_trig_addr                      : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
+  -- Debug outputs
+  signal dbg_ddr_addr_cnt_axis              : std_logic_vector(30 downto 0);
+  signal dbg_ddr_addr_init                  : std_logic_vector(30 downto 0);
+  signal dbg_ddr_addr_max                   : std_logic_vector(30 downto 0);
   ------------------------------------------------------------------------------
   -- Components
   ------------------------------------------------------------------------------
@@ -1070,7 +1083,21 @@ begin
       axis_s2mm_pld_tkeep_o                   => axis_s2mm_pld_tkeep_o,
       axis_s2mm_pld_tlast_o                   => axis_s2mm_pld_tlast_o,
       axis_s2mm_pld_tvalid_o                  => axis_s2mm_pld_tvalid_o,
-      axis_s2mm_pld_tready_i                  => axis_s2mm_pld_tready_i
+      axis_s2mm_pld_tready_i                  => axis_s2mm_pld_tready_i,
+
+      axis_s2mm_rstn_o                        => axis_s2mm_rstn_o,
+      axis_s2mm_halt_o                        => axis_s2mm_halt_o,
+      axis_s2mm_halt_cmplt_i                  => axis_s2mm_halt_cmplt_i,
+      axis_s2mm_allow_addr_req_o              => axis_s2mm_allow_addr_req_o,
+      axis_s2mm_addr_req_posted_i             => axis_s2mm_addr_req_posted_i,
+      axis_s2mm_wr_xfer_cmplt_i               => axis_s2mm_wr_xfer_cmplt_i,
+      axis_s2mm_ld_nxt_len_i                  => axis_s2mm_ld_nxt_len_i,
+      axis_s2mm_wr_len_i                      => axis_s2mm_wr_len_i,
+
+      -- Debug Outputs
+      dbg_ddr_addr_cnt_axis_o                 => dbg_ddr_addr_cnt_axis,
+      dbg_ddr_addr_init_o                     => dbg_ddr_addr_init,
+      dbg_ddr_addr_max_o                      => dbg_ddr_addr_max
     );
   end generate;
 

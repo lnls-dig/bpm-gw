@@ -1583,6 +1583,15 @@ package dbe_wishbone_pkg is
     axis_s2mm_pld_tvalid_o                    : out std_logic;
     axis_s2mm_pld_tready_i                    : in std_logic := '0';
 
+    axis_s2mm_rstn_o                          : out std_logic;
+    axis_s2mm_halt_o                          : out std_logic;
+    axis_s2mm_halt_cmplt_i                    : in  std_logic := '0';
+    axis_s2mm_allow_addr_req_o                : out std_logic;
+    axis_s2mm_addr_req_posted_i               : in  std_logic := '0';
+    axis_s2mm_wr_xfer_cmplt_i                 : in  std_logic := '0';
+    axis_s2mm_ld_nxt_len_i                    : in  std_logic := '0';
+    axis_s2mm_wr_len_i                        : in  std_logic_vector(7 downto 0) := (others => '0');
+
     axis_mm2s_cmd_tdata_o                     : out std_logic_vector(71 downto 0);
     axis_mm2s_cmd_tvalid_o                    : out std_logic;
     axis_mm2s_cmd_tready_i                    : in std_logic := '0';

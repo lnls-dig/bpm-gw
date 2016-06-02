@@ -93,7 +93,21 @@ port
   axis_s2mm_pld_tkeep_o                     : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
   axis_s2mm_pld_tlast_o                     : out std_logic;
   axis_s2mm_pld_tvalid_o                    : out std_logic;
-  axis_s2mm_pld_tready_i                    : in std_logic
+  axis_s2mm_pld_tready_i                    : in std_logic;
+
+  axis_s2mm_rstn_o                          : out std_logic;
+  axis_s2mm_halt_o                          : out std_logic;
+  axis_s2mm_halt_cmplt_i                    : in  std_logic;
+  axis_s2mm_allow_addr_req_o                : out std_logic;
+  axis_s2mm_addr_req_posted_i               : in  std_logic;
+  axis_s2mm_wr_xfer_cmplt_i                 : in  std_logic;
+  axis_s2mm_ld_nxt_len_i                    : in  std_logic;
+  axis_s2mm_wr_len_i                        : in  std_logic_vector(7 downto 0);
+
+  -- Debug Outputs
+  dbg_ddr_addr_cnt_axis_o                   : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+  dbg_ddr_addr_init_o                       : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+  dbg_ddr_addr_max_o                        : out std_logic_vector(g_ddr_addr_width-1 downto 0)
 );
 end acq_ddr3_axis_write;
 
@@ -266,6 +280,12 @@ architecture rtl of acq_ddr3_axis_write is
 
   signal ddr_rdy_cmd                        : std_logic;
   signal ddr_rdy_pld                        : std_logic;
+
+  -- Halt/Rst signals
+  type   t_hrst_state is (IDLE, HALT_GEN, WAIT_HALT_CMPLT, RST_GEN, RST1, RST2, RST3);
+  signal ddr_axis_rstn                      : std_logic := '1';
+  signal ddr_axis_halt                      : std_logic := '0';
+  signal hrst_state                         : t_hrst_state := IDLE;
 
 begin
 
@@ -522,6 +542,11 @@ begin
   -- To Flow Control module
   ddr_addr_in_axis <= std_logic_vector(ddr_addr_cnt_axis);
 
+  -- Debug outputs
+  dbg_ddr_addr_cnt_axis_o <= std_logic_vector(ddr_addr_cnt_axis);
+  dbg_ddr_addr_init_o <= std_logic_vector(ddr_addr_init);
+  dbg_ddr_addr_max_o <= std_logic_vector(ddr_addr_max);
+
   -----------------------------------------------------------------------------
   -- Store DDR Trigger address
   -----------------------------------------------------------------------------
@@ -753,6 +778,77 @@ begin
                           c_acq_header_id_bot_idx+c_fc_header_bot_idx);
 
   -----------------------------------------------------------------------------
+  -- AXIS Soft Shutdown Interface
+  -----------------------------------------------------------------------------
+
+  -- We reset on two situations: a regular reset (startup or reset trigger) or
+  -- when we abort an acquisition (fsm_stop signal). For this to work seamlessly
+  -- with AXIS interface, we must drive the halt/rst signals properly
+
+  -- First, generate halt signal to force AXIS datamover to shutdown its engine.
+  -- We can use the same as rst, as it's long enough
+
+  -- Secondly, we must look into axis_S2mm_halt_cmplt_i signal. When it completes
+  -- its shutdown (asserted high),. we must then reset the AXIS core using
+  -- axis_s2mm_rstn_o signal
+
+  -- AXIS Halt/Rst state machine.
+  p_axis_halt_rst_fsm : process(ext_clk_i)
+  begin
+    if rising_edge(ext_clk_i) then
+      case hrst_state is
+        -- Waits for a halt command to start
+        when IDLE =>
+          ddr_axis_rstn <= '1';
+          ddr_axis_halt <= '0';
+
+          if ext_rst_n_i = '0' then
+            hrst_state <= HALT_GEN;
+          end if;
+
+        when HALT_GEN =>
+          ddr_axis_halt <= '1';
+          hrst_state <= WAIT_HALT_CMPLT;
+
+        when WAIT_HALT_CMPLT =>
+          -- Wait for AXIS core to gracefully shutdown then reset the core
+          -- and deasserts halt
+          if axis_s2mm_halt_cmplt_i = '1' then
+            ddr_axis_halt <= '0';
+            hrst_state <= RST_GEN;
+          end if;
+
+        -- Generates a reset for the core
+        when RST_GEN =>
+          ddr_axis_rstn <= '0';
+          hrst_state <= RST1;
+
+        -- Wait for a minimum of 3 clock cycles for a successful reset
+        -- (axi datamover v5.1, page 16, table 2-6, about m_axi_s2mm_aresetn)
+        when RST1 =>
+          hrst_state <= RST2;
+
+        when RST2 =>
+          hrst_state <= RST3;
+
+        -- Deasserts rst and go back to the beginning
+        when RST3 =>
+          ddr_axis_rstn <= '1';
+          hrst_state <= IDLE;
+
+        when others =>
+          ddr_axis_rstn <= '1';
+          ddr_axis_halt <= '0';
+          hrst_state <= IDLE;
+
+      end case;
+    end if;
+  end process;
+
+  axis_s2mm_rstn_o                          <= ddr_axis_rstn;
+  axis_s2mm_halt_o                          <= ddr_axis_halt;
+
+  -----------------------------------------------------------------------------
   -- AXIS Interface
   -----------------------------------------------------------------------------
 
@@ -791,6 +887,9 @@ begin
     c_axis_cmd_tdata_tag_bot_idx)                             <= "0000";                      -- cmd_tag
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_pad_top_idx downto
     c_axis_cmd_tdata_pad_bot_idx)                             <= (others => '0');             -- cmd_pad
+
+  -- We always allow address request
+  axis_s2mm_allow_addr_req_o <= '1';
 
   fc_eop_pld <= '1' when fc_dout(c_eop_high downto c_eop_low) = "1" else '0';
 
