@@ -311,7 +311,7 @@ port(
 
   -- PCI clock and reset signals
   pcie_clk_p_i                              : in std_logic;
-  pcie_clk_n_i                              : in std_logic
+  pcie_clk_n_i                              : in std_logic;
 
   -----------------------------------------
   -- Button pins
@@ -321,7 +321,7 @@ port(
   -----------------------------------------
   -- User LEDs
   -----------------------------------------
-  --leds_o                                    : out std_logic_vector(7 downto 0)
+  leds_o                                    : out std_logic_vector(2 downto 0)
 );
 end dbe_bpm2;
 
@@ -454,7 +454,11 @@ architecture rtl of dbe_bpm2 is
   constant c_trig_mux_1_id                  : natural := 1;
 
   -- GPIO num pinscalc
-  constant c_leds_num_pins                  : natural := 8;
+  constant c_leds_num_pins                  : natural := 3;
+  constant c_with_leds_heartbeat            : t_boolean_array(c_leds_num_pins-1 downto 0) :=
+                                                (2 => false,  -- Red LED
+                                                 1 => true,   -- Green LED
+                                                 0 => false); -- Blue LED
   constant c_buttons_num_pins               : natural := 8;
 
   -- Counter width. It willl count up to 2^32 clock cycles
@@ -940,7 +944,8 @@ architecture rtl of dbe_bpm2 is
   -- GPIO LED signals
   signal gpio_slave_led_o                   : t_wishbone_slave_out;
   signal gpio_slave_led_i                   : t_wishbone_slave_in;
-  signal gpio_leds_int                      : std_logic_vector(c_leds_num_pins-1 downto 0);
+  signal gpio_leds_out_int                  : std_logic_vector(c_leds_num_pins-1 downto 0);
+  signal gpio_leds_in_int                   : std_logic_vector(c_leds_num_pins-1 downto 0) := (others => '0');
   -- signal leds_gpio_dummy_in                : std_logic_vector(c_leds_num_pins-1 downto 0);
 
   signal buttons_dummy                      : std_logic_vector(7 downto 0) := (others => '0');
@@ -2171,6 +2176,7 @@ begin
     --g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_cntr_period                             => c_tics_cntr_period,
     g_num_leds                                => c_leds_num_pins,
+    g_with_led_heartbeat                      => c_with_leds_heartbeat,
     g_num_buttons                             => c_buttons_num_pins
   )
   port map(
@@ -2184,8 +2190,8 @@ begin
     uart_txd_o                                => open,
 
     -- LEDs
-    led_out_o                                 => gpio_leds_int,
-    led_in_i                                  => gpio_leds_int,
+    led_out_o                                 => gpio_leds_out_int,
+    led_in_i                                  => gpio_leds_in_int,
     led_oen_o                                 => open,
 
     -- Buttons
@@ -2199,7 +2205,8 @@ begin
     slave_o                                   => cbar_master_i(c_slv_periph_id)
   );
 
-  --leds_o <= gpio_leds_int;
+  -- LED Red, LED Green, LED Blue
+  leds_o <= gpio_leds_out_int;
 
   ----------------------------------------------------------------------
   --                      AFC Diagnostics                             --

@@ -28,6 +28,17 @@ set_property PACKAGE_PIN AG26 [get_ports sys_rst_button_n_i]
 set_property IOSTANDARD LVCMOS25 [get_ports sys_rst_button_n_i]
 set_property PULLUP true [get_ports sys_rst_button_n_i]
 
+# AFC LEDs
+# LED Red - IO_L6P_T0_36
+set_property PACKAGE_PIN K10 [get_ports {leds_o[2]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {leds_o[2]}]
+# Led Green - IO_25_36
+set_property PACKAGE_PIN L7 [get_ports {leds_o[1]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {leds_o[1]}]
+# Led Blue - IO_0_36
+set_property PACKAGE_PIN H12 [get_ports {leds_o[0]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {leds_o[0]}]
+
 #######################################################################
 ##                           Trigger	                             ##
 #######################################################################
