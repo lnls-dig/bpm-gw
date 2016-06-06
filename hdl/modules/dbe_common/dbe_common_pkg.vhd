@@ -74,5 +74,21 @@ package dbe_common_pkg is
       count_o : out std_logic_vector(g_output_width-1 downto 0));
   end component counter_simple;
 
+  component heartbeat
+  generic
+  (
+    -- number of system clock cycles to count before blinking
+    g_clk_counts                             : natural := 100000000
+  );
+  port
+  (
+    -- 100 MHz system clock
+    clk_i                                    : in std_logic;
+    rst_n_i                                  : in std_logic;
+
+    -- Heartbeat pulse output
+    heartbeat_o                              : out std_logic
+  );
+  end component;
 
 end dbe_common_pkg;
