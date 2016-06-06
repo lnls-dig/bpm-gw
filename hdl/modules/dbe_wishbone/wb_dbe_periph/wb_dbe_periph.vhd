@@ -14,6 +14,7 @@ generic(
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
   g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
   g_num_leds                                : natural                        := 8;
+  g_with_led_heartbeat                      : t_boolean_array                ;          -- must match g_num_leds width
   g_num_buttons                             : natural                        := 8
 );
 port(
@@ -78,6 +79,9 @@ architecture rtl of wb_dbe_periph is
   signal cbar_slave_out                     : t_wishbone_slave_out_array(c_masters-1 downto 0);
   signal cbar_master_in                     : t_wishbone_master_in_array(c_slaves-1 downto 0);
   signal cbar_master_out                    : t_wishbone_master_out_array(c_slaves-1 downto 0);
+
+  signal led_gpio_out_int                   : std_logic_vector(g_num_leds-1 downto 0) := (others => '0');
+  signal led_heartbeat_out_int              : std_logic_vector(g_num_leds-1 downto 0) := (others => '0');
 
 begin
 
@@ -149,10 +153,34 @@ begin
 
     --gpio_b : inout std_logic_vector(g_num_pins-1 downto 0);
 
-    gpio_out_o                              => led_out_o,
+    gpio_out_o                              => led_gpio_out_int,
     gpio_in_i                               => led_in_i,
     gpio_oen_o                              => led_oen_o
   );
+
+  gen_leds_heartbeat : for i in g_num_leds-1 downto 0 generate
+
+      gen_with_heartbeat : if g_with_led_heartbeat(i) generate
+        -- Heartbeat module controls the Blue LED
+        cmp_blue_led : heartbeat
+        port map
+        (
+          clk_i                                   => clk_sys_i,
+          rst_n_i                                 => rst_n_i,
+
+          heartbeat_o                             => led_heartbeat_out_int(i)
+        );
+      end generate;
+
+      gen_without_heartbeat : if not g_with_led_heartbeat(i) generate
+        led_heartbeat_out_int(i) <= '0';
+      end generate;
+
+  end generate;
+
+  gen_leds_outputs : for i in g_num_leds-1 downto 0 generate
+    led_out_o(i) <= led_gpio_out_int(i) or led_heartbeat_out_int(i);
+  end generate;
 
   -- Slave 2 is the Button driver
   cmp_buttons : xwb_gpio_port

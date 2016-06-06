@@ -15,6 +15,12 @@ use work.trigger_pkg.all;
 package dbe_wishbone_pkg is
 
   --------------------------------------------------------------------
+  -- Types
+  --------------------------------------------------------------------
+  subtype t_boolean is boolean;
+  type t_boolean_array is array (natural range <>) of t_boolean;
+
+  --------------------------------------------------------------------
   -- Components
   --------------------------------------------------------------------
 
@@ -1355,6 +1361,7 @@ package dbe_wishbone_pkg is
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
     g_num_leds                                : natural                        := 8;
+    g_with_led_heartbeat                      : t_boolean_array                ;          -- must match g_num_leds width
     g_num_buttons                             : natural                        := 8
   );
   port(
@@ -1398,6 +1405,7 @@ package dbe_wishbone_pkg is
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
     g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
     g_num_leds                                : natural                        := 8;
+    g_with_led_heartbeat                      : t_boolean_array                ;          -- must match g_num_leds width
     g_num_buttons                             : natural                        := 8
   );
   port(
@@ -1494,7 +1502,8 @@ package dbe_wishbone_pkg is
     g_fifo_fc_size                            : natural := 64;
     g_sim_readback                            : boolean := false;
     g_ddr_interface_type                      : string  := "AXIS";
-    g_max_burst_size                          : natural := 4
+    g_max_burst_size                          : natural := 4;
+    g_inst_id                                 : natural := 1
   );
   port
   (

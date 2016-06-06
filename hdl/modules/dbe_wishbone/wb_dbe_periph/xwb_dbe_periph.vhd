@@ -14,6 +14,7 @@ generic(
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
   g_cntr_period                             : integer                        := 100000; -- 100MHz clock, ms granularity
   g_num_leds                                : natural                        := 8;
+  g_with_led_heartbeat                      : t_boolean_array                ;          -- must match g_num_leds width
   g_num_buttons                             : natural                        := 8
 );
 port(
@@ -52,6 +53,7 @@ begin
     g_address_granularity                     => g_address_granularity,
     g_cntr_period                             => g_cntr_period,
     g_num_leds                                => g_num_leds,
+    g_with_led_heartbeat                      => g_with_led_heartbeat,
     g_num_buttons                             => g_num_buttons
   )
   port map(
