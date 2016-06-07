@@ -856,7 +856,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_active_clk/wb_fmc_active_clk.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_active_clk/xwb_fmc_active_clk.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/dds_cos_lut.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/machine_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/dds_sin_lut.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci"]"\
