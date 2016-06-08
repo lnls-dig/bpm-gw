@@ -41,7 +41,7 @@ begin
           pps_counter <= to_unsigned(0, pps_counter'length);
           hb <= not hb;
         else
-         pps_counter <= pps_counter + 1;
+          pps_counter <= pps_counter + 1;
         end if;
       end if;
     end if;
