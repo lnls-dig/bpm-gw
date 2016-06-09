@@ -5465,7 +5465,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "hearbeat/heartbeat.vhd"
+set file "heartbeat/heartbeat.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
