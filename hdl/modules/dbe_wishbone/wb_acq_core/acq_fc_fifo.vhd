@@ -476,9 +476,11 @@ begin
   -- Used only for passthrough mode
   fifo_in_valid_full <= '1' when fifo_in_valid_cnt = lmt_full_pkt_size else '0';
 
-  -- Fifo valid input. We use only the first FIFO full, for precaution and simplicity
-  fifo_fc_wr_en <= pt_wr_en_i and pt_dvalid_i and not(fifo_in_valid_full) and not(fifo_fc_wr_full(0));
-  fifo_fc_dpram_wr_en <= dpram_dvalid_i and not(fifo_fc_wr_full(0));
+  -- Fifo valid input. We use only the first FIFO full, for precaution and simplicity.
+  -- Don't add "fifo_fc_wr_full" to the condition to write on FIFO. The data will
+  -- be lost anyway and we can improve timing closure.
+  fifo_fc_wr_en <= pt_wr_en_i and pt_dvalid_i and not(fifo_in_valid_full);
+  fifo_fc_dpram_wr_en <= dpram_dvalid_i;
 
   -- Only count when in pre_trigger or post_trigger and we haven't acquire
   -- enough samples
