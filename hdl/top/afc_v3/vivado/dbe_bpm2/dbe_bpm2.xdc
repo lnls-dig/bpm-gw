@@ -108,6 +108,14 @@ set_property PACKAGE_PIN J8 [get_ports diag_spi_clk_i]
 set_property IOSTANDARD LVCMOS25 [get_ports diag_spi_clk_i]
 
 #######################################################################
+##                      ADN4604ASVZ Contraints                      ##
+#######################################################################
+
+set_property PACKAGE_PIN U24 [get_ports adn4604_vadj2_clk_updt_n_o]
+set_property IOSTANDARD LVCMOS25 [get_ports adn4604_vadj2_clk_updt_n_o]
+set_property PULLUP true [get_ports adn4604_vadj2_clk_updt_n_o]
+
+#######################################################################
 ##                      FMC Connector HPC1                           ##
 #######################################################################
 
