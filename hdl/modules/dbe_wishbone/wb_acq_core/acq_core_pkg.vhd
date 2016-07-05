@@ -751,7 +751,21 @@ package acq_core_pkg is
     axis_s2mm_pld_tkeep_o                     : out std_logic_vector(g_ddr_payload_width/8-1 downto 0);
     axis_s2mm_pld_tlast_o                     : out std_logic;
     axis_s2mm_pld_tvalid_o                    : out std_logic;
-    axis_s2mm_pld_tready_i                    : in std_logic
+    axis_s2mm_pld_tready_i                    : in std_logic;
+
+    axis_s2mm_rstn_o                          : out std_logic;
+    axis_s2mm_halt_o                          : out std_logic;
+    axis_s2mm_halt_cmplt_i                    : in  std_logic;
+    axis_s2mm_allow_addr_req_o                : out std_logic;
+    axis_s2mm_addr_req_posted_i               : in  std_logic;
+    axis_s2mm_wr_xfer_cmplt_i                 : in  std_logic;
+    axis_s2mm_ld_nxt_len_i                    : in  std_logic;
+    axis_s2mm_wr_len_i                        : in  std_logic_vector(7 downto 0);
+
+    -- Debug Outputs
+    dbg_ddr_addr_cnt_axis_o                   : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    dbg_ddr_addr_init_o                       : out std_logic_vector(g_ddr_addr_width-1 downto 0);
+    dbg_ddr_addr_max_o                        : out std_logic_vector(g_ddr_addr_width-1 downto 0)
   );
   end component;
 

@@ -119,6 +119,7 @@ entity bpm_pcie is
     CYC_O : out std_logic;
     --/ Wishbone interface
     -- Additional exported signals for instantiation
+    pcie_user_clk : out std_logic;
     ext_rst_o : out std_logic
     );
 end entity bpm_pcie;
@@ -275,7 +276,7 @@ architecture Behavioral of bpm_pcie is
   signal cfg_err_aer_headerlog_set     : std_logic := '0';
   signal cfg_aer_ecrc_check_en         : std_logic := '0';
   signal cfg_aer_ecrc_gen_en           : std_logic := '0';
-  signal cfg_pm_halt_aspm_l0s          : std_logic := '0';
+  signal cfg_pm_halt_aspm_l0s          : std_logic := '1';
   signal cfg_pm_halt_aspm_l1           : std_logic := '1';
   signal cfg_pm_force_state_en         : std_logic := '0';
   signal cfg_pm_force_state            : std_logic_vector(1 downto 0) := "00";
@@ -827,6 +828,7 @@ DDRs_ctrl_module: entity work.DDR_Transact
     ddr_sys_clk   => ddr_sys_clk,
     --clocking & reset
     pcie_clk   => user_clk,
+    pcie_lnk_up => user_lnk_up,
     sys_reset => ddr_sys_rst
   );
   
@@ -877,6 +879,8 @@ Wishbone_intf: entity work.wb_transact
   STB_O      <= wbone_stb;
   CYC_O      <= wbone_cyc;
   ext_rst_o  <= wb_fifo_rst;
+  
+  pcie_user_clk <= user_clk;
 
 
 end Behavioral;

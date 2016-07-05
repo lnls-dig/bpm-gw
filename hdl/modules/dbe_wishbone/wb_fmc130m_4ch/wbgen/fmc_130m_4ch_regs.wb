@@ -5,101 +5,6 @@ peripheral {
 
   prefix = "wb_fmc_130m_4ch_csr";
 
-  reg {
-    name = "FMC Status";
-    prefix = "fmc_status";
-
-    field {
-      name = "FMC Present";
-      prefix = "prsnt";
-      description = "FMC PRSNT_M2C Pin\n0 - FMC card present\n1 - no FMC card on carrier";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Power Good from mezzanine";
-      prefix = "pg_m2c";
-      description = "FMC Power Good Pin\nNot used";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Clock Direction";
-      prefix = "clk_dir";
-      description = "Clock direction (RES1)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Firware ID";
-      prefix = "firmware_id";
-      description = "Should be 0x01332A11 on read (20130321)";
-      type = SLV;
-      size = 29;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-
-  };
-
-  reg {
-    name = "Trigger control";
-    prefix = "trigger";
-
-    field {
-      name = "DIR";
-      prefix = "dir";
-      description = "Trigger direction\n0 - output\n1 - input";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Termination Control";
-      prefix = "term";
-      description = "Trigger termination 50 ohm\n0 - disable\n1 - enable";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Trigger Value";
-      prefix = "trig_val";
-      description = "Trigger value (when used in output mode)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's.";
-      prefix = "reserved";
-      type = SLV;
-      size = 29;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-
-  };
-
  reg {
     name = "ADC LTC2208 control register (4 chips)";
     prefix = "adc";
@@ -156,117 +61,6 @@ peripheral {
 
   };
 
- reg {
-    name = "Clock distribution control register";
-    prefix = "clk_distrib";
-
-    field {
-      name = "SI571_OE";
-      prefix = "si571_oe";
-      description = "Si571 output enable pin, check datasheet for proper voltage standard and signal polarity";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "PLL_FUNCTION";
-      prefix = "pll_function";
-      description = "AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "PLL_STATUS";
-      prefix = "pll_status";
-      description = "AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "CLK_SEL";
-      prefix = "clk_sel";
-      description = "TS3USB221 clock select (for FMC REFIN line)\n0 - clock from external source (MMCX J4)\n1 - clock from FPGA (FMC_CLK line)";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's.";
-      prefix = "reserved";
-      type = SLV;
-      size = 28;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-  };
-
-  reg {
-    name = "Monitor and FMC status control register";
-    prefix = "monitor";
-
-    field {
-      name = "Temperate Alarm";
-      prefix = "temp_alarm";
-      description = "Temperature alarm from LM75 chips";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-    field {
-      name = "Led 1";
-      prefix = "led1";
-      description = "FMC LED1 (blue) - configuration in progress indicator\n0 - LED off\1 - LED on";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Led 2";
-      prefix = "led2";
-      description = "FMC LED2 (red) - data acquisition in progress indicator\n0 - LED off\1 - LED on";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-    field {
-      name = "Led 3";
-      prefix = "led3";
-      description = "FMC LED3 (green) - trigger status indicator\n0 - LED off\1 - LED on";
-      type = BIT;
-      --size = 1;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
-    };
-
-
-    field {
-      name = "Reserved";
-      description = "Ignore on read, write with 0's.";
-      prefix = "reserved";
-      type = SLV;
-      size = 28;
-      access_bus = READ_ONLY;
-      access_dev = WRITE_ONLY;
-    };
-
-  };
 
  reg {
     name = "FPGA control";
@@ -344,13 +138,13 @@ peripheral {
     };
 
     field {
-      name = "Enable test data";
-      description = "Write the address counter value instead of ADC data to Wishbone Streaming Interface";
-      prefix = "test_data_en";
+      name = "Temperature Alarm";
+      prefix = "temp_alarm";
+      description = "Temperature alarm from LM75 chips";
       type = BIT;
-      align = 8;
-      access_bus = READ_WRITE;
-      access_dev = READ_ONLY;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
     };
 
     field {

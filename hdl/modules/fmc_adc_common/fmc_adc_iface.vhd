@@ -64,7 +64,7 @@ generic
   g_with_bufr_clk_chains                    : t_clk_use_bufr_chain := default_clk_use_bufr_chain;
   g_with_data_sdr                           : boolean := false;
   g_with_fn_dly_select                      : boolean := false;
-  g_with_idelayctrl			    : boolean := true;
+  g_with_idelayctrl			                : boolean := true;
   g_sim                                     : integer := 0
 );
 port
@@ -154,7 +154,7 @@ architecture rtl of fmc_adc_iface is
 
   --type t_adc_fn_dly_val_array is array (natural range <>) of std_logic_vector(4 downto 0);
   -- Optional external global clock
-  signal adc_clk_chain_glob_int             : t_adc_clk_chain_glob;
+  signal adc_clk_chain_glob_int             : t_adc_clk_chain_glob_array(c_num_adc_channels-1 downto 0);
 
   -- ADC fine delay internal signal
   signal adc_data_dly_sel_int               : std_logic_vector(c_num_in_adc_pins-1 downto 0);
@@ -175,6 +175,8 @@ begin
       adc_in_t(i).adc_clk                   <= adc_in_sdr_i(i).adc_clk;
       adc_in_t(i).adc_rst_n                 <= adc_in_sdr_i(i).adc_rst_n;
 
+    end generate;
+
     -- DDR data structure
     gen_without_data_sdr : if (not g_with_data_sdr) generate
 
@@ -185,7 +187,6 @@ begin
 
     end generate;
 
-    end generate;
   end generate;
 
   -- idelay control for var_loadable iodelay mode
@@ -197,7 +198,7 @@ begin
       rdy                                     => idelay_rdy_o
     );
   end generate;
-  
+
   gen_not_idelayctrl : if (not g_with_idelayctrl) generate
     idelay_rdy_o <= '1';
   end generate;
@@ -252,11 +253,11 @@ begin
     -- Give the user the possibility to use an external clock for
     -- as the global clocks
     gen_ext_adc_glob_clk : if g_ref_clk = c_num_adc_channels generate
-      adc_clk_chain_glob_int <= adc_ext_glob_clk_i;
+      adc_clk_chain_glob_int(i) <= adc_ext_glob_clk_i;
     end generate;
 
     gen_without_ext_adc_glob_clk : if g_ref_clk /= c_num_adc_channels generate
-      adc_clk_chain_glob_int <= adc_clk_chain_glob(g_ref_clk);
+      adc_clk_chain_glob_int(i) <= adc_clk_chain_glob(g_ref_clk);
     end generate;
 
     -- Default mmcm_locked signals to 1 is this chain is not used
@@ -309,7 +310,7 @@ begin
             -- Input Clocks from fmc_adc_clk signals
             -----------------------------
             adc_clk_chain_priv_i                => adc_clk_chain_priv(chain_intercon(i)),
-            adc_clk_chain_glob_i                => adc_clk_chain_glob_int,
+            adc_clk_chain_glob_i                => adc_clk_chain_glob_int(i),
 
             -----------------------------
             -- ADC Data Delay signals.

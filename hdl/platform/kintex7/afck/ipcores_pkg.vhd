@@ -19,6 +19,9 @@ constant C_DDR_CKE_WIDTH     : positive := 1;
 constant C_DDR_ODT_WIDTH     : positive := 1;
 constant C_DDR_ADDR_WIDTH    : positive := 31;
 
+constant C_DDR_TID_WIDTH : positive := 8;
+constant C_AXI_SLAVE_TID_WIDTH : positive := 4;
+
   -- ----------------------------------------------------------------------------
   -- Component declarations
   -- ----------------------------------------------------------------------------

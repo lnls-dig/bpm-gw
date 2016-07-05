@@ -1,3 +1,38 @@
 *~
 *.swp
 *.orig
+hdl/syn/*.runs*
+
+######################
+# Compilation files
+######################
+
+*Makefile
+*transcript
+*make_*
+*_history
+
+######################
+# Modelsim
+######################
+
+*.wlf
+work/
+
+######################
+# Temporary files
+######################
+
+*#*
+
+######################
+# Vivado files
+######################
+
+*.jou
+*.log
+*.str
+*.xpr
+*.edif
+*.mif
+.Xil/

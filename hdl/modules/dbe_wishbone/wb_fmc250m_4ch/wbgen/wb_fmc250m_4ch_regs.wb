@@ -1,0 +1,1004 @@
+peripheral {
+  name = "FMC ADC 250MS/s core registers";
+  description = "Wishbone slave for FMC ADC 250MS/s core";
+  hdl_entity = "wb_fmc_250m_4ch_csr";
+  prefix = "wb_fmc_250m_4ch_csr";
+
+  reg {
+    name = "Global ADC Status register";
+    description = "Global ADC status register.";
+    prefix = "adc_sta";
+
+    field {
+      name = "FMC ADC clock chains";
+      description = "FMC ADC used clock chains. \
+                      read 1: clock chain is used  \
+                      read 0: clock chain is not used";
+      prefix = "clk_chains";
+      type = SLV;
+      size = 4;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_chains";
+      type = SLV;
+      size = 4;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC ADC Data chains";
+      description = "FMC ADC used clock chains. \
+                      read 1: data chain is used  \
+                      read 0: data chain is not used";
+      prefix = "data_chains";
+      type = SLV;
+      size = 4;
+      align = 8;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_chains";
+      type = SLV;
+      size = 4;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "FMC ADC packet size";
+      description = "Size of the packet sent to the Wishbone Streaming Interface. \
+                      This will appear as cycles of <packet_size> clock cycles on \
+                      the wishbone interface";
+      prefix = "adc_pkt_size";
+      type = SLV;
+      size = 16;
+      align = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Global ADC Control register";
+    description = "Global ADC control register.";
+    prefix = "adc_ctl";
+
+    field {
+      name = "Reset/Update ADC clock chains delay";
+      description = "write 1: reset/update clock chains to its default  \
+                      values or from the values in the delay registers.\
+                      write 0: no effect";
+
+      prefix = "update_clk_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reset/Update ADC data chains delay";
+      description = "write 1: reset/update data chains to its default  \
+                      values or from the values in the delay registers.\
+                      write 0: no effect";
+
+      prefix = "update_data_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reset ADCs";
+      description = "Reset and recalibrate ADCs\
+                      write 0: no reset \
+                      write 1: enable ADC reset";
+      prefix = "rst_adcs";
+      type = MONOSTABLE;
+      -- type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+
+    field {
+      name = "Reset Div ADCs";
+      description = "Reset for synchronization between multiple ADCs \
+                      write 0: no reset \
+                      write 1: enable ADC div reset";
+      prefix = "rst_div_adcs";
+      type = MONOSTABLE;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+
+    field {
+      name = "Sleep ADCs";
+      description = "Sleep for ADCs \
+                      write 0: normal operation \
+                      write 1: enable sleep mode";
+      prefix = "sleep_adcs";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+      clock = "fs_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 27;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 status register";
+    prefix = "ch0_sta";
+
+    field {
+      name = "Channel 0 current ADC value";
+      description = "Current ADC raw value. The format is binary two's complement.";
+      prefix = "val";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+      --clock = "wb_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 fine delay register";
+    prefix = "ch0_fn_dly";
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC clock chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC clock chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 0 coarse delay register";
+    prefix = "ch0_cs_dly";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 status register";
+    prefix = "ch1_sta";
+
+    field {
+      name = "Channel 1 current ADC value";
+      description = "Current ADC raw value. The format is binary two's complement.";
+      prefix = "val";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+      --clock = "wb_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
+    name = "Channel 1 fine delay register";
+    prefix = "ch1_fn_dly";
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC clock chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC clock chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 coarse delay register";
+    prefix = "ch1_cs_dly";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 2 status register";
+    prefix = "ch2_sta";
+
+    field {
+      name = "Channel 2 current ADC value";
+      description = "Current ADC raw value. The format is binary two's complement.";
+      prefix = "val";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+      --clock = "wb_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 2 fine delay register";
+    prefix = "ch2_fn_dly";
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC clock chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC clock chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 2 coarse delay register";
+    prefix = "ch2_cs_dly";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 status register";
+    prefix = "ch3_sta";
+
+    field {
+      name = "Channel 3 current ADC value";
+      description = "Current ADC raw value. The format is binary two's complement.";
+      prefix = "val";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+      clock = "fs_clk_i";
+      --clock = "wb_clk_i";
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 fine delay register";
+    prefix = "ch3_fn_dly";
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC clock chain delay";
+      description = "ADC clock chain delay";
+      prefix = "clk_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VAR_LOADABLE mode iodelay
+    field {
+      name = "ADC data chain delay";
+      description = "ADC data chain delay";
+      prefix = "data_chain_dly";
+      type = SLV;
+      --clock = "fs_clk_i";
+      size = 5;
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_WRITE;
+      load = LOAD_EXT;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_chain_dly";
+      type = SLV;
+      size = 3;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC clock chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC clock chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_clk_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_clk_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Increment ADC data chains delay";
+      description = "write 1: increment clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "inc_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      align = 8;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    -- Registers for VARIABLE mode iodelay
+    field {
+      name = "Decrement ADC data chains delay";
+      description = "write 1: decrement clock chains delay.\
+                      write 0: no effect";
+
+      prefix = "dec_data_chain_dly";
+      -- Pulse to start
+      type = MONOSTABLE;
+      --clock = "fs_clk_i";
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_data_incdec_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 coarse delay register";
+    prefix = "ch3_cs_dly";
+
+    field {
+      name = "Falling edge data delay";
+      description = "write 3: delay falling edge data by two.\
+                      write 1: delay falling edge data by one.\
+                      write 0: no effect";
+      prefix = "fe_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_fe_dly";
+      type = SLV;
+      size = 6;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Regular data delay";
+      description = "write 3: delay data by two.\
+                      write 1: delay data by one.\
+                      write 0: no effect";
+      prefix = "rg_dly";
+      type = SLV;
+      clock = "fs_clk_i";
+      align = 8;
+      size = 2;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved_rg_dly";
+      type = SLV;
+      size = 22;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "FMC temperature monitor register";
+    prefix = "temp";
+
+    field {
+      name = "Monitor device";
+      prefix = "mon_dev";
+      description = "Data valid from AMC7823 chip (monitor, active low)\n0 - data available \n1 - data not valid or DAV deactivated";
+      type = SLV;
+      size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+ };
+
+};

@@ -131,10 +131,12 @@ architecture rtl of acq_fsm is
 
   -- Pre/Post trigger and shots counters
   signal pre_trig_cnt                       : unsigned(c_acq_samples_size-1 downto 0);
+  signal pre_trig_cnt_max                   : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_done                      : std_logic;
   signal wait_trig_skip_r                   : std_logic;
   signal wait_trig_skip_done                : std_logic;
   signal post_trig_cnt                      : unsigned(c_acq_samples_size-1 downto 0);
+  signal post_trig_cnt_max                  : unsigned(c_acq_samples_size-1 downto 0);
   signal post_trig_done                     : std_logic;
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
   signal shots_cnt                          : unsigned(15 downto 0);
@@ -189,23 +191,33 @@ begin
   begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
-        pre_trig_cnt <= to_unsigned(1, pre_trig_cnt'length);
+        pre_trig_cnt <= to_unsigned(0, pre_trig_cnt'length);
+        pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
+        pre_trig_done <= '0';
       else
         if (acq_start_i = '1' or pre_trig_done = '1') then
+          pre_trig_cnt <= to_unsigned(0, pre_trig_cnt'length);
+          pre_trig_done <= '0';
+
           if pre_trig_samples_i = to_unsigned(0, pre_trig_samples_i'length) then
-            pre_trig_cnt <= (others => '0');
+            pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
           else
-            pre_trig_cnt <= pre_trig_samples_i - 1;
+            pre_trig_cnt_max <= pre_trig_samples_i-1;
           end if;
         elsif (acq_in_pre_trig = '1' and acq_dvalid_i = '1') then
-          pre_trig_cnt <= pre_trig_cnt - 1;
+          pre_trig_cnt <= pre_trig_cnt + 1;
+
+          -- Will increment
+          if pre_trig_cnt = pre_trig_cnt_max then
+            pre_trig_done <= '1';
+          end if;
+        else
+          pre_trig_done <= '0';
         end if;
       end if;
     end if;
   end process;
 
-  pre_trig_done <= '1' when (pre_trig_cnt = to_unsigned(0, pre_trig_cnt'length) and
-                             acq_dvalid_i = '1' and acq_in_pre_trig = '1') else '0';
   acq_pre_trig_done_o <= pre_trig_done;
 
   ------------------------------------------------------------------------------
@@ -238,22 +250,32 @@ begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
         post_trig_cnt <= to_unsigned(1, post_trig_cnt'length);
+        post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
+        post_trig_done <= '0';
       else
         if (acq_start = '1' or post_trig_done = '1') then
+          post_trig_cnt <= to_unsigned(0, post_trig_cnt'length);
+          post_trig_done <= '0';
+
           if post_trig_samples_i = to_unsigned(0, post_trig_samples_i'length) then
-            post_trig_cnt <= (others => '0');
+            post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
           else
-            post_trig_cnt <= post_trig_samples_i - 1;
+            post_trig_cnt_max <= post_trig_samples_i-1;
           end if;
         elsif (acq_in_post_trig = '1' and acq_dvalid_i = '1') then
-          post_trig_cnt <= post_trig_cnt - 1;
+          post_trig_cnt <= post_trig_cnt + 1;
+
+          -- Will increment
+          if post_trig_cnt = post_trig_cnt_max then
+            post_trig_done <= '1';
+          end if;
+        else
+          post_trig_done <= '0';
         end if;
       end if;
     end if;
   end process;
 
-  post_trig_done <= '1' when (post_trig_cnt = to_unsigned(0, post_trig_cnt'length) and
-                              (acq_dvalid_i = '1' or wait_trig_skip_r = '1') and acq_in_post_trig = '1') else '0';
   acq_post_trig_done_o <= post_trig_done;
 
   ------------------------------------------------------------------------------

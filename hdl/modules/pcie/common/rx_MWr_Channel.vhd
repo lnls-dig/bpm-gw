@@ -27,6 +27,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
+use IEEE.STD_LOGIC_MISC.all;
 
 library work;
 use work.abb64Package.all;
@@ -260,7 +261,7 @@ begin
         g_with_almost_empty => false,
         g_with_almost_full => true,
         g_with_count => false,
-        g_almost_full_threshold => 26,
+        g_almost_full_threshold => 24,
         g_with_fifo_inferred => true)
       port map(
         rst_n_i => user_reset_n,
@@ -705,12 +706,16 @@ begin
               elbuf_din(C_IS_HDR_BIT) <= '0';
               elbuf_din(C_DDR_HIT_BIT) <= '1';
               elbuf_din(C_WB_HIT_BIT) <= '0';
-              --r1 in 4DW hdr case, i or r1 in 3DW hdr case
-              elbuf_din(C_TLAST_BIT) <= (not(mwr_has_4dw_header) and (m_axis_rx_tlast_i or m_axis_rx_tlast_r1))
-                                        or (mwr_has_4dw_header and m_axis_rx_tlast_r1);
               elbuf_din(C_TKEEP_BTOP downto C_TKEEP_BBOT) <= endian_invert_tkeep(m_axis_rx_tkeep_fixed) and (tkeep_hmask & x"F");
               elbuf_din(C_DBUS_WIDTH-1 downto 0) <= endian_invert_64(m_axis_rx_tdata_fixed);
-              elbuf_we <= not trn_rx_throttle_r;
+              if mwr_has_4dw_header = '1' then
+                elbuf_din(C_TLAST_BIT) <= m_axis_rx_tlast_r1;
+                elbuf_we <= not trn_rx_throttle_r;
+              else
+                elbuf_din(C_TLAST_BIT) <= (or_reduce(tkeep_hmask) and m_axis_rx_tlast_i) or m_axis_rx_tlast_r1;
+                elbuf_we <= (or_reduce(tkeep_hmask) and not(trn_rx_throttle))
+                            or (not(trn_rx_throttle_r) and or_reduce(m_axis_rx_tkeep_fixed(3 downto 0)) and m_axis_rx_tlast_r1);                
+              end if;
             end if;
 
         end case;
@@ -800,6 +805,7 @@ begin
   
   ddr_write:
   process(user_clk)
+    variable first_data : std_logic;
   begin
     if rising_edge(user_clk) then
       if user_reset = '1' then
@@ -834,6 +840,7 @@ begin
             elsif elbuf_dout(C_IS_HDR_BIT) = '1' and elbuf_dout(C_DDR_HIT_BIT) = '1' and ddr_s2mm_cmd_tready = '1' then
               ddr_wr_state <= st_data;
               elbuf_re_st <= '1';
+              first_data := '1';
             end if;
             
           when st_data =>
@@ -846,9 +853,11 @@ begin
             if (elbuf_empty = '0' and elbuf_re = '1') or elbuf_dout(C_TLAST_BIT) = '1' then
               --if it's the last word in a packet fifo will be already empty, so push last word unconditionally
               ddr_s2mm_tdata <= elbuf_dout(C_DBUS_WIDTH-1 downto 0);
-              ddr_s2mm_tvalid_i <= not(ddr_s2mm_cmd_tvalid_i); --omit 1st word after command
+              ddr_s2mm_tvalid_i <= not(ddr_s2mm_cmd_tvalid_i) and elbuf_re_r; --omit 1st word after command and align delay
+              first_data := '0';
             else
-              ddr_s2mm_tvalid_i <= not(ddr_s2mm_tready); --keep valid to push word currently present on *_tdata
+              --keep valid to push word currently present on *_tdata, unless it's first word
+              ddr_s2mm_tvalid_i <= not(ddr_s2mm_tready) and not(first_data);
             end if;
             if ddr_s2mm_tready = '1' and ddr_s2mm_tvalid_i = '1' and ddr_s2mm_tlast_i = '1' then
               ddr_wr_state <= st_idle;

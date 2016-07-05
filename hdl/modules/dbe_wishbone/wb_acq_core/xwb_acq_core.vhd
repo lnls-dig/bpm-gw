@@ -258,6 +258,15 @@ begin
     axis_s2mm_cmd_tvalid_o                    => axis_s2mm_cmd_ma_o.tvalid,
     axis_s2mm_cmd_tready_i                    => axis_s2mm_cmd_ma_i.tready,
 
+    axis_s2mm_rstn_o                          => axis_s2mm_cmd_ma_o.rstn,
+    axis_s2mm_halt_o                          => axis_s2mm_cmd_ma_o.halt,
+    axis_s2mm_halt_cmplt_i                    => axis_s2mm_cmd_ma_i.halt_cmplt,
+    axis_s2mm_allow_addr_req_o                => axis_s2mm_cmd_ma_o.allow_addr_req,
+    axis_s2mm_addr_req_posted_i               => axis_s2mm_cmd_ma_i.addr_req_posted,
+    axis_s2mm_wr_xfer_cmplt_i                 => axis_s2mm_cmd_ma_i.wr_xfer_cmplt,
+    axis_s2mm_ld_nxt_len_i                    => axis_s2mm_cmd_ma_i.ld_nxt_len,
+    axis_s2mm_wr_len_i                        => axis_s2mm_cmd_ma_i.wr_len,
+
     axis_s2mm_pld_tdata_o                     => axis_s2mm_pld_ma_o.tdata,
     axis_s2mm_pld_tkeep_o                     => axis_s2mm_pld_ma_o.tkeep,
     axis_s2mm_pld_tlast_o                     => axis_s2mm_pld_ma_o.tlast,

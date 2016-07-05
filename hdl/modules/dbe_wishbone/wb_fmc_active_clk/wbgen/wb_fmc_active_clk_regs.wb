@@ -1,0 +1,77 @@
+peripheral {
+  name = "FMC Active Clock registers";
+  description = "Wishbone slave for FMC Active Clock";
+  hdl_entity = "wb_fmc_active_clk_csr";
+  prefix = "wb_fmc_active_clk_csr";
+
+  reg {
+    name = "Clock distribution control register";
+    prefix = "clk_distrib";
+
+    field {
+      name = "Si 571 Output Enable";
+      prefix = "si571_oe";
+      description = "Si571 output enable pin, check datasheet for proper voltage standard and signal polarity";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "AD9510 PLL function";
+      prefix = "pll_function";
+      description = "AD9510 function pin (behaviour depends on configuration of chip, output from FPGA)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "AD9510 PLL Status";
+      prefix = "pll_status";
+      description = "AD9510 status pin - for monitoring PLL status and sync (behaviour depends on configuration of chip, input to FPGA)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Reference Clock Selection";
+      prefix = "clk_sel";
+      description = "TS3USB221 clock select (for FMC REFIN line)\n0 - clock from external source (MMCX J4)\n1 - clock from FPGA (FMC_CLK line)";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 28;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Dummy";
+    prefix = "dummy";
+
+    field {
+      name = "Reserved";
+      description = "Ignore on read, write with 0's.";
+      prefix = "reserved";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+};
