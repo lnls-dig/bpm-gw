@@ -1502,8 +1502,7 @@ package dbe_wishbone_pkg is
     g_fifo_fc_size                            : natural := 64;
     g_sim_readback                            : boolean := false;
     g_ddr_interface_type                      : string  := "AXIS";
-    g_max_burst_size                          : natural := 4;
-    g_inst_id                                 : natural := 1
+    g_max_burst_size                          : natural := 4
   );
   port
   (
