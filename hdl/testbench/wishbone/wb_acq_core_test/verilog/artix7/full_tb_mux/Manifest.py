@@ -18,7 +18,7 @@ modules = {"local" : [
                     "../../../../../../sim/ddr_model",
                      "../../../../../../platform/artix7/afc_v3"]}
 
-files = ["wb_acq_core_tb.v", "ddr_core_wrapper.vhd", "defines.v", "timescale.v",
+files = ["wb_acq_core_tb.v", "axi_interconnect_wrapper.vhd", "ddr_core_wrapper.vhd", "defines.v", "timescale.v",
 			"clk_rst.v", "../../../../../../sim/wishbone_test_master.v",
             "../../../../../../../../../../../opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/glbl.v"]
 
