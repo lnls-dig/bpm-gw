@@ -2,7 +2,7 @@ action = "simulation"
 target = "xilinx"
 syn_device = "xc7a200t"
 sim_tool = "modelsim"
-top_module = "wb_acq_core_tb.v"
+top_module = "wb_acq_core_tb"
 
 modules = {"local" : [
                     "../../../../../../modules/dbe_wishbone",

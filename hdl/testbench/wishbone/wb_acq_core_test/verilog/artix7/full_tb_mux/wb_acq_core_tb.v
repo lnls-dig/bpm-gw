@@ -500,7 +500,8 @@ module wb_acq_core_tb;
   // bpm acquisition parameters
   // Must be at least the size of the biggest acquisition size
   localparam ACQ_ADDR_WIDTH         = C_S_AXI_ADDR_WIDTH;
-  localparam ACQ_DATA_WIDTH         = 64;
+  localparam ACQ_DATA_WIDTH         = 128;
+  localparam ACQ_DATA_WIDTH_MAX     = 1024;
   localparam DATA_CHECK_FIFO_SIZE   = 8192;
   localparam ACQ_FIFO_SIZE          = 4096;
 
@@ -512,9 +513,8 @@ module wb_acq_core_tb;
   localparam RB_COUNTER_WIDTH = 8;
 
   // Tests paramaters
-  reg [ACQ_DATA_WIDTH-1:0] data_test_low [c_n_chan-1:0];
-  reg [16-1:0] data_test_low_0;
-  reg [ACQ_DATA_WIDTH-1:0] data_test_high [c_n_chan-1:0];
+  reg [ACQ_DATA_WIDTH_MAX-1:0] data_test [c_n_chan-1:0];
+  reg [16-1:0] data_test_0;
   reg data_test_dvalid [c_n_chan-1:0];
   reg data_test_dvalid_t [c_n_chan-1:0];
   reg data_test_trig [c_n_chan-1:0];
@@ -784,7 +784,7 @@ module wb_acq_core_tb;
   );
 
   // DUT
-  wb_acq_core_mux_plain #(
+  wb_facq_core_mux_plain #(
     .g_ddr_addr_width(ACQ_ADDR_WIDTH),
     .g_acq_addr_width(ACQ_ADDR_WIDTH),
     .g_fifo_fc_size(ACQ_FIFO_SIZE),
@@ -819,22 +819,14 @@ module wb_acq_core_tb;
     .wb_rty_array_o                         (),
     .wb_stall_array_o                       (),
 
-    .acq_val_low_array_i                    ({
+    .acq_val_array_i                        ({
                                                 // Acq core 1
-                                                data_test_low[4] + c_ddr3_acq1_data_offset, data_test_low[3] + c_ddr3_acq1_data_offset,
-                                                data_test_low[2] + c_ddr3_acq1_data_offset, data_test_low[1] + c_ddr3_acq1_data_offset,
-                                                data_test_low[0] + c_ddr3_acq1_data_offset,
+                                                data_test[4] + c_ddr3_acq1_data_offset, data_test[3] + c_ddr3_acq1_data_offset,
+                                                data_test[2] + c_ddr3_acq1_data_offset, data_test[1] + c_ddr3_acq1_data_offset,
+                                                data_test[0] + c_ddr3_acq1_data_offset ,
                                                 // Acq core 0
-                                                data_test_low[4], data_test_low[3], data_test_low[2],
-                                                data_test_low[1], data_test_low[0]}),
-    .acq_val_high_array_i                   ({
-                                                // Acq core 1
-                                                data_test_high[4] + c_ddr3_acq1_data_offset, data_test_high[3] + c_ddr3_acq1_data_offset,
-                                                data_test_high[2] + c_ddr3_acq1_data_offset, data_test_high[1] + c_ddr3_acq1_data_offset,
-                                                data_test_high[0] + c_ddr3_acq1_data_offset ,
-                                                // Acq core 0
-                                                data_test_high[4], data_test_high[3], data_test_high[2],
-                                                data_test_high[1], data_test_high[0]}),
+                                                data_test[4], data_test[3], data_test[2],
+                                                data_test[1], data_test[0]}),
     .acq_dvalid_array_i                     ({
                                                 // Acq core 1
                                                 data_test_dvalid[4], data_test_dvalid[3], data_test_dvalid[2],
@@ -2315,19 +2307,30 @@ module wb_acq_core_tb;
     if (data_gen_start) begin
       //data_test <= f_data_gen(c_data_max);
       if (data_test_dvalid_t[0]) begin
-        data_test_low[0] <= {data_test_low_0 + 16'h30, data_test_low_0 + 16'h20,
-                                        data_test_low_0 + 16'h10, data_test_low_0 + 16'h00};
-        data_test_high[0] <= {64'h0};
-        data_test_low_0 <= data_test_low_0 + 1;
+      //  data_test[0] <= {data_test_0 + 16'h30, data_test_0 + 16'h20,
+      //                                  data_test_0 + 16'h10, data_test_0 + 16'h00};
+        data_test[0] <= {
+            data_test_0 + 16'hF0, data_test_0 + 16'hE0,
+            data_test_0 + 16'hD0, data_test_0 + 16'hC0,
+
+            data_test_0 + 16'hB0, data_test_0 + 16'hA0,
+            data_test_0 + 16'h90, data_test_0 + 16'h80,
+
+            data_test_0 + 16'h70, data_test_0 + 16'h60,
+            data_test_0 + 16'h50, data_test_0 + 16'h40,
+
+            data_test_0 + 16'h30, data_test_0 + 16'h20,
+            data_test_0 + 16'h10, data_test_0 + 16'h00
+            };
+        data_test_0 <= data_test_0 + 1;
       end
 
       data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold);
       data_test_dvalid[0] <= data_test_dvalid_t[0];
       data_test_trig[0] <= data_trig;
     end else begin
-      data_test_low_0 <= 'h0;
-      data_test_low[0] <= 'h0;
-      data_test_high[0] <= 'h0;
+      data_test_0 <= 'h0;
+      data_test[0] <= 'h0;
       data_test_dvalid[0] <= 1'b0;
       data_test_dvalid_t[0] <= 1'b0;
       data_test_trig[0] <= 1'b0;
@@ -2340,8 +2343,7 @@ module wb_acq_core_tb;
     for (ch = 1; ch < c_n_chan; ch = ch + 1) begin: gen_chan
       initial begin
         data_test_trig[ch] = 0;
-        data_test_low[ch] = 0;
-        data_test_high[ch] = 100;
+        data_test[ch] = 0;
       end
 
       always @(posedge adc_clk)
@@ -2349,16 +2351,14 @@ module wb_acq_core_tb;
         if (data_gen_start) begin
           //data_test <= f_data_gen(c_data_max);
           if (data_test_dvalid_t[ch]) begin
-            data_test_low[ch] <= data_test_low[ch] + ch + 1;
-            data_test_high[ch] <=  data_test_high[ch] + ch + 1;
+            data_test[ch] <= data_test[ch] + ch + 1;
           end
 
           data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold);
           data_test_dvalid[ch] <= data_test_dvalid_t[ch];
           data_test_trig[ch] <= data_trig;
         end else begin
-          data_test_low[ch] <= 'h0;
-          data_test_high[ch] <= 'h0;
+          data_test[ch] <= 'h0;
           data_test_dvalid[ch] <= 1'b0;
           data_test_dvalid_t[ch] <= 1'b0;
           data_test_trig[ch] <= 1'b0;
