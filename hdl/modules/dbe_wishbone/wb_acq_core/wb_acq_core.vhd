@@ -741,8 +741,8 @@ begin
     buffer_sel_i                            => multishot_buffer_sel,
     acq_trig_i                              => acq_trig_det,
 
-    pre_trig_samples_i                      => pre_trig_samples_c,
-    post_trig_samples_i                     => post_trig_samples_c,
+    pre_trig_samples_i                      => lmt_acq_pre_pkt_size,
+    post_trig_samples_i                     => lmt_acq_pre_pkt_size,
 
     acq_pre_trig_done_i                     => acq_pre_trig_done,
     acq_wait_trig_skip_done_i               => acq_wait_trig_skip_done,
