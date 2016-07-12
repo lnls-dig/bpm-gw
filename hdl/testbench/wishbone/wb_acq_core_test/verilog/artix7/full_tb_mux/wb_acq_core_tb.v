@@ -1803,7 +1803,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00001000;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00010000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
