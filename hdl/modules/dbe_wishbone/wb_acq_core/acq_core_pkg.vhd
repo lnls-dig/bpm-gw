@@ -21,6 +21,13 @@ package acq_core_pkg is
   constant c_data_oob_sof_ofs               : natural := 1; -- SOF offset
   constant c_data_oob_eof_ofs               : natural := 0; -- EOF offset
 
+  constant c_acq_chan_cmplt_width           : natural := 1024; -- Maximum number of data bits per channel
+                                                               -- Ideally this shouldn't be constrained
+                                                               -- and left open to the user, but we can't
+                                                               -- (without VHDL 2008) use generic widths
+                                                               -- inside records
+  constant c_acq_chan_cmplt_width_log2      : natural := f_log2_size(c_acq_chan_cmplt_width)+1;
+
   constant c_acq_chan_width                 : natural := 64;
   constant c_acq_chan_max_w                 : natural := 2*c_acq_chan_width;
   constant c_acq_chan_max_w_log2            : natural := f_log2_size(c_acq_chan_max_w)+1;
@@ -30,6 +37,9 @@ package acq_core_pkg is
 
   constant c_acq_atom_width                 : natural := c_acq_chan_max_w;
   constant c_acq_atom_width_log2            : natural := f_log2_size(c_acq_atom_width)+1;
+
+  constant c_acq_coalesce_width             : natural := 8;
+  constant c_acq_coalesce_width_log2        : natural := f_log2_size(c_acq_coalesce_width)+1;
 
   constant c_ddr3_ui_diff_threshold         : natural := 3;
 
@@ -56,8 +66,13 @@ package acq_core_pkg is
   subtype t_payld_ratio is integer range 0 to c_max_payload_ratio;
   type t_payld_ratio_array is array (natural range <>) of t_payld_ratio;
 
-  subtype t_acq_width is unsigned(c_acq_chan_max_w_log2-1 downto 0);
+--  subtype t_acq_width is unsigned(c_acq_chan_max_w_log2-1 downto 0);
+--  type t_acq_width_array is array (natural range <>) of t_acq_width;
+  subtype t_acq_width is unsigned(c_acq_chan_cmplt_width_log2-1 downto 0);
   type t_acq_width_array is array (natural range <>) of t_acq_width;
+
+--  subtype t_facq_width is unsigned(c_acq_chan_cmplt_width_log2-1 downto 0);
+--  type t_facq_width_array is array (natural range <>) of t_facq_width;
 
   subtype t_acq_num_atoms is unsigned(c_acq_num_atoms_width_log2-1 downto 0);
   type t_acq_num_atoms_array is array (natural range <>) of t_acq_num_atoms;
@@ -65,19 +80,38 @@ package acq_core_pkg is
   subtype t_acq_atom_width is unsigned(c_acq_atom_width_log2-1 downto 0);
   type t_acq_atom_width_array is array (natural range <>) of t_acq_atom_width;
 
+  subtype t_acq_coalesce is unsigned(c_acq_coalesce_width_log2-1 downto 0);
+  type t_acq_coalesce_array is array (natural range <>) of t_acq_coalesce;
+
   subtype t_property_value is natural;
   type t_property_value_array is array (natural range <>) of t_property_value;
 
-  type t_acq_chan_property is (WIDTH, NUM_ATOMS, ATOM_WIDTH);
+  type t_acq_chan_property is (WIDTH, NUM_ATOMS, ATOM_WIDTH, NUM_COALESCE);
 
   -- Parameters for acquisition core channels. Max of 128-bit in width
   type t_acq_chan_param is record
     width : t_acq_width;
     num_atoms : t_acq_num_atoms;
     atom_width : t_acq_atom_width;
+    -- This parameter should only be modified by inner modules, not by the user.
+    -- This is used to give some information to acquisition modules on how to
+    -- monitor data that was narrowed externally as a way to fit the 128-bit
+    -- requirement. So, data that should belong to the same data word, but was
+    -- split into several words should set this parameter time the number of words
+    -- belonging to the same "transaction"
+    num_coalesce : t_acq_coalesce;
   end record;
 
   type t_acq_chan_param_array is array (natural range <>) of t_acq_chan_param;
+
+  -- Simpler acq_chan_param record for use with higher-level modules
+  type t_facq_chan_param is record
+    width : t_acq_width;
+    num_atoms : t_acq_num_atoms;
+    atom_width : t_acq_atom_width;
+  end record;
+
+  type t_facq_chan_param_array is array (natural range <>) of t_facq_chan_param;
 
   type t_acq_chan_slice is record
     use_high_part : boolean;
@@ -85,7 +119,11 @@ package acq_core_pkg is
 
   type t_acq_chan_slice_array is array (natural range <>) of t_acq_chan_slice;
 
+  subtype t_acq_val_cmplt is std_logic_vector(c_acq_chan_cmplt_width-1 downto 0);
+
   subtype t_acq_val_half is std_logic_vector(c_acq_chan_width-1 downto 0);
+
+  type t_acq_val_cmplt_array is array (natural range <>) of t_acq_val_cmplt;
 
   type t_acq_val_half_array is array (natural range <>) of t_acq_val_half;
 
@@ -95,6 +133,10 @@ package acq_core_pkg is
   end record;
 
   type t_acq_val_full_array is array (natural range <>) of t_acq_val_full;
+
+  subtype t_acq_val_full_plain is std_logic_vector(c_acq_chan_max_w-1 downto 0);
+
+  type t_acq_val_full_plain_array is array (natural range <>) of t_acq_val_full_plain;
 
   -- Acquisition core channels. No VHDL-2008 support.
   -- We constrain the c_acq_chan_width to hold 128-bit tops (low + high). if we
@@ -110,18 +152,46 @@ package acq_core_pkg is
   type t_acq_chan_array is array (natural range <>) of t_acq_chan;
   type t_acq_chan_array2d is array (natural range <>, natural range <>) of t_acq_chan;
 
+  type t_facq_chan is record
+    val : t_acq_val_cmplt;
+    dvalid : std_logic;
+    trig : std_logic;
+  end record;
+
+  type t_facq_chan_array is array (natural range <>) of t_facq_chan;
+  type t_facq_chan_array2d is array (natural range <>, natural range <>) of t_facq_chan;
+
   constant c_default_acq_num_channels : natural := 5;
+  constant c_default_facq_num_channels : natural := 5;
   constant c_default_acq_chan_param64 : t_acq_chan_param := (
-                                                width => to_unsigned(64, c_acq_chan_max_w_log2),
+                                                width => to_unsigned(64, c_acq_chan_cmplt_width_log2),
+                                                num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                                                atom_width => to_unsigned(16, c_acq_atom_width_log2), -- 2^4 = 16-bit
+                                                num_coalesce => to_unsigned(1, c_acq_coalesce_width_log2)
+                                                );
+  constant c_default_acq_chan_param128 : t_acq_chan_param := (
+                                                width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
+                                                num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                                                atom_width => to_unsigned(32, c_acq_atom_width_log2), -- 2^5 = 32-bit
+                                                num_coalesce => to_unsigned(1, c_acq_coalesce_width_log2)
+                                                );
+  constant c_default_acq_chan_param: t_acq_chan_param := c_default_acq_chan_param64;
+  constant c_default_facq_chan_param64 : t_facq_chan_param := (
+                                                width => to_unsigned(64, c_acq_chan_cmplt_width_log2),
                                                 num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                                                 atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
                                                 );
-  constant c_default_acq_chan_param128 : t_acq_chan_param := (
-                                                width => to_unsigned(128, c_acq_chan_max_w_log2),
+  constant c_default_facq_chan_param128 : t_facq_chan_param := (
+                                                width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
                                                 num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                                                 atom_width => to_unsigned(32, c_acq_atom_width_log2) -- 2^5 = 32-bit
                                                 );
-  constant c_default_acq_chan_param: t_acq_chan_param := c_default_acq_chan_param64;
+  constant c_default_facq_chan_param256 : t_facq_chan_param := (
+                                                width => to_unsigned(256, c_acq_chan_cmplt_width_log2),
+                                                num_atoms => to_unsigned(16, c_acq_num_atoms_width_log2),
+                                                atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4= 16-bit
+                                                );
+  constant c_default_facq_chan_param: t_facq_chan_param := c_default_facq_chan_param64;
   constant c_default_acq_chan_param_array : t_acq_chan_param_array(c_default_acq_num_channels-1 downto 0) :=
                                               (
                                                 0 => c_default_acq_chan_param64,
@@ -130,8 +200,20 @@ package acq_core_pkg is
                                                 3 => c_default_acq_chan_param128,
                                                 4 => c_default_acq_chan_param128
                                               );
+  constant c_default_facq_chan_param_array : t_facq_chan_param_array(c_default_facq_num_channels-1 downto 0) :=
+                                              (
+--                                                0 => c_default_facq_chan_param64,
+                                                0 => c_default_facq_chan_param256,
+                                                1 => c_default_facq_chan_param128,
+                                                2 => c_default_facq_chan_param128,
+                                                3 => c_default_facq_chan_param128,
+                                                4 => c_default_facq_chan_param128
+                                              );
   constant c_default_acq_chan : t_acq_chan := (val_low => (others => '0'),
                                                  val_high => (others => '0'),
+                                                 dvalid => '0',
+                                                 trig => '0');
+  constant c_default_facq_chan : t_facq_chan := (val => (others => '0'),
                                                  dvalid => '0',
                                                  trig => '0');
 
@@ -166,6 +248,12 @@ package acq_core_pkg is
   function f_acq_chan_find_narrowest_num_atoms(acq_chan_param_array : t_acq_chan_param_array)
     return natural;
 
+  function f_acq_chan_find_widest_num_coalesce(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
+  function f_acq_chan_find_narrowest_num_coalesce(acq_chan_param_array : t_acq_chan_param_array)
+    return natural;
+
   function f_acq_chan_det_slice(acq_chan_param_array : t_acq_chan_param_array)
     return t_acq_chan_slice_array;
 
@@ -178,12 +266,39 @@ package acq_core_pkg is
   function f_acq_chan_conv_val(acq_val : t_acq_val_full)
     return std_logic_vector;
 
+  function f_conv_facq_to_acq_chan(facq_chan_param : t_facq_chan_param)
+    return t_acq_chan_param;
+
+  function f_conv_facq_to_acq_chan_array(facq_chan_param_array : t_facq_chan_param_array)
+    return t_acq_chan_param_array;
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half;
 
   -- Move this function to appropriate package
   function f_log2_size_array(payld_ratio_array : t_payld_ratio_array)
     return t_payld_ratio_array;
+
+  function f_log2_size_array(property_array : t_property_value_array)
+    return t_property_value_array;
+
+  function f_log2_array(payld_ratio_array : t_payld_ratio_array)
+    return t_payld_ratio_array;
+
+  function f_log2_array(property_array : t_property_value_array)
+    return t_property_value_array;
+
+  function f_divide_array(arr1 : t_property_value_array; arr2 : t_property_value_array)
+    return t_property_value_array;
+
+  function min (left, right: integer)
+    return integer;
+
+  function max (left, right: integer)
+    return integer;
+
+  function f_max_align_array(arr1 : t_property_value_array; arr2 : t_payld_ratio_array)
+    return t_property_value_array;
 
   -----------------------------
   -- Components declaration
@@ -277,6 +392,10 @@ package acq_core_pkg is
   end component;
 
   component acq_fsm
+  generic
+  (
+    g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
+  );
   port
   (
     fs_clk_i                                  : in std_logic;
@@ -301,6 +420,10 @@ package acq_core_pkg is
     pre_trig_samples_i                        : in unsigned(c_acq_samples_size-1 downto 0);
     post_trig_samples_i                       : in unsigned(c_acq_samples_size-1 downto 0);
     shots_nb_i                                : in unsigned(15 downto 0);
+    -- Current channel selection ID
+    lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+    -- Acquisition limits valid signal
+    lmt_valid_i                               : in std_logic;
     samples_cnt_o                             : out unsigned(c_acq_samples_size-1 downto 0);
 
     -----------------------------
@@ -968,6 +1091,8 @@ package body acq_core_pkg is
               property_value_array(i) := to_integer(acq_chan_param_array(i).num_atoms);
           when ATOM_WIDTH =>
               property_value_array(i) := to_integer(acq_chan_param_array(i).atom_width);
+          when NUM_COALESCE =>
+              property_value_array(i) := to_integer(acq_chan_param_array(i).num_coalesce);
           when others =>
             null;
       end case;
@@ -1066,6 +1191,26 @@ package body acq_core_pkg is
     return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
   end;
 
+  function f_acq_chan_find_widest_num_coalesce(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := true;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := NUM_COALESCE;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
+  end;
+
+  function f_acq_chan_find_narrowest_num_coalesce(acq_chan_param_array : t_acq_chan_param_array)
+    return natural
+  is
+    variable find_widest : boolean := false;
+    variable property_type : t_acq_chan_property;
+  begin
+    property_type := NUM_COALESCE;
+    return f_acq_chan_find(acq_chan_param_array, find_widest, property_type);
+  end;
+
   -- Determine which part of the vector is valid
   function f_acq_chan_det_slice(acq_chan_param_array : t_acq_chan_param_array)
     return t_acq_chan_slice_array
@@ -1124,6 +1269,46 @@ package body acq_core_pkg is
     return ret;
   end;
 
+  function f_conv_facq_to_acq_chan(facq_chan_param : t_facq_chan_param)
+    return t_acq_chan_param
+  is
+    variable acq_chan_param : t_acq_chan_param;
+    variable temp : t_acq_width;
+  begin
+    acq_chan_param.num_atoms := facq_chan_param.num_atoms;
+    acq_chan_param.atom_width := facq_chan_param.atom_width;
+
+    if facq_chan_param.width < c_acq_chan_max_w then -- must coalesce data into
+                                                     -- c_acq_chan_width bits
+      temp := facq_chan_param.width/c_acq_chan_width;
+      -- It's safe to truncate the division result, as c_acq_chan_width is big enough
+      -- to yield a small result
+      acq_chan_param.num_coalesce := temp(acq_chan_param.num_coalesce'length-1 downto 0);
+      -- The new width will be either c_acq_chan_width or c_acq_chan_max_w,
+      -- depending on the coalescing parameter
+      acq_chan_param.width := to_unsigned(c_acq_chan_width, acq_chan_param.width'length);
+    else -- must coalesce data into c_acq_chan_max_w
+      temp := facq_chan_param.width/c_acq_chan_max_w;
+      acq_chan_param.num_coalesce := temp(acq_chan_param.num_coalesce'length-1 downto 0);
+      acq_chan_param.width := to_unsigned(c_acq_chan_max_w, acq_chan_param.width'length);
+    end if;
+
+    return acq_chan_param;
+  end;
+
+  function f_conv_facq_to_acq_chan_array(facq_chan_param_array : t_facq_chan_param_array)
+    return t_acq_chan_param_array
+  is
+    variable acq_chan_param_array : t_acq_chan_param_array(facq_chan_param_array'length-1 downto 0);
+  begin
+
+    for i in 0 to facq_chan_param_array'length-1 loop
+      acq_chan_param_array(i) := f_conv_facq_to_acq_chan(facq_chan_param_array(i));
+    end loop;
+
+    return acq_chan_param_array;
+  end;
+
   function f_acq_chan_unmarshall_val(acq_val : t_acq_val_full; acq_sel : natural)
     return t_acq_val_half
   is
@@ -1164,6 +1349,113 @@ package body acq_core_pkg is
     end loop;
 
     return log2_size_array;
+  end;
+
+  function f_log2_size_array(property_array : t_property_value_array)
+    return t_property_value_array
+  is
+    variable log2_size_array : t_property_value_array(property_array'length-1 downto 0);
+  begin
+
+    for i in 0 to log2_size_array'length-1 loop
+      log2_size_array(i) := f_log2_size(property_array(i));
+    end loop;
+
+    return log2_size_array;
+  end;
+
+  function f_log2_array(payld_ratio_array : t_payld_ratio_array)
+    return t_payld_ratio_array
+  is
+    variable log2_array : t_payld_ratio_array(payld_ratio_array'length-1 downto 0);
+  begin
+
+    for i in 0 to payld_ratio_array'length-1 loop
+      if payld_ratio_array(i) <= 1 then
+        log2_array(i) := 0;
+      else
+        log2_array(i) := f_log2_size(payld_ratio_array(i));
+      end if;
+    end loop;
+
+    return log2_array;
+  end;
+
+  function f_log2_array(property_array : t_property_value_array)
+    return t_property_value_array
+  is
+    variable log2_array : t_property_value_array(property_array'length-1 downto 0);
+  begin
+
+    for i in 0 to log2_array'length-1 loop
+      if property_array(i) <= 1 then
+        log2_array(i) := 0;
+      else
+        log2_array(i) := f_log2_size(property_array(i));
+      end if;
+    end loop;
+
+    return log2_array;
+  end;
+
+  function f_divide_array(arr1 : t_property_value_array; arr2 : t_property_value_array)
+    return t_property_value_array
+  is
+    variable res : t_property_value_array(arr1'length-1 downto 0);
+  begin
+
+    assert (arr1'length = arr2'length)
+      report "[f_divide_array] Array lengths do not match. Left is " &
+      Integer'image(arr1'length) & ", Right is " &
+      Integer'image(arr2'length)
+      severity Failure;
+
+    for i in 0 to res'length-1 loop
+      res(i) := arr1(i) / arr2(i);
+    end loop;
+
+    return res;
+  end;
+
+  function max (left, right: integer)
+    return integer
+  is
+  begin
+    if left > right then return left;
+    else return right;
+    end if;
+  end max;
+
+  function min (left, right: integer)
+    return integer
+  is
+  begin
+    if left < right then return left;
+    else return right;
+    end if;
+  end min;
+
+  function f_max_align_array(arr1 : t_property_value_array; arr2 : t_payld_ratio_array)
+    return t_property_value_array
+  is
+    variable res : t_property_value_array(arr1'length-1 downto 0);
+  begin
+
+    assert (arr1'length = arr2'length)
+      report "[f_divide_array] Array lengths do not match. Left is " &
+      Integer'image(arr1'length) & ", Right is " &
+      Integer'image(arr2'length)
+      severity Failure;
+
+    for i in 0 to res'length-1 loop
+      if arr1(i) > arr2(i) then
+        res(i) := arr1(i);
+      else
+        res(i) := arr2(i);
+      end if;
+    end loop;
+
+    return res;
   end;
 
 end acq_core_pkg;

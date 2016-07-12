@@ -92,7 +92,11 @@ architecture rtl of acq_trigger is
 
   constant c_narrowest_channel_width        : natural := f_acq_chan_find_narrowest(g_acq_channels);
 
-  constant c_trigger_align_samples          : natural := g_ddr_payload_width/c_narrowest_channel_width;
+  --constant c_trigger_align_samples          : natural := g_ddr_payload_width/c_narrowest_channel_width;
+  constant c_trigger_coalesce_align         : natural := f_acq_chan_find_widest_num_coalesce(g_acq_channels);
+  constant c_trigger_ddr_payload_align      : natural := g_ddr_payload_width/c_narrowest_channel_width;
+  constant c_trigger_align_samples          : natural := max(c_trigger_coalesce_align, c_trigger_ddr_payload_align);
+  constant c_trigger_align_width            : natural := f_log2_size(c_trigger_align_samples);
 
   constant c_int_data_hysteresis_depth      : natural := 8;
   constant c_pipe_depth                     : natural := 5;
@@ -103,14 +107,27 @@ architecture rtl of acq_trigger is
 
   constant c_num_atoms_array                : t_property_value_array(g_acq_channels'length-1 downto 0) :=
       f_extract_property_array(g_acq_channels, NUM_ATOMS);
-  constant c_atom_width_array                : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+  constant c_atom_width_array               : t_property_value_array(g_acq_channels'length-1 downto 0) :=
       f_extract_property_array(g_acq_channels, ATOM_WIDTH);
+  constant c_num_coalesce_array             : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+      f_extract_property_array(g_acq_channels, NUM_COALESCE);
+
+  constant c_num_atoms_uncoalesced_array    : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+      f_divide_array(c_num_atoms_array, c_num_coalesce_array);
+  constant c_num_atoms_uncoalesced_log2_array
+                                            : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+                                            f_log2_size_array(c_num_atoms_uncoalesced_array);
 
   constant c_acq_chan_slice                 : t_acq_chan_slice_array(g_acq_num_channels-1 downto 0) :=
                                                  f_acq_chan_det_slice(g_acq_channels);
   constant c_fc_payload_ratio               : t_payld_ratio_array(g_acq_num_channels-1 downto 0) :=
                                                    f_fc_payload_ratio (g_ddr_payload_width,
                                                                 c_acq_chan_slice);
+
+  -- Minimum required alignment for each data stream
+  constant c_min_align_array                : t_property_value_array(g_acq_num_channels-1 downto 0) :=
+                                                   f_max_align_array(c_num_coalesce_array,
+                                                                 c_fc_payload_ratio);
 
   -- Types
   subtype t_acq_atom is std_logic_vector(c_widest_atom_width-1 downto 0);
@@ -121,6 +138,8 @@ architecture rtl of acq_trigger is
 
   -- Signals
   signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
+  signal lmt_dtrig_chan_id_uncoalesced      : unsigned(c_chan_id_width-1 downto 0);
+  signal lmt_dtrig_chan_id_uncoalesced_id   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_dtrig_valid                    : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
@@ -134,6 +153,12 @@ architecture rtl of acq_trigger is
   signal acq_atoms                          : t_acq_atom_array2d(g_acq_num_channels-1 downto 0,
                                                 c_widest_num_atoms-1 downto 0) :=
                                                 (others => (others => (others => '0')));
+
+  signal acq_num_atoms                      : t_acq_num_atoms;
+  signal acq_num_atoms_uncoalesced          : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
+  signal acq_num_atoms_uncoalesced_log2     : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
+  signal acq_num_coalesce_max               : t_acq_coalesce;
+  signal acq_coalesce_cnt                   : t_acq_coalesce;
   signal acq_valid_in                       : std_logic;
   signal acq_valid_sel_out                  : std_logic;
   signal acq_valid_out                      : std_logic;
@@ -143,9 +168,9 @@ architecture rtl of acq_trigger is
   signal acq_trig                           : std_logic;
   signal acq_trig_sel_out                   : std_logic;
   signal acq_trig_out                       : std_logic;
-  signal acq_trig_align_cnt                 : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
+  signal acq_trig_align_cnt                 : unsigned(c_trigger_align_width-1 downto 0);
   signal acq_trig_align_cnt_en              : std_logic;
-  signal acq_trig_align_cnt_max             : unsigned(f_log2_size(c_trigger_align_samples)-1 downto 0);
+  signal acq_min_align_max                  : unsigned(c_trigger_align_width-1 downto 0);
 
   signal int_trig                           : std_logic;
   signal int_trig_over_thres                : std_logic;
@@ -193,15 +218,28 @@ begin
       if fs_rst_n_i = '0' then
         lmt_valid <= '0';
         lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
-        acq_trig_align_cnt_max <= to_unsigned(0, acq_trig_align_cnt_max'length);
+        acq_num_atoms <= to_unsigned(0, acq_num_atoms'length);
+        acq_num_atoms_uncoalesced <= to_unsigned(0, acq_num_atoms_uncoalesced'length);
+        acq_num_atoms_uncoalesced_log2 <= to_unsigned(0, acq_num_atoms_uncoalesced_log2'length);
+        acq_num_coalesce_max <= to_unsigned(0, acq_num_coalesce_max'length);
+        acq_min_align_max <= to_unsigned(0, acq_min_align_max'length);
       else
         lmt_valid <= lmt_valid_i;
 
         if lmt_valid_i = '1' then
           lmt_curr_chan_id <= lmt_curr_chan_id_i;
           -- prepare the maximun fifo index to be used by the current channel
-          acq_trig_align_cnt_max <= to_unsigned(c_fc_payload_ratio(to_integer(lmt_curr_chan_id_i)),
-                                 acq_trig_align_cnt_max'length) - 1;
+          acq_num_atoms <= to_unsigned(c_num_atoms_array(to_integer(lmt_curr_chan_id_i)),
+                                acq_num_atoms'length);
+          acq_num_atoms_uncoalesced <= to_unsigned(c_num_atoms_uncoalesced_array(to_integer(lmt_curr_chan_id_i)),
+                                acq_num_atoms_uncoalesced'length);
+          acq_num_atoms_uncoalesced_log2 <= to_unsigned(c_num_atoms_uncoalesced_log2_array(to_integer(lmt_curr_chan_id_i)),
+                                acq_num_atoms_uncoalesced_log2'length);
+          acq_num_coalesce_max <= to_unsigned(c_num_coalesce_array(to_integer(lmt_curr_chan_id_i)),
+                                acq_num_coalesce_max'length) - 1;
+          acq_min_align_max <= to_unsigned(c_min_align_array(to_integer(lmt_curr_chan_id_i)),
+                                acq_min_align_max'length) - 1;
+      else
         end if;
       end if;
     end if;
@@ -229,11 +267,20 @@ begin
       if fs_rst_n_i = '0' then
         acq_data_in <= (others => '0');
         acq_valid_in <= '0';
+        acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
       else
         acq_valid_in <= acq_valid_i;
 
         if acq_valid_i = '1' then
           acq_data_in <= acq_data_i;
+
+          -- Increment the coalesce counter each valid bit, so we know
+          -- where we are in the data stream
+          acq_coalesce_cnt <= acq_coalesce_cnt + 1;
+
+          if acq_coalesce_cnt = acq_num_coalesce_max then
+            acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
+          end if;
         end if;
       end if;
     end if;
@@ -242,7 +289,10 @@ begin
   -- Prepare slices for all atoms in the channels
   gen_channels_prop : for i in 0 to g_acq_num_channels-1 generate -- for all input channels
 
-      gen_channel_atoms : for j in 0 to c_num_atoms_array(i)-1 generate -- for all atoms
+      -- The effective number of atoms is the number of atoms in a single word,
+      -- not in the aggregated stream. So, we must consider only the uncoalesced
+      -- number of atoms.
+      gen_channel_atoms : for j in 0 to c_num_atoms_uncoalesced_array(i)-1 generate -- for all uncoalesced atoms
         -- with sign extension
         acq_atoms(i,j) <=
         std_logic_vector(resize(signed(dtrig_data_in(c_atom_width_array(i)*(j+1)-1 downto
@@ -254,9 +304,21 @@ begin
   -----------------------------------------------------------------------------
   -- Trigger Logic
   -----------------------------------------------------------------------------
+  -- Get only the uncoalesced part of the Data Trigger channel ID
+  lmt_dtrig_chan_id_uncoalesced(lmt_dtrig_chan_id_uncoalesced'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) <=
+      (others => '0');
+  lmt_dtrig_chan_id_uncoalesced(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
+      lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0);
+
+  -- Get the coalesced data packet ID of the Data Trigger channel
+  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id_uncoalesced_id'length-1 downto
+  lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)) <=
+    (others => '0');
+  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
+    lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2));
 
   -- Internal hardware trigger
-  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id_uncoalesced),
                    to_integer(unsigned(cfg_int_trig_sel_i)));
 
   -- Sign extend data according to the selected channel
@@ -267,7 +329,9 @@ begin
       if fs_rst_n_i = '0' then
         int_trig_data_se <= (others => '0');
       else
-        int_trig_data_se <= int_trig_data;
+        if lmt_dtrig_chan_id_uncoalesced_id = acq_coalesce_cnt then
+          int_trig_data_se <= int_trig_data;
+        end if;
       end if;
     end if;
   end process;
@@ -380,9 +444,11 @@ begin
         acq_trig_align_cnt <= to_unsigned(0, acq_trig_align_cnt'length);
       else
         if acq_trig_align_cnt_en = '1' then
+          -- Increment the alignment (between input data and aggregated data
+          -- for DDR memory) counter
           acq_trig_align_cnt <= acq_trig_align_cnt + 1;
 
-          if acq_trig_align_cnt = acq_trig_align_cnt_max then
+          if acq_trig_align_cnt = acq_min_align_max then
             acq_trig_align_cnt <= to_unsigned(0, acq_trig_align_cnt'length);
          end if;
         end if;
@@ -417,10 +483,10 @@ begin
         -- Wait until we have transfered the correct (aligned) number of samples
         -- to output trigger.
         --
-        -- By design acq_trig_align_cnt_max would be at least 1, meaning a channel
-        -- composed of 2 atoms. So the arithmetic acq_trig_align_cnt_max-1 yields
+        -- By design acq_min_align_max would be at least 1, meaning a channel
+        -- composed of 2 atoms. So the arithmetic acq_min_align_max-1 yields
         -- valid values in all cases.
-        if trig_unaligned = '1' and acq_trig_align_cnt = acq_trig_align_cnt_max-1 and
+        if trig_unaligned = '1' and acq_trig_align_cnt = acq_min_align_max-1 and
             acq_valid_sel_out = '1' then -- will increment to the last atom
           trig_align <= '1'; -- Output trigger aligned with the last atom
         elsif acq_valid_sel_out = '1' then

@@ -648,6 +648,10 @@ begin
   -- Acquisiton FSM
   -----------------------------------------------------------------------------
   cmp_acq_fsm : acq_fsm
+  generic map
+  (
+    g_acq_channels                          => g_acq_channels
+  )
   port map
   (
     -- FSM does not use fs_rst_n
@@ -674,6 +678,8 @@ begin
     pre_trig_samples_i                      => pre_trig_samples_c,
     post_trig_samples_i                     => post_trig_samples_c,
     shots_nb_i                              => shots_nb_c,
+    lmt_curr_chan_id_i                      => lmt_curr_chan_id,
+    lmt_valid_i                             => acq_start,
     samples_cnt_o                           => samples_cnt,
 
     -----------------------------

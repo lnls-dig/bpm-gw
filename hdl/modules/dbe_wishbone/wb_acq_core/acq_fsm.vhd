@@ -40,6 +40,10 @@ use work.dbe_common_pkg.all;
 use work.acq_core_pkg.all;
 
 entity acq_fsm is
+generic
+(
+  g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
+);
 port
 (
   fs_clk_i                                  : in std_logic;
@@ -64,6 +68,10 @@ port
   pre_trig_samples_i                        : in unsigned(c_acq_samples_size-1 downto 0);
   post_trig_samples_i                       : in unsigned(c_acq_samples_size-1 downto 0);
   shots_nb_i                                : in unsigned(15 downto 0);
+  -- Current channel selection ID
+  lmt_curr_chan_id_i                        : in unsigned(c_chan_id_width-1 downto 0);
+  -- Acquisition limits valid signal
+  lmt_valid_i                               : in std_logic;
   samples_cnt_o                             : out unsigned(c_acq_samples_size-1 downto 0);
 
   -----------------------------
@@ -108,6 +116,14 @@ architecture rtl of acq_fsm is
 
   -- FSM reset pulse width
   constant c_ext_fsm_pulse_width            : natural := 16;
+  constant c_num_coalesce_array             : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+                                                f_extract_property_array(g_acq_channels, NUM_COALESCE);
+  constant c_num_coalesce_log2_array        : t_property_value_array(g_acq_channels'length-1 downto 0) :=
+                                                f_log2_array(c_num_coalesce_array); -- f_log2_array can output 0 value, differently from f_log2_size_array
+
+  -- Configuration
+  signal lmt_valid                          : std_logic;
+  signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
 
   -- FSM resets
   signal acq_stop_extend_fs_sync            : std_logic;
@@ -130,6 +146,11 @@ architecture rtl of acq_fsm is
   signal samples_wr_en                      : std_logic;
 
   -- Pre/Post trigger and shots counters
+  signal curr_num_coalese_log2              : integer := 0;
+  signal pre_trig_samples_shift_s           : std_logic_vector(c_acq_samples_size-1 downto 0);
+  signal post_trig_samples_shift_s          : std_logic_vector(c_acq_samples_size-1 downto 0);
+  signal pre_trig_samples_shift             : unsigned(c_acq_samples_size-1 downto 0);
+  signal post_trig_samples_shift            : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_cnt                       : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_cnt_max                   : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_done                      : std_logic;
@@ -149,11 +170,34 @@ architecture rtl of acq_fsm is
   signal lmt_acq_pos_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
   signal lmt_acq_full_pkt_size              : unsigned(c_acq_samples_size-1 downto 0);
   signal lmt_shots_nb                       : unsigned(15 downto 0);
-  signal lmt_valid                          : std_logic;
 
 begin
 
---------------------------------------------------------------------
+  p_reg_lmt_iface : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        lmt_valid <= '0';
+        lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
+      else
+        lmt_valid <= lmt_valid_i;
+
+        if lmt_valid_i = '1' then
+          lmt_curr_chan_id <= lmt_curr_chan_id_i;
+        end if;
+      end if;
+    end if;
+  end process;
+
+  -- We must take into account the coalescence factor here, as a different
+  -- number of transactions will happen
+  curr_num_coalese_log2         <= c_num_coalesce_log2_array(to_integer(lmt_curr_chan_id));
+  pre_trig_samples_shift_s      <= std_logic_vector(shift_left(pre_trig_samples_i, curr_num_coalese_log2));
+  post_trig_samples_shift_s     <= std_logic_vector(shift_left(post_trig_samples_i, curr_num_coalese_log2));
+  pre_trig_samples_shift        <= unsigned(pre_trig_samples_shift_s);
+  post_trig_samples_shift       <= unsigned(post_trig_samples_shift_s);
+
+  --------------------------------------------------------------------
   -- Shots counter
   --------------------------------------------------------------------
   p_shots_cnt : process (fs_clk_i)
@@ -199,10 +243,10 @@ begin
           pre_trig_cnt <= to_unsigned(0, pre_trig_cnt'length);
           pre_trig_done <= '0';
 
-          if pre_trig_samples_i = to_unsigned(0, pre_trig_samples_i'length) then
+          if pre_trig_samples_shift = to_unsigned(0, pre_trig_samples_shift'length) then
             pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
           else
-            pre_trig_cnt_max <= pre_trig_samples_i-1;
+            pre_trig_cnt_max <= pre_trig_samples_shift-1;
           end if;
         elsif (acq_in_pre_trig = '1' and acq_dvalid_i = '1') then
           pre_trig_cnt <= pre_trig_cnt + 1;
@@ -257,10 +301,10 @@ begin
           post_trig_cnt <= to_unsigned(0, post_trig_cnt'length);
           post_trig_done <= '0';
 
-          if post_trig_samples_i = to_unsigned(0, post_trig_samples_i'length) then
+          if post_trig_samples_shift = to_unsigned(0, post_trig_samples_shift'length) then
             post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
           else
-            post_trig_cnt_max <= post_trig_samples_i-1;
+            post_trig_cnt_max <= post_trig_samples_shift-1;
           end if;
         elsif (acq_in_post_trig = '1' and acq_dvalid_i = '1') then
           post_trig_cnt <= post_trig_cnt + 1;
@@ -312,16 +356,13 @@ begin
         lmt_acq_full_pkt_size <= to_unsigned(0, lmt_acq_full_pkt_size'length);
         lmt_shots_nb <= to_unsigned(1, lmt_shots_nb'length);
       else
-        lmt_acq_pre_pkt_size <= unsigned(pre_trig_samples_i(lmt_acq_pre_pkt_size'left downto 0));
-        lmt_acq_pos_pkt_size <= unsigned(post_trig_samples_i(lmt_acq_pos_pkt_size'left downto 0));
-        lmt_acq_full_pkt_size <= unsigned(pre_trig_samples_i(pre_trig_samples_i'left downto 0)) +
-                            unsigned(post_trig_samples_i(post_trig_samples_i'left downto 0));
+        lmt_acq_pre_pkt_size <= pre_trig_samples_shift;
+        lmt_acq_pos_pkt_size <= post_trig_samples_shift;
+        lmt_acq_full_pkt_size <= pre_trig_samples_shift + post_trig_samples_shift;
         lmt_shots_nb <= shots_nb_i;
       end if;
     end if;
   end process;
-
-  lmt_valid <= acq_start_i;
 
   -- Output assignments
   lmt_acq_pre_pkt_size_o <= lmt_acq_pre_pkt_size;
