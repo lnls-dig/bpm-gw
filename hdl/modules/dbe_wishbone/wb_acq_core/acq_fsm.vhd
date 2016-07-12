@@ -190,8 +190,12 @@ begin
   end process;
 
   -- We must take into account the coalescence factor here, as a different
-  -- number of transactions will happen
-  curr_num_coalese_log2         <= c_num_coalesce_log2_array(to_integer(lmt_curr_chan_id));
+  -- number of transactions will happen.
+  -- We use lmt_curr_chan_id_i instead of the lmt_curr_chan_id, because
+  -- we need to shift the samples before outputting it to the other
+  -- logic. This is safe, because the other modules only get this new value
+  -- after lmt_valid signal is asserted
+  curr_num_coalese_log2         <= c_num_coalesce_log2_array(to_integer(lmt_curr_chan_id_i));
   pre_trig_samples_shift_s      <= std_logic_vector(shift_left(pre_trig_samples_i, curr_num_coalese_log2));
   post_trig_samples_shift_s     <= std_logic_vector(shift_left(post_trig_samples_i, curr_num_coalese_log2));
   pre_trig_samples_shift        <= unsigned(pre_trig_samples_shift_s);
