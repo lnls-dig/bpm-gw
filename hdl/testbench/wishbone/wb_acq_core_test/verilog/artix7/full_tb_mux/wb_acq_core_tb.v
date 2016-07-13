@@ -1800,7 +1800,7 @@ module wb_acq_core_tb;
 
     test_id = 5;
     n_shots = 16'h0001;
-    pre_trig_samples = 32'h00001000;
+    pre_trig_samples = 32'h00000400;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
     ddr3_end_addr = 32'h00100000;
