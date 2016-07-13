@@ -306,14 +306,14 @@ begin
   -----------------------------------------------------------------------------
   -- Get only the uncoalesced part of the Data Trigger channel ID
   lmt_dtrig_chan_id_uncoalesced(lmt_dtrig_chan_id_uncoalesced'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) <=
-      (others => '0');
+      to_unsigned(0, lmt_dtrig_chan_id_uncoalesced'length-to_integer(acq_num_atoms_uncoalesced_log2));
   lmt_dtrig_chan_id_uncoalesced(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
       lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0);
 
   -- Get the coalesced data packet ID of the Data Trigger channel
   lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id_uncoalesced_id'length-1 downto
-  lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)) <=
-    (others => '0');
+      lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)) <=
+          to_unsigned(0, lmt_dtrig_chan_id_uncoalesced'length-(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)));
   lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
     lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2));
 
