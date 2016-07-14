@@ -256,7 +256,7 @@ begin
           pre_trig_cnt <= pre_trig_cnt + 1;
 
           -- Will increment
-          if pre_trig_cnt = pre_trig_cnt_max then
+          if pre_trig_cnt = pre_trig_cnt_max-1 then
             pre_trig_done <= '1';
           end if;
         else
@@ -314,7 +314,7 @@ begin
           post_trig_cnt <= post_trig_cnt + 1;
 
           -- Will increment
-          if post_trig_cnt = post_trig_cnt_max then
+          if post_trig_cnt = post_trig_cnt_max-1 then
             post_trig_done <= '1';
           end if;
         else
