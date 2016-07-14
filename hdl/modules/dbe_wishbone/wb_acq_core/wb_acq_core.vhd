@@ -264,12 +264,14 @@ architecture rtl of wb_acq_core is
   signal acq_data_marsh                     : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal dtrig_data_marsh                   : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal acq_data_fsm                       : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_trig_in                        : std_logic;
   signal acq_trig                           : std_logic;
-  signal acq_trig_det                       : std_logic;
+  signal acq_trig_fsm                       : std_logic;
   signal acq_dvalid_in                      : std_logic;
   signal dtrig_valid_in                     : std_logic;
   signal acq_valid                          : std_logic;
+  signal acq_valid_fsm                      : std_logic;
   signal samples_wr_en                      : std_logic;
 
   -- ACQ trigger registers
@@ -669,6 +671,7 @@ begin
     acq_start_i                             => acq_start_sync_fs,
     acq_now_i                               => acq_now,
     acq_stop_i                              => acq_stop,
+    acq_data_i                              => acq_data,
     acq_trig_i                              => acq_trig,
     acq_dvalid_i                            => acq_valid,
 
@@ -711,7 +714,9 @@ begin
     -- FSM Outputs
     -----------------------------
     shots_decr_o                            => shots_decr,
-    acq_trig_o                              => acq_trig_det,
+    acq_data_o                              => acq_data_fsm,
+    acq_valid_o                             => acq_valid_fsm,
+    acq_trig_o                              => acq_trig_fsm,
     multishot_buffer_sel_o                  => multishot_buffer_sel,
     samples_wr_en_o                         => samples_wr_en
   );
@@ -732,14 +737,14 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n,
 
-    data_i                                  => acq_data,
+    data_i                                  => acq_data_fsm,
     data_id_i                               => acq_fsm_state,
-    dvalid_i                                => acq_valid,
+    dvalid_i                                => acq_valid_fsm,
     wr_en_i                                 => samples_wr_en,
     addr_rst_i                              => shots_decr,
 
     buffer_sel_i                            => multishot_buffer_sel,
-    acq_trig_i                              => acq_trig_det,
+    acq_trig_i                              => acq_trig_fsm,
 
     pre_trig_samples_i                      => lmt_acq_pre_pkt_size,
     post_trig_samples_i                     => lmt_acq_pre_pkt_size,
@@ -788,10 +793,10 @@ begin
     dpram_dvalid_i                          => dpram_valid,
 
     -- Passthrough data
-    pt_data_i                               => acq_data,
+    pt_data_i                               => acq_data_fsm,
     pt_data_id_i                            => acq_fsm_state,
-    pt_trig_i                               => acq_trig_det,
-    pt_dvalid_i                             => acq_valid,
+    pt_trig_i                               => acq_trig_fsm,
+    pt_dvalid_i                             => acq_valid_fsm,
     pt_wr_en_i                              => samples_wr_en,
 
     -- Request transaction reset as soon as possible (when all outstanding

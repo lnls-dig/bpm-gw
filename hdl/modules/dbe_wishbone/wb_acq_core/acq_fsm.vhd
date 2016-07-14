@@ -59,6 +59,7 @@ port
   acq_start_i                               : in  std_logic := '0';
   acq_now_i                                 : in  std_logic := '0';
   acq_stop_i                                : in  std_logic := '0';
+  acq_data_i                                : in  std_logic_vector(c_acq_chan_max_w-1 downto 0) := (others => '0');
   acq_trig_i                                : in  std_logic := '0';
   acq_dvalid_i                              : in  std_logic := '0';
 
@@ -103,6 +104,8 @@ port
   -- FSM Outputs
   -----------------------------
   shots_decr_o                              : out std_logic;
+  acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  acq_valid_o                               : out std_logic;
   acq_trig_o                                : out std_logic;
   multishot_buffer_sel_o                    : out std_logic;
   samples_wr_en_o                           : out std_logic
@@ -131,12 +134,16 @@ architecture rtl of acq_fsm is
   signal acq_stop_rst_n_fs_sync             : std_logic;
   signal acq_stop_rst_n_ext_sync            : std_logic;
 
+  signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal acq_valid                          : std_logic;
+  signal acq_trig                           : std_logic;
+  signal acq_trig_comb                      : std_logic;
+
   -- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
   signal acq_start                          : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_stop_n                         : std_logic;
-  signal acq_trig                           : std_logic;
   signal acq_end                            : std_logic;
   signal acq_end_t                          : std_logic;
   signal acq_in_pre_trig                    : std_logic;
@@ -327,6 +334,26 @@ begin
   acq_post_trig_done_o <= post_trig_done;
 
   ------------------------------------------------------------------------------
+  -- Delay data/trigger samples as it takes 1 clock cycle for the FSM
+  -- to change states/outputs
+  ------------------------------------------------------------------------------
+
+  p_delay : process (fs_clk_i)
+  begin
+    if rising_edge(fs_clk_i) then
+      if fs_rst_n_i = '0' then
+        acq_data  <= (others => '0');
+        acq_valid <= '0';
+        acq_trig  <= '0';
+      else
+        acq_data  <= acq_data_i;
+        acq_valid <= acq_dvalid_i;
+        acq_trig  <= acq_trig_comb;
+      end if;
+    end if;
+  end process;
+
+  ------------------------------------------------------------------------------
   -- Samples counter
   ------------------------------------------------------------------------------
 
@@ -398,10 +425,10 @@ begin
   acq_end_o <= acq_end;
 
   -- FSM commands
-  acq_start <= acq_start_i;
-  acq_stop  <= acq_stop_i;
-  acq_trig  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
-  acq_end_t <= shots_done and post_trig_done;
+  acq_start      <= acq_start_i;
+  acq_stop       <= acq_stop_i;
+  acq_trig_comb  <= acq_dvalid_i and acq_trig_i and acq_in_wait_trig;
+  acq_end_t      <= shots_done and post_trig_done;
 
   -- When FSM in IDLE, request reset
   acq_fsm_req_rst <= '1' when acq_fsm_state = "001" else '0';
@@ -455,7 +482,7 @@ begin
           when WAIT_TRIG =>
             if acq_stop = '1' then
               acq_fsm_current_state := IDLE;
-            elsif acq_trig = '1' then
+            elsif acq_trig_comb = '1' then
               acq_fsm_current_state := POST_TRIG;
             end if;
 
@@ -584,6 +611,8 @@ begin
   end process;
 
   shots_decr_o       <= shots_decr;
+  acq_data_o         <= acq_data;
+  acq_valid_o        <= acq_valid;
   acq_trig_o         <= acq_trig;
   acq_in_pre_trig_o  <= acq_in_pre_trig;
   acq_in_wait_trig_o <= acq_in_wait_trig;
@@ -626,7 +655,9 @@ begin
     rst_n_o                                 => acq_stop_rst_n_ext_sync
   );
 
-  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
-  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
+  --acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
+  --acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
+  acq_fsm_rstn_fs_sync_o <= '1';
+  acq_fsm_rstn_ext_sync_o <= '1';
 
 end rtl;

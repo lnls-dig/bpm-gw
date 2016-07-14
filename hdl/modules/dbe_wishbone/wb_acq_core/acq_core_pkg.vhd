@@ -411,6 +411,7 @@ package acq_core_pkg is
     acq_start_i                               : in  std_logic := '0';
     acq_now_i                                 : in  std_logic := '0';
     acq_stop_i                                : in  std_logic := '0';
+    acq_data_i                                : in  std_logic_vector(c_acq_chan_max_w-1 downto 0) := (others => '0');
     acq_trig_i                                : in  std_logic := '0';
     acq_dvalid_i                              : in  std_logic := '0';
 
@@ -455,6 +456,8 @@ package acq_core_pkg is
     -- FSM Outputs
     -----------------------------
     shots_decr_o                              : out std_logic;
+    acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
+    acq_valid_o                               : out std_logic;
     acq_trig_o                                : out std_logic;
     multishot_buffer_sel_o                    : out std_logic;
     samples_wr_en_o                           : out std_logic
