@@ -305,6 +305,7 @@ architecture rtl of wb_acq_core is
   signal shots_cnt                          : unsigned(15 downto 0);
   signal shots_decr                         : std_logic;
   signal multishot_buffer_sel               : std_logic;
+  signal acq_ms_addr_rst                    : std_logic;
 
   -- Packet size for ext interface
   signal lmt_acq_pre_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
@@ -741,7 +742,7 @@ begin
     data_id_i                               => acq_fsm_state,
     dvalid_i                                => acq_valid_fsm,
     wr_en_i                                 => samples_wr_en,
-    addr_rst_i                              => shots_decr,
+    addr_rst_i                              => acq_ms_addr_rst,
 
     buffer_sel_i                            => multishot_buffer_sel,
     acq_trig_i                              => acq_trig_fsm,
@@ -756,6 +757,8 @@ begin
     dpram_dout_o                            => dpram_dout,
     dpram_valid_o                           => dpram_valid
   );
+
+  acq_ms_addr_rst                           <= shots_decr or acq_start_sync_fs;
 
   -- Do not output the header. Only the payload
   dpram_dout_o                              <=  dpram_dout(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
