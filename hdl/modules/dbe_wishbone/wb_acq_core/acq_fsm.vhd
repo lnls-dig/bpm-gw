@@ -114,8 +114,11 @@ end acq_fsm;
 
 architecture rtl of acq_fsm is
 
-  type t_acq_fsm_state is (IDLE, PRE_TRIG, WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG,
-                                 POST_TRIG_SKIP, DECR_SHOT);
+  type t_acq_fsm_state is (IDLE, PRE_TRIG, PRE_TRIG_WAIT_LAST, PRE_TRIG_SKIP_WAIT_LAST,
+                                WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG, POST_TRIG_SKIP,
+                                POST_TRIG_IDLE_WAIT_LAST, POST_TRIG_DECR_SHOT_WAIT_LAST,
+                                POST_TRIG_SKIP_IDLE_WAIT_LAST, POST_TRIG_SKIP_DECR_SHOT_WAIT_LAST,
+                                DECR_SHOT);
 
   -- FSM reset pulse width
   constant c_ext_fsm_pulse_width            : natural := 16;
@@ -141,16 +144,27 @@ architecture rtl of acq_fsm is
 
   -- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
+  signal acq_fsm_state_d                    : std_logic_vector(2 downto 0);
   signal acq_start                          : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_stop_n                         : std_logic;
   signal acq_end                            : std_logic;
   signal acq_end_t                          : std_logic;
   signal acq_in_pre_trig                    : std_logic;
+  signal acq_in_pre_trig_wait               : std_logic;
+  signal acq_in_pre_trig_out                : std_logic;
   signal acq_in_wait_trig                   : std_logic;
   signal acq_in_post_trig                   : std_logic;
+  signal acq_in_post_trig_wait              : std_logic;
+  signal acq_in_post_trig_out               : std_logic;
+  signal acq_in_pre_trig_d                  : std_logic;
+  signal acq_in_pre_trig_out_d              : std_logic;
+  signal acq_in_wait_trig_d                 : std_logic;
+  signal acq_in_post_trig_d                 : std_logic;
+  signal acq_in_post_trig_out_d             : std_logic;
   signal acq_fsm_req_rst                    : std_logic;
   signal samples_wr_en                      : std_logic;
+  signal samples_wr_en_d                    : std_logic;
 
   -- Pre/Post trigger and shots counters
   signal curr_num_coalese_log2              : integer := 0;
@@ -170,6 +184,7 @@ architecture rtl of acq_fsm is
   signal shots_cnt                          : unsigned(15 downto 0);
   signal shots_done                         : std_logic;
   signal shots_decr                         : std_logic;
+  signal shots_decr_d                       : std_logic;
   signal single_shot                        : std_logic;
 
   -- Packet size for ext interface
@@ -293,7 +308,7 @@ begin
     end if;
   end process;
 
-  wait_trig_skip_done <= '1' when (wait_trig_skip_r = '1' and acq_in_wait_trig = '1') else '0';
+  wait_trig_skip_done <= '1' when (wait_trig_skip_r = '1' and acq_in_wait_trig_d = '1') else '0';
   acq_wait_trig_skip_done_o <= wait_trig_skip_done;
 
   ------------------------------------------------------------------------------
@@ -442,12 +457,14 @@ begin
         acq_fsm_current_state := IDLE;
 
         -- Outputs
-        shots_decr       <= '0';
-        acq_in_pre_trig  <= '0';
-        acq_in_wait_trig <= '0';
-        acq_in_post_trig <= '0';
-        samples_wr_en    <= '0';
-        acq_fsm_state    <= "001";
+        shots_decr            <= '0';
+        acq_in_pre_trig       <= '0';
+        acq_in_pre_trig_wait  <= '0';
+        acq_in_wait_trig      <= '0';
+        acq_in_post_trig      <= '0';
+        acq_in_post_trig_wait <= '0';
+        samples_wr_en         <= '0';
+        acq_fsm_state         <= "001";
       else
 
         -- FSM transitions
@@ -462,13 +479,31 @@ begin
             if acq_stop = '1' then
               acq_fsm_current_state := IDLE;
             elsif pre_trig_done = '1' then
-                acq_fsm_current_state := WAIT_TRIG;
+                if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                  acq_fsm_current_state := WAIT_TRIG;
+                else
+                  acq_fsm_current_state := PRE_TRIG_WAIT_LAST;
+                end if;
 
                 -- Hack to avoid writing samples in wait_trig_skip mode. FIXME!
                 if wait_trig_skip_r = '1' then
-                  acq_fsm_current_state := WAIT_TRIG_SKIP;
+                  if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                    acq_fsm_current_state := WAIT_TRIG_SKIP;
+                  else
+                    acq_fsm_current_state := PRE_TRIG_SKIP_WAIT_LAST;
+                  end if;
                 end if;
 
+            end if;
+
+          when PRE_TRIG_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := WAIT_TRIG;
+            end if;
+
+          when PRE_TRIG_SKIP_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := WAIT_TRIG_SKIP;
             end if;
 
           -- Dummy state to skip writing samples in wait_trig_skip mode
@@ -493,9 +528,17 @@ begin
             elsif post_trig_done = '1' then
 
               if single_shot = '1' then
-                acq_fsm_current_state := IDLE;
+                if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                  acq_fsm_current_state := IDLE;
+                else
+                  acq_fsm_current_state := POST_TRIG_SKIP_IDLE_WAIT_LAST;
+                end if;
               else
-                acq_fsm_current_state := DECR_SHOT;
+                if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                  acq_fsm_current_state := DECR_SHOT;
+                else
+                  acq_fsm_current_state := POST_TRIG_SKIP_DECR_SHOT_WAIT_LAST;
+                end if;
               end if;
 
             end if;
@@ -506,11 +549,39 @@ begin
             elsif post_trig_done = '1' then
 
               if single_shot = '1' then
-                acq_fsm_current_state := IDLE;
+                if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                  acq_fsm_current_state := IDLE;
+                else
+                  acq_fsm_current_state := POST_TRIG_IDLE_WAIT_LAST;
+                end if;
               else
-                acq_fsm_current_state := DECR_SHOT;
+                if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+                  acq_fsm_current_state := DECR_SHOT;
+                else
+                  acq_fsm_current_state := POST_TRIG_DECR_SHOT_WAIT_LAST;
+                end if;
               end if;
 
+            end if;
+
+          when POST_TRIG_SKIP_IDLE_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := IDLE;
+            end if;
+
+          when POST_TRIG_SKIP_DECR_SHOT_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := DECR_SHOT;
+            end if;
+
+          when POST_TRIG_IDLE_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := IDLE;
+            end if;
+
+          when POST_TRIG_DECR_SHOT_WAIT_LAST =>
+            if acq_dvalid_i = '1' then -- we must wait one cycle more with samples_wr_en asserted
+              acq_fsm_current_state := DECR_SHOT;
             end if;
 
           when DECR_SHOT =>
@@ -537,24 +608,50 @@ begin
           when IDLE =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0';
             acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
             samples_wr_en    <= '0';
             acq_fsm_state    <= "001";
 
           when PRE_TRIG =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '1';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0';
             acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
+            samples_wr_en    <= '1';
+            acq_fsm_state    <= "010";
+
+          when PRE_TRIG_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '1';
+            acq_in_wait_trig <= '0';
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
+            samples_wr_en    <= '1';
+            acq_fsm_state    <= "010";
+
+          when PRE_TRIG_SKIP_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '1';
+            acq_in_wait_trig <= '0';
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
             samples_wr_en    <= '1';
             acq_fsm_state    <= "010";
 
           when WAIT_TRIG_SKIP =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '1'; -- Other logic will detect the same state
             acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
             samples_wr_en    <= '0'; -- Don't write samples when in wait_skip_trig mode
             acq_fsm_state    <= "011"; -- Other logic will detect the same state
 
@@ -567,30 +664,77 @@ begin
           when WAIT_TRIG =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '1';
             acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
             samples_wr_en    <= '1';
             acq_fsm_state    <= "011";
 
           when POST_TRIG_SKIP =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0'; -- Other logic will detect the same state
             acq_in_post_trig <= '1';
+            acq_in_post_trig_wait <= '0';
             samples_wr_en    <= '0'; -- Don't write samples when in wait_skip_trig mode
             acq_fsm_state    <= "100"; -- Other logic will detect the same state
 
           when POST_TRIG =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0';
             acq_in_post_trig <= '1';
+            acq_in_post_trig_wait <= '0';
+            samples_wr_en    <= '1';
+            acq_fsm_state    <= "100";
+
+          when POST_TRIG_SKIP_IDLE_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
+            acq_in_wait_trig <= '0'; -- Other logic will detect the same state
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '1';
+            samples_wr_en    <= '0'; -- Don't write samples when in wait_skip_trig mode
+            acq_fsm_state    <= "100"; -- Other logic will detect the same state
+
+          when POST_TRIG_SKIP_DECR_SHOT_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
+            acq_in_wait_trig <= '0'; -- Other logic will detect the same state
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '1';
+            samples_wr_en    <= '0'; -- Don't write samples when in wait_skip_trig mode
+            acq_fsm_state    <= "100"; -- Other logic will detect the same state
+
+          when POST_TRIG_IDLE_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
+            acq_in_wait_trig <= '0';
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '1';
+            samples_wr_en    <= '1';
+            acq_fsm_state    <= "100";
+
+          when POST_TRIG_DECR_SHOT_WAIT_LAST =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
+            acq_in_wait_trig <= '0';
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '1';
             samples_wr_en    <= '1';
             acq_fsm_state    <= "100";
 
           when DECR_SHOT =>
             shots_decr       <= '1';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0';
             acq_in_post_trig <= '0';
             samples_wr_en    <= '0';
@@ -599,6 +743,7 @@ begin
           when others =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
             acq_in_wait_trig <= '0';
             acq_in_post_trig <= '0';
             samples_wr_en    <= '0';
@@ -606,19 +751,32 @@ begin
 
         end case;
 
+        -- Delay output signals
+        shots_decr_d           <= shots_decr;
+        acq_in_pre_trig_d      <= acq_in_pre_trig;
+        acq_in_pre_trig_out_d  <= acq_in_pre_trig_out;
+        acq_in_wait_trig_d     <= acq_in_wait_trig;
+        acq_in_post_trig_d     <= acq_in_post_trig;
+        acq_in_post_trig_out_d <= acq_in_post_trig_out;
+        samples_wr_en_d        <= samples_wr_en;
+        acq_fsm_state_d        <= acq_fsm_state;
+
       end if;
     end if;
   end process;
 
-  shots_decr_o       <= shots_decr;
+  acq_in_pre_trig_out <= acq_in_pre_trig or acq_in_pre_trig_wait;
+  acq_in_post_trig_out <= acq_in_post_trig or acq_in_post_trig_wait;
+
   acq_data_o         <= acq_data;
   acq_valid_o        <= acq_valid;
   acq_trig_o         <= acq_trig;
-  acq_in_pre_trig_o  <= acq_in_pre_trig;
-  acq_in_wait_trig_o <= acq_in_wait_trig;
-  acq_in_post_trig_o <= acq_in_post_trig;
-  samples_wr_en_o    <= samples_wr_en;
-  acq_fsm_state_o    <= acq_fsm_state;
+  shots_decr_o       <= shots_decr_d;
+  acq_in_pre_trig_o  <= acq_in_pre_trig_out_d;
+  acq_in_wait_trig_o <= acq_in_wait_trig_d;
+  acq_in_post_trig_o <= acq_in_post_trig_out_d;
+  samples_wr_en_o    <= samples_wr_en_d;
+  acq_fsm_state_o    <= acq_fsm_state_d;
   acq_fsm_req_rst_o  <= acq_fsm_req_rst;
 
   ------------------------------------------------------------------------------
