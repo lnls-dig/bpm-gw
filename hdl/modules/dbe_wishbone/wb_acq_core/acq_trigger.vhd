@@ -138,8 +138,6 @@ architecture rtl of acq_trigger is
 
   -- Signals
   signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
-  signal lmt_dtrig_chan_id_uncoalesced      : unsigned(c_chan_id_width-1 downto 0);
-  signal lmt_dtrig_chan_id_uncoalesced_id   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_dtrig_valid                    : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
@@ -304,21 +302,10 @@ begin
   -----------------------------------------------------------------------------
   -- Trigger Logic
   -----------------------------------------------------------------------------
-  -- Get only the uncoalesced part of the Data Trigger channel ID
-  lmt_dtrig_chan_id_uncoalesced(lmt_dtrig_chan_id_uncoalesced'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) <=
-      to_unsigned(0, lmt_dtrig_chan_id_uncoalesced'length-to_integer(acq_num_atoms_uncoalesced_log2));
-  lmt_dtrig_chan_id_uncoalesced(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
-      lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0);
-
-  -- Get the coalesced data packet ID of the Data Trigger channel
-  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id_uncoalesced_id'length-1 downto
-      lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)) <=
-          to_unsigned(0, lmt_dtrig_chan_id_uncoalesced'length-(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)));
-  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
-    lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2));
 
   -- Internal hardware trigger
-  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id_uncoalesced),
+  -- Get the coalesced data packet ID of the Data Trigger channel
+  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0)),
                    to_integer(unsigned(cfg_int_trig_sel_i)));
 
   -- Sign extend data according to the selected channel
@@ -329,7 +316,8 @@ begin
       if fs_rst_n_i = '0' then
         int_trig_data_se <= (others => '0');
       else
-        if lmt_dtrig_chan_id_uncoalesced_id = acq_coalesce_cnt then
+        -- Get only the uncoalesced part of the Data Trigger channel ID
+        if lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) = acq_coalesce_cnt then
           int_trig_data_se <= int_trig_data;
         end if;
       end if;
