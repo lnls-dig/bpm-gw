@@ -249,6 +249,7 @@ architecture rtl of wb_acq_core is
 
   ---- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
+  signal acq_fsm_accepting                  : std_logic;
   signal acq_fsm_req_rst                    : std_logic;
   signal acq_fsm_rstn_fs_sync               : std_logic;
   signal acq_fsm_rstn_ext_sync              : std_logic;
@@ -641,7 +642,7 @@ begin
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
     lmt_valid_i                             => acq_start,
 
-    acq_wr_en_i                             => samples_wr_en,
+    acq_wr_en_i                             => acq_fsm_accepting,
     acq_data_o                              => acq_data,
     acq_valid_o                             => acq_valid,
     acq_trig_o                              => acq_trig
@@ -697,6 +698,7 @@ begin
     acq_pre_trig_done_o                     => acq_pre_trig_done,
     acq_wait_trig_skip_done_o               => acq_wait_trig_skip_done,
     acq_post_trig_done_o                    => acq_post_trig_done,
+    acq_fsm_accepting_o                     => acq_fsm_accepting,
     acq_fsm_req_rst_o                       => acq_fsm_req_rst,
     acq_fsm_state_o                         => acq_fsm_state,
     acq_fsm_rstn_fs_sync_o                  => acq_fsm_rstn_fs_sync,

@@ -86,6 +86,7 @@ port
   acq_pre_trig_done_o                       : out std_logic;
   acq_wait_trig_skip_done_o                 : out std_logic;
   acq_post_trig_done_o                      : out std_logic;
+  acq_fsm_accepting_o                       : out std_logic;
   acq_fsm_req_rst_o                         : out std_logic;
   acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
   acq_fsm_rstn_fs_sync_o                    : out std_logic;
@@ -768,6 +769,7 @@ begin
   acq_in_pre_trig_out <= acq_in_pre_trig or acq_in_pre_trig_wait;
   acq_in_post_trig_out <= acq_in_post_trig or acq_in_post_trig_wait;
 
+  acq_fsm_accepting_o <= samples_wr_en;
   acq_data_o         <= acq_data;
   acq_valid_o        <= acq_valid;
   acq_trig_o         <= acq_trig;
