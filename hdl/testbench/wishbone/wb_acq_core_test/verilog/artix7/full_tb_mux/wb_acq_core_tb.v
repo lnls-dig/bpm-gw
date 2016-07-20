@@ -490,11 +490,12 @@ module wb_acq_core_tb;
   localparam c_n_chan                   = 5;
   localparam c_n_width64                = 16'd64;
   localparam c_n_width128               = 16'd128;
+  localparam c_n_width256               = 16'd256;
   //localparam c_min_wait_gnt             = 32;
   //localparam c_max_wait_gnt             = 128;
   localparam c_acq_num_channels         = 5;
   localparam [16-1:0] c_acq_channels[0:c_acq_num_channels-1] =
-      '{c_n_width64, c_n_width128, c_n_width128,
+      '{c_n_width256, c_n_width128, c_n_width128,
       c_n_width128, c_n_width128};
 
   // bpm acquisition parameters
