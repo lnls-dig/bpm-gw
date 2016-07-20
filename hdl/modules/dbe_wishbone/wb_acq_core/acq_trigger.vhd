@@ -145,6 +145,7 @@ architecture rtl of acq_trigger is
   signal dtrig_data_in                      : std_logic_vector(g_data_in_width-1 downto 0);
   signal dtrig_valid_in                     : std_logic;
 
+  signal acq_curr_coalesce_id               : integer;
   signal acq_data_in                        : std_logic_vector(g_data_in_width-1 downto 0);
   signal acq_data_sel_out                   : std_logic_vector(g_data_in_width-1 downto 0);
   signal acq_data_out                       : std_logic_vector(g_data_in_width-1 downto 0);
@@ -305,8 +306,45 @@ begin
 
   -- Internal hardware trigger
   -- Get the coalesced data packet ID of the Data Trigger channel
-  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0)),
-                   to_integer(unsigned(cfg_int_trig_sel_i)));
+  --int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0)),
+  --                 to_integer(unsigned(cfg_int_trig_sel_i)));
+
+  -- Problem: Vivado 2015.2 does not support dynamic slicing!
+  -- Solution: Implement a case statement to address each possible slice
+
+  p_int_trig_data : process(acq_num_atoms_uncoalesced_log2)
+  begin
+     case to_integer(acq_num_atoms_uncoalesced_log2) is
+       when 0 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 0));
+       when 1 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 1));
+       when 2 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(1 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 2));
+       when 3 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(2 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 3));
+       when 4 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(3 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 4));
+       when 5 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(4 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 4));
+       when others =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
+                          to_integer(unsigned(cfg_int_trig_sel_i)));
+         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 0));
+     end case;
+  end process;
 
   -- Sign extend data according to the selected channel
   p_int_trig_sign_extend : process (fs_clk_i)
@@ -317,7 +355,7 @@ begin
         int_trig_data_se <= (others => '0');
       else
         -- Get only the uncoalesced part of the Data Trigger channel ID
-        if lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) = acq_coalesce_cnt then
+        if acq_curr_coalesce_id = acq_coalesce_cnt then
           int_trig_data_se <= int_trig_data;
         end if;
       end if;
