@@ -511,7 +511,7 @@ module wb_acq_core_tb;
   localparam DDR3_BYTES_PER_WORD = DQ_WIDTH/8;
   localparam DDR3_ADDR_INC_BYTES = DDR3_PAYLOAD_WIDTH/DQ_WIDTH*DDR3_BYTES_PER_WORD;
 
-  localparam RB_COUNTER_WIDTH = 8;
+  localparam RB_COUNTER_WIDTH = 12;
 
   // Tests paramaters
   reg [ACQ_DATA_WIDTH_MAX-1:0] data_test [c_n_chan-1:0];
