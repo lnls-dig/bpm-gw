@@ -434,6 +434,11 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.ngc"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/hearbeat/heartbeat.vhd"
+#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"
+#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"
+#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"
+#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/xwb_facq_core_mux.vhd"
+#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"
@@ -896,6 +901,11 @@ set files [list \
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.ngc"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/hearbeat/heartbeat.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/xwb_facq_core_mux.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"]"\
@@ -5466,6 +5476,61 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "heartbeat/heartbeat.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core/xwb_facq_core.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core/wb_facq_core.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core_mux/wb_facq_core_mux_plain.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core_mux/xwb_facq_core_mux.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core_mux/wb_facq_core_mux.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
