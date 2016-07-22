@@ -2433,10 +2433,10 @@ begin
   --------------------
   -- ADC 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val           <= fmc1_adc_data_ch3 &
-                                                                 fmc1_adc_data_ch2 &
-                                                                 fmc1_adc_data_ch1 &
-                                                                 fmc1_adc_data_ch0;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val           <= fmc2_adc_data_ch3 &
+                                                                 fmc2_adc_data_ch2 &
+                                                                 fmc2_adc_data_ch1 &
+                                                                 fmc2_adc_data_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_id).pulse;
 
