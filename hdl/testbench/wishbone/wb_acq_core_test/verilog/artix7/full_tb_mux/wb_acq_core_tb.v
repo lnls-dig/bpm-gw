@@ -1604,6 +1604,9 @@ module wb_acq_core_tb;
     // Default values. 200 ADC CLK cycles after star wait
     min_wait_trig = 200;
     max_wait_trig = 200;
+    // Initial values for f_gen_bit_one
+    f_gen_bit_one.wait_cycles = 0;
+    f_gen_bit_one.gen_valid = 0;
 
     $display("-----------------------------------");
     $display("@%0d: Simulation of BPM ACQ FSM starting!", $time);
@@ -2326,7 +2329,7 @@ module wb_acq_core_tb;
         data_test_0 <= data_test_0 + 1;
       end
 
-      data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold);
+      data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold, 1);
       data_test_dvalid[0] <= data_test_dvalid_t[0];
       data_test_trig[0] <= data_trig;
     end else begin
@@ -2355,7 +2358,7 @@ module wb_acq_core_tb;
             data_test[ch] <= data_test[ch] + ch + 1;
           end
 
-          data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold);
+          data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold, 1);
           data_test_dvalid[ch] <= data_test_dvalid_t[ch];
           data_test_trig[ch] <= data_trig;
         end else begin
@@ -2382,9 +2385,10 @@ module wb_acq_core_tb;
 
   function f_gen_data_rdy_gen;
     input real prob;
+    input integer min_wait_cycles;
     real temp;
   begin
-    f_gen_data_rdy_gen = f_gen_bit_one(prob);
+    f_gen_data_rdy_gen = f_gen_bit_one(prob, min_wait_cycles);
   end
   endfunction
 
@@ -2392,21 +2396,37 @@ module wb_acq_core_tb;
     input real prob;
     real temp;
   begin
-    f_gen_data_stall = f_gen_bit_one(1.0-prob);
+    f_gen_data_stall = f_gen_bit_one(1.0-prob, 0);
   end
   endfunction
 
   function f_gen_bit_one;
     input real prob;
+    input integer min_wait_cycles;
     real temp;
+    integer wait_cycles;
+    integer gen_valid;
   begin
+
+   // count wait_cycles up to min_wait_cycles
+   if (wait_cycles >= min_wait_cycles) begin
+     gen_valid = 1;
+     wait_cycles = 0;
+   end else begin
+     gen_valid = 0;
+     wait_cycles = wait_cycles + 1;
+   end
+
     // $random is surronded by the concat operator in order
     // to provide us with only unsigned (bit vector) data.
     // Generates valud in a 0..1 range
     temp = ({$random} % 100 + 1)/100.00;//threshold;
 
-    if (temp <= prob)
-     f_gen_bit_one = 1'b1;
+    if (gen_valid == 1)
+      if (temp <= prob)
+       f_gen_bit_one = 1'b1;
+      else
+        f_gen_bit_one = 1'b0;
     else
       f_gen_bit_one = 1'b0;
   end
