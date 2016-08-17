@@ -360,7 +360,7 @@ package acq_core_pkg is
     cfg_sw_trig_t_i                           : in std_logic;
     cfg_sw_trig_en_i                          : in std_logic;
     cfg_trig_dly_i                            : in std_logic_vector(31 downto 0);
-    cfg_int_trig_sel_i                        : in std_logic_vector(1 downto 0);
+    cfg_int_trig_sel_i                        : in std_logic_vector(4 downto 0);
     cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
     cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 

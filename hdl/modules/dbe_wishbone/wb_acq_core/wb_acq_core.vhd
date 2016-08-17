@@ -282,7 +282,7 @@ architecture rtl of wb_acq_core is
   signal acq_trig_sw                        : std_logic;
   signal acq_trig_sw_en                     : std_logic;
   signal acq_trig_dly                       : std_logic_vector(31 downto 0);
-  signal acq_trig_int_sw_sel                : std_logic_vector(1 downto 0);
+  signal acq_trig_int_sw_sel                : std_logic_vector(4 downto 0);
   signal acq_trig_int_thres                 : std_logic_vector(31 downto 0);
   signal acq_trig_int_thres_filt            : std_logic_vector(7 downto 0);
 

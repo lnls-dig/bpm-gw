@@ -51,7 +51,7 @@ port
   cfg_sw_trig_t_i                           : in std_logic;
   cfg_sw_trig_en_i                          : in std_logic;
   cfg_trig_dly_i                            : in std_logic_vector(31 downto 0);
-  cfg_int_trig_sel_i                        : in std_logic_vector(1 downto 0);
+  cfg_int_trig_sel_i                        : in std_logic_vector(4 downto 0);
   cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
   cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 
@@ -316,33 +316,33 @@ begin
   begin
      case to_integer(acq_num_atoms_uncoalesced_log2) is
        when 0 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 0));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 0)));
        when 1 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 1));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 1)));
        when 2 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(1 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 2));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(1 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 2)));
        when 3 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(2 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 3));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(2 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 3)));
        when 4 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(3 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 4));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(3 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 4)));
        when 5 =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(4 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 4));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(4 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 4)));
        when others =>
-         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(0 downto 0)),
-                          to_integer(unsigned(cfg_int_trig_sel_i)));
-         acq_curr_coalesce_id <= to_integer(lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto 0));
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 0)));
      end case;
   end process;
 
