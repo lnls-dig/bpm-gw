@@ -1303,7 +1303,7 @@ begin
 
     -- Necessity signals
     ddr_clk_i                                 => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
-    ddr_rst_i                                 => clk_sys_pcie_rst,
+    ddr_rst_i                                 => clk_sys_rst,
     pcie_clk_p_i                              => pcie_clk_p_i, --100 MHz PCIe Clock (connect directly to input pin)
     pcie_clk_n_i                              => pcie_clk_n_i, --100 MHz PCIe Clock
     pcie_rst_n_i                              => clk_sys_pcie_rstn, -- PCIe core reset
