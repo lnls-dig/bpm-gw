@@ -213,10 +213,10 @@ peripheral {
 
     field {
       name = "Channel selection for internal trigger";
-      description = "00: channel 1\n01: channel 2\n10: channel 3\n11: channel 4";
+      description = "00: channel 1\n01: channel 2\n10: channel 3\nn: channel n+1";
       prefix = "int_trig_sel";
       type = SLV;
-      size = 2;
+      size = 5;
       clock = "fs_clk_i";
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
@@ -227,7 +227,7 @@ peripheral {
       description = "Ignore on read, write with 0's";
       prefix = "reserved";
       type = SLV;
-      size = 26;
+      size = 23;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
     };
