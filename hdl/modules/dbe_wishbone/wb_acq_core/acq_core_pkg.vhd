@@ -360,7 +360,7 @@ package acq_core_pkg is
     cfg_sw_trig_t_i                           : in std_logic;
     cfg_sw_trig_en_i                          : in std_logic;
     cfg_trig_dly_i                            : in std_logic_vector(31 downto 0);
-    cfg_int_trig_sel_i                        : in std_logic_vector(1 downto 0);
+    cfg_int_trig_sel_i                        : in std_logic_vector(4 downto 0);
     cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
     cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 
@@ -411,6 +411,7 @@ package acq_core_pkg is
     acq_start_i                               : in  std_logic := '0';
     acq_now_i                                 : in  std_logic := '0';
     acq_stop_i                                : in  std_logic := '0';
+    acq_data_i                                : in  std_logic_vector(c_acq_chan_max_w-1 downto 0) := (others => '0');
     acq_trig_i                                : in  std_logic := '0';
     acq_dvalid_i                              : in  std_logic := '0';
 
@@ -437,6 +438,7 @@ package acq_core_pkg is
     acq_pre_trig_done_o                       : out std_logic;
     acq_wait_trig_skip_done_o                 : out std_logic;
     acq_post_trig_done_o                      : out std_logic;
+    acq_fsm_accepting_o                       : out std_logic;
     acq_fsm_req_rst_o                         : out std_logic;
     acq_fsm_state_o                           : out std_logic_vector(2 downto 0);
     acq_fsm_rstn_fs_sync_o                    : out std_logic;
@@ -455,6 +457,8 @@ package acq_core_pkg is
     -- FSM Outputs
     -----------------------------
     shots_decr_o                              : out std_logic;
+    acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
+    acq_valid_o                               : out std_logic;
     acq_trig_o                                : out std_logic;
     multishot_buffer_sel_o                    : out std_logic;
     samples_wr_en_o                           : out std_logic

@@ -51,7 +51,7 @@ port
   cfg_sw_trig_t_i                           : in std_logic;
   cfg_sw_trig_en_i                          : in std_logic;
   cfg_trig_dly_i                            : in std_logic_vector(31 downto 0);
-  cfg_int_trig_sel_i                        : in std_logic_vector(1 downto 0);
+  cfg_int_trig_sel_i                        : in std_logic_vector(4 downto 0);
   cfg_int_trig_thres_i                      : in std_logic_vector(31 downto 0);
   cfg_int_trig_thres_filt_i                 : in std_logic_vector(7 downto 0);
 
@@ -138,8 +138,6 @@ architecture rtl of acq_trigger is
 
   -- Signals
   signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
-  signal lmt_dtrig_chan_id_uncoalesced      : unsigned(c_chan_id_width-1 downto 0);
-  signal lmt_dtrig_chan_id_uncoalesced_id   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_dtrig_valid                    : std_logic;
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
   signal lmt_valid                          : std_logic;
@@ -147,6 +145,7 @@ architecture rtl of acq_trigger is
   signal dtrig_data_in                      : std_logic_vector(g_data_in_width-1 downto 0);
   signal dtrig_valid_in                     : std_logic;
 
+  signal acq_curr_coalesce_id               : integer;
   signal acq_data_in                        : std_logic_vector(g_data_in_width-1 downto 0);
   signal acq_data_sel_out                   : std_logic_vector(g_data_in_width-1 downto 0);
   signal acq_data_out                       : std_logic_vector(g_data_in_width-1 downto 0);
@@ -304,22 +303,48 @@ begin
   -----------------------------------------------------------------------------
   -- Trigger Logic
   -----------------------------------------------------------------------------
-  -- Get only the uncoalesced part of the Data Trigger channel ID
-  lmt_dtrig_chan_id_uncoalesced(lmt_dtrig_chan_id_uncoalesced'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2)) <=
-      (others => '0');
-  lmt_dtrig_chan_id_uncoalesced(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
-      lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0);
-
-  -- Get the coalesced data packet ID of the Data Trigger channel
-  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id_uncoalesced_id'length-1 downto
-  lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)) <=
-    (others => '0');
-  lmt_dtrig_chan_id_uncoalesced_id(lmt_dtrig_chan_id'length-to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0) <=
-    lmt_dtrig_chan_id(lmt_dtrig_chan_id'length-1 downto to_integer(acq_num_atoms_uncoalesced_log2));
 
   -- Internal hardware trigger
-  int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id_uncoalesced),
-                   to_integer(unsigned(cfg_int_trig_sel_i)));
+  -- Get the coalesced data packet ID of the Data Trigger channel
+  --int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id(to_integer(acq_num_atoms_uncoalesced_log2)-1 downto 0)),
+  --                 to_integer(unsigned(cfg_int_trig_sel_i)));
+
+  -- Problem: Vivado 2015.2 does not support dynamic slicing!
+  -- Solution: Implement a case statement to address each possible slice
+
+  p_int_trig_data : process(acq_num_atoms_uncoalesced_log2)
+  begin
+     case to_integer(acq_num_atoms_uncoalesced_log2) is
+       when 0 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 0)));
+       when 1 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 1)));
+       when 2 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(1 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 2)));
+       when 3 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(2 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 3)));
+       when 4 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(3 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 4)));
+       when 5 =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(4 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 4)));
+       when others =>
+         int_trig_data <= acq_atoms(to_integer(lmt_dtrig_chan_id),
+                          to_integer(unsigned(cfg_int_trig_sel_i(0 downto 0))));
+         acq_curr_coalesce_id <= to_integer(unsigned(cfg_int_trig_sel_i(cfg_int_trig_sel_i'length-1 downto 0)));
+     end case;
+  end process;
 
   -- Sign extend data according to the selected channel
   p_int_trig_sign_extend : process (fs_clk_i)
@@ -329,7 +354,8 @@ begin
       if fs_rst_n_i = '0' then
         int_trig_data_se <= (others => '0');
       else
-        if lmt_dtrig_chan_id_uncoalesced_id = acq_coalesce_cnt then
+        -- Get only the uncoalesced part of the Data Trigger channel ID
+        if acq_curr_coalesce_id = acq_coalesce_cnt then
           int_trig_data_se <= int_trig_data;
         end if;
       end if;
@@ -463,7 +489,7 @@ begin
   acq_trig_align_cnt_en <= acq_valid_out and acq_wr_en_i;
 
   -- Hold trigger signal until a we are aligned and a valid sample is found.
-  -- The aligned term here refers to the last atom of a channel sample
+  -- The aligned term here refers to the first atom of a channel sample
   -- (composed of atoms). For instance, if the channel is composed of 4 atoms,
   -- the last channel atom would be number 3.
   p_trig_align : process (fs_clk_i)
@@ -486,9 +512,9 @@ begin
         -- By design acq_min_align_max would be at least 1, meaning a channel
         -- composed of 2 atoms. So the arithmetic acq_min_align_max-1 yields
         -- valid values in all cases.
-        if trig_unaligned = '1' and acq_trig_align_cnt = acq_min_align_max-1 and
-            acq_valid_sel_out = '1' then -- will increment to the last atom
-          trig_align <= '1'; -- Output trigger aligned with the last atom
+        if trig_unaligned = '1' and acq_trig_align_cnt = acq_min_align_max and
+            acq_valid_sel_out = '1' then -- will increment to the first atom
+          trig_align <= '1'; -- Output trigger aligned with the first atom
         elsif acq_valid_sel_out = '1' then
           trig_align <= '0';
         end if;

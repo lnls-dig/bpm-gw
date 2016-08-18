@@ -712,7 +712,7 @@ acq_core_trig_cfg_sw_trig_en_o
 
 </td>
 <td  class="td_pblock_right">
-acq_core_trig_cfg_int_trig_sel_o[1:0]
+acq_core_trig_cfg_int_trig_sel_o[4:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -729,7 +729,7 @@ acq_core_trig_cfg_int_trig_sel_o[1:0]
 
 </td>
 <td  class="td_pblock_right">
-acq_core_trig_cfg_reserved_o[25:0]
+acq_core_trig_cfg_reserved_o[22:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
@@ -2077,7 +2077,7 @@ TRIG_CFG
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[25:18]
+RESERVED[22:15]
 </td>
 <td >
 
@@ -2131,7 +2131,7 @@ RESERVED[25:18]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[17:10]
+RESERVED[14:7]
 </td>
 <td >
 
@@ -2184,11 +2184,11 @@ RESERVED[17:10]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[9:2]
+<td style="border: solid 1px black;" colspan=7  class="td_field">
+RESERVED[6:0]
 </td>
-<td >
-
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+INT_TRIG_SEL[4:4]
 </td>
 <td >
 
@@ -2238,11 +2238,8 @@ RESERVED[9:2]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=2  class="td_field">
-RESERVED[1:0]
-</td>
-<td style="border: solid 1px black;" colspan=2  class="td_field">
-INT_TRIG_SEL[1:0]
+<td style="border: solid 1px black;" colspan=4  class="td_field">
+INT_TRIG_SEL[3:0]
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 SW_TRIG_EN
@@ -2255,6 +2252,9 @@ HW_TRIG_POL
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 HW_TRIG_SEL
+</td>
+<td >
+
 </td>
 <td >
 
@@ -2284,7 +2284,7 @@ SW_TRIG_EN
 <li><b>
 INT_TRIG_SEL
 </b>[<i>read/write</i>]: Channel selection for internal trigger
-<br>00: channel 1<br>01: channel 2<br>10: channel 3<br>11: channel 4
+<br>00: channel 1<br>01: channel 2<br>10: channel 3<br>n: channel n+1
 <li><b>
 RESERVED
 </b>[<i>read/write</i>]: Reserved

@@ -205,26 +205,26 @@ begin
 
   gen_word_packer : for i in 0 to g_acq_num_channels-1 generate
 
-    gen_packer_narrow : if c_acq_channels(i).width < c_max_channel_width generate
+    gen_packer_narrow : if g_facq_channels(i).width < c_max_channel_width generate
 
       -- If we are narrower than c_max_channel_width we must at least divide
       -- c_min_channel_width
-      assert (c_acq_channels(i).width mod c_min_channel_width = 0)
-      report "[wb_facq_core] c_acq_channels(" & Integer'image(i) &
+      assert (g_facq_channels(i).width mod c_min_channel_width = 0)
+      report "[wb_facq_core] g_facq_channels(" & Integer'image(i) &
       ").width must divide c_min_channel_width (" & Integer'image(c_min_channel_width) &
       ")"
       severity failure;
 
       cmp_gc_word_packer : gc_word_packer
       generic map (
-        g_input_width                        => to_integer(c_acq_channels(i).width),
+        g_input_width                        => to_integer(g_facq_channels(i).width),
         g_output_width                       => c_min_channel_width
       )
       port map (
         clk_i                                => fs_clk_i,
         rst_n_i                              => fs_rst_n_i,
 
-        d_i                                  => acq_val_i(i)(to_integer(c_acq_channels(i).width)-1 downto 0),
+        d_i                                  => acq_val_i(i)(to_integer(g_facq_channels(i).width)-1 downto 0),
         d_valid_i                            => acq_dvalid_i(i),
         d_req_o                              => open,
 
@@ -235,24 +235,24 @@ begin
 
     end generate;
 
-    gen_packer_wider : if c_acq_channels(i).width >= c_max_channel_width generate
+    gen_packer_wider : if g_facq_channels(i).width >= c_max_channel_width generate
 
-      assert (c_acq_channels(i).width mod c_max_channel_width = 0)
-      report "[wb_facq_core] c_acq_channels(" & Integer'image(i) &
+      assert (g_facq_channels(i).width mod c_max_channel_width = 0)
+      report "[wb_facq_core] g_facq_channels(" & Integer'image(i) &
       ").width must divide c_max_channel_width (" & Integer'image(c_max_channel_width) &
       ")"
       severity failure;
 
       cmp_gc_word_packer : gc_word_packer
       generic map (
-        g_input_width                        => to_integer(c_acq_channels(i).width),
+        g_input_width                        => to_integer(g_facq_channels(i).width),
         g_output_width                       => c_max_channel_width
       )
       port map (
         clk_i                                => fs_clk_i,
         rst_n_i                              => fs_rst_n_i,
 
-        d_i                                  => acq_val_i(i)(to_integer(c_acq_channels(i).width)-1 downto 0),
+        d_i                                  => acq_val_i(i)(to_integer(g_facq_channels(i).width)-1 downto 0),
         d_valid_i                            => acq_dvalid_i(i),
         d_req_o                              => open,
 

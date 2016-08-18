@@ -249,6 +249,7 @@ architecture rtl of wb_acq_core is
 
   ---- Acquisition FSM
   signal acq_fsm_state                      : std_logic_vector(2 downto 0);
+  signal acq_fsm_accepting                  : std_logic;
   signal acq_fsm_req_rst                    : std_logic;
   signal acq_fsm_rstn_fs_sync               : std_logic;
   signal acq_fsm_rstn_ext_sync              : std_logic;
@@ -264,12 +265,14 @@ architecture rtl of wb_acq_core is
   signal acq_data_marsh                     : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal dtrig_data_marsh                   : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
+  signal acq_data_fsm                       : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_trig_in                        : std_logic;
   signal acq_trig                           : std_logic;
-  signal acq_trig_det                       : std_logic;
+  signal acq_trig_fsm                       : std_logic;
   signal acq_dvalid_in                      : std_logic;
   signal dtrig_valid_in                     : std_logic;
   signal acq_valid                          : std_logic;
+  signal acq_valid_fsm                      : std_logic;
   signal samples_wr_en                      : std_logic;
 
   -- ACQ trigger registers
@@ -279,7 +282,7 @@ architecture rtl of wb_acq_core is
   signal acq_trig_sw                        : std_logic;
   signal acq_trig_sw_en                     : std_logic;
   signal acq_trig_dly                       : std_logic_vector(31 downto 0);
-  signal acq_trig_int_sw_sel                : std_logic_vector(1 downto 0);
+  signal acq_trig_int_sw_sel                : std_logic_vector(4 downto 0);
   signal acq_trig_int_thres                 : std_logic_vector(31 downto 0);
   signal acq_trig_int_thres_filt            : std_logic_vector(7 downto 0);
 
@@ -303,6 +306,7 @@ architecture rtl of wb_acq_core is
   signal shots_cnt                          : unsigned(15 downto 0);
   signal shots_decr                         : std_logic;
   signal multishot_buffer_sel               : std_logic;
+  signal acq_ms_addr_rst                    : std_logic;
 
   -- Packet size for ext interface
   signal lmt_acq_pre_pkt_size               : unsigned(c_acq_samples_size-1 downto 0);
@@ -638,7 +642,7 @@ begin
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
     lmt_valid_i                             => acq_start,
 
-    acq_wr_en_i                             => samples_wr_en,
+    acq_wr_en_i                             => acq_fsm_accepting,
     acq_data_o                              => acq_data,
     acq_valid_o                             => acq_valid,
     acq_trig_o                              => acq_trig
@@ -669,6 +673,7 @@ begin
     acq_start_i                             => acq_start_sync_fs,
     acq_now_i                               => acq_now,
     acq_stop_i                              => acq_stop,
+    acq_data_i                              => acq_data,
     acq_trig_i                              => acq_trig,
     acq_dvalid_i                            => acq_valid,
 
@@ -693,6 +698,7 @@ begin
     acq_pre_trig_done_o                     => acq_pre_trig_done,
     acq_wait_trig_skip_done_o               => acq_wait_trig_skip_done,
     acq_post_trig_done_o                    => acq_post_trig_done,
+    acq_fsm_accepting_o                     => acq_fsm_accepting,
     acq_fsm_req_rst_o                       => acq_fsm_req_rst,
     acq_fsm_state_o                         => acq_fsm_state,
     acq_fsm_rstn_fs_sync_o                  => acq_fsm_rstn_fs_sync,
@@ -711,7 +717,9 @@ begin
     -- FSM Outputs
     -----------------------------
     shots_decr_o                            => shots_decr,
-    acq_trig_o                              => acq_trig_det,
+    acq_data_o                              => acq_data_fsm,
+    acq_valid_o                             => acq_valid_fsm,
+    acq_trig_o                              => acq_trig_fsm,
     multishot_buffer_sel_o                  => multishot_buffer_sel,
     samples_wr_en_o                         => samples_wr_en
   );
@@ -732,14 +740,14 @@ begin
     fs_ce_i                                 => fs_ce_i,
     fs_rst_n_i                              => fs_rst_n,
 
-    data_i                                  => acq_data,
+    data_i                                  => acq_data_fsm,
     data_id_i                               => acq_fsm_state,
-    dvalid_i                                => acq_valid,
+    dvalid_i                                => acq_valid_fsm,
     wr_en_i                                 => samples_wr_en,
-    addr_rst_i                              => shots_decr,
+    addr_rst_i                              => acq_ms_addr_rst,
 
     buffer_sel_i                            => multishot_buffer_sel,
-    acq_trig_i                              => acq_trig_det,
+    acq_trig_i                              => acq_trig_fsm,
 
     pre_trig_samples_i                      => lmt_acq_pre_pkt_size,
     post_trig_samples_i                     => lmt_acq_pre_pkt_size,
@@ -751,6 +759,8 @@ begin
     dpram_dout_o                            => dpram_dout,
     dpram_valid_o                           => dpram_valid
   );
+
+  acq_ms_addr_rst                           <= shots_decr or acq_start_sync_fs;
 
   -- Do not output the header. Only the payload
   dpram_dout_o                              <=  dpram_dout(f_acq_chan_find_widest(g_acq_channels)-1 downto 0);
@@ -788,10 +798,10 @@ begin
     dpram_dvalid_i                          => dpram_valid,
 
     -- Passthrough data
-    pt_data_i                               => acq_data,
+    pt_data_i                               => acq_data_fsm,
     pt_data_id_i                            => acq_fsm_state,
-    pt_trig_i                               => acq_trig_det,
-    pt_dvalid_i                             => acq_valid,
+    pt_trig_i                               => acq_trig_fsm,
+    pt_dvalid_i                             => acq_valid_fsm,
     pt_wr_en_i                              => samples_wr_en,
 
     -- Request transaction reset as soon as possible (when all outstanding
