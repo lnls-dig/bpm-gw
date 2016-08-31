@@ -1493,8 +1493,6 @@ begin
   );
 
   fmc_led2_o <= led2_extd_p or fmc_led2_int;
-
-  fmc_led2_o <= fmc_led2_int;
   fmc_led3_o <= fmc_led3_int;
 
 end rtl;
