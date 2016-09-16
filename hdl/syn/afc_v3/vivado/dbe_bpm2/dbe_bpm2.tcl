@@ -376,10 +376,6 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_write.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/ddr_core/mig_b.prj"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.upgrade_log"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/pcie_core/pcie_core.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc250m_4ch/wbgen/wb_fmc250m_4ch_regs.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc250m_4ch/wb_fmc250m_4ch.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc250m_4ch/xwb_fmc250m_4ch.vhd"
@@ -398,9 +394,6 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/dds_sin_lut.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd"
@@ -422,11 +415,6 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.h"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/xwb_trigger_iface.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wb_trigger_iface.vhd"
-#    "/home/lerwys/Repos/bpm-sw/hdl/platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/platform/artix7/afc_v3/axi_interconnect/axi_interconnect.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.upgrade_log"
-#    "/home/lerwys/Repos/bpm-sw/hdl/platform/artix7/afc_v3/ddr_core/ddr_core.upgrade_log"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/trigger_rcv/trigger_rcv.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/counter_simple/counter_simple.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"
@@ -844,10 +832,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_write.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/ddr_core/mig_b.prj"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc250m_4ch/wbgen/wb_fmc250m_4ch_regs.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc250m_4ch/wb_fmc250m_4ch.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc250m_4ch/xwb_fmc250m_4ch.vhd"]"\
@@ -865,14 +849,11 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/dds_sin_lut.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_16_65/cos_lut_uvx_16_65.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_16_65/sin_lut_uvx_16_65.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_18_65/cos_lut_uvx_18_65.coe"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"]"\
  "[file normalize "$origin_dir/../../../../platform/virtex6/chipscope/icon_1_port/chipscope_icon_1_port.ngc"]"\
  "[file normalize "$origin_dir/../../../../platform/virtex6/chipscope/icon_1_port/chipscope_icon_1_port.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/xwb_trigger_mux.vhd"]"\
@@ -889,18 +870,13 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.h"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/xwb_trigger_iface.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wb_trigger_iface.vhd"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/platform/artix7/afc_v3/axi_interconnect/axi_interconnect.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.upgrade_log"]"\
- "[file normalize "$origin_dir/../../../../../../bpm-sw/hdl/platform/artix7/afc_v3/ddr_core/ddr_core.upgrade_log"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/trigger_rcv/trigger_rcv.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/counter_simple/counter_simple.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.ngc"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_common/hearbeat/heartbeat.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_common/heartbeat/heartbeat.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"]"\
@@ -4862,42 +4838,6 @@ set_property "scoped_to_ref" "" $file_obj
 set_property "used_in" "synthesis" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "cos_lut_uvx_35_148/cos_lut_uvx_35_148.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "pcie_core/pcie_core.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "sin_lut_uvx_35_148/sin_lut_uvx_35_148.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
 set file "wbgen/wb_fmc250m_4ch_regs.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -5041,17 +4981,6 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "uvx_250M/machine_pkg.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -5102,33 +5031,6 @@ set_property "scoped_to_ref" "" $file_obj
 set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
-
-set file "cos_lut_uvx_16_65/cos_lut_uvx_16_65.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "sin_lut_uvx_16_65/sin_lut_uvx_16_65.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
 
 set file "ce_synch/ce_synch.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -5362,51 +5264,6 @@ set_property "path_mode" "RelativeFirst" $file_obj
 set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
-
-set file "axi_datamover_0/axi_datamover_0.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "axi_datamover_bpm/axi_datamover_bpm.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "axi_interconnect/axi_interconnect.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "axi_interconnect_bpm/axi_interconnect_bpm.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
-
-set file "ddr_core/ddr_core.upgrade_log"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP Update Log" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "" $file_obj
 
 set file "trigger_rcv/trigger_rcv.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
