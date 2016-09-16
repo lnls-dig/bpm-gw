@@ -418,7 +418,6 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/trigger_rcv/trigger_rcv.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/counter_simple/counter_simple.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.ngc"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.vhd"
 #    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/hearbeat/heartbeat.vhd"
@@ -434,7 +433,6 @@
 #    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/cos_lut_uvx_18_65/cos_lut_uvx_18_65.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/ddr_core/ddr_core.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/pcie_core/pcie_core.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.xci"
 #    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm2/pcie_core.xdc"
 #    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm2/ddr_core.xdc"
 #    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm2/dbe_bpm2.xdc"
@@ -873,7 +871,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_common/trigger_rcv/trigger_rcv.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/counter_simple/counter_simple.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_250M/sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.ngc"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_2_port/chipscope_icon_2_port.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/heartbeat/heartbeat.vhd"]"\
@@ -5066,18 +5063,6 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "cos_lut_uvx_18_65/cos_lut_uvx_18_65.coe"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "scoped_to_cells" "" $file_obj
-set_property "scoped_to_ref" "" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "sin_lut_uvx_18_65/sin_lut_uvx_18_65.coe"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "is_enabled" "1" $file_obj
 set_property "is_global_include" "0" $file_obj
