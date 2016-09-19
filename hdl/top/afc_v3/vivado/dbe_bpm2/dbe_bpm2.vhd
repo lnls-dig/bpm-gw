@@ -331,6 +331,9 @@ port(
 end dbe_bpm2;
 
 architecture rtl of dbe_bpm2 is
+  -- Swap/de-swap settings
+  constant c_pos_calc_delay_vec_width         : natural := 8;
+  constant c_pos_calc_swap_div_freq_vec_width : natural := 16;
 
   -- Top crossbar layout
   -- Number of slaves
@@ -1843,7 +1846,11 @@ begin
     g_k_width                               => c_pos_calc_k_width,
 
     --width for IQ output
-    g_IQ_width                              => c_pos_calc_IQ_width
+    g_IQ_width                              => c_pos_calc_IQ_width,
+
+    -- Swap/de-swap setup
+    g_delay_vec_width                       => c_pos_calc_delay_vec_width,
+    g_swap_div_freq_vec_width               => c_pos_calc_swap_div_freq_vec_width
   )
   port map (
     rst_n_i                                 => clk_sys_rstn,
@@ -1956,11 +1963,7 @@ begin
     -----------------------------
     -- Output to RFFE board
     -----------------------------
-    clk_swap_o                              => dsp1_clk_rffe_swap,
-    flag1_o                                 => dsp1_flag1_int,
-    flag2_o                                 => dsp1_flag2_int,
-    ctrl1_o                                 => open,
-    ctrl2_o                                 => open,
+    rffe_swclk_o                            => dsp1_clk_rffe_swap,
 
     -----------------------------
     -- Debug signals
@@ -1972,12 +1975,6 @@ begin
     dbg_adc_ch2_cond_o                      => dsp1_dbg_adc_ch2_cond,
     dbg_adc_ch3_cond_o                      => dsp1_dbg_adc_ch3_cond
   );
-
-  --flag1_o                                   <= dsp1_flag1_int;
-  --flag2_o                                   <= dsp1_flag2_int;
-  ---- There is no clk_swap2x_o, so we just output the same as clk_swap_o
-  --clk_swap_o                                <= dsp1_clk_rffe_swap;
-  --clk_swap2x_o                              <= dsp1_clk_rffe_swap;
 
   ----------------------------------------------------------------------
   --                      DSP Chain 2 Core                            --
@@ -2036,7 +2033,11 @@ begin
     g_k_width                               => c_pos_calc_k_width,
 
     --width for IQ output
-    g_IQ_width                              => c_pos_calc_IQ_width
+    g_IQ_width                              => c_pos_calc_IQ_width,
+
+    -- Swap/de-swap setup
+    g_delay_vec_width                       => c_pos_calc_delay_vec_width,
+    g_swap_div_freq_vec_width               => c_pos_calc_swap_div_freq_vec_width
   )
   port map (
     rst_n_i                                 => clk_sys_rstn,
@@ -2149,11 +2150,7 @@ begin
     -----------------------------
     -- Output to RFFE board
     -----------------------------
-    clk_swap_o                              => dsp2_clk_rffe_swap,
-    flag1_o                                 => dsp2_flag1_int,
-    flag2_o                                 => dsp2_flag2_int,
-    ctrl1_o                                 => open,
-    ctrl2_o                                 => open,
+    rffe_swclk_o                            => dsp2_clk_rffe_swap,
 
     -----------------------------
     -- Debug signals
@@ -2165,13 +2162,6 @@ begin
     dbg_adc_ch2_cond_o                      => dsp2_dbg_adc_ch2_cond,
     dbg_adc_ch3_cond_o                      => dsp2_dbg_adc_ch3_cond
   );
-
-  -- FIXME: Only output DSP CHAIN 1 signals
-  --flag1_o                                   <= dsp2_flag1_int;
-  --flag2_o                                   <= dsp2_flag2_int;
-  ---- There is no clk_swap2x_o, so we just output the same as clk_swap_o
-  --clk_swap_o                                <= dsp2_clk_rffe_swap;
-  --clk_swap2x_o                              <= dsp2_clk_rffe_swap;
 
   ----------------------------------------------------------------------
   --                      Peripherals Core                            --
