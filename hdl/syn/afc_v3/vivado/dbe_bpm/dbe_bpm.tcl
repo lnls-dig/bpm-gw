@@ -112,30 +112,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_2_diff_cnt.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_4_port/chipscope_icon_4_port.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/icon_6_port/chipscope_icon_6_port.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_common/heartbeat/heartbeat.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/xwb_facq_core_mux.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/chipscope/ila/chipscope_ila.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/xwb_trigger_mux.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wb_trigger_mux.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs_pkg.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.h"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/wb_trigger.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/trigger_resolver.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/xwb_trigger.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/trigger_pkg.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs_pkg.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.h"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/xwb_trigger_iface.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wb_trigger_iface.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_common/trigger_rcv/trigger_rcv.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_common/counter_simple/counter_simple.vhd"]"\
- "[file normalize "$origin_dir/../../../../modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/data_checker.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/downconv/downconv.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_master_core/eb_commit_len_fifo.vhd"]"\
@@ -394,9 +371,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_afc_diag/shift_reg.v"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_afc_diag/spi_link_top.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/position_calc/position_calc.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_cos_lut.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/machine_pkg.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_sin_lut.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_core_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_cdc_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_position_calc/xwb_position_calc_core.vhd"]"\
@@ -414,9 +388,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter_slv.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/rp_math_pack/rp_math_pack.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_pulse_level_sync.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_trigger.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/ipcores_pkg.vhd"]"\
@@ -433,13 +404,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_write.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/ddr_core/mig_b.prj"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.xci"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/ddr_core/ddr_core.xci"]"\
- "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.xci"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.xci"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_adc_common/wbgen/wb_fmc_adc_common_regs.h"]"\
@@ -450,9 +415,44 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_active_clk/wbgen/wb_fmc_active_clk_regs.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_active_clk/wb_fmc_active_clk.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc_active_clk/xwb_fmc_active_clk.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_cos_lut.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/machine_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_sin_lut.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/ddr_core/ddr_core.xci"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/pcie_core/pcie_core.xci"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_common/heartbeat/heartbeat.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/xwb_trigger_mux.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wb_trigger_mux.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.h"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/wb_trigger.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/trigger_resolver.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/xwb_trigger.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger/trigger_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.h"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/xwb_trigger_iface.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_trigger_iface/wb_trigger_iface.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_common/trigger_rcv/trigger_rcv.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_common/counter_simple/counter_simple.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/xwb_facq_core_mux.vhd"]"\
+ "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux.vhd"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"]"\
+ "[file normalize "$origin_dir/../../../../platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wb_bpm_swap.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/xwb_bpm_swap.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/bpm_swap/swmode_sel.vhd"]"\
@@ -1042,254 +1042,11 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "wb_facq_core/xwb_facq_core.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_facq_core/wb_facq_core.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_facq_core_mux/wb_facq_core_mux_plain.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_facq_core_mux/xwb_facq_core_mux.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_facq_core_mux/wb_facq_core_mux.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-
 set file "ila/chipscope_ila.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
 set_property "is_global_include" "1" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger_mux/xwb_trigger_mux.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger_mux/wb_trigger_mux.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_mux_regs_pkg.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_mux_regs.h"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "Verilog Header" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_mux_regs.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger/wb_trigger.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger/trigger_resolver.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger/xwb_trigger.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger/trigger_pkg.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_iface_regs_pkg.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_iface_regs.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wbgen/wb_trigger_iface_regs.h"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "Verilog Header" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger_iface/xwb_trigger_iface.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_trigger_iface/wb_trigger_iface.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "trigger_rcv/trigger_rcv.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "counter_simple/counter_simple.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "extend_pulse_dyn/extend_pulse_dyn.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
 set_property "library" "xil_defaultlib" $file_obj
 set_property "path_mode" "RelativeFirst" $file_obj
 set_property "used_in" "synthesis simulation" $file_obj
@@ -4171,7 +3928,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "uvx_130M/dds_cos_lut.vhd"
+set file "wb_facq_core/xwb_facq_core.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -4182,7 +3939,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "uvx_130M/machine_pkg.vhd"
+set file "wb_facq_core/wb_facq_core.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -4193,7 +3950,29 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "uvx_130M/dds_sin_lut.vhd"
+set file "wb_facq_core_mux/wb_facq_core_mux_plain.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core_mux/xwb_facq_core_mux.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_facq_core_mux/wb_facq_core_mux.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -4303,6 +4082,250 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
+set file "wb_trigger/wb_trigger.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger/trigger_resolver.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger/xwb_trigger.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger/trigger_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_iface_regs_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_iface_regs.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_iface_regs.h"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "Verilog Header" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger_iface/xwb_trigger_iface.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger_iface/wb_trigger_iface.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "trigger_rcv/trigger_rcv.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "counter_simple/counter_simple.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "extend_pulse_dyn/extend_pulse_dyn.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "rp_math_pack/rp_math_pack.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_acq_core/acq_pulse_level_sync.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_acq_core/acq_trigger.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "afc_v3/ipcores_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "scoped_to_cells" "" $file_obj
+set_property "scoped_to_ref" "" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "scoped_to_cells" "" $file_obj
+set_property "scoped_to_ref" "" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_pcie/bpm_axi_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "uvx_130M/dds_cos_lut.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "uvx_130M/dds_sin_lut.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "uvx_130M/machine_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
 set file "cordic/inversion_stage.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -4380,17 +4403,6 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "rp_math_pack/rp_math_pack.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "wbgen/wb_bpm_swap.h"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "Verilog Header" $file_obj
@@ -4424,30 +4436,6 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "scoped_to_cells" "" $file_obj
-set_property "scoped_to_ref" "" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "scoped_to_cells" "" $file_obj
-set_property "scoped_to_ref" "" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "is_enabled" "1" $file_obj
@@ -4460,51 +4448,62 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "wb_acq_core/acq_pulse_level_sync.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_acq_core/acq_trigger.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "afc_v3/ipcores_pkg.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_pcie/bpm_axi_pkg.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "pkgs/v6abb64Package_efifo_elink.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger_mux/xwb_trigger_mux.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_trigger_mux/wb_trigger_mux.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_mux_regs_pkg.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_mux_regs.h"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "Verilog Header" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wbgen/wb_trigger_mux_regs.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
