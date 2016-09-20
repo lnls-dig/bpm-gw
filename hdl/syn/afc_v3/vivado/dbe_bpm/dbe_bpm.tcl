@@ -23,411 +23,7 @@
 # 2. The following source(s) files that were local or imported into the original project.
 #    (Please see the '$orig_proj_dir' and '$origin_dir' variable setting below at the start of the script)
 #
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/series7/s7_hwfifo_wrapper.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_clockgen.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_cop.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_crc.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_defines.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_fifo.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_maccontrol.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_macstatus.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_miim.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_outputcontrol.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_random.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_receivecontrol.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_register.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_registers.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_rxaddrcheck.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_rxcounters.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_rxethmac.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_rxstatem.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_shiftreg.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_spram_256x32.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_top.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_transmitcontrol.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_txcounters.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_txethmac.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_txstatem.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/eth_wishbone.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/ethmac.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/ethmac_defines.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/jtag_cores.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/jtag_tap.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_adder.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_addsub.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/lm32_allprofiles.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_logic_op.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_mc_arithmetic.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/platform/generic/lm32_multiplier.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_shifter.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/log2.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/sockit_owm.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_clgen.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_shift.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/spi_top.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/timescale.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/xilinx_dist_ram_16x32.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_2_diff_cnt.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_4_port/chipscope_icon_4_port.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_6_port/chipscope_icon_6_port.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/ila/chipscope_ila.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/hearbeat/heartbeat.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_mux/xwb_trigger_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_mux/wb_trigger_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_mux/wbgen/wb_trigger_mux_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger/wb_trigger.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger/trigger_resolver.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger/xwb_trigger.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger/trigger_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wbgen/wb_trigger_iface_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/xwb_trigger_iface.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_trigger_iface/wb_trigger_iface.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/trigger_rcv/trigger_rcv.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/counter_simple/counter_simple.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/extend_pulse_dyn/extend_pulse_dyn.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/data_checker.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/downconv/downconv.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_commit_len_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_framer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_master_eth_tx.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_master_slave_wrapper.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_master_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_master_wb_if.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_raw_slave.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_master_core/eb_record_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_usb_core/ez_usb.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_usb_core/ez_usb_fifos.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_usb_core/ez_usb_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_sync_chains.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_arbitrated_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_bicolor_led_ctrl.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_big_adder.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_crc_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_delay_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_dual_pi_controller.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_dyn_glitch_filt.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_frequency_meter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_fsm_watchdog.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_glitch_filt.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_i2c_slave.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_moving_average.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_prio_encoder.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer2.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_rr_arbiter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_serial_dac.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_word_packer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_spram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/input_gen/input_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/irqm_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_dp_ram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/src/lm32_ram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/multiboot_fsm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/multiboot_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_pwm/simple_pwm_wb.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_pwm/simple_pwm_wbgen2_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/spi_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/vic_prio_enc.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/wb_acq_core_plain.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/wb_async_bridge.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/wb_ethmac.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc150/wb_fmc150_port.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc516/wb_fmc516.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc516/wbgen/wb_fmc516_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc516/wbgen/wb_fmc516_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_bridge/wb_i2c_bridge.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_lm32.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_slave.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_irq/wb_irq_timer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/wb_mem.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/wb_onewire_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_serial_lcd/wb_serial_lcd.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_pwm/wb_simple_pwm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_slave_vic.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/wb_spi.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_flash/wb_spi_flash.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/wb_xil_multiboot.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_async.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_fifo_sync.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc150/xfmc150_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/xloader_registers_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/xloader_wb.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/xwb_acq_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/xwb_bpm_swap.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/xwb_ethmac.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fabric/xwb_fabric_sink.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fabric/xwb_fabric_source.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc150/xwb_fmc150.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc516/xwb_fmc516.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_lm32/generated/xwb_lm32.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_onewire_master/xwb_onewire_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_pwm/xwb_simple_pwm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi/xwb_spi.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_sink.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/generic/xwb_stream_sink_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/xwb_stream_source.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/generic/xwb_stream_source_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_streamer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_vic/xwb_vic.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/xwb_xilinx_fpga_loader.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fabric/xwrf_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_4_port/chipscope_icon_4_port.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/icon_6_port/chipscope_icon_6_port.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core/xwb_facq_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core/wb_facq_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux_plain.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/xwb_facq_core_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_facq_core_mux/wb_facq_core_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/chipscope/ila/chipscope_ila.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/genram_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_simple_dpram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/auto_baud.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/inferred_async_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/clock_driver/conv_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gencores_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_core_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fabric/wr_fabric_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/DMA_Calculate.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_bit_ctrl.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/DMA_FSM.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_defines.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/timescale.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_clgen.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/inv_ch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_usDMA_Channel.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_MWr_Channel.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/dsp_cores_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/rf_ch_swap.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_MRd_Channel.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/dyn_mult_2chs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_dsDMA_Channel.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_internals_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/fixed_dds/lut_sweep.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/Tx_Output_Arbitor.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/clock_driver/xlclockdriver.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_shift.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/Interrupts.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/pipeline/pipeline.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_CplD_Channel.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/RxIn_Delays.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/tx_Mem_Reader.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/delay_inv_ch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/wbgen/acq_core_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/serial.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/rx_Transact.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_pulse_synchronizer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/multiplier/generic_multiplier.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/fixed_dds/fixed_dds.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_baud_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/fc_source.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/cic_decim.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_sync_ffs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/inv_chs_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/swap_cnt_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/dbe_common_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/pulse2level/pulse2level.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_top.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/tx_Transact.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_rx.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_generic_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/Registers.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_cnt.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/divider/arith_dsp48e_package.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/gc_shiftreg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/etherbone_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/tlpControl.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_fsm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_clk.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_commit_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/ddr_Transact.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/cic_dual.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/dbe_wishbone_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_pass_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/un_cross_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/cic_dyn.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_wbm_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_data.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/wb_spi_bidir.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_cfg_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/sw_windowing/counter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/rs232_syscon.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_tag_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_private_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/wbgen/acq_core_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_checksum.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc130m_4ch/wbgen/fmc_130m_4ch_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/delta_sigma/delta_sigma.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/mixer/mixer.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_fc_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_fsm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_multishot_dpram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_crossbar.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/wb_gpio_port.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/common/wb_transact.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_common/reset_synch/reset_synch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/ip_cores/axis_mux_2_to_1/axis_mux_2_to_1.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_dly_iface.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wb_bpm_swap.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/sw_windowing/input_conditioner.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_register_link.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_stream_widen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_buf.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_stream_narrow.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_simple_timer/xwb_tics.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_eth_tx.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_uart/xwb_simple_uart.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_eth_rx.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/rs232_syscon_top.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_spi_bidir/xwb_spi_bidir.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_extend_pulse.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_stream/generic/wb_stream_source_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc130m_4ch/wbgen/fmc_130m_4ch_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_gpio_port/xwb_gpio_port.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_ext_pulse_sync.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_i2c_master/xwb_i2c_master.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/wb_acq_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_sdb_crossbar.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/fmc_adc_common/fmc_adc_iface.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_dma/xwb_dma.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac/ethmac_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_ethernet_slave.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc130m_4ch/wb_fmc130m_4ch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/wb_rs232_syscon.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_dbe_periph/wb_dbe_periph.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/etherbone-core/hdl/eb_slave_core/eb_slave_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_dbe_periph/xwb_dbe_periph.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/common/gc_reset.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_rs232_syscon/xwb_rs232_syscon.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc130m_4ch/xwb_fmc130m_4ch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/sys_pll.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/clk_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/dbe_bpm.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/memory_loader_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/xilinx/series7/s7_fifo_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/generic/generic_sync_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/general-cores/modules/genrams/generic/generic_async_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/sw_windowing/window_n_500_tukey_0_2.coe"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/divider/utilities_package.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/syn/afc_v3/vivado/dbe_bpm/synthesis_descriptor_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi2wb_dpram.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi_fifo.ngc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi_fifo.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi_link.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi2wb.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/wb_afc_diag.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi2wb_dpram.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/xwb_afc_diag.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/shift_reg.v"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_afc_diag/spi_link_top.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/position_calc/position_calc.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_cos_lut.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/machine_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/dds_sin_lut.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_core_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_cdc_fifo.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/xwb_position_calc_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/wb_pos_calc_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/wb_pos_calc_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/wbgen/pos_calc_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/wb_position_calc_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_counters_single.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_position_calc/position_calc_counters.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic/inversion_stage.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic/cordic_vectoring_slv.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic/cordic_core.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic/addsub.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter_slv.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/rp_math_pack/rp_math_pack.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_defs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_pulse_level_sync.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_trigger.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/ipcores_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_pcie/bpm_axi_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/pkgs/v6abb64Package_efifo_elink.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_write.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_pcie/wb_bpm_pcie.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_pcie/xwb_bpm_pcie.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/pcie/bpm_pcie.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core_mux/xwb_acq_core_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_read.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core_mux/wb_acq_core_mux_plain.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_ui_read.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_acq_core/acq_ddr3_axis_write.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/ddr_core/mig_b.prj"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_datamover_0/axi_datamover_0.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_datamover_bpm/axi_datamover_bpm.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_interconnect/axi_interconnect.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/axi_interconnect_bpm/axi_interconnect_bpm.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/cos_lut_uvx_35_148.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/ddr_core/ddr_core.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/platform/artix7/afc_v3/pcie_core/pcie_core.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/sin_lut_uvx_35_148.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.xci"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_adc_common/wbgen/wb_fmc_adc_common_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_adc_common/wbgen/wb_fmc_adc_common_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_adc_common/wbgen/wb_fmc_adc_common_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_active_clk/wbgen/wb_fmc_active_clk_regs.h"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_active_clk/wbgen/wb_fmc_active_clk_regs_pkg.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_active_clk/wbgen/wb_fmc_active_clk_regs.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_active_clk/wb_fmc_active_clk.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/modules/dbe_wishbone/wb_fmc_active_clk/xwb_fmc_active_clk.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/pcie_core.xdc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/ddr_core.xdc"
-#    "/home/lerwys/Repos/bpm-gw/hdl/top/afc_v3/vivado/dbe_bpm/dbe_bpm.xdc"
+#    (Absolute paths deleted - Daniel Tavares)
 #
 # 3. The following remote source files that were added to the original project:-
 #
@@ -617,7 +213,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/xloader_wb.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/xwb_acq_core.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_async_bridge/xwb_async_bridge.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/xwb_bpm_swap.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_bus_fanout/xwb_bus_fanout.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_clock_crossing/xwb_clock_crossing.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_ethmac/xwb_ethmac.vhd"]"\
@@ -658,15 +253,12 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_defines.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/timescale.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_clgen.v"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/inv_ch.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/rx_usDMA_Channel.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/rx_MWr_Channel.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/dsp_cores_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/i2c_master_byte_ctrl.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/rf_ch_swap.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/rx_MRd_Channel.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_fwft_fifo.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/dyn_mult_2chs.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/rx_dsDMA_Channel.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_stream/wb_stream_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_internals_pkg.vhd"]"\
@@ -680,8 +272,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/pcie/common/RxIn_Delays.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/tx_Mem_Reader.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/delay_inv_ch.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/simple_uart_wb.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/uart_async_tx.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/fmc_adc_common/fmc_adc_pkg.vhd"]"\
@@ -698,8 +288,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/cic_decim.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/common/gc_sync_ffs.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/inv_chs_top.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/swap_cnt_top.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/dbe_common_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/pulse2level/pulse2level.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_top.v"]"\
@@ -721,14 +309,12 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/dbe_wishbone_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_pass_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_simple_timer/wb_tics.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/cross_uncross_core/un_cross_top.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/cic_dyn.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_wbm_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/fmc_adc_common/fmc_adc_data.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/wb_spi_bidir.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_cfg_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/sw_windowing/counter.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_rs232_syscon/rs232_syscon.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tag_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/fmc_adc_common/fmc_adc_private_pkg.vhd"]"\
@@ -751,7 +337,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_common/reset_synch/reset_synch.vhd"]"\
  "[file normalize "$origin_dir/../../../../platform/artix7/ip_cores/axis_mux_2_to_1/axis_mux_2_to_1.ngc"]"\
  "[file normalize "$origin_dir/../../../../modules/fmc_adc_common/fmc_adc_dly_iface.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wb_bpm_swap.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/sw_windowing/input_conditioner.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/xwb_register_link.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_stream_widen.vhd"]"\
@@ -829,9 +414,6 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cordic_iter/cordic_iter_slv.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/rp_math_pack/rp_math_pack.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap.h"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_defs.h"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_un_cross/wbgen/wb_bpm_swap_regs.h"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sin_lut_uvx_35_148/dds_sin_uvx_35_148.coe"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/cos_lut_uvx_35_148/dds_cos_uvx_35_148.coe"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/machine/uvx_130M/sw_windowing_n_251_tukey_0_2/sw_windowing_n_251_tukey_0_2.coe"]"\
@@ -871,6 +453,17 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/strobe_gen/strobe_gen.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/decimation_strober.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/ce_synch/ce_synch.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wb_bpm_swap.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/xwb_bpm_swap.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/bpm_swap/swmode_sel.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/bpm_swap/bpm_swap.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/bpm_swap/swap_freqgen.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/bpm_swap/deswap_channels.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wbgen/wb_bpm_swap_regs.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wbgen/wb_bpm_swap.h"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wbgen/wb_bpm_swap_regs_pkg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wbgen/wb_bpm_swap_defs.h"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/wb_bpm_swap/wbgen/wb_bpm_swap_regs.h"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -2550,17 +2143,6 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "wb_un_cross/xwb_bpm_swap.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "1" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "wb_bus_fanout/xwb_bus_fanout.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -3005,17 +2587,6 @@ set_property "used_in_implementation" "1" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "cross_uncross_core/inv_ch.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "common/rx_usDMA_Channel.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -3060,17 +2631,6 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "cross_uncross_core/rf_ch_swap.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
 set file "common/rx_MRd_Channel.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
@@ -3083,17 +2643,6 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "wb_acq_core/acq_fwft_fifo.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cross_uncross_core/dyn_mult_2chs.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -3238,17 +2787,6 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "common/tx_Mem_Reader.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cross_uncross_core/delay_inv_ch.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -3438,28 +2976,6 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "common/gc_sync_ffs.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cross_uncross_core/inv_chs_top.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cross_uncross_core/swap_cnt_top.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -3692,17 +3208,6 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "wb_simple_timer/wb_tics.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "cross_uncross_core/un_cross_top.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -4023,17 +3528,6 @@ set_property "used_in_implementation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "fmc_adc_common/fmc_adc_dly_iface.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "VHDL" $file_obj
-set_property "is_enabled" "1" $file_obj
-set_property "is_global_include" "0" $file_obj
-set_property "library" "xil_defaultlib" $file_obj
-set_property "path_mode" "RelativeFirst" $file_obj
-set_property "used_in" "synthesis simulation" $file_obj
-set_property "used_in_simulation" "1" $file_obj
-set_property "used_in_synthesis" "1" $file_obj
-
-set file "wb_un_cross/wb_bpm_swap.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -5416,6 +4910,71 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
+set file "wb_bpm_swap/wb_bpm_swap.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "bpm_swap/swmode_sel.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "bpm_swap/bpm_swap.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "bpm_swap/swap_freqgen.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "bpm_swap/deswap_channels.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "wb_bpm_swap/xwb_bpm_swap.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
