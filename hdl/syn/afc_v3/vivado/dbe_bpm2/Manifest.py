@@ -8,6 +8,8 @@ syn_top = "dbe_bpm2"
 syn_project = "dbe_bpm2"
 syn_tool = "vivado"
 
+syn_pre_cmd = "./build_synthesis_sdb.sh"
+
 files = ["synthesis_descriptor_pkg.vhd"];
 
 machine_pkg = "uvx_250M";
