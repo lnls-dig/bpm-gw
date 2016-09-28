@@ -52,7 +52,11 @@ begin
     -- Shift reg
     p_rst_pipe : process (clk_i)
     begin
-      if rising_edge(clk_i) then
+      if arst_n_i = '0' then
+        for i in 0 to g_pipeline-2 loop
+          s_ff(i+1) <= '0';
+        end loop;
+      elsif rising_edge(clk_i) then
         for i in 0 to g_pipeline-2 loop
           s_ff(i+1) <= s_ff(i);
         end loop;
