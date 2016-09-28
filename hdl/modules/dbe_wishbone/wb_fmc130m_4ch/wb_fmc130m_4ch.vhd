@@ -428,22 +428,22 @@ architecture rtl of wb_fmc130m_4ch is
   -----------------------------
   -- EEPROM I2C Signals
   -----------------------------
-  signal eeprom_i2c_scl_in                  : std_logic;
-  signal eeprom_i2c_scl_out                 : std_logic;
-  signal eeprom_i2c_scl_oe_n                : std_logic;
-  signal eeprom_i2c_sda_in                  : std_logic;
-  signal eeprom_i2c_sda_out                 : std_logic;
-  signal eeprom_i2c_sda_oe_n                : std_logic;
+  signal eeprom_i2c_scl_in                  : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_scl_out                 : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_scl_oe_n                : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_in                  : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_out                 : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_oe_n                : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- LM75A I2C Signals
   -----------------------------
-  signal lm75a_i2c_scl_in                   : std_logic;
-  signal lm75a_i2c_scl_out                  : std_logic;
-  signal lm75a_i2c_scl_oe_n                 : std_logic;
-  signal lm75a_i2c_sda_in                   : std_logic;
-  signal lm75a_i2c_sda_out                  : std_logic;
-  signal lm75a_i2c_sda_oe_n                 : std_logic;
+  signal lm75a_i2c_scl_in                   : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_scl_out                  : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_scl_oe_n                 : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_in                   : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_out                  : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_oe_n                 : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- Trigger signals
@@ -1255,11 +1255,11 @@ begin
     sda_padoen_o                            => eeprom_i2c_sda_oe_n
   );
 
-  eeprom_scl_pad_b  <= eeprom_i2c_scl_out when eeprom_i2c_scl_oe_n = '0' else 'Z';
-  eeprom_i2c_scl_in <= eeprom_scl_pad_b;
+  eeprom_scl_pad_b  <= eeprom_i2c_scl_out(0) when eeprom_i2c_scl_oe_n(0) = '0' else 'Z';
+  eeprom_i2c_scl_in(0) <= eeprom_scl_pad_b;
 
-  eeprom_sda_pad_b  <= eeprom_i2c_sda_out when eeprom_i2c_sda_oe_n = '0' else 'Z';
-  eeprom_i2c_sda_in <= eeprom_sda_pad_b;
+  eeprom_sda_pad_b  <= eeprom_i2c_sda_out(0) when eeprom_i2c_sda_oe_n(0) = '0' else 'Z';
+  eeprom_i2c_sda_in(0) <= eeprom_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(3).err                     <= '0';
@@ -1291,11 +1291,11 @@ begin
     sda_padoen_o                            => lm75a_i2c_sda_oe_n
   );
 
-  lm75_scl_pad_b  <= lm75a_i2c_scl_out when lm75a_i2c_scl_oe_n = '0' else 'Z';
-  lm75a_i2c_scl_in <= lm75_scl_pad_b;
+  lm75_scl_pad_b  <= lm75a_i2c_scl_out(0) when lm75a_i2c_scl_oe_n(0) = '0' else 'Z';
+  lm75a_i2c_scl_in(0) <= lm75_scl_pad_b;
 
-  lm75_sda_pad_b  <= lm75a_i2c_sda_out when lm75a_i2c_sda_oe_n = '0' else 'Z';
-  lm75a_i2c_sda_in <= lm75_sda_pad_b;
+  lm75_sda_pad_b  <= lm75a_i2c_sda_out(0) when lm75a_i2c_sda_oe_n(0) = '0' else 'Z';
+  lm75a_i2c_sda_in(0) <= lm75_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(4).err                     <= '0';

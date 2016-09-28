@@ -163,12 +163,12 @@ architecture rtl of wb_fmc_active_clk is
   -----------------------------
   -- VCXO Si571 I2C Signals
   -----------------------------
-  signal si571_i2c_scl_in                   : std_logic;
-  signal si571_i2c_scl_out                  : std_logic;
-  signal si571_i2c_scl_oe_n                 : std_logic;
-  signal si571_i2c_sda_in                   : std_logic;
-  signal si571_i2c_sda_out                  : std_logic;
-  signal si571_i2c_sda_oe_n                 : std_logic;
+  signal si571_i2c_scl_in                   : std_logic_vector(0 downto 0);
+  signal si571_i2c_scl_out                  : std_logic_vector(0 downto 0);
+  signal si571_i2c_scl_oe_n                 : std_logic_vector(0 downto 0);
+  signal si571_i2c_sda_in                   : std_logic_vector(0 downto 0);
+  signal si571_i2c_sda_out                  : std_logic_vector(0 downto 0);
+  signal si571_i2c_sda_oe_n                 : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- Components
@@ -387,11 +387,11 @@ begin
     sda_padoen_o                            => si571_i2c_sda_oe_n
   );
 
-  si571_scl_pad_b  <= si571_i2c_scl_out when si571_i2c_scl_oe_n = '0' else 'Z';
-  si571_i2c_scl_in <= si571_scl_pad_b;
+  si571_scl_pad_b  <= si571_i2c_scl_out(0) when si571_i2c_scl_oe_n(0) = '0' else 'Z';
+  si571_i2c_scl_in(0) <= si571_scl_pad_b;
 
-  si571_sda_pad_b  <= si571_i2c_sda_out when si571_i2c_sda_oe_n = '0' else 'Z';
-  si571_i2c_sda_in <= si571_sda_pad_b;
+  si571_sda_pad_b  <= si571_i2c_sda_out(0) when si571_i2c_sda_oe_n(0) = '0' else 'Z';
+  si571_i2c_sda_in(0) <= si571_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(1).err                     <= '0';
