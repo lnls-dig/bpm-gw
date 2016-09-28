@@ -96,6 +96,7 @@ port
   acq_val_low_array_i                       : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   acq_val_high_array_i                      : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   acq_dvalid_array_i                        : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  acq_id_array_i                            : in t_acq_id_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   acq_trig_array_i                          : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
   -----------------------------
@@ -274,6 +275,7 @@ begin
       acq_val_low_i                             => acq_val_low_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
       acq_val_high_i                            => acq_val_high_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
       acq_dvalid_i                              => acq_dvalid_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
+      acq_id_i                                  => acq_id_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
       acq_trig_i                                => acq_trig_array_i((i+1)*g_acq_num_channels-1 downto i*g_acq_num_channels),
 
       -----------------------------

@@ -125,6 +125,7 @@ architecture rtl of xwb_acq_core_mux is
   signal acq_val_low_array                  : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_val_high_array                 : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_dvalid_array                   : std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  signal acq_id_array                       : t_acq_id_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_trig_array                     : std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
   signal wb_adr_array_in                    : std_logic_vector(g_acq_num_cores*c_wishbone_address_width-1 downto 0);
@@ -195,6 +196,7 @@ begin
     acq_val_low_array_i                      => acq_val_low_array,
     acq_val_high_array_i                     => acq_val_high_array,
     acq_dvalid_array_i                       => acq_dvalid_array,
+    acq_id_array_i                           => acq_id_array,
     acq_trig_array_i                         => acq_trig_array,
 
     -----------------------------
@@ -287,6 +289,7 @@ begin
       acq_val_low_array(i*g_acq_num_channels + j)  <= acq_chan_array_i(i,j).val_low;
       acq_val_high_array(i*g_acq_num_channels + j) <= acq_chan_array_i(i,j).val_high;
       acq_dvalid_array(i*g_acq_num_channels + j) <= acq_chan_array_i(i,j).dvalid;
+      acq_id_array(i*g_acq_num_channels + j) <= acq_chan_array_i(i,j).id;
       acq_trig_array(i*g_acq_num_channels + j)   <= acq_chan_array_i(i,j).trig;
 
     end generate;

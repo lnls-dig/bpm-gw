@@ -90,6 +90,7 @@ port
   acq_val_low_array_i                       : in std_logic_vector(g_acq_num_cores*g_acq_num_channels*c_acq_chan_width-1 downto 0);
   acq_val_high_array_i                      : in std_logic_vector(g_acq_num_cores*g_acq_num_channels*c_acq_chan_width-1 downto 0);
   acq_dvalid_array_i                        : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  acq_id_array_i                            : in unsigned(g_acq_num_cores*g_acq_num_channels*c_acq_id_width-1 downto 0);
   acq_trig_array_i                          : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
   -----------------------------
@@ -166,6 +167,7 @@ architecture rtl of wb_acq_core_mux_plain is
   signal acq_val_low_array                  : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_val_high_array                 : t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_dvalid_array                   : std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+  signal acq_id_array                       : t_acq_id_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
   signal acq_trig_array                     : std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
 begin
@@ -224,6 +226,7 @@ begin
     acq_val_low_array_i                       => acq_val_low_array,
     acq_val_high_array_i                      => acq_val_high_array,
     acq_dvalid_array_i                        => acq_dvalid_array,
+    acq_id_array_i                            => acq_id_array,
     acq_trig_array_i                          => acq_trig_array,
 
     -----------------------------
@@ -302,6 +305,8 @@ begin
       acq_val_high_array(i*g_acq_num_channels+j)     <=
               acq_val_high_array_i(i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*(j+1)-1 downto i*g_acq_num_channels*c_acq_chan_width + c_acq_chan_width*j);
       acq_dvalid_array(i*g_acq_num_channels+j)       <= acq_dvalid_array_i(i*g_acq_num_channels+j);
+      acq_id_array(i*g_acq_num_channels+j)     <=
+              acq_id_array_i(i*g_acq_num_channels*c_acq_id_width + c_acq_id_width*(j+1)-1 downto i*g_acq_num_channels*c_acq_id_width + c_acq_id_width*j);
       acq_trig_array(i*g_acq_num_channels+j)         <= acq_trig_array_i(i*g_acq_num_channels+j);
 
     end generate;
