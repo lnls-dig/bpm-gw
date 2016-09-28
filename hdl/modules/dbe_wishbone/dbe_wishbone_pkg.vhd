@@ -1538,6 +1538,7 @@ package dbe_wishbone_pkg is
     acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_id_i                                  : in t_acq_id_array(g_acq_num_channels-1 downto 0);
     acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
 
     -----------------------------
@@ -2222,6 +2223,7 @@ package dbe_wishbone_pkg is
     acq_val_low_array_i                       : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
     acq_val_high_array_i                      : in t_acq_val_half_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
     acq_dvalid_array_i                        : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
+    acq_id_array_i                            : in t_acq_id_array(g_acq_num_cores*g_acq_num_channels-1 downto 0);
     acq_trig_array_i                          : in std_logic_vector(g_acq_num_cores*g_acq_num_channels-1 downto 0);
 
     -----------------------------
