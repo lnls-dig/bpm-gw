@@ -180,11 +180,13 @@ architecture rtl of wb_facq_core is
   constant c_widest_channel_width           : natural := f_acq_chan_find_widest(c_acq_channels);
   constant c_min_channel_width              : natural := c_acq_chan_width;
   constant c_max_channel_width              : natural := c_acq_chan_max_w;
+  constant c_curr_acq_id_width              : natural := f_log2_size(c_widest_channel_width/c_narrowest_channel_width + 1);
 
   signal acq_val_plain_low_unpack_array      : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   signal acq_val_plain_high_unpack_array     : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   signal acq_val_full_unpack_array           : t_acq_val_full_plain_array(g_acq_num_channels-1 downto 0);
   signal acq_dvalid_unpack                   : std_logic_vector(g_acq_num_channels-1 downto 0);
+  signal acq_val_id_unpack                   : t_acq_id_array(g_acq_num_channels-1 downto 0) := (others => (others => '0'));
   signal acq_trig_unpack                     : std_logic_vector(g_acq_num_channels-1 downto 0);
 
 begin
@@ -229,6 +231,7 @@ begin
         d_req_o                              => open,
 
         q_o                                  => acq_val_full_unpack_array(i)(c_min_channel_width-1 downto 0),
+        q_id_o                               => acq_val_id_unpack(i)(f_log2_size(to_integer(g_facq_channels(i).width)/c_min_channel_width + 1) -1 downto 0),
         q_valid_o                            => acq_dvalid_unpack(i),
         q_req_i                              => '1'
       );
@@ -257,6 +260,7 @@ begin
         d_req_o                              => open,
 
         q_o                                  => acq_val_full_unpack_array(i)(c_max_channel_width-1 downto 0),
+        q_id_o                               => acq_val_id_unpack(i)(f_log2_size(to_integer(g_facq_channels(i).width)/c_max_channel_width + 1) -1 downto 0),
         q_valid_o                            => acq_dvalid_unpack(i),
         q_req_i                              => '1'
       );
@@ -325,6 +329,7 @@ begin
     acq_val_low_i                             => acq_val_plain_low_unpack_array,
     acq_val_high_i                            => acq_val_plain_high_unpack_array,
     acq_dvalid_i                              => acq_dvalid_unpack,
+    acq_id_i                                  => acq_val_id_unpack,
     acq_trig_i                                => acq_trig_unpack,
 
     -----------------------------
