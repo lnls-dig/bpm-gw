@@ -103,6 +103,7 @@ port
   acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+  acq_id_i                                  : in t_acq_id_array(g_acq_num_channels-1 downto 0);
   acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
 
   -----------------------------
@@ -270,9 +271,13 @@ architecture rtl of wb_acq_core is
   signal acq_trig                           : std_logic;
   signal acq_trig_fsm                       : std_logic;
   signal acq_dvalid_in                      : std_logic;
+  signal acq_id_in                          : t_acq_id;
   signal dtrig_valid_in                     : std_logic;
+  signal dtrig_id_in                        : t_acq_id;
   signal acq_valid                          : std_logic;
+  signal acq_id                             : t_acq_id;
   signal acq_valid_fsm                      : std_logic;
+  signal acq_id_fsm                         : t_acq_id;
   signal samples_wr_en                      : std_logic;
 
   -- ACQ trigger registers
@@ -557,6 +562,7 @@ begin
     acq_val_low_i                           => acq_val_low_i,
     acq_val_high_i                          => acq_val_high_i,
     acq_dvalid_i                            => acq_dvalid_i,
+    acq_id_i                                => acq_id_i,
     acq_trig_i                              => acq_trig_i,
 
     lmt_curr_chan_id_i                      => lmt_dtrig_chan_id,
@@ -567,6 +573,7 @@ begin
     -----------------------------
     acq_data_o                              => dtrig_data_marsh,
     acq_dvalid_o                            => dtrig_valid_in,
+    acq_id_o                                => dtrig_id_in,
     acq_trig_o                              => open
   );
 
@@ -589,6 +596,7 @@ begin
     acq_val_low_i                           => acq_val_low_i,
     acq_val_high_i                          => acq_val_high_i,
     acq_dvalid_i                            => acq_dvalid_i,
+    acq_id_i                                => acq_id_i,
     acq_trig_i                              => acq_trig_i,
 
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
@@ -599,6 +607,7 @@ begin
     -----------------------------
     acq_data_o                              => acq_data_marsh,
     acq_dvalid_o                            => acq_dvalid_in,
+    acq_id_o                                => acq_id_in,
     acq_trig_o                              => acq_trig_in
   );
 
@@ -631,12 +640,14 @@ begin
 
     dtrig_data_i                            => dtrig_data_marsh(c_acq_data_width-1 downto 0),
     dtrig_valid_i                           => dtrig_valid_in,
+    dtrig_id_i                              => dtrig_id_in,
 
     lmt_dtrig_chan_id_i                     => lmt_dtrig_chan_id,
     lmt_dtrig_valid_i                       => acq_start,
 
     acq_data_i                              => acq_data_marsh(c_acq_data_width-1 downto 0),
     acq_valid_i                             => acq_dvalid_in,
+    acq_id_i                                => acq_id_in,
     acq_trig_i                              => acq_trig_in,
 
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
@@ -645,6 +656,7 @@ begin
     acq_wr_en_i                             => acq_fsm_accepting,
     acq_data_o                              => acq_data,
     acq_valid_o                             => acq_valid,
+    acq_id_o                                => acq_id,
     acq_trig_o                              => acq_trig
   );
 
@@ -676,6 +688,7 @@ begin
     acq_data_i                              => acq_data,
     acq_trig_i                              => acq_trig,
     acq_dvalid_i                            => acq_valid,
+    acq_id_i                                => acq_id,
 
     -----------------------------
     -- FSM Number of Samples
@@ -719,6 +732,7 @@ begin
     shots_decr_o                            => shots_decr,
     acq_data_o                              => acq_data_fsm,
     acq_valid_o                             => acq_valid_fsm,
+    acq_id_o                                => acq_id_fsm,
     acq_trig_o                              => acq_trig_fsm,
     multishot_buffer_sel_o                  => multishot_buffer_sel,
     samples_wr_en_o                         => samples_wr_en

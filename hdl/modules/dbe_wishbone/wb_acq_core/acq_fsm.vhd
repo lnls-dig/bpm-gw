@@ -62,6 +62,7 @@ port
   acq_data_i                                : in  std_logic_vector(c_acq_chan_max_w-1 downto 0) := (others => '0');
   acq_trig_i                                : in  std_logic := '0';
   acq_dvalid_i                              : in  std_logic := '0';
+  acq_id_i                                  : in t_acq_id;
 
   -----------------------------
   -- FSM Number of Samples
@@ -107,6 +108,7 @@ port
   shots_decr_o                              : out std_logic;
   acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
   acq_valid_o                               : out std_logic;
+  acq_id_o                                  : out t_acq_id;
   acq_trig_o                                : out std_logic;
   multishot_buffer_sel_o                    : out std_logic;
   samples_wr_en_o                           : out std_logic
@@ -115,7 +117,7 @@ end acq_fsm;
 
 architecture rtl of acq_fsm is
 
-  type t_acq_fsm_state is (IDLE, PRE_TRIG, PRE_TRIG_WAIT_LAST, PRE_TRIG_SKIP_WAIT_LAST,
+  type t_acq_fsm_state is (IDLE, WAIT_ALIGN_ID, PRE_TRIG, PRE_TRIG_WAIT_LAST, PRE_TRIG_SKIP_WAIT_LAST,
                                 WAIT_TRIG, WAIT_TRIG_SKIP, POST_TRIG, POST_TRIG_SKIP,
                                 POST_TRIG_IDLE_WAIT_LAST, POST_TRIG_DECR_SHOT_WAIT_LAST,
                                 POST_TRIG_SKIP_IDLE_WAIT_LAST, POST_TRIG_SKIP_DECR_SHOT_WAIT_LAST,
@@ -140,6 +142,7 @@ architecture rtl of acq_fsm is
 
   signal acq_data                           : std_logic_vector(c_acq_chan_max_w-1 downto 0);
   signal acq_valid                          : std_logic;
+  signal acq_id                             : t_acq_id;
   signal acq_trig                           : std_logic;
   signal acq_trig_comb                      : std_logic;
 
@@ -169,6 +172,7 @@ architecture rtl of acq_fsm is
 
   -- Pre/Post trigger and shots counters
   signal curr_num_coalese_log2              : integer := 0;
+  signal curr_num_coalese                   : integer := 0;
   signal pre_trig_samples_shift_s           : std_logic_vector(c_acq_samples_size-1 downto 0);
   signal post_trig_samples_shift_s          : std_logic_vector(c_acq_samples_size-1 downto 0);
   signal pre_trig_samples_shift             : unsigned(c_acq_samples_size-1 downto 0);
@@ -222,6 +226,7 @@ begin
   -- logic. This is safe, because the other modules only get this new value
   -- after lmt_valid signal is asserted
   curr_num_coalese_log2         <= c_num_coalesce_log2_array(to_integer(lmt_curr_chan_id_i));
+  curr_num_coalese              <= c_num_coalesce_array(to_integer(lmt_curr_chan_id_i));
   pre_trig_samples_shift_s      <= std_logic_vector(shift_left(pre_trig_samples_i, curr_num_coalese_log2));
   post_trig_samples_shift_s     <= std_logic_vector(shift_left(post_trig_samples_i, curr_num_coalese_log2));
   pre_trig_samples_shift        <= unsigned(pre_trig_samples_shift_s);
@@ -363,10 +368,12 @@ begin
       if fs_rst_n_i = '0' then
         acq_data  <= (others => '0');
         acq_valid <= '0';
+        acq_id    <= (others => '0');
         acq_trig  <= '0';
       else
         acq_data  <= acq_data_i;
         acq_valid <= acq_dvalid_i;
+        acq_id    <= acq_id_i;
         acq_trig  <= acq_trig_comb;
       end if;
     end if;
@@ -470,6 +477,16 @@ begin
         samples_wr_en         <= '0';
         acq_fsm_state         <= "001";
 
+        -- Delayed outputs
+        shots_decr_d           <= '0';
+        acq_in_pre_trig_d      <= '0';
+        acq_in_pre_trig_out_d  <= '0';
+        acq_in_wait_trig_d     <= '0';
+        acq_in_post_trig_d     <= '0';
+        acq_in_post_trig_out_d <= '0';
+        samples_wr_en_d        <= '0';
+        acq_fsm_state_d        <= "001";
+
         pre_trig_done_ext         <= '0';
         wait_trig_skip_done_ext   <= '0';
         post_trig_done_ext        <= '0';
@@ -484,6 +501,14 @@ begin
 
           when IDLE =>
             if acq_start = '1' then
+              acq_fsm_current_state := WAIT_ALIGN_ID;
+            end if;
+
+          when WAIT_ALIGN_ID =>
+            -- Only at the start of the acquisition, wait until we are
+            -- at the beginning of the atom word. This will assure us that
+            -- we are acquiring the complete word, at all times.
+            if acq_id_i = curr_num_coalese-1 and acq_dvalid_i = '1' then
               acq_fsm_current_state := PRE_TRIG;
             end if;
 
@@ -565,6 +590,9 @@ begin
 
             end if;
 
+          -- Differently from the pre trigger logic (WAIT_ALIGN_ID state),
+          -- we always receive the trigger aligned with the first atom. So,
+          -- no action is necessary here.
           when POST_TRIG =>
             if acq_stop = '1' then
               acq_fsm_current_state := IDLE;
@@ -635,6 +663,16 @@ begin
         case acq_fsm_current_state is
 
           when IDLE =>
+            shots_decr       <= '0';
+            acq_in_pre_trig  <= '0';
+            acq_in_pre_trig_wait <= '0';
+            acq_in_wait_trig <= '0';
+            acq_in_post_trig <= '0';
+            acq_in_post_trig_wait <= '0';
+            samples_wr_en    <= '0';
+            acq_fsm_state    <= "001";
+
+          when WAIT_ALIGN_ID =>
             shots_decr       <= '0';
             acq_in_pre_trig  <= '0';
             acq_in_pre_trig_wait <= '0';
@@ -800,6 +838,7 @@ begin
   acq_fsm_accepting_o <= samples_wr_en;
   acq_data_o         <= acq_data;
   acq_valid_o        <= acq_valid;
+  acq_id_o           <= acq_id;
   acq_trig_o         <= acq_trig;
   shots_decr_o       <= shots_decr_d;
   acq_in_pre_trig_o  <= acq_in_pre_trig_out_d;
@@ -843,7 +882,10 @@ begin
     rst_n_o                                 => acq_stop_rst_n_ext_sync
   );
 
-  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
-  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
+-----------------------  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
+-----------------------  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
+
+acq_fsm_rstn_fs_sync_o <= '1';
+acq_fsm_rstn_ext_sync_o <= '1';
 
 end rtl;

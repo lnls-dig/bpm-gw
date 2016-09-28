@@ -58,6 +58,7 @@ port
   -- Data-driven data input
   dtrig_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
   dtrig_valid_i                             : in std_logic;
+  dtrig_id_i                                : in t_acq_id;
 
   -- Data-driven trigger channel selection ID
   lmt_dtrig_chan_id_i                       : in unsigned(c_chan_id_width-1 downto 0);
@@ -67,6 +68,7 @@ port
   -- Acquisition input
   acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
   acq_valid_i                               : in std_logic;
+  acq_id_i                                  : in t_acq_id;
   acq_trig_i                                : in std_logic;
 
   -- Current channel selection ID
@@ -78,6 +80,7 @@ port
   acq_wr_en_i                               : in std_logic;
   acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
   acq_valid_o                               : out std_logic;
+  acq_id_o                                  : out t_acq_id;
   acq_trig_o                                : out std_logic
 );
 end acq_trigger;
@@ -135,6 +138,7 @@ architecture rtl of acq_trigger is
   type t_acq_atom_array2d is array (natural range <>, natural range <>) of t_acq_atom;
   type t_data_pipe is array (natural range <>) of std_logic_vector(g_data_in_width-1 downto 0);
   type t_valid_pipe is array (natural range <>) of std_logic;
+  type t_id_pipe is array (natural range <>) of t_acq_id;
 
   -- Signals
   signal lmt_dtrig_chan_id                  : unsigned(c_chan_id_width-1 downto 0);
@@ -144,6 +148,7 @@ architecture rtl of acq_trigger is
 
   signal dtrig_data_in                      : std_logic_vector(g_data_in_width-1 downto 0);
   signal dtrig_valid_in                     : std_logic;
+  signal dtrig_id_in                        : t_acq_id;
 
   signal acq_curr_coalesce_id               : integer;
   signal acq_data_in                        : std_logic_vector(g_data_in_width-1 downto 0);
@@ -156,14 +161,18 @@ architecture rtl of acq_trigger is
   signal acq_num_atoms                      : t_acq_num_atoms;
   signal acq_num_atoms_uncoalesced          : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
   signal acq_num_atoms_uncoalesced_log2     : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
-  signal acq_num_coalesce_max               : t_acq_coalesce;
-  signal acq_coalesce_cnt                   : t_acq_coalesce;
+--  signal acq_num_coalesce_max               : t_acq_coalesce;
+--  signal acq_coalesce_cnt                   : t_acq_coalesce;
   signal acq_valid_in                       : std_logic;
+  signal acq_id_in                          : t_acq_id;
   signal acq_valid_sel_out                  : std_logic;
+  signal acq_id_sel_out                     : t_acq_id;
   signal acq_valid_out                      : std_logic;
+  signal acq_id_out                         : t_acq_id;
 
   signal acq_data_pipe                      : t_data_pipe(c_pipe_depth-1 downto 0);
   signal acq_valid_pipe                     : t_valid_pipe(c_pipe_depth-1 downto 0);
+  signal acq_id_pipe                        : t_id_pipe(c_pipe_depth-1 downto 0);
   signal acq_trig                           : std_logic;
   signal acq_trig_sel_out                   : std_logic;
   signal acq_trig_out                       : std_logic;
@@ -220,7 +229,7 @@ begin
         acq_num_atoms <= to_unsigned(0, acq_num_atoms'length);
         acq_num_atoms_uncoalesced <= to_unsigned(0, acq_num_atoms_uncoalesced'length);
         acq_num_atoms_uncoalesced_log2 <= to_unsigned(0, acq_num_atoms_uncoalesced_log2'length);
-        acq_num_coalesce_max <= to_unsigned(0, acq_num_coalesce_max'length);
+--        acq_num_coalesce_max <= to_unsigned(0, acq_num_coalesce_max'length);
         acq_min_align_max <= to_unsigned(0, acq_min_align_max'length);
       else
         lmt_valid <= lmt_valid_i;
@@ -234,8 +243,8 @@ begin
                                 acq_num_atoms_uncoalesced'length);
           acq_num_atoms_uncoalesced_log2 <= to_unsigned(c_num_atoms_uncoalesced_log2_array(to_integer(lmt_curr_chan_id_i)),
                                 acq_num_atoms_uncoalesced_log2'length);
-          acq_num_coalesce_max <= to_unsigned(c_num_coalesce_array(to_integer(lmt_curr_chan_id_i)),
-                                acq_num_coalesce_max'length) - 1;
+--          acq_num_coalesce_max <= to_unsigned(c_num_coalesce_array(to_integer(lmt_curr_chan_id_i)),
+--                                acq_num_coalesce_max'length) - 1;
           acq_min_align_max <= to_unsigned(c_min_align_array(to_integer(lmt_curr_chan_id_i)),
                                 acq_min_align_max'length) - 1;
       else
@@ -249,12 +258,14 @@ begin
     if rising_edge(fs_clk_i) then
       if fs_rst_n_i = '0' then
         dtrig_data_in <= (others => '0');
+        dtrig_id_in <= to_unsigned(0, dtrig_id_in'length);
         dtrig_valid_in <= '0';
       else
         dtrig_valid_in <= dtrig_valid_i;
 
         if dtrig_valid_i = '1' then
           dtrig_data_in <= dtrig_data_i;
+          dtrig_id_in <= dtrig_id_i;
         end if;
       end if;
     end if;
@@ -266,20 +277,22 @@ begin
       if fs_rst_n_i = '0' then
         acq_data_in <= (others => '0');
         acq_valid_in <= '0';
-        acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
+        acq_id_in <= to_unsigned(0, acq_id_in'length);
+--        acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
       else
         acq_valid_in <= acq_valid_i;
 
         if acq_valid_i = '1' then
           acq_data_in <= acq_data_i;
+          acq_id_in <= acq_id_i;
 
-          -- Increment the coalesce counter each valid bit, so we know
-          -- where we are in the data stream
-          acq_coalesce_cnt <= acq_coalesce_cnt + 1;
-
-          if acq_coalesce_cnt = acq_num_coalesce_max then
-            acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
-          end if;
+--          -- Increment the coalesce counter each valid bit, so we know
+--          -- where we are in the data stream
+--          acq_coalesce_cnt <= acq_coalesce_cnt + 1;
+--
+--          if acq_coalesce_cnt = acq_num_coalesce_max then
+--            acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
+--          end if;
         end if;
       end if;
     end if;
@@ -355,7 +368,8 @@ begin
         int_trig_data_se <= (others => '0');
       else
         -- Get only the uncoalesced part of the Data Trigger channel ID
-        if acq_curr_coalesce_id = acq_coalesce_cnt then
+--        if acq_curr_coalesce_id = acq_coalesce_cnt then
+        if acq_curr_coalesce_id = dtrig_id_in then
           int_trig_data_se <= int_trig_data;
         end if;
       end if;
@@ -529,9 +543,11 @@ begin
       if fs_rst_n_i = '0' then
         acq_data_pipe <= (others => (others => '0'));
         acq_valid_pipe <= (others => '0');
+        acq_id_pipe <= (others => (others => '0'));
       else
         acq_data_pipe <= acq_data_pipe(acq_data_pipe'left-1 downto 0) & acq_data_in;
         acq_valid_pipe <= acq_valid_pipe(acq_valid_pipe'left-1 downto 0) & acq_valid_in;
+        acq_id_pipe <= acq_id_pipe(acq_valid_pipe'left-1 downto 0) & acq_id_in;
       end if;
     end if;
   end process;
@@ -542,6 +558,8 @@ begin
                     acq_data_in;
   acq_valid_sel_out <= acq_valid_pipe(c_trig_det_delay-1) when cfg_hw_trig_sel_i = '0' else
                     acq_valid_in;
+  acq_id_sel_out <= acq_id_pipe(c_trig_det_delay-1) when cfg_hw_trig_sel_i = '0' else
+                    acq_id_in;
   acq_trig_sel_out <= trig_align;
 
   ------------------------------------------------------------------------------
@@ -554,10 +572,12 @@ begin
       if fs_rst_n_i = '0' then
         acq_data_out <= (others => '0');
         acq_valid_out <= '0';
+        acq_id_out <= (others => '0');
         acq_trig_out <= '0';
       else
         acq_data_out <= acq_data_sel_out;
         acq_valid_out <= acq_valid_sel_out;
+        acq_id_out <= acq_id_sel_out;
         acq_trig_out <= acq_trig_sel_out;
       end if;
     end if;
@@ -565,6 +585,7 @@ begin
 
   acq_data_o <= acq_data_out;
   acq_valid_o <= acq_valid_out;
+  acq_id_o <= acq_id_out;
   acq_trig_o <= acq_trig_out;
 
 end rtl;

@@ -41,6 +41,9 @@ package acq_core_pkg is
   constant c_acq_coalesce_width             : natural := 8;
   constant c_acq_coalesce_width_log2        : natural := f_log2_size(c_acq_coalesce_width)+1;
 
+  constant c_acq_max_coalesce_factor        : natural := c_acq_chan_cmplt_width/c_acq_chan_max_w;
+  constant c_acq_id_width                   : natural := f_log2_size(c_acq_max_coalesce_factor)+1;
+
   constant c_ddr3_ui_diff_threshold         : natural := 3;
 
   -- UI Commands
@@ -73,6 +76,9 @@ package acq_core_pkg is
 
 --  subtype t_facq_width is unsigned(c_acq_chan_cmplt_width_log2-1 downto 0);
 --  type t_facq_width_array is array (natural range <>) of t_facq_width;
+
+  subtype t_acq_id is unsigned(c_acq_id_width-1 downto 0);
+  type t_acq_id_array is array (natural range <>) of t_acq_id;
 
   subtype t_acq_num_atoms is unsigned(c_acq_num_atoms_width_log2-1 downto 0);
   type t_acq_num_atoms_array is array (natural range <>) of t_acq_num_atoms;
@@ -146,6 +152,7 @@ package acq_core_pkg is
     val_low : t_acq_val_half;
     val_high : t_acq_val_half;
     dvalid : std_logic;
+    id : t_acq_id;
     trig : std_logic;
   end record;
 
@@ -155,6 +162,7 @@ package acq_core_pkg is
   type t_facq_chan is record
     val : t_acq_val_cmplt;
     dvalid : std_logic;
+    id : t_acq_id;
     trig : std_logic;
   end record;
 
@@ -212,9 +220,11 @@ package acq_core_pkg is
   constant c_default_acq_chan : t_acq_chan := (val_low => (others => '0'),
                                                  val_high => (others => '0'),
                                                  dvalid => '0',
+                                                 id => (others => '0'),
                                                  trig => '0');
   constant c_default_facq_chan : t_facq_chan := (val => (others => '0'),
                                                  dvalid => '0',
+                                                 id => (others => '0'),
                                                  trig => '0');
 
   -----------------------------
@@ -323,6 +333,7 @@ package acq_core_pkg is
     acq_val_low_i                             : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_val_high_i                            : in t_acq_val_half_array(g_acq_num_channels-1 downto 0);
     acq_dvalid_i                              : in std_logic_vector(g_acq_num_channels-1 downto 0);
+    acq_id_i                                  : in t_acq_id_array(g_acq_num_channels-1 downto 0);
     acq_trig_i                                : in std_logic_vector(g_acq_num_channels-1 downto 0);
 
     -- Current channel selection ID
@@ -335,6 +346,7 @@ package acq_core_pkg is
     -----------------------------
     acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
     acq_dvalid_o                              : out std_logic;
+    acq_id_o                                  : out t_acq_id;
     acq_trig_o                                : out std_logic
   );
   end component;
@@ -343,7 +355,7 @@ package acq_core_pkg is
   generic
   (
     g_data_in_width                           : natural := 128;
-    g_acq_num_channels                        : natural := 1;
+    g_acq_num_channels                        : natural := 5;
     g_ddr_payload_width                       : natural := 256;
     g_acq_channels                            : t_acq_chan_param_array := c_default_acq_chan_param_array
   );
@@ -353,7 +365,7 @@ package acq_core_pkg is
     fs_ce_i                                   : in std_logic;
     fs_rst_n_i                                : in std_logic;
 
-    -- Configuration trigger inputs
+    -- Trigger inputs
     cfg_hw_trig_sel_i                         : in std_logic;
     cfg_hw_trig_pol_i                         : in std_logic;
     cfg_hw_trig_en_i                          : in std_logic;
@@ -367,6 +379,7 @@ package acq_core_pkg is
     -- Data-driven data input
     dtrig_data_i                              : in std_logic_vector(g_data_in_width-1 downto 0);
     dtrig_valid_i                             : in std_logic;
+    dtrig_id_i                                : in t_acq_id;
 
     -- Data-driven trigger channel selection ID
     lmt_dtrig_chan_id_i                       : in unsigned(c_chan_id_width-1 downto 0);
@@ -376,6 +389,7 @@ package acq_core_pkg is
     -- Acquisition input
     acq_data_i                                : in std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_i                               : in std_logic;
+    acq_id_i                                  : in t_acq_id;
     acq_trig_i                                : in std_logic;
 
     -- Current channel selection ID
@@ -387,6 +401,7 @@ package acq_core_pkg is
     acq_wr_en_i                               : in std_logic;
     acq_data_o                                : out std_logic_vector(g_data_in_width-1 downto 0);
     acq_valid_o                               : out std_logic;
+    acq_id_o                                  : out t_acq_id;
     acq_trig_o                                : out std_logic
   );
   end component;
@@ -414,6 +429,7 @@ package acq_core_pkg is
     acq_data_i                                : in  std_logic_vector(c_acq_chan_max_w-1 downto 0) := (others => '0');
     acq_trig_i                                : in  std_logic := '0';
     acq_dvalid_i                              : in  std_logic := '0';
+    acq_id_i                                  : in t_acq_id;
 
     -----------------------------
     -- FSM Number of Samples
@@ -459,6 +475,7 @@ package acq_core_pkg is
     shots_decr_o                              : out std_logic;
     acq_data_o                                : out std_logic_vector(c_acq_chan_max_w-1 downto 0);
     acq_valid_o                               : out std_logic;
+    acq_id_o                                  : out t_acq_id;
     acq_trig_o                                : out std_logic;
     multishot_buffer_sel_o                    : out std_logic;
     samples_wr_en_o                           : out std_logic

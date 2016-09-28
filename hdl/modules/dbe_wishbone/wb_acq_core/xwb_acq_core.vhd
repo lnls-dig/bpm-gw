@@ -145,6 +145,7 @@ architecture rtl of xwb_acq_core is
 
   signal acq_val_low_array                  : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
   signal acq_val_high_array                 : t_acq_val_half_array(g_acq_num_channels-1 downto 0);
+  signal acq_id_array                       : t_acq_id_array(g_acq_num_channels-1 downto 0);
   signal acq_dvalid_array                   : std_logic_vector(g_acq_num_channels-1 downto 0);
   signal acq_trig_array                     : std_logic_vector(g_acq_num_channels-1 downto 0);
 
@@ -201,6 +202,7 @@ begin
     acq_val_low_i                             => acq_val_low_array,
     acq_val_high_i                            => acq_val_high_array,
     acq_dvalid_i                              => acq_dvalid_array,
+    acq_id_i                                  => acq_id_array,
     acq_trig_i                                => acq_trig_array,
 
     -----------------------------
@@ -289,6 +291,7 @@ begin
     acq_val_high_array(i)     <= acq_chan_array_i(i).val_high;
     acq_dvalid_array(i)       <= acq_chan_array_i(i).dvalid;
     acq_trig_array(i)         <= acq_chan_array_i(i).trig;
+    acq_id_array(i)           <= acq_chan_array_i(i).id;
 
   end generate;
 
