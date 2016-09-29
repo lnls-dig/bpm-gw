@@ -882,10 +882,7 @@ begin
     rst_n_o                                 => acq_stop_rst_n_ext_sync
   );
 
------------------------  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
------------------------  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
-
-acq_fsm_rstn_fs_sync_o <= '1';
-acq_fsm_rstn_ext_sync_o <= '1';
+  acq_fsm_rstn_fs_sync_o <= acq_stop_rst_n_fs_sync;
+  acq_fsm_rstn_ext_sync_o <= acq_stop_rst_n_ext_sync;
 
 end rtl;

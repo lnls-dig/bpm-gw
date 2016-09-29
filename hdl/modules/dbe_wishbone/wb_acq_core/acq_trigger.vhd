@@ -161,8 +161,6 @@ architecture rtl of acq_trigger is
   signal acq_num_atoms                      : t_acq_num_atoms;
   signal acq_num_atoms_uncoalesced          : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
   signal acq_num_atoms_uncoalesced_log2     : t_acq_num_atoms := to_unsigned(2, t_acq_num_atoms'length);
---  signal acq_num_coalesce_max               : t_acq_coalesce;
---  signal acq_coalesce_cnt                   : t_acq_coalesce;
   signal acq_valid_in                       : std_logic;
   signal acq_id_in                          : t_acq_id;
   signal acq_valid_sel_out                  : std_logic;
@@ -229,7 +227,6 @@ begin
         acq_num_atoms <= to_unsigned(0, acq_num_atoms'length);
         acq_num_atoms_uncoalesced <= to_unsigned(0, acq_num_atoms_uncoalesced'length);
         acq_num_atoms_uncoalesced_log2 <= to_unsigned(0, acq_num_atoms_uncoalesced_log2'length);
---        acq_num_coalesce_max <= to_unsigned(0, acq_num_coalesce_max'length);
         acq_min_align_max <= to_unsigned(0, acq_min_align_max'length);
       else
         lmt_valid <= lmt_valid_i;
@@ -243,8 +240,6 @@ begin
                                 acq_num_atoms_uncoalesced'length);
           acq_num_atoms_uncoalesced_log2 <= to_unsigned(c_num_atoms_uncoalesced_log2_array(to_integer(lmt_curr_chan_id_i)),
                                 acq_num_atoms_uncoalesced_log2'length);
---          acq_num_coalesce_max <= to_unsigned(c_num_coalesce_array(to_integer(lmt_curr_chan_id_i)),
---                                acq_num_coalesce_max'length) - 1;
           acq_min_align_max <= to_unsigned(c_min_align_array(to_integer(lmt_curr_chan_id_i)),
                                 acq_min_align_max'length) - 1;
       else
@@ -278,21 +273,12 @@ begin
         acq_data_in <= (others => '0');
         acq_valid_in <= '0';
         acq_id_in <= to_unsigned(0, acq_id_in'length);
---        acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
       else
         acq_valid_in <= acq_valid_i;
 
         if acq_valid_i = '1' then
           acq_data_in <= acq_data_i;
           acq_id_in <= acq_id_i;
-
---          -- Increment the coalesce counter each valid bit, so we know
---          -- where we are in the data stream
---          acq_coalesce_cnt <= acq_coalesce_cnt + 1;
---
---          if acq_coalesce_cnt = acq_num_coalesce_max then
---            acq_coalesce_cnt <= to_unsigned(0, acq_coalesce_cnt'length);
---          end if;
         end if;
       end if;
     end if;
@@ -368,7 +354,6 @@ begin
         int_trig_data_se <= (others => '0');
       else
         -- Get only the uncoalesced part of the Data Trigger channel ID
---        if acq_curr_coalesce_id = acq_coalesce_cnt then
         if acq_curr_coalesce_id = dtrig_id_in then
           int_trig_data_se <= int_trig_data;
         end if;
