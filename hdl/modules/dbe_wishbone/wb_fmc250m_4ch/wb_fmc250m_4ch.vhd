@@ -246,14 +246,14 @@ architecture rtl of wb_fmc250m_4ch is
   -- Number packet size counter bits
   constant c_packet_num_bits                : natural := f_packet_num_bits(g_packet_size);
   -- Number of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
-  constant c_periph_addr_size               : natural := 4+2;
+  constant c_periph_addr_size               : natural := 5+2;
   constant c_periph_acommon_addr_size       : natural := 2+2;
   constant c_first_used_clk                 : natural := f_first_used_clk(g_use_clk_chains);
   constant c_ref_clk                        : natural := f_adc_ref_clk(g_ref_clk);
   constant c_with_clk_single_ended          : boolean := false;
   constant c_with_data_single_ended         : boolean := false;
   constant c_with_data_sdr                  : boolean := false;
-  constant c_with_fn_dly_select             : boolean := false;
+  constant c_with_fn_dly_select             : boolean := true;
   constant c_with_idelay_var_loadable       : boolean := true;
   constant c_with_idelay_variable           : boolean := true;
 
@@ -496,7 +496,7 @@ architecture rtl of wb_fmc250m_4ch is
   port (
     rst_n_i                                  : in     std_logic;
     clk_sys_i                                : in     std_logic;
-    wb_adr_i                                 : in     std_logic_vector(3 downto 0);
+    wb_adr_i                                 : in     std_logic_vector(4 downto 0);
     wb_dat_i                                 : in     std_logic_vector(31 downto 0);
     wb_dat_o                                 : out    std_logic_vector(31 downto 0);
     wb_cyc_i                                 : in     std_logic;
@@ -712,7 +712,7 @@ begin
   port map(
     rst_n_i                                 => sys_rst_sync_n,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => wb_slv_adp_out.adr(3 downto 0),
+    wb_adr_i                                => wb_slv_adp_out.adr(4 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
     wb_cyc_i                                => wb_slv_adp_out.cyc,
@@ -770,12 +770,19 @@ begin
   -- ADC delay registers out
   regs_in.ch0_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(0).clk_chain.idelay.val;
   regs_in.ch0_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(0).data_chain.idelay.val;
+  regs_in.ch0_fn_sel_reserved_i             <= (others => '0');
+
   regs_in.ch1_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(1).clk_chain.idelay.val;
   regs_in.ch1_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(1).data_chain.idelay.val;
+  regs_in.ch1_fn_sel_reserved_i             <= (others => '0');
+
   regs_in.ch2_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(2).clk_chain.idelay.val;
   regs_in.ch2_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(2).data_chain.idelay.val;
+  regs_in.ch2_fn_sel_reserved_i             <= (others => '0');
+
   regs_in.ch3_fn_dly_clk_chain_dly_i        <= adc_fn_dly_out(3).clk_chain.idelay.val;
   regs_in.ch3_fn_dly_data_chain_dly_i       <= adc_fn_dly_out(3).data_chain.idelay.val;
+  regs_in.ch3_fn_sel_reserved_i             <= (others => '0');
 
   -- ADC delay registers in
   --adc_fn_dly_in_int(0).adc_clk_load         <= regs_out.ch0_fn_dly_clk_chain_dly_load_o;
@@ -821,6 +828,9 @@ begin
   adc_fn_dly_wb_ctl_out(0).data_chain.var.inc          <= regs_out.ch0_fn_dly_inc_data_chain_dly_o;
   adc_fn_dly_wb_ctl_out(0).clk_chain.var.dec           <= regs_out.ch0_fn_dly_dec_clk_chain_dly_o;
   adc_fn_dly_wb_ctl_out(0).data_chain.var.dec          <= regs_out.ch0_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(0).clk_chain.sel.which         <= regs_out.ch0_fn_sel_line_o(c_num_adc_bits);
+  adc_fn_dly_wb_ctl_out(0).data_chain.sel.which        <= regs_out.ch0_fn_sel_line_o(c_num_adc_bits-1 downto 0);
+
   adc_fn_dly_wb_ctl_out(1).clk_chain.loadable.load     <= regs_out.ch1_fn_dly_clk_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(1).data_chain.loadable.load    <= regs_out.ch1_fn_dly_data_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(1).clk_chain.loadable.val      <= regs_out.ch1_fn_dly_clk_chain_dly_o;
@@ -831,6 +841,9 @@ begin
   adc_fn_dly_wb_ctl_out(1).data_chain.var.inc          <= regs_out.ch1_fn_dly_inc_data_chain_dly_o;
   adc_fn_dly_wb_ctl_out(1).clk_chain.var.dec           <= regs_out.ch1_fn_dly_dec_clk_chain_dly_o;
   adc_fn_dly_wb_ctl_out(1).data_chain.var.dec          <= regs_out.ch1_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(1).clk_chain.sel.which         <= regs_out.ch1_fn_sel_line_o(c_num_adc_bits);
+  adc_fn_dly_wb_ctl_out(1).data_chain.sel.which        <= regs_out.ch1_fn_sel_line_o(c_num_adc_bits-1 downto 0);
+
   adc_fn_dly_wb_ctl_out(2).clk_chain.loadable.load     <= regs_out.ch2_fn_dly_clk_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(2).data_chain.loadable.load    <= regs_out.ch2_fn_dly_data_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(2).clk_chain.loadable.val      <= regs_out.ch2_fn_dly_clk_chain_dly_o;
@@ -841,6 +854,9 @@ begin
   adc_fn_dly_wb_ctl_out(2).data_chain.var.inc          <= regs_out.ch2_fn_dly_inc_data_chain_dly_o;
   adc_fn_dly_wb_ctl_out(2).clk_chain.var.dec           <= regs_out.ch2_fn_dly_dec_clk_chain_dly_o;
   adc_fn_dly_wb_ctl_out(2).data_chain.var.dec          <= regs_out.ch2_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(2).clk_chain.sel.which         <= regs_out.ch2_fn_sel_line_o(c_num_adc_bits);
+  adc_fn_dly_wb_ctl_out(2).data_chain.sel.which        <= regs_out.ch2_fn_sel_line_o(c_num_adc_bits-1 downto 0);
+
   adc_fn_dly_wb_ctl_out(3).clk_chain.loadable.load     <= regs_out.ch3_fn_dly_clk_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(3).data_chain.loadable.load    <= regs_out.ch3_fn_dly_data_chain_dly_load_o;
   adc_fn_dly_wb_ctl_out(3).clk_chain.loadable.val      <= regs_out.ch3_fn_dly_clk_chain_dly_o;
@@ -851,6 +867,8 @@ begin
   adc_fn_dly_wb_ctl_out(3).data_chain.var.inc          <= regs_out.ch3_fn_dly_inc_data_chain_dly_o;
   adc_fn_dly_wb_ctl_out(3).clk_chain.var.dec           <= regs_out.ch3_fn_dly_dec_clk_chain_dly_o;
   adc_fn_dly_wb_ctl_out(3).data_chain.var.dec          <= regs_out.ch3_fn_dly_dec_data_chain_dly_o;
+  adc_fn_dly_wb_ctl_out(3).clk_chain.sel.which         <= regs_out.ch3_fn_sel_line_o(c_num_adc_bits);
+  adc_fn_dly_wb_ctl_out(3).data_chain.sel.which        <= regs_out.ch3_fn_sel_line_o(c_num_adc_bits-1 downto 0);
 
   -- ADC delay falling edge control
   adc_cs_dly_in_int(0).adc_data_fe_d1_en    <= regs_out.ch0_cs_dly_fe_dly_o(0);
