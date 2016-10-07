@@ -178,7 +178,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_flash/wb_spi_flash.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_stream/generic/wb_stream_sink_gen.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_vic/wb_vic.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/wb_xil_multiboot.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/platform/xilinx/wb_xil_multiboot/xwb_xil_multiboot.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/platform/xilinx/wb_xilinx_fpga_loader/wb_xilinx_fpga_loader.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_dpssram.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wbgen2/wbgen2_eic.vhd"]"\
@@ -217,8 +217,8 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_simple_dpram.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_rs232_syscon/auto_baud.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wishbone_pkg.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/inferred_async_fifo.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/inferred_sync_fifo.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/common/inferred_async_fifo.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/common/inferred_sync_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/clock_driver/conv_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_hdr_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/common/gencores_pkg.vhd"]"\
@@ -308,7 +308,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/wb_transact.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/common/generic_shiftreg_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/reset_synch/reset_synch.vhd"]"\
@@ -2198,7 +2198,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "genrams/inferred_async_fifo.vhd"
+set file "common/inferred_async_fifo.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -2209,7 +2209,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "genrams/inferred_sync_fifo.vhd"
+set file "common/inferred_sync_fifo.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -2843,7 +2843,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "xilinx/gc_shiftreg.vhd"
+set file "common/gc_shiftreg.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
