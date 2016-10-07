@@ -179,6 +179,7 @@ architecture rtl of acq_fsm is
   signal post_trig_samples_shift            : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_cnt                       : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_cnt_max                   : unsigned(c_acq_samples_size-1 downto 0);
+  signal pre_trig_cnt_max_m1                : unsigned(c_acq_samples_size-1 downto 0);
   signal pre_trig_done                      : std_logic;
   signal pre_trig_done_ext                  : std_logic;
   signal wait_trig_skip_r                   : std_logic;
@@ -186,6 +187,7 @@ architecture rtl of acq_fsm is
   signal wait_trig_skip_done_ext            : std_logic;
   signal post_trig_cnt                      : unsigned(c_acq_samples_size-1 downto 0);
   signal post_trig_cnt_max                  : unsigned(c_acq_samples_size-1 downto 0);
+  signal post_trig_cnt_max_m1               : unsigned(c_acq_samples_size-1 downto 0);
   signal post_trig_done                     : std_logic;
   signal post_trig_done_ext                 : std_logic;
   signal samples_cnt                        : unsigned(c_acq_samples_size-1 downto 0);
@@ -280,14 +282,21 @@ begin
 
           if pre_trig_samples_shift = to_unsigned(0, pre_trig_samples_shift'length) then
             pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
+            -- Calculate the comparison value in advance, so to improve
+            -- timing
+            pre_trig_cnt_max_m1 <= to_unsigned(0, pre_trig_cnt_max'length);
           else
             pre_trig_cnt_max <= pre_trig_samples_shift-1;
+            -- Calculate the comparison value in advance, so to improve
+            -- timing
+            pre_trig_cnt_max_m1 <= pre_trig_samples_shift-2;
           end if;
+
         elsif (acq_in_pre_trig = '1' and acq_dvalid_i = '1') then
           pre_trig_cnt <= pre_trig_cnt + 1;
 
           -- Will increment
-          if pre_trig_cnt = pre_trig_cnt_max-1 then
+          if pre_trig_cnt = pre_trig_cnt_max_m1 then
             pre_trig_done <= '1';
           end if;
         else
@@ -338,14 +347,20 @@ begin
 
           if post_trig_samples_shift = to_unsigned(0, post_trig_samples_shift'length) then
             post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
+            -- Calculate the comparison value in advance, so to improve
+            -- timing
+            post_trig_cnt_max_m1 <= to_unsigned(1, post_trig_cnt_max'length);
           else
             post_trig_cnt_max <= post_trig_samples_shift-1;
+            -- Calculate the comparison value in advance, so to improve
+            -- timing
+            post_trig_cnt_max_m1 <= post_trig_samples_shift-2;
           end if;
         elsif (acq_in_post_trig = '1' and acq_dvalid_i = '1') then
           post_trig_cnt <= post_trig_cnt + 1;
 
           -- Will increment
-          if post_trig_cnt = post_trig_cnt_max-1 then
+          if post_trig_cnt = post_trig_cnt_max_m1 then
             post_trig_done <= '1';
           end if;
         else
