@@ -274,6 +274,7 @@ begin
       if fs_rst_n_i = '0' then
         pre_trig_cnt <= to_unsigned(0, pre_trig_cnt'length);
         pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
+        pre_trig_cnt_max_m1 <= (others => '1');
         pre_trig_done <= '0';
       else
         if (acq_start_i = '1' or pre_trig_done = '1') then
@@ -339,6 +340,7 @@ begin
       if fs_rst_n_i = '0' then
         post_trig_cnt <= to_unsigned(1, post_trig_cnt'length);
         post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
+        post_trig_cnt_max_m1 <= to_unsigned(0, post_trig_cnt_max'length);
         post_trig_done <= '0';
       else
         if (acq_start = '1' or post_trig_done = '1') then
