@@ -283,8 +283,8 @@ begin
           if pre_trig_samples_shift = to_unsigned(0, pre_trig_samples_shift'length) then
             pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
             -- Calculate the comparison value in advance, so to improve
-            -- timing
-            pre_trig_cnt_max_m1 <= to_unsigned(0, pre_trig_cnt_max'length);
+            -- timing.
+            pre_trig_cnt_max_m1 <= (others => '1');
           else
             pre_trig_cnt_max <= pre_trig_samples_shift-1;
             -- Calculate the comparison value in advance, so to improve
@@ -349,7 +349,7 @@ begin
             post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
             -- Calculate the comparison value in advance, so to improve
             -- timing
-            post_trig_cnt_max_m1 <= to_unsigned(1, post_trig_cnt_max'length);
+            post_trig_cnt_max_m1 <= to_unsigned(0, post_trig_cnt_max'length);
           else
             post_trig_cnt_max <= post_trig_samples_shift-1;
             -- Calculate the comparison value in advance, so to improve
