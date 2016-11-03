@@ -274,7 +274,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/pcie/common/Registers.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_cnt.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/divider/arith_dsp48e_package.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/common/gc_shiftreg.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/xilinx/gc_shiftreg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/etherbone_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_i2c_master/wb_i2c_master.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/tlpControl.vhd"]"\
@@ -308,7 +308,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/etherbone-core/hdl/eb_slave_core/eb_tx_mux.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_crossbar/sdb_rom.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/pcie/common/wb_transact.vhd"]"\
- "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/generic_shiftreg_fifo.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/common/generic_shiftreg_fifo.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_acq_core/acq_sel_chan.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_uart/wb_simple_uart.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/reset_synch/reset_synch.vhd"]"\
@@ -2841,7 +2841,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "common/gc_shiftreg.vhd"
+set file "xilinx/gc_shiftreg.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -3227,7 +3227,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "genrams/generic_shiftreg_fifo.vhd"
+set file "common/generic_shiftreg_fifo.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
