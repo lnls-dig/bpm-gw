@@ -576,12 +576,6 @@ begin
   end generate;
 
   -----------------------------
-  -- General status board pins
-  -----------------------------
-  -- PLL status available through a regular core pin
-  fmc_pll_status_o                          <= fmc_pll_status_i;
-
-  -----------------------------
   -- Insert extra Wishbone registering stage for ease timing.
   -- It effectively cuts the bandwidth in half!
   -----------------------------
