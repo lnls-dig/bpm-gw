@@ -1528,7 +1528,7 @@ begin
 
   -- Insert more FMC ADC boards here
   assert (g_fmc_adc_type = "FMC130M" or g_fmc_adc_type = "FMC250M")
-    report "[dbe_bpm_gen] FMC ADC board must be either \"FMC130M\" or \"FMC250M\""
+    report "[dbe_bpm_gen] FMC ADC board must be either \'FMC130M\' or \'FMC250M\'"
     severity Failure;
 
   gen_fmc130 : if (g_fmc_adc_type = "FMC130M") generate

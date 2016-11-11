@@ -742,7 +742,7 @@ architecture rtl of dbe_bpm2 is
     -----------------------------------------
     leds_o                                    : out std_logic_vector(2 downto 0)
   );
-  end component
+  end component;
 
 begin
 
@@ -1024,7 +1024,7 @@ begin
     -----------------------------------------
     -- User LEDs
     -----------------------------------------
-    leds_o                                    => leds_o,
+    leds_o                                    => leds_o
   );
 
 end rtl;

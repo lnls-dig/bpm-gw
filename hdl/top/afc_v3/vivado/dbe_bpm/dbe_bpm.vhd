@@ -1008,8 +1008,8 @@ begin
     -----------------------------------------
     -- User LEDs
     -----------------------------------------
-    leds_o                                    => leds_o,
+    leds_o                                    => leds_o
   );
-  end component
+  end component;
 
 end rtl;
