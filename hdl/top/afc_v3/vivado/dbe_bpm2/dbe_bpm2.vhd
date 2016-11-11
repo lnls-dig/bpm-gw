@@ -21,6 +21,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+-- FMC516 definitions
+use work.fmc_adc_pkg.all;
+-- IP cores constants
+use work.ipcores_pkg.all;
+
 entity dbe_bpm2 is
 port(
   -----------------------------------------
@@ -742,13 +748,13 @@ architecture rtl of dbe_bpm2 is
     -----------------------------------------
     leds_o                                    : out std_logic_vector(2 downto 0)
   );
-  end component
+  end component;
 
 begin
 
   cmp_dbe_bpm_gen : dbe_bpm_gen
   generic map (
-    g_fmc_adc_type                            := "FMC250M"
+    g_fmc_adc_type                            => "FMC250M"
   )
   port map (
     -----------------------------------------

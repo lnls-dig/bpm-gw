@@ -22,34 +22,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
--- Main Wishbone Definitions
-use work.wishbone_pkg.all;
--- Memory core generator
-use work.gencores_pkg.all;
--- Custom Wishbone Modules
-use work.dbe_wishbone_pkg.all;
--- Custom common cores
-use work.dbe_common_pkg.all;
--- Wishbone stream modules and interface
-use work.wb_stream_generic_pkg.all;
 -- FMC516 definitions
 use work.fmc_adc_pkg.all;
--- DSP definitions
-use work.dsp_cores_pkg.all;
--- Positicon Calc constants
-use work.machine_pkg.all;
--- Genrams
-use work.genram_pkg.all;
--- Data Acquisition core
-use work.acq_core_pkg.all;
 -- IP cores constants
 use work.ipcores_pkg.all;
--- Meta Package
-use work.synthesis_descriptor_pkg.all;
--- AXI cores
-use work.bpm_axi_pkg.all;
--- Trigger Modules
-use work.trigger_pkg.all;
 
 entity dbe_bpm is
 port(
@@ -749,7 +725,7 @@ architecture rtl of dbe_bpm is
     -----------------------------------------
     leds_o                                    : out std_logic_vector(2 downto 0)
   );
-  end component
+  end component;
 
 begin
 
