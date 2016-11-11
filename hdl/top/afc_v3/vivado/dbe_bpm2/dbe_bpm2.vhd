@@ -1046,10 +1046,6 @@ architecture rtl of dbe_bpm2 is
   --signal TRIG_ILA10_3                       : std_logic_vector(31 downto 0);
   --signal TRIG_ILA10_4                       : std_logic_vector(31 downto 0);
 
-  ---- Chipscope VIO signals
-  --signal vio_out                             : std_logic_vector(255 downto 0);
-  --signal vio_out_dsp_config                  : std_logic_vector(255 downto 0);
-
   ---------------------------
   --      Components       --
   ---------------------------
@@ -1090,23 +1086,6 @@ architecture rtl of dbe_bpm2 is
   component chipscope_icon_1_port
   port (
     CONTROL0                                : inout std_logic_vector(35 downto 0)
-  );
-  end component;
-
-  component multiplier_16x10_DSP
-  port (
-    clk                                     : in std_logic;
-    a                                       : in std_logic_vector(15 downto 0);
-    b                                       : in std_logic_vector(9 downto 0);
-    p                                       : out std_logic_vector(25 downto 0)
-  );
-  end component;
-
-  component dds_adc_input
-  port (
-    aclk                                    : in std_logic;
-    m_axis_data_tvalid                      : out std_logic;
-    m_axis_data_tdata                       : out std_logic_vector(31 downto 0)
   );
   end component;
 
@@ -3142,26 +3121,6 @@ begin
   --TRIG_ILA10_2(dsp_fofb_pha_ch1'left downto 0)    <= dsp_fofb_pha_ch1;
   --TRIG_ILA10_3(dsp_fofb_pha_ch2'left downto 0)    <= dsp_fofb_pha_ch2;
   --TRIG_ILA10_4(dsp_fofb_pha_ch3'left downto 0)    <= dsp_fofb_pha_ch3;
-
-  ---- Controllable gain for test data
-  --cmp_chipscope_vio_256 : chipscope_vio_256
-  --port map (
-  --  CONTROL                                 => CONTROL11,
-  --  ASYNC_OUT                               => vio_out
-  --);
-
-  --dds_sine_gain_ch0                         <= vio_out(10-1 downto 0);
-  --dds_sine_gain_ch1                         <= vio_out(20-1 downto 10);
-  --dds_sine_gain_ch2                         <= vio_out(30-1 downto 20);
-  --dds_sine_gain_ch3                         <= vio_out(40-1 downto 30);
-  --adc_synth_data_en                         <= vio_out(40);
-
-  ---- Controllable DDS frequency and phase
-  --cmp_chipscope_vio_256_dsp_config : chipscope_vio_256
-  --port map (
-  --  CONTROL                                 => CONTROL12,
-  --  ASYNC_OUT                               => vio_out_dsp_config
-  --);
 
   ----------------------------------------------------------------------
   --                AFC Diagnostics Chipscope                         --
