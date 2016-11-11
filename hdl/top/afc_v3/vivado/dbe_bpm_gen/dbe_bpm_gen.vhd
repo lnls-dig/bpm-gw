@@ -495,30 +495,28 @@ architecture rtl of dbe_bpm_gen is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 17;
-  -- General Dual-port memory, FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
+  constant c_slaves                         : natural := 15;
+  -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
   -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Repo URL,
   -- SDB synthesis top, general-cores, dsp-cores
 
   -- Slaves indexes
-  constant c_slv_dpram_sys_port0_id        : natural := 0;
-  constant c_slv_dpram_sys_port1_id        : natural := 1;
-  constant c_slv_pos_calc_1_id             : natural := 2;
-  constant c_slv_fmc_adc_1_id              : natural := 3;
-  constant c_slv_acq_core_0_id             : natural := 4;
-  constant c_slv_pos_calc_2_id             : natural := 5;
-  constant c_slv_fmc_adc_2_id              : natural := 6;
-  constant c_slv_acq_core_1_id             : natural := 7;
-  constant c_slv_periph_id                 : natural := 8;
-  constant c_slv_afc_diag_id               : natural := 9;
-  constant c_slv_trig_iface_id             : natural := 10;
-  constant c_slv_trig_mux_0_id             : natural := 11;
-  constant c_slv_trig_mux_1_id             : natural := 12;
-  constant c_slv_sdb_repo_url_id           : natural := 13;
-  constant c_slv_sdb_top_syn_id            : natural := 14;
-  constant c_slv_sdb_dsp_cores_id          : natural := 15;
-  constant c_slv_sdb_gen_cores_id          : natural := 16;
+  constant c_slv_pos_calc_1_id             : natural := 0;
+  constant c_slv_fmc_adc_1_id              : natural := 1;
+  constant c_slv_acq_core_0_id             : natural := 2;
+  constant c_slv_pos_calc_2_id             : natural := 3;
+  constant c_slv_fmc_adc_2_id              : natural := 4;
+  constant c_slv_acq_core_1_id             : natural := 5;
+  constant c_slv_periph_id                 : natural := 6;
+  constant c_slv_afc_diag_id               : natural := 7;
+  constant c_slv_trig_iface_id             : natural := 8;
+  constant c_slv_trig_mux_0_id             : natural := 9;
+  constant c_slv_trig_mux_1_id             : natural := 10;
+  constant c_slv_sdb_repo_url_id           : natural := 11;
+  constant c_slv_sdb_top_syn_id            : natural := 12;
+  constant c_slv_sdb_dsp_cores_id          : natural := 13;
+  constant c_slv_sdb_gen_cores_id          : natural := 14;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -527,7 +525,6 @@ architecture rtl of dbe_bpm_gen is
   constant c_ma_pcie_id                    : natural := 0;
   constant c_ma_rs232_syscon_id            : natural := 1;
 
-  constant c_dpram_size                     : natural := 16384/4; -- in 32-bit words (16KB)
   constant c_acq_fifo_size                  : natural := 1024;
 
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
@@ -661,9 +658,7 @@ architecture rtl of dbe_bpm_gen is
 
   -- WB SDB (Self describing bus) layout
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
-    (c_slv_dpram_sys_port0_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00000000"),   -- 16KB RAM
-     c_slv_dpram_sys_port1_id  => f_sdb_embed_device(f_xwb_dpram(c_dpram_size),  x"00100000"),   -- Second port to the same memory
-     c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
+    (c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00310000"),   -- Position Calc Core 1 control port
      c_slv_fmc_adc_1_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00320000"),   -- FMC_ADC control 1 port
      c_slv_acq_core_0_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
@@ -1500,30 +1495,6 @@ begin
     -- WISHBONE master
     wb_master_i                               => cbar_slave_o(c_ma_rs232_syscon_id),
     wb_master_o                               => cbar_slave_i(c_ma_rs232_syscon_id)
-  );
-
-  ----------------------------------------------------------------------
-  --                            SYS DPRAM                             --
-  ----------------------------------------------------------------------
-  -- Generic System DPRAM
-  cmp_ram : xwb_dpram
-  generic map(
-    g_size                                  => c_dpram_size,
-    g_must_have_init_file                   => false,
-    g_slave1_interface_mode                 => PIPELINED,
-    g_slave2_interface_mode                 => PIPELINED,
-    g_slave1_granularity                    => BYTE,
-    g_slave2_granularity                    => BYTE
-  )
-  port map(
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-    -- First port connected to the crossbar
-    slave1_i                                => cbar_master_o(c_slv_dpram_sys_port0_id),
-    slave1_o                                => cbar_master_i(c_slv_dpram_sys_port0_id),
-    -- Second port connected to the crossbar
-    slave2_i                                => cbar_master_o(c_slv_dpram_sys_port1_id),
-    slave2_o                                => cbar_master_i(c_slv_dpram_sys_port1_id)
   );
 
   -- Insert more FMC ADC boards here
