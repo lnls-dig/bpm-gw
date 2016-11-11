@@ -99,335 +99,335 @@ port(
   -----------------------------
 
   -- ADC LTC2208 interface
-  fmc1_adc_pga_o                             : out std_logic;
-  fmc1_adc_shdn_o                            : out std_logic;
-  fmc1_adc_dith_o                            : out std_logic;
-  fmc1_adc_rand_o                            : out std_logic;
+  fmc130_1_adc_pga_o                         : out std_logic;
+  fmc130_1_adc_shdn_o                        : out std_logic;
+  fmc130_1_adc_dith_o                        : out std_logic;
+  fmc130_1_adc_rand_o                        : out std_logic;
 
   -- ADC0 LTC2208
-  fmc1_adc0_clk_i                            : in std_logic := '0';
-  fmc1_adc0_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc1_adc0_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_1_adc0_clk_i                        : in std_logic := '0';
+  fmc130_1_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc0_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC1 LTC2208
-  fmc1_adc1_clk_i                            : in std_logic := '0';
-  fmc1_adc1_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc1_adc1_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_1_adc1_clk_i                        : in std_logic := '0';
+  fmc130_1_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc1_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC2 LTC2208
-  fmc1_adc2_clk_i                            : in std_logic := '0';
-  fmc1_adc2_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc1_adc2_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_1_adc2_clk_i                        : in std_logic := '0';
+  fmc130_1_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc2_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC3 LTC2208
-  fmc1_adc3_clk_i                            : in std_logic := '0';
-  fmc1_adc3_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc1_adc3_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_1_adc3_clk_i                        : in std_logic := '0';
+  fmc130_1_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc3_of_i                         : in std_logic := '0'; -- Unused
 
   ---- FMC General Status
-  --fmc1_prsnt_i                               : in std_logic := '0';
-  --fmc1_pg_m2c_i                              : in std_logic := '0';
-  --fmc1_clk_dir_i                             : in std_logic := '0';
+  --fmc130_1_prsnt_i                           : in std_logic := '0';
+  --fmc130_1_pg_m2c_i                          : in std_logic := '0';
+  --fmc130_1_clk_dir_i                         : in std_logic := '0';
 
   -- Trigger
-  fmc1_trig_dir_o                            : out std_logic;
-  fmc1_trig_term_o                           : out std_logic;
-  fmc1_trig_val_p_b                          : inout std_logic;
-  fmc1_trig_val_n_b                          : inout std_logic;
+  fmc130_1_trig_dir_o                        : out std_logic;
+  fmc130_1_trig_term_o                       : out std_logic;
+  fmc130_1_trig_val_p_b                      : inout std_logic;
+  fmc130_1_trig_val_n_b                      : inout std_logic;
 
   -- Si571 clock gen
-  fmc1_si571_scl_pad_b                       : inout std_logic;
-  fmc1_si571_sda_pad_b                       : inout std_logic;
-  fmc1_si571_oe_o                            : out std_logic;
+  fmc130_1_si571_scl_pad_b                   : inout std_logic;
+  fmc130_1_si571_sda_pad_b                   : inout std_logic;
+  fmc130_1_si571_oe_o                        : out std_logic;
 
   -- AD9510 clock distribution PLL
-  fmc1_spi_ad9510_cs_o                       : out std_logic;
-  fmc1_spi_ad9510_sclk_o                     : out std_logic;
-  fmc1_spi_ad9510_mosi_o                     : out std_logic;
-  fmc1_spi_ad9510_miso_i                     : in std_logic := '0';
+  fmc130_1_spi_ad9510_cs_o                   : out std_logic;
+  fmc130_1_spi_ad9510_sclk_o                 : out std_logic;
+  fmc130_1_spi_ad9510_mosi_o                 : out std_logic;
+  fmc130_1_spi_ad9510_miso_i                 : in std_logic := '0';
 
-  fmc1_pll_function_o                        : out std_logic;
-  fmc1_pll_status_i                          : in std_logic := '0';
+  fmc130_1_pll_function_o                    : out std_logic;
+  fmc130_1_pll_status_i                      : in std_logic := '0';
 
   -- AD9510 clock copy
-  fmc1_fpga_clk_p_i                          : in std_logic := '0';
-  fmc1_fpga_clk_n_i                          : in std_logic := '0';
+  fmc130_1_fpga_clk_p_i                      : in std_logic := '0';
+  fmc130_1_fpga_clk_n_i                      : in std_logic := '0';
 
   -- Clock reference selection (TS3USB221)
-  fmc1_clk_sel_o                             : out std_logic;
+  fmc130_1_clk_sel_o                         : out std_logic;
 
   -- EEPROM (Connected to the CPU)
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
-  fmc1_eeprom_scl_pad_b                     : inout std_logic;
-  fmc1_eeprom_sda_pad_b                     : inout std_logic;
+  fmc130_1_eeprom_scl_pad_b                  : inout std_logic;
+  fmc130_1_eeprom_sda_pad_b                  : inout std_logic;
 
   -- Temperature monitor (LM75AIMM)
-  fmc1_lm75_scl_pad_b                       : inout std_logic;
-  fmc1_lm75_sda_pad_b                       : inout std_logic;
+  fmc130_1_lm75_scl_pad_b                    : inout std_logic;
+  fmc130_1_lm75_sda_pad_b                    : inout std_logic;
 
-  fmc1_lm75_temp_alarm_i                     : in std_logic := '0';
+  fmc130_1_lm75_temp_alarm_i                 : in std_logic := '0';
 
   -- FMC LEDs
-  fmc1_led1_o                                : out std_logic;
-  fmc1_led2_o                                : out std_logic;
-  fmc1_led3_o                                : out std_logic;
+  fmc130_1_led1_o                            : out std_logic;
+  fmc130_1_led2_o                            : out std_logic;
+  fmc130_1_led3_o                            : out std_logic;
 
   -----------------------------
   -- FMC2_130m_4ch ports
   -----------------------------
 
   -- ADC LTC2208 interface
-  fmc2_adc_pga_o                             : out std_logic;
-  fmc2_adc_shdn_o                            : out std_logic;
-  fmc2_adc_dith_o                            : out std_logic;
-  fmc2_adc_rand_o                            : out std_logic;
+  fmc130_2_adc_pga_o                         : out std_logic;
+  fmc130_2_adc_shdn_o                        : out std_logic;
+  fmc130_2_adc_dith_o                        : out std_logic;
+  fmc130_2_adc_rand_o                        : out std_logic;
 
   -- ADC0 LTC2208
-  fmc2_adc0_clk_i                            : in std_logic := '0';
-  fmc2_adc0_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc2_adc0_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_2_adc0_clk_i                        : in std_logic := '0';
+  fmc130_2_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc0_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC1 LTC2208
-  fmc2_adc1_clk_i                            : in std_logic := '0';
-  fmc2_adc1_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc2_adc1_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_2_adc1_clk_i                        : in std_logic := '0';
+  fmc130_2_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc1_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC2 LTC2208
-  fmc2_adc2_clk_i                            : in std_logic := '0';
-  fmc2_adc2_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc2_adc2_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_2_adc2_clk_i                        : in std_logic := '0';
+  fmc130_2_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc2_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC3 LTC2208
-  fmc2_adc3_clk_i                            : in std_logic := '0';
-  fmc2_adc3_data_i                           : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
-  fmc2_adc3_of_i                             : in std_logic := '0'; -- Unused
+  fmc130_2_adc3_clk_i                        : in std_logic := '0';
+  fmc130_2_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc3_of_i                         : in std_logic := '0'; -- Unused
 
   ---- FMC General Status
-  --fmc2_prsnt_i                               : in std_logic := '0';
-  --fmc2_pg_m2c_i                              : in std_logic := '0';
-  --fmc2_clk_dir_i                             : in std_logic := '0';
+  --fmc130_2_prsnt_i                           : in std_logic := '0';
+  --fmc130_2_pg_m2c_i                          : in std_logic := '0';
+  --fmc130_2_clk_dir_i                         : in std_logic := '0';
 
   -- Trigger
-  fmc2_trig_dir_o                            : out std_logic;
-  fmc2_trig_term_o                           : out std_logic;
-  fmc2_trig_val_p_b                          : inout std_logic;
-  fmc2_trig_val_n_b                          : inout std_logic;
+  fmc130_2_trig_dir_o                        : out std_logic;
+  fmc130_2_trig_term_o                       : out std_logic;
+  fmc130_2_trig_val_p_b                      : inout std_logic;
+  fmc130_2_trig_val_n_b                      : inout std_logic;
 
   -- Si571 clock gen
-  fmc2_si571_scl_pad_b                       : inout std_logic;
-  fmc2_si571_sda_pad_b                       : inout std_logic;
-  fmc2_si571_oe_o                            : out std_logic;
+  fmc130_2_si571_scl_pad_b                   : inout std_logic;
+  fmc130_2_si571_sda_pad_b                   : inout std_logic;
+  fmc130_2_si571_oe_o                        : out std_logic;
 
   -- AD9510 clock distribution PLL
-  fmc2_spi_ad9510_cs_o                       : out std_logic;
-  fmc2_spi_ad9510_sclk_o                     : out std_logic;
-  fmc2_spi_ad9510_mosi_o                     : out std_logic;
-  fmc2_spi_ad9510_miso_i                     : in std_logic := '0';
+  fmc130_2_spi_ad9510_cs_o                   : out std_logic;
+  fmc130_2_spi_ad9510_sclk_o                 : out std_logic;
+  fmc130_2_spi_ad9510_mosi_o                 : out std_logic;
+  fmc130_2_spi_ad9510_miso_i                 : in std_logic := '0';
 
-  fmc2_pll_function_o                        : out std_logic;
-  fmc2_pll_status_i                          : in std_logic := '0';
+  fmc130_2_pll_function_o                    : out std_logic;
+  fmc130_2_pll_status_i                      : in std_logic := '0';
 
   -- AD9510 clock copy
-  fmc2_fpga_clk_p_i                          : in std_logic := '0';
-  fmc2_fpga_clk_n_i                          : in std_logic := '0';
+  fmc130_2_fpga_clk_p_i                      : in std_logic := '0';
+  fmc130_2_fpga_clk_n_i                      : in std_logic := '0';
 
   -- Clock reference selection (TS3USB221)
-  fmc2_clk_sel_o                             : out std_logic;
+  fmc130_2_clk_sel_o                         : out std_logic;
 
   -- EEPROM (Connected to the CPU)
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
 
   -- Temperature monitor (LM75AIMM)
-  fmc2_lm75_scl_pad_b                       : inout std_logic;
-  fmc2_lm75_sda_pad_b                       : inout std_logic;
+  fmc130_2_lm75_scl_pad_b                    : inout std_logic;
+  fmc130_2_lm75_sda_pad_b                    : inout std_logic;
 
-  fmc2_lm75_temp_alarm_i                     : in std_logic := '0';
+  fmc130_2_lm75_temp_alarm_i                 : in std_logic := '0';
 
   -- FMC LEDs
-  fmc2_led1_o                                : out std_logic;
-  fmc2_led2_o                                : out std_logic;
-  fmc2_led3_o                                : out std_logic;
+  fmc130_2_led1_o                            : out std_logic;
+  fmc130_2_led2_o                            : out std_logic;
+  fmc130_2_led3_o                            : out std_logic;
 
   -----------------------------
   -- FMC1_250m_4ch ports
   -----------------------------
 
   -- ADC clock (half of the sampling frequency) divider reset
-  fmc1_adc_clk_div_rst_p_o                   : out std_logic;
-  fmc1_adc_clk_div_rst_n_o                   : out std_logic;
-  fmc1_adc_ext_rst_n_o                       : out std_logic;
-  fmc1_adc_sleep_o                           : out std_logic;
+  fmc250_1_adc_clk_div_rst_p_o               : out std_logic;
+  fmc250_1_adc_clk_div_rst_n_o               : out std_logic;
+  fmc250_1_adc_ext_rst_n_o                   : out std_logic;
+  fmc250_1_adc_sleep_o                       : out std_logic;
 
   -- ADC clocks. One clock per ADC channel.
   -- Only ch1 clock is used as all data chains
   -- are sampled at the same frequency
-  fmc1_adc_clk0_p_i                          : in std_logic := '0';
-  fmc1_adc_clk0_n_i                          : in std_logic := '0';
-  fmc1_adc_clk1_p_i                          : in std_logic := '0';
-  fmc1_adc_clk1_n_i                          : in std_logic := '0';
-  fmc1_adc_clk2_p_i                          : in std_logic := '0';
-  fmc1_adc_clk2_n_i                          : in std_logic := '0';
-  fmc1_adc_clk3_p_i                          : in std_logic := '0';
-  fmc1_adc_clk3_n_i                          : in std_logic := '0';
+  fmc250_1_adc_clk0_p_i                      : in std_logic := '0';
+  fmc250_1_adc_clk0_n_i                      : in std_logic := '0';
+  fmc250_1_adc_clk1_p_i                      : in std_logic := '0';
+  fmc250_1_adc_clk1_n_i                      : in std_logic := '0';
+  fmc250_1_adc_clk2_p_i                      : in std_logic := '0';
+  fmc250_1_adc_clk2_n_i                      : in std_logic := '0';
+  fmc250_1_adc_clk3_p_i                      : in std_logic := '0';
+  fmc250_1_adc_clk3_n_i                      : in std_logic := '0';
 
   -- DDR ADC data channels.
-  fmc1_adc_data_ch0_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch0_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch1_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch1_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch2_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch2_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch3_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc1_adc_data_ch3_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
 
   ---- FMC General Status
-  --fmc1_prsnt_i                               : in std_logic := '0';
-  --fmc1_pg_m2c_i                              : in std_logic := '0';
-  --fmc1_clk_dir_i                             : in std_logic := '0';
+  --fmc250_1_prsnt_i                           : in std_logic := '0';
+  --fmc250_1_pg_m2c_i                          : in std_logic := '0';
+  --fmc250_1_clk_dir_i                         : in std_logic := '0';
 
   -- Trigger
-  fmc1_trig_dir_o                            : out std_logic;
-  fmc1_trig_term_o                           : out std_logic;
-  fmc1_trig_val_p_b                          : inout std_logic;
-  fmc1_trig_val_n_b                          : inout std_logic;
+  fmc250_1_trig_dir_o                        : out std_logic;
+  fmc250_1_trig_term_o                       : out std_logic;
+  fmc250_1_trig_val_p_b                      : inout std_logic;
+  fmc250_1_trig_val_n_b                      : inout std_logic;
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-  fmc1_adc_spi_clk_o                         : out std_logic;
-  fmc1_adc_spi_mosi_o                        : out std_logic;
-  fmc1_adc_spi_miso_i                        : in std_logic := '0';
-  fmc1_adc_spi_cs_adc0_n_o                   : out std_logic;  -- SPI ADC CS channel 0
-  fmc1_adc_spi_cs_adc1_n_o                   : out std_logic;  -- SPI ADC CS channel 1
-  fmc1_adc_spi_cs_adc2_n_o                   : out std_logic;  -- SPI ADC CS channel 2
-  fmc1_adc_spi_cs_adc3_n_o                   : out std_logic;  -- SPI ADC CS channel 3
+  fmc250_1_adc_spi_clk_o                     : out std_logic;
+  fmc250_1_adc_spi_mosi_o                    : out std_logic;
+  fmc250_1_adc_spi_miso_i                    : in std_logic := '0';
+  fmc250_1_adc_spi_cs_adc0_n_o               : out std_logic;  -- SPI ADC CS channel 0
+  fmc250_1_adc_spi_cs_adc1_n_o               : out std_logic;  -- SPI ADC CS channel 1
+  fmc250_1_adc_spi_cs_adc2_n_o               : out std_logic;  -- SPI ADC CS channel 2
+  fmc250_1_adc_spi_cs_adc3_n_o               : out std_logic;  -- SPI ADC CS channel 3
 
   -- Si571 clock gen
-  fmc1_si571_scl_pad_b                       : inout std_logic;
-  fmc1_si571_sda_pad_b                       : inout std_logic;
-  fmc1_si571_oe_o                            : out std_logic;
+  fmc250_1_si571_scl_pad_b                   : inout std_logic;
+  fmc250_1_si571_sda_pad_b                   : inout std_logic;
+  fmc250_1_si571_oe_o                        : out std_logic;
 
   -- AD9510 clock distribution PLL
-  fmc1_spi_ad9510_cs_o                       : out std_logic;
-  fmc1_spi_ad9510_sclk_o                     : out std_logic;
-  fmc1_spi_ad9510_mosi_o                     : out std_logic;
-  fmc1_spi_ad9510_miso_i                     : in std_logic := '0';
+  fmc250_1_spi_ad9510_cs_o                   : out std_logic;
+  fmc250_1_spi_ad9510_sclk_o                 : out std_logic;
+  fmc250_1_spi_ad9510_mosi_o                 : out std_logic;
+  fmc250_1_spi_ad9510_miso_i                 : in std_logic := '0';
 
-  fmc1_pll_function_o                        : out std_logic;
-  fmc1_pll_status_i                          : in std_logic := '0';
+  fmc250_1_pll_function_o                    : out std_logic;
+  fmc250_1_pll_status_i                      : in std_logic := '0';
 
   -- AD9510 clock copy
-  fmc1_fpga_clk_p_i                          : in std_logic := '0';
-  fmc1_fpga_clk_n_i                          : in std_logic := '0';
+  fmc250_1_fpga_clk_p_i                      : in std_logic := '0';
+  fmc250_1_fpga_clk_n_i                      : in std_logic := '0';
 
   -- Clock reference selection (TS3USB221)
-  fmc1_clk_sel_o                             : out std_logic;
+  fmc250_1_clk_sel_o                         : out std_logic;
 
   -- EEPROM (Connected to the CPU)
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
-  fmc1_eeprom_scl_pad_b                     : inout std_logic;
-  fmc1_eeprom_sda_pad_b                     : inout std_logic;
+  fmc250_1_eeprom_scl_pad_b                  : inout std_logic;
+  fmc250_1_eeprom_sda_pad_b                  : inout std_logic;
 
   -- AMC7823 temperature monitor
-  fmc1_amc7823_spi_cs_o                      : out std_logic;
-  fmc1_amc7823_spi_sclk_o                    : out std_logic;
-  fmc1_amc7823_spi_mosi_o                    : out std_logic;
-  fmc1_amc7823_spi_miso_i                    : in std_logic := '0';
-  fmc1_amc7823_davn_i                        : in std_logic := '0';
+  fmc250_1_amc7823_spi_cs_o                  : out std_logic;
+  fmc250_1_amc7823_spi_sclk_o                : out std_logic;
+  fmc250_1_amc7823_spi_mosi_o                : out std_logic;
+  fmc250_1_amc7823_spi_miso_i                : in std_logic := '0';
+  fmc250_1_amc7823_davn_i                    : in std_logic := '0';
 
   -- FMC LEDs
-  fmc1_led1_o                                : out std_logic;
-  fmc1_led2_o                                : out std_logic;
-  fmc1_led3_o                                : out std_logic;
+  fmc250_1_led1_o                            : out std_logic;
+  fmc250_1_led2_o                            : out std_logic;
+  fmc250_1_led3_o                            : out std_logic;
 
   -----------------------------
   -- FMC2_250m_4ch ports
   -----------------------------
   -- ADC clock (half of the sampling frequency) divider reset
-  fmc2_adc_clk_div_rst_p_o                   : out std_logic;
-  fmc2_adc_clk_div_rst_n_o                   : out std_logic;
-  fmc2_adc_ext_rst_n_o                       : out std_logic;
-  fmc2_adc_sleep_o                           : out std_logic;
+  fmc250_2_adc_clk_div_rst_p_o               : out std_logic;
+  fmc250_2_adc_clk_div_rst_n_o               : out std_logic;
+  fmc250_2_adc_ext_rst_n_o                   : out std_logic;
+  fmc250_2_adc_sleep_o                       : out std_logic;
 
   -- ADC clocks. One clock per ADC channel.
   -- Only ch1 clock is used as all data chains
   -- are sampled at the same frequency
-  fmc2_adc_clk0_p_i                          : in std_logic := '0';
-  fmc2_adc_clk0_n_i                          : in std_logic := '0';
-  fmc2_adc_clk1_p_i                          : in std_logic := '0';
-  fmc2_adc_clk1_n_i                          : in std_logic := '0';
-  fmc2_adc_clk2_p_i                          : in std_logic := '0';
-  fmc2_adc_clk2_n_i                          : in std_logic := '0';
-  fmc2_adc_clk3_p_i                          : in std_logic := '0';
-  fmc2_adc_clk3_n_i                          : in std_logic := '0';
+  fmc250_2_adc_clk0_p_i                      : in std_logic := '0';
+  fmc250_2_adc_clk0_n_i                      : in std_logic := '0';
+  fmc250_2_adc_clk1_p_i                      : in std_logic := '0';
+  fmc250_2_adc_clk1_n_i                      : in std_logic := '0';
+  fmc250_2_adc_clk2_p_i                      : in std_logic := '0';
+  fmc250_2_adc_clk2_n_i                      : in std_logic := '0';
+  fmc250_2_adc_clk3_p_i                      : in std_logic := '0';
+  fmc250_2_adc_clk3_n_i                      : in std_logic := '0';
 
   -- DDR ADC data channels.
-  fmc2_adc_data_ch0_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch0_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch1_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch1_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch2_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch2_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch3_p_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc2_adc_data_ch3_n_i                      : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
 
   ---- FMC General Status
-  --fmc2_prsnt_i                               : in std_logic := '0';
-  --fmc2_pg_m2c_i                              : in std_logic := '0';
-  --fmc2_clk_dir_i                             : in std_logic := '0';
+  --fmc250_2_prsnt_i                           : in std_logic := '0';
+  --fmc250_2_pg_m2c_i                          : in std_logic := '0';
+  --fmc250_2_clk_dir_i                         : in std_logic := '0';
 
   -- Trigger
-  fmc2_trig_dir_o                            : out std_logic;
-  fmc2_trig_term_o                           : out std_logic;
-  fmc2_trig_val_p_b                          : inout std_logic;
-  fmc2_trig_val_n_b                          : inout std_logic;
+  fmc250_2_trig_dir_o                        : out std_logic;
+  fmc250_2_trig_term_o                       : out std_logic;
+  fmc250_2_trig_val_p_b                      : inout std_logic;
+  fmc250_2_trig_val_n_b                      : inout std_logic;
 
   -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-  fmc2_adc_spi_clk_o                         : out std_logic;
-  fmc2_adc_spi_mosi_o                        : out std_logic;
-  fmc2_adc_spi_miso_i                        : in std_logic := '0';
-  fmc2_adc_spi_cs_adc0_n_o                   : out std_logic;  -- SPI ADC CS channel 0
-  fmc2_adc_spi_cs_adc1_n_o                   : out std_logic;  -- SPI ADC CS channel 1
-  fmc2_adc_spi_cs_adc2_n_o                   : out std_logic;  -- SPI ADC CS channel 2
-  fmc2_adc_spi_cs_adc3_n_o                   : out std_logic;  -- SPI ADC CS channel 3
+  fmc250_2_adc_spi_clk_o                     : out std_logic;
+  fmc250_2_adc_spi_mosi_o                    : out std_logic;
+  fmc250_2_adc_spi_miso_i                    : in std_logic := '0';
+  fmc250_2_adc_spi_cs_adc0_n_o               : out std_logic;  -- SPI ADC CS channel 0
+  fmc250_2_adc_spi_cs_adc1_n_o               : out std_logic;  -- SPI ADC CS channel 1
+  fmc250_2_adc_spi_cs_adc2_n_o               : out std_logic;  -- SPI ADC CS channel 2
+  fmc250_2_adc_spi_cs_adc3_n_o               : out std_logic;  -- SPI ADC CS channel 3
 
   -- Si571 clock gen
-  fmc2_si571_scl_pad_b                       : inout std_logic;
-  fmc2_si571_sda_pad_b                       : inout std_logic;
-  fmc2_si571_oe_o                            : out std_logic;
+  fmc250_2_si571_scl_pad_b                   : inout std_logic;
+  fmc250_2_si571_sda_pad_b                   : inout std_logic;
+  fmc250_2_si571_oe_o                        : out std_logic;
 
   -- AD9510 clock distribution PLL
-  fmc2_spi_ad9510_cs_o                       : out std_logic;
-  fmc2_spi_ad9510_sclk_o                     : out std_logic;
-  fmc2_spi_ad9510_mosi_o                     : out std_logic;
-  fmc2_spi_ad9510_miso_i                     : in std_logic := '0';
+  fmc250_2_spi_ad9510_cs_o                   : out std_logic;
+  fmc250_2_spi_ad9510_sclk_o                 : out std_logic;
+  fmc250_2_spi_ad9510_mosi_o                 : out std_logic;
+  fmc250_2_spi_ad9510_miso_i                 : in std_logic := '0';
 
-  fmc2_pll_function_o                        : out std_logic;
-  fmc2_pll_status_i                          : in std_logic := '0';
+  fmc250_2_pll_function_o                    : out std_logic;
+  fmc250_2_pll_status_i                      : in std_logic := '0';
 
   -- AD9510 clock copy
-  fmc2_fpga_clk_p_i                          : in std_logic := '0';
-  fmc2_fpga_clk_n_i                          : in std_logic := '0';
+  fmc250_2_fpga_clk_p_i                      : in std_logic := '0';
+  fmc250_2_fpga_clk_n_i                      : in std_logic := '0';
 
   -- Clock reference selection (TS3USB221)
-  fmc2_clk_sel_o                             : out std_logic;
+  fmc250_2_clk_sel_o                         : out std_logic;
 
   -- EEPROM (Connected to the CPU)
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
 
   -- AMC7823 temperature monitor
-  fmc2_amc7823_spi_cs_o                      : out std_logic;
-  fmc2_amc7823_spi_sclk_o                    : out std_logic;
-  fmc2_amc7823_spi_mosi_o                    : out std_logic;
-  fmc2_amc7823_spi_miso_i                    : in std_logic := '0';
-  fmc2_amc7823_davn_i                        : in std_logic := '0';
+  fmc250_2_amc7823_spi_cs_o                  : out std_logic;
+  fmc250_2_amc7823_spi_sclk_o                : out std_logic;
+  fmc250_2_amc7823_spi_mosi_o                : out std_logic;
+  fmc250_2_amc7823_spi_miso_i                : in std_logic := '0';
+  fmc250_2_amc7823_davn_i                    : in std_logic := '0';
 
   -- FMC LEDs
-  fmc2_led1_o                                : out std_logic;
-  fmc2_led2_o                                : out std_logic;
-  fmc2_led3_o                                : out std_logic;
+  fmc250_2_led1_o                            : out std_logic;
+  fmc250_2_led2_o                            : out std_logic;
+  fmc250_2_led3_o                            : out std_logic;
 
   -----------------------------------------
   -- Position Calc signals
@@ -1570,84 +1570,84 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc130m_4ch_1_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc130m_4ch_1_id),
+      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_1_id),
+      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_1_id),
 
       -----------------------------
       -- External ports
       -----------------------------
 
       -- ADC LTC2208 interface
-      fmc_adc_pga_o                           => fmc1_adc_pga_o,
-      fmc_adc_shdn_o                          => fmc1_adc_shdn_o,
-      fmc_adc_dith_o                          => fmc1_adc_dith_o,
-      fmc_adc_rand_o                          => fmc1_adc_rand_o,
+      fmc_adc_pga_o                           => fmc130_1_adc_pga_o,
+      fmc_adc_shdn_o                          => fmc130_1_adc_shdn_o,
+      fmc_adc_dith_o                          => fmc130_1_adc_dith_o,
+      fmc_adc_rand_o                          => fmc130_1_adc_rand_o,
 
       -- ADC0 LTC2208
-      fmc_adc0_clk_i                          => fmc1_adc0_clk_i,
-      fmc_adc0_data_i                         => fmc1_adc0_data_i,
-      fmc_adc0_of_i                           => fmc1_adc0_of_i,
+      fmc_adc0_clk_i                          => fmc130_1_adc0_clk_i,
+      fmc_adc0_data_i                         => fmc130_1_adc0_data_i,
+      fmc_adc0_of_i                           => fmc130_1_adc0_of_i,
 
       -- ADC1 LTC2208
-      fmc_adc1_clk_i                          => fmc1_adc1_clk_i,
-      fmc_adc1_data_i                         => fmc1_adc1_data_i,
-      fmc_adc1_of_i                           => fmc1_adc1_of_i,
+      fmc_adc1_clk_i                          => fmc130_1_adc1_clk_i,
+      fmc_adc1_data_i                         => fmc130_1_adc1_data_i,
+      fmc_adc1_of_i                           => fmc130_1_adc1_of_i,
 
       -- ADC2 LTC2208
-      fmc_adc2_clk_i                          => fmc1_adc2_clk_i,
-      fmc_adc2_data_i                         => fmc1_adc2_data_i,
-      fmc_adc2_of_i                           => fmc1_adc2_of_i,
+      fmc_adc2_clk_i                          => fmc130_1_adc2_clk_i,
+      fmc_adc2_data_i                         => fmc130_1_adc2_data_i,
+      fmc_adc2_of_i                           => fmc130_1_adc2_of_i,
 
       -- ADC3 LTC2208
-      fmc_adc3_clk_i                          => fmc1_adc3_clk_i,
-      fmc_adc3_data_i                         => fmc1_adc3_data_i,
-      fmc_adc3_of_i                           => fmc1_adc3_of_i,
+      fmc_adc3_clk_i                          => fmc130_1_adc3_clk_i,
+      fmc_adc3_data_i                         => fmc130_1_adc3_data_i,
+      fmc_adc3_of_i                           => fmc130_1_adc3_of_i,
 
       -- FMC General Status
-      --fmc_prsnt_i                             => fmc1_prsnt_i,
-      --fmc_pg_m2c_i                            => fmc1_pg_m2c_i,
+      --fmc_prsnt_i                             => fmc130_1_prsnt_i,
+      --fmc_pg_m2c_i                            => fmc130_1_pg_m2c_i,
       fmc_prsnt_i                             => '0', -- Connected to the CPU
       fmc_pg_m2c_i                            => '0', -- Connected to the CPU
 
       -- Trigger
-      fmc_trig_dir_o                          => fmc1_trig_dir_o,
-      fmc_trig_term_o                         => fmc1_trig_term_o,
-      fmc_trig_val_p_b                        => fmc1_trig_val_p_b,
-      fmc_trig_val_n_b                        => fmc1_trig_val_n_b,
+      fmc_trig_dir_o                          => fmc130_1_trig_dir_o,
+      fmc_trig_term_o                         => fmc130_1_trig_term_o,
+      fmc_trig_val_p_b                        => fmc130_1_trig_val_p_b,
+      fmc_trig_val_n_b                        => fmc130_1_trig_val_n_b,
 
       -- Si571 clock gen
-      si571_scl_pad_b                         => fmc1_si571_scl_pad_b,
-      si571_sda_pad_b                         => fmc1_si571_sda_pad_b,
-      fmc_si571_oe_o                          => fmc1_si571_oe_o,
+      si571_scl_pad_b                         => fmc130_1_si571_scl_pad_b,
+      si571_sda_pad_b                         => fmc130_1_si571_sda_pad_b,
+      fmc_si571_oe_o                          => fmc130_1_si571_oe_o,
 
       -- AD9510 clock distribution PLL
-      spi_ad9510_cs_o                         => fmc1_spi_ad9510_cs_o,
-      spi_ad9510_sclk_o                       => fmc1_spi_ad9510_sclk_o,
-      spi_ad9510_mosi_o                       => fmc1_spi_ad9510_mosi_o,
-      spi_ad9510_miso_i                       => fmc1_spi_ad9510_miso_i,
+      spi_ad9510_cs_o                         => fmc130_1_spi_ad9510_cs_o,
+      spi_ad9510_sclk_o                       => fmc130_1_spi_ad9510_sclk_o,
+      spi_ad9510_mosi_o                       => fmc130_1_spi_ad9510_mosi_o,
+      spi_ad9510_miso_i                       => fmc130_1_spi_ad9510_miso_i,
 
-      fmc_pll_function_o                      => fmc1_pll_function_o,
-      fmc_pll_status_i                        => fmc1_pll_status_i,
+      fmc_pll_function_o                      => fmc130_1_pll_function_o,
+      fmc_pll_status_i                        => fmc130_1_pll_status_i,
 
       -- AD9510 clock copy
-      fmc_fpga_clk_p_i                        => fmc1_fpga_clk_p_i,
-      fmc_fpga_clk_n_i                        => fmc1_fpga_clk_n_i,
+      fmc_fpga_clk_p_i                        => fmc130_1_fpga_clk_p_i,
+      fmc_fpga_clk_n_i                        => fmc130_1_fpga_clk_n_i,
 
       -- Clock reference selection (TS3USB221)
-      fmc_clk_sel_o                           => fmc1_clk_sel_o,
+      fmc_clk_sel_o                           => fmc130_1_clk_sel_o,
 
       -- EEPROM (Connected to the CPU)
       --eeprom_scl_pad_b                        => eeprom_scl_pad_b,
       --eeprom_sda_pad_b                        => eeprom_sda_pad_b,
-      eeprom_scl_pad_b                       => fmc1_eeprom_scl_pad_b,
-      eeprom_sda_pad_b                       => fmc1_eeprom_sda_pad_b,
+      eeprom_scl_pad_b                        => fmc130_1_eeprom_scl_pad_b,
+      eeprom_sda_pad_b                        => fmc130_1_eeprom_sda_pad_b,
 
       -- Temperature monitor
       -- LM75AIMM
-      lm75_scl_pad_b                          => fmc1_lm75_scl_pad_b,
-      lm75_sda_pad_b                          => fmc1_lm75_sda_pad_b,
+      lm75_scl_pad_b                          => fmc130_1_lm75_scl_pad_b,
+      lm75_sda_pad_b                          => fmc130_1_lm75_sda_pad_b,
 
-      fmc_lm75_temp_alarm_i                   => fmc1_lm75_temp_alarm_i,
+      fmc_lm75_temp_alarm_i                   => fmc130_1_lm75_temp_alarm_i,
 
       -- FMC LEDs
       fmc_led1_o                              => fmc1_led1_int,
@@ -1699,12 +1699,12 @@ begin
       wbs_fmc1_in_array(i)                    <= cc_dummy_src_com_in;
     end generate;
 
-    --fmc1_mmcm_lock_led_o                       <= fmc1_mmcm_lock_int;
-    --fmc1_pll_status_led_o                      <= fmc1_pll_status_int;
+    --fmc130_1_mmcm_lock_led_o                   <= fmc1_mmcm_lock_int;
+    --fmc130_1_pll_status_led_o                  <= fmc1_pll_status_int;
 
-    fmc1_led1_o                                <= fmc1_led1_int;
-    fmc1_led2_o                                <= fmc1_led2_int;
-    fmc1_led3_o                                <= fmc1_led3_int;
+    fmc130_1_led1_o                            <= fmc1_led1_int;
+    fmc130_1_led2_o                            <= fmc1_led2_int;
+    fmc130_1_led3_o                            <= fmc1_led3_int;
 
     fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
@@ -1762,71 +1762,71 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc130m_4ch_2_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc130m_4ch_2_id),
+      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_2_id),
+      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_2_id),
 
       -----------------------------
       -- External ports
       -----------------------------
 
       -- ADC LTC2208 interface
-      fmc_adc_pga_o                           => fmc2_adc_pga_o,
-      fmc_adc_shdn_o                          => fmc2_adc_shdn_o,
-      fmc_adc_dith_o                          => fmc2_adc_dith_o,
-      fmc_adc_rand_o                          => fmc2_adc_rand_o,
+      fmc_adc_pga_o                           => fmc130_2_adc_pga_o,
+      fmc_adc_shdn_o                          => fmc130_2_adc_shdn_o,
+      fmc_adc_dith_o                          => fmc130_2_adc_dith_o,
+      fmc_adc_rand_o                          => fmc130_2_adc_rand_o,
 
       -- ADC0 LTC2208
-      fmc_adc0_clk_i                          => fmc2_adc0_clk_i,
-      fmc_adc0_data_i                         => fmc2_adc0_data_i,
-      fmc_adc0_of_i                           => fmc2_adc0_of_i,
+      fmc_adc0_clk_i                          => fmc130_2_adc0_clk_i,
+      fmc_adc0_data_i                         => fmc130_2_adc0_data_i,
+      fmc_adc0_of_i                           => fmc130_2_adc0_of_i,
 
       -- ADC1 LTC2208
-      fmc_adc1_clk_i                          => fmc2_adc1_clk_i,
-      fmc_adc1_data_i                         => fmc2_adc1_data_i,
-      fmc_adc1_of_i                           => fmc2_adc1_of_i,
+      fmc_adc1_clk_i                          => fmc130_2_adc1_clk_i,
+      fmc_adc1_data_i                         => fmc130_2_adc1_data_i,
+      fmc_adc1_of_i                           => fmc130_2_adc1_of_i,
 
       -- ADC2 LTC2208
-      fmc_adc2_clk_i                          => fmc2_adc2_clk_i,
-      fmc_adc2_data_i                         => fmc2_adc2_data_i,
-      fmc_adc2_of_i                           => fmc2_adc2_of_i,
+      fmc_adc2_clk_i                          => fmc130_2_adc2_clk_i,
+      fmc_adc2_data_i                         => fmc130_2_adc2_data_i,
+      fmc_adc2_of_i                           => fmc130_2_adc2_of_i,
 
       -- ADC3 LTC2208
-      fmc_adc3_clk_i                          => fmc2_adc3_clk_i,
-      fmc_adc3_data_i                         => fmc2_adc3_data_i,
-      fmc_adc3_of_i                           => fmc2_adc3_of_i,
+      fmc_adc3_clk_i                          => fmc130_2_adc3_clk_i,
+      fmc_adc3_data_i                         => fmc130_2_adc3_data_i,
+      fmc_adc3_of_i                           => fmc130_2_adc3_of_i,
 
       -- FMC General Status
-      --fmc_prsnt_i                             => fmc2_prsnt_i,
-      --fmc_pg_m2c_i                            => fmc2_pg_m2c_i,
+      --fmc_prsnt_i                             => fmc130_2_prsnt_i,
+      --fmc_pg_m2c_i                            => fmc130_2_pg_m2c_i,
       fmc_prsnt_i                             => '0', -- Connected to the CPU
       fmc_pg_m2c_i                            => '0', -- Connected to the CPU
 
       -- Trigger
-      fmc_trig_dir_o                          => fmc2_trig_dir_o,
-      fmc_trig_term_o                         => fmc2_trig_term_o,
-      fmc_trig_val_p_b                        => fmc2_trig_val_p_b,
-      fmc_trig_val_n_b                        => fmc2_trig_val_n_b,
+      fmc_trig_dir_o                          => fmc130_2_trig_dir_o,
+      fmc_trig_term_o                         => fmc130_2_trig_term_o,
+      fmc_trig_val_p_b                        => fmc130_2_trig_val_p_b,
+      fmc_trig_val_n_b                        => fmc130_2_trig_val_n_b,
 
       -- Si571 clock gen
-      si571_scl_pad_b                         => fmc2_si571_scl_pad_b,
-      si571_sda_pad_b                         => fmc2_si571_sda_pad_b,
-      fmc_si571_oe_o                          => fmc2_si571_oe_o,
+      si571_scl_pad_b                         => fmc130_2_si571_scl_pad_b,
+      si571_sda_pad_b                         => fmc130_2_si571_sda_pad_b,
+      fmc_si571_oe_o                          => fmc130_2_si571_oe_o,
 
       -- AD9510 clock distribution PLL
-      spi_ad9510_cs_o                         => fmc2_spi_ad9510_cs_o,
-      spi_ad9510_sclk_o                       => fmc2_spi_ad9510_sclk_o,
-      spi_ad9510_mosi_o                       => fmc2_spi_ad9510_mosi_o,
-      spi_ad9510_miso_i                       => fmc2_spi_ad9510_miso_i,
+      spi_ad9510_cs_o                         => fmc130_2_spi_ad9510_cs_o,
+      spi_ad9510_sclk_o                       => fmc130_2_spi_ad9510_sclk_o,
+      spi_ad9510_mosi_o                       => fmc130_2_spi_ad9510_mosi_o,
+      spi_ad9510_miso_i                       => fmc130_2_spi_ad9510_miso_i,
 
-      fmc_pll_function_o                      => fmc2_pll_function_o,
-      fmc_pll_status_i                        => fmc2_pll_status_i,
+      fmc_pll_function_o                      => fmc130_2_pll_function_o,
+      fmc_pll_status_i                        => fmc130_2_pll_status_i,
 
       -- AD9510 clock copy
-      fmc_fpga_clk_p_i                        => fmc2_fpga_clk_p_i,
-      fmc_fpga_clk_n_i                        => fmc2_fpga_clk_n_i,
+      fmc_fpga_clk_p_i                        => fmc130_2_fpga_clk_p_i,
+      fmc_fpga_clk_n_i                        => fmc130_2_fpga_clk_n_i,
 
       -- Clock reference selection (TS3USB221)
-      fmc_clk_sel_o                           => fmc2_clk_sel_o,
+      fmc_clk_sel_o                           => fmc130_2_clk_sel_o,
 
       -- EEPROM (Connected to the CPU)
       --eeprom_scl_pad_b                        => eeprom_scl_pad_b,
@@ -1836,10 +1836,10 @@ begin
 
       -- Temperature monitor
       -- LM75AIMM
-      lm75_scl_pad_b                          => fmc2_lm75_scl_pad_b,
-      lm75_sda_pad_b                          => fmc2_lm75_sda_pad_b,
+      lm75_scl_pad_b                          => fmc130_2_lm75_scl_pad_b,
+      lm75_sda_pad_b                          => fmc130_2_lm75_sda_pad_b,
 
-      fmc_lm75_temp_alarm_i                   => fmc2_lm75_temp_alarm_i,
+      fmc_lm75_temp_alarm_i                   => fmc130_2_lm75_temp_alarm_i,
 
       -- FMC LEDs
       fmc_led1_o                              => fmc2_led1_int,
@@ -1892,12 +1892,12 @@ begin
     end generate;
 
     -- Only FMC 1 is connected for now
-    --fmc2_mmcm_lock_led_o                       <= fmc2_mmcm_lock_int;
-    --fmc2_pll_status_led_o                      <= fmc2_pll_status_int;
+    --fmc130_2_mmcm_lock_led_o                   <= fmc2_mmcm_lock_int;
+    --fmc130_2_pll_status_led_o                  <= fmc2_pll_status_int;
 
-    fmc2_led1_o                                <= fmc2_led1_int;
-    fmc2_led2_o                                <= fmc2_led2_int;
-    fmc2_led3_o                                <= fmc2_led3_int;
+    fmc130_2_led1_o                            <= fmc2_led1_int;
+    fmc130_2_led2_o                            <= fmc2_led2_int;
+    fmc130_2_led3_o                            <= fmc2_led3_int;
 
     fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
@@ -1961,87 +1961,87 @@ begin
       -----------------------------
 
       -- ADC clock (half of the sampling frequency) divider reset
-      adc_clk_div_rst_p_o                     => fmc1_adc_clk_div_rst_p_o,
-      adc_clk_div_rst_n_o                     => fmc1_adc_clk_div_rst_n_o,
-      adc_ext_rst_n_o                         => fmc1_adc_ext_rst_n_o,
-      adc_sleep_o                             => fmc1_adc_sleep_o,
+      adc_clk_div_rst_p_o                     => fmc250_1_adc_clk_div_rst_p_o,
+      adc_clk_div_rst_n_o                     => fmc250_1_adc_clk_div_rst_n_o,
+      adc_ext_rst_n_o                         => fmc250_1_adc_ext_rst_n_o,
+      adc_sleep_o                             => fmc250_1_adc_sleep_o,
 
       -- ADC clocks. One clock per ADC channel.
       -- Only ch1 clock is used as all data chains
       -- are sampled at the same frequency
-      adc_clk0_p_i                            => fmc1_adc_clk0_p_i,
-      adc_clk0_n_i                            => fmc1_adc_clk0_n_i,
-      adc_clk1_p_i                            => fmc1_adc_clk1_p_i,
-      adc_clk1_n_i                            => fmc1_adc_clk1_n_i,
-      adc_clk2_p_i                            => fmc1_adc_clk2_p_i,
-      adc_clk2_n_i                            => fmc1_adc_clk2_n_i,
-      adc_clk3_p_i                            => fmc1_adc_clk3_p_i,
-      adc_clk3_n_i                            => fmc1_adc_clk3_n_i,
+      adc_clk0_p_i                            => fmc250_1_adc_clk0_p_i,
+      adc_clk0_n_i                            => fmc250_1_adc_clk0_n_i,
+      adc_clk1_p_i                            => fmc250_1_adc_clk1_p_i,
+      adc_clk1_n_i                            => fmc250_1_adc_clk1_n_i,
+      adc_clk2_p_i                            => fmc250_1_adc_clk2_p_i,
+      adc_clk2_n_i                            => fmc250_1_adc_clk2_n_i,
+      adc_clk3_p_i                            => fmc250_1_adc_clk3_p_i,
+      adc_clk3_n_i                            => fmc250_1_adc_clk3_n_i,
 
       -- DDR ADC data channels.
-      adc_data_ch0_p_i                        => fmc1_adc_data_ch0_p_i,
-      adc_data_ch0_n_i                        => fmc1_adc_data_ch0_n_i,
-      adc_data_ch1_p_i                        => fmc1_adc_data_ch1_p_i,
-      adc_data_ch1_n_i                        => fmc1_adc_data_ch1_n_i,
-      adc_data_ch2_p_i                        => fmc1_adc_data_ch2_p_i,
-      adc_data_ch2_n_i                        => fmc1_adc_data_ch2_n_i,
-      adc_data_ch3_p_i                        => fmc1_adc_data_ch3_p_i,
-      adc_data_ch3_n_i                        => fmc1_adc_data_ch3_n_i,
+      adc_data_ch0_p_i                        => fmc250_1_adc_data_ch0_p_i,
+      adc_data_ch0_n_i                        => fmc250_1_adc_data_ch0_n_i,
+      adc_data_ch1_p_i                        => fmc250_1_adc_data_ch1_p_i,
+      adc_data_ch1_n_i                        => fmc250_1_adc_data_ch1_n_i,
+      adc_data_ch2_p_i                        => fmc250_1_adc_data_ch2_p_i,
+      adc_data_ch2_n_i                        => fmc250_1_adc_data_ch2_n_i,
+      adc_data_ch3_p_i                        => fmc250_1_adc_data_ch3_p_i,
+      adc_data_ch3_n_i                        => fmc250_1_adc_data_ch3_n_i,
 
       -- FMC General Status
-      --fmc_prsnt_i                             => fmc1_prsnt_i,
-      --fmc_pg_m2c_i                            => fmc1_pg_m2c_i,
+      --fmc_prsnt_i                             => fmc250_1_prsnt_i,
+      --fmc_pg_m2c_i                            => fmc250_1_pg_m2c_i,
       fmc_prsnt_i                             => '0', -- Connected to the CPU
       fmc_pg_m2c_i                            => '0', -- Connected to the CPU
 
       -- Trigger
-      fmc_trig_dir_o                          => fmc1_trig_dir_o,
-      fmc_trig_term_o                         => fmc1_trig_term_o,
-      fmc_trig_val_p_b                        => fmc1_trig_val_p_b,
-      fmc_trig_val_n_b                        => fmc1_trig_val_n_b,
+      fmc_trig_dir_o                          => fmc250_1_trig_dir_o,
+      fmc_trig_term_o                         => fmc250_1_trig_term_o,
+      fmc_trig_val_p_b                        => fmc250_1_trig_val_p_b,
+      fmc_trig_val_n_b                        => fmc250_1_trig_val_n_b,
 
       -- ADC SPI control interface.
-      adc_spi_clk_o                           => fmc1_adc_spi_clk_o,
-      adc_spi_mosi_o                          => fmc1_adc_spi_mosi_o,
-      adc_spi_miso_i                          => fmc1_adc_spi_miso_i,
-      adc_spi_cs_adc0_n_o                     => fmc1_adc_spi_cs_adc0_n_o,
-      adc_spi_cs_adc1_n_o                     => fmc1_adc_spi_cs_adc1_n_o,
-      adc_spi_cs_adc2_n_o                     => fmc1_adc_spi_cs_adc2_n_o,
-      adc_spi_cs_adc3_n_o                     => fmc1_adc_spi_cs_adc3_n_o,
+      adc_spi_clk_o                           => fmc250_1_adc_spi_clk_o,
+      adc_spi_mosi_o                          => fmc250_1_adc_spi_mosi_o,
+      adc_spi_miso_i                          => fmc250_1_adc_spi_miso_i,
+      adc_spi_cs_adc0_n_o                     => fmc250_1_adc_spi_cs_adc0_n_o,
+      adc_spi_cs_adc1_n_o                     => fmc250_1_adc_spi_cs_adc1_n_o,
+      adc_spi_cs_adc2_n_o                     => fmc250_1_adc_spi_cs_adc2_n_o,
+      adc_spi_cs_adc3_n_o                     => fmc250_1_adc_spi_cs_adc3_n_o,
 
       -- Si571 clock gen
-      si571_scl_pad_b                         => fmc1_si571_scl_pad_b,
-      si571_sda_pad_b                         => fmc1_si571_sda_pad_b,
-      fmc_si571_oe_o                          => fmc1_si571_oe_o,
+      si571_scl_pad_b                         => fmc250_1_si571_scl_pad_b,
+      si571_sda_pad_b                         => fmc250_1_si571_sda_pad_b,
+      fmc_si571_oe_o                          => fmc250_1_si571_oe_o,
 
       -- AD9510 clock distribution PLL
-      spi_ad9510_cs_o                         => fmc1_spi_ad9510_cs_o,
-      spi_ad9510_sclk_o                       => fmc1_spi_ad9510_sclk_o,
-      spi_ad9510_mosi_o                       => fmc1_spi_ad9510_mosi_o,
-      spi_ad9510_miso_i                       => fmc1_spi_ad9510_miso_i,
+      spi_ad9510_cs_o                         => fmc250_1_spi_ad9510_cs_o,
+      spi_ad9510_sclk_o                       => fmc250_1_spi_ad9510_sclk_o,
+      spi_ad9510_mosi_o                       => fmc250_1_spi_ad9510_mosi_o,
+      spi_ad9510_miso_i                       => fmc250_1_spi_ad9510_miso_i,
 
-      fmc_pll_function_o                      => fmc1_pll_function_o,
-      fmc_pll_status_i                        => fmc1_pll_status_i,
+      fmc_pll_function_o                      => fmc250_1_pll_function_o,
+      fmc_pll_status_i                        => fmc250_1_pll_status_i,
 
       -- AD9510 clock copy
-      fmc_fpga_clk_p_i                        => fmc1_fpga_clk_p_i,
-      fmc_fpga_clk_n_i                        => fmc1_fpga_clk_n_i,
+      fmc_fpga_clk_p_i                        => fmc250_1_fpga_clk_p_i,
+      fmc_fpga_clk_n_i                        => fmc250_1_fpga_clk_n_i,
 
       -- Clock reference selection (TS3USB221)
-      fmc_clk_sel_o                           => fmc1_clk_sel_o,
+      fmc_clk_sel_o                           => fmc250_1_clk_sel_o,
 
       -- EEPROM (Connected to the CPU)
       --eeprom_scl_pad_b                        => eeprom_scl_pad_b,
       --eeprom_sda_pad_b                        => eeprom_sda_pad_b,
-      eeprom_scl_pad_b                       => fmc1_eeprom_scl_pad_b,
-      eeprom_sda_pad_b                       => fmc1_eeprom_sda_pad_b,
+      eeprom_scl_pad_b                       => fmc250_1_eeprom_scl_pad_b,
+      eeprom_sda_pad_b                       => fmc250_1_eeprom_sda_pad_b,
 
       -- AMC7823 temperature monitor
-      amc7823_spi_cs_o                        => fmc1_amc7823_spi_cs_o,
-      amc7823_spi_sclk_o                      => fmc1_amc7823_spi_sclk_o,
-      amc7823_spi_mosi_o                      => fmc1_amc7823_spi_mosi_o,
-      amc7823_spi_miso_i                      => fmc1_amc7823_spi_miso_i,
-      amc7823_davn_i                          => fmc1_amc7823_davn_i,
+      amc7823_spi_cs_o                        => fmc250_1_amc7823_spi_cs_o,
+      amc7823_spi_sclk_o                      => fmc250_1_amc7823_spi_sclk_o,
+      amc7823_spi_mosi_o                      => fmc250_1_amc7823_spi_mosi_o,
+      amc7823_spi_miso_i                      => fmc250_1_amc7823_spi_miso_i,
+      amc7823_davn_i                          => fmc250_1_amc7823_davn_i,
 
       -- FMC LEDs
       fmc_led1_o                              => fmc1_led1_int,
@@ -2093,12 +2093,12 @@ begin
       wbs_fmc1_in_array(i)                    <= cc_dummy_src_com_in;
     end generate;
 
-    --fmc1_mmcm_lock_led_o                       <= fmc1_mmcm_lock_int;
-    --fmc1_pll_status_led_o                      <= fmc1_pll_status_int;
+    --fmc250_1_mmcm_lock_led_o                   <= fmc1_mmcm_lock_int;
+    --fmc250_1_pll_status_led_o                  <= fmc1_pll_status_int;
 
-    fmc1_led1_o                                <= fmc1_led1_int;
-    fmc1_led2_o                                <= fmc1_led2_int;
-    fmc1_led3_o                                <= fmc1_led3_int;
+    fmc250_1_led1_o                            <= fmc1_led1_int;
+    fmc250_1_led2_o                            <= fmc1_led2_int;
+    fmc250_1_led3_o                            <= fmc1_led3_int;
 
     fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
@@ -2163,74 +2163,74 @@ begin
       -- External ports
       -----------------------------
       -- ADC clock (half of the sampling frequency) divider reset
-      adc_clk_div_rst_p_o                     => fmc2_adc_clk_div_rst_p_o,
-      adc_clk_div_rst_n_o                     => fmc2_adc_clk_div_rst_n_o,
-      adc_ext_rst_n_o                         => fmc2_adc_ext_rst_n_o,
-      adc_sleep_o                             => fmc2_adc_sleep_o,
+      adc_clk_div_rst_p_o                     => fmc250_2_adc_clk_div_rst_p_o,
+      adc_clk_div_rst_n_o                     => fmc250_2_adc_clk_div_rst_n_o,
+      adc_ext_rst_n_o                         => fmc250_2_adc_ext_rst_n_o,
+      adc_sleep_o                             => fmc250_2_adc_sleep_o,
 
       -- ADC clocks. One clock per ADC channel.
       -- Only ch1 clock is used as all data chains
       -- are sampled at the same frequency
-      adc_clk0_p_i                            => fmc2_adc_clk0_p_i,
-      adc_clk0_n_i                            => fmc2_adc_clk0_n_i,
-      adc_clk1_p_i                            => fmc2_adc_clk1_p_i,
-      adc_clk1_n_i                            => fmc2_adc_clk1_n_i,
-      adc_clk2_p_i                            => fmc2_adc_clk2_p_i,
-      adc_clk2_n_i                            => fmc2_adc_clk2_n_i,
-      adc_clk3_p_i                            => fmc2_adc_clk3_p_i,
-      adc_clk3_n_i                            => fmc2_adc_clk3_n_i,
+      adc_clk0_p_i                            => fmc250_2_adc_clk0_p_i,
+      adc_clk0_n_i                            => fmc250_2_adc_clk0_n_i,
+      adc_clk1_p_i                            => fmc250_2_adc_clk1_p_i,
+      adc_clk1_n_i                            => fmc250_2_adc_clk1_n_i,
+      adc_clk2_p_i                            => fmc250_2_adc_clk2_p_i,
+      adc_clk2_n_i                            => fmc250_2_adc_clk2_n_i,
+      adc_clk3_p_i                            => fmc250_2_adc_clk3_p_i,
+      adc_clk3_n_i                            => fmc250_2_adc_clk3_n_i,
 
       -- DDR ADC data channels.
-      adc_data_ch0_p_i                        => fmc2_adc_data_ch0_p_i,
-      adc_data_ch0_n_i                        => fmc2_adc_data_ch0_n_i,
-      adc_data_ch1_p_i                        => fmc2_adc_data_ch1_p_i,
-      adc_data_ch1_n_i                        => fmc2_adc_data_ch1_n_i,
-      adc_data_ch2_p_i                        => fmc2_adc_data_ch2_p_i,
-      adc_data_ch2_n_i                        => fmc2_adc_data_ch2_n_i,
-      adc_data_ch3_p_i                        => fmc2_adc_data_ch3_p_i,
-      adc_data_ch3_n_i                        => fmc2_adc_data_ch3_n_i,
+      adc_data_ch0_p_i                        => fmc250_2_adc_data_ch0_p_i,
+      adc_data_ch0_n_i                        => fmc250_2_adc_data_ch0_n_i,
+      adc_data_ch1_p_i                        => fmc250_2_adc_data_ch1_p_i,
+      adc_data_ch1_n_i                        => fmc250_2_adc_data_ch1_n_i,
+      adc_data_ch2_p_i                        => fmc250_2_adc_data_ch2_p_i,
+      adc_data_ch2_n_i                        => fmc250_2_adc_data_ch2_n_i,
+      adc_data_ch3_p_i                        => fmc250_2_adc_data_ch3_p_i,
+      adc_data_ch3_n_i                        => fmc250_2_adc_data_ch3_n_i,
 
       -- FMC General Status
-      --fmc_prsnt_i                             => fmc2_prsnt_i,
-      --fmc_pg_m2c_i                            => fmc2_pg_m2c_i,
+      --fmc_prsnt_i                             => fmc250_2_prsnt_i,
+      --fmc_pg_m2c_i                            => fmc250_2_pg_m2c_i,
       fmc_prsnt_i                             => '0', -- Connected to the CPU
       fmc_pg_m2c_i                            => '0', -- Connected to the CPU
 
       -- Trigger
-      fmc_trig_dir_o                          => fmc2_trig_dir_o,
-      fmc_trig_term_o                         => fmc2_trig_term_o,
-      fmc_trig_val_p_b                        => fmc2_trig_val_p_b,
-      fmc_trig_val_n_b                        => fmc2_trig_val_n_b,
+      fmc_trig_dir_o                          => fmc250_2_trig_dir_o,
+      fmc_trig_term_o                         => fmc250_2_trig_term_o,
+      fmc_trig_val_p_b                        => fmc250_2_trig_val_p_b,
+      fmc_trig_val_n_b                        => fmc250_2_trig_val_n_b,
 
       -- ADC SPI control interface. Three-wire mode. Tri-stated data pin
-      adc_spi_clk_o                           => fmc2_adc_spi_clk_o,
-      adc_spi_mosi_o                          => fmc2_adc_spi_mosi_o,
-      adc_spi_miso_i                          => fmc2_adc_spi_miso_i,
-      adc_spi_cs_adc0_n_o                     => fmc2_adc_spi_cs_adc0_n_o,
-      adc_spi_cs_adc1_n_o                     => fmc2_adc_spi_cs_adc1_n_o,
-      adc_spi_cs_adc2_n_o                     => fmc2_adc_spi_cs_adc2_n_o,
-      adc_spi_cs_adc3_n_o                     => fmc2_adc_spi_cs_adc3_n_o,
+      adc_spi_clk_o                           => fmc250_2_adc_spi_clk_o,
+      adc_spi_mosi_o                          => fmc250_2_adc_spi_mosi_o,
+      adc_spi_miso_i                          => fmc250_2_adc_spi_miso_i,
+      adc_spi_cs_adc0_n_o                     => fmc250_2_adc_spi_cs_adc0_n_o,
+      adc_spi_cs_adc1_n_o                     => fmc250_2_adc_spi_cs_adc1_n_o,
+      adc_spi_cs_adc2_n_o                     => fmc250_2_adc_spi_cs_adc2_n_o,
+      adc_spi_cs_adc3_n_o                     => fmc250_2_adc_spi_cs_adc3_n_o,
 
       -- Si571 clock gen
-      si571_scl_pad_b                         => fmc2_si571_scl_pad_b,
-      si571_sda_pad_b                         => fmc2_si571_sda_pad_b,
-      fmc_si571_oe_o                          => fmc2_si571_oe_o,
+      si571_scl_pad_b                         => fmc250_2_si571_scl_pad_b,
+      si571_sda_pad_b                         => fmc250_2_si571_sda_pad_b,
+      fmc_si571_oe_o                          => fmc250_2_si571_oe_o,
 
       -- AD9510 clock distribution PLL
-      spi_ad9510_cs_o                         => fmc2_spi_ad9510_cs_o,
-      spi_ad9510_sclk_o                       => fmc2_spi_ad9510_sclk_o,
-      spi_ad9510_mosi_o                       => fmc2_spi_ad9510_mosi_o,
-      spi_ad9510_miso_i                       => fmc2_spi_ad9510_miso_i,
+      spi_ad9510_cs_o                         => fmc250_2_spi_ad9510_cs_o,
+      spi_ad9510_sclk_o                       => fmc250_2_spi_ad9510_sclk_o,
+      spi_ad9510_mosi_o                       => fmc250_2_spi_ad9510_mosi_o,
+      spi_ad9510_miso_i                       => fmc250_2_spi_ad9510_miso_i,
 
-      fmc_pll_function_o                      => fmc2_pll_function_o,
-      fmc_pll_status_i                        => fmc2_pll_status_i,
+      fmc_pll_function_o                      => fmc250_2_pll_function_o,
+      fmc_pll_status_i                        => fmc250_2_pll_status_i,
 
       -- AD9510 clock copy
-      fmc_fpga_clk_p_i                        => fmc2_fpga_clk_p_i,
-      fmc_fpga_clk_n_i                        => fmc2_fpga_clk_n_i,
+      fmc_fpga_clk_p_i                        => fmc250_2_fpga_clk_p_i,
+      fmc_fpga_clk_n_i                        => fmc250_2_fpga_clk_n_i,
 
       -- Clock reference selection (TS3USB221)
-      fmc_clk_sel_o                           => fmc2_clk_sel_o,
+      fmc_clk_sel_o                           => fmc250_2_clk_sel_o,
 
       -- EEPROM (Connected to the CPU)
       --eeprom_scl_pad_b                        => eeprom_scl_pad_b,
@@ -2239,11 +2239,11 @@ begin
       eeprom_sda_pad_b                        => open,
 
       -- AMC7823 temperature monitor
-      amc7823_spi_cs_o                        => fmc2_amc7823_spi_cs_o,
-      amc7823_spi_sclk_o                      => fmc2_amc7823_spi_sclk_o,
-      amc7823_spi_mosi_o                      => fmc2_amc7823_spi_mosi_o,
-      amc7823_spi_miso_i                      => fmc2_amc7823_spi_miso_i,
-      amc7823_davn_i                          => fmc2_amc7823_davn_i,
+      amc7823_spi_cs_o                        => fmc250_2_amc7823_spi_cs_o,
+      amc7823_spi_sclk_o                      => fmc250_2_amc7823_spi_sclk_o,
+      amc7823_spi_mosi_o                      => fmc250_2_amc7823_spi_mosi_o,
+      amc7823_spi_miso_i                      => fmc250_2_amc7823_spi_miso_i,
+      amc7823_davn_i                          => fmc250_2_amc7823_davn_i,
 
       -- FMC LEDs
       fmc_led1_o                              => fmc2_led1_int,
@@ -2296,12 +2296,12 @@ begin
     end generate;
 
     -- Only FMC 1 is connected for now
-    --fmc2_mmcm_lock_led_o                       <= fmc2_mmcm_lock_int;
-    --fmc2_pll_status_led_o                      <= fmc2_pll_status_int;
+    --fmc250_2_mmcm_lock_led_o                   <= fmc2_mmcm_lock_int;
+    --fmc250_2_pll_status_led_o                  <= fmc2_pll_status_int;
 
-    fmc2_led1_o                                <= fmc2_led1_int;
-    fmc2_led2_o                                <= fmc2_led2_int;
-    fmc2_led3_o                                <= fmc2_led3_int;
+    fmc250_2_led1_o                            <= fmc2_led1_int;
+    fmc250_2_led2_o                            <= fmc2_led2_int;
+    fmc250_2_led3_o                            <= fmc2_led3_int;
 
     fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
