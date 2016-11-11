@@ -265,6 +265,7 @@ set files [list \
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_slave_adapter/wb_slave_adapter.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/dsp-cores/hdl/modules/cic/cic_decim.v"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/common/gc_sync_ffs.vhd"]"\
+ "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/common/gc_sync_register.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/dbe_common_pkg.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_common/pulse2level/pulse2level.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_spi_bidir/spi_bidir_top.v"]"\
@@ -2734,6 +2735,17 @@ set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
 set file "common/gc_sync_ffs.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "common/gc_sync_register.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
