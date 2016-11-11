@@ -678,7 +678,7 @@ architecture rtl of dbe_bpm_gen is
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
-  constant c_sdb_address                    : t_wishbone_address := x"00200000";
+  constant c_sdb_address                    : t_wishbone_address := x"00000000";
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
