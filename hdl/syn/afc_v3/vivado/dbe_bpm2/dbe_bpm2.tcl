@@ -348,8 +348,9 @@ set files [list \
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_fmc250m_4ch/xwb_fmc250m_4ch.vhd"]"\
  "[file normalize "$origin_dir/../../../../modules/dbe_wishbone/wb_ethmac_adapter/xwb_ethmac_adapter.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/wishbone/wb_dpram/xwb_dpram.vhd"]"\
- "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm2/sys_pll.vhd"]"\
- "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm2/clk_gen.vhd"]"\
+ "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm_gen/dbe_bpm_gen.vhd"]"\
+ "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm_gen/sys_pll.vhd"]"\
+ "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm_gen/clk_gen.vhd"]"\
  "[file normalize "$origin_dir/../../../../top/afc_v3/vivado/dbe_bpm2/dbe_bpm2.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_dualclock.vhd"]"\
  "[file normalize "$origin_dir/../../../../ip_cores/general-cores/modules/genrams/xilinx/generic_dpram_sameclock.vhd"]"\
@@ -3668,7 +3669,7 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "dbe_bpm2/sys_pll.vhd"
+set file "dbe_bpm_gen/dbe_bpm_gen.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
@@ -3679,7 +3680,18 @@ set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_simulation" "1" $file_obj
 set_property "used_in_synthesis" "1" $file_obj
 
-set file "dbe_bpm2/clk_gen.vhd"
+set file "dbe_bpm_gen/sys_pll.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property "file_type" "VHDL" $file_obj
+set_property "is_enabled" "1" $file_obj
+set_property "is_global_include" "0" $file_obj
+set_property "library" "xil_defaultlib" $file_obj
+set_property "path_mode" "RelativeFirst" $file_obj
+set_property "used_in" "synthesis simulation" $file_obj
+set_property "used_in_simulation" "1" $file_obj
+set_property "used_in_synthesis" "1" $file_obj
+
+set file "dbe_bpm_gen/clk_gen.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "file_type" "VHDL" $file_obj
 set_property "is_enabled" "1" $file_obj
