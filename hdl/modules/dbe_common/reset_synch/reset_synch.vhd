@@ -50,7 +50,7 @@ begin
 
   gen_pipe : if g_pipeline > 1 generate
     -- Shift reg
-    p_rst_pipe : process (clk_i)
+    p_rst_pipe : process (clk_i, arst_n_i)
     begin
       if arst_n_i = '0' then
         for i in 0 to g_pipeline-2 loop
