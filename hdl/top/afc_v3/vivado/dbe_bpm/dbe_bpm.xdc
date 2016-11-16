@@ -1044,6 +1044,8 @@ set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*a
 # is activated many many miliseconds after all of the other. So, give it 2x the clock
 # period
 set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 16.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out] 16.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out_1] 16.000
 
 # Use Distributed RAM, as these FIFOs are small and sparse through the module
 # Cannot make this work with hierarchical matching... only by specifying the
