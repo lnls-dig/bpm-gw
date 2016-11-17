@@ -38,7 +38,7 @@ if { [info exists ::origin_dir_loc] } {
 }
 
 variable script_file
-set script_file "dbe_bpm2_2016.tcl"
+set script_file "dbe_bpm2.tcl"
 
 # Help information for this script
 proc help {} {
