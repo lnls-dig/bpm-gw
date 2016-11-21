@@ -8,11 +8,13 @@ syn_top = "dbe_bpm2"
 syn_project = "dbe_bpm2"
 syn_tool = "vivado"
 
-syn_pre_cmd = "./build_synthesis_sdb.sh"
-
-files = ["synthesis_descriptor_pkg.vhd"];
+import os
+import sys
+if os.path.isfile("synthesis_descriptor_pkg.vhd"):
+    files = ["synthesis_descriptor_pkg.vhd"];
+else:
+    sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
 
 machine_pkg = "uvx_250M";
 
 modules = { "local" : [ "../../../../top/afc_v3/vivado/dbe_bpm2" ] };
-
