@@ -280,7 +280,7 @@ architecture rtl of wb_fmc130m_4ch is
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
-  constant c_sdb_address                    : t_wishbone_address := x"00005000";
+  constant c_sdb_address                    : t_wishbone_address := x"00006000";
 
   -----------------------------
   -- Clock and reset signals
