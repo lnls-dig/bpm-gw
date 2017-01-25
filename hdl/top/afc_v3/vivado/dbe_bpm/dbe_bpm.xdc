@@ -1050,7 +1050,7 @@ set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/
 # Use Distributed RAM, as these FIFOs are small and sparse through the module
 # Cannot make this work with hierarchical matching... only by specifying the
 # whole topology
-set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/*/cmp_position_calc_cdc_fifo/mem_reg*}]
+set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_position_calc_cdc_fifo/mem_reg*}]
 
 #######################################################################
 ##                      Placement Constraints                        ##
