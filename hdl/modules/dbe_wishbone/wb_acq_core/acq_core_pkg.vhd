@@ -169,6 +169,7 @@ package acq_core_pkg is
   type t_facq_chan_array is array (natural range <>) of t_facq_chan;
   type t_facq_chan_array2d is array (natural range <>, natural range <>) of t_facq_chan;
 
+  constant c_default_acq_num_cores : natural := 2;
   constant c_default_acq_num_channels : natural := 5;
   constant c_default_facq_num_channels : natural := 5;
   constant c_default_acq_chan_param64 : t_acq_chan_param := (
@@ -1090,6 +1091,22 @@ package acq_core_pkg is
     version       => x"00000001",
     date          => x"20131011",
     name          => "LNLS_BPM_ACQ_CORE  ")));
+
+  constant c_xwb_acq_core_pm_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"7",                     -- 8/16/32-bit port granularity (0111)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"0000000000000FFF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"7f9e3377",
+    version       => x"00000001",
+    date          => x"20170124",
+    name          => "LNLS_ACQ_CORE_PM   ")));
 
 end acq_core_pkg;
 
