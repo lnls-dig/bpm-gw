@@ -154,6 +154,7 @@ begin
     g_multishot_ram_size                     => g_multishot_ram_size,
     g_fifo_fc_size                           => g_fifo_fc_size,
     g_sim_readback                           => g_sim_readback,
+    g_acq_num_cores                          => g_acq_num_cores,
     g_ddr_interface_type                     => g_ddr_interface_type,
     g_max_burst_size                         => g_max_burst_size
   )
