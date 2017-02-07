@@ -495,11 +495,12 @@ architecture rtl of dbe_bpm_gen is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 15;
+  constant c_slaves                         : natural := 19;
   -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
-  -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Repo URL,
-  -- SDB synthesis top, general-cores, dsp-cores
+  -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Acq_Core PM 1, Acq_Core PM 2,
+  -- Trigger MUX PM 1, Trigger MUX PM 2, Repo URL, SDB synthesis top,
+  -- general-cores, dsp-cores
 
   -- Slaves indexes
   constant c_slv_pos_calc_1_id             : natural := 0;
@@ -513,10 +514,14 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_trig_iface_id             : natural := 8;
   constant c_slv_trig_mux_0_id             : natural := 9;
   constant c_slv_trig_mux_1_id             : natural := 10;
-  constant c_slv_sdb_repo_url_id           : natural := 11;
-  constant c_slv_sdb_top_syn_id            : natural := 12;
-  constant c_slv_sdb_dsp_cores_id          : natural := 13;
-  constant c_slv_sdb_gen_cores_id          : natural := 14;
+  constant c_slv_acq_core_pm_0_id          : natural := 11;
+  constant c_slv_acq_core_pm_1_id          : natural := 12;
+  constant c_slv_trig_mux_pm_0_id          : natural := 13;
+  constant c_slv_trig_mux_pm_1_id          : natural := 14;
+  constant c_slv_sdb_repo_url_id           : natural := 15;
+  constant c_slv_sdb_top_syn_id            : natural := 16;
+  constant c_slv_sdb_dsp_cores_id          : natural := 17;
+  constant c_slv_sdb_gen_cores_id          : natural := 18;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -552,14 +557,16 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_acq_pos_ddr3_width             : natural := 32;
 
-  -- Number of acquisition cores
-  constant c_acq_num_cores                  : natural := 2;
+  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
+  constant c_acq_num_cores                  : natural := 4;
   -- Type of DDR3 core interface
   constant c_ddr_interface_type             : string := "AXIS";
 
   -- Acquisition core IDs
   constant c_acq_core_0_id                  : natural := 0;
   constant c_acq_core_1_id                  : natural := 1;
+  constant c_acq_core_2_id                  : natural := 2;
+  constant c_acq_core_3_id                  : natural := 3;
 
   -- Number of channels per acquisition core
   constant c_acq_num_channels               : natural := 17; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
@@ -619,6 +626,8 @@ architecture rtl of dbe_bpm_gen is
   -- Trigger core IDs
   constant c_trig_mux_0_id                  : natural := 0;
   constant c_trig_mux_1_id                  : natural := 1;
+  constant c_trig_mux_2_id                  : natural := 2;
+  constant c_trig_mux_3_id                  : natural := 3;
 
   -- GPIO num pinscalc
   constant c_leds_num_pins                  : natural := 3;
@@ -671,6 +680,10 @@ architecture rtl of dbe_bpm_gen is
      c_slv_trig_iface_id       => f_sdb_embed_device(c_xwb_trigger_iface_sdb,    x"00390000"),   -- Trigger Interface port
      c_slv_trig_mux_0_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00400000"),   -- Trigger Mux 1 port
      c_slv_trig_mux_1_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00410000"),   -- Trigger Mux 2 port
+     c_slv_acq_core_pm_0_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00420000"),   -- Data Acquisition 0 Post-Mortem port
+     c_slv_acq_core_pm_1_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00430000"),   -- Data Acquisition 1 Post-Mortem port
+     c_slv_trig_mux_pm_0_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00440000"),   -- Trigger Mux Post-Mortem 1 port
+     c_slv_trig_mux_pm_1_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00450000"),   -- Trigger Mux Post-Mortem 2 port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
@@ -1103,6 +1116,12 @@ architecture rtl of dbe_bpm_gen is
   signal trig_fmc1_channel_2                : t_trig_channel;
   signal trig_fmc2_channel_1                : t_trig_channel;
   signal trig_fmc2_channel_2                : t_trig_channel;
+
+  -- Post-Mortem triggers
+  signal trig_fmc1_pm_channel_1             : t_trig_channel;
+  signal trig_fmc1_pm_channel_2             : t_trig_channel;
+  signal trig_fmc2_pm_channel_1             : t_trig_channel;
+  signal trig_fmc2_pm_channel_2             : t_trig_channel;
 
   signal trig_dbg                           : std_logic_vector(7 downto 0);
 
@@ -3090,6 +3109,345 @@ begin
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).dvalid <= '0';
   acq_chan_array(c_acq_core_1_id, c_acq_monit_1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_1_pos_id).pulse;
 
+  --------------------
+  -- ADC 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).val           <= fmc1_adc_data_ch3 &
+                                                                 fmc1_adc_data_ch2 &
+                                                                 fmc1_adc_data_ch1 &
+                                                                 fmc1_adc_data_ch0;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_id).pulse;
+
+  --------------------
+  -- ADC SWAP 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).val      <= dsp1_adc_ch3_data &
+                                                                 dsp1_adc_ch2_data &
+                                                                 dsp1_adc_ch1_data &
+                                                                 dsp1_adc_ch0_data;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_swap_id).pulse;
+
+  --------------------
+  -- MIXER I/Q 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).dvalid      <= dsp1_mix_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_mixiq_id).pulse;
+
+  --------------------
+  -- DUMMY 0 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_dummy0_id).val            <= (others => '0');
+  acq_chan_array(c_acq_core_2_id, c_dummy0_id).dvalid         <= '0';
+  acq_chan_array(c_acq_core_2_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy0_id).pulse;
+
+  --------------------
+  -- TBT I/Q 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).val    <= std_logic_vector(resize(signed(dsp1_tbtdecimq_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimq_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimq_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).dvalid <= dsp1_tbtdecim_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbtdecimiq_id).pulse;
+
+  --------------------
+  -- DUMMY 1 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_dummy1_id).val            <= (others => '0');
+  acq_chan_array(c_acq_core_2_id, c_dummy1_id).dvalid         <= '0';
+  acq_chan_array(c_acq_core_2_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy1_id).pulse;
+
+  --------------------
+  -- TBT AMP 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).val       <= std_logic_vector(resize(signed(dsp1_tbt_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_amp_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_amp_id).pulse;
+
+  --------------------
+  -- TBT PHASE 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).dvalid  <= dsp1_tbt_pha_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_phase_id).pulse;
+
+  --------------------
+  -- TBT POS 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).val       <= std_logic_vector(resize(signed(dsp1_tbt_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pos_x), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_pos_id).pulse;
+
+  --------------------
+  -- FOFB I/Q 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).val    <= std_logic_vector(resize(signed(dsp1_fofbdecimq_ch3), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimi_ch3), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimq_ch2), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimi_ch2), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimq_ch1), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimi_ch1), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).dvalid <= dsp1_fofbdecim_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofbdecimiq_id).pulse;
+
+  --------------------
+  -- DUMMY 2 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_dummy2_id).val             <= (others => '0');
+  acq_chan_array(c_acq_core_2_id, c_dummy2_id).dvalid          <= '0';
+  acq_chan_array(c_acq_core_2_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy1_id).pulse;
+
+  --------------------
+  -- FOFB AMP 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).val      <= std_logic_vector(resize(signed(dsp1_fofb_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_amp_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).dvalid   <= dsp1_fofb_amp_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_amp_id).pulse;
+
+  --------------------
+  -- FOFB PHASE 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).dvalid <= dsp1_fofb_pha_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_phase_id).pulse;
+
+  --------------------
+  -- FOFB POS 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).val      <= std_logic_vector(resize(signed(dsp1_fofb_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pos_x), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).dvalid   <= dsp1_fofb_pos_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_pos_id).pulse;
+
+  --------------------
+  -- MONIT AMP 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).val     <= std_logic_vector(resize(signed(dsp1_monit_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_amp_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).dvalid  <= dsp1_monit_amp_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit_amp_id).pulse;
+
+  --------------------
+  -- MONIT POS 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).val     <= std_logic_vector(resize(signed(dsp1_monit_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_monit_pos_x), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).dvalid  <= dsp1_monit_pos_valid;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit_pos_id).pulse;
+
+  --------------------
+  -- MONIT1 POS 3 data
+  --------------------
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_1_pos_id).val    <= (others => '0');
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_1_pos_id).dvalid <= '0';
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit_1_pos_id).pulse;
+
+  --------------------
+  -- ADC 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).val           <= fmc2_adc_data_ch3 &
+                                                                 fmc2_adc_data_ch2 &
+                                                                 fmc2_adc_data_ch1 &
+                                                                 fmc2_adc_data_ch0;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).dvalid        <= '1';
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_id).pulse;
+
+  --------------------
+  -- ADC SWAP 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).val      <= dsp2_adc_ch3_data &
+                                                                 dsp2_adc_ch2_data &
+                                                                 dsp2_adc_ch1_data &
+                                                                 dsp2_adc_ch0_data;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_swap_id).pulse;
+
+  --------------------
+  -- MIXER I/Q 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).dvalid      <= dsp2_mix_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_mixiq_id).pulse;
+
+  --------------------
+  -- DUMMY 0 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_dummy0_id).val            <= (others => '0');
+  acq_chan_array(c_acq_core_3_id, c_dummy0_id).dvalid         <= '0';
+  acq_chan_array(c_acq_core_3_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy0_id).pulse;
+
+  --------------------
+  -- TBT I/Q 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).val    <= std_logic_vector(resize(signed(dsp2_tbtdecimq_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimq_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimq_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).dvalid <= dsp2_tbtdecim_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbtdecimiq_id).pulse;
+
+  --------------------
+  -- DUMMY 1 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_dummy1_id).val            <= (others => '0');
+  acq_chan_array(c_acq_core_3_id, c_dummy1_id).dvalid         <= '0';
+  acq_chan_array(c_acq_core_3_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy1_id).pulse;
+
+  --------------------
+  -- TBT AMP 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).val       <= std_logic_vector(resize(signed(dsp2_tbt_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_amp_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_amp_id).pulse;
+
+  --------------------
+  -- TBT PHASE 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).dvalid  <= dsp2_tbt_pha_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_phase_id).pulse;
+
+  --------------------
+  -- TBT POS 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).val       <= std_logic_vector(resize(signed(dsp2_tbt_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pos_x), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_pos_id).pulse;
+
+  --------------------
+  -- FOFB I/Q 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).val    <= std_logic_vector(resize(signed(dsp2_fofbdecimq_ch3), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimi_ch3), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimq_ch2), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimi_ch2), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimq_ch1), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimi_ch1), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
+                                                                  std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).dvalid <= dsp2_fofbdecim_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofbdecimiq_id).pulse;
+
+  --------------------
+  -- DUMMY 2 (for compatibility)
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_dummy2_id).val             <= (others => '0');
+  acq_chan_array(c_acq_core_3_id, c_dummy2_id).dvalid          <= '0';
+  acq_chan_array(c_acq_core_3_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy2_id).pulse;
+
+  --------------------
+  -- FOFB AMP 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).val      <= std_logic_vector(resize(signed(dsp2_fofb_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_amp_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).dvalid   <= dsp2_fofb_amp_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_amp_id).pulse;
+
+  --------------------
+  -- FOFB PHASE 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
+                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).dvalid <= dsp2_fofb_pha_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_phase_id).pulse;
+
+  --------------------
+  -- FOFB POS 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).val      <= std_logic_vector(resize(signed(dsp2_fofb_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pos_x), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).dvalid   <= dsp2_fofb_pos_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_pos_id).pulse;
+
+  --------------------
+  -- MONIT AMP 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).val     <= std_logic_vector(resize(signed(dsp2_monit_amp_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_amp_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_amp_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_amp_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).dvalid  <= dsp2_monit_amp_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit_amp_id).pulse;
+
+  --------------------
+  -- MONIT POS 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).val     <= std_logic_vector(resize(signed(dsp2_monit_pos_sum), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_pos_q), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_pos_y), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_monit_pos_x), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).dvalid  <= dsp2_monit_pos_valid;
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit_pos_id).pulse;
+
+  --------------------
+  -- MONIT1 POS 4 data
+  --------------------
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_1_pos_id).val    <= (others => '0');
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_1_pos_id).dvalid <= '0';
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit_1_pos_id).pulse;
 
   cmp_xwb_facq_core_mux : xwb_facq_core_mux
   generic map
@@ -3171,15 +3529,20 @@ begin
     ddr_aximm_w_ma_o                          => ddr_aximm_w_ma_out
   );
 
-  fs_clk_array   <= fs2_clk & fs1_clk;
-  fs_ce_array    <= "11";
-  fs_rst_n_array <= fs2_rstn & fs1_rstn;
+  fs_clk_array   <= fs2_clk & fs1_clk & fs2_clk & fs1_clk;
+  fs_ce_array    <= "1111";
+  fs_rst_n_array <= fs2_rstn & fs1_rstn & fs2_rstn & fs1_rstn;
 
   -- c_slv_acq_core_*_id is Wishbone slave index
   -- c_acq_core_*_id is Acquisition core index
-  acq_core_slave_i <= cbar_master_o(c_slv_acq_core_1_id) & cbar_master_o(c_slv_acq_core_0_id);
+  acq_core_slave_i <= cbar_master_o(c_slv_acq_core_pm_1_id) &
+                      cbar_master_o(c_slv_acq_core_pm_0_id) &
+                      cbar_master_o(c_slv_acq_core_1_id) &
+                      cbar_master_o(c_slv_acq_core_0_id);
   cbar_master_i(c_slv_acq_core_0_id) <= acq_core_slave_o(c_acq_core_0_id);
   cbar_master_i(c_slv_acq_core_1_id) <= acq_core_slave_o(c_acq_core_1_id);
+  cbar_master_i(c_slv_acq_core_pm_0_id) <= acq_core_slave_o(c_acq_core_2_id);
+  cbar_master_i(c_slv_acq_core_pm_1_id) <= acq_core_slave_o(c_acq_core_3_id);
 
   ----------------------------------------------------------------------
   --                          Trigger                                 --
@@ -3225,9 +3588,14 @@ begin
       trig_dbg_o                           => trig_dbg
   );
 
-  trig_core_slave_i <= cbar_master_o(c_slv_trig_mux_1_id) & cbar_master_o(c_slv_trig_mux_0_id);
-  cbar_master_i(c_slv_trig_mux_0_id) <= trig_core_slave_o(c_trig_mux_0_id);
-  cbar_master_i(c_slv_trig_mux_1_id) <= trig_core_slave_o(c_trig_mux_1_id);
+  trig_core_slave_i <= cbar_master_o(c_slv_trig_mux_pm_1_id) &
+                       cbar_master_o(c_slv_trig_mux_pm_0_id) &
+                       cbar_master_o(c_slv_trig_mux_1_id) &
+                       cbar_master_o(c_slv_trig_mux_0_id);
+  cbar_master_i(c_slv_trig_mux_0_id)    <= trig_core_slave_o(c_trig_mux_0_id);
+  cbar_master_i(c_slv_trig_mux_1_id)    <= trig_core_slave_o(c_trig_mux_1_id);
+  cbar_master_i(c_slv_trig_mux_pm_0_id) <= trig_core_slave_o(c_trig_mux_2_id);
+  cbar_master_i(c_slv_trig_mux_pm_1_id) <= trig_core_slave_o(c_trig_mux_3_id);
 
   -- Assign FMCs trigger pulses to trigger channel interfaces
   trig_fmc1_channel_1.pulse <= fmc1_trig_hw;
@@ -3236,11 +3604,25 @@ begin
   trig_fmc2_channel_1.pulse <= fmc2_trig_hw;
   trig_fmc2_channel_2.pulse <= dsp2_clk_rffe_swap;
 
+  -- Post-Mortem triggers (mainly for testing. The real trigger would come from the
+  -- Backplane MLVDS triggers)
+  trig_fmc1_pm_channel_1.pulse <= '0';
+  trig_fmc1_pm_channel_2.pulse <= fmc1_trig_hw;
+
+  trig_fmc2_pm_channel_1.pulse <= '0';
+  trig_fmc2_pm_channel_2.pulse <= fmc2_trig_hw;
+
   -- Assign intern triggers to trigger module
   trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_channel_1;
   trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_channel_2;
   trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_channel_1;
   trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_channel_2;
+
+  -- Post-Mortem triggers
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_pm_channel_2;
 
   trig_dir_o <= trig_dir_int;
 
