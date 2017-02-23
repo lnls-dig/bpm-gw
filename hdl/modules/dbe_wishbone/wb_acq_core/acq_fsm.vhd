@@ -135,6 +135,9 @@ architecture rtl of acq_fsm is
   signal lmt_curr_chan_id                   : unsigned(c_chan_id_width-1 downto 0);
 
   -- FSM resets
+  signal fs_rst_n                           : std_logic;
+  signal ext_rst_n                          : std_logic;
+
   signal acq_stop_extend_fs_sync            : std_logic;
   signal acq_stop_n_extend_fs_sync          : std_logic;
   signal acq_stop_rst_n_fs_sync             : std_logic;
@@ -205,10 +208,15 @@ architecture rtl of acq_fsm is
 
 begin
 
+  -- These are used everywhere in this module except on the reset
+  -- generation circuit.
+  fs_rst_n <= fs_rst_n_i and acq_stop_rst_n_fs_sync;
+  ext_rst_n <= ext_rst_n_i and acq_stop_rst_n_ext_sync;
+
   p_reg_lmt_iface : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         lmt_valid <= '0';
         lmt_curr_chan_id <= to_unsigned(0, lmt_curr_chan_id'length);
       else
@@ -240,7 +248,7 @@ begin
   p_shots_cnt : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         shots_cnt   <= to_unsigned(0, shots_cnt'length);
         single_shot <= '0';
       else
@@ -271,7 +279,7 @@ begin
   p_pre_trig_cnt : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         pre_trig_cnt <= to_unsigned(0, pre_trig_cnt'length);
         pre_trig_cnt_max <= to_unsigned(0, pre_trig_cnt_max'length);
         pre_trig_cnt_max_m1 <= (others => '1');
@@ -317,7 +325,7 @@ begin
   p_wait_trig_skip : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         wait_trig_skip_r <= '0';
       else
         if (acq_start_i = '1') then
@@ -337,7 +345,7 @@ begin
   p_post_trig_cnt : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         post_trig_cnt <= to_unsigned(1, post_trig_cnt'length);
         post_trig_cnt_max <= to_unsigned(1, post_trig_cnt_max'length);
         post_trig_cnt_max_m1 <= to_unsigned(0, post_trig_cnt_max'length);
@@ -382,7 +390,7 @@ begin
   p_delay : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         acq_data  <= (others => '0');
         acq_valid <= '0';
         acq_id    <= (others => '0');
@@ -403,7 +411,7 @@ begin
   p_samples_cnt : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         samples_cnt <= (others => '0');
       else
         if (acq_start = '1') then
@@ -424,7 +432,7 @@ begin
   p_total_acq_sample : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         lmt_acq_pre_pkt_size <= to_unsigned(0, lmt_acq_pre_pkt_size'length);
         lmt_acq_pos_pkt_size <= to_unsigned(0, lmt_acq_pos_pkt_size'length);
         lmt_acq_full_pkt_size <= to_unsigned(0, lmt_acq_full_pkt_size'length);
@@ -453,7 +461,7 @@ begin
   p_acq_end : process (fs_clk_i)
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         acq_end <= '0';
       else
         if acq_start_i = '1' then
@@ -481,7 +489,7 @@ begin
     variable acq_fsm_current_state : t_acq_fsm_state;
   begin
     if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
+      if fs_rst_n = '0' then
         acq_fsm_current_state := IDLE;
 
         -- Outputs
@@ -875,6 +883,8 @@ begin
   )
   port map(
     clk_i                                   => fs_clk_i,
+    -- This must not use fs_rst_n signal as it would cause an asynchronous
+    -- path loop
     rst_n_i                                 => fs_rst_n_i,
     -- input pulse (synchronous to clk_i)
     pulse_i                                 => acq_stop,
