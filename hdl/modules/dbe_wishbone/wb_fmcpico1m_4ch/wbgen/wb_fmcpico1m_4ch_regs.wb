@@ -1,9 +1,9 @@
 peripheral {
   name = "Control and status registers for FMC PICO 1M 4CH";
   description = "Wishbone slave for control and status registers related to FMC PICO 1M 4CH with access from CSR bus";
-  hdl_entity = "wb_fmc_pico1m_4ch_csr";
+  hdl_entity = "wb_fmcpico1m_4ch_csr";
 
-  prefix = "wb_fmc_pico1m_4ch_csr";
+  prefix = "wb_fmcpico1m_4ch_csr";
 
   reg {
     name = "FMC Status";

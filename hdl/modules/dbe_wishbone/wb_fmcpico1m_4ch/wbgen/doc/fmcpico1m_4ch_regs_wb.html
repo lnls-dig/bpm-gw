@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<TITLE>wb_fmc_pico1m_4ch_csr</TITLE>
+<TITLE>wb_fmcpico1m_4ch_csr</TITLE>
 <STYLE TYPE="text/css" MEDIA="all">
 
 	<!--
@@ -27,7 +27,7 @@
 </STYLE>
 </HEAD>
 <BODY>
-<h1 class="heading">wb_fmc_pico1m_4ch_csr</h1>
+<h1 class="heading">wb_fmcpico1m_4ch_csr</h1>
 <h3>Control and status registers for FMC PICO 1M 4CH</h3>
 <p>Wishbone slave for control and status registers related to FMC PICO 1M 4CH with access from CSR bus</p>
 <h3>Contents:</h3>
@@ -71,7 +71,7 @@ REG
 <A href="#FMC_STATUS">FMC Status</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_fmc_status
+wb_fmcpico1m_4ch_csr_fmc_status
 </td>
 <td  class="td_code">
 FMC_STATUS
@@ -88,7 +88,7 @@ REG
 <A href="#FMC_CTL">FMC Control</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_fmc_ctl
+wb_fmcpico1m_4ch_csr_fmc_ctl
 </td>
 <td  class="td_code">
 FMC_CTL
@@ -105,7 +105,7 @@ REG
 <A href="#RNG_CTL">Input Range Control</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_rng_ctl
+wb_fmcpico1m_4ch_csr_rng_ctl
 </td>
 <td  class="td_code">
 RNG_CTL
@@ -122,7 +122,7 @@ REG
 <A href="#DATA0">ADC Data Channel 0</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data0
+wb_fmcpico1m_4ch_csr_data0
 </td>
 <td  class="td_code">
 DATA0
@@ -139,7 +139,7 @@ REG
 <A href="#DATA1">ADC Data Channel 1</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data1
+wb_fmcpico1m_4ch_csr_data1
 </td>
 <td  class="td_code">
 DATA1
@@ -156,7 +156,7 @@ REG
 <A href="#DATA2">ADC Data Channel 2</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data2
+wb_fmcpico1m_4ch_csr_data2
 </td>
 <td  class="td_code">
 DATA2
@@ -173,7 +173,7 @@ REG
 <A href="#DATA3">ADC Data Channel 3</a>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data3
+wb_fmcpico1m_4ch_csr_data3
 </td>
 <td  class="td_code">
 DATA3
@@ -211,7 +211,7 @@ clk_sys_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_fmc_status_prsnt_i
+wb_fmcpico1m_4ch_csr_fmc_status_prsnt_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -228,7 +228,7 @@ wb_adr_i[2:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_fmc_status_pg_m2c_i
+wb_fmcpico1m_4ch_csr_fmc_status_pg_m2c_i
 </td>
 <td  class="td_arrow_right">
 &larr;
@@ -279,7 +279,7 @@ wb_cyc_i
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_fmc_ctl_led1_o
+wb_fmcpico1m_4ch_csr_fmc_ctl_led1_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -296,7 +296,7 @@ wb_sel_i[3:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_fmc_ctl_led2_o
+wb_fmcpico1m_4ch_csr_fmc_ctl_led2_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -347,7 +347,7 @@ wb_ack_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_rng_ctl_r0_o
+wb_fmcpico1m_4ch_csr_rng_ctl_r0_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -364,7 +364,7 @@ wb_stall_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_rng_ctl_r1_o
+wb_fmcpico1m_4ch_csr_rng_ctl_r1_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -381,7 +381,7 @@ wb_fmc_pico1m_4ch_csr_rng_ctl_r1_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_rng_ctl_r2_o
+wb_fmcpico1m_4ch_csr_rng_ctl_r2_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -398,7 +398,7 @@ wb_fmc_pico1m_4ch_csr_rng_ctl_r2_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_rng_ctl_r3_o
+wb_fmcpico1m_4ch_csr_rng_ctl_r3_o
 </td>
 <td  class="td_arrow_right">
 &rarr;
@@ -449,7 +449,7 @@ wb_fmc_pico1m_4ch_csr_rng_ctl_r3_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_data0_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data0_val_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -500,7 +500,7 @@ wb_fmc_pico1m_4ch_csr_data0_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_data1_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data1_val_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -551,7 +551,7 @@ wb_fmc_pico1m_4ch_csr_data1_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_data2_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data2_val_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -602,7 +602,7 @@ wb_fmc_pico1m_4ch_csr_data2_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_pico1m_4ch_csr_data3_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data3_val_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -619,7 +619,7 @@ wb_fmc_pico1m_4ch_csr_data3_val_i[31:0]
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_fmc_status
+wb_fmcpico1m_4ch_csr_fmc_status
 </td>
 </tr>
 <tr>
@@ -881,7 +881,7 @@ PG_M2C
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_fmc_ctl
+wb_fmcpico1m_4ch_csr_fmc_ctl
 </td>
 </tr>
 <tr>
@@ -1143,7 +1143,7 @@ LED2
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_rng_ctl
+wb_fmcpico1m_4ch_csr_rng_ctl
 </td>
 </tr>
 <tr>
@@ -1413,7 +1413,7 @@ R3
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data0
+wb_fmcpico1m_4ch_csr_data0
 </td>
 </tr>
 <tr>
@@ -1671,7 +1671,7 @@ VAL
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data1
+wb_fmcpico1m_4ch_csr_data1
 </td>
 </tr>
 <tr>
@@ -1929,7 +1929,7 @@ VAL
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data2
+wb_fmcpico1m_4ch_csr_data2
 </td>
 </tr>
 <tr>
@@ -2187,7 +2187,7 @@ VAL
 <b>HW prefix: </b>
 </td>
 <td  class="td_code">
-wb_fmc_pico1m_4ch_csr_data3
+wb_fmcpico1m_4ch_csr_data3
 </td>
 </tr>
 <tr>
