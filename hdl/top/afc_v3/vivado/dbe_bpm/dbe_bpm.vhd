@@ -345,22 +345,22 @@ architecture rtl of dbe_bpm is
 
     -- ADC0 LTC2208
     fmc130_1_adc0_clk_i                        : in std_logic := '0';
-    fmc130_1_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_1_adc0_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_1_adc0_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC1 LTC2208
     fmc130_1_adc1_clk_i                        : in std_logic := '0';
-    fmc130_1_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_1_adc1_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_1_adc1_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC2 LTC2208
     fmc130_1_adc2_clk_i                        : in std_logic := '0';
-    fmc130_1_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_1_adc2_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_1_adc2_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC3 LTC2208
     fmc130_1_adc3_clk_i                        : in std_logic := '0';
-    fmc130_1_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_1_adc3_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_1_adc3_of_i                         : in std_logic := '0'; -- Unused
 
     ---- FMC General Status
@@ -424,22 +424,22 @@ architecture rtl of dbe_bpm is
 
     -- ADC0 LTC2208
     fmc130_2_adc0_clk_i                        : in std_logic := '0';
-    fmc130_2_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_2_adc0_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_2_adc0_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC1 LTC2208
     fmc130_2_adc1_clk_i                        : in std_logic := '0';
-    fmc130_2_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_2_adc1_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_2_adc1_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC2 LTC2208
     fmc130_2_adc2_clk_i                        : in std_logic := '0';
-    fmc130_2_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_2_adc2_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_2_adc2_of_i                         : in std_logic := '0'; -- Unused
 
     -- ADC3 LTC2208
     fmc130_2_adc3_clk_i                        : in std_logic := '0';
-    fmc130_2_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+    fmc130_2_adc3_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
     fmc130_2_adc3_of_i                         : in std_logic := '0'; -- Unused
 
     ---- FMC General Status
@@ -512,14 +512,14 @@ architecture rtl of dbe_bpm is
     fmc250_1_adc_clk3_n_i                      : in std_logic := '0';
 
     -- DDR ADC data channels.
-    fmc250_1_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_1_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch0_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch0_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch1_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch1_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch2_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch2_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch3_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_1_adc_data_ch3_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
 
     ---- FMC General Status
     --fmc250_1_prsnt_i                           : in std_logic := '0';
@@ -602,14 +602,14 @@ architecture rtl of dbe_bpm is
     fmc250_2_adc_clk3_n_i                      : in std_logic := '0';
 
     -- DDR ADC data channels.
-    fmc250_2_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-    fmc250_2_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch0_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch0_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch1_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch1_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch2_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch2_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch3_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+    fmc250_2_adc_data_ch3_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
 
     ---- FMC General Status
     --fmc250_2_prsnt_i                           : in std_logic := '0';
@@ -667,6 +667,59 @@ architecture rtl of dbe_bpm is
     fmc250_2_led1_o                            : out std_logic;
     fmc250_2_led2_o                            : out std_logic;
     fmc250_2_led3_o                            : out std_logic;
+
+    -----------------------------------------
+    -- FMC PICO 1M_4CH Ports
+    -----------------------------------------
+
+    fmcpico_1_adc_conv_o                       : out std_logic;
+    fmcpico_1_adc_sck_o                        : out std_logic;
+    fmcpico_1_adc_sck_rtrn_i                   : in std_logic : = '0';
+    fmcpico_1_adc_sdo1_i                       : in std_logic : = '0';
+    fmcpico_1_adc_sdo2_i                       : in std_logic : = '0';
+    fmcpico_1_adc_sdo3_i                       : in std_logic : = '0';
+    fmcpico_1_adc_sdo4_i                       : in std_logic : = '0';
+    fmcpico_1_adc_busy_cmn_i                   : in std_logic : = '0';
+
+    fmcpico_1_rng_r1_o                         : out std_logic;
+    fmcpico_1_rng_r2_o                         : out std_logic;
+    fmcpico_1_rng_r3_o                         : out std_logic;
+    fmcpico_1_rng_r4_o                         : out std_logic;
+
+    fmcpico_1_led1_o                           : out std_logic;
+    fmcpico_1_led2_o                           : out std_logic;
+
+    fmcpico_1_sm_scl_o                         : out std_logic;
+    fmcpico_1_sm_sda_b                         : inout std_logic;
+
+    fmcpico_1_a_scl_o                          : out std_logic;
+    fmcpico_1_a_sda_b                          : inout std_logic;
+
+    -----------------------------------------
+    -- FMC PICO 1M_4CH Ports
+    -----------------------------------------
+    fmcpico_2_adc_conv_o                            : out std_logic;
+    fmcpico_2_adc_sck_o                             : out std_logic;
+    fmcpico_2_adc_sck_rtrn_i                        : in std_logic := '0';
+    fmcpico_2_adc_sdo1_i                            : in std_logic := '0';
+    fmcpico_2_adc_sdo2_i                            : in std_logic := '0';
+    fmcpico_2_adc_sdo3_i                            : in std_logic := '0';
+    fmcpico_2_adc_sdo4_i                            : in std_logic := '0';
+    fmcpico_2_adc_busy_cmn_i                        : in std_logic := '0';
+
+    fmcpico_2_rng_r1_o                              : out std_logic;
+    fmcpico_2_rng_r2_o                              : out std_logic;
+    fmcpico_2_rng_r3_o                              : out std_logic;
+    fmcpico_2_rng_r4_o                              : out std_logic;
+
+    fmcpico_2_led1_o                                : out std_logic;
+    fmcpico_2_led2_o                                : out std_logic;
+
+    fmcpico_2_sm_scl_o                              : out std_logic;
+    fmcpico_2_sm_sda_b                              : inout std_logic;
+
+    fmcpico_2_a_scl_o                               : out std_logic;
+    fmcpico_2_a_sda_b                               : inout std_logic;
 
     -----------------------------------------
     -- Position Calc signals
