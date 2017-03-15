@@ -106,22 +106,22 @@ port(
 
   -- ADC0 LTC2208
   fmc130_1_adc0_clk_i                        : in std_logic := '0';
-  fmc130_1_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc0_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_1_adc0_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC1 LTC2208
   fmc130_1_adc1_clk_i                        : in std_logic := '0';
-  fmc130_1_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc1_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_1_adc1_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC2 LTC2208
   fmc130_1_adc2_clk_i                        : in std_logic := '0';
-  fmc130_1_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc2_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_1_adc2_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC3 LTC2208
   fmc130_1_adc3_clk_i                        : in std_logic := '0';
-  fmc130_1_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_1_adc3_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_1_adc3_of_i                         : in std_logic := '0'; -- Unused
 
   ---- FMC General Status
@@ -185,22 +185,22 @@ port(
 
   -- ADC0 LTC2208
   fmc130_2_adc0_clk_i                        : in std_logic := '0';
-  fmc130_2_adc0_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc0_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_2_adc0_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC1 LTC2208
   fmc130_2_adc1_clk_i                        : in std_logic := '0';
-  fmc130_2_adc1_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc1_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_2_adc1_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC2 LTC2208
   fmc130_2_adc2_clk_i                        : in std_logic := '0';
-  fmc130_2_adc2_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc2_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_2_adc2_of_i                         : in std_logic := '0'; -- Unused
 
   -- ADC3 LTC2208
   fmc130_2_adc3_clk_i                        : in std_logic := '0';
-  fmc130_2_adc3_data_i                       : in std_logic_vector(c_num_adc_bits-1 downto 0) := (others => '0');
+  fmc130_2_adc3_data_i                       : in std_logic_vector(16-1 downto 0) := (others => '0');
   fmc130_2_adc3_of_i                         : in std_logic := '0'; -- Unused
 
   ---- FMC General Status
@@ -273,14 +273,14 @@ port(
   fmc250_1_adc_clk3_n_i                      : in std_logic := '0';
 
   -- DDR ADC data channels.
-  fmc250_1_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_1_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch0_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch0_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch1_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch1_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch2_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch2_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch3_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_1_adc_data_ch3_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
 
   ---- FMC General Status
   --fmc250_1_prsnt_i                           : in std_logic := '0';
@@ -363,14 +363,14 @@ port(
   fmc250_2_adc_clk3_n_i                      : in std_logic := '0';
 
   -- DDR ADC data channels.
-  fmc250_2_adc_data_ch0_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch0_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch1_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch1_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch2_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch2_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch3_p_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
-  fmc250_2_adc_data_ch3_n_i                  : in std_logic_vector(c_num_adc_bits/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch0_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch0_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch1_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch1_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch2_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch2_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch3_p_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
+  fmc250_2_adc_data_ch3_n_i                  : in std_logic_vector(16/2-1 downto 0) := (others => '0');
 
   ---- FMC General Status
   --fmc250_2_prsnt_i                           : in std_logic := '0';
@@ -428,6 +428,59 @@ port(
   fmc250_2_led1_o                            : out std_logic;
   fmc250_2_led2_o                            : out std_logic;
   fmc250_2_led3_o                            : out std_logic;
+
+  -----------------------------------------
+  -- FMC PICO 1M_4CH Ports
+  -----------------------------------------
+
+  fmcpico_1_adc_conv_o                       : out std_logic;
+  fmcpico_1_adc_sck_o                        : out std_logic;
+  fmcpico_1_adc_sck_rtrn_i                   : in std_logic : = '0';
+  fmcpico_1_adc_sdo1_i                       : in std_logic : = '0';
+  fmcpico_1_adc_sdo2_i                       : in std_logic : = '0';
+  fmcpico_1_adc_sdo3_i                       : in std_logic : = '0';
+  fmcpico_1_adc_sdo4_i                       : in std_logic : = '0';
+  fmcpico_1_adc_busy_cmn_i                   : in std_logic : = '0';
+
+  fmcpico_1_rng_r1_o                         : out std_logic;
+  fmcpico_1_rng_r2_o                         : out std_logic;
+  fmcpico_1_rng_r3_o                         : out std_logic;
+  fmcpico_1_rng_r4_o                         : out std_logic;
+
+  fmcpico_1_led1_o                           : out std_logic;
+  fmcpico_1_led2_o                           : out std_logic;
+
+  fmcpico_1_sm_scl_o                         : out std_logic;
+  fmcpico_1_sm_sda_b                         : inout std_logic;
+
+  fmcpico_1_a_scl_o                          : out std_logic;
+  fmcpico_1_a_sda_b                          : inout std_logic;
+
+  -----------------------------------------
+  -- FMC PICO 1M_4CH Ports
+  -----------------------------------------
+  fmcpico_2_adc_conv_o                       : out std_logic;
+  fmcpico_2_adc_sck_o                        : out std_logic;
+  fmcpico_2_adc_sck_rtrn_i                   : in std_logic := '0';
+  fmcpico_2_adc_sdo1_i                       : in std_logic := '0';
+  fmcpico_2_adc_sdo2_i                       : in std_logic := '0';
+  fmcpico_2_adc_sdo3_i                       : in std_logic := '0';
+  fmcpico_2_adc_sdo4_i                       : in std_logic := '0';
+  fmcpico_2_adc_busy_cmn_i                   : in std_logic := '0';
+
+  fmcpico_2_rng_r1_o                         : out std_logic;
+  fmcpico_2_rng_r2_o                         : out std_logic;
+  fmcpico_2_rng_r3_o                         : out std_logic;
+  fmcpico_2_rng_r4_o                         : out std_logic;
+
+  fmcpico_2_led1_o                           : out std_logic;
+  fmcpico_2_led2_o                           : out std_logic;
+
+  fmcpico_2_sm_scl_o                         : out std_logic;
+  fmcpico_2_sm_sda_b                         : inout std_logic;
+
+  fmcpico_2_a_scl_o                          : out std_logic;
+  fmcpico_2_a_sda_b                          : inout std_logic;
 
   -----------------------------------------
   -- Position Calc signals
@@ -489,6 +542,49 @@ port(
 end dbe_bpm_gen;
 
 architecture rtl of dbe_bpm_gen is
+
+  function f_num_bits_adc(adc_type : string)
+      return natural is
+  begin
+    if (adc_type = "FMC130M") then
+      return 16;
+    elsif (adc_type = "FMC250M") then
+      return 16;
+    elsif (adc_type = "FMCPICO_1M") then
+      return 20;
+    else
+      return 16;
+    end if;
+  end f_num_bits_adc;
+
+  function f_acq_channel_adc_param(adc_type : string)
+      return t_facq_cham_param is
+    variable v_facq_chan                  : t_facq_chan_param;
+  begin
+    if (adc_type = "FMC130M") then
+      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    elsif (adc_type = "FMC250M") then
+      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    elsif (adc_type = "FMCPICO_1M") then
+      v_facq_chan := (to_unsigned(128, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(32, c_acq_atom_width_log2) -- 2^5 = 32-bit
+                     );
+    else
+      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    end if;
+    return v_facq_chan;
+  end f_acq_channel_adc_param;
+
   -- Swap/de-swap settings
   constant c_pos_calc_delay_vec_width         : natural := 8;
   constant c_pos_calc_swap_div_freq_vec_width : natural := 16;
@@ -587,10 +683,12 @@ architecture rtl of dbe_bpm_gen is
   constant c_acq_atom_width_u32             : unsigned(c_acq_atom_width_log2-1 downto 0) :=
                                                 to_unsigned(32, c_acq_atom_width_log2);
 
+  constant c_facq_params_adc                : t_facq_chan_param := f_acq_channel_adc_param(g_fmc_adc_type);
+
   constant c_facq_channels                  : t_facq_chan_param_array(c_acq_num_channels-1 downto 0) :=
   (
-     c_acq_adc_id            => (width => c_acq_width_u64,  num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u16),
-     c_acq_adc_swap_id       => (width => c_acq_width_u64,  num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u16),
+     c_acq_adc_id            => c_facq_params_adc,
+     c_acq_adc_swap_id       => c_facq_params_adc,
      c_acq_mixiq_id          => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
      c_dummy0_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
      c_acq_tbtdecimiq_id     => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
@@ -651,9 +749,10 @@ architecture rtl of dbe_bpm_gen is
   constant c_adc_ref_clk                    : natural := 2;
 
   -- Number of top level clocks
-  constant c_num_tlvl_clks                  : natural := 2; -- CLK_SYS and CLK_200 MHz
-  constant c_clk_sys_id                     : natural := 0; -- CLK_SYS and CLK_200 MHz
-  constant c_clk_200mhz_id                  : natural := 1; -- CLK_SYS and CLK_200 MHz
+  constant c_num_tlvl_clks                  : natural := 3; -- CLK_SYS and CLK_200 MHz and CLK_300 MHz
+  constant c_clk_sys_id                     : natural := 0;
+  constant c_clk_200mhz_id                  : natural := 1;
+  constant c_clk_300mhz_id                  : natural := 2;
 
   -- FMC_ADC layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
@@ -693,18 +792,21 @@ architecture rtl of dbe_bpm_gen is
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
   constant c_sdb_address                    : t_wishbone_address := x"00000000";
 
+  constant c_num_unprocessed_bits           : natural := f_num_bits_adc(g_fmc_adc_type);
+  constant c_num_large_adc_bits             : natural := 32;
+
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
-  constant c_adc_data_ch0_msb               : natural := c_num_adc_bits-1 + c_adc_data_ch0_lsb;
+  constant c_adc_data_ch0_msb               : natural := c_num_unprocessed_bits-1 + c_adc_data_ch0_lsb;
 
   constant c_adc_data_ch1_lsb               : natural := c_adc_data_ch0_msb + 1;
-  constant c_adc_data_ch1_msb               : natural := c_num_adc_bits-1 + c_adc_data_ch1_lsb;
+  constant c_adc_data_ch1_msb               : natural := c_num_unprocessed_bits-1 + c_adc_data_ch1_lsb;
 
   constant c_adc_data_ch2_lsb               : natural := c_adc_data_ch1_msb + 1;
-  constant c_adc_data_ch2_msb               : natural := c_num_adc_bits-1 + c_adc_data_ch2_lsb;
+  constant c_adc_data_ch2_msb               : natural := c_num_unprocessed_bits-1 + c_adc_data_ch2_lsb;
 
   constant c_adc_data_ch3_lsb               : natural := c_adc_data_ch2_msb + 1;
-  constant c_adc_data_ch3_msb               : natural := c_num_adc_bits-1 + c_adc_data_ch3_lsb;
+  constant c_adc_data_ch3_msb               : natural := c_num_unprocessed_bits-1 + c_adc_data_ch3_lsb;
 
   -- Crossbar master/slave arrays
   signal cbar_slave_i                       : t_wishbone_slave_in_array (c_masters-1 downto 0);
@@ -799,6 +901,8 @@ architecture rtl of dbe_bpm_gen is
   signal clk_sys_rst                        : std_logic;
   signal clk_200mhz_rst                     : std_logic;
   signal clk_200mhz_rstn                    : std_logic;
+  signal clk_300mhz_rst                     : std_logic;
+  signal clk_300mhz_rstn                    : std_logic;
 
   signal rst_button_sys_pp                  : std_logic;
   signal rst_button_sys                     : std_logic;
@@ -847,13 +951,15 @@ architecture rtl of dbe_bpm_gen is
 
   signal fmc1_clk                            : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc1_clk2x                          : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal fmc1_data                           : std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+  signal fmc1_data                           : std_logic_vector(c_num_adc_channels*c_num_unprocessed_bits-1 downto 0);
   signal fmc1_data_valid                     : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc1_adc_fast_spi_clk               : std_logic;
+  signal fmc1_adc_fast_spi_rstn              : std_logic;
 
-  signal fmc1_adc_data_ch0                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc1_adc_data_ch1                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc1_adc_data_ch2                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc1_adc_data_ch3                   : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal fmc1_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch2                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch3                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
 
   signal fmc1_debug                          : std_logic;
   signal fmc1_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -884,13 +990,15 @@ architecture rtl of dbe_bpm_gen is
 
   signal fmc2_clk                            : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc2_clk2x                          : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal fmc2_data                           : std_logic_vector(c_num_adc_channels*c_num_adc_bits-1 downto 0);
+  signal fmc2_data                           : std_logic_vector(c_num_adc_channels*c_num_unprocessed_bits-1 downto 0);
   signal fmc2_data_valid                     : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal fmc2_adc_fast_spi_clk               : std_logic;
+  signal fmc2_adc_fast_spi_rstn              : std_logic;
 
-  signal fmc2_adc_data_ch0                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc2_adc_data_ch1                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc2_adc_data_ch2                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal fmc2_adc_data_ch3                   : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal fmc2_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch2                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch3                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
 
   signal fmc2_debug                          : std_logic;
   signal fmc2_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -912,10 +1020,10 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_flag2_int                      : std_logic;
 
   -- DSP 1 signals
-  signal dsp1_adc_ch0_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal dsp1_adc_ch0_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
   signal dsp1_mixi_ch0                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
   signal dsp1_mixi_ch1                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
@@ -999,10 +1107,10 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_monit_pos_valid                : std_logic;
 
   signal dsp1_dbg_cur_address                : std_logic_vector(31 downto 0);
-  signal dsp1_dbg_adc_ch0_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp1_dbg_adc_ch1_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp1_dbg_adc_ch2_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp1_dbg_adc_ch3_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
+  signal dsp1_dbg_adc_ch0_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_dbg_adc_ch1_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_dbg_adc_ch2_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_dbg_adc_ch3_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
   -- Uncross 2 signals
   signal dsp2_clk_rffe_swap                  : std_logic;
@@ -1010,10 +1118,10 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_flag2_int                      : std_logic;
 
   -- DSP 2 signals
-  signal dsp2_adc_ch0_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
-  signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_adc_bits-1 downto 0);
+  signal dsp2_adc_ch0_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
   signal dsp2_mixi_ch0                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
   signal dsp2_mixi_ch1                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
@@ -1097,10 +1205,10 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_monit_pos_valid                : std_logic;
 
   signal dsp2_dbg_cur_address                : std_logic_vector(31 downto 0);
-  signal dsp2_dbg_adc_ch0_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp2_dbg_adc_ch1_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp2_dbg_adc_ch2_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
-  signal dsp2_dbg_adc_ch3_cond               : std_logic_vector(c_pos_calc_input_width-1 downto 0);
+  signal dsp2_dbg_adc_ch0_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_dbg_adc_ch1_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_dbg_adc_ch2_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_dbg_adc_ch3_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
   -- Trigger
   signal trig_core_slave_i                  : t_wishbone_slave_in_array (c_trig_num_mux_interfaces-1 downto 0);
@@ -1243,13 +1351,16 @@ architecture rtl of dbe_bpm_gen is
     -- 100 MHz output clock
     g_clk0_divide_f                         : integer := 10;
     -- 200 MHz output clock
-    g_clk1_divide                           : integer := 5
+    g_clk1_divide                           : integer := 5;
+    -- 200 MHz output clock
+    g_clk2_divide                           : integer := 5
   );
   port(
     rst_i                                   : in std_logic := '0';
     clk_i                                   : in std_logic := '0';
     clk0_o                                  : out std_logic;
     clk1_o                                  : out std_logic;
+    clk2_o                                  : out std_logic;
     locked_o                                : out std_logic
   );
   end component;
@@ -1307,12 +1418,14 @@ begin
     -- 125 MHz input clock
     g_clkin_period                          => 8.000,
     g_divclk_divide                         => 5,
-    g_clkbout_mult_f                        => 32,
+    g_clkbout_mult_f                        => 48,
 
     -- 100 MHz output clock
-    g_clk0_divide_f                         => 8,
+    g_clk0_divide_f                         => 12,
     -- 200 MHz output clock
-    g_clk1_divide                           => 4
+    g_clk1_divide                           => 6,
+    -- 300 MHz output clock
+    g_clk2_divide                           => 4
   )
   port map (
     rst_i                                   => '0',
@@ -1320,6 +1433,7 @@ begin
     --clk_i                                   => sys_clk_gen,
     clk0_o                                  => clk_sys,     -- 100MHz locked clock
     clk1_o                                  => clk_200mhz,  -- 200MHz locked clock
+    clk2_o                                  => clk_300mhz,  -- 300MHz locked clock
     locked_o                                => locked        -- '1' when the PLL has locked
   );
 
@@ -1338,6 +1452,7 @@ begin
 
   reset_clks(c_clk_sys_id)                  <= clk_sys;
   reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
+  reset_clks(c_clk_300mhz_id)               <= clk_300mhz;
 
   -- Reset for PCIe core. Caution when resetting the PCIe core after the
   -- initialization. The PCIe core needs to retrain the link and the PCIe
@@ -1352,6 +1467,9 @@ begin
   -- Reset synchronous to clk200mhz
   clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
   clk_200mhz_rst                            <=  not(reset_rstn(c_clk_200mhz_id));
+  -- Reset synchronous to clk300mhz
+  clk_300mhz_rstn                           <= reset_rstn(c_clk_300mhz_id);
+  clk_300mhz_rst                            <=  not(reset_rstn(c_clk_300mhz_id));
 
   -- Generate button reset synchronous to each clock domain
   -- Detect button positive edge of clk_sys
@@ -1517,8 +1635,8 @@ begin
   );
 
   -- Insert more FMC ADC boards here
-  assert (g_fmc_adc_type = "FMC130M" or g_fmc_adc_type = "FMC250M")
-    report "[dbe_bpm_gen] FMC ADC board must be either \'FMC130M\' or \'FMC250M\'"
+  assert (g_fmc_adc_type = "FMC130M" or g_fmc_adc_type = "FMC250M" or g_fmc_adc_type = "FMCPICO_1M")
+    report "[dbe_bpm_gen] FMC ADC board must be either \'FMC130M\' or \'FMC250M\' or \'FMCPICO_1M\'"
     severity Failure;
 
   gen_fmc130 : if (g_fmc_adc_type = "FMC130M") generate
@@ -1696,10 +1814,14 @@ begin
     fmc130_1_led2_o                            <= fmc1_led2_int;
     fmc130_1_led3_o                            <= fmc1_led3_int;
 
-    fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
@@ -1889,10 +2011,14 @@ begin
     fmc130_2_led2_o                            <= fmc2_led2_int;
     fmc130_2_led3_o                            <= fmc2_led3_int;
 
-    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2090,10 +2216,14 @@ begin
     fmc250_1_led2_o                            <= fmc1_led2_int;
     fmc250_1_led3_o                            <= fmc1_led3_int;
 
-    fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
@@ -2285,6 +2415,170 @@ begin
       wbs_fmc2_in_array(i)                    <= cc_dummy_src_com_in;
     end generate;
 
+  gen_fmc250 : if (g_fmc_adc_type = "FMCPICO_1M") generate
+
+    ----------------------------------------------------------------------
+    --                      FMC PICO 1M_4CH 1 Core                         --
+    ----------------------------------------------------------------------
+
+    cmp1_xwb_fmcpico1m_4ch : xwb_fmcpico1m_4ch
+    generic map
+    (
+      g_interface_mode                          => PIPELINED,
+      g_address_granularity                     => BYTE,
+      -- g_num_adc_bits                             natural := 20;
+      -- g_num_adc_channels                         natural := 4;
+      -- g_clk_freq                                 natural := 300000000; -- Hz
+      -- g_sclk_freq                                natural := 75000000 --Hz
+    )
+    port map
+    (
+      sys_clk_i                               => clk_sys,
+      sys_rst_n_i                             => clk_sys_rstn,
+      sys_clk_200Mhz_i                        => clk_200mhz,
+
+      -----------------------------
+      -- Wishbone Control Interface signals
+      -----------------------------
+      wb_slv_i                                => cc_dummy_slave_in, --cbar_master_o(c_slv_fmc_adc_1_id),
+      wb_slv_o                                => open,              --cbar_master_i(c_slv_fmc_adc_1_id),
+
+      -----------------------------
+      -- External ports
+      -----------------------------
+
+      adc_fast_spi_clk_i                      => clk_300mhz,
+      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+
+      -- Control signals
+      adc_start_i                             => '1',
+
+      -- SPI bus
+      adc_sdo1_i                              => fmcpico_1_adc_sdo1_i,
+      adc_sdo2_i                              => fmcpico_1_adc_sdo2_i,
+      adc_sdo3_i                              => fmcpico_1_adc_sdo3_i,
+      adc_sdo4_i                              => fmcpico_1_adc_sdo4_i,
+      adc_sck_o                               => fmcpico_1_adc_sck_o,
+      adc_sck_rtrn_i                          => fmcpico_1_adc_sck_rtrn_i,
+      adc_busy_cmn_i                          => fmcpico_1_adc_busy_cmn_i,
+      adc_cnv_out_o                           => fmcpico_1_adc_cnv_out_o,
+
+      -----------------------------
+      -- ADC output signals. Continuous flow
+      -----------------------------
+      -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
+      -- suffice in all cases
+      adc_clk_i                               => fmc1_clk,
+      adc_data_o                              => fmc1_data,
+      adc_data_valid_o                        => fmc1_data_valid,
+      adc_out_busy_o                          => fmc1_busy
+    );
+
+    -- FIXME! Temporary signals. For testing only!
+    fmcpico_1_rng_r1_o         <= '0';
+    fmcpico_1_rng_r2_o         <= '1';
+    fmcpico_1_rng_r3_o         <= '0';
+    fmcpico_1_rng_r4_o         <= '1';
+
+    fmcpico_1_led1_o           <= '0';
+    fmcpico_1_led2_o           <= '1';
+
+    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc1_clk                                   <= (others => clk_sys);
+    fmc1_clk2x                                 <= (others => clk_sys);
+    fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
+    fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
+
+    ----------------------------------------------------------------------
+    --                      FMC PICO 1M_4CH 2 Core                         --
+    ----------------------------------------------------------------------
+
+    cmp2_xwb_fmcpico1m_4ch : xwb_fmcpico1m_4ch
+    generic map
+    (
+      g_interface_mode                          => PIPELINED,
+      g_address_granularity                     => BYTE,
+      -- g_num_adc_bits                             natural := 20;
+      -- g_num_adc_channels                         natural := 4;
+      -- g_clk_freq                                 natural := 300000000; -- Hz
+      -- g_sclk_freq                                natural := 75000000 --Hz
+    )
+    port map
+    (
+      sys_clk_i                               => clk_sys,
+      sys_rst_n_i                             => clk_sys_rstn,
+      sys_clk_200Mhz_i                        => clk_200mhz,
+
+      -----------------------------
+      -- Wishbone Control Interface signals
+      -----------------------------
+      wb_slv_i                                => cc_dummy_slave_in, --cbar_master_o(c_slv_fmc_adc_1_id),
+      wb_slv_o                                => open,              --cbar_master_i(c_slv_fmc_adc_1_id),
+
+      -----------------------------
+      -- External ports
+      -----------------------------
+
+      adc_fast_spi_clk_i                      => clk_300mhz,
+      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+
+      -- Control signals
+      adc_start_i                             => '1',
+
+      -- SPI bus
+      adc_sdo1_i                              => fmcpico_2_adc_sdo1_i,
+      adc_sdo2_i                              => fmcpico_2_adc_sdo2_i,
+      adc_sdo3_i                              => fmcpico_2_adc_sdo3_i,
+      adc_sdo4_i                              => fmcpico_2_adc_sdo4_i,
+      adc_sck_o                               => fmcpico_2_adc_sck_o,
+      adc_sck_rtrn_i                          => fmcpico_2_adc_sck_rtrn_i,
+      adc_busy_cmn_i                          => fmcpico_2_adc_busy_cmn_i,
+      adc_cnv_out_o                           => fmcpico_2_adc_cnv_out_o,
+
+      -----------------------------
+      -- ADC output signals. Continuous flow
+      -----------------------------
+      -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
+      -- suffice in all cases
+      adc_clk_i                               => fmc2_clk,
+      adc_data_o                              => fmc2_data,
+      adc_data_valid_o                        => fmc2_data_valid,
+      adc_out_busy_o                          => fmc2_busy
+    );
+
+    -- FIXME! Temporary signals. For testing only!
+    fmcpico_2_rng_r1_o         <= '0';
+    fmcpico_2_rng_r2_o         <= '1';
+    fmcpico_2_rng_r3_o         <= '0';
+    fmcpico_2_rng_r4_o         <= '1';
+
+    fmcpico_2_led1_o           <= '0';
+    fmcpico_2_led2_o           <= '1';
+
+    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc2_clk                                   <= (others => clk_sys);
+    fmc2_clk2x                                 <= (others => clk_sys);
+    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
+    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
+
+  end generate;
+
     -- Only FMC 1 is connected for now
     --fmc250_2_mmcm_lock_led_o                   <= fmc2_mmcm_lock_int;
     --fmc250_2_pll_status_led_o                  <= fmc2_pll_status_int;
@@ -2293,10 +2587,14 @@ begin
     fmc250_2_led2_o                            <= fmc2_led2_int;
     fmc250_2_led3_o                            <= fmc2_led3_int;
 
-    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
+                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2319,7 +2617,7 @@ begin
     g_with_extra_wb_reg                     => true,
 
     -- input sizes
-    g_input_width                           => c_pos_calc_input_width,
+    g_input_width                           => c_num_unprocessed_bits,
     g_mixed_width                           => c_pos_calc_mixed_width,
     g_adc_ratio                             => c_pos_calc_adc_ratio,
 
@@ -2388,10 +2686,10 @@ begin
     -----------------------------
     -- Raw ADC signals
     -----------------------------
-    adc_ch0_i                               => fmc1_adc_data_ch0,
-    adc_ch1_i                               => fmc1_adc_data_ch1,
-    adc_ch2_i                               => fmc1_adc_data_ch2,
-    adc_ch3_i                               => fmc1_adc_data_ch3,
+    adc_ch0_i                               => fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0),
+    adc_ch1_i                               => fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0),
+    adc_ch2_i                               => fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0),
+    adc_ch3_i                               => fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0),
 
     -----------------------------
     -- Position calculation at various rates
@@ -2506,7 +2804,7 @@ begin
     g_with_extra_wb_reg                     => true,
 
     -- input sizes
-    g_input_width                           => c_pos_calc_input_width,
+    g_input_width                           => c_num_unprocessed_bits,
     g_mixed_width                           => c_pos_calc_mixed_width,
     g_adc_ratio                             => c_pos_calc_adc_ratio,
 
@@ -2575,10 +2873,10 @@ begin
     -----------------------------
     -- Raw ADC signals
     -----------------------------
-    adc_ch0_i                               => fmc2_adc_data_ch0,
-    adc_ch1_i                               => fmc2_adc_data_ch1,
-    adc_ch2_i                               => fmc2_adc_data_ch2,
-    adc_ch3_i                               => fmc2_adc_data_ch3,
+    adc_ch0_i                               => fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0),
+    adc_ch1_i                               => fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0),
+    adc_ch2_i                               => fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0),
+    adc_ch3_i                               => fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0),
 
     -----------------------------
     -- Position calculation at various rates
