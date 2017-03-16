@@ -2500,6 +2500,10 @@ begin
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
 
+    -- Temporary assignemnts
+    fmcpico_1_sm_scl_o                         <= '0';
+    fmcpico_1_a_scl_o                          <= '0';
+
     ----------------------------------------------------------------------
     --                      FMC PICO 1M_4CH 2 Core                         --
     ----------------------------------------------------------------------
@@ -2579,6 +2583,10 @@ begin
     fmc2_clk2x                                 <= (others => clk_sys);
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
+
+    -- Temporary assignemnts
+    fmcpico_2_sm_scl_o                         <= '0';
+    fmcpico_2_a_scl_o                          <= '0';
 
   end generate;
 
