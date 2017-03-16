@@ -132,78 +132,78 @@ set_property PULLUP true [get_ports adn4604_vadj2_clk_updt_n_o]
 
 # CONV
 set_property PACKAGE_PIN K1 [get_ports fmc1_adc_cnv_o]                  ;# LA1_LA04_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_cnv_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_cnv_o]
 # SCK
 set_property PACKAGE_PIN J1 [get_ports fmc1_adc_sck_o]                  ;# LA1_LA04_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sck_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sck_o]
 # SCK_RTRN
 set_property PACKAGE_PIN F3 [get_ports fmc1_adc_sck_rtrn_i]             ;# LA1_LA08_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sck_rtrn_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sck_rtrn_i]
 # SDO1
 set_property PACKAGE_PIN L2 [get_ports fmc1_adc_sdo1_i]                 ;# LA1_LA11_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sdo1_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sdo1_i]
 # SDO2
 set_property PACKAGE_PIN M2 [get_ports fmc1_adc_sdo2_i]                 ;# LA1_LA11_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sdo2_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sdo2_i]
 # SDO3
 set_property PACKAGE_PIN K2 [get_ports fmc1_adc_sdo3_i]                 ;# LA1_LA07_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sdo3_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sdo3_i]
 # SDO4
 set_property PACKAGE_PIN K3 [get_ports fmc1_adc_sdo4_i]                 ;# LA1_LA07_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_sdo4_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_sdo4_i]
 # BUSY_CMN
 set_property PACKAGE_PIN F2 [get_ports fmc1_adc_busy_cmn_i]             ;# LA1_LA08_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_adc_busy_cmn_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_adc_busy_cmn_i]
 
 ############################# Range Selection #########################
 
 # R1
 set_property PACKAGE_PIN G1 [get_ports fmc1_rng_r1_o]                   ;# LA1_LA03_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_rng_r1_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_rng_r1_o]
 # R2
 set_property PACKAGE_PIN H1 [get_ports fmc1_rng_r2_o]                   ;# LA1_LA03_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_rng_r2_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_rng_r2_o]
 # R3
 set_property PACKAGE_PIN G6 [get_ports fmc1_rng_r3_o]                   ;# LA1_LA02_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_rng_r3_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_rng_r3_o]
 # R4
 set_property PACKAGE_PIN G7 [get_ports fmc1_rng_r4_o]                   ;# LA1_LA02_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_rng_r4_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_rng_r4_o]
 
 ################################# Leds #############################
 
 # Led1
 set_property PACKAGE_PIN H4 [get_ports fmc1_led1_o]                     ;# LA1_LA05_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_led1_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_led1_o]
 # Led2
 set_property PACKAGE_PIN H3 [get_ports fmc1_led2_o]                     ;# LA1_LA05_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_led2_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_led2_o]
 
 ######################## System Managment EEPROM ####################
 
 # SCL
 set_property PACKAGE_PIN P6 [get_ports fmc1_sm_scl_o]                   ;# FPGA_I2C_SCL (through I2C MUX)
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_sm_scl_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_sm_scl_o]
 # SDA
 set_property PACKAGE_PIN R11 [get_ports fmc1_sm_sda_b]                  ;# FPGA_I2C_SDA (through I2C MUX)
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_sm_sda_b]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_sm_sda_b]
 #
 # GA0 and GA1 are directly connected to resistors
 ## GA0
 #set_property PACKAGE_PIN ?? [get_ports fmc1_sm_ga0_o]
-#set_property IOSTANDARD LVCMOS18 [get_ports fmc1_sm_ga0_o]
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc1_sm_ga0_o]
 ## GA1
 #set_property PACKAGE_PIN ?? [get_ports fmc1_sm_ga1_o]
-#set_property IOSTANDARD LVCMOS18 [get_ports fmc1_sm_ga1_o]
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc1_sm_ga1_o]
 
 ########################## Application EEPROM ######################
 
 # SCL
 set_property PACKAGE_PIN N3 [get_ports fmc1_a_scl_o]                    ;# LA1_LA23_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_a_scl_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_a_scl_o]
 # SDA
 set_property PACKAGE_PIN N2 [get_ports fmc1_a_sda_b]                    ;# LA1_LA23_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc1_a_sda_b]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc1_a_sda_b]
 
 #######################################################################
 ##                       FMC Connector HPC2                           #
@@ -211,79 +211,79 @@ set_property IOSTANDARD LVCMOS18 [get_ports fmc1_a_sda_b]
 
 # CONV
 set_property PACKAGE_PIN AC26 [get_ports fmc2_adc_cnv_o]                ;# LA2_LA04_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_cnv_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_cnv_o]
 # SCK
 set_property PACKAGE_PIN AC27 [get_ports fmc2_adc_sck_o]                ;# LA2_LA04_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sck_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sck_o]
 # SCK_RTRN
 set_property PACKAGE_PIN AD25 [get_ports fmc2_adc_sck_rtrn_i]           ;# LA2_LA08_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sck_rtrn_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sck_rtrn_i]
 # SDO1
 set_property PACKAGE_PIN AE30 [get_ports fmc2_adc_sdo1_i]               ;# LA2_LA11_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sdo1_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sdo1_i]
 # SDO2
 set_property PACKAGE_PIN AD30 [get_ports fmc2_adc_sdo2_i]               ;# LA2_LA11_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sdo2_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sdo2_i]
 # SDO3
 set_property PACKAGE_PIN AH27 [get_ports fmc2_adc_sdo3_i]               ;# LA2_LA07_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sdo3_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sdo3_i]
 # SDO4
 set_property PACKAGE_PIN AG27 [get_ports fmc2_adc_sdo4_i]               ;# LA2_LA07_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_sdo4_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_sdo4_i]
 # BUSY_CMN
 set_property PACKAGE_PIN AE25 [get_ports fmc2_adc_busy_cmn_i]           ;# LA2_LA08_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_adc_busy_cmn_i]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc_busy_cmn_i]
 
 ############################# Range Selection #########################
 
 # R1
 set_property PACKAGE_PIN AH24 [get_ports fmc2_rng_r1_o]                 ;# LA2_LA03_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_rng_r1_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_rng_r1_o]
 # R2
 set_property PACKAGE_PIN AG24 [get_ports fmc2_rng_r2_o]                 ;# LA2_LA03_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_rng_r2_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_rng_r2_o]
 # R3
 set_property PACKAGE_PIN AH31 [get_ports fmc2_rng_r3_o]                 ;# LA2_LA02_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_rng_r3_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_rng_r3_o]
 # R4
 set_property PACKAGE_PIN AG31 [get_ports fmc2_rng_r4_o]                 ;# LA2_LA02_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_rng_r4_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_rng_r4_o]
 
 ################################# Leds #############################
 
 # Led1
 set_property PACKAGE_PIN AH33 [get_ports fmc2_led1_o]                   ;# LA2_LA05_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_led1_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led1_o]
 # Led2
 set_property PACKAGE_PIN AH34 [get_ports fmc2_led2_o]                   ;# LA2_LA05_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_led2_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led2_o]
 
 ######################## System Managment EEPROM ####################
 
 # These pins are shared with the fmc2 pins,as they go to a I2C MUX
 # SCL
 set_property PACKAGE_PIN P6 [get_ports fmc2_sm_scl_o]                   ;# FPGA_I2C_SCL (through I2C MUX)
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_sm_scl_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_scl_o]
 # SDA
 set_property PACKAGE_PIN R11 [get_ports fmc2_sm_sda_b]                  ;# FPGA_I2C_SDA (through I2C MUX)
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_sm_sda_b]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_sda_b]
 
 ## GA0 and GA1 are directly connected to resistors
 ## GA0
 #set_property PACKAGE_PIN ?? [get_ports fmc2_sm_ga0_o]
-#set_property IOSTANDARD LVCMOS18 [get_ports fmc2_sm_ga0_o]
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_ga0_o]
 ## GA1
 #set_property PACKAGE_PIN ?? [get_ports fmc2_sm_ga1_o]
-#set_property IOSTANDARD LVCMOS18 [get_ports fmc2_sm_ga1_o]
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_ga1_o]
 
 ########################## Application EEPROM ######################
 
 # SCL
 set_property PACKAGE_PIN W25 [get_ports fmc2_a_scl_o]                   ;# LA2_LA23_P
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_a_scl_o]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_a_scl_o]
 # SDA
 set_property PACKAGE_PIN Y25 [get_ports fmc2_a_sda_b]                   ;# LA2_LA23_N
-set_property IOSTANDARD LVCMOS18 [get_ports fmc2_a_sda_b]
+set_property IOSTANDARD LVCMOS25 [get_ports fmc2_a_sda_b]
 
 #######################################################################
 ##               Pinout and Related I/O Constraints                  ##
