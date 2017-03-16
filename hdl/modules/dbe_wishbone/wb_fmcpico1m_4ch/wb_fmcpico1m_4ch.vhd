@@ -19,14 +19,18 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 library work;
 -- Main Wishbone Definitions
 use work.wishbone_pkg.all;
 -- Custom Wishbone Modules
 use work.dbe_wishbone_pkg.all;
+-- Wishbone Stream Interface
+--use work.wb_stream_pkg.all;
+use work.wb_stream_generic_pkg.all;
 -- Wishbone Register Interface
--- use work.wb_fmc_pico1m_4ch_csr_wbgen2_pkg.all;
+use work.wb_fmcpico1m_4ch_csr_wbgen2_pkg.all;
 -- FMC ADC package
 -- use work.fmc_adc_pkg.all;
 -- Reset Synch
@@ -118,7 +122,29 @@ architecture rtl of wb_fmcpico1m_4ch is
   -- General Constants
   -----------------------------
   constant c_cdc_ref_size                   : natural := 4;
-  constant c_cdc_width                      : g_num_adc_bits * g_num_adc_channels;
+  constant c_cdc_width                      : natural := g_num_adc_bits * g_num_adc_channels;
+
+  -----------------------------
+  -- Crossbar component constants
+  -----------------------------
+  -- Internal crossbar layout
+  -- 0 -> FMCPICO_1M_4CH Register Wishbone Interface
+  -- 1 -> System EEPROM I2C Bus
+  -- 2 -> Application EEPROM I2C Bus
+  -- Number of slaves
+  constant c_slaves                         : natural := 3;
+  -- Number of masters
+  constant c_masters                        : natural := 1;            -- Top master.
+
+  constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
+  ( 0 => f_sdb_embed_device(c_xwb_fmcpico_1m_4ch_regs_sdb,
+                                                        x"00000000"),   -- Register interface
+    1 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00001000"),   -- EEPROM I2C
+    2 => f_sdb_embed_device(c_xwb_i2c_master_sdb,       x"00002000")    -- EEPROM I2C
+  );
+
+  -- Self Describing Bus ROM Address. It will be an addressed slave as well.
+  constant c_sdb_address                    : t_wishbone_address := x"00006000";
 
   -----------------------------
   -- Clock and reset signals
@@ -131,8 +157,8 @@ architecture rtl of wb_fmcpico1m_4ch is
   -- Wishbone Register Interface signals
   -----------------------------
   -- FMC250 reg structure
-  signal regs_out                           : t_wb_fmc_pico1m_4ch_csr_out_registers;
-  signal regs_in                            : t_wb_fmc_pico1m_4ch_csr_in_registers;
+  signal regs_out                           : t_wb_fmcpico1m_4ch_csr_out_registers;
+  signal regs_in                            : t_wb_fmcpico1m_4ch_csr_in_registers;
 
   -----------------------------
   -- Test data signals and constants
@@ -194,8 +220,10 @@ architecture rtl of wb_fmcpico1m_4ch is
   -----------------------------
   -- ADC signals
   -----------------------------
-  signal adc_fifo_in                        : std_logic_vector(g_num_adc_bits*g_num_adc_channels-1 downto 0);
-  signal adc_fifo_out                       : std_logic_vector(g_num_adc_bits*g_num_adc_channels-1 downto 0);
+  signal adc_fifo_data_in                   : std_logic_vector(g_num_adc_bits*g_num_adc_channels-1 downto 0);
+  signal adc_fifo_valid_in                  : std_logic;
+  signal adc_fifo_data_out                  : std_logic_vector(g_num_adc_bits*g_num_adc_channels-1 downto 0);
+  signal adc_fifo_valid_out                 : std_logic;
 
   signal adc_out_data1_int                  : std_logic_vector(g_num_adc_bits-1 downto 0);
   signal adc_out_data2_int                  : std_logic_vector(g_num_adc_bits-1 downto 0);
@@ -207,7 +235,7 @@ architecture rtl of wb_fmcpico1m_4ch is
   -----------------------------
   -- Components
   -----------------------------
-  component wb_fmc_pico1m_4ch_csr
+  component wb_fmcpico1m_4ch_csr
   port (
     rst_n_i                                  : in     std_logic;
     clk_sys_i                                : in     std_logic;
@@ -221,8 +249,67 @@ architecture rtl of wb_fmcpico1m_4ch is
     wb_ack_o                                 : out    std_logic;
     wb_stall_o                               : out    std_logic;
     fs_clk_i                                 : in     std_logic;
-    regs_i                                   : in     t_wb_fmc_pico1m_4ch_csr_in_registers;
-    regs_o                                   : out    t_wb_fmc_pico1m_4ch_csr_out_registers
+    regs_i                                   : in     t_wb_fmcpico1m_4ch_csr_in_registers;
+    regs_o                                   : out    t_wb_fmcpico1m_4ch_csr_out_registers
+  );
+  end component;
+
+  component fmc_pico_spi
+  generic (
+	BITS                                      : natural := 20;
+	-- main clock frequency
+	CLK_FREQ                                  : natural := 300000000;
+	-- SCLK frequency
+	SCLK_FREQ                                 : natural := 75000000;
+    -- number of channels
+    NR_CHAN                                   : natural := 4;
+    -- time for CONV to be held high
+    T_CONV_HIGH                               : real    := 25.0e-9;
+    -- ADC supports max 1MSPS
+    T_CONV_MIN_TIME                           : real    := 1.0e-6;
+    -- time from CONV high to BUSY low
+    T_CONV_WAIT                               : real    := 675.0e-9 + 7.0e-9
+  );
+  port (
+	--------------- Clock and reset ---------------
+	 clk                                      : in std_logic;
+     reset                                    : in std_logic;
+	--------------- Control signals ---------------
+	start,
+	--------------- SPI bus -----------------------
+	sdo1                                      : in std_logic;
+	sdo2                                      : in std_logic;
+	sdo3                                      : in std_logic;
+	sdo4                                      : in std_logic;
+    sck                                       : out std_logic;
+	sck_rtrn                                  : in std_logic;
+	busy_cmn                                  : in std_logic;
+	cnv                                       : out std_logic;
+	--------------- output bus -------------------
+    out_data1                                 : out std_logic_vector(BITS-1 downto 0);
+	out_data2                                 : out std_logic_vector(BITS-1 downto 0);
+	out_data3                                 : out std_logic_vector(BITS-1 downto 0);
+	out_data4                                 : out std_logic_vector(BITS-1 downto 0);
+	out_valid                                 : out std_logic;
+	out_busy                                  : out std_logic
+  );
+  end component;
+
+  component cdc_fifo
+  generic
+  (
+    g_data_width                              : natural;
+    g_size                                    : natural
+  );
+  port
+  (
+    clk_wr_i                                  : in std_logic;
+    data_i                                    : in std_logic_vector(g_data_width-1 downto 0);
+    valid_i                                   : in std_logic;
+
+    clk_rd_i                                  : in std_logic;
+    data_o                                    : out std_logic_vector(g_data_width-1 downto 0);
+    valid_o                                   : out std_logic
   );
   end component;
 
@@ -236,7 +323,7 @@ begin
 	BITS                                     => g_num_adc_bits,
 	CLK_FREQ                                 => g_clk_freq,
 	SCLK_FREQ                                => g_sclk_freq
-  );
+  )
   port map (
     clk                                      => adc_fast_spi_clk_i,
     reset                                    => adc_fast_spi_rst,
@@ -250,7 +337,7 @@ begin
     sck                                      => adc_sck_o,
 	sck_rtrn                                 => adc_sck_rtrn_i,
 	busy_cmn                                 => adc_busy_cmn_i,
-    cnv                                      => adc_conv_out_o,
+    cnv                                      => adc_cnv_out_o,
 
     out_data1                                => adc_out_data1_int,
 	out_data2                                => adc_out_data2_int,
@@ -274,8 +361,8 @@ begin
     valid_i                                   => adc_fifo_valid_in,
 
     clk_rd_i                                  => adc_clk_i,
-    data_o                                    => adc_data_o,
-    valid_o                                   => adc_data_valid_o
+    data_o                                    => adc_fifo_data_out,
+    valid_o                                   => adc_fifo_valid_out
   );
 
   adc_fifo_valid_in <= adc_out_valid_int;
@@ -283,5 +370,8 @@ begin
                       adc_out_data3_int &
                       adc_out_data2_int &
                       adc_out_data1_int;
+
+  adc_data_o <= adc_fifo_data_out;
+  adc_data_valid_o <= (others => adc_fifo_valid_out);
 
 end rtl;

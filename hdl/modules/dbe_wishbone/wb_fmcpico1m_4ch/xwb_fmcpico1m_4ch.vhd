@@ -88,16 +88,16 @@ end xwb_fmcpico1m_4ch;
 
 architecture rtl of xwb_fmcpico1m_4ch is
 
-  signal wbs_adr_int                        : std_logic_vector(c_num_adc_channels*c_wbs_adr4_width-1 downto 0);
-  signal wbs_dat_int                        : std_logic_vector(c_num_adc_channels*c_wbs_dat16_width-1 downto 0);
-  signal wbs_cyc_int                        : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_stb_int                        : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_we_int                         : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_sel_int                        : std_logic_vector(c_num_adc_channels*c_wbs_sel16_width-1 downto 0);
-  signal wbs_ack_int                        : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_stall_int                      : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_err_int                        : std_logic_vector(c_num_adc_channels-1 downto 0);
-  signal wbs_rty_int                        : std_logic_vector(c_num_adc_channels-1 downto 0);
+  signal wbs_adr_int                        : std_logic_vector(g_num_adc_channels*c_wbs_adr4_width-1 downto 0);
+  signal wbs_dat_int                        : std_logic_vector(g_num_adc_channels*c_wbs_dat16_width-1 downto 0);
+  signal wbs_cyc_int                        : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_stb_int                        : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_we_int                         : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_sel_int                        : std_logic_vector(g_num_adc_channels*c_wbs_sel16_width-1 downto 0);
+  signal wbs_ack_int                        : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_stall_int                      : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_err_int                        : std_logic_vector(g_num_adc_channels-1 downto 0);
+  signal wbs_rty_int                        : std_logic_vector(g_num_adc_channels-1 downto 0);
 
 begin
 
@@ -161,7 +161,7 @@ begin
     adc_out_busy_o                           => adc_out_busy_o
   );
 
-  --gen_wbs_interfaces : for i in 0 to c_num_adc_channels-1 generate
+  --gen_wbs_interfaces : for i in 0 to g_num_adc_channels-1 generate
   --  gen_wbs_interfaces_ch : if g_use_data_chains(i) = '1' generate
   --    wbs_ack_int(i)                            <=  wbs_source_i(i).ack;
   --    wbs_stall_int(i)                          <=  wbs_source_i(i).stall;
