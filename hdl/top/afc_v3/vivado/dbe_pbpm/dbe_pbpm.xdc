@@ -262,11 +262,11 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_led2_o]
 
 # These pins are shared with the fmc2 pins,as they go to a I2C MUX
 # SCL
-set_property PACKAGE_PIN P6 [get_ports fmc2_sm_scl_o]                   ;# FPGA_I2C_SCL (through I2C MUX)
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_scl_o]
-# SDA
-set_property PACKAGE_PIN R11 [get_ports fmc2_sm_sda_b]                  ;# FPGA_I2C_SDA (through I2C MUX)
-set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_sda_b]
+#set_property PACKAGE_PIN P6 [get_ports fmc2_sm_scl_o]                   ;# FPGA_I2C_SCL (through I2C MUX)
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_scl_o]
+## SDA
+#set_property PACKAGE_PIN R11 [get_ports fmc2_sm_sda_b]                  ;# FPGA_I2C_SDA (through I2C MUX)
+#set_property IOSTANDARD LVCMOS25 [get_ports fmc2_sm_sda_b]
 
 ## GA0 and GA1 are directly connected to resistors
 ## GA0
