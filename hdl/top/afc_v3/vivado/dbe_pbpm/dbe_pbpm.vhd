@@ -72,7 +72,7 @@ port(
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
 
-  fmc1_adc_conv_o                       : out std_logic;
+  fmc1_adc_cnv_o                        : out std_logic;
   fmc1_adc_sck_o                        : out std_logic;
   fmc1_adc_sck_rtrn_i                   : in std_logic;
   fmc1_adc_sdo1_i                       : in std_logic;
@@ -99,7 +99,7 @@ port(
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
 
-  fmc2_adc_conv_o                            : out std_logic;
+  fmc2_adc_cnv_o                             : out std_logic;
   fmc2_adc_sck_o                             : out std_logic;
   fmc2_adc_sck_rtrn_i                        : in std_logic;
   fmc2_adc_sdo1_i                            : in std_logic;
@@ -570,14 +570,14 @@ architecture rtl of dbe_pbpm is
     -- FMC PICO 1M_4CH Ports
     -----------------------------------------
 
-    fmcpico_1_adc_conv_o                       : out std_logic;
+    fmcpico_1_adc_cnv_o                        : out std_logic;
     fmcpico_1_adc_sck_o                        : out std_logic;
-    fmcpico_1_adc_sck_rtrn_i                   : in std_logic : = '0';
-    fmcpico_1_adc_sdo1_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo2_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo3_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo4_i                       : in std_logic : = '0';
-    fmcpico_1_adc_busy_cmn_i                   : in std_logic : = '0';
+    fmcpico_1_adc_sck_rtrn_i                   : in std_logic := '0';
+    fmcpico_1_adc_sdo1_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo2_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo3_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo4_i                       : in std_logic := '0';
+    fmcpico_1_adc_busy_cmn_i                   : in std_logic := '0';
 
     fmcpico_1_rng_r1_o                         : out std_logic;
     fmcpico_1_rng_r2_o                         : out std_logic;
@@ -596,7 +596,7 @@ architecture rtl of dbe_pbpm is
     -----------------------------------------
     -- FMC PICO 1M_4CH Ports
     -----------------------------------------
-    fmcpico_2_adc_conv_o                            : out std_logic;
+    fmcpico_2_adc_cnv_o                             : out std_logic;
     fmcpico_2_adc_sck_o                             : out std_logic;
     fmcpico_2_adc_sck_rtrn_i                        : in std_logic := '0';
     fmcpico_2_adc_sdo1_i                            : in std_logic := '0';
@@ -728,7 +728,7 @@ begin
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
 
-  fmcpico_1_adc_conv_o                       => fmc1_adc_conv_o,
+  fmcpico_1_adc_cnv_o                        => fmc1_adc_cnv_o,
   fmcpico_1_adc_sck_o                        => fmc1_adc_sck_o,
   fmcpico_1_adc_sck_rtrn_i                   => fmc1_adc_sck_rtrn_i,
   fmcpico_1_adc_sdo1_i                       => fmc1_adc_sdo1_i,
@@ -754,7 +754,7 @@ begin
   -----------------------------------------
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
-  fmcpico_2_adc_conv_o                       => fmc2_adc_conv_o,
+  fmcpico_2_adc_cnv_o                        => fmc2_adc_cnv_o,
   fmcpico_2_adc_sck_o                        => fmc2_adc_sck_o,
   fmcpico_2_adc_sck_rtrn_i                   => fmc2_adc_sck_rtrn_i,
   fmcpico_2_adc_sdo1_i                       => fmc2_adc_sdo1_i,
