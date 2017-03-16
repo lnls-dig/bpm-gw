@@ -433,14 +433,14 @@ port(
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
 
-  fmcpico_1_adc_conv_o                       : out std_logic;
+  fmcpico_1_adc_cnv_o                        : out std_logic;
   fmcpico_1_adc_sck_o                        : out std_logic;
-  fmcpico_1_adc_sck_rtrn_i                   : in std_logic : = '0';
-  fmcpico_1_adc_sdo1_i                       : in std_logic : = '0';
-  fmcpico_1_adc_sdo2_i                       : in std_logic : = '0';
-  fmcpico_1_adc_sdo3_i                       : in std_logic : = '0';
-  fmcpico_1_adc_sdo4_i                       : in std_logic : = '0';
-  fmcpico_1_adc_busy_cmn_i                   : in std_logic : = '0';
+  fmcpico_1_adc_sck_rtrn_i                   : in std_logic := '0';
+  fmcpico_1_adc_sdo1_i                       : in std_logic := '0';
+  fmcpico_1_adc_sdo2_i                       : in std_logic := '0';
+  fmcpico_1_adc_sdo3_i                       : in std_logic := '0';
+  fmcpico_1_adc_sdo4_i                       : in std_logic := '0';
+  fmcpico_1_adc_busy_cmn_i                   : in std_logic := '0';
 
   fmcpico_1_rng_r1_o                         : out std_logic;
   fmcpico_1_rng_r2_o                         : out std_logic;
@@ -459,7 +459,7 @@ port(
   -----------------------------------------
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
-  fmcpico_2_adc_conv_o                       : out std_logic;
+  fmcpico_2_adc_cnv_o                        : out std_logic;
   fmcpico_2_adc_sck_o                        : out std_logic;
   fmcpico_2_adc_sck_rtrn_i                   : in std_logic := '0';
   fmcpico_2_adc_sdo1_i                       : in std_logic := '0';
@@ -558,26 +558,26 @@ architecture rtl of dbe_bpm_gen is
   end f_num_bits_adc;
 
   function f_acq_channel_adc_param(adc_type : string)
-      return t_facq_cham_param is
+      return t_facq_chan_param is
     variable v_facq_chan                  : t_facq_chan_param;
   begin
     if (adc_type = "FMC130M") then
-      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+      v_facq_chan := (width => to_unsigned(64, c_acq_chan_cmplt_width_log2),
                       num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                       atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
                      );
     elsif (adc_type = "FMC250M") then
-      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+      v_facq_chan := (width => to_unsigned(64, c_acq_chan_cmplt_width_log2),
                       num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                       atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
                      );
     elsif (adc_type = "FMCPICO_1M") then
-      v_facq_chan := (to_unsigned(128, c_acq_chan_cmplt_width_log2),
+      v_facq_chan := (width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
                       num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                       atom_width => to_unsigned(32, c_acq_atom_width_log2) -- 2^5 = 32-bit
                      );
     else
-      v_facq_chan := (to_unsigned(64, c_acq_chan_cmplt_width_log2),
+      v_facq_chan := (width => to_unsigned(64, c_acq_chan_cmplt_width_log2),
                       num_atoms => to_unsigned(4, c_acq_num_atoms_width_log2),
                       atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
                      );
@@ -922,6 +922,7 @@ architecture rtl of dbe_bpm_gen is
 
   -- 200 Mhz clocck for iodelay_ctrl
   signal clk_200mhz                         : std_logic;
+  signal clk_300mhz                         : std_logic;
 
   -- ADC clock
   signal fs1_clk                            : std_logic;
@@ -955,6 +956,7 @@ architecture rtl of dbe_bpm_gen is
   signal fmc1_data_valid                     : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc1_adc_fast_spi_clk               : std_logic;
   signal fmc1_adc_fast_spi_rstn              : std_logic;
+  signal fmc1_adc_busy                       : std_logic;
 
   signal fmc1_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
   signal fmc1_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
@@ -994,6 +996,7 @@ architecture rtl of dbe_bpm_gen is
   signal fmc2_data_valid                     : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc2_adc_fast_spi_clk               : std_logic;
   signal fmc2_adc_fast_spi_rstn              : std_logic;
+  signal fmc2_adc_busy                       : std_logic;
 
   signal fmc2_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
   signal fmc2_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
@@ -2425,7 +2428,7 @@ begin
     generic map
     (
       g_interface_mode                          => PIPELINED,
-      g_address_granularity                     => BYTE,
+      g_address_granularity                     => BYTE
       -- g_num_adc_bits                             natural := 20;
       -- g_num_adc_channels                         natural := 4;
       -- g_clk_freq                                 natural := 300000000; -- Hz
@@ -2461,17 +2464,17 @@ begin
       adc_sck_o                               => fmcpico_1_adc_sck_o,
       adc_sck_rtrn_i                          => fmcpico_1_adc_sck_rtrn_i,
       adc_busy_cmn_i                          => fmcpico_1_adc_busy_cmn_i,
-      adc_cnv_out_o                           => fmcpico_1_adc_cnv_out_o,
+      adc_cnv_out_o                           => fmcpico_1_adc_cnv_o,
 
       -----------------------------
       -- ADC output signals. Continuous flow
       -----------------------------
       -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
       -- suffice in all cases
-      adc_clk_i                               => fmc1_clk,
+      adc_clk_i                               => fs1_clk,
       adc_data_o                              => fmc1_data,
       adc_data_valid_o                        => fmc1_data_valid,
-      adc_out_busy_o                          => fmc1_busy
+      adc_out_busy_o                          => fmc1_adc_busy
     );
 
     -- FIXME! Temporary signals. For testing only!
@@ -2505,7 +2508,7 @@ begin
     generic map
     (
       g_interface_mode                          => PIPELINED,
-      g_address_granularity                     => BYTE,
+      g_address_granularity                     => BYTE
       -- g_num_adc_bits                             natural := 20;
       -- g_num_adc_channels                         natural := 4;
       -- g_clk_freq                                 natural := 300000000; -- Hz
@@ -2541,17 +2544,17 @@ begin
       adc_sck_o                               => fmcpico_2_adc_sck_o,
       adc_sck_rtrn_i                          => fmcpico_2_adc_sck_rtrn_i,
       adc_busy_cmn_i                          => fmcpico_2_adc_busy_cmn_i,
-      adc_cnv_out_o                           => fmcpico_2_adc_cnv_out_o,
+      adc_cnv_out_o                           => fmcpico_2_adc_cnv_o,
 
       -----------------------------
       -- ADC output signals. Continuous flow
       -----------------------------
       -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
       -- suffice in all cases
-      adc_clk_i                               => fmc2_clk,
+      adc_clk_i                               => fs2_clk,
       adc_data_o                              => fmc2_data,
       adc_data_valid_o                        => fmc2_data_valid,
-      adc_out_busy_o                          => fmc2_busy
+      adc_out_busy_o                          => fmc2_adc_busy
     );
 
     -- FIXME! Temporary signals. For testing only!
