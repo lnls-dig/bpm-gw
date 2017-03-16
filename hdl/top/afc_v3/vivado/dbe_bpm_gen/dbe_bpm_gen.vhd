@@ -476,8 +476,9 @@ port(
   fmcpico_2_led1_o                           : out std_logic;
   fmcpico_2_led2_o                           : out std_logic;
 
-  fmcpico_2_sm_scl_o                         : out std_logic;
-  fmcpico_2_sm_sda_b                         : inout std_logic;
+  ---- Connected through FPGA MUX
+  --fmcpico_2_sm_scl_o                         : out std_logic;
+  --fmcpico_2_sm_sda_b                         : inout std_logic;
 
   fmcpico_2_a_scl_o                          : out std_logic;
   fmcpico_2_a_sda_b                          : inout std_logic;
@@ -2584,9 +2585,10 @@ begin
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
 
-    -- Temporary assignemnts
-    fmcpico_2_sm_scl_o                         <= '0';
-    fmcpico_2_a_scl_o                          <= '0';
+    ---- Connected through FPGA MUX
+    ---- Temporary assignemnts
+    --fmcpico_2_sm_scl_o                         <= '0';
+    --fmcpico_2_a_scl_o                          <= '0';
 
   end generate;
 

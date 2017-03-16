@@ -116,8 +116,9 @@ port(
   fmc2_led1_o                                : out std_logic;
   fmc2_led2_o                                : out std_logic;
 
-  fmc2_sm_scl_o                              : out std_logic;
-  fmc2_sm_sda_b                              : inout std_logic;
+  -- Connected through FPGA MUX
+  --fmc2_sm_scl_o                              : out std_logic;
+  --fmc2_sm_sda_b                              : inout std_logic;
 
   fmc2_a_scl_o                               : out std_logic;
   fmc2_a_sda_b                               : inout std_logic;
@@ -613,8 +614,9 @@ architecture rtl of dbe_pbpm is
     fmcpico_2_led1_o                                : out std_logic;
     fmcpico_2_led2_o                                : out std_logic;
 
-    fmcpico_2_sm_scl_o                              : out std_logic;
-    fmcpico_2_sm_sda_b                              : inout std_logic;
+    ---- Connected through FPGA MUX
+    --fmcpico_2_sm_scl_o                              : out std_logic;
+    --fmcpico_2_sm_sda_b                              : inout std_logic;
 
     fmcpico_2_a_scl_o                               : out std_logic;
     fmcpico_2_a_sda_b                               : inout std_logic;
@@ -771,8 +773,9 @@ begin
   fmcpico_2_led1_o                           => fmc2_led1_o,
   fmcpico_2_led2_o                           => fmc2_led2_o,
 
-  fmcpico_2_sm_scl_o                         => fmc2_sm_scl_o,
-  fmcpico_2_sm_sda_b                         => fmc2_sm_sda_b,
+  ---- Connected through FPGA MUX
+  ----fmcpico_2_sm_scl_o                         => fmc2_sm_scl_o,
+  ----fmcpico_2_sm_sda_b                         => fmc2_sm_sda_b,
 
   fmcpico_2_a_scl_o                          => fmc2_a_scl_o,
   fmcpico_2_a_sda_b                          => fmc2_a_sda_b,
