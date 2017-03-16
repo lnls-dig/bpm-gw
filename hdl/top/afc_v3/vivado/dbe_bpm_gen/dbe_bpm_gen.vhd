@@ -2487,14 +2487,18 @@ begin
     fmcpico_1_led1_o           <= '0';
     fmcpico_1_led2_o           <= '1';
 
-    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc1_adc_data_ch0          <= std_logic_vector(resize(signed(
+                                      fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                      fmc1_adc_data_ch0'length));
+    fmc1_adc_data_ch1          <= std_logic_vector(resize(signed(
+                                      fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                      fmc1_adc_data_ch1'length));
+    fmc1_adc_data_ch2          <= std_logic_vector(resize(signed(
+                                      fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                      fmc1_adc_data_ch2'length));
+    fmc1_adc_data_ch3          <= std_logic_vector(resize(signed(
+                                      fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                      fmc1_adc_data_ch3'length));
 
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
@@ -2571,14 +2575,18 @@ begin
     fmcpico_2_led1_o           <= '0';
     fmcpico_2_led2_o           <= '1';
 
-    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc2_adc_data_ch0          <= std_logic_vector(resize(signed(
+                                      fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                      fmc2_adc_data_ch0'length));
+    fmc2_adc_data_ch1          <= std_logic_vector(resize(signed(
+                                      fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                      fmc2_adc_data_ch1'length));
+    fmc2_adc_data_ch2          <= std_logic_vector(resize(signed(
+                                      fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                      fmc2_adc_data_ch2'length));
+    fmc2_adc_data_ch3          <= std_logic_vector(resize(signed(
+                                      fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                      fmc2_adc_data_ch3'length));
 
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
