@@ -256,11 +256,11 @@ architecture rtl of wb_fmcpico1m_4ch is
 
   component fmc_pico_spi
   generic (
-	BITS                                      : natural := 20;
-	-- main clock frequency
-	CLK_FREQ                                  : natural := 300000000;
-	-- SCLK frequency
-	SCLK_FREQ                                 : natural := 75000000;
+    BITS                                      : natural := 20;
+    -- main clock frequency
+    CLK_FREQ                                  : natural := 300000000;
+    -- SCLK frequency
+    SCLK_FREQ                                 : natural := 75000000;
     -- number of channels
     NR_CHAN                                   : natural := 4;
     -- time for CONV to be held high
@@ -271,27 +271,27 @@ architecture rtl of wb_fmcpico1m_4ch is
     T_CONV_WAIT                               : real    := 675.0e-9 + 7.0e-9
   );
   port (
-	--------------- Clock and reset ---------------
-	 clk                                      : in std_logic;
+    --------------- Clock and reset ---------------
+     clk                                      : in std_logic;
      reset                                    : in std_logic;
-	--------------- Control signals ---------------
-	start,
-	--------------- SPI bus -----------------------
-	sdo1                                      : in std_logic;
-	sdo2                                      : in std_logic;
-	sdo3                                      : in std_logic;
-	sdo4                                      : in std_logic;
+    --------------- Control signals ---------------
+    start,
+    --------------- SPI bus -----------------------
+    sdo1                                      : in std_logic;
+    sdo2                                      : in std_logic;
+    sdo3                                      : in std_logic;
+    sdo4                                      : in std_logic;
     sck                                       : out std_logic;
-	sck_rtrn                                  : in std_logic;
-	busy_cmn                                  : in std_logic;
-	cnv                                       : out std_logic;
-	--------------- output bus -------------------
+    sck_rtrn                                  : in std_logic;
+    busy_cmn                                  : in std_logic;
+    cnv                                       : out std_logic;
+    --------------- output bus -------------------
     out_data1                                 : out std_logic_vector(BITS-1 downto 0);
-	out_data2                                 : out std_logic_vector(BITS-1 downto 0);
-	out_data3                                 : out std_logic_vector(BITS-1 downto 0);
-	out_data4                                 : out std_logic_vector(BITS-1 downto 0);
-	out_valid                                 : out std_logic;
-	out_busy                                  : out std_logic
+    out_data2                                 : out std_logic_vector(BITS-1 downto 0);
+    out_data3                                 : out std_logic_vector(BITS-1 downto 0);
+    out_data4                                 : out std_logic_vector(BITS-1 downto 0);
+    out_valid                                 : out std_logic;
+    out_busy                                  : out std_logic
   );
   end component;
 
@@ -320,9 +320,9 @@ begin
 
   cmp_fmc_pico_spi : fmc_pico_spi
   generic map (
-	BITS                                     => g_num_adc_bits,
-	CLK_FREQ                                 => g_clk_freq,
-	SCLK_FREQ                                => g_sclk_freq
+    BITS                                     => g_num_adc_bits,
+    CLK_FREQ                                 => g_clk_freq,
+    SCLK_FREQ                                => g_sclk_freq
   )
   port map (
     clk                                      => adc_fast_spi_clk_i,
@@ -330,21 +330,21 @@ begin
 
     start                                    => '1',
 
-	sdo1                                     => adc_sdo1_i,
-	sdo2                                     => adc_sdo2_i,
-	sdo3                                     => adc_sdo3_i,
-	sdo4                                     => adc_sdo4_i,
+    sdo1                                     => adc_sdo1_i,
+    sdo2                                     => adc_sdo2_i,
+    sdo3                                     => adc_sdo3_i,
+    sdo4                                     => adc_sdo4_i,
     sck                                      => adc_sck_o,
-	sck_rtrn                                 => adc_sck_rtrn_i,
-	busy_cmn                                 => adc_busy_cmn_i,
+    sck_rtrn                                 => adc_sck_rtrn_i,
+    busy_cmn                                 => adc_busy_cmn_i,
     cnv                                      => adc_cnv_out_o,
 
     out_data1                                => adc_out_data1_int,
-	out_data2                                => adc_out_data2_int,
-	out_data3                                => adc_out_data3_int,
-	out_data4                                => adc_out_data4_int,
+    out_data2                                => adc_out_data2_int,
+    out_data3                                => adc_out_data3_int,
+    out_data4                                => adc_out_data4_int,
     out_valid                                => adc_out_valid_int,
-	out_busy                                 => adc_out_busy_int
+    out_busy                                 => adc_out_busy_int
   );
 
   -- CDC FIFO
