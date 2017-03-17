@@ -2606,8 +2606,13 @@ begin
 
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
+    fmc1_rst_n                                 <= (others => clk_sys_rstn);
+    fmc1_rst2x_n                               <= (others => clk_sys_rstn);
+
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
+    fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
+    fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
 
     -- Temporary assignemnts
     fmcpico_1_sm_scl_o                         <= '0';
@@ -2701,8 +2706,13 @@ begin
 
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
+    fmc2_rst_n                                 <= (others => clk_sys_rstn);
+    fmc2_rst2x_n                               <= (others => clk_sys_rstn);
+
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
+    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
+    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
 
     ---- Connected through FPGA MUX
     ---- Temporary assignemnts
