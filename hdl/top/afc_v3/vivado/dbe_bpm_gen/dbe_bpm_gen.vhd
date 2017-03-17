@@ -688,8 +688,8 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_facq_channels                  : t_facq_chan_param_array(c_acq_num_channels-1 downto 0) :=
   (
-     c_acq_adc_id            => c_facq_params_adc,
-     c_acq_adc_swap_id       => c_facq_params_adc,
+     c_acq_adc_id            => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_adc_swap_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
      c_acq_mixiq_id          => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
      c_dummy0_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
      c_acq_tbtdecimiq_id     => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
@@ -794,6 +794,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_sdb_address                    : t_wishbone_address := x"00000000";
 
   constant c_num_unprocessed_bits           : natural := f_num_bits_adc(g_fmc_adc_type);
+  constant c_num_unprocessed_se_bits        : natural := 32;
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
@@ -963,6 +964,11 @@ architecture rtl of dbe_bpm_gen is
   signal fmc1_adc_data_ch2                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
   signal fmc1_adc_data_ch3                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
 
+  signal fmc1_adc_data_se_ch0                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_se_ch1                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_se_ch2                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_se_ch3                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+
   signal fmc1_debug                          : std_logic;
   signal fmc1_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc1_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -1003,6 +1009,11 @@ architecture rtl of dbe_bpm_gen is
   signal fmc2_adc_data_ch2                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
   signal fmc2_adc_data_ch3                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
 
+  signal fmc2_adc_data_se_ch0                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_se_ch1                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_se_ch2                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_se_ch3                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0) := (others => '0');
+
   signal fmc2_debug                          : std_logic;
   signal fmc2_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal fmc2_rst2x_n                        : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -1027,6 +1038,11 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+
+  signal dsp1_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp1_adc_se_ch1_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp1_adc_se_ch2_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp1_adc_se_ch3_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
 
   signal dsp1_mixi_ch0                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
   signal dsp1_mixi_ch1                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
@@ -1125,6 +1141,11 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+
+  signal dsp2_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp2_adc_se_ch1_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp2_adc_se_ch2_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
+  signal dsp2_adc_se_ch3_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
 
   signal dsp2_mixi_ch0                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
   signal dsp2_mixi_ch1                       : std_logic_vector(c_pos_calc_IQ_width-1 downto 0);
@@ -1822,6 +1843,19 @@ begin
     fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
+    fmc1_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc1_adc_data_se_ch0'length));
+    fmc1_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc1_adc_data_se_ch1'length));
+    fmc1_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc1_adc_data_se_ch2'length));
+    fmc1_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc1_adc_data_se_ch3'length));
+
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
     fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
@@ -2014,6 +2048,19 @@ begin
     fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
     fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc2_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc2_adc_data_se_ch0'length));
+    fmc2_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc2_adc_data_se_ch1'length));
+    fmc2_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc2_adc_data_se_ch2'length));
+    fmc2_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc2_adc_data_se_ch3'length));
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2215,6 +2262,19 @@ begin
     fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
     fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc1_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc1_adc_data_se_ch0'length));
+    fmc1_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc1_adc_data_se_ch1'length));
+    fmc1_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc1_adc_data_se_ch2'length));
+    fmc1_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc1_adc_data_se_ch3'length));
 
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
@@ -2479,6 +2539,19 @@ begin
     fmc1_adc_data_ch2                         <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc1_adc_data_ch3                         <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
+    fmc1_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc1_adc_data_se_ch0'length));
+    fmc1_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc1_adc_data_se_ch1'length));
+    fmc1_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc1_adc_data_se_ch2'length));
+    fmc1_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc1_adc_data_se_ch3'length));
+
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
@@ -2559,6 +2632,19 @@ begin
     fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
+    fmc2_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc2_adc_data_se_ch0'length));
+    fmc2_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc2_adc_data_se_ch1'length));
+    fmc2_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc2_adc_data_se_ch2'length));
+    fmc2_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc2_adc_data_se_ch3'length));
+
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
@@ -2583,6 +2669,19 @@ begin
     fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
     fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
     fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc2_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc2_adc_data_se_ch0'length));
+    fmc2_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc2_adc_data_se_ch1'length));
+    fmc2_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc2_adc_data_se_ch2'length));
+    fmc2_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc2_adc_data_se_ch3'length));
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2781,6 +2880,20 @@ begin
     dbg_adc_ch3_cond_o                      => dsp1_dbg_adc_ch3_cond
   );
 
+  -- Sign-extension to acquisition core
+  dsp1_adc_se_ch0_data                       <= std_logic_vector(resize(signed(
+                                                 dsp1_adc_ch0_data),
+                                                 dsp1_adc_se_ch0_data'length));
+  dsp1_adc_se_ch1_data                       <= std_logic_vector(resize(signed(
+                                                 dsp1_adc_ch1_data),
+                                                 dsp1_adc_se_ch1_data'length));
+  dsp1_adc_se_ch2_data                       <= std_logic_vector(resize(signed(
+                                                 dsp1_adc_ch2_data),
+                                                 dsp1_adc_se_ch2_data'length));
+  dsp1_adc_se_ch3_data                       <= std_logic_vector(resize(signed(
+                                                 dsp1_adc_ch3_data),
+                                                 dsp1_adc_se_ch3_data'length));
+
   ----------------------------------------------------------------------
   --                      DSP Chain 2 Core                            --
   ----------------------------------------------------------------------
@@ -2968,6 +3081,20 @@ begin
     dbg_adc_ch3_cond_o                      => dsp2_dbg_adc_ch3_cond
   );
 
+  -- Sign-extension to acquisition core
+  dsp2_adc_se_ch0_data                       <= std_logic_vector(resize(signed(
+                                                 dsp2_adc_ch0_data),
+                                                 dsp2_adc_se_ch0_data'length));
+  dsp2_adc_se_ch1_data                       <= std_logic_vector(resize(signed(
+                                                 dsp2_adc_ch1_data),
+                                                 dsp2_adc_se_ch1_data'length));
+  dsp2_adc_se_ch2_data                       <= std_logic_vector(resize(signed(
+                                                 dsp2_adc_ch2_data),
+                                                 dsp2_adc_se_ch2_data'length));
+  dsp2_adc_se_ch3_data                       <= std_logic_vector(resize(signed(
+                                                 dsp2_adc_ch3_data),
+                                                 dsp2_adc_se_ch3_data'length));
+
   ----------------------------------------------------------------------
   --                      Peripherals Core                            --
   ----------------------------------------------------------------------
@@ -3058,20 +3185,20 @@ begin
   --------------------
   -- ADC 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).val           <= fmc1_adc_data_ch3 &
-                                                                 fmc1_adc_data_ch2 &
-                                                                 fmc1_adc_data_ch1 &
-                                                                 fmc1_adc_data_ch0;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).val           <= fmc1_adc_data_se_ch3 &
+                                                                 fmc1_adc_data_se_ch2 &
+                                                                 fmc1_adc_data_se_ch1 &
+                                                                 fmc1_adc_data_se_ch0;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).val      <= dsp1_adc_ch3_data &
-                                                                 dsp1_adc_ch2_data &
-                                                                 dsp1_adc_ch1_data &
-                                                                 dsp1_adc_ch0_data;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).val      <= dsp1_adc_se_ch3_data &
+                                                                 dsp1_adc_se_ch2_data &
+                                                                 dsp1_adc_se_ch1_data &
+                                                                 dsp1_adc_se_ch0_data;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid   <= '1';
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_swap_id).pulse;
 
@@ -3228,20 +3355,20 @@ begin
   --------------------
   -- ADC 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val           <= fmc2_adc_data_ch3 &
-                                                                 fmc2_adc_data_ch2 &
-                                                                 fmc2_adc_data_ch1 &
-                                                                 fmc2_adc_data_ch0;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).val           <= fmc2_adc_data_se_ch3 &
+                                                                 fmc2_adc_data_se_ch2 &
+                                                                 fmc2_adc_data_se_ch1 &
+                                                                 fmc2_adc_data_se_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).val      <= dsp2_adc_ch3_data &
-                                                                 dsp2_adc_ch2_data &
-                                                                 dsp2_adc_ch1_data &
-                                                                 dsp2_adc_ch0_data;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).val      <= dsp2_adc_se_ch3_data &
+                                                                 dsp2_adc_se_ch2_data &
+                                                                 dsp2_adc_se_ch1_data &
+                                                                 dsp2_adc_se_ch0_data;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid   <= '1';
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_swap_id).pulse;
 
@@ -3398,20 +3525,20 @@ begin
   --------------------
   -- ADC 3 data
   --------------------
-  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).val           <= fmc1_adc_data_ch3 &
-                                                                 fmc1_adc_data_ch2 &
-                                                                 fmc1_adc_data_ch1 &
-                                                                 fmc1_adc_data_ch0;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).val           <= fmc1_adc_data_se_ch3 &
+                                                                 fmc1_adc_data_se_ch2 &
+                                                                 fmc1_adc_data_se_ch1 &
+                                                                 fmc1_adc_data_se_ch0;
   acq_chan_array(c_acq_core_2_id, c_acq_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq_core_2_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 3 data
   --------------------
-  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).val      <= dsp1_adc_ch3_data &
-                                                                 dsp1_adc_ch2_data &
-                                                                 dsp1_adc_ch1_data &
-                                                                 dsp1_adc_ch0_data;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).val      <= dsp1_adc_se_ch3_data &
+                                                                 dsp1_adc_se_ch2_data &
+                                                                 dsp1_adc_se_ch1_data &
+                                                                 dsp1_adc_se_ch0_data;
   acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).dvalid   <= '1';
   acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_swap_id).pulse;
 
@@ -3568,20 +3695,20 @@ begin
   --------------------
   -- ADC 4 data
   --------------------
-  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).val           <= fmc2_adc_data_ch3 &
-                                                                 fmc2_adc_data_ch2 &
-                                                                 fmc2_adc_data_ch1 &
-                                                                 fmc2_adc_data_ch0;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).val           <= fmc2_adc_data_se_ch3 &
+                                                                 fmc2_adc_data_se_ch2 &
+                                                                 fmc2_adc_data_se_ch1 &
+                                                                 fmc2_adc_data_se_ch0;
   acq_chan_array(c_acq_core_3_id, c_acq_adc_id).dvalid        <= '1';
   acq_chan_array(c_acq_core_3_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 4 data
   --------------------
-  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).val      <= dsp2_adc_ch3_data &
-                                                                 dsp2_adc_ch2_data &
-                                                                 dsp2_adc_ch1_data &
-                                                                 dsp2_adc_ch0_data;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).val      <= dsp2_adc_se_ch3_data &
+                                                                 dsp2_adc_se_ch2_data &
+                                                                 dsp2_adc_se_ch1_data &
+                                                                 dsp2_adc_se_ch0_data;
   acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).dvalid   <= '1';
   acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_swap_id).pulse;
 
