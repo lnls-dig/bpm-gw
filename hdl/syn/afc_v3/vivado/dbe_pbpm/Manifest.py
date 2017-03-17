@@ -2,7 +2,7 @@ target = "xilinx"
 action = "synthesis"
 
 syn_device = "xc7a200t"
-syn_grade = "-1"
+syn_grade = "-2"
 syn_package = "ffg1156"
 syn_top = "dbe_pbpm"
 syn_project = "dbe_pbpm"
