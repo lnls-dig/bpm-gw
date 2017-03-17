@@ -409,6 +409,9 @@ create_clock -name clk_sys -period 10.000 [get_pins -hier -filter {NAME =~ */cmp
 # A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
 create_clock -name clk_200mhz -period 5.000 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout1_buf/O}]
 
+# A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
+create_clock -name clk_300mhz -period 3.333 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout2_buf/O}]
+
 # real jitter is about 22ps peak-to-peak
 create_clock -period 4.000 -name fmc1_adc_clk0_p_i [get_ports fmc1_adc_clk0_p_i]
 set_input_jitter fmc1_adc_clk0_p_i 0.050
