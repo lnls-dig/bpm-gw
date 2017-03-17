@@ -519,5 +519,6 @@ begin
 
   adc_data_o <= adc_fifo_data_out;
   adc_data_valid_o <= (others => adc_fifo_valid_out);
+  adc_out_busy_o <= adc_out_busy_int;
 
 end rtl;
