@@ -474,7 +474,7 @@ begin
     clk                                      => adc_fast_spi_clk_i,
     reset                                    => adc_fast_spi_rst,
 
-    start                                    => '1',
+    start                                    => adc_start_i,
 
     sdo1                                     => adc_sdo1_i,
     sdo2                                     => adc_sdo2_i,
