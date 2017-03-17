@@ -2466,7 +2466,7 @@ begin
       wbs_fmc2_in_array(i)                    <= cc_dummy_src_com_in;
     end generate;
 
-  gen_fmc250 : if (g_fmc_adc_type = "FMCPICO_1M") generate
+  gen_fmcpico_1m : if (g_fmc_adc_type = "FMCPICO_1M") generate
 
     ----------------------------------------------------------------------
     --                      FMC PICO 1M_4CH 1 Core                         --
