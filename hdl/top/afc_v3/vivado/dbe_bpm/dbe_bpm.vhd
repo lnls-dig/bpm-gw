@@ -672,14 +672,14 @@ architecture rtl of dbe_bpm is
     -- FMC PICO 1M_4CH Ports
     -----------------------------------------
 
-    fmcpico_1_adc_conv_o                       : out std_logic;
+    fmcpico_1_adc_cnv_o                        : out std_logic;
     fmcpico_1_adc_sck_o                        : out std_logic;
-    fmcpico_1_adc_sck_rtrn_i                   : in std_logic : = '0';
-    fmcpico_1_adc_sdo1_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo2_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo3_i                       : in std_logic : = '0';
-    fmcpico_1_adc_sdo4_i                       : in std_logic : = '0';
-    fmcpico_1_adc_busy_cmn_i                   : in std_logic : = '0';
+    fmcpico_1_adc_sck_rtrn_i                   : in std_logic := '0';
+    fmcpico_1_adc_sdo1_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo2_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo3_i                       : in std_logic := '0';
+    fmcpico_1_adc_sdo4_i                       : in std_logic := '0';
+    fmcpico_1_adc_busy_cmn_i                   : in std_logic := '0';
 
     fmcpico_1_rng_r1_o                         : out std_logic;
     fmcpico_1_rng_r2_o                         : out std_logic;
@@ -698,7 +698,7 @@ architecture rtl of dbe_bpm is
     -----------------------------------------
     -- FMC PICO 1M_4CH Ports
     -----------------------------------------
-    fmcpico_2_adc_conv_o                            : out std_logic;
+    fmcpico_2_adc_cnv_o                             : out std_logic;
     fmcpico_2_adc_sck_o                             : out std_logic;
     fmcpico_2_adc_sck_rtrn_i                        : in std_logic := '0';
     fmcpico_2_adc_sdo1_i                            : in std_logic := '0';
@@ -715,8 +715,9 @@ architecture rtl of dbe_bpm is
     fmcpico_2_led1_o                                : out std_logic;
     fmcpico_2_led2_o                                : out std_logic;
 
-    fmcpico_2_sm_scl_o                              : out std_logic;
-    fmcpico_2_sm_sda_b                              : inout std_logic;
+    ---- Connected through FPGA MUX
+    --fmcpico_2_sm_scl_o                              : out std_logic;
+    --fmcpico_2_sm_sda_b                              : inout std_logic;
 
     fmcpico_2_a_scl_o                               : out std_logic;
     fmcpico_2_a_sda_b                               : inout std_logic;
