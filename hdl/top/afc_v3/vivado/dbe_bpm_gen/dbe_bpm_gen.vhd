@@ -794,7 +794,6 @@ architecture rtl of dbe_bpm_gen is
   constant c_sdb_address                    : t_wishbone_address := x"00000000";
 
   constant c_num_unprocessed_bits           : natural := f_num_bits_adc(g_fmc_adc_type);
-  constant c_num_large_adc_bits             : natural := 32;
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
@@ -959,10 +958,10 @@ architecture rtl of dbe_bpm_gen is
   signal fmc1_adc_fast_spi_rstn              : std_logic;
   signal fmc1_adc_busy                       : std_logic;
 
-  signal fmc1_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc1_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc1_adc_data_ch2                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc1_adc_data_ch3                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch0                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch1                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch2                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc1_adc_data_ch3                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
 
   signal fmc1_debug                          : std_logic;
   signal fmc1_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -999,10 +998,10 @@ architecture rtl of dbe_bpm_gen is
   signal fmc2_adc_fast_spi_rstn              : std_logic;
   signal fmc2_adc_busy                       : std_logic;
 
-  signal fmc2_adc_data_ch0                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc2_adc_data_ch1                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc2_adc_data_ch2                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
-  signal fmc2_adc_data_ch3                   : std_logic_vector(c_num_large_adc_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch0                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch1                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch2                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
+  signal fmc2_adc_data_ch3                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0) := (others => '0');
 
   signal fmc2_debug                          : std_logic;
   signal fmc2_rst_n                          : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -1818,14 +1817,10 @@ begin
     fmc130_1_led2_o                            <= fmc1_led2_int;
     fmc130_1_led3_o                            <= fmc1_led3_int;
 
-    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
@@ -2015,14 +2010,10 @@ begin
     fmc130_2_led2_o                            <= fmc2_led2_int;
     fmc130_2_led3_o                            <= fmc2_led3_int;
 
-    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2220,14 +2211,10 @@ begin
     fmc250_1_led2_o                            <= fmc1_led2_int;
     fmc250_1_led3_o                            <= fmc1_led3_int;
 
-    fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc1_adc_data_ch0                          <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1                          <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2                          <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3                          <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
     fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
@@ -2479,26 +2466,18 @@ begin
     );
 
     -- FIXME! Temporary signals. For testing only!
-    fmcpico_1_rng_r1_o         <= '0';
-    fmcpico_1_rng_r2_o         <= '1';
-    fmcpico_1_rng_r3_o         <= '0';
-    fmcpico_1_rng_r4_o         <= '1';
+    fmcpico_1_rng_r1_o                        <= '0';
+    fmcpico_1_rng_r2_o                        <= '1';
+    fmcpico_1_rng_r3_o                        <= '0';
+    fmcpico_1_rng_r4_o                        <= '1';
 
-    fmcpico_1_led1_o           <= '0';
-    fmcpico_1_led2_o           <= '1';
+    fmcpico_1_led1_o                          <= '0';
+    fmcpico_1_led2_o                          <= '1';
 
-    fmc1_adc_data_ch0          <= std_logic_vector(resize(signed(
-                                      fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
-                                      fmc1_adc_data_ch0'length));
-    fmc1_adc_data_ch1          <= std_logic_vector(resize(signed(
-                                      fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
-                                      fmc1_adc_data_ch1'length));
-    fmc1_adc_data_ch2          <= std_logic_vector(resize(signed(
-                                      fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
-                                      fmc1_adc_data_ch2'length));
-    fmc1_adc_data_ch3          <= std_logic_vector(resize(signed(
-                                      fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
-                                      fmc1_adc_data_ch3'length));
+    fmc1_adc_data_ch0                         <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc1_adc_data_ch1                         <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc1_adc_data_ch2                         <= fmc1_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc1_adc_data_ch3                         <= fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
@@ -2567,26 +2546,18 @@ begin
     );
 
     -- FIXME! Temporary signals. For testing only!
-    fmcpico_2_rng_r1_o         <= '0';
-    fmcpico_2_rng_r2_o         <= '1';
-    fmcpico_2_rng_r3_o         <= '0';
-    fmcpico_2_rng_r4_o         <= '1';
+    fmcpico_2_rng_r1_o                         <= '0';
+    fmcpico_2_rng_r2_o                         <= '1';
+    fmcpico_2_rng_r3_o                         <= '0';
+    fmcpico_2_rng_r4_o                         <= '1';
 
-    fmcpico_2_led1_o           <= '0';
-    fmcpico_2_led2_o           <= '1';
+    fmcpico_2_led1_o                           <= '0';
+    fmcpico_2_led2_o                           <= '1';
 
-    fmc2_adc_data_ch0          <= std_logic_vector(resize(signed(
-                                      fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
-                                      fmc2_adc_data_ch0'length));
-    fmc2_adc_data_ch1          <= std_logic_vector(resize(signed(
-                                      fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
-                                      fmc2_adc_data_ch1'length));
-    fmc2_adc_data_ch2          <= std_logic_vector(resize(signed(
-                                      fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
-                                      fmc2_adc_data_ch2'length));
-    fmc2_adc_data_ch3          <= std_logic_vector(resize(signed(
-                                      fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
-                                      fmc2_adc_data_ch3'length));
+    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
 
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
@@ -2608,14 +2579,10 @@ begin
     fmc250_2_led2_o                            <= fmc2_led2_int;
     fmc250_2_led3_o                            <= fmc2_led3_int;
 
-    fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0)
-                                              <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
 
     fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
     fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
@@ -2707,10 +2674,10 @@ begin
     -----------------------------
     -- Raw ADC signals
     -----------------------------
-    adc_ch0_i                               => fmc1_adc_data_ch0(c_num_unprocessed_bits-1 downto 0),
-    adc_ch1_i                               => fmc1_adc_data_ch1(c_num_unprocessed_bits-1 downto 0),
-    adc_ch2_i                               => fmc1_adc_data_ch2(c_num_unprocessed_bits-1 downto 0),
-    adc_ch3_i                               => fmc1_adc_data_ch3(c_num_unprocessed_bits-1 downto 0),
+    adc_ch0_i                               => fmc1_adc_data_ch0,
+    adc_ch1_i                               => fmc1_adc_data_ch1,
+    adc_ch2_i                               => fmc1_adc_data_ch2,
+    adc_ch3_i                               => fmc1_adc_data_ch3,
 
     -----------------------------
     -- Position calculation at various rates
@@ -2894,10 +2861,10 @@ begin
     -----------------------------
     -- Raw ADC signals
     -----------------------------
-    adc_ch0_i                               => fmc2_adc_data_ch0(c_num_unprocessed_bits-1 downto 0),
-    adc_ch1_i                               => fmc2_adc_data_ch1(c_num_unprocessed_bits-1 downto 0),
-    adc_ch2_i                               => fmc2_adc_data_ch2(c_num_unprocessed_bits-1 downto 0),
-    adc_ch3_i                               => fmc2_adc_data_ch3(c_num_unprocessed_bits-1 downto 0),
+    adc_ch0_i                               => fmc2_adc_data_ch0,
+    adc_ch1_i                               => fmc2_adc_data_ch1,
+    adc_ch2_i                               => fmc2_adc_data_ch2,
+    adc_ch3_i                               => fmc2_adc_data_ch3,
 
     -----------------------------
     -- Position calculation at various rates
