@@ -2491,8 +2491,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cc_dummy_slave_in, --cbar_master_o(c_slv_fmc_adc_1_id),
-      wb_slv_o                                => open,              --cbar_master_i(c_slv_fmc_adc_1_id),
+      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_1_id),
+      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_1_id),
 
       -----------------------------
       -- External ports
@@ -2584,8 +2584,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cc_dummy_slave_in, --cbar_master_o(c_slv_fmc_adc_1_id),
-      wb_slv_o                                => open,              --cbar_master_i(c_slv_fmc_adc_1_id),
+      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_2_id),
+      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_2_id),
 
       -----------------------------
       -- External ports
