@@ -1042,6 +1042,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_valid                      : std_logic;
 
   signal dsp1_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
   signal dsp1_adc_se_ch1_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -1145,6 +1146,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_valid                      : std_logic;
 
   signal dsp2_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
   signal dsp2_adc_se_ch1_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -2601,7 +2603,8 @@ begin
                                                    fmc1_adc_data_se_ch3'length));
 
     -- Any valid bit would be fine
-    fmc1_adc_valid                             <= fmc1_data_valid(0);
+    --fmc1_adc_valid                             <= fmc1_data_valid(0);
+    fmc1_adc_valid                             <= '1';
 
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
@@ -2697,7 +2700,8 @@ begin
                                                    fmc2_adc_data_se_ch3'length));
 
     -- Any valid bit would be fine
-    fmc2_adc_valid                             <= fmc2_data_valid(0);
+    --fmc2_adc_valid                             <= fmc2_data_valid(0);
+    fmc2_adc_valid                             <= '1';
 
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
@@ -2795,6 +2799,7 @@ begin
     adc_ch1_i                               => fmc1_adc_data_ch1,
     adc_ch2_i                               => fmc1_adc_data_ch2,
     adc_ch3_i                               => fmc1_adc_data_ch3,
+    adc_valid_i                             => fmc1_adc_valid,
 
     -----------------------------
     -- Position calculation at various rates
@@ -2803,6 +2808,7 @@ begin
     adc_ch1_swap_o                          => dsp1_adc_ch1_data,
     adc_ch2_swap_o                          => dsp1_adc_ch2_data,
     adc_ch3_swap_o                          => dsp1_adc_ch3_data,
+    adc_swap_valid_o                        => dsp1_adc_valid,
 
     mix_ch0_i_o                             => dsp1_mixi_ch0,
     mix_ch0_q_o                             => dsp1_mixq_ch0,
@@ -2996,6 +3002,7 @@ begin
     adc_ch1_i                               => fmc2_adc_data_ch1,
     adc_ch2_i                               => fmc2_adc_data_ch2,
     adc_ch3_i                               => fmc2_adc_data_ch3,
+    adc_valid_i                             => fmc2_adc_valid,
 
     -----------------------------
     -- Position calculation at various rates
@@ -3004,6 +3011,7 @@ begin
     adc_ch1_swap_o                          => dsp2_adc_ch1_data,
     adc_ch2_swap_o                          => dsp2_adc_ch2_data,
     adc_ch3_swap_o                          => dsp2_adc_ch3_data,
+    adc_swap_valid_o                        => dsp2_adc_valid,
 
     mix_ch0_i_o                             => dsp2_mixi_ch0,
     mix_ch0_q_o                             => dsp2_mixq_ch0,
@@ -3217,7 +3225,7 @@ begin
                                                                  dsp1_adc_se_ch2_data &
                                                                  dsp1_adc_se_ch1_data &
                                                                  dsp1_adc_se_ch0_data;
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid   <= dsp1_adc_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_swap_id).pulse;
 
   --------------------
@@ -3387,7 +3395,7 @@ begin
                                                                  dsp2_adc_se_ch2_data &
                                                                  dsp2_adc_se_ch1_data &
                                                                  dsp2_adc_se_ch0_data;
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid   <= dsp2_adc_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_swap_id).pulse;
 
   --------------------
@@ -3557,7 +3565,7 @@ begin
                                                                  dsp1_adc_se_ch2_data &
                                                                  dsp1_adc_se_ch1_data &
                                                                  dsp1_adc_se_ch0_data;
-  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).dvalid   <= dsp1_adc_valid;
   acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_swap_id).pulse;
 
   --------------------
@@ -3727,7 +3735,7 @@ begin
                                                                  dsp2_adc_se_ch2_data &
                                                                  dsp2_adc_se_ch1_data &
                                                                  dsp2_adc_se_ch0_data;
-  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).dvalid   <= '1';
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).dvalid   <= dsp2_adc_valid;
   acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_swap_id).pulse;
 
   --------------------
