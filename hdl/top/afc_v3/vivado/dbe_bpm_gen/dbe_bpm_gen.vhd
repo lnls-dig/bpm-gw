@@ -2466,6 +2466,42 @@ begin
       wbs_fmc2_in_array(i)                    <= cc_dummy_src_com_in;
     end generate;
 
+    -- Only FMC 1 is connected for now
+    --fmc250_2_mmcm_lock_led_o                   <= fmc2_mmcm_lock_int;
+    --fmc250_2_pll_status_led_o                  <= fmc2_pll_status_int;
+
+    fmc250_2_led1_o                            <= fmc2_led1_int;
+    fmc250_2_led2_o                            <= fmc2_led2_int;
+    fmc250_2_led3_o                            <= fmc2_led3_int;
+
+    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
+    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
+    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
+    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
+
+    fmc2_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
+                                                   fmc2_adc_data_se_ch0'length));
+    fmc2_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
+                                                   fmc2_adc_data_se_ch1'length));
+    fmc2_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
+                                                   fmc2_adc_data_se_ch2'length));
+    fmc2_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
+                                                   fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
+                                                   fmc2_adc_data_se_ch3'length));
+
+    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
+    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
+    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
+    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+
+    -- Use ADC trigger for testing
+    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
+
+  end generate;
+
   gen_fmcpico_1m : if (g_fmc_adc_type = "FMCPICO_1M") generate
 
     ----------------------------------------------------------------------
@@ -2654,42 +2690,6 @@ begin
     ---- Temporary assignemnts
     --fmcpico_2_sm_scl_o                         <= '0';
     --fmcpico_2_a_scl_o                          <= '0';
-
-  end generate;
-
-    -- Only FMC 1 is connected for now
-    --fmc250_2_mmcm_lock_led_o                   <= fmc2_mmcm_lock_int;
-    --fmc250_2_pll_status_led_o                  <= fmc2_pll_status_int;
-
-    fmc250_2_led1_o                            <= fmc2_led1_int;
-    fmc250_2_led2_o                            <= fmc2_led2_int;
-    fmc250_2_led3_o                            <= fmc2_led3_int;
-
-    fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
-    fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
-    fmc2_adc_data_ch2                          <= fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb);
-    fmc2_adc_data_ch3                          <= fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb);
-
-    fmc2_adc_data_se_ch0                       <= std_logic_vector(resize(signed(
-                                                   fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb)),
-                                                   fmc2_adc_data_se_ch0'length));
-    fmc2_adc_data_se_ch1                       <= std_logic_vector(resize(signed(
-                                                   fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb)),
-                                                   fmc2_adc_data_se_ch1'length));
-    fmc2_adc_data_se_ch2                       <= std_logic_vector(resize(signed(
-                                                   fmc2_data(c_adc_data_ch2_msb downto c_adc_data_ch2_lsb)),
-                                                   fmc2_adc_data_se_ch2'length));
-    fmc2_adc_data_se_ch3                       <= std_logic_vector(resize(signed(
-                                                   fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
-                                                   fmc2_adc_data_se_ch3'length));
-
-    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
-    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
-    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
-    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
-
-    -- Use ADC trigger for testing
-    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
 
   end generate;
 
