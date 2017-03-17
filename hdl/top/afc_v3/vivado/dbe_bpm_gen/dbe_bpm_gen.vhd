@@ -2602,9 +2602,7 @@ begin
                                                    fmc1_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
                                                    fmc1_adc_data_se_ch3'length));
 
-    -- Any valid bit would be fine
-    --fmc1_adc_valid                             <= fmc1_data_valid(0);
-    fmc1_adc_valid                             <= '1';
+    fmc1_adc_valid                             <= fmc1_data_valid(0);
 
     fmc1_clk                                   <= (others => clk_sys);
     fmc1_clk2x                                 <= (others => clk_sys);
@@ -2699,9 +2697,7 @@ begin
                                                    fmc2_data(c_adc_data_ch3_msb downto c_adc_data_ch3_lsb)),
                                                    fmc2_adc_data_se_ch3'length));
 
-    -- Any valid bit would be fine
-    --fmc2_adc_valid                             <= fmc2_data_valid(0);
-    fmc2_adc_valid                             <= '1';
+    fmc2_adc_valid                             <= fmc2_data_valid(0);
 
     fmc2_clk                                   <= (others => clk_sys);
     fmc2_clk2x                                 <= (others => clk_sys);
