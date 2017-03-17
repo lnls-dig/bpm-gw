@@ -1333,6 +1333,7 @@ package dbe_wishbone_pkg is
   (
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
     g_num_adc_bits                            : natural := 20;
     g_num_adc_channels                        : natural := 4;
     g_clk_freq                                : natural := 300000000; -- Hz
@@ -1397,6 +1398,7 @@ package dbe_wishbone_pkg is
   (
     g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
     g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
     g_num_adc_bits                            : natural := 20;
     g_num_adc_channels                        : natural := 4;
     g_clk_freq                                : natural := 300000000; -- Hz

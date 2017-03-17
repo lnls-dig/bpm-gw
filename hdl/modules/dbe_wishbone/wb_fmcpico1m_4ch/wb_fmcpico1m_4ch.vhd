@@ -46,6 +46,7 @@ generic
 (
   g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
   g_address_granularity                     : t_wishbone_address_granularity := WORD;
+  g_with_extra_wb_reg                       : boolean := false;
   g_num_adc_bits                            : natural := 20;
   g_num_adc_channels                        : natural := 4;
   g_clk_freq                                : natural := 300000000; -- Hz
@@ -123,6 +124,8 @@ architecture rtl of wb_fmcpico1m_4ch is
   -----------------------------
   constant c_cdc_ref_size                   : natural := 4;
   constant c_cdc_width                      : natural := g_num_adc_bits * g_num_adc_channels;
+  -- Number of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
+  constant c_periph_addr_size               : natural := 2+2;
 
   -----------------------------
   -- Crossbar component constants
@@ -216,7 +219,6 @@ architecture rtl of wb_fmcpico1m_4ch is
   signal cbar_slave_in_reg0                 : t_wishbone_slave_in_array (c_masters-1 downto 0);
   signal cbar_slave_out_reg0                : t_wishbone_slave_out_array(c_masters-1 downto 0);
 
-
   -----------------------------
   -- ADC signals
   -----------------------------
@@ -248,7 +250,6 @@ architecture rtl of wb_fmcpico1m_4ch is
     wb_we_i                                  : in     std_logic;
     wb_ack_o                                 : out    std_logic;
     wb_stall_o                               : out    std_logic;
-    fs_clk_i                                 : in     std_logic;
     regs_i                                   : in     t_wb_fmcpico1m_4ch_csr_in_registers;
     regs_o                                   : out    t_wb_fmcpico1m_4ch_csr_out_registers
   );
@@ -318,6 +319,151 @@ begin
   adc_fast_spi_rstn <= adc_fast_spi_rstn_i;
   adc_fast_spi_rst <= not adc_fast_spi_rstn;
 
+  -----------------------------
+  -- Insert extra Wishbone registering stage for ease timing.
+  -- It effectively cuts the bandwidth in half!
+  -----------------------------
+  gen_with_extra_wb_reg : if g_with_extra_wb_reg generate
+
+    cmp_register_link : xwb_register_link -- puts a register of delay between crossbars
+    port map (
+      clk_sys_i                             => sys_clk_i,
+      rst_n_i                               => sys_rst_n,
+      slave_i                               => cbar_slave_in_reg0(0),
+      slave_o                               => cbar_slave_out_reg0(0),
+      master_i                              => cbar_slave_out(0),
+      master_o                              => cbar_slave_in(0)
+    );
+
+    cbar_slave_in_reg0(0).adr               <= wb_adr_i;
+    cbar_slave_in_reg0(0).dat               <= wb_dat_i;
+    cbar_slave_in_reg0(0).sel               <= wb_sel_i;
+    cbar_slave_in_reg0(0).we                <= wb_we_i;
+    cbar_slave_in_reg0(0).cyc               <= wb_cyc_i;
+    cbar_slave_in_reg0(0).stb               <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out_reg0(0).dat;
+    wb_ack_o                                <= cbar_slave_out_reg0(0).ack;
+    wb_err_o                                <= cbar_slave_out_reg0(0).err;
+    wb_rty_o                                <= cbar_slave_out_reg0(0).rty;
+    wb_stall_o                              <= cbar_slave_out_reg0(0).stall;
+
+  end generate;
+
+  gen_without_extra_wb_reg : if not g_with_extra_wb_reg generate
+
+    -- External master connection
+    cbar_slave_in(0).adr                    <= wb_adr_i;
+    cbar_slave_in(0).dat                    <= wb_dat_i;
+    cbar_slave_in(0).sel                    <= wb_sel_i;
+    cbar_slave_in(0).we                     <= wb_we_i;
+    cbar_slave_in(0).cyc                    <= wb_cyc_i;
+    cbar_slave_in(0).stb                    <= wb_stb_i;
+
+    wb_dat_o                                <= cbar_slave_out(0).dat;
+    wb_ack_o                                <= cbar_slave_out(0).ack;
+    wb_err_o                                <= cbar_slave_out(0).err;
+    wb_rty_o                                <= cbar_slave_out(0).rty;
+    wb_stall_o                              <= cbar_slave_out(0).stall;
+
+  end generate;
+
+  -----------------------------
+  -- Crossbar component constants
+  -----------------------------
+  -- Internal crossbar layout
+  -- 0 -> FMCPICO_1M_4CH Register Wishbone Interface
+  -- 1 -> System EEPROM I2C Bus
+  -- 2 -> Application EEPROM I2C Bus
+  -- The Internal Wishbone B.4 crossbar
+  cmp_interconnect : xwb_sdb_crossbar
+  generic map(
+    g_num_masters                             => c_masters,
+    g_num_slaves                              => c_slaves,
+    g_registered                              => true,
+    g_wraparound                              => true, -- Should be true for nested buses
+    g_layout                                  => c_layout,
+    g_sdb_addr                                => c_sdb_address
+  )
+  port map(
+    clk_sys_i                                 => sys_clk_i,
+    rst_n_i                                   => sys_rst_n,
+    -- Master connections (INTERCON is a slave)
+    slave_i                                   => cbar_slave_in,
+    slave_o                                   => cbar_slave_out,
+    -- Slave connections (INTERCON is a master)
+    master_i                                  => cbar_master_in,
+    master_o                                  => cbar_master_out
+  );
+
+  -----------------------------
+  -- Slave adapter for Wishbone Register Interface
+  -----------------------------
+  cmp_slave_adapter : wb_slave_adapter
+  generic map (
+    g_master_use_struct                     => true,
+    g_master_mode                           => PIPELINED,
+    g_master_granularity                    => WORD,
+    g_slave_use_struct                      => false,
+    g_slave_mode                            => g_interface_mode,
+    g_slave_granularity                     => g_address_granularity
+  )
+  port map (
+    clk_sys_i                               => sys_clk_i,
+    rst_n_i                                 => sys_rst_n,
+    master_i                                => wb_slv_adp_in,
+    master_o                                => wb_slv_adp_out,
+    sl_adr_i                                => resized_addr,
+    sl_dat_i                                => cbar_master_out(0).dat,
+    sl_sel_i                                => cbar_master_out(0).sel,
+    sl_cyc_i                                => cbar_master_out(0).cyc,
+    sl_stb_i                                => cbar_master_out(0).stb,
+    sl_we_i                                 => cbar_master_out(0).we,
+    sl_dat_o                                => cbar_master_in(0).dat,
+    sl_ack_o                                => cbar_master_in(0).ack,
+    sl_rty_o                                => cbar_master_in(0).rty,
+    sl_err_o                                => cbar_master_in(0).err,
+    sl_int_o                                => cbar_master_in(0).int,
+    sl_stall_o                              => cbar_master_in(0).stall
+  );
+
+  -- By doing this zeroing we avoid the issue related to BYTE -> WORD  conversion
+  -- slave addressing (possibly performed by the slave adapter component)
+  -- in which a bit in the MSB of the peripheral addressing part (31 - 5 in our case)
+  -- is shifted to the internal register adressing part (4 - 0 in our case).
+  -- Therefore, possibly changing the these bits!
+  resized_addr(c_periph_addr_size-1 downto 0)
+                                            <= cbar_master_out(0).adr(c_periph_addr_size-1 downto 0);
+  resized_addr(c_wishbone_address_width-1 downto c_periph_addr_size)
+                                            <= (others => '0');
+
+  -----------------------------
+  -- FMCPICO_1M Register Wishbone Interface. Word addressed!
+  -----------------------------
+  --FMCPICO_1M register interface is the slave number 0, word addressed
+  cmp_wb_fmcpico1m_4ch_csr : wb_fmcpico1m_4ch_csr
+  port map(
+    rst_n_i                                 => sys_rst_n,
+    clk_sys_i                               => sys_clk_i,
+    wb_adr_i                                => wb_slv_adp_out.adr(2 downto 0),
+    wb_dat_i                                => wb_slv_adp_out.dat,
+    wb_dat_o                                => wb_slv_adp_in.dat,
+    wb_cyc_i                                => wb_slv_adp_out.cyc,
+    wb_sel_i                                => wb_slv_adp_out.sel,
+    wb_stb_i                                => wb_slv_adp_out.stb,
+    wb_we_i                                 => wb_slv_adp_out.we,
+    wb_ack_o                                => wb_slv_adp_in.ack,
+    wb_stall_o                              => wb_slv_adp_in.stall,
+    regs_i                                  => regs_in,
+    regs_o                                  => regs_out
+  );
+
+  -- Unused wishbone signals
+  wb_slv_adp_in.int                         <= '0';
+  wb_slv_adp_in.err                         <= '0';
+  wb_slv_adp_in.rty                         <= '0';
+
+  -- FMC PICO ADC
   cmp_fmc_pico_spi : fmc_pico_spi
   generic map (
     BITS                                     => g_num_adc_bits,
