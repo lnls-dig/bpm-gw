@@ -300,99 +300,12 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_a_sda_b]
 ##                         DIFF TERM                                 ##
 #######################################################################
 
-set_property DIFF_TERM TRUE [get_ports fmc1_trig_val_p_b]
-set_property DIFF_TERM TRUE [get_ports fmc1_trig_val_n_b]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_trig_val_p_b]
-set_property DIFF_TERM TRUE [get_ports fmc2_trig_val_n_b]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_fpga_clk_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc1_fpga_clk_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_fpga_clk_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc2_fpga_clk_n_i]
-
-# ISLA clock dividers
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk_div_rst_p_o]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk_div_rst_n_o]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk_div_rst_p_o]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk_div_rst_n_o]
-
-# ISLA clocks
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk0_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk0_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk1_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk1_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk2_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk2_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk3_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_clk3_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk0_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk0_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk1_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk1_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk2_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk2_n_i]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk3_p_i]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_clk3_n_i]
-
-# ISLA data
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch0_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch0_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch1_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch1_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch2_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch2_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch3_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc1_adc_data_ch3_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch0_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch0_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch1_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch1_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch2_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch2_n_i[*]]
-
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch3_p_i[*]]
-set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch3_n_i[*]]
-
 #######################################################################
 ##                    Timing constraints                             ##
 #######################################################################
 
 # Overrides default_delay hdl parameter for the VARIABLE mode.
 # For Artix7: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps ???
-set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 22 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 23 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 20 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 22 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 23 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-
-# Overrides default_delay hdl parameter
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
 #######################################################################
 ##                          Clocks                                   ##
@@ -412,31 +325,10 @@ create_clock -name clk_200mhz -period 5.000 [get_pins -hier -filter {NAME =~ */c
 # A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
 create_clock -name clk_300mhz -period 3.333 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout2_buf/O}]
 
-# real jitter is about 22ps peak-to-peak
-create_clock -period 4.000 -name fmc1_adc_clk0_p_i [get_ports fmc1_adc_clk0_p_i]
-set_input_jitter fmc1_adc_clk0_p_i 0.050
-create_clock -period 4.000 -name fmc2_adc_clk0_p_i [get_ports fmc2_adc_clk0_p_i]
-set_input_jitter fmc2_adc_clk0_p_i 0.050
-
-create_clock -period 4.000 -name fmc1_adc_clk1_p_i [get_ports fmc1_adc_clk1_p_i]
-set_input_jitter fmc1_adc_clk1_p_i 0.050
-create_clock -period 4.000 -name fmc2_adc_clk1_p_i [get_ports fmc2_adc_clk1_p_i]
-set_input_jitter fmc2_adc_clk1_p_i 0.050
-
-create_clock -period 4.000 -name fmc1_adc_clk2_p_i [get_ports fmc1_adc_clk2_p_i]
-set_input_jitter fmc1_adc_clk2_p_i 0.050
-create_clock -period 4.000 -name fmc2_adc_clk2_p_i [get_ports fmc2_adc_clk2_p_i]
-set_input_jitter fmc2_adc_clk2_p_i 0.050
-
-create_clock -period 4.000 -name fmc1_adc_clk3_p_i [get_ports fmc1_adc_clk3_p_i]
-set_input_jitter fmc1_adc_clk3_p_i 0.050
-create_clock -period 4.000 -name fmc2_adc_clk3_p_i [get_ports fmc2_adc_clk3_p_i]
-set_input_jitter fmc2_adc_clk3_p_i 0.050
-
-
 set_clock_groups -asynchronous \
   -group [get_clocks -include_generated_clocks pcie_clk] \
   -group [get_clocks -include_generated_clocks clk_200mhz]
+  -group [get_clocks -include_generated_clocks clk_300mhz]
 
 #######################################################################
 ##                         Cross Clock Constraints                   ##
@@ -451,86 +343,9 @@ set_false_path -through [get_nets -hier -filter {NAME =~ *theTlpControl/Memory_S
 # DDR 3 temperature monitor reset path
 set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
-# including 50ps jitter, for 130MHz clock
-# since design uses copy of input ADC clock
-# there is additional delay for clock/ data (tC)
-# ADC Data <-> Clocks Constraints (ISLA216P)
-#
-# From the data sheet (page 11)
-#
-#Output Clock to Data Propagation Delay (LVDS Mode):
-# tdc Rising/Falling Edge -0.1 (min) 0.16 (typ) 0.5 (max) ns
-#
-#Constraint recommended by an Intersil Employee
-#
-#TIMEGRP "datain18_p_group" OFFSET = IN -200 ps VALID 1200 ps BEFORE "clkin18_p" RISING;
-#
-#This is setup for a 250MHz clock (4ns period).  The ISLA216P25 specifies
-# tDC as -0.1 to +0.5 ns.  The constraint adds an additional 100ps to each side
-# to account for potential skew due to the pcb.  So, the tDC ends up being -0.2
-# to 0.6 ns.  The value after IN in the constraint equal tDC min (-200ps). 
-# The  value after VALID = Period/2 + tDC min – tDC max (4000ps/2 + -200ps –
-# 600ps = 1200ps).  (The period is divided by two because the data is DDR.)
-#
-#
-#         OFFSET
-#        +---+
-#
-#             --------      --------
-# CLK         |      |      |      |      |
-#                    --------      --------
-#        --------------------------------
-# DATA   |      ||      ||      ||      |
-#        --------------------------------
-#
-#        +------+
-#         VALID
-#
-
-set_input_delay -clock [get_clocks fmc1_adc_clk0_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch0_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk0_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch0_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk0_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch0_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk0_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch0_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk1_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch1_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk1_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch1_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk1_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch1_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk1_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch1_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk2_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch2_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk2_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch2_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk2_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch2_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk2_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch2_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk3_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch3_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk3_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch3_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc1_adc_clk3_p_i] -max -add_delay -0.200 [get_ports {fmc1_adc_data_ch3_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc1_adc_clk3_p_i] -min -add_delay 1.200  [get_ports {fmc1_adc_data_ch3_p_i[*]}] -fall
-
-set_input_delay -clock [get_clocks fmc2_adc_clk0_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch0_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk0_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch0_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk0_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch0_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk0_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch0_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk1_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch1_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk1_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch1_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk1_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch1_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk1_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch1_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk2_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch2_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk2_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch2_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk2_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch2_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk2_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch2_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk3_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch3_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk3_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch3_p_i[*]}] -rise
-set_input_delay -clock [get_clocks fmc2_adc_clk3_p_i] -max -add_delay -0.200 [get_ports {fmc2_adc_data_ch3_p_i[*]}] -fall
-set_input_delay -clock [get_clocks fmc2_adc_clk3_p_i] -min -add_delay 1.200  [get_ports {fmc2_adc_data_ch3_p_i[*]}] -fall
-
 #######################################################################
 ##                                Data                               ##
 #######################################################################
-
-# Constraint all IDELAY blocks to the same IDELAY control as the DDR 3, so the tool will replicate it as needed
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
 #######################################################################
 ##                          PCIe constraints                        ##
@@ -586,53 +401,22 @@ set_property PACKAGE_PIN C18 [get_ports {pci_exp_rxn_i[3]}]
 # Timing Constraints
 #######################################################################
 # The following cross clock domain false path constraints can be uncommented in order to mimic ucf constraints behavior (see message at the beginning of this file)
-set_false_path -from [get_clocks sys_clk_p_i] -to [get_clocks [list clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_sys] -to [get_clocks [list sys_clk_p_i clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_200mhz] -to [get_clocks [list sys_clk_p_i clk_sys fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc1_adc_clk0_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc2_adc_clk0_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc1_adc_clk1_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc2_adc_clk1_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc1_adc_clk2_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc2_adc_clk2_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc1_adc_clk3_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks fmc2_adc_clk3_p_i] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks pcie_clk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_125mhz] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_userclk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_userclk2] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-#set_false_path -from [get_clocks [list cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz fmc1_adc_clk0_p_i fmc2_adc_clk0_p_i fmc1_adc_clk1_p_i fmc2_adc_clk1_p_i fmc1_adc_clk2_p_i fmc2_adc_clk2_p_i fmc1_adc_clk3_p_i fmc2_adc_clk3_p_i pcie_clk clk_125mhz clk_userclk clk_userclk2]]
-
-# To/From Wishbone To/From ADC/ADC2x. These are just for slow control and don't need to be analyzed
-#set_false_path -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out]
-set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out] 16.000
-set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk_mmcm_out_1] 16.000
-#set_false_path -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out]
-set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out] 8.000
-set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
-
-#set_false_path -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_sys]
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_sys] 20.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks clk_sys] 20.000
-#set_false_path -from [get_clocks adc_clk2x_mmcm_out] -to [get_clocks clk_sys]
-set_max_delay -datapath_only -from [get_clocks adc_clk2x_mmcm_out] -to [get_clocks clk_sys] 10.000
-set_max_delay -datapath_only -from [get_clocks adc_clk2x_mmcm_out_1] -to [get_clocks clk_sys] 10.000
-
-# This path happens only in the control path for setting control parameters
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks adc_clk2x_mmcm_out] 8.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks adc_clk2x_mmcm_out_1] 8.000
-
-# FIFO CDC timimng. Using faster clock period / 2
-set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out] -to [get_clocks clk_pll_i] 4.000
-
-set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks adc_clk_mmcm_out_1] 4.000
-set_max_delay -datapath_only -from [get_clocks adc_clk_mmcm_out_1] -to [get_clocks clk_pll_i] 4.000
+set_false_path -from [get_clocks sys_clk_p_i] -to [get_clocks [list clk_sys clk_200mhz pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks clk_sys] -to [get_clocks [list sys_clk_p_i clk_200mhz pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks clk_200mhz] -to [get_clocks [list sys_clk_p_i clk_sys pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks pcie_clk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks clk_125mhz] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks clk_userclk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_false_path -from [get_clocks clk_userclk2] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
 set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks clk_userclk2] 8.000
 set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks clk_pll_i] 8.000
+
+# CDC FIFO from FMCPICO to CLK_SYS. Give it "faster clock period" ns
+set_max_delay -datapath_only -from [get_clocks clk_300mhz] -to [get_clocks clk_sys] 3.333
+set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks clk_300mhz] 3.333
 
 #######################################################################
 ##                      Placement Constraints                        ##
@@ -645,20 +429,10 @@ set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*a
 set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
 #set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
 
-# This path is only valid after acq_start signal, which is controlled by software and
-# is activated many many miliseconds after all of the other. So, give it 2x the clock
-# period
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out_1] 8.000
-
 # Use Distributed RAM, as these FIFOs are small and sparse through the module
 # Cannot make this work with hierarchical matching... only by specifying the
 # whole topology
 set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_position_calc_cdc_fifo/mem_reg*}]
-
-# Use Distributed RAMs for FMC ADC CDC FIFOs. They are small and sparse.
-set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_fmc_adc_iface/*/cmp_adc_data_async_fifo/mem_reg*}]
 
 #######################################################################
 ##                      Placement Constraints                        ##
