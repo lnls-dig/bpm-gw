@@ -327,7 +327,7 @@ create_clock -name clk_300mhz -period 3.333 [get_pins -hier -filter {NAME =~ */c
 
 set_clock_groups -asynchronous \
   -group [get_clocks -include_generated_clocks pcie_clk] \
-  -group [get_clocks -include_generated_clocks clk_200mhz]
+  -group [get_clocks -include_generated_clocks clk_200mhz] \
   -group [get_clocks -include_generated_clocks clk_300mhz]
 
 #######################################################################
