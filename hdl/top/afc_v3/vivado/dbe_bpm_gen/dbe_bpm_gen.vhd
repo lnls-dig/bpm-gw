@@ -2564,6 +2564,16 @@ begin
       adc_busy_cmn_i                          => fmcpico_1_adc_busy_cmn_i,
       adc_cnv_out_o                           => fmcpico_1_adc_cnv_o,
 
+      -- Range selection
+      adc_rng_r1_o                            => fmcpico_1_rng_r1_o,
+      adc_rng_r2_o                            => fmcpico_1_rng_r2_o,
+      adc_rng_r3_o                            => fmcpico_1_rng_r3_o,
+      adc_rng_r4_o                            => fmcpico_1_rng_r4_o,
+
+      -- Board LEDs
+      fmc_led1_o                              => fmcpico_1_led1_o,
+      fmc_led2_o                              => fmcpico_1_led2_o,
+
       -----------------------------
       -- ADC output signals. Continuous flow
       -----------------------------
@@ -2574,16 +2584,6 @@ begin
       adc_data_valid_o                        => fmc1_data_valid,
       adc_out_busy_o                          => fmc1_adc_busy
     );
-
-    -- FIXME! Temporary signals. For testing only!
-    -- Default all ADCs to RNG0 = 1mA (for safety)
-    fmcpico_1_rng_r1_o                        <= '1';
-    fmcpico_1_rng_r2_o                        <= '1';
-    fmcpico_1_rng_r3_o                        <= '1';
-    fmcpico_1_rng_r4_o                        <= '1';
-
-    fmcpico_1_led1_o                          <= '0';
-    fmcpico_1_led2_o                          <= '1';
 
     fmc1_adc_data_ch0                         <= fmc1_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc1_adc_data_ch1                         <= fmc1_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
@@ -2665,6 +2665,16 @@ begin
       adc_busy_cmn_i                          => fmcpico_2_adc_busy_cmn_i,
       adc_cnv_out_o                           => fmcpico_2_adc_cnv_o,
 
+      -- Range selection
+      adc_rng_r1_o                            => fmcpico_2_rng_r1_o,
+      adc_rng_r2_o                            => fmcpico_2_rng_r2_o,
+      adc_rng_r3_o                            => fmcpico_2_rng_r3_o,
+      adc_rng_r4_o                            => fmcpico_2_rng_r4_o,
+
+      -- Board LEDs
+      fmc_led1_o                              => fmcpico_2_led1_o,
+      fmc_led2_o                              => fmcpico_2_led2_o,
+
       -----------------------------
       -- ADC output signals. Continuous flow
       -----------------------------
@@ -2675,16 +2685,6 @@ begin
       adc_data_valid_o                        => fmc2_data_valid,
       adc_out_busy_o                          => fmc2_adc_busy
     );
-
-    -- FIXME! Temporary signals. For testing only!
-    -- Default all ADCs to RNG0 = 1mA (for safety)
-    fmcpico_2_rng_r1_o                         <= '1';
-    fmcpico_2_rng_r2_o                         <= '1';
-    fmcpico_2_rng_r3_o                         <= '1';
-    fmcpico_2_rng_r4_o                         <= '1';
-
-    fmcpico_2_led1_o                           <= '0';
-    fmcpico_2_led2_o                           <= '1';
 
     fmc2_adc_data_ch0                          <= fmc2_data(c_adc_data_ch0_msb downto c_adc_data_ch0_lsb);
     fmc2_adc_data_ch1                          <= fmc2_data(c_adc_data_ch1_msb downto c_adc_data_ch1_lsb);
