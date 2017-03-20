@@ -2576,9 +2576,10 @@ begin
     );
 
     -- FIXME! Temporary signals. For testing only!
-    fmcpico_1_rng_r1_o                        <= '0';
+    -- Default all ADCs to RNG0 = 1mA (for safety)
+    fmcpico_1_rng_r1_o                        <= '1';
     fmcpico_1_rng_r2_o                        <= '1';
-    fmcpico_1_rng_r3_o                        <= '0';
+    fmcpico_1_rng_r3_o                        <= '1';
     fmcpico_1_rng_r4_o                        <= '1';
 
     fmcpico_1_led1_o                          <= '0';
@@ -2676,9 +2677,10 @@ begin
     );
 
     -- FIXME! Temporary signals. For testing only!
-    fmcpico_2_rng_r1_o                         <= '0';
+    -- Default all ADCs to RNG0 = 1mA (for safety)
+    fmcpico_2_rng_r1_o                         <= '1';
     fmcpico_2_rng_r2_o                         <= '1';
-    fmcpico_2_rng_r3_o                         <= '0';
+    fmcpico_2_rng_r3_o                         <= '1';
     fmcpico_2_rng_r4_o                         <= '1';
 
     fmcpico_2_led1_o                           <= '0';
