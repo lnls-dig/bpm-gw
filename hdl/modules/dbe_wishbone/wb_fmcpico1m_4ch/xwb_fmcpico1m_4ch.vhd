@@ -74,6 +74,16 @@ port
   adc_busy_cmn_i                            : in std_logic;
   adc_cnv_out_o                             : out std_logic;
 
+  -- Range selection
+  adc_rng_r1_o                              : out std_logic;
+  adc_rng_r2_o                              : out std_logic;
+  adc_rng_r3_o                              : out std_logic;
+  adc_rng_r4_o                              : out std_logic;
+
+  -- Board LEDs
+  fmc_led1_o                                : out std_logic;
+  fmc_led2_o                                : out std_logic;
+
   -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
@@ -151,6 +161,16 @@ begin
     adc_sck_rtrn_i                            => adc_sck_rtrn_i,
     adc_busy_cmn_i                            => adc_busy_cmn_i,
     adc_cnv_out_o                             => adc_cnv_out_o,
+
+    -- Range selection
+    adc_rng_r1_o                              => adc_rng_r1_o,
+    adc_rng_r2_o                              => adc_rng_r2_o,
+    adc_rng_r3_o                              => adc_rng_r3_o,
+    adc_rng_r4_o                              => adc_rng_r4_o,
+
+    -- Board LEDs
+    fmc_led1_o                                => fmc_led1_o,
+    fmc_led2_o                                => fmc_led2_o,
 
     -----------------------------
     -- ADC output signals. Continuous flow

@@ -1381,6 +1381,16 @@ package dbe_wishbone_pkg is
     adc_busy_cmn_i                            : in std_logic;
     adc_cnv_out_o                             : out std_logic;
 
+    -- Range selection
+    adc_rng_r1_o                              : out std_logic;
+    adc_rng_r2_o                              : out std_logic;
+    adc_rng_r3_o                              : out std_logic;
+    adc_rng_r4_o                              : out std_logic;
+
+    -- Board LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
+
     -----------------------------
     -- ADC output signals. Continuous flow
     -----------------------------
@@ -1436,6 +1446,16 @@ package dbe_wishbone_pkg is
     adc_sck_rtrn_i                            : in std_logic;
     adc_busy_cmn_i                            : in std_logic;
     adc_cnv_out_o                             : out std_logic;
+
+    -- Range selection
+    adc_rng_r1_o                              : out std_logic;
+    adc_rng_r2_o                              : out std_logic;
+    adc_rng_r3_o                              : out std_logic;
+    adc_rng_r4_o                              : out std_logic;
+
+    -- Board LEDs
+    fmc_led1_o                                : out std_logic;
+    fmc_led2_o                                : out std_logic;
 
     -----------------------------
     -- ADC output signals. Continuous flow

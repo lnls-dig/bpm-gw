@@ -94,6 +94,16 @@ port
   adc_busy_cmn_i                            : in std_logic;
   adc_cnv_out_o                             : out std_logic;
 
+  -- Range selection
+  adc_rng_r1_o                              : out std_logic;
+  adc_rng_r2_o                              : out std_logic;
+  adc_rng_r3_o                              : out std_logic;
+  adc_rng_r4_o                              : out std_logic;
+
+  -- Board LEDs
+  fmc_led1_o                                : out std_logic;
+  fmc_led2_o                                : out std_logic;
+
   -----------------------------
   -- ADC output signals. Continuous flow
   -----------------------------
@@ -462,6 +472,15 @@ begin
   wb_slv_adp_in.int                         <= '0';
   wb_slv_adp_in.err                         <= '0';
   wb_slv_adp_in.rty                         <= '0';
+
+  adc_rng_r1_o                              <= regs_out.rng_ctl_r0_o;
+  adc_rng_r2_o                              <= regs_out.rng_ctl_r1_o;
+  adc_rng_r3_o                              <= regs_out.rng_ctl_r2_o;
+  adc_rng_r4_o                              <= regs_out.rng_ctl_r3_o;
+
+  -- LEDs
+  fmc_led1_o                                <= regs_out.fmc_ctl_led1_o;
+  fmc_led2_o                                <= regs_out.fmc_ctl_led1_o;
 
   -- FMC PICO ADC
   cmp_fmc_pico_spi : fmc_pico_spi
