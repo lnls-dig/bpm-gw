@@ -449,7 +449,7 @@ wb_fmcpico1m_4ch_csr_rng_ctl_r3_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmcpico1m_4ch_csr_data0_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data0_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -500,7 +500,7 @@ wb_fmcpico1m_4ch_csr_data0_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmcpico1m_4ch_csr_data1_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data1_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -551,7 +551,7 @@ wb_fmcpico1m_4ch_csr_data1_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmcpico1m_4ch_csr_data2_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data2_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -602,7 +602,7 @@ wb_fmcpico1m_4ch_csr_data2_val_i[31:0]
 
 </td>
 <td  class="td_pblock_right">
-wb_fmcpico1m_4ch_csr_data3_val_i[31:0]
+wb_fmcpico1m_4ch_csr_data3_i[31:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1470,7 +1470,7 @@ DATA0
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[31:24]
+DATA0[31:24]
 </td>
 <td >
 
@@ -1524,7 +1524,7 @@ VAL[31:24]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[23:16]
+DATA0[23:16]
 </td>
 <td >
 
@@ -1578,7 +1578,7 @@ VAL[23:16]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[15:8]
+DATA0[15:8]
 </td>
 <td >
 
@@ -1632,7 +1632,7 @@ VAL[15:8]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[7:0]
+DATA0[7:0]
 </td>
 <td >
 
@@ -1659,7 +1659,7 @@ VAL[7:0]
 </table>
 <ul>
 <li><b>
-VAL
+DATA0
 </b>[<i>read-only</i>]: DATA0
 <br>ADC data from channel 0
 </ul>
@@ -1728,7 +1728,7 @@ DATA1
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[31:24]
+DATA1[31:24]
 </td>
 <td >
 
@@ -1782,7 +1782,7 @@ VAL[31:24]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[23:16]
+DATA1[23:16]
 </td>
 <td >
 
@@ -1836,7 +1836,7 @@ VAL[23:16]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[15:8]
+DATA1[15:8]
 </td>
 <td >
 
@@ -1890,7 +1890,7 @@ VAL[15:8]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[7:0]
+DATA1[7:0]
 </td>
 <td >
 
@@ -1917,7 +1917,7 @@ VAL[7:0]
 </table>
 <ul>
 <li><b>
-VAL
+DATA1
 </b>[<i>read-only</i>]: DATA1
 <br>ADC data from channel 1
 </ul>
@@ -1986,7 +1986,7 @@ DATA2
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[31:24]
+DATA2[31:24]
 </td>
 <td >
 
@@ -2040,7 +2040,7 @@ VAL[31:24]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[23:16]
+DATA2[23:16]
 </td>
 <td >
 
@@ -2094,7 +2094,7 @@ VAL[23:16]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[15:8]
+DATA2[15:8]
 </td>
 <td >
 
@@ -2148,7 +2148,7 @@ VAL[15:8]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[7:0]
+DATA2[7:0]
 </td>
 <td >
 
@@ -2175,7 +2175,7 @@ VAL[7:0]
 </table>
 <ul>
 <li><b>
-VAL
+DATA2
 </b>[<i>read-only</i>]: DATA2
 <br>ADC data from channel 2
 </ul>
@@ -2244,7 +2244,7 @@ DATA3
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[31:24]
+DATA3[31:24]
 </td>
 <td >
 
@@ -2298,7 +2298,7 @@ VAL[31:24]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[23:16]
+DATA3[23:16]
 </td>
 <td >
 
@@ -2352,7 +2352,7 @@ VAL[23:16]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[15:8]
+DATA3[15:8]
 </td>
 <td >
 
@@ -2406,7 +2406,7 @@ VAL[15:8]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-VAL[7:0]
+DATA3[7:0]
 </td>
 <td >
 
@@ -2433,7 +2433,7 @@ VAL[7:0]
 </table>
 <ul>
 <li><b>
-VAL
+DATA3
 </b>[<i>read-only</i>]: DATA3
 <br>ADC data from channel 3
 </ul>
