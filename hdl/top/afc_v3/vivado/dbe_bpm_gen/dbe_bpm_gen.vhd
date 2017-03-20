@@ -2733,6 +2733,9 @@ begin
     g_address_granularity                   => BYTE,
     g_with_extra_wb_reg                     => true,
 
+    -- selection of position_calc stages
+    g_with_downconv                         => c_pos_calc_with_downconv,
+
     -- input sizes
     g_input_width                           => c_num_unprocessed_bits,
     g_mixed_width                           => c_pos_calc_mixed_width,
@@ -2935,6 +2938,9 @@ begin
     g_interface_mode                        => PIPELINED,
     g_address_granularity                   => BYTE,
     g_with_extra_wb_reg                     => true,
+
+    -- selection of position_calc stages
+    g_with_downconv                         => c_pos_calc_with_downconv,
 
     -- input sizes
     g_input_width                           => c_num_unprocessed_bits,
