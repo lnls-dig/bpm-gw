@@ -1328,6 +1328,128 @@ package dbe_wishbone_pkg is
   );
   end component;
 
+  component wb_fmcpico1m_4ch
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
+    g_num_adc_bits                            : natural := 20;
+    g_num_adc_channels                        : natural := 4;
+    g_clk_freq                                : natural := 300000000; -- Hz
+    g_sclk_freq                               : natural := 75000000 --Hz
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_wishbone_address_width-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_wishbone_data_width-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_wishbone_data_width-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_wishbone_data_width/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_err_o                                  : out std_logic;
+    wb_rty_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    adc_fast_spi_clk_i                        : in std_logic;
+    adc_fast_spi_rstn_i                       : in std_logic;
+
+    -- Control signals
+    adc_start_i                               : in std_logic;
+
+    -- SPI bus
+    adc_sdo1_i                                : in std_logic;
+    adc_sdo2_i                                : in std_logic;
+    adc_sdo3_i                                : in std_logic;
+    adc_sdo4_i                                : in std_logic;
+    adc_sck_o                                 : out std_logic;
+    adc_sck_rtrn_i                            : in std_logic;
+    adc_busy_cmn_i                            : in std_logic;
+    adc_cnv_out_o                             : out std_logic;
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
+    -- suffice in all cases
+    adc_clk_i                                 : in std_logic;
+    adc_data_o                                : out std_logic_vector(g_num_adc_channels*g_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(g_num_adc_channels-1 downto 0);
+    adc_out_busy_o                            : out std_logic
+  );
+  end component;
+
+  component xwb_fmcpico1m_4ch
+  generic
+  (
+    g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
+    g_address_granularity                     : t_wishbone_address_granularity := WORD;
+    g_with_extra_wb_reg                       : boolean := false;
+    g_num_adc_bits                            : natural := 20;
+    g_num_adc_channels                        : natural := 4;
+    g_clk_freq                                : natural := 300000000; -- Hz
+    g_sclk_freq                               : natural := 75000000 --Hz
+  );
+  port
+  (
+    sys_clk_i                                 : in std_logic;
+    sys_rst_n_i                               : in std_logic;
+    sys_clk_200Mhz_i                          : in std_logic;
+
+    -----------------------------
+    -- Wishbone Control Interface signals
+    -----------------------------
+
+    wb_slv_i                                  : in t_wishbone_slave_in;
+    wb_slv_o                                  : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- External ports
+    -----------------------------
+
+    adc_fast_spi_clk_i                        : in std_logic;
+    adc_fast_spi_rstn_i                       : in std_logic;
+
+    -- Control signals
+    adc_start_i                               : in std_logic;
+
+    -- SPI bus
+    adc_sdo1_i                                : in std_logic;
+    adc_sdo2_i                                : in std_logic;
+    adc_sdo3_i                                : in std_logic;
+    adc_sdo4_i                                : in std_logic;
+    adc_sck_o                                 : out std_logic;
+    adc_sck_rtrn_i                            : in std_logic;
+    adc_busy_cmn_i                            : in std_logic;
+    adc_cnv_out_o                             : out std_logic;
+
+    -----------------------------
+    -- ADC output signals. Continuous flow
+    -----------------------------
+    -- clock to CDC. This must be g_sclk_freq/g_num_adc_bits. A regular 100MHz should
+    -- suffice in all cases
+    adc_clk_i                                 : in std_logic;
+    adc_data_o                                : out std_logic_vector(g_num_adc_channels*g_num_adc_bits-1 downto 0);
+    adc_data_valid_o                          : out std_logic_vector(g_num_adc_channels-1 downto 0);
+    adc_out_busy_o                            : out std_logic
+
+  );
+  end component;
+
   component xwb_ethmac_adapter
   port(
     clk_i                                     : in std_logic;
@@ -3218,5 +3340,23 @@ package dbe_wishbone_pkg is
     version       => x"00000001",
     date          => x"20160203",
     name          => "LNLS_TRIGGER_IFACE ")));
+
+  -- fmcpico_1m_4CH
+  constant c_xwb_fmcpico_1m_4ch_regs_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"669f7e38",
+    version       => x"00000001",
+    date          => x"20171603",
+    name          => "LNLS_FMCPICO_REGS  ")));
+
 
 end dbe_wishbone_pkg;

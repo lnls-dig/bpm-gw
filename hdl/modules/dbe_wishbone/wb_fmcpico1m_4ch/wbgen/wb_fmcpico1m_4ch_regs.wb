@@ -1,0 +1,159 @@
+peripheral {
+  name = "Control and status registers for FMC PICO 1M 4CH";
+  description = "Wishbone slave for control and status registers related to FMC PICO 1M 4CH with access from CSR bus";
+  hdl_entity = "wb_fmcpico1m_4ch_csr";
+
+  prefix = "wb_fmcpico1m_4ch_csr";
+
+  reg {
+    name = "FMC Status";
+    prefix = "fmc_status";
+
+    field {
+      name = "FMC Present";
+      prefix = "prsnt";
+      description = "FMC PRSNT_M2C Pin\n0 - FMC card present\n1 - no FMC card on carrier";
+      type = BIT;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "Power Good from mezzanine";
+      prefix = "pg_m2c";
+      description = "FMC Power Good Pin\nNot used";
+      type = BIT;
+      --size = 1;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "FMC Control";
+    prefix = "fmc_ctl";
+
+    field {
+      name = "LED 1 Control";
+      prefix = "led1";
+      description = "0 - Led Off\n1 - Led On";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "LED 2 Control";
+      prefix = "led2";
+      description = "0 - Led Off\n1 - Led On";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Input Range Control";
+    prefix = "rng_ctl";
+
+    field {
+      name = "R0";
+      prefix = "r0";
+      description = "Input Range Control for ADC0\n0 - RNG1 = +/- 1uA\n1 - RNG0 = +/- 1mA";
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "R1";
+      prefix = "r1";
+      description = "Input Range Control for ADC1\n0 - RNG1 = +/- 1uA\n1 - RNG0 = +/- 1mA";
+      align = 8;
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "R2";
+      prefix = "r2";
+      description = "Input Range Control for ADC2\n0 - RNG1 = +/- 1uA\n1 - RNG0 = +/- 1mA";
+      align = 16;
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "R3";
+      prefix = "r3";
+      description = "Input Range Control for ADC3\n0 - RNG1 = +/- 1uA\n1 - RNG0 = +/- 1mA";
+      align = 24;
+      type = BIT;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+  };
+
+  reg {
+      name = "ADC Data Channel 0";
+      prefix = "data0";
+
+      field {
+        name = "DATA0";
+        prefix = "val";
+        description = "ADC data from channel 0";
+        type = SLV;
+        size = 32;
+        access_bus = READ_ONLY;
+        access_dev = WRITE_ONLY;
+      };
+  };
+
+  reg {
+      name = "ADC Data Channel 1";
+      prefix = "data1";
+
+      field {
+        name = "DATA1";
+        prefix = "val";
+        description = "ADC data from channel 1";
+        type = SLV;
+        size = 32;
+        access_bus = READ_ONLY;
+        access_dev = WRITE_ONLY;
+      };
+  };
+
+  reg {
+      name = "ADC Data Channel 2";
+      prefix = "data2";
+
+      field {
+        name = "DATA2";
+        prefix = "val";
+        description = "ADC data from channel 2";
+        type = SLV;
+        size = 32;
+        access_bus = READ_ONLY;
+        access_dev = WRITE_ONLY;
+      };
+  };
+
+  reg {
+      name = "ADC Data Channel 3";
+      prefix = "data3";
+
+      field {
+        name = "DATA3";
+        prefix = "val";
+        description = "ADC data from channel 3";
+        type = SLV;
+        size = 32;
+        access_bus = READ_ONLY;
+        access_dev = WRITE_ONLY;
+      };
+  };
+};
