@@ -1304,7 +1304,7 @@ set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from 
 #######################################################################
 
 #set_property BITSTREAM.Config.SPI_BUSWIDTH 1    [current_design]
-set_property BITSTREAM.CONFIG.CONFIGRATE 50       [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 12       [current_design]
 set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES   [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE      [current_design]
 set_property CFGBVS VCCO                          [current_design]
