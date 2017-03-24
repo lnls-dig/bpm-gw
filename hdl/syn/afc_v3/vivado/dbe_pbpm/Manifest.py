@@ -31,8 +31,7 @@ if os.path.isfile("synthesis_descriptor_pkg.vhd"):
 else:
     sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
 
-# Doesn't matter got PBPM
-machine_pkg = "uvx_250M"
+machine_pkg = "pbpm_fmcpico1M"
 
 modules = { "local" : [ "../../../../top/afc_v3/vivado/dbe_pbpm" ] };
 
