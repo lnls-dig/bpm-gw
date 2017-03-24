@@ -558,6 +558,21 @@ architecture rtl of dbe_bpm_gen is
     end if;
   end f_num_bits_adc;
 
+  function f_num_bits_se_adc(adc_type : string)
+      return natural is
+  begin
+    if (adc_type = "FMC130M") then
+      return 16;
+    elsif (adc_type = "FMC250M") then
+      return 16;
+  elsif (adc_type = "FMCPICO_1M") then
+      -- next power of 2
+      return 32;
+    else
+      return 16;
+    end if;
+  end f_num_bits_se_adc;
+
   function f_acq_channel_adc_param(adc_type : string)
       return t_facq_chan_param is
     variable v_facq_chan                  : t_facq_chan_param;
@@ -688,8 +703,8 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_facq_channels                  : t_facq_chan_param_array(c_acq_num_channels-1 downto 0) :=
   (
-     c_acq_adc_id            => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_adc_swap_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
+     c_acq_adc_id            => c_facq_params_adc,
+     c_acq_adc_swap_id       => c_facq_params_adc,
      c_acq_mixiq_id          => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
      c_dummy0_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
      c_acq_tbtdecimiq_id     => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
@@ -794,7 +809,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_sdb_address                    : t_wishbone_address := x"00000000";
 
   constant c_num_unprocessed_bits           : natural := f_num_bits_adc(g_fmc_adc_type);
-  constant c_num_unprocessed_se_bits        : natural := 32;
+  constant c_num_unprocessed_se_bits        : natural := f_num_bits_se_adc(g_fmc_adc_type);
 
   -- FMC ADC data constants
   constant c_adc_data_ch0_lsb               : natural := 0;
