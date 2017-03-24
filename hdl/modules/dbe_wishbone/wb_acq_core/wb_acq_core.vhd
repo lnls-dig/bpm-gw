@@ -196,7 +196,8 @@ architecture rtl of wb_acq_core is
   -----------------------------
   constant c_acq_samples_size               : natural := 32;
   constant c_dpram_depth                    : integer := f_log2_size(g_multishot_ram_size);
-  constant c_periph_addr_size               : natural := 3+3;
+  constant c_periph_addr_size               : natural := 3+5;
+  constant c_max_num_channels               : natural := 24;
 
   constant c_acq_data_width                 : natural :=
                                   f_acq_chan_find_widest(c_acq_channels);
@@ -230,6 +231,17 @@ architecture rtl of wb_acq_core is
   -- Registers Signals
   signal regs_in                            : t_acq_core_in_registers;
   signal regs_out                           : t_acq_core_out_registers;
+
+  type t_wb_acq_desc_in_channel is record
+      desc_int_width                        : std_logic_vector(15 downto 0);
+      desc_num_coalesce                     : std_logic_vector(15 downto 0);
+      atom_desc_num_atoms                   : std_logic_vector(15 downto 0);
+      atom_desc_atom_width                  : std_logic_vector(15 downto 0);
+  end record;
+
+  type t_wb_acq_desc_in_array is array(natural range <>) of t_wb_acq_desc_in_channel;
+
+  signal ch_regs_in                         : t_wb_acq_desc_in_array(c_max_num_channels-1 downto 0);
 
   -- Wishbone slave adapter signals/structures
   signal wb_slv_adp_out                     : t_wishbone_master_out;
@@ -406,7 +418,7 @@ architecture rtl of wb_acq_core is
   port (
     rst_n_i                                 : in     std_logic;
     clk_sys_i                               : in     std_logic;
-    wb_adr_i                                : in     std_logic_vector(3 downto 0);
+    wb_adr_i                                : in     std_logic_vector(5 downto 0);
     wb_dat_i                                : in     std_logic_vector(31 downto 0);
     wb_dat_o                                : out    std_logic_vector(31 downto 0);
     wb_cyc_i                                : in     std_logic;
@@ -426,6 +438,11 @@ begin
 
   assert (g_ddr_interface_type = "AXIS" or g_ddr_interface_type = "UI")
     report "[wb_acq_core] DDR interface type must be either AXIS or UI"
+    severity Failure;
+
+  -- Test for maximum number of interfaces defined in wb_acq_core_regs.vhd
+  assert (g_acq_num_channels <= 24) -- number of wb_acq_core_regs.vhd registers
+    report "[wb_acq_core] Only g_acq_num_channels less or equal 24 is supported!"
     severity Failure;
 
   fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync;
@@ -475,7 +492,7 @@ begin
   port map(
     rst_n_i                                 => sys_rst_n_i,
     clk_sys_i                               => sys_clk_i,
-    wb_adr_i                                => wb_slv_adp_out.adr(3 downto 0),
+    wb_adr_i                                => wb_slv_adp_out.adr(5 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
     wb_cyc_i                                => wb_slv_adp_out.cyc,
@@ -542,6 +559,145 @@ begin
                                                     ddr_trig_addr'length, '0') & ddr_trig_addr;
   regs_in.samples_cnt_i                     <= std_logic_vector(samples_cnt);
 
+  ------------------------------------------------------------------------------
+  -- Channel Descriptions
+  -----------------------------------------------------------------------------
+
+  regs_in.ch0_desc_int_width_i               <= ch_regs_in(0).desc_int_width;
+  regs_in.ch0_desc_num_coalesce_i            <= ch_regs_in(0).desc_num_coalesce;
+  regs_in.ch0_atom_desc_num_atoms_i          <= ch_regs_in(0).atom_desc_num_atoms;
+  regs_in.ch0_atom_desc_atom_width_i         <= ch_regs_in(0).atom_desc_atom_width;
+
+  regs_in.ch1_desc_int_width_i               <= ch_regs_in(1).desc_int_width;
+  regs_in.ch1_desc_num_coalesce_i            <= ch_regs_in(1).desc_num_coalesce;
+  regs_in.ch1_atom_desc_num_atoms_i          <= ch_regs_in(1).atom_desc_num_atoms;
+  regs_in.ch1_atom_desc_atom_width_i         <= ch_regs_in(1).atom_desc_atom_width;
+
+  regs_in.ch2_desc_int_width_i               <= ch_regs_in(2).desc_int_width;
+  regs_in.ch2_desc_num_coalesce_i            <= ch_regs_in(2).desc_num_coalesce;
+  regs_in.ch2_atom_desc_num_atoms_i          <= ch_regs_in(2).atom_desc_num_atoms;
+  regs_in.ch2_atom_desc_atom_width_i         <= ch_regs_in(2).atom_desc_atom_width;
+
+  regs_in.ch3_desc_int_width_i               <= ch_regs_in(3).desc_int_width;
+  regs_in.ch3_desc_num_coalesce_i            <= ch_regs_in(3).desc_num_coalesce;
+  regs_in.ch3_atom_desc_num_atoms_i          <= ch_regs_in(3).atom_desc_num_atoms;
+  regs_in.ch3_atom_desc_atom_width_i         <= ch_regs_in(3).atom_desc_atom_width;
+
+  regs_in.ch4_desc_int_width_i               <= ch_regs_in(4).desc_int_width;
+  regs_in.ch4_desc_num_coalesce_i            <= ch_regs_in(4).desc_num_coalesce;
+  regs_in.ch4_atom_desc_num_atoms_i          <= ch_regs_in(4).atom_desc_num_atoms;
+  regs_in.ch4_atom_desc_atom_width_i         <= ch_regs_in(4).atom_desc_atom_width;
+
+  regs_in.ch5_desc_int_width_i               <= ch_regs_in(5).desc_int_width;
+  regs_in.ch5_desc_num_coalesce_i            <= ch_regs_in(5).desc_num_coalesce;
+  regs_in.ch5_atom_desc_num_atoms_i          <= ch_regs_in(5).atom_desc_num_atoms;
+  regs_in.ch5_atom_desc_atom_width_i         <= ch_regs_in(5).atom_desc_atom_width;
+
+  regs_in.ch6_desc_int_width_i               <= ch_regs_in(6).desc_int_width;
+  regs_in.ch6_desc_num_coalesce_i            <= ch_regs_in(6).desc_num_coalesce;
+  regs_in.ch6_atom_desc_num_atoms_i          <= ch_regs_in(6).atom_desc_num_atoms;
+  regs_in.ch6_atom_desc_atom_width_i         <= ch_regs_in(6).atom_desc_atom_width;
+
+  regs_in.ch7_desc_int_width_i               <= ch_regs_in(7).desc_int_width;
+  regs_in.ch7_desc_num_coalesce_i            <= ch_regs_in(7).desc_num_coalesce;
+  regs_in.ch7_atom_desc_num_atoms_i          <= ch_regs_in(7).atom_desc_num_atoms;
+  regs_in.ch7_atom_desc_atom_width_i         <= ch_regs_in(7).atom_desc_atom_width;
+
+  regs_in.ch8_desc_int_width_i               <= ch_regs_in(8).desc_int_width;
+  regs_in.ch8_desc_num_coalesce_i            <= ch_regs_in(8).desc_num_coalesce;
+  regs_in.ch8_atom_desc_num_atoms_i          <= ch_regs_in(8).atom_desc_num_atoms;
+  regs_in.ch8_atom_desc_atom_width_i         <= ch_regs_in(8).atom_desc_atom_width;
+
+  regs_in.ch9_desc_int_width_i               <= ch_regs_in(9).desc_int_width;
+  regs_in.ch9_desc_num_coalesce_i            <= ch_regs_in(9).desc_num_coalesce;
+  regs_in.ch9_atom_desc_num_atoms_i          <= ch_regs_in(9).atom_desc_num_atoms;
+  regs_in.ch9_atom_desc_atom_width_i         <= ch_regs_in(9).atom_desc_atom_width;
+
+  regs_in.ch10_desc_int_width_i             <= ch_regs_in(10).desc_int_width;
+  regs_in.ch10_desc_num_coalesce_i          <= ch_regs_in(10).desc_num_coalesce;
+  regs_in.ch10_atom_desc_num_atoms_i        <= ch_regs_in(10).atom_desc_num_atoms;
+  regs_in.ch10_atom_desc_atom_width_i       <= ch_regs_in(10).atom_desc_atom_width;
+
+  regs_in.ch11_desc_int_width_i             <= ch_regs_in(11).desc_int_width;
+  regs_in.ch11_desc_num_coalesce_i          <= ch_regs_in(11).desc_num_coalesce;
+  regs_in.ch11_atom_desc_num_atoms_i        <= ch_regs_in(11).atom_desc_num_atoms;
+  regs_in.ch11_atom_desc_atom_width_i       <= ch_regs_in(11).atom_desc_atom_width;
+
+  regs_in.ch12_desc_int_width_i             <= ch_regs_in(12).desc_int_width;
+  regs_in.ch12_desc_num_coalesce_i          <= ch_regs_in(12).desc_num_coalesce;
+  regs_in.ch12_atom_desc_num_atoms_i        <= ch_regs_in(12).atom_desc_num_atoms;
+  regs_in.ch12_atom_desc_atom_width_i       <= ch_regs_in(12).atom_desc_atom_width;
+
+  regs_in.ch13_desc_int_width_i             <= ch_regs_in(13).desc_int_width;
+  regs_in.ch13_desc_num_coalesce_i          <= ch_regs_in(13).desc_num_coalesce;
+  regs_in.ch13_atom_desc_num_atoms_i        <= ch_regs_in(13).atom_desc_num_atoms;
+  regs_in.ch13_atom_desc_atom_width_i       <= ch_regs_in(13).atom_desc_atom_width;
+
+  regs_in.ch14_desc_int_width_i             <= ch_regs_in(14).desc_int_width;
+  regs_in.ch14_desc_num_coalesce_i          <= ch_regs_in(14).desc_num_coalesce;
+  regs_in.ch14_atom_desc_num_atoms_i        <= ch_regs_in(14).atom_desc_num_atoms;
+  regs_in.ch14_atom_desc_atom_width_i       <= ch_regs_in(14).atom_desc_atom_width;
+
+  regs_in.ch15_desc_int_width_i             <= ch_regs_in(15).desc_int_width;
+  regs_in.ch15_desc_num_coalesce_i          <= ch_regs_in(15).desc_num_coalesce;
+  regs_in.ch15_atom_desc_num_atoms_i        <= ch_regs_in(15).atom_desc_num_atoms;
+  regs_in.ch15_atom_desc_atom_width_i       <= ch_regs_in(15).atom_desc_atom_width;
+
+  regs_in.ch16_desc_int_width_i             <= ch_regs_in(16).desc_int_width;
+  regs_in.ch16_desc_num_coalesce_i          <= ch_regs_in(16).desc_num_coalesce;
+  regs_in.ch16_atom_desc_num_atoms_i        <= ch_regs_in(16).atom_desc_num_atoms;
+  regs_in.ch16_atom_desc_atom_width_i       <= ch_regs_in(16).atom_desc_atom_width;
+
+  regs_in.ch17_desc_int_width_i             <= ch_regs_in(17).desc_int_width;
+  regs_in.ch17_desc_num_coalesce_i          <= ch_regs_in(17).desc_num_coalesce;
+  regs_in.ch17_atom_desc_num_atoms_i        <= ch_regs_in(17).atom_desc_num_atoms;
+  regs_in.ch17_atom_desc_atom_width_i       <= ch_regs_in(17).atom_desc_atom_width;
+
+  regs_in.ch18_desc_int_width_i             <= ch_regs_in(18).desc_int_width;
+  regs_in.ch18_desc_num_coalesce_i          <= ch_regs_in(18).desc_num_coalesce;
+  regs_in.ch18_atom_desc_num_atoms_i        <= ch_regs_in(18).atom_desc_num_atoms;
+  regs_in.ch18_atom_desc_atom_width_i       <= ch_regs_in(18).atom_desc_atom_width;
+
+  regs_in.ch19_desc_int_width_i             <= ch_regs_in(19).desc_int_width;
+  regs_in.ch19_desc_num_coalesce_i          <= ch_regs_in(19).desc_num_coalesce;
+  regs_in.ch19_atom_desc_num_atoms_i        <= ch_regs_in(19).atom_desc_num_atoms;
+  regs_in.ch19_atom_desc_atom_width_i       <= ch_regs_in(19).atom_desc_atom_width;
+
+  regs_in.ch20_desc_int_width_i             <= ch_regs_in(20).desc_int_width;
+  regs_in.ch20_desc_num_coalesce_i          <= ch_regs_in(20).desc_num_coalesce;
+  regs_in.ch20_atom_desc_num_atoms_i        <= ch_regs_in(20).atom_desc_num_atoms;
+  regs_in.ch20_atom_desc_atom_width_i       <= ch_regs_in(20).atom_desc_atom_width;
+
+  regs_in.ch21_desc_int_width_i             <= ch_regs_in(21).desc_int_width;
+  regs_in.ch21_desc_num_coalesce_i          <= ch_regs_in(21).desc_num_coalesce;
+  regs_in.ch21_atom_desc_num_atoms_i        <= ch_regs_in(21).atom_desc_num_atoms;
+  regs_in.ch21_atom_desc_atom_width_i       <= ch_regs_in(21).atom_desc_atom_width;
+
+  regs_in.ch22_desc_int_width_i             <= ch_regs_in(22).desc_int_width;
+  regs_in.ch22_desc_num_coalesce_i          <= ch_regs_in(22).desc_num_coalesce;
+  regs_in.ch22_atom_desc_num_atoms_i        <= ch_regs_in(22).atom_desc_num_atoms;
+  regs_in.ch22_atom_desc_atom_width_i       <= ch_regs_in(22).atom_desc_atom_width;
+
+  regs_in.ch23_desc_int_width_i             <= ch_regs_in(23).desc_int_width;
+  regs_in.ch23_desc_num_coalesce_i          <= ch_regs_in(23).desc_num_coalesce;
+  regs_in.ch23_atom_desc_num_atoms_i        <= ch_regs_in(23).atom_desc_num_atoms;
+  regs_in.ch23_atom_desc_atom_width_i       <= ch_regs_in(23).atom_desc_atom_width;
+
+  -- Assign generics to registers
+  gen_regs_desc : for i in 0 to g_acq_num_channels-1 generate
+    ch_regs_in(i).desc_int_width       <= std_logic_vector(resize(
+                                                            g_acq_channels(i).width,
+                                                            ch_regs_in(i).desc_int_width'length));
+    ch_regs_in(i).desc_num_coalesce    <= std_logic_vector(resize(
+                                                            g_acq_channels(i).num_atoms,
+                                                            ch_regs_in(i).desc_num_coalesce'length));
+    ch_regs_in(i).atom_desc_num_atoms  <= std_logic_vector(resize(
+                                                            g_acq_channels(i).atom_width,
+                                                            ch_regs_in(i).atom_desc_num_atoms'length));
+    ch_regs_in(i).atom_desc_atom_width <= std_logic_vector(resize(
+                                                            g_acq_channels(i).num_coalesce,
+                                                            ch_regs_in(i).atom_desc_atom_width'length));
+  end generate;
 
   ------------------------------------------------------------------------------
   -- Data-driven Trigger Channel Selection
