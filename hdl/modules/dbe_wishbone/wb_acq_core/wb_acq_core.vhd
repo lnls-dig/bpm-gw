@@ -689,13 +689,13 @@ begin
                                                             g_acq_channels(i).width,
                                                             ch_regs_in(i).desc_int_width'length));
     ch_regs_in(i).desc_num_coalesce    <= std_logic_vector(resize(
-                                                            g_acq_channels(i).num_atoms,
+                                                            g_acq_channels(i).num_coalesce,
                                                             ch_regs_in(i).desc_num_coalesce'length));
     ch_regs_in(i).atom_desc_num_atoms  <= std_logic_vector(resize(
-                                                            g_acq_channels(i).atom_width,
+                                                            g_acq_channels(i).num_atoms,
                                                             ch_regs_in(i).atom_desc_num_atoms'length));
     ch_regs_in(i).atom_desc_atom_width <= std_logic_vector(resize(
-                                                            g_acq_channels(i).num_coalesce,
+                                                            g_acq_channels(i).atom_width,
                                                             ch_regs_in(i).atom_desc_atom_width'length));
   end generate;
 
