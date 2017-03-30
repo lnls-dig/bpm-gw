@@ -174,6 +174,7 @@ architecture rtl of wb_trigger_iface is
   signal ch_regs_in  : t_wb_trig_in_array(c_max_num_channels-1 downto 0);
 
   signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_rcv_buff : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
 
   signal rcv_pulse_bus    : t_trig_channel_array(g_trig_num-1 downto 0);  -- rcv pulses
@@ -546,13 +547,15 @@ begin  -- architecture rtl
 
     cmp_iobuf : iobuf
       port map (
-        o  => extended_rcv(i),          -- Buffer output for further use
+        o  => extended_rcv_buff(i),     -- Buffer output for further use
         io => trig_b(i),                -- inout (connect directly to top-level port)
         i  => extended_transm(i),       -- Buffer input
         t  => ch_regs_out(i).ch_ctl_dir -- 3-state enable input, high=input, low=output
         );
 
-    trig_dbg_o(i) <= extended_rcv(i);
+    trig_dbg_o(i) <= extended_rcv_buff(i);
+    extended_rcv(i) <= extended_rcv_buff(i) when ch_regs_out(i).ch_ctl_dir = '1' -- FPGA is input
+                       else '0'; -- FPGA is output
 
     --------------------------------
     -- Pulse counters
