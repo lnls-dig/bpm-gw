@@ -4015,8 +4015,8 @@ begin
   ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
-  trig_ref_clk <= fs1_clk;
-  trig_ref_rst_n <= fs1_rstn;
+  trig_ref_clk <= clk_sys;
+  trig_ref_rst_n <= clk_sys_rstn;
 
   cmp_xwb_trigger : xwb_trigger
     generic map (
