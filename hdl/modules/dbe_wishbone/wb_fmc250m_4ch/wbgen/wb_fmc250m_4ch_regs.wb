@@ -307,6 +307,32 @@ peripheral {
   };
 
   reg {
+    name = "Channel 0 fine delay selection";
+    prefix = "ch0_fn_sel";
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), \
+                        including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 15;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
     name = "Channel 0 coarse delay register";
     prefix = "ch0_cs_dly";
 
@@ -513,6 +539,32 @@ peripheral {
       size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 1 fine delay selection";
+    prefix = "ch1_fn_sel";
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), \
+                        including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 15;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
     };
   };
 
@@ -726,6 +778,32 @@ peripheral {
   };
 
   reg {
+    name = "Channel 2 fine delay selection";
+    prefix = "ch2_fn_sel";
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), \
+                        including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 15;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
     name = "Channel 2 coarse delay register";
     prefix = "ch2_cs_dly";
 
@@ -931,6 +1009,32 @@ peripheral {
       size = 6;
       access_bus = READ_WRITE;
       access_dev = READ_ONLY;
+    };
+  };
+
+  reg {
+    name = "Channel 3 fine delay selection";
+    prefix = "ch3_fn_sel";
+
+    field {
+      name = "LINE";
+      prefix = "line";
+      description = "IDELAY Line to update tap value (multiple lines at one can be set), \
+                        including clock line, bit 16 - clk, bits 15-0 - data";
+      type = SLV;
+      size = 17;
+      access_bus = READ_WRITE;
+      access_dev = READ_ONLY;
+    };
+
+    field {
+      name = "Reserved";
+      description = "Ignore on write, read as 0's";
+      prefix = "reserved";
+      type = SLV;
+      size = 15;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
     };
   };
 

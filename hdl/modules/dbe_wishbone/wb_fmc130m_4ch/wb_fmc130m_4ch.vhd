@@ -280,7 +280,7 @@ architecture rtl of wb_fmc130m_4ch is
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
-  constant c_sdb_address                    : t_wishbone_address := x"00005000";
+  constant c_sdb_address                    : t_wishbone_address := x"00006000";
 
   -----------------------------
   -- Clock and reset signals
@@ -428,22 +428,22 @@ architecture rtl of wb_fmc130m_4ch is
   -----------------------------
   -- EEPROM I2C Signals
   -----------------------------
-  signal eeprom_i2c_scl_in                  : std_logic;
-  signal eeprom_i2c_scl_out                 : std_logic;
-  signal eeprom_i2c_scl_oe_n                : std_logic;
-  signal eeprom_i2c_sda_in                  : std_logic;
-  signal eeprom_i2c_sda_out                 : std_logic;
-  signal eeprom_i2c_sda_oe_n                : std_logic;
+  signal eeprom_i2c_scl_in                  : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_scl_out                 : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_scl_oe_n                : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_in                  : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_out                 : std_logic_vector(0 downto 0);
+  signal eeprom_i2c_sda_oe_n                : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- LM75A I2C Signals
   -----------------------------
-  signal lm75a_i2c_scl_in                   : std_logic;
-  signal lm75a_i2c_scl_out                  : std_logic;
-  signal lm75a_i2c_scl_oe_n                 : std_logic;
-  signal lm75a_i2c_sda_in                   : std_logic;
-  signal lm75a_i2c_sda_out                  : std_logic;
-  signal lm75a_i2c_sda_oe_n                 : std_logic;
+  signal lm75a_i2c_scl_in                   : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_scl_out                  : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_scl_oe_n                 : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_in                   : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_out                  : std_logic_vector(0 downto 0);
+  signal lm75a_i2c_sda_oe_n                 : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- Trigger signals
@@ -561,12 +561,6 @@ begin
       --fs_rst_sync_n(i) <= fs_rst_n;
     end generate;
   end generate;
-
-  -----------------------------
-  -- General status board pins
-  -----------------------------
-  -- PLL status available through a regular core pin
-  fmc_pll_status_o                          <= fmc_pll_status_i;
 
   -----------------------------
   -- Insert extra Wishbone registering stage for ease timing.
@@ -1255,11 +1249,11 @@ begin
     sda_padoen_o                            => eeprom_i2c_sda_oe_n
   );
 
-  eeprom_scl_pad_b  <= eeprom_i2c_scl_out when eeprom_i2c_scl_oe_n = '0' else 'Z';
-  eeprom_i2c_scl_in <= eeprom_scl_pad_b;
+  eeprom_scl_pad_b  <= eeprom_i2c_scl_out(0) when eeprom_i2c_scl_oe_n(0) = '0' else 'Z';
+  eeprom_i2c_scl_in(0) <= eeprom_scl_pad_b;
 
-  eeprom_sda_pad_b  <= eeprom_i2c_sda_out when eeprom_i2c_sda_oe_n = '0' else 'Z';
-  eeprom_i2c_sda_in <= eeprom_sda_pad_b;
+  eeprom_sda_pad_b  <= eeprom_i2c_sda_out(0) when eeprom_i2c_sda_oe_n(0) = '0' else 'Z';
+  eeprom_i2c_sda_in(0) <= eeprom_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(3).err                     <= '0';
@@ -1291,11 +1285,11 @@ begin
     sda_padoen_o                            => lm75a_i2c_sda_oe_n
   );
 
-  lm75_scl_pad_b  <= lm75a_i2c_scl_out when lm75a_i2c_scl_oe_n = '0' else 'Z';
-  lm75a_i2c_scl_in <= lm75_scl_pad_b;
+  lm75_scl_pad_b  <= lm75a_i2c_scl_out(0) when lm75a_i2c_scl_oe_n(0) = '0' else 'Z';
+  lm75a_i2c_scl_in(0) <= lm75_scl_pad_b;
 
-  lm75_sda_pad_b  <= lm75a_i2c_sda_out when lm75a_i2c_sda_oe_n = '0' else 'Z';
-  lm75a_i2c_sda_in <= lm75_sda_pad_b;
+  lm75_sda_pad_b  <= lm75a_i2c_sda_out(0) when lm75a_i2c_sda_oe_n(0) = '0' else 'Z';
+  lm75a_i2c_sda_in(0) <= lm75_sda_pad_b;
 
   -- Not used wishbone signals
   --cbar_master_in(4).err                     <= '0';
@@ -1493,8 +1487,6 @@ begin
   );
 
   fmc_led2_o <= led2_extd_p or fmc_led2_int;
-
-  fmc_led2_o <= fmc_led2_int;
   fmc_led3_o <= fmc_led3_int;
 
 end rtl;

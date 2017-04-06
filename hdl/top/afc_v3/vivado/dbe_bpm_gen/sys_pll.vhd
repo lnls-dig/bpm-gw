@@ -36,13 +36,16 @@ generic(
   -- 100 MHz output clock
   g_clk0_divide_f                           : integer := 10;
   -- 200 MHz output clock
-  g_clk1_divide                             : integer := 5
+  g_clk1_divide                             : integer := 5;
+  -- 200 MHz output clock
+  g_clk2_divide                             : integer := 5
 );
 port(
   rst_i                                     : in std_logic := '0';
   clk_i                                     : in std_logic := '0';
   clk0_o                                    : out std_logic;
   clk1_o                                    : out std_logic;
+  clk2_o                                    : out std_logic;
   locked_o                                  : out std_logic
 );
 end sys_pll;
@@ -54,6 +57,7 @@ architecture syn of sys_pll is
 
   signal s_clk0                             : std_logic;
   signal s_clk1                             : std_logic;
+  signal s_clk2                             : std_logic;
 begin
 
   -- Clock PLL
@@ -68,7 +72,7 @@ begin
       -- CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for CLKOUT (1-128)
       CLKOUT0_DIVIDE                        => g_clk0_divide_f,
       CLKOUT1_DIVIDE                        => g_clk1_divide,
-      CLKOUT2_DIVIDE                        => 1,
+      CLKOUT2_DIVIDE                        => g_clk2_divide,
       CLKOUT3_DIVIDE                        => 1,
       CLKOUT4_DIVIDE                        => 1,
       CLKOUT5_DIVIDE                        => 1,
@@ -97,7 +101,7 @@ begin
       -- Clock Outputs: 1-bit (each) output: User configurable clock outputs
       CLKOUT0                               => s_clk0,            -- 1-bit output: CLKOUT0
       CLKOUT1                               => s_clk1,            -- 1-bit output: CLKOUT1
-      CLKOUT2                               => open,              -- 1-bit output: CLKOUT2
+      CLKOUT2                               => s_clk2,            -- 1-bit output: CLKOUT2
       CLKOUT3                               => open,              -- 1-bit output: CLKOUT3
       CLKOUT4                               => open,              -- 1-bit output: CLKOUT4
       CLKOUT5                               => open,              -- 1-bit output: CLKOUT5
@@ -141,6 +145,12 @@ begin
     port map(
         O                                   => clk1_o,
         I                                   => s_clk1
+    );
+
+    cmp_clkout2_buf : BUFG
+    port map(
+        O                                   => clk2_o,
+        I                                   => s_clk2
     );
 
 end syn;

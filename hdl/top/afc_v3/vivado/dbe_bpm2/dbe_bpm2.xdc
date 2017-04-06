@@ -938,24 +938,24 @@ set_property DIFF_TERM TRUE [get_ports fmc2_adc_data_ch3_n_i[*]]
 
 # Overrides default_delay hdl parameter for the VARIABLE mode.
 # For Artix7: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps ???
-set_property IDELAY_VALUE 21 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 22 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 23 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 21 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 20 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 22 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 23 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IDELAY_VALUE 21 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 22 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[0].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 23 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[1].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 20 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 22 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[2].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 23 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IDELAY_VALUE 21 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[3].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
 
 # Overrides default_delay hdl parameter
-set_property IDELAY_VALUE 0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
-set_property IDELAY_VALUE 0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[0].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[1].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[2].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[3].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
 #######################################################################
 ##                          Clocks                                   ##
@@ -966,11 +966,11 @@ create_clock -period 8.000 -name sys_clk_p_i [get_ports sys_clk_p_i]
 
 ## 100 MHz wihsbone clock
 # A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
-create_clock -name clk_sys -period 10.000 [get_pins cmp_sys_pll_inst/cmp_clkout0_buf/O]
+create_clock -name clk_sys -period 10.000 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout0_buf/O}]
 
 # 200 MHz DDR3 and IDELAY CONTROL clock
 # A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
-create_clock -name clk_200mhz -period 5.000 [get_pins cmp_sys_pll_inst/cmp_clkout1_buf/O]
+create_clock -name clk_200mhz -period 5.000 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout1_buf/O}]
 
 # real jitter is about 22ps peak-to-peak
 create_clock -period 4.000 -name fmc1_adc_clk0_p_i [get_ports fmc1_adc_clk0_p_i]
@@ -1003,11 +1003,11 @@ set_clock_groups -asynchronous \
 #######################################################################
 
 # Reset synchronization path
-set_false_path -through [get_nets cmp_reset/master_rstn]
+set_false_path -through [get_nets -hier -filter {NAME =~ *cmp_reset/master_rstn}]
 # DDR 3 temperature monitor reset path
 # chain of FFs synched with clk_sys. We use asynchronous assertion and
 # synchronous deassertion
-set_false_path -through [get_nets -hier -filter {name=~ */theTlpControl/Memory_Space/wb_FIFO_Rst}]
+set_false_path -through [get_nets -hier -filter {NAME =~ *theTlpControl/Memory_Space/wb_FIFO_Rst}]
 # DDR 3 temperature monitor reset path
 set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
@@ -1086,11 +1086,11 @@ set_input_delay -clock [get_clocks fmc2_adc_clk3_p_i] -min -add_delay 1.200  [ge
 #######################################################################
 
 # Constraint all IDELAY blocks to the same IDELAY control as the DDR 3, so the tool will replicate it as needed
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
-set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells {cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_adc_data_chains[*].gen_adc_data_chains_check.cmp_fmc_adc_data/gen_adc_data[*].gen_adc_data_7series_iodelay.gen_adc_data_var_loadable_iodelay.cmp_adc_data_iodelay}]
+set_property IODELAY_GROUP DDR_CORE_IODELAY_MIG0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/cmp_wb_fmc250m_4ch/cmp_fmc_adc_iface/gen_clock_chains[*].gen_clock_chains_check.cmp_fmc_adc_clk/gen_adc_clk_7series_iodelay.gen_adc_clk_var_load_iodelay.cmp_ibufds_clk_iodelay}]
 
 #######################################################################
 ##                          PCIe constraints                        ##
@@ -1197,16 +1197,31 @@ set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks clk
 #######################################################################
 ##                      Placement Constraints                        ##
 #######################################################################
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
 
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
-#set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ */*acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
+#set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+
+# This path is only valid after acq_start signal, which is controlled by software and
+# is activated many many miliseconds after all of the other. So, give it 2x the clock
+# period
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 8.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out] 8.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks adc_clk_mmcm_out_1] 8.000
 
 # Use Distributed RAM, as these FIFOs are small and sparse through the module
-set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/cmp_position_calc_cdc_fifo/mem_reg*}]
+# Cannot make this work with hierarchical matching... only by specifying the
+# whole topology
+set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_position_calc_cdc_fifo/mem_reg*}]
+
+# Use Distributed RAMs for FMC ADC CDC FIFOs. They are small and sparse.
+set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_fmc_adc_iface/*/cmp_adc_data_async_fifo/mem_reg*}]
+
+# Use Distributed RAMs for FMC ACQ FIFOs. They are small and sparse.
+set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_acq_fc_fifo/cmp_fc_source/*.*/*.*/mem_reg*}]
 
 #######################################################################
 ##                      Placement Constraints                        ##
@@ -1215,26 +1230,28 @@ set_property RAM_STYLE DISTRIBUTED [get_cells {*/*/*/cmp_position_calc_cdc_fifo/
 # timing analysis.
 # Comment out because we use nonstandard GTP location
 create_pblock GRP_pcie_core
-add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -quiet cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i/*]
-add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i]
+add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ */cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i/*}]
 resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
-### Place the DMA design not far from PCIe core, otherwise it also breaks timing
+#
+## Place the DMA design not far from PCIe core, otherwise it also breaks timing
 #create_pblock GRP_ddr_core
-#add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/*]]
+#add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -hier -filter  {NAME =~ */cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i/DDRs_ctrl_module/ddr_core_inst/*]]
 #resize_pblock [get_pblocks GRP_ddr_core] -add {CLOCKREGION_X1Y0:CLOCKREGION_X1Y1}
+#
+## Place DDR core temperature monitor
 #create_pblock GRP_ddr_core_temp_mon
 #add_cells_to_pblock [get_pblocks GRP_ddr_core_temp_mon] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/temp_mon_enabled.u_tempmon/*]]
 #resize_pblock [get_pblocks GRP_ddr_core_temp_mon] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y3}
+#
 ## The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
-#INST "cmp1_xwb_fmc250m_4ch/*" AREA_GROUP = "GRP_fmc1";
-#AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
-#INST "cmp2_xwb_fmc250m_4ch" AREA_GROUP = "GRP_fmc2";
-#AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
-### The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
-#INST "cmp1_xwb_fmc250m_4ch/*" AREA_GROUP = "GRP_fmc1";
-#AREA_GROUP "GRP_fmc1" RANGE = CLOCKREGION_X1Y2:CLOCKREGION_X1Y4;
-#INST "cmp2_xwb_fmc250m_4ch" AREA_GROUP = "GRP_fmc2";
-#AREA_GROUP "GRP_fmc2" RANGE = CLOCKREGION_X0Y0:CLOCKREGION_X0Y2;
+#create_pblock GRP_fmc1
+#add_cells_to_pblock [get_pblocks GRP_fmc1] [get_cells -hier -filter {NAME =~ *cmp1_xwb_fmc250m_4ch/*}]
+#resize_pblock [get_pblocks GRP_fmc1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
+#
+#create_pblock GRP_fmc2
+#add_cells_to_pblock [get_pblocks GRP_fmc2] [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/*}]
+#resize_pblock [get_pblocks GRP_fmc2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+#
 ### Constraint Position Calc Cores
 #create_pblock GRP_position_calc_core1
 #add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo1] [get_cells -quiet {list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
@@ -1242,31 +1259,36 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y
 #create_pblock GRP_position_calc_core_cdc_fifo2
 #add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] [get_cells -quiet {list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
 #resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+#
+## Place acquisition core 0
+#create_pblock GRP_acq_core_0
+#add_cells_to_pblock [get_pblocks GRP_acq_core_0] [get_cells -hier -filter {NAME =~ */cmp_wb_facq_core_mux/gen_facq_core[0].*}]
+#resize_pblock [get_pblocks GRP_acq_core_0] -add {CLOCKREGION_X0Y3:CLOCKREGION_X1Y3} -remove {CLOCKREGION_X0Y4:CLOCKREGION_X1Y4}
 
 #######################################################################
 ##                         CE Constraints                            ##
 #######################################################################
 
 ## Mixer CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_mixer/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_mixer/*}]]
+#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
+#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
 
 ## CIC TBT CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
 
 ## TBT CORDIC CE
-set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/cmp_cordic_core/*}]]
-set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/cmp_cordic_core/*}]]
+set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
+set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
 
 ## CIC FOFB CE
-#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
 
 ## FOFB CORDIC CE
 # FIXME: get CE from VHDL code
-set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/cmp_cordic_core/*}]]
-set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/cmp_cordic_core/*}]]
+set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
+set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
 
 ## CIC MONIT 1 CE
 set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
@@ -1285,7 +1307,8 @@ set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from 
 #######################################################################
 
 #set_property BITSTREAM.Config.SPI_BUSWIDTH 1    [current_design]
-#set_property BITSTREAM.CONFIG.CONFIGRATE 50     [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 12       [current_design]
+set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES   [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE      [current_design]
 set_property CFGBVS VCCO                          [current_design]
 set_property CONFIG_VOLTAGE 3.3                   [current_design]

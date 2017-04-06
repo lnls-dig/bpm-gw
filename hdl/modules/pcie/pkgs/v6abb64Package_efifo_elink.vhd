@@ -10,6 +10,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 
+library work;
+use work.ipcores_pkg.all;
+
 package abb64Package is
 
 -- Declare constants
@@ -106,7 +109,11 @@ package abb64Package is
   -- 8192 Mb= 1024MB : 30
   -- 16384 Mb= 2048MB : 31
   -- 32768 Mb= 4096MB : 32
-  constant C_DDR_IAWIDTH : integer range 24 to 32 := 30;
+
+  -- Get correct nubmer of DDR bit address from ipcores_pkg,
+  -- that contains definitions for the specific board we're
+  -- synthesizing against
+  constant C_DDR_IAWIDTH : integer range 24 to 32 := C_DDR_ADDR_WIDTH;
 
   ---       Block RAM address bus width.  Variation requires BRAM core regeneration.
   constant C_PRAM_AWIDTH : integer range 8 to 29 := 29;
@@ -367,7 +374,7 @@ package abb64Package is
   -- Bit range of Wishbone address in Channel Buffer word
   constant C_CHBUF_WB_BIT_BOT : integer := C_CHANNEL_BUF_WIDTH-C_WB_AWIDTH;  --97;
   constant C_CHBUF_WB_BIT_TOP : integer := C_CHANNEL_BUF_WIDTH-1;  --127;
-  
+
   ------------------------------------------------------------------------
   -- TX Mem Reader channel bit definitions
   constant C_TXMEM_TLAST_BIT : integer := C_DBUS_WIDTH;
@@ -737,7 +744,7 @@ package body abb64Package is
     else
       return tkeep_in;
     end if;
-    
+
     assert tkeep_in'length = 4 or tkeep_in'length = 8
     report "tkeep length must be 4 or 8"
     severity failure;

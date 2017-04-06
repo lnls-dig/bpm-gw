@@ -413,12 +413,12 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- System I2C signals
   -----------------------------
-  signal sys_i2c_scl_in                     : std_logic;
-  signal sys_i2c_scl_out                    : std_logic;
-  signal sys_i2c_scl_oe_n                   : std_logic;
-  signal sys_i2c_sda_in                     : std_logic;
-  signal sys_i2c_sda_out                    : std_logic;
-  signal sys_i2c_sda_oe_n                   : std_logic;
+  signal sys_i2c_scl_in                     : std_logic_vector(0 downto 0);
+  signal sys_i2c_scl_out                    : std_logic_vector(0 downto 0);
+  signal sys_i2c_scl_oe_n                   : std_logic_vector(0 downto 0);
+  signal sys_i2c_sda_in                     : std_logic_vector(0 downto 0);
+  signal sys_i2c_sda_out                    : std_logic_vector(0 downto 0);
+  signal sys_i2c_sda_oe_n                   : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- System SPI signals
@@ -438,12 +438,12 @@ architecture rtl of wb_fmc516 is
   -----------------------------
   -- VCXO I2C signals
   -----------------------------
-  signal vcxo_i2c_scl_in                    : std_logic;
-  signal vcxo_i2c_scl_out                   : std_logic;
-  signal vcxo_i2c_scl_oe_n                  : std_logic;
-  signal vcxo_i2c_sda_in                    : std_logic;
-  signal vcxo_i2c_sda_out                   : std_logic;
-  signal vcxo_i2c_sda_oe_n                  : std_logic;
+  signal vcxo_i2c_scl_in                    : std_logic_vector(0 downto 0);
+  signal vcxo_i2c_scl_out                   : std_logic_vector(0 downto 0);
+  signal vcxo_i2c_scl_oe_n                  : std_logic_vector(0 downto 0);
+  signal vcxo_i2c_sda_in                    : std_logic_vector(0 downto 0);
+  signal vcxo_i2c_sda_out                   : std_logic_vector(0 downto 0);
+  signal vcxo_i2c_sda_oe_n                  : std_logic_vector(0 downto 0);
 
   -----------------------------
   -- One Wire DS2431 (VMETRO Data) signals
@@ -1173,11 +1173,11 @@ begin
   );
 
   -- Tri-state buffer for SDA and SCL
-  sys_i2c_scl_b  <= sys_i2c_scl_out when sys_i2c_scl_oe_n = '0' else 'Z';
-  sys_i2c_scl_in <= sys_i2c_scl_b;
+  sys_i2c_scl_b  <= sys_i2c_scl_out(0) when sys_i2c_scl_oe_n(0) = '0' else 'Z';
+  sys_i2c_scl_in(0) <= sys_i2c_scl_b;
 
-  sys_i2c_sda_b  <= sys_i2c_sda_out when sys_i2c_sda_oe_n = '0' else 'Z';
-  sys_i2c_sda_in <= sys_i2c_sda_b;
+  sys_i2c_sda_b  <= sys_i2c_sda_out(0) when sys_i2c_sda_oe_n(0) = '0' else 'Z';
+  sys_i2c_sda_in(0) <= sys_i2c_sda_b;
 
   -- Not used wishbone signals
   cbar_master_in(1).err                     <= '0';
@@ -1295,12 +1295,12 @@ begin
     sda_padoen_o                            => vcxo_i2c_sda_oe_n
   );
 
-  vcxo_i2c_scl_b  <= vcxo_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
-  vcxo_i2c_scl_in <= vcxo_i2c_scl_b;
+  vcxo_i2c_scl_b  <= vcxo_i2c_scl_out(0) when vcxo_i2c_scl_oe_n(0) = '0' else 'Z';
+  vcxo_i2c_scl_in(0) <= vcxo_i2c_scl_b;
   --vcxo_i2c_scl_o <= sys_i2c_scl_out when vcxo_i2c_scl_oe_n = '0' else 'Z';
 
-  vcxo_i2c_sda_b  <= vcxo_i2c_sda_out when vcxo_i2c_sda_oe_n = '0' else 'Z';
-  vcxo_i2c_sda_in <= vcxo_i2c_sda_b;
+  vcxo_i2c_sda_b  <= vcxo_i2c_sda_out(0) when vcxo_i2c_sda_oe_n(0) = '0' else 'Z';
+  vcxo_i2c_sda_in(0) <= vcxo_i2c_sda_b;
 
   -- VCXO output enable. Controllable from the Wishbone Register Interface
   vcxo_pd_l_o                               <= regs_out.fmc_ctl_vcxo_out_en_o;

@@ -490,17 +490,19 @@ module wb_acq_core_tb;
   localparam c_n_chan                   = 5;
   localparam c_n_width64                = 16'd64;
   localparam c_n_width128               = 16'd128;
+  localparam c_n_width256               = 16'd256;
   //localparam c_min_wait_gnt             = 32;
   //localparam c_max_wait_gnt             = 128;
   localparam c_acq_num_channels         = 5;
   localparam [16-1:0] c_acq_channels[0:c_acq_num_channels-1] =
-      '{c_n_width64, c_n_width128, c_n_width128,
+      '{c_n_width256, c_n_width128, c_n_width128,
       c_n_width128, c_n_width128};
 
   // bpm acquisition parameters
   // Must be at least the size of the biggest acquisition size
   localparam ACQ_ADDR_WIDTH         = C_S_AXI_ADDR_WIDTH;
-  localparam ACQ_DATA_WIDTH         = 64;
+  localparam ACQ_DATA_WIDTH         = 128;
+  localparam ACQ_DATA_WIDTH_MAX     = 1024;
   localparam DATA_CHECK_FIFO_SIZE   = 8192;
   localparam ACQ_FIFO_SIZE          = 4096;
 
@@ -509,12 +511,11 @@ module wb_acq_core_tb;
   localparam DDR3_BYTES_PER_WORD = DQ_WIDTH/8;
   localparam DDR3_ADDR_INC_BYTES = DDR3_PAYLOAD_WIDTH/DQ_WIDTH*DDR3_BYTES_PER_WORD;
 
-  localparam RB_COUNTER_WIDTH = 8;
+  localparam RB_COUNTER_WIDTH = 12;
 
   // Tests paramaters
-  reg [ACQ_DATA_WIDTH-1:0] data_test_low [c_n_chan-1:0];
-  reg [16-1:0] data_test_low_0;
-  reg [ACQ_DATA_WIDTH-1:0] data_test_high [c_n_chan-1:0];
+  reg [ACQ_DATA_WIDTH_MAX-1:0] data_test [c_n_chan-1:0];
+  reg [16-1:0] data_test_0;
   reg data_test_dvalid [c_n_chan-1:0];
   reg data_test_dvalid_t [c_n_chan-1:0];
   reg data_test_trig [c_n_chan-1:0];
@@ -784,7 +785,7 @@ module wb_acq_core_tb;
   );
 
   // DUT
-  wb_acq_core_mux_plain #(
+  wb_facq_core_mux_plain #(
     .g_ddr_addr_width(ACQ_ADDR_WIDTH),
     .g_acq_addr_width(ACQ_ADDR_WIDTH),
     .g_fifo_fc_size(ACQ_FIFO_SIZE),
@@ -819,22 +820,14 @@ module wb_acq_core_tb;
     .wb_rty_array_o                         (),
     .wb_stall_array_o                       (),
 
-    .acq_val_low_array_i                    ({
+    .acq_val_array_i                        ({
                                                 // Acq core 1
-                                                data_test_low[4] + c_ddr3_acq1_data_offset, data_test_low[3] + c_ddr3_acq1_data_offset,
-                                                data_test_low[2] + c_ddr3_acq1_data_offset, data_test_low[1] + c_ddr3_acq1_data_offset,
-                                                data_test_low[0] + c_ddr3_acq1_data_offset,
+                                                data_test[4] + c_ddr3_acq1_data_offset, data_test[3] + c_ddr3_acq1_data_offset,
+                                                data_test[2] + c_ddr3_acq1_data_offset, data_test[1] + c_ddr3_acq1_data_offset,
+                                                data_test[0] + c_ddr3_acq1_data_offset ,
                                                 // Acq core 0
-                                                data_test_low[4], data_test_low[3], data_test_low[2],
-                                                data_test_low[1], data_test_low[0]}),
-    .acq_val_high_array_i                   ({
-                                                // Acq core 1
-                                                data_test_high[4] + c_ddr3_acq1_data_offset, data_test_high[3] + c_ddr3_acq1_data_offset,
-                                                data_test_high[2] + c_ddr3_acq1_data_offset, data_test_high[1] + c_ddr3_acq1_data_offset,
-                                                data_test_high[0] + c_ddr3_acq1_data_offset ,
-                                                // Acq core 0
-                                                data_test_high[4], data_test_high[3], data_test_high[2],
-                                                data_test_high[1], data_test_high[0]}),
+                                                data_test[4], data_test[3], data_test[2],
+                                                data_test[1], data_test[0]}),
     .acq_dvalid_array_i                     ({
                                                 // Acq core 1
                                                 data_test_dvalid[4], data_test_dvalid[3], data_test_dvalid[2],
@@ -1611,6 +1604,9 @@ module wb_acq_core_tb;
     // Default values. 200 ADC CLK cycles after star wait
     min_wait_trig = 200;
     max_wait_trig = 200;
+    // Initial values for f_gen_bit_one
+    f_gen_bit_one.wait_cycles = 0;
+    f_gen_bit_one.gen_valid = 0;
 
     $display("-----------------------------------");
     $display("@%0d: Simulation of BPM ACQ FSM starting!", $time);
@@ -1658,7 +1654,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1696,7 +1692,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1710,7 +1706,7 @@ module wb_acq_core_tb;
     hw_trig_en = 1'b0;
     hw_trig_dly = 'h0;
     hw_int_trig_thres = 32'h000FFFFF;
-    hw_int_trig_thres_filt = 8'b00001111;
+        hw_int_trig_thres_filt = 8'b00001111;
     sw_trig_en = 1'b0;
 
     wb_acq(test_id, n_shots,
@@ -1734,7 +1730,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1773,7 +1769,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd1;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1808,10 +1804,10 @@ module wb_acq_core_tb;
 
     test_id = 5;
     n_shots = 16'h0001;
-    pre_trig_samples = 32'h00001000;
+    pre_trig_samples = 32'h00000400;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00010000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1849,7 +1845,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1887,7 +1883,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1925,7 +1921,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000020;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -1963,7 +1959,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -2001,7 +1997,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000020;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -2038,7 +2034,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000004;
     post_trig_samples = 32'h00000000;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00001000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b1;
@@ -2120,7 +2116,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000100;
     post_trig_samples = 32'h00000010;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00010000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b0;
@@ -2159,7 +2155,7 @@ module wb_acq_core_tb;
     pre_trig_samples = 32'h00000010;
     post_trig_samples = 32'h00000100;
     ddr3_start_addr = 32'h00000000; // all zeros for now
-    ddr3_end_addr = 32'h00010000;
+    ddr3_end_addr = 32'h00100000;
     acq_chan = 16'd0;
     lmt_pkt_size = (pre_trig_samples + post_trig_samples)/(DDR3_PAYLOAD_WIDTH/c_acq_channels[acq_chan]);
     skip_trig = 1'b0;
@@ -2315,19 +2311,30 @@ module wb_acq_core_tb;
     if (data_gen_start) begin
       //data_test <= f_data_gen(c_data_max);
       if (data_test_dvalid_t[0]) begin
-        data_test_low[0] <= {data_test_low_0 + 16'h30, data_test_low_0 + 16'h20,
-                                        data_test_low_0 + 16'h10, data_test_low_0 + 16'h00};
-        data_test_high[0] <= {64'h0};
-        data_test_low_0 <= data_test_low_0 + 1;
+      //  data_test[0] <= {data_test_0 + 16'h30, data_test_0 + 16'h20,
+      //                                  data_test_0 + 16'h10, data_test_0 + 16'h00};
+        data_test[0] <= {
+            data_test_0 + 16'hF0, data_test_0 + 16'hE0,
+            data_test_0 + 16'hD0, data_test_0 + 16'hC0,
+
+            data_test_0 + 16'hB0, data_test_0 + 16'hA0,
+            data_test_0 + 16'h90, data_test_0 + 16'h80,
+
+            data_test_0 + 16'h70, data_test_0 + 16'h60,
+            data_test_0 + 16'h50, data_test_0 + 16'h40,
+
+            data_test_0 + 16'h30, data_test_0 + 16'h20,
+            data_test_0 + 16'h10, data_test_0 + 16'h00
+            };
+        data_test_0 <= data_test_0 + 1;
       end
 
-      data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold);
+      data_test_dvalid_t[0] <= f_gen_data_rdy_gen(data_valid_threshold, 1);
       data_test_dvalid[0] <= data_test_dvalid_t[0];
       data_test_trig[0] <= data_trig;
     end else begin
-      data_test_low_0 <= 'h0;
-      data_test_low[0] <= 'h0;
-      data_test_high[0] <= 'h0;
+      data_test_0 <= 'h0;
+      data_test[0] <= 'h0;
       data_test_dvalid[0] <= 1'b0;
       data_test_dvalid_t[0] <= 1'b0;
       data_test_trig[0] <= 1'b0;
@@ -2340,8 +2347,7 @@ module wb_acq_core_tb;
     for (ch = 1; ch < c_n_chan; ch = ch + 1) begin: gen_chan
       initial begin
         data_test_trig[ch] = 0;
-        data_test_low[ch] = 0;
-        data_test_high[ch] = 100;
+        data_test[ch] = 0;
       end
 
       always @(posedge adc_clk)
@@ -2349,16 +2355,14 @@ module wb_acq_core_tb;
         if (data_gen_start) begin
           //data_test <= f_data_gen(c_data_max);
           if (data_test_dvalid_t[ch]) begin
-            data_test_low[ch] <= data_test_low[ch] + ch + 1;
-            data_test_high[ch] <=  data_test_high[ch] + ch + 1;
+            data_test[ch] <= data_test[ch] + ch + 1;
           end
 
-          data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold);
+          data_test_dvalid_t[ch] <= f_gen_data_rdy_gen(data_valid_threshold, 1);
           data_test_dvalid[ch] <= data_test_dvalid_t[ch];
           data_test_trig[ch] <= data_trig;
         end else begin
-          data_test_low[ch] <= 'h0;
-          data_test_high[ch] <= 'h0;
+          data_test[ch] <= 'h0;
           data_test_dvalid[ch] <= 1'b0;
           data_test_dvalid_t[ch] <= 1'b0;
           data_test_trig[ch] <= 1'b0;
@@ -2381,9 +2385,10 @@ module wb_acq_core_tb;
 
   function f_gen_data_rdy_gen;
     input real prob;
+    input integer min_wait_cycles;
     real temp;
   begin
-    f_gen_data_rdy_gen = f_gen_bit_one(prob);
+    f_gen_data_rdy_gen = f_gen_bit_one(prob, min_wait_cycles);
   end
   endfunction
 
@@ -2391,21 +2396,37 @@ module wb_acq_core_tb;
     input real prob;
     real temp;
   begin
-    f_gen_data_stall = f_gen_bit_one(1.0-prob);
+    f_gen_data_stall = f_gen_bit_one(1.0-prob, 0);
   end
   endfunction
 
   function f_gen_bit_one;
     input real prob;
+    input integer min_wait_cycles;
     real temp;
+    integer wait_cycles;
+    integer gen_valid;
   begin
+
+   // count wait_cycles up to min_wait_cycles
+   if (wait_cycles >= min_wait_cycles) begin
+     gen_valid = 1;
+     wait_cycles = 0;
+   end else begin
+     gen_valid = 0;
+     wait_cycles = wait_cycles + 1;
+   end
+
     // $random is surronded by the concat operator in order
     // to provide us with only unsigned (bit vector) data.
     // Generates valud in a 0..1 range
     temp = ({$random} % 100 + 1)/100.00;//threshold;
 
-    if (temp <= prob)
-     f_gen_bit_one = 1'b1;
+    if (gen_valid == 1)
+      if (temp <= prob)
+       f_gen_bit_one = 1'b1;
+      else
+        f_gen_bit_one = 1'b0;
     else
       f_gen_bit_one = 1'b0;
   end

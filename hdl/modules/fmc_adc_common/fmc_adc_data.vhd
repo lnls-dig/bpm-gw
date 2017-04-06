@@ -93,7 +93,10 @@ architecture rtl of fmc_adc_data is
 
   -- Small fifo depth. This FIFO is intended just to cross phase-mismatched
   -- clock domains (BUFR -> BUFG), but frequency locked
-  constant async_fifo_size                  : natural := 16;
+  constant c_fifo_size                      : natural := 16;
+  constant c_fifo_guard_size                : integer := 2;
+  constant c_fifo_almost_empty_thres        : integer := c_fifo_guard_size;
+  constant c_fifo_almost_full_thres         : integer := c_fifo_size - c_fifo_guard_size;
 
   -- Number of ADC input pins. This is differente for SDR or DDR ADCs.
   constant c_num_in_adc_pins                : natural := f_num_adc_pins(g_with_data_sdr);
@@ -409,10 +412,13 @@ begin
   -- On the other hand, BUFG and BUFR/BUFIO are not guaranteed to be phase-matched,
   -- as they drive independently clock nets. Hence, a FIFO is needed to employ
   -- a clock domain crossing.
-  cmp_adc_data_async_fifo : generic_async_fifo
+  --cmp_adc_data_async_fifo : generic_async_fifo
+  cmp_adc_data_async_fifo : inferred_async_fifo
   generic map(
     g_data_width                          => c_num_adc_bits,
-    g_size                                => async_fifo_size
+    g_size                                => c_fifo_size,
+    g_almost_empty_threshold              => c_fifo_almost_empty_thres,
+    g_almost_full_threshold               => c_fifo_almost_full_thres
   )
   port map(
     rst_n_i                               => sys_rst_n_i,
