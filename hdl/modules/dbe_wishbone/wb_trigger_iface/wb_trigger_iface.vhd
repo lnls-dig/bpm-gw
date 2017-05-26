@@ -145,6 +145,10 @@ architecture rtl of wb_trigger_iface is
 
   constant c_max_num_channels   : natural := 24;
 
+  -- Trigger direction constants
+  constant c_trig_dir_fpga_input  : std_logic := '1';
+  constant c_trig_dir_fpga_output : std_logic := not (c_trig_dir_fpga_input);
+
   -----------
   --Signals--
   -----------
@@ -173,12 +177,22 @@ architecture rtl of wb_trigger_iface is
   signal ch_regs_out : t_wb_trig_out_array(c_max_num_channels-1 downto 0);
   signal ch_regs_in  : t_wb_trig_in_array(c_max_num_channels-1 downto 0);
 
-  signal extended_rcv    : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_rcv      : std_logic_vector(g_trig_num-1 downto 0);
   signal extended_rcv_buff : std_logic_vector(g_trig_num-1 downto 0);
-  signal extended_transm : std_logic_vector(g_trig_num-1 downto 0);
+  signal extended_transm   : std_logic_vector(g_trig_num-1 downto 0);
 
   signal rcv_pulse_bus    : t_trig_channel_array(g_trig_num-1 downto 0);  -- rcv pulses
   signal transm_pulse_bus : t_trig_channel_array(g_trig_num-1 downto 0);    -- transm pulses
+
+  signal trig_dir_int           : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_pol_int           : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_data_int          : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_dir_polarized     : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_data_polarized    : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_dir_ext           : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_data_ext          : std_logic_vector(g_trig_num-1 downto 0);
+  signal trig_dir_int_buff      : std_logic_vector(g_trig_num-1 downto 0);
+-- signal trig_data_int_buff     : std_logic_vector(g_trig_num-1 downto 0);
 
 --  signal transm_mux_bus : std_logic_vector(g_intern_num-1 downto 0);  -- input of transm multiplexers
 --  signal rcv_mux_out    : std_logic_vector(g_intern_num-1 downto 0);
@@ -513,8 +527,42 @@ begin  -- architecture rtl
     -- Connecting signals
     --------------------------------
 
-    trig_dir_o(i) <= ch_regs_out(i).ch_ctl_dir when ch_regs_out(i).ch_ctl_dir_pol = '0' else
-                    not (ch_regs_out(i).ch_ctl_dir);
+    -- Implementation of wired-OR logic with trigger lines, as described
+    -- in www.ti.com/lit/pdf/snla113, page 11. It works as follows:
+    --
+    -- If we want to output data, we use the direction pin as data and
+    -- drive the actual output to HI. This would only drive the line
+    -- when we send data.
+    --
+    -- If we want to input data, we use the pins as usual: data as data and
+    -- direction as direction.
+    trig_dir_int(i)  <= ch_regs_out(i).ch_ctl_dir;
+    trig_pol_int(i)  <= ch_regs_out(i).ch_ctl_dir_pol;
+    trig_data_int(i) <= extended_transm(i);
+
+    -- Regular data/direction driving with polarity inversion
+    trig_dir_polarized(i)  <= trig_dir_int(i) when trig_pol_int(i) = '0' else
+                               not (trig_dir_int(i));
+    trig_data_polarized(i) <= trig_data_int(i) when trig_pol_int(i) = '0' else
+                                not (trig_data_int(i));
+
+    -- Use data/direction pin as data depending if we are input or output.
+    -- If it's input, we just need to use the direction according to the
+    -- polarity ('0' means same polarity, '1' means reversed polarity).
+    --
+    -- We could have used just "not (trig_dir_int(i))" instead of trig_dir_polarized(i)
+    -- here, but we opted for clarity in the hope the tools will optimize this
+    trig_dir_ext(i)  <= trig_data_polarized(i) when trig_dir_int(i) = c_trig_dir_fpga_output else
+                       trig_dir_polarized(i);
+    trig_data_ext(i) <= '1' when trig_dir_int(i) = c_trig_dir_fpga_output else '0';
+
+    -- Internal buffer direction/data
+    trig_dir_int_buff(i)  <= trig_data_int(i) when trig_dir_int(i) = c_trig_dir_fpga_output else
+                              trig_dir_int(i);
+    --trig_data_int_buff(i) <= '1' when trig_dir_int(i) = c_trig_dir_fpga_output else '0';
+
+    -- Trigger direction external output
+    trig_dir_o(i) <= trig_dir_ext(i);
 
     --------------------------------
     -- Transmitter and Receiver Cores
@@ -549,12 +597,12 @@ begin  -- architecture rtl
       port map (
         o  => extended_rcv_buff(i),     -- Buffer output for further use
         io => trig_b(i),                -- inout (connect directly to top-level port)
-        i  => extended_transm(i),       -- Buffer input
-        t  => ch_regs_out(i).ch_ctl_dir -- 3-state enable input, high=input, low=output
+        i  => trig_data_ext(i),         -- Buffer input
+        t  => trig_dir_int_buff(i)      -- 3-state enable input, high=input, low=output
         );
 
     trig_dbg_o(i) <= extended_rcv_buff(i);
-    extended_rcv(i) <= extended_rcv_buff(i) when ch_regs_out(i).ch_ctl_dir = '1' -- FPGA is input
+    extended_rcv(i) <= extended_rcv_buff(i) when trig_dir_int(i) = c_trig_dir_fpga_input
                        else '0'; -- FPGA is output
 
     --------------------------------
