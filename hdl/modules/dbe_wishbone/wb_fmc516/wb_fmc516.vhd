@@ -1485,7 +1485,7 @@ begin
   -- Trigger buffers and Synchronization
   cmp_ext_trig_ibufds : ibufds
   generic map(
-    IOSTANDARD                               => "LVDS_25",
+    IOSTANDARD                            => "LVDS_25",
     DIFF_TERM                             => TRUE
   )
   port map (
@@ -1497,8 +1497,9 @@ begin
   -- External hardware trigger synchronization
   cmp_trig_sync : gc_ext_pulse_sync
   generic map(
-    g_min_pulse_width                       => 1,     -- clk_i ticks
-    g_clk_frequency                         => 100,   -- MHz
+    -- minimum pulse in ns to accept input (must be >1 clk_i ns)
+    g_min_pulse_width                       => 8,
+    g_clk_frequency                         => 250,   -- MHz
     g_output_polarity                       => '0',   -- positive pulse
     g_output_retrig                         => false,
     g_output_length                         => 1      -- clk_i tick
