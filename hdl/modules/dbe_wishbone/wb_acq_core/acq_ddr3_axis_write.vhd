@@ -533,12 +533,12 @@ begin
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
-        ddr_addr_first <= '0';
-        ddr_addr_cnt_axis <= to_unsigned(0, ddr_addr_cnt_axis'length);
-        -- FIXME: Reset the init/end register cause fast acquisition
-        -- data path to fail on hw or sw trigger acquisitions.
-        -- This might be related to the fact that these addresses
-        -- might not be properly configured.
+        ddr_addr_first <= '1';
+        -- This address must be word-aligned
+        ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
+        ddr_addr_init <= unsigned(wr_init_addr_alig);
+        ddr_addr_max <= unsigned(wr_end_addr_alig);
+        ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
       else
 
         if wr_start_i = '1' then
