@@ -256,6 +256,8 @@ architecture rtl of acq_ddr3_axis_write is
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_cnt_max_reached           : std_logic;
+  signal ddr_addr_cnt_max_m1_reached        : std_logic;
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_recv_pkt_cnt                   : unsigned(c_ddr_axis_max_wtt_width-1 downto 0);
@@ -424,7 +426,20 @@ begin
           -- around the maximum number of samples per AXI packet
           ddr_recv_pkt_cnt <= ddr_recv_pkt_cnt + 1;
 
-          if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) then -- will increment to last sample
+          -- There are 2 cases in which we need to reset the counter and
+          -- hence reissue a transaction.
+          --
+          -- The first one is the obvious one. If we go over the maximum AXI SS
+          -- maximum number of words. In this case we just end the current transaction
+          -- and reissue a next one with the current address.
+          --
+          -- The second one is if we go over the current channel "ddr_addr_max"
+          -- signal. In this case, we also need to reissue the transaction with
+          -- the wrapped memory address, because we only do INCR AXI transaction.
+          -- And in this mode, the memory addresses are incremented automatically
+          -- for each word.
+          if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) or
+              ddr_addr_cnt_max_m1_reached = '1' then -- will increment to last sample
             ddr_eop_in <= "1";
           else
             ddr_eop_in <= "0";
@@ -488,8 +503,6 @@ begin
     end if;
   end process;
 
-  -- First address or transaction wrapped to init address
-  ddr_addr_first <= '1' when ddr_addr_cnt_axis = ddr_addr_init else '0';
   -- First packet of transaction (new shot - used for multishot transactions) or
   -- when we make large (larger than c_ddr_axis_max_wtt words) transfers
   ddr_axis_cmd_valid_in <= '1' when ddr_valid_in = '1' and (ddr_addr_first = '1' or
@@ -517,6 +530,7 @@ begin
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
+        ddr_addr_first <= '0';
         ddr_addr_cnt_axis <= to_unsigned(0, ddr_addr_cnt_axis'length);
         -- FIXME: Reset the init/end register cause fast acquisition
         -- data path to fail on hw or sw trigger acquisitions.
@@ -525,23 +539,30 @@ begin
       else
 
         if wr_start_i = '1' then
+          -- First word in the transaction
+          ddr_addr_first <= '1';
           -- This address must be word-aligned
           ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
           ddr_addr_init <= unsigned(wr_init_addr_alig);
           ddr_addr_max <= unsigned(wr_end_addr_alig);
         elsif ddr_valid_in = '1' then -- This represents a successful transfer
+          -- No more the first transaction. This train has departed already...
+          ddr_addr_first <= '0';
 
           -- To Flow Control module
           -- Get ready for the next valid transaction
           ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis;
           -- Wrap counters if we go over the limit
-          if ddr_addr_cnt_axis = ddr_addr_max then
+          if ddr_addr_cnt_max_reached = '1' then
             ddr_addr_cnt_axis <= ddr_addr_init;
           end if;
         end if;
       end if;
     end if;
   end process;
+
+  ddr_addr_cnt_max_reached <= '1' when ddr_addr_cnt_axis = ddr_addr_max else '0';
+  ddr_addr_cnt_max_m1_reached <= '1' when ddr_addr_cnt_axis = ddr_addr_max-1 else '0';
 
   -- To Flow Control module
   ddr_addr_in_axis <= std_logic_vector(ddr_addr_cnt_axis);
