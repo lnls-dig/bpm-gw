@@ -258,6 +258,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_cnt_max_reached           : std_logic;
   signal ddr_addr_cnt_m1_max_reached        : std_logic;
+  signal ddr_addr_cnt_next_will_reach_max   : std_logic;
+  signal ddr_addr_cnt_m1_next_will_reach_max : std_logic;
   signal ddr_addr_wrap_counter              : std_logic;
   signal ddr_addr_m1_wrap_counter           : std_logic;
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
