@@ -257,9 +257,12 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_data_in                        : std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_cnt_max_reached           : std_logic;
-  signal ddr_addr_cnt_max_m1_reached        : std_logic;
+  signal ddr_addr_cnt_m1_max_reached        : std_logic;
+  signal ddr_addr_wrap_counter              : std_logic;
+  signal ddr_addr_m1_wrap_counter           : std_logic;
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_max_m1                    : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_recv_pkt_cnt                   : unsigned(c_ddr_axis_max_wtt_width-1 downto 0);
   signal ddr_addr_first                     : std_logic;
   signal ddr_reissue_trans                  : std_logic;
@@ -439,7 +442,7 @@ begin
           -- And in this mode, the memory addresses are incremented automatically
           -- for each word.
           if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) or
-              ddr_addr_cnt_max_m1_reached = '1' then -- will increment to last sample
+              ddr_addr_m1_wrap_counter = '1' then -- will increment to last sample
             ddr_eop_in <= "1";
           else
             ddr_eop_in <= "0";
@@ -545,6 +548,7 @@ begin
           ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
           ddr_addr_init <= unsigned(wr_init_addr_alig);
           ddr_addr_max <= unsigned(wr_end_addr_alig);
+          ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
         elsif ddr_valid_in = '1' then -- This represents a successful transfer
           -- No more the first transaction. This train has departed already...
           ddr_addr_first <= '0';
@@ -553,7 +557,7 @@ begin
           -- Get ready for the next valid transaction
           ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis;
           -- Wrap counters if we go over the limit
-          if ddr_addr_cnt_max_reached = '1' then
+          if ddr_addr_wrap_counter = '1' then
             ddr_addr_cnt_axis <= ddr_addr_init;
           end if;
         end if;
@@ -561,8 +565,19 @@ begin
     end if;
   end process;
 
-  ddr_addr_cnt_max_reached <= '1' when ddr_addr_cnt_axis = ddr_addr_max else '0';
-  ddr_addr_cnt_max_m1_reached <= '1' when ddr_addr_cnt_axis = ddr_addr_max-1 else '0';
+  -- calculate if the next address will go over the limit
+  ddr_addr_cnt_next_will_reach_max <= '1' when ddr_addr_cnt_axis + c_addr_ddr_inc_axis > ddr_addr_max else '0';
+  ddr_addr_cnt_m1_next_will_reach_max <= '1' when ddr_addr_cnt_axis + c_addr_ddr_inc_axis > ddr_addr_max_m1 else '0';
+  -- We must compare the limit using >=, as the input wr_end_addr_alig may not
+  -- be multiple of "c_addr_ddr_inc_axis". Thus not allowing us to use "=" only
+  ddr_addr_cnt_max_reached <= '1' when ddr_addr_cnt_axis >= ddr_addr_max else '0';
+  ddr_addr_cnt_m1_max_reached <= '1' when ddr_addr_cnt_axis >= ddr_addr_max_m1 else '0';
+
+  -- Wrap counter flags
+  ddr_addr_wrap_counter <= '1' when ddr_addr_cnt_next_will_reach_max = '1' or
+                                    ddr_addr_cnt_max_reached = '1' else '0';
+  ddr_addr_m1_wrap_counter <= '1' when ddr_addr_cnt_m1_next_will_reach_max = '1' or
+                                       ddr_addr_cnt_m1_max_reached = '1' else '0';
 
   -- To Flow Control module
   ddr_addr_in_axis <= std_logic_vector(ddr_addr_cnt_axis);
