@@ -143,6 +143,12 @@ architecture rtl of acq_ddr3_axis_write is
 
   -- Must be power of 2
   constant c_ddr_axis_max_btt               : natural := 4194304; -- 2^22
+  constant c_ddr_axis_max_btt_uns           : unsigned(c_axis_cmd_tdata_btt_width-1 downto 0) :=
+                                                to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width);
+  constant c_ddr_axis_max_btt_uns_padded    : unsigned(g_ddr_addr_width-1 downto 0) :=
+                                                unsigned(f_gen_std_logic_vector(
+                                                    g_ddr_addr_width-c_axis_cmd_tdata_btt_width, '0')) &
+                                                to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width);
   -- Maximum words to transfer
   constant c_ddr_axis_max_wtt               : natural := c_ddr_axis_max_btt/c_ddr_payload_width_byte;
   constant c_ddr_axis_max_wtt_width         : natural := f_log2_size(c_ddr_axis_max_wtt);
@@ -277,6 +283,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_m1_wrap_counter           : std_logic;
   signal ddr_btt                            : unsigned(c_axis_cmd_tdata_btt_width-1 downto 0);
   signal ddr_btt_full                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_mem_area_full              : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_mem_area_rem               : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_btt_slv                        : std_logic_vector(c_axis_cmd_tdata_btt_width-1 downto 0);
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
@@ -310,6 +318,27 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_axis_rstn                      : std_logic := '1';
   signal ddr_axis_halt                      : std_logic := '0';
   signal hrst_state                         : t_hrst_state := IDLE;
+
+  function f_clip_value(val : unsigned; max_value : unsigned)
+    return unsigned
+  is
+    variable res : unsigned(val'length-1 downto 0);
+  begin
+
+    assert (val'length = max_value'length)
+      report "[f_clip_value] Array lengths do not match. Left is " &
+      Integer'image(val'length) & ", Right is " &
+      Integer'image(max_value'length)
+      severity Failure;
+
+    if val > max_value then
+      res := max_value;
+    else
+      res := val;
+    end if;
+
+    return res;
+  end;
 
 begin
 
@@ -581,7 +610,7 @@ begin
           ddr_addr_max <= unsigned(wr_end_addr_alig);
           ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
           -- Transfer up to the remaining of the memory area
-          ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
+          ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
         elsif ddr_valid_in = '1' then -- This represents a successful transfer
           -- No more the first transaction. This train has departed already...
           ddr_addr_first <= '0';
@@ -589,12 +618,12 @@ begin
           -- Always calculate the number of bytes to be transmitted.
           -- This will only be written when a new command is issued,
           -- so we need to have the correct value at all times.
-          ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(ddr_byte_addr_cnt_axis);
+          ddr_btt_full <= f_clip_value(ddr_btt_mem_area_rem, c_ddr_axis_max_btt_uns_padded);
           -- This case only happens when the DDR addr will wrap. So, we reset BTT to
           -- the maximum allowed for the memory region
           if unsigned(ddr_byte_addr_cnt_axis) > unsigned(wr_end_byte_addr_alig) or
               ddr_addr_wrap_counter = '1' then
-            ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
+            ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
           end if;
 
           -- To Flow Control module
@@ -608,6 +637,9 @@ begin
       end if;
     end if;
   end process;
+
+  ddr_btt_mem_area_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
+  ddr_btt_mem_area_rem <= unsigned(wr_end_byte_addr_alig) - unsigned(ddr_byte_addr_cnt_axis);
 
   -- Crop number of bits to the maximum allowed by datamover. This only matters
   -- if we have smaller (less than 2^23) quantities anyway.
