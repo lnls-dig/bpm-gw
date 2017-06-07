@@ -592,7 +592,8 @@ begin
           ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(ddr_byte_addr_cnt_axis);
           -- This case only happens when the DDR addr will wrap. So, we reset BTT to
           -- the maximum allowed for the memory region
-          if unsigned(ddr_byte_addr_cnt_axis) > unsigned(wr_end_byte_addr_alig) then
+          if unsigned(ddr_byte_addr_cnt_axis) > unsigned(wr_end_byte_addr_alig) or
+              ddr_addr_wrap_counter = '1' then
             ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
           end if;
 
