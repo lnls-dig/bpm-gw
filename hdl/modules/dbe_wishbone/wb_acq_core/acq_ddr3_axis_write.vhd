@@ -150,6 +150,7 @@ architecture rtl of acq_ddr3_axis_write is
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
+  constant c_axis_cmd_width                 : natural := g_ddr_addr_width + c_axis_cmd_tdata_btt_width;
 
   -- Constants for data + keep aggregate signal
   constant c_keep_low                       : natural := 0;
@@ -166,6 +167,12 @@ architecture rtl of acq_ddr3_axis_write is
 
   constant c_fc_header_top_idx              : natural := g_ddr_header_width + c_ddr_payload_eop_keep_width -1;
   constant c_fc_header_bot_idx              : natural := c_ddr_payload_eop_keep_width;
+
+  -- Constants for addr + btt aggregate signal
+  constant c_ddr_btt_low                    : natural := 0;
+  constant c_ddr_btt_high                   : natural := c_axis_cmd_tdata_btt_width + c_ddr_btt_low -1;
+  constant c_ddr_addr_low                   : natural := c_ddr_btt_high + 1;
+  constant c_ddr_addr_high                  : natural := g_ddr_addr_width + c_ddr_addr_low -1;
 
   -- Constants for ddr3 address bits
   constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
@@ -208,6 +215,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal fc_eof_pld                         : std_logic;
   signal fc_eop_pld                         : std_logic;
   signal fc_addr                            : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal fc_btt                             : std_logic_vector(c_axis_cmd_tdata_btt_width-1 downto 0);
+  signal fc_addr_btt_cmd                    : std_logic_vector(c_axis_cmd_width-1 downto 0);
   signal fc_stall_cmd                       : std_logic;
   signal fc_dreq_cmd                        : std_logic;
   signal fc_stall_pld                       : std_logic;
@@ -227,6 +236,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal cnt_all_trans_done_p               : std_logic;
   signal wr_init_addr_alig                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal wr_end_addr_alig                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal wr_init_byte_addr_alig             : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal wr_end_byte_addr_alig              : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
   -- Plain interface control
   signal pl_dreq                            : std_logic;
@@ -256,12 +267,17 @@ architecture rtl of acq_ddr3_axis_write is
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_cnt_axis_slv              : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal ddr_byte_addr_cnt_axis             : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_cnt_max_reached           : std_logic;
   signal ddr_addr_cnt_m1_max_reached        : std_logic;
   signal ddr_addr_cnt_next_will_reach_max   : std_logic;
   signal ddr_addr_cnt_m1_next_will_reach_max : std_logic;
   signal ddr_addr_wrap_counter              : std_logic;
   signal ddr_addr_m1_wrap_counter           : std_logic;
+  signal ddr_btt                            : unsigned(c_axis_cmd_tdata_btt_width-1 downto 0);
+  signal ddr_btt_full                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_slv                        : std_logic_vector(c_axis_cmd_tdata_btt_width-1 downto 0);
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max_m1                    : unsigned(g_ddr_addr_width-1 downto 0);
@@ -273,6 +289,7 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_in_axis                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_valid_in                       : std_logic;
   signal ddr_axis_cmd_valid_in              : std_logic;
+  signal ddr_axis_cmd_addr_btt_in           : std_logic_vector(c_axis_cmd_width-1 downto 0);
   signal ddr_sent_cnt_out                   : unsigned(f_log2_size(g_max_burst_size)-1 downto 0);
   signal ddr_valid_in_t                     : std_logic;
   signal ddr_trigger_in                     : std_logic;
@@ -444,7 +461,7 @@ begin
           -- And in this mode, the memory addresses are incremented automatically
           -- for each word.
           if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) or
-              ddr_addr_m1_wrap_counter = '1' then -- will increment to last sample
+              (ddr_addr_m1_wrap_counter = '1' and ddr_addr_wrap_counter = '0') then -- will increment to last sample
             ddr_eop_in <= "1";
           else
             ddr_eop_in <= "0";
@@ -531,6 +548,16 @@ begin
   wr_end_addr_alig <= wr_end_addr_i(wr_end_addr_i'left downto c_ddr_align_shift) &
                              f_gen_std_logic_vector(c_ddr_align_shift, '0');
 
+  -- Get address in bytes
+  wr_init_byte_addr_alig <= f_gen_std_logic_vector(2, '0') &
+                              wr_init_addr_alig(wr_init_addr_alig'left downto 2);
+  wr_end_byte_addr_alig <= f_gen_std_logic_vector(2, '0') &
+                              wr_end_addr_alig(wr_end_addr_alig'left downto 2);
+  ddr_byte_addr_cnt_axis <= f_gen_std_logic_vector(2, '0') &
+                            ddr_addr_cnt_axis_slv(ddr_byte_addr_cnt_axis'left downto 2);
+
+  ddr_addr_cnt_axis_slv <= std_logic_vector(ddr_addr_cnt_axis);
+
   p_ddr_addr_cnt : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
@@ -540,7 +567,9 @@ begin
         ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
         ddr_addr_init <= unsigned(wr_init_addr_alig);
         ddr_addr_max <= unsigned(wr_end_addr_alig);
+        -- FIXME. Logic on reset tree.
         ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
+        ddr_btt_full <= to_unsigned(0, ddr_btt_full'length);
       else
 
         if wr_start_i = '1' then
@@ -551,9 +580,21 @@ begin
           ddr_addr_init <= unsigned(wr_init_addr_alig);
           ddr_addr_max <= unsigned(wr_end_addr_alig);
           ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
+          -- Transfer up to the remaining of the memory area
+          ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
         elsif ddr_valid_in = '1' then -- This represents a successful transfer
           -- No more the first transaction. This train has departed already...
           ddr_addr_first <= '0';
+
+          -- Always calculate the number of bytes to be transmitted.
+          -- This will only be written when a new command is issued,
+          -- so we need to have the correct value at all times.
+          ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(ddr_byte_addr_cnt_axis);
+          -- This case only happens when the DDR addr will wrap. So, we reset BTT to
+          -- the maximum allowed for the memory region
+          if unsigned(ddr_byte_addr_cnt_axis) > unsigned(wr_end_byte_addr_alig) then
+            ddr_btt_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
+          end if;
 
           -- To Flow Control module
           -- Get ready for the next valid transaction
@@ -566,6 +607,10 @@ begin
       end if;
     end if;
   end process;
+
+  -- Crop number of bits to the maximum allowed by datamover. This only matters
+  -- if we have smaller (less than 2^23) quantities anyway.
+  ddr_btt <= ddr_btt_full(ddr_btt'left downto 0);
 
   -- calculate if the next address will go over the limit
   ddr_addr_cnt_next_will_reach_max <= '1' when ddr_addr_cnt_axis + c_addr_ddr_inc_axis > ddr_addr_max else '0';
@@ -583,6 +628,10 @@ begin
 
   -- To Flow Control module
   ddr_addr_in_axis <= std_logic_vector(ddr_addr_cnt_axis);
+  ddr_btt_slv <= std_logic_vector(ddr_btt);
+
+  ddr_axis_cmd_addr_btt_in(c_ddr_addr_high downto c_ddr_addr_low) <= ddr_addr_in_axis;
+  ddr_axis_cmd_addr_btt_in(c_ddr_btt_high downto c_ddr_btt_low) <= ddr_btt_slv;
 
   -- Debug outputs
   dbg_ddr_addr_cnt_axis_o <= std_logic_vector(ddr_addr_cnt_axis);
@@ -729,7 +778,7 @@ begin
     g_header_in_width                       => g_ddr_header_width,
     g_data_width                            => 0, -- Dummy value
     g_pkt_size_width                        => c_pkt_size_width,
-    g_addr_width                            => g_ddr_addr_width,
+    g_addr_width                            => c_axis_cmd_width,
     g_with_fifo_inferred                    => true,
     g_pipe_size                             => g_fc_pipe_size
   )
@@ -738,7 +787,7 @@ begin
     rst_n_i                                 => ext_rst_n_i,
 
     pl_data_i                               => (others => '0'),
-    pl_addr_i                               => ddr_addr_in_axis,
+    pl_addr_i                               => ddr_axis_cmd_addr_btt_in,
     pl_valid_i                              => ddr_axis_cmd_valid_in,
 
     pl_dreq_o                               => pl_dreq_cmd,
@@ -757,13 +806,16 @@ begin
 
     fc_dout_o                               => fc_header_cmd,
     fc_valid_o                              => fc_valid_cmd,
-    fc_addr_o                               => fc_addr,
+    fc_addr_o                               => fc_addr_btt_cmd,
     fc_sof_o                                => fc_sof_cmd,
     fc_eof_o                                => fc_eof_cmd,
 
     fc_stall_i                              => fc_stall_cmd,
     fc_dreq_i                               => fc_dreq_cmd
   );
+
+  fc_addr <= fc_addr_btt_cmd(c_ddr_addr_high downto c_ddr_addr_low);
+  fc_btt <= fc_addr_btt_cmd(c_ddr_btt_high downto c_ddr_btt_low);
 
   -----------------------------------------------------------------------------
   -- DDR3 AXIS Write Interface
@@ -911,12 +963,12 @@ begin
   axis_s2mm_cmd_tvalid_o <= fc_valid_cmd;
 
   -- With 23 bits we can transfer up to 8MB of data.  We always set the datamover
-  -- to transfer the maximum ammount of data. If we finish early, we can just
-  -- abort the transaction asserting the LTAST stream signal (typical case).
+  -- to transfer the maximum ammount of data up to the end of the memory region.
+  -- If we finish early, we can just abort the transaction asserting the TLAST
+  -- stream signal (typical case).
   -- WARNING: the datamover MUST be set the support Indeterminate BTT!
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_btt_top_idx downto
-    c_axis_cmd_tdata_btt_bot_idx)                             <=
-   std_logic_vector(to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width));             -- cmd_btt (Bytes to transfer)
+    c_axis_cmd_tdata_btt_bot_idx)                             <= fc_btt;                      -- cmd_btt (Bytes to transfer)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_type_idx)            <= '1';                         -- cmd_type (1 = increment address)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_dsa_top_idx downto
     c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                    -- cmd_dsa
