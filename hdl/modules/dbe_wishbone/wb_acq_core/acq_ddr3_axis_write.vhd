@@ -242,8 +242,6 @@ architecture rtl of acq_ddr3_axis_write is
   signal cnt_all_trans_done_p               : std_logic;
   signal wr_init_addr_alig                  : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal wr_end_addr_alig                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
-  signal wr_init_byte_addr_alig             : std_logic_vector(g_ddr_addr_width-1 downto 0);
-  signal wr_end_byte_addr_alig              : std_logic_vector(g_ddr_addr_width-1 downto 0);
 
   -- Plain interface control
   signal pl_dreq                            : std_logic;
@@ -273,7 +271,6 @@ architecture rtl of acq_ddr3_axis_write is
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
-  signal ddr_addr_cnt_axis_slv              : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_byte_addr_cnt_axis             : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_cnt_max_reached           : std_logic;
   signal ddr_addr_cnt_m1_max_reached        : std_logic;
@@ -577,16 +574,6 @@ begin
   wr_end_addr_alig <= wr_end_addr_i(wr_end_addr_i'left downto c_ddr_align_shift) &
                              f_gen_std_logic_vector(c_ddr_align_shift, '0');
 
-  -- Get address in bytes
-  wr_init_byte_addr_alig <= f_gen_std_logic_vector(2, '0') &
-                              wr_init_addr_alig(wr_init_addr_alig'left downto 2);
-  wr_end_byte_addr_alig <= f_gen_std_logic_vector(2, '0') &
-                              wr_end_addr_alig(wr_end_addr_alig'left downto 2);
-  ddr_byte_addr_cnt_axis <= f_gen_std_logic_vector(2, '0') &
-                            ddr_addr_cnt_axis_slv(ddr_byte_addr_cnt_axis'left downto 2);
-
-  ddr_addr_cnt_axis_slv <= std_logic_vector(ddr_addr_cnt_axis);
-
   p_ddr_addr_cnt : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
@@ -621,7 +608,7 @@ begin
           ddr_btt_full <= f_clip_value(ddr_btt_mem_area_rem, c_ddr_axis_max_btt_uns_padded);
           -- This case only happens when the DDR addr will wrap. So, we reset BTT to
           -- the maximum allowed for the memory region
-          if unsigned(ddr_byte_addr_cnt_axis) > unsigned(wr_end_byte_addr_alig) or
+          if unsigned(ddr_addr_cnt_axis) > unsigned(wr_end_addr_alig) or
               ddr_addr_wrap_counter = '1' then
             ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
           end if;
@@ -638,8 +625,8 @@ begin
     end if;
   end process;
 
-  ddr_btt_mem_area_full <= unsigned(wr_end_byte_addr_alig) - unsigned(wr_init_byte_addr_alig);
-  ddr_btt_mem_area_rem <= unsigned(wr_end_byte_addr_alig) - unsigned(ddr_byte_addr_cnt_axis);
+  ddr_btt_mem_area_full <= unsigned(wr_end_addr_alig) - unsigned(wr_init_addr_alig);
+  ddr_btt_mem_area_rem <= unsigned(wr_end_addr_alig) - unsigned(ddr_addr_cnt_axis);
 
   -- Crop number of bits to the maximum allowed by datamover. This only matters
   -- if we have smaller (less than 2^23) quantities anyway.
