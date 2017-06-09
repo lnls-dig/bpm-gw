@@ -916,7 +916,7 @@ begin
           ddr_axis_rstn <= '1';
           ddr_axis_halt <= '0';
 
-          if ext_rst_n_i = '0' then
+          if ext_rst_n_i = '0' or wr_start_i = '1' then
             hrst_state <= HALT_GEN;
           end if;
 
