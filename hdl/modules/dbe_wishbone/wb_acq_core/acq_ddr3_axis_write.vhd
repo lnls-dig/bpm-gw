@@ -310,6 +310,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_rdy_cmd                        : std_logic;
   signal ddr_rdy_pld                        : std_logic;
 
+  signal int_rst_n                          : std_logic;
+
   -- Halt/Rst signals
   type   t_hrst_state is (IDLE, HALT_GEN, WAIT_HALT_CMPLT, RST_GEN, RST1, RST2, RST3);
   signal ddr_axis_rstn                      : std_logic := '1';
@@ -342,6 +344,9 @@ begin
   assert (g_ddr_payload_width = 256 or g_ddr_payload_width = 512)
   report "[acq_ddr3_axis_write] Only DDR Payload of 256 or 512 are supported!"
   severity failure;
+
+  -- Internal reset
+  int_rst_n <= ext_rst_n_i and not (wr_start_i);
 
   ----------------------------------------------------------------------------
   -- Register transaction limits
@@ -439,7 +444,7 @@ begin
   p_ddr_valid_data_in : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_data_in <= (others => '0');
         ddr_valid_in_t <= '0';
       else
@@ -461,15 +466,11 @@ begin
   p_eop_pld : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_eop_in <= "0";
         ddr_recv_pkt_cnt <= to_unsigned(0, ddr_recv_pkt_cnt'length);
       else
-        -- New transaction
-        if wr_start_i = '1' then
-          ddr_recv_pkt_cnt <= to_unsigned(0, ddr_recv_pkt_cnt'length);
-          ddr_eop_in <= "0";
-        elsif ddr_valid_in = '1' then
+        if ddr_valid_in = '1' then
           -- Count the number of valid packets received. This will wrap
           -- around the maximum number of samples per AXI packet
           ddr_recv_pkt_cnt <= ddr_recv_pkt_cnt + 1;
@@ -518,7 +519,7 @@ begin
   p_valid_axis_ms_cmd : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_new_shot_coming <= '0';
       else
         -- Current transaction finished, but not all of them -> current shot
@@ -537,7 +538,7 @@ begin
   p_reissue_cmd : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_reissue_trans <= '0';
       else
         if ddr_valid_in = '1' then
@@ -577,7 +578,7 @@ begin
   p_ddr_addr_cnt : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_addr_first <= '1';
         -- This address must be word-aligned
         ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
@@ -585,20 +586,10 @@ begin
         ddr_addr_max <= unsigned(wr_end_addr_alig);
         -- FIXME. Logic on reset tree.
         ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
-        ddr_btt_full <= to_unsigned(0, ddr_btt_full'length);
+        -- Transfer up to the remaining of the memory area
+        ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
       else
-
-        if wr_start_i = '1' then
-          -- First word in the transaction
-          ddr_addr_first <= '1';
-          -- This address must be word-aligned
-          ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
-          ddr_addr_init <= unsigned(wr_init_addr_alig);
-          ddr_addr_max <= unsigned(wr_end_addr_alig);
-          ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
-          -- Transfer up to the remaining of the memory area
-          ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
-        elsif ddr_valid_in = '1' then -- This represents a successful transfer
+        if ddr_valid_in = '1' then -- This represents a successful transfer
           -- No more the first transaction. This train has departed already...
           ddr_addr_first <= '0';
 
@@ -664,16 +655,13 @@ begin
   p_ddr_trig_addr : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
-        ddr_trig_addr <= to_unsigned(0, ddr_trig_addr'length);
+      if int_rst_n = '0' then
+        -- Default trigger address is in the beginning of the memory section
+        ddr_trig_addr <= unsigned(wr_init_addr_alig);
         ddr_trig_captured <= '0';
       else
-        -- Default trigger address is in the beginning of the memory section
-        if wr_start_i = '1' then
-          ddr_trig_addr <= unsigned(wr_init_addr_alig);
-          ddr_trig_captured <= '0';
         -- Store DDR address if there was a trigger occurrence
-        elsif (ddr_trigger_in = '1' and ddr_valid_in = '1') or
+        if (ddr_trigger_in = '1' and ddr_valid_in = '1') or
             -- We have transfered all samples, but no trigger occurred
             (cnt_all_trans_done_p = '1' and ddr_trig_captured = '0') then
           ddr_trig_addr <= ddr_addr_cnt_axis;
@@ -716,7 +704,7 @@ begin
   (
     -- DDR3 external clock
     clk_i                                   => ext_clk_i,
-    rst_n_i                                 => ext_rst_n_i,
+    rst_n_i                                 => int_rst_n,
 
     cnt_all_pkts_ct_done_p_o                => open,
     cnt_all_trans_done_p_o                  => open,
@@ -738,7 +726,7 @@ begin
   (
     -- DDR3 external clock
     clk_i                                   => ext_clk_i,
-    rst_n_i                                 => ext_rst_n_i,
+    rst_n_i                                 => int_rst_n,
 
     cnt_all_pkts_ct_done_p_o                => cnt_all_pkts_ct_done_pld_p,
     cnt_all_trans_done_p_o                  => cnt_all_trans_done_pld_p,
@@ -759,7 +747,7 @@ begin
   p_cnt_wait_last_done : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         cnt_all_trans_done_pld_l <= '0';
       else
 
@@ -780,7 +768,7 @@ begin
   p_ddr_keep_in : process(ext_clk_i)
   begin
     if rising_edge(ext_clk_i) then
-      if ext_rst_n_i = '0' then
+      if int_rst_n = '0' then
         ddr_keep_in <= (others => '1');
       else
         if fifo_fc_valid_i = '1' then
@@ -804,7 +792,7 @@ begin
   )
   port map (
     clk_i                                   => ext_clk_i,
-    rst_n_i                                 => ext_rst_n_i,
+    rst_n_i                                 => int_rst_n,
 
     pl_data_i                               => (others => '0'),
     pl_addr_i                               => ddr_axis_cmd_addr_btt_in,
@@ -851,7 +839,7 @@ begin
   )
   port map (
     clk_i                                   => ext_clk_i,
-    rst_n_i                                 => ext_rst_n_i,
+    rst_n_i                                 => int_rst_n,
 
     pl_data_i                               => ddr_data_eop_keep_in,
     pl_addr_i                               => (others => '0'),
@@ -916,7 +904,7 @@ begin
           ddr_axis_rstn <= '1';
           ddr_axis_halt <= '0';
 
-          if ext_rst_n_i = '0' or wr_start_i = '1' then
+          if int_rst_n = '0' then
             hrst_state <= HALT_GEN;
           end if;
 
