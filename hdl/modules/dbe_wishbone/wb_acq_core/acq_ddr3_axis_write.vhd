@@ -691,9 +691,9 @@ begin
 
   -- Only count up to the sample when in pre_trigger or post_trigger and we haven't
   -- acquire enough samples
-  pl_cmd_cnt_en <= '1' when (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_pre_pkt_size and
+  pl_cmd_cnt_en <= '1' when (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fc_data_id_cmd = "010") or -- Pre-trigger
-                                (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fc_data_id_cmd = "100") -- Post-trigger
                             else '0';
 
@@ -702,9 +702,9 @@ begin
 
   -- Only count up to the sample when in pre_trigger or post_trigger and we haven't
   -- acquire enough samples
-  pl_pld_cnt_en <= '1' when (unsigned(dbg_pld_pkt_ct_cnt) < lmt_pre_pkt_size and
+  pl_pld_cnt_en <= '1' when (unsigned(dbg_pld_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fc_data_id_cmd = "010") or -- Pre-trigger
-                                (unsigned(dbg_pld_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_pld_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fc_data_id_cmd = "100") -- Post-trigger
                             else '0';
 
