@@ -536,9 +536,17 @@ begin  -- architecture rtl
     --
     -- If we want to input data, we use the pins as usual: data as data and
     -- direction as direction.
+    --
+    -- Notice that for FPGA output:
+    --   Direction pin 0 = Input to FPGA
+    --   Direction pin 1 = Output to FPGA
+    --
+    -- So, we must negate the data pin so, sending 1 will set the FPGA
+    -- to output ('0' in iobuf) and sending 0 will set the FPGA to input
+    -- ('1' in iobuf)
     trig_dir_int(i)  <= ch_regs_out(i).ch_ctl_dir;
     trig_pol_int(i)  <= ch_regs_out(i).ch_ctl_dir_pol;
-    trig_data_int(i) <= extended_transm(i);
+    trig_data_int(i) <= not (extended_transm(i));
 
     -- Regular data/direction driving with polarity inversion
     trig_dir_polarized(i)  <= trig_dir_int(i) when trig_pol_int(i) = '0' else

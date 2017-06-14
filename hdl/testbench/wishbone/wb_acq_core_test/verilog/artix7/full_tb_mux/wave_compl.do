@@ -11,6 +11,12 @@ quietly virtual signal -install /wb_acq_core_tb/cmp0_data_checker { /wb_acq_core
 quietly virtual signal -install /wb_acq_core_tb/cmp0_data_checker { /wb_acq_core_tb/cmp0_data_checker/fifo_exp_dout(286 downto 31)} data_exp
 quietly virtual signal -install /wb_acq_core_tb/cmp0_data_checker { /wb_acq_core_tb/cmp0_data_checker/fifo_act_dout(286 downto 31)} data_act
 quietly virtual signal -install /wb_acq_core_tb/cmp0_data_checker { /wb_acq_core_tb/cmp0_data_checker/fifo_act_dout(30 downto 0)} addr_act
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface { /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(22 downto 0)} axis_btt
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface {/wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(23)  } axis_type
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface { /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(29 downto 24)} axis_dsa
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface {/wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(40)  } axis_eof
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface {/wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(31)  } axis_drr
+quietly virtual signal -install /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface { /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o(63 downto 32)} axis_addr
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider testbench
 add wave -noupdate /wb_acq_core_tb/c_data_max
@@ -502,8 +508,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_valid_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_wr_en_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_dtrig_chan_id
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_dtrig_chan_id_uncoalesced
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_dtrig_chan_id_uncoalesced_id
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_dtrig_valid
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_curr_chan_id
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/lmt_valid
@@ -515,8 +519,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_atoms
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_num_atoms
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_num_atoms_uncoalesced
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_num_coalesce_max
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_coalesce_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_valid_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_valid_sel_out
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_trig/acq_valid_out
@@ -624,7 +626,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/c_ext_fsm_pulse_width
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/c_num_coalesce_array
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/c_num_coalesce_log2_array
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/curr_num_coalese_log2
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/lmt_acq_full_pkt_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/lmt_acq_pos_pkt_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/cmp_acq_fsm/lmt_acq_pre_pkt_size
@@ -916,20 +917,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_full_pkt_size_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_shots_nb_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_valid_i
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tready_i
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tready_i
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fifo_fc_dreq_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fifo_fc_stall_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_all_trans_done_p_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_ddr_trig_addr_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tvalid_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tdata_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tkeep_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tlast_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tvalid_o
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/addr
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/addr
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_pre_pkt_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_pre_pkt_size_s
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_pre_pkt_size_alig_s
@@ -961,6 +948,8 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_eof_pld
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_eop_pld
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_addr
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_btt
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_addr_btt_cmd
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_stall_cmd
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_dreq_cmd
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fc_stall_pld
@@ -977,8 +966,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/cnt_all_trans_done_cmd_l
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/cnt_all_trans_done_pld_l
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/cnt_all_trans_done_p
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/wr_init_addr_alig
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/wr_end_addr_alig
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/pl_dreq
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/pl_stall
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/pl_stall_d0
@@ -1000,16 +987,24 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/pl_pld_cnt_en
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/acq_pld_cnt_en
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_data_in
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_axis
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_max_reached
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_m1_max_reached
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_next_will_reach_max
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_m1_next_will_reach_max
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_wrap_counter
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_m1_wrap_counter
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_btt_slv
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_init
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_max
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_max_m1
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_recv_pkt_cnt
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_first
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_reissue_trans
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_new_shot_coming
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_in_axis
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_valid_in
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_axis_cmd_valid_in
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_axis_cmd_addr_btt_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_sent_cnt_out
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_valid_in_t
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_trigger_in
@@ -1022,39 +1017,48 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_data_eop_keep_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_rdy_cmd
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_rdy_pld
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_payload_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_acq_channels
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_acq_chan_slice
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_fc_payload_ratio
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_fc_payload_ratio_log2
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_max_ddr_payload_ratio_log2
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_keep_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_eop_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_payload_eop_keep_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_bytes_per_word
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_bytes_per_word_log2
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_addr_ddr_inc
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_addr_ddr_inc_axis
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_payload_width_byte
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_payload_width_byte_log2
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_axis_max_btt
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_axis_max_wtt
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_axis_max_wtt_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_pkt_size_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_addr_cnt_width
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_keep_low
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_keep_high
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_eop_low
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_eop_high
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_data_low
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_data_high
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_header_low
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_header_high
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_header_top_idx
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_header_bot_idx
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_fc_header_top_idx
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_fc_header_bot_idx
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/c_ddr_align_shift
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_axis_rstn
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_axis_halt
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/hrst_state
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_halt_cmplt_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_addr_req_posted_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_wr_xfer_cmplt_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_ld_nxt_len_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_wr_len_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fifo_fc_dreq_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/fifo_fc_stall_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_all_trans_done_p_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/lmt_ddr_trig_addr_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_axis_cmd_valid_in
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_btt
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_btt_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_btt_mem_area_full
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_btt_mem_area_rem
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/wr_init_addr_alig
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/wr_end_addr_alig
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_addr_cnt_axis
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/ddr_byte_addr_cnt_axis
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_addr
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_drr
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_eof
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_dsa
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_type
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_btt
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tready_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tready_i
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tdata_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_cmd_tvalid_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tdata_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tkeep_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tlast_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_pld_tvalid_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_rstn_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_halt_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/axis_s2mm_allow_addr_req_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/dbg_ddr_addr_cnt_axis_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/dbg_ddr_addr_init_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/dbg_ddr_addr_max_o
+add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_axis_interface/cmp_acq_ddr3_iface/addr
 add wave -noupdate -divider ddr3_axis_readback0
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ext_clk_i
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ext_rst_n_i
@@ -1105,7 +1109,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_full_pkt_addr_ms
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_pre_pkt_addr
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_pre_full_addr
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/sample_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_data_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_addr_inc
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(0)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_addr_cnt_out
@@ -1186,7 +1189,6 @@ add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_pre_pkt_addr
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_pre_full_addr
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/lmt_pre_full_addr_m
-add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/sample_size
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_data_in
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_addr_inc
 add wave -noupdate /wb_acq_core_tb/dut/cmp_wb_facq_core_mux/gen_facq_core(1)/cmp_wb_facq_core/cmp_wb_acq_core/gen_ddr3_readback/gen_ddr3_readback_axis_interface/cmp_acq_ddr3_read/ddr_addr_cnt_out
@@ -1592,10 +1594,10 @@ add wave -noupdate /wb_acq_core_tb/cmp1_data_checker/chk_pass_o
 add wave -noupdate /wb_acq_core_tb/cmp1_data_checker/exp_addr
 add wave -noupdate /wb_acq_core_tb/cmp1_data_checker/act_addr
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {147139918260 fs} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 264
-configure wave -valuecolwidth 313
+WaveRestoreCursors {{Cursor 1} {203437500000 fs} 0} {{Cursor 2} {207107500000 fs} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 295
+configure wave -valuecolwidth 180
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -1608,4 +1610,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {985246678214 fs} {986488619137 fs}
+WaveRestoreZoom {206941717318 fs} {207490953867 fs}

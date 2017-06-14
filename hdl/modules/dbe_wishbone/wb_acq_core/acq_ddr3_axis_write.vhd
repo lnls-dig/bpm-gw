@@ -143,6 +143,12 @@ architecture rtl of acq_ddr3_axis_write is
 
   -- Must be power of 2
   constant c_ddr_axis_max_btt               : natural := 4194304; -- 2^22
+  constant c_ddr_axis_max_btt_uns           : unsigned(c_axis_cmd_tdata_btt_width-1 downto 0) :=
+                                                to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width);
+  constant c_ddr_axis_max_btt_uns_padded    : unsigned(g_ddr_addr_width-1 downto 0) :=
+                                                unsigned(f_gen_std_logic_vector(
+                                                    g_ddr_addr_width-c_axis_cmd_tdata_btt_width, '0')) &
+                                                to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width);
   -- Maximum words to transfer
   constant c_ddr_axis_max_wtt               : natural := c_ddr_axis_max_btt/c_ddr_payload_width_byte;
   constant c_ddr_axis_max_wtt_width         : natural := f_log2_size(c_ddr_axis_max_wtt);
@@ -150,6 +156,7 @@ architecture rtl of acq_ddr3_axis_write is
   -- Flow Control constants
   constant c_pkt_size_width                 : natural := 32;
   constant c_addr_cnt_width                 : natural := c_max_ddr_payload_ratio_log2;
+  constant c_axis_cmd_width                 : natural := g_ddr_addr_width + c_axis_cmd_tdata_btt_width;
 
   -- Constants for data + keep aggregate signal
   constant c_keep_low                       : natural := 0;
@@ -166,6 +173,12 @@ architecture rtl of acq_ddr3_axis_write is
 
   constant c_fc_header_top_idx              : natural := g_ddr_header_width + c_ddr_payload_eop_keep_width -1;
   constant c_fc_header_bot_idx              : natural := c_ddr_payload_eop_keep_width;
+
+  -- Constants for addr + btt aggregate signal
+  constant c_ddr_btt_low                    : natural := 0;
+  constant c_ddr_btt_high                   : natural := c_axis_cmd_tdata_btt_width + c_ddr_btt_low -1;
+  constant c_ddr_addr_low                   : natural := c_ddr_btt_high + 1;
+  constant c_ddr_addr_high                  : natural := g_ddr_addr_width + c_ddr_addr_low -1;
 
   -- Constants for ddr3 address bits
   constant c_ddr_align_shift                : natural := f_log2_size(c_addr_ddr_inc);
@@ -208,6 +221,8 @@ architecture rtl of acq_ddr3_axis_write is
   signal fc_eof_pld                         : std_logic;
   signal fc_eop_pld                         : std_logic;
   signal fc_addr                            : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal fc_btt                             : std_logic_vector(c_axis_cmd_tdata_btt_width-1 downto 0);
+  signal fc_addr_btt_cmd                    : std_logic_vector(c_axis_cmd_width-1 downto 0);
   signal fc_stall_cmd                       : std_logic;
   signal fc_dreq_cmd                        : std_logic;
   signal fc_stall_pld                       : std_logic;
@@ -256,8 +271,21 @@ architecture rtl of acq_ddr3_axis_write is
   -- DDR3 Signals
   signal ddr_data_in                        : std_logic_vector(g_ddr_header_width+g_ddr_payload_width-1 downto 0);
   signal ddr_addr_cnt_axis                  : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_byte_addr_cnt_axis             : std_logic_vector(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_cnt_max_reached           : std_logic;
+  signal ddr_addr_cnt_m1_max_reached        : std_logic;
+  signal ddr_addr_cnt_next_will_reach_max   : std_logic;
+  signal ddr_addr_cnt_m1_next_will_reach_max : std_logic;
+  signal ddr_addr_wrap_counter              : std_logic;
+  signal ddr_addr_m1_wrap_counter           : std_logic;
+  signal ddr_btt                            : unsigned(c_axis_cmd_tdata_btt_width-1 downto 0);
+  signal ddr_btt_full                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_mem_area_full              : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_mem_area_rem               : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_btt_slv                        : std_logic_vector(c_axis_cmd_tdata_btt_width-1 downto 0);
   signal ddr_addr_init                      : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_addr_max                       : unsigned(g_ddr_addr_width-1 downto 0);
+  signal ddr_addr_max_m1                    : unsigned(g_ddr_addr_width-1 downto 0);
   signal ddr_recv_pkt_cnt                   : unsigned(c_ddr_axis_max_wtt_width-1 downto 0);
   signal ddr_addr_first                     : std_logic;
   signal ddr_reissue_trans                  : std_logic;
@@ -266,6 +294,7 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_addr_in_axis                   : std_logic_vector(g_ddr_addr_width-1 downto 0);
   signal ddr_valid_in                       : std_logic;
   signal ddr_axis_cmd_valid_in              : std_logic;
+  signal ddr_axis_cmd_addr_btt_in           : std_logic_vector(c_axis_cmd_width-1 downto 0);
   signal ddr_sent_cnt_out                   : unsigned(f_log2_size(g_max_burst_size)-1 downto 0);
   signal ddr_valid_in_t                     : std_logic;
   signal ddr_trigger_in                     : std_logic;
@@ -286,6 +315,27 @@ architecture rtl of acq_ddr3_axis_write is
   signal ddr_axis_rstn                      : std_logic := '1';
   signal ddr_axis_halt                      : std_logic := '0';
   signal hrst_state                         : t_hrst_state := IDLE;
+
+  function f_clip_value(val : unsigned; max_value : unsigned)
+    return unsigned
+  is
+    variable res : unsigned(val'length-1 downto 0);
+  begin
+
+    assert (val'length = max_value'length)
+      report "[f_clip_value] Array lengths do not match. Left is " &
+      Integer'image(val'length) & ", Right is " &
+      Integer'image(max_value'length)
+      severity Failure;
+
+    if val > max_value then
+      res := max_value;
+    else
+      res := val;
+    end if;
+
+    return res;
+  end;
 
 begin
 
@@ -424,7 +474,20 @@ begin
           -- around the maximum number of samples per AXI packet
           ddr_recv_pkt_cnt <= ddr_recv_pkt_cnt + 1;
 
-          if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) then -- will increment to last sample
+          -- There are 2 cases in which we need to reset the counter and
+          -- hence reissue a transaction.
+          --
+          -- The first one is the obvious one. If we go over the maximum AXI SS
+          -- maximum number of words. In this case we just end the current transaction
+          -- and reissue a next one with the current address.
+          --
+          -- The second one is if we go over the current channel "ddr_addr_max"
+          -- signal. In this case, we also need to reissue the transaction with
+          -- the wrapped memory address, because we only do INCR AXI transaction.
+          -- And in this mode, the memory addresses are incremented automatically
+          -- for each word.
+          if ddr_recv_pkt_cnt = to_unsigned(c_ddr_axis_max_wtt-2, ddr_recv_pkt_cnt'length) or
+              (ddr_addr_m1_wrap_counter = '1' and ddr_addr_wrap_counter = '0') then -- will increment to last sample
             ddr_eop_in <= "1";
           else
             ddr_eop_in <= "0";
@@ -488,8 +551,6 @@ begin
     end if;
   end process;
 
-  -- First address or transaction wrapped to init address
-  ddr_addr_first <= '1' when ddr_addr_cnt_axis = ddr_addr_init else '0';
   -- First packet of transaction (new shot - used for multishot transactions) or
   -- when we make large (larger than c_ddr_axis_max_wtt words) transfers
   ddr_axis_cmd_valid_in <= '1' when ddr_valid_in = '1' and (ddr_addr_first = '1' or
@@ -517,25 +578,46 @@ begin
   begin
     if rising_edge(ext_clk_i) then
       if ext_rst_n_i = '0' then
-        ddr_addr_cnt_axis <= to_unsigned(0, ddr_addr_cnt_axis'length);
-        -- FIXME: Reset the init/end register cause fast acquisition
-        -- data path to fail on hw or sw trigger acquisitions.
-        -- This might be related to the fact that these addresses
-        -- might not be properly configured.
+        ddr_addr_first <= '1';
+        -- This address must be word-aligned
+        ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
+        ddr_addr_init <= unsigned(wr_init_addr_alig);
+        ddr_addr_max <= unsigned(wr_end_addr_alig);
+        -- FIXME. Logic on reset tree.
+        ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
+        ddr_btt_full <= to_unsigned(0, ddr_btt_full'length);
       else
 
         if wr_start_i = '1' then
+          -- First word in the transaction
+          ddr_addr_first <= '1';
           -- This address must be word-aligned
           ddr_addr_cnt_axis <= unsigned(wr_init_addr_alig);
           ddr_addr_init <= unsigned(wr_init_addr_alig);
           ddr_addr_max <= unsigned(wr_end_addr_alig);
+          ddr_addr_max_m1 <= unsigned(wr_end_addr_alig)-c_addr_ddr_inc_axis;
+          -- Transfer up to the remaining of the memory area
+          ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
         elsif ddr_valid_in = '1' then -- This represents a successful transfer
+          -- No more the first transaction. This train has departed already...
+          ddr_addr_first <= '0';
+
+          -- Always calculate the number of bytes to be transmitted.
+          -- This will only be written when a new command is issued,
+          -- so we need to have the correct value at all times.
+          ddr_btt_full <= f_clip_value(ddr_btt_mem_area_rem, c_ddr_axis_max_btt_uns_padded);
+          -- This case only happens when the DDR addr will wrap. So, we reset BTT to
+          -- the maximum allowed for the memory region
+          if unsigned(ddr_addr_cnt_axis) > unsigned(wr_end_addr_alig) or
+              ddr_addr_wrap_counter = '1' then
+            ddr_btt_full <= f_clip_value(ddr_btt_mem_area_full, c_ddr_axis_max_btt_uns_padded);
+          end if;
 
           -- To Flow Control module
           -- Get ready for the next valid transaction
           ddr_addr_cnt_axis <= ddr_addr_cnt_axis + c_addr_ddr_inc_axis;
           -- Wrap counters if we go over the limit
-          if ddr_addr_cnt_axis = ddr_addr_max then
+          if ddr_addr_wrap_counter = '1' then
             ddr_addr_cnt_axis <= ddr_addr_init;
           end if;
         end if;
@@ -543,8 +625,33 @@ begin
     end if;
   end process;
 
+  ddr_btt_mem_area_full <= unsigned(wr_end_addr_alig) - unsigned(wr_init_addr_alig);
+  ddr_btt_mem_area_rem <= unsigned(wr_end_addr_alig) - unsigned(ddr_addr_cnt_axis);
+
+  -- Crop number of bits to the maximum allowed by datamover. This only matters
+  -- if we have smaller (less than 2^23) quantities anyway.
+  ddr_btt <= ddr_btt_full(ddr_btt'left downto 0);
+
+  -- calculate if the next address will go over the limit
+  ddr_addr_cnt_next_will_reach_max <= '1' when ddr_addr_cnt_axis + c_addr_ddr_inc_axis > ddr_addr_max else '0';
+  ddr_addr_cnt_m1_next_will_reach_max <= '1' when ddr_addr_cnt_axis + c_addr_ddr_inc_axis > ddr_addr_max_m1 else '0';
+  -- We must compare the limit using >=, as the input wr_end_addr_alig may not
+  -- be multiple of "c_addr_ddr_inc_axis". Thus not allowing us to use "=" only
+  ddr_addr_cnt_max_reached <= '1' when ddr_addr_cnt_axis >= ddr_addr_max else '0';
+  ddr_addr_cnt_m1_max_reached <= '1' when ddr_addr_cnt_axis >= ddr_addr_max_m1 else '0';
+
+  -- Wrap counter flags
+  ddr_addr_wrap_counter <= '1' when ddr_addr_cnt_next_will_reach_max = '1' or
+                                    ddr_addr_cnt_max_reached = '1' else '0';
+  ddr_addr_m1_wrap_counter <= '1' when ddr_addr_cnt_m1_next_will_reach_max = '1' or
+                                       ddr_addr_cnt_m1_max_reached = '1' else '0';
+
   -- To Flow Control module
   ddr_addr_in_axis <= std_logic_vector(ddr_addr_cnt_axis);
+  ddr_btt_slv <= std_logic_vector(ddr_btt);
+
+  ddr_axis_cmd_addr_btt_in(c_ddr_addr_high downto c_ddr_addr_low) <= ddr_addr_in_axis;
+  ddr_axis_cmd_addr_btt_in(c_ddr_btt_high downto c_ddr_btt_low) <= ddr_btt_slv;
 
   -- Debug outputs
   dbg_ddr_addr_cnt_axis_o <= std_logic_vector(ddr_addr_cnt_axis);
@@ -584,9 +691,9 @@ begin
 
   -- Only count up to the sample when in pre_trigger or post_trigger and we haven't
   -- acquire enough samples
-  pl_cmd_cnt_en <= '1' when (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_pre_pkt_size and
+  pl_cmd_cnt_en <= '1' when (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fc_data_id_cmd = "010") or -- Pre-trigger
-                                (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_cmd_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fc_data_id_cmd = "100") -- Post-trigger
                             else '0';
 
@@ -595,9 +702,9 @@ begin
 
   -- Only count up to the sample when in pre_trigger or post_trigger and we haven't
   -- acquire enough samples
-  pl_pld_cnt_en <= '1' when (unsigned(dbg_pld_pkt_ct_cnt) < lmt_pre_pkt_size and
+  pl_pld_cnt_en <= '1' when (unsigned(dbg_pld_pkt_ct_cnt) < lmt_pre_pkt_size_aggd and
                                 fc_data_id_cmd = "010") or -- Pre-trigger
-                                (unsigned(dbg_pld_pkt_ct_cnt) < lmt_full_pkt_size and
+                                (unsigned(dbg_pld_pkt_ct_cnt) < lmt_full_pkt_size_aggd and
                                 fc_data_id_cmd = "100") -- Post-trigger
                             else '0';
 
@@ -691,7 +798,7 @@ begin
     g_header_in_width                       => g_ddr_header_width,
     g_data_width                            => 0, -- Dummy value
     g_pkt_size_width                        => c_pkt_size_width,
-    g_addr_width                            => g_ddr_addr_width,
+    g_addr_width                            => c_axis_cmd_width,
     g_with_fifo_inferred                    => true,
     g_pipe_size                             => g_fc_pipe_size
   )
@@ -700,7 +807,7 @@ begin
     rst_n_i                                 => ext_rst_n_i,
 
     pl_data_i                               => (others => '0'),
-    pl_addr_i                               => ddr_addr_in_axis,
+    pl_addr_i                               => ddr_axis_cmd_addr_btt_in,
     pl_valid_i                              => ddr_axis_cmd_valid_in,
 
     pl_dreq_o                               => pl_dreq_cmd,
@@ -719,13 +826,16 @@ begin
 
     fc_dout_o                               => fc_header_cmd,
     fc_valid_o                              => fc_valid_cmd,
-    fc_addr_o                               => fc_addr,
+    fc_addr_o                               => fc_addr_btt_cmd,
     fc_sof_o                                => fc_sof_cmd,
     fc_eof_o                                => fc_eof_cmd,
 
     fc_stall_i                              => fc_stall_cmd,
     fc_dreq_i                               => fc_dreq_cmd
   );
+
+  fc_addr <= fc_addr_btt_cmd(c_ddr_addr_high downto c_ddr_addr_low);
+  fc_btt <= fc_addr_btt_cmd(c_ddr_btt_high downto c_ddr_btt_low);
 
   -----------------------------------------------------------------------------
   -- DDR3 AXIS Write Interface
@@ -806,7 +916,7 @@ begin
           ddr_axis_rstn <= '1';
           ddr_axis_halt <= '0';
 
-          if ext_rst_n_i = '0' then
+          if ext_rst_n_i = '0' or wr_start_i = '1' then
             hrst_state <= HALT_GEN;
           end if;
 
@@ -873,12 +983,12 @@ begin
   axis_s2mm_cmd_tvalid_o <= fc_valid_cmd;
 
   -- With 23 bits we can transfer up to 8MB of data.  We always set the datamover
-  -- to transfer the maximum ammount of data. If we finish early, we can just
-  -- abort the transaction asserting the LTAST stream signal (typical case).
+  -- to transfer the maximum ammount of data up to the end of the memory region.
+  -- If we finish early, we can just abort the transaction asserting the TLAST
+  -- stream signal (typical case).
   -- WARNING: the datamover MUST be set the support Indeterminate BTT!
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_btt_top_idx downto
-    c_axis_cmd_tdata_btt_bot_idx)                             <=
-   std_logic_vector(to_unsigned(c_ddr_axis_max_btt, c_axis_cmd_tdata_btt_width));             -- cmd_btt (Bytes to transfer)
+    c_axis_cmd_tdata_btt_bot_idx)                             <= fc_btt;                      -- cmd_btt (Bytes to transfer)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_type_idx)            <= '1';                         -- cmd_type (1 = increment address)
   axis_s2mm_cmd_tdata_o(c_axis_cmd_tdata_dsa_top_idx downto
     c_axis_cmd_tdata_dsa_bot_idx)                             <= "000000";                    -- cmd_dsa
