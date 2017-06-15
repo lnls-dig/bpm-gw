@@ -220,6 +220,8 @@ architecture rtl of wb_acq_core is
   constant c_p2l_with_pulse2level           : t_acq_bool_array(c_p2l_num_inputs-1 downto 0) :=
                                                 (false, true, true, false, true, true);
 
+  constant c_acq_start_fs_rst_pulse_width   : natural := 16;
+
   ------------------------------------------------------------------------------
   -- Types declaration
   ------------------------------------------------------------------------------
@@ -269,6 +271,13 @@ architecture rtl of wb_acq_core is
   signal acq_start                          : std_logic;
   signal acq_start_sync_ext                 : std_logic;
   signal acq_start_sync_fs                  : std_logic;
+  signal acq_start_rst                      : std_logic;
+  signal acq_start_pp_fs_sync               : std_logic;
+  signal acq_start_rst_fs_sync              : std_logic;
+  signal acq_start_rst_ext_sync             : std_logic;
+  signal acq_start_rstn_fs_sync             : std_logic;
+  signal acq_start_rstn_ext_sync            : std_logic;
+  signal acq_start_safe                     : std_logic;
   signal acq_now                            : std_logic;
   signal acq_stop                           : std_logic;
   signal acq_end                            : std_logic;
@@ -445,8 +454,8 @@ begin
     report "[wb_acq_core] Only g_acq_num_channels less or equal 24 is supported!"
     severity Failure;
 
-  fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync;
-  ext_rst_n <= ext_rst_n_i and acq_fsm_rstn_ext_sync;
+  fs_rst_n <= fs_rst_n_i and acq_fsm_rstn_fs_sync and acq_start_rstn_fs_sync;
+  ext_rst_n <= ext_rst_n_i and acq_fsm_rstn_ext_sync and acq_start_rstn_ext_sync;
 
   -----------------------------
   -- Slave adapter for Wishbone Register Interface
@@ -722,7 +731,7 @@ begin
     acq_trig_i                              => acq_trig_i,
 
     lmt_curr_chan_id_i                      => lmt_dtrig_chan_id,
-    lmt_valid_i                             => acq_start,
+    lmt_valid_i                             => acq_start_safe,
 
     -----------------------------
     -- Output Interface.
@@ -756,7 +765,7 @@ begin
     acq_trig_i                              => acq_trig_i,
 
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    lmt_valid_i                             => acq_start,
+    lmt_valid_i                             => acq_start_safe,
 
     -----------------------------
     -- Output Interface.
@@ -799,7 +808,7 @@ begin
     dtrig_id_i                              => dtrig_id_in,
 
     lmt_dtrig_chan_id_i                     => lmt_dtrig_chan_id,
-    lmt_dtrig_valid_i                       => acq_start,
+    lmt_dtrig_valid_i                       => acq_start_safe,
 
     acq_data_i                              => acq_data_marsh(c_acq_data_width-1 downto 0),
     acq_valid_i                             => acq_dvalid_in,
@@ -807,7 +816,7 @@ begin
     acq_trig_i                              => acq_trig_in,
 
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    lmt_valid_i                             => acq_start,
+    lmt_valid_i                             => acq_start_safe,
 
     acq_wr_en_i                             => acq_fsm_accepting,
     acq_data_o                              => acq_data,
@@ -853,7 +862,7 @@ begin
     post_trig_samples_i                     => post_trig_samples_c,
     shots_nb_i                              => shots_nb_c,
     lmt_curr_chan_id_i                      => lmt_curr_chan_id,
-    lmt_valid_i                             => acq_start,
+    lmt_valid_i                             => acq_start_safe,
     samples_cnt_o                           => samples_cnt,
 
     -----------------------------
@@ -976,7 +985,7 @@ begin
 
     -- Request transaction reset as soon as possible (when all outstanding
     -- transactions have been commited)
-    req_rst_trans_i                         => acq_fsm_req_rst, -- FIXME: Could this be acq_start = '1'???
+    req_rst_trans_i                         => acq_fsm_req_rst,
     -- Select between multi-buffer mode and pass-through mode (data directly
     -- through external module interface)
     passthrough_en_i                        => acq_single_shot,
@@ -994,7 +1003,7 @@ begin
     -- Number of shots in this acquisition
     lmt_shots_nb_i                          => lmt_shots_nb,
     --lmt_valid_i                             => lmt_valid,
-    lmt_valid_i                             => acq_start,
+    lmt_valid_i                             => acq_start_safe,
 
     fifo_fc_all_trans_done_p_o              => fifo_fc_all_trans_done_p,
     -- Asserted when the Acquisition FIFO is full. Data is lost when this signal is
@@ -1021,6 +1030,64 @@ begin
     dbg_pkt_ct_cnt_o                        => dbg_pkt_ct_cnt,
     dbg_shots_cnt_o                         => dbg_shots_cnt
   );
+
+  ------------------------------------------------------------------------------
+  -- Delayed start and modules reset
+  ------------------------------------------------------------------------------
+
+  -- Reset all modules on each new acquisition. This is the first thing to
+  -- happen when we start an acquisition. After that, all modules are
+  -- started accordingly. This would be better described as a FSM, maybe,
+  -- but it works fine for now.
+
+  -- Acquisition start chain:
+  -- acq_start -> acq_start_safe -> acq_start_sync_ext -> acq_start_sync_fs
+
+  -- Extend acq_start to function as a reset to all modules
+  cmp_acq_start_rst_extended : gc_extend_pulse
+  generic map (
+    g_width                                 => c_acq_start_fs_rst_pulse_width
+  )
+  port map(
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+    pulse_i                                 => acq_start,
+    extended_o                              => acq_start_rst
+  );
+
+  -- Sync and pipeline reset signals
+  cmp_reset_fs_synch : reset_synch
+  port map(
+    clk_i                                   => fs_clk_i,
+    arst_n_i                                => acq_start_rst,
+    rst_n_o                                 => acq_start_rst_fs_sync
+  );
+
+  cmp_reset_ext_synch : reset_synch
+  port map(
+    clk_i                                   => ext_clk_i,
+    arst_n_i                                => acq_start_rst,
+    rst_n_o                                 => acq_start_rst_ext_sync
+  );
+
+  acq_start_rstn_fs_sync <= not(acq_start_rst_fs_sync);
+  acq_start_rstn_ext_sync <= not(acq_start_rst_ext_sync);
+
+  -- Use the negative edge of the extended pulse to trigger the acq_start
+  -- and start all modules.
+  cmp_edge_detector : gc_sync_ffs
+    generic map(
+      g_sync_edge                           => "positive")
+    port map(
+      clk_i                                 => fs_clk_i,
+      rst_n_i                               => fs_rst_n_i,
+      data_i                                => acq_start_rst_fs_sync,
+      synced_o                              => open,
+      npulse_o                              => acq_start_pp_fs_sync,
+      ppulse_o                              => open
+  );
+
+  acq_start_safe <= acq_start_pp_fs_sync;
 
   ------------------------------------------------------------------------------
   -- Pulse to Level and Synchronizer circuits
@@ -1074,7 +1141,7 @@ begin
   p2l_clk_out(c_p2l_acq_start_idx)          <= ext_clk_i;
   p2l_rst_out_n(c_p2l_acq_start_idx)        <= ext_rst_n;
 
-  p2l_pulse(c_p2l_acq_start_idx)            <= acq_start;
+  p2l_pulse(c_p2l_acq_start_idx)            <= acq_start_safe;
   p2l_clr(c_p2l_acq_start_idx)              <= '0'; -- not used
 
   acq_start_sync_ext                        <= p2l_pulse_synched(c_p2l_acq_start_idx);
@@ -1102,7 +1169,7 @@ begin
   ddr3_all_trans_done_l <= p2l_level_synched(c_p2l_ddr3_all_trans_done_idx);
 
   -- FIXME: We use the additional latency introduced by the conversion circuits
-  -- acq_start -> acq_start_sync_ext -> acq_start_sync_fs to give time to modules
+  -- acq_start -> acq_start_safe -> acq_start_sync_ext -> acq_start_sync_fs to give time to modules
   -- downstream (acq_ddr_iface and the ones clocked by ext_clk_i) to configure
   -- themselves before starting the actual acquisition. Without this, the modules
   -- can misbehave as the number of samples would not be correctly set, for

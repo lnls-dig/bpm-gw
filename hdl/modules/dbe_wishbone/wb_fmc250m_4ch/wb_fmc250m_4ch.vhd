@@ -1539,8 +1539,8 @@ begin
   -- External hardware trigger synchronization
   cmp_trig_sync : gc_ext_pulse_sync
   generic map(
-    g_min_pulse_width                       => 1,     -- clk_i ticks
-    --g_clk_frequency                         => 1/g_adc_clk_period_values(g_ref_clk),   -- MHz
+    -- minimum pulse in ns to accept input (must be >1 clk_i ns)
+    g_min_pulse_width                       => 8,
     g_clk_frequency                         => 250,   -- MHz
     g_output_polarity                       => '0',   -- positive pulse
     g_output_retrig                         => false,
