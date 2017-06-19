@@ -33,6 +33,6 @@ if os.path.isfile("synthesis_descriptor_pkg.vhd"):
 else:
     sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
 
-machine_pkg = "sirius_250M";
+machine_pkg = "sirius_sr_250M";
 
 modules = { "local" : [ "../../../../top/afc_v3/vivado/dbe_bpm2" ] };

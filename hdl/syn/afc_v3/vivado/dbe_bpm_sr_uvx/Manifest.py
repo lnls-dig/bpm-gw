@@ -33,6 +33,6 @@ if os.path.isfile("synthesis_descriptor_pkg.vhd"):
 else:
     sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
 
-machine_pkg = "uvx_130M"
+machine_pkg = "uvx_sr_130M"
 
 modules = { "local" : [ "../../../../top/afc_v3/vivado/dbe_bpm" ] };
