@@ -3312,10 +3312,10 @@ begin
   --------------------
   -- TBT PHASE 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(signed(dsp1_tbt_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).dvalid  <= dsp1_tbt_pha_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_phase_id).pulse;
 
@@ -3363,10 +3363,10 @@ begin
   --------------------
   -- FOFB PHASE 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(signed(dsp1_fofb_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).dvalid <= dsp1_fofb_pha_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_phase_id).pulse;
 
@@ -3482,10 +3482,10 @@ begin
   --------------------
   -- TBT PHASE 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(signed(dsp2_tbt_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).dvalid  <= dsp2_tbt_pha_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_phase_id).pulse;
 
@@ -3533,10 +3533,10 @@ begin
   --------------------
   -- FOFB PHASE 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(signed(dsp2_fofb_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).dvalid <= dsp2_fofb_pha_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_phase_id).pulse;
 
@@ -3652,10 +3652,10 @@ begin
   --------------------
   -- TBT PHASE 3 data
   --------------------
-  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(signed(dsp1_tbt_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).dvalid  <= dsp1_tbt_pha_valid;
   acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_phase_id).pulse;
 
@@ -3703,10 +3703,10 @@ begin
   --------------------
   -- FOFB PHASE 3 data
   --------------------
-  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(signed(dsp1_fofb_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp1_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).dvalid <= dsp1_fofb_pha_valid;
   acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_phase_id).pulse;
 
@@ -3822,10 +3822,10 @@ begin
   --------------------
   -- TBT PHASE 4 data
   --------------------
-  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).val     <= std_logic_vector(resize(signed(dsp2_tbt_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).dvalid  <= dsp2_tbt_pha_valid;
   acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_phase_id).pulse;
 
@@ -3873,10 +3873,10 @@ begin
   --------------------
   -- FOFB PHASE 4 data
   --------------------
-  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32)) &
-                                                                 std_logic_vector(resize(to_signed(0, c_dsp_ref_num_bits_ns), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).val    <= std_logic_vector(resize(signed(dsp2_fofb_pha_ch3), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch2), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch1), 32)) &
+                                                                 std_logic_vector(resize(signed(dsp2_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).dvalid <= dsp2_fofb_pha_valid;
   acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_phase_id).pulse;
 
