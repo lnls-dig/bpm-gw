@@ -530,9 +530,9 @@ architecture rtl of wb_fmc250m_4ch is
   end component;
 
 begin
+
   -- Reset signals and sychronization with positive edge of
   -- respective clock
-  --sys_rst_n <= sys_rst_n_i and mmcm_adc_locked;
   sys_rst_n <= sys_rst_n_i;
   fs_rst_n <= sys_rst_n and mmcm_adc_locked;
 
@@ -545,9 +545,6 @@ begin
     rst_n_o                                 => sys_rst_sync_n
   );
 
-
-  --sys_rst_sync_n <= sys_rst_n;
-
   -- Reset synchronization with FS clock domain (just clock 1
   -- is used for now). Align the reset deassertion to the next
   -- clock edge
@@ -557,8 +554,7 @@ begin
       port map(
         clk_i                                       => fs_clk(i),
         arst_n_i                                    => fs_rst_n,
-        --rst_n_o                                      => fs_rst_sync_n
-        rst_n_o                                      => fs_rst_sync_n(i)
+        rst_n_o                                     => fs_rst_sync_n(i)
       );
 
       cmp_reset_fs2x_synch : reset_synch
@@ -571,7 +567,6 @@ begin
       -- Output adc sync'ed reset to downstream FPGA logic
       adc_rst_n_o(i) <= fs_rst_sync_n(i);
       adc_rst2x_n_o(i) <= fs_rst2x_sync_n(i);
-      --fs_rst_sync_n(i) <= fs_rst_n;
     end generate;
   end generate;
 
