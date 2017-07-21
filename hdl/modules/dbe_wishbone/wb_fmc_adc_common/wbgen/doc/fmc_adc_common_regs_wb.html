@@ -411,7 +411,24 @@ wb_fmc_adc_common_csr_monitor_led3_o
 
 </td>
 <td  class="td_pblock_right">
-wb_fmc_adc_common_csr_monitor_reserved_i[27:0]
+wb_fmc_adc_common_csr_monitor_mmcm_rst_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+wb_fmc_adc_common_csr_monitor_reserved_i[26:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
@@ -1025,7 +1042,7 @@ MONITOR
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[27:20]
+RESERVED[26:19]
 </td>
 <td >
 
@@ -1079,7 +1096,7 @@ RESERVED[27:20]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[19:12]
+RESERVED[18:11]
 </td>
 <td >
 
@@ -1133,7 +1150,7 @@ RESERVED[19:12]
 </tr>
 <tr>
 <td style="border: solid 1px black;" colspan=8  class="td_field">
-RESERVED[11:4]
+RESERVED[10:3]
 </td>
 <td >
 
@@ -1186,8 +1203,11 @@ RESERVED[11:4]
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=4  class="td_field">
-RESERVED[3:0]
+<td style="border: solid 1px black;" colspan=3  class="td_field">
+RESERVED[2:0]
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+MMCM_RST
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 LED3
@@ -1200,9 +1220,6 @@ LED1
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 TEST_DATA_EN
-</td>
-<td >
-
 </td>
 <td >
 
@@ -1229,6 +1246,10 @@ LED2
 LED3
 </b>[<i>read/write</i>]: Led 3
 <br>FMC LED3 (green) - trigger status indicator<br>0 - LED off - LED on
+<li><b>
+MMCM_RST
+</b>[<i>read/write</i>]: MMCM reset
+<br>write 1: reset MMCM.<br>                      write 0: no effect
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved
