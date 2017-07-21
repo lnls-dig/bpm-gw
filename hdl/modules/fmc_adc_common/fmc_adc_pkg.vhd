@@ -361,6 +361,9 @@ package fmc_adc_pkg is
     -- ADC clocks. One clock per ADC channel
     adc_clk_i                                 : in std_logic;
 
+    -- MMCM reset port
+    mmcm_rst_i                                : in std_logic := '0';
+
     -----------------------------
     -- ADC Delay signals.
     -----------------------------
@@ -473,6 +476,9 @@ package fmc_adc_pkg is
     -- System Reset. Rgular reset, not ANDed with mmcm_adc_locked
     sys_rst_n_i                               : in std_logic;
     sys_clk_200Mhz_i                          : in std_logic;
+
+    -- MMCM reset port
+    mmcm_rst_i                                : in std_logic := '0';
 
     -----------------------------
     -- External ports

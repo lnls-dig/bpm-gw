@@ -50,6 +50,9 @@ port
   sys_clk_200Mhz_i                          : in std_logic;
   sys_rst_i                                 : in std_logic;
 
+  -- MMCM reset port
+  mmcm_rst_i                                : in std_logic := '0';
+
   -----------------------------
   -- External ports
   -----------------------------
@@ -115,6 +118,7 @@ architecture rtl of fmc_adc_clk is
   signal adc_clk2x_mmcm_out                 : std_logic;
   signal mmcm_adc_locked_int                : std_logic;
   signal mmcm_adc_locked_sync               : std_logic;
+  signal mmcm_rst_int                       : std_logic;
 
   -- Clock delay signals
   signal iodelay_update                     : std_logic;
@@ -437,8 +441,10 @@ begin
       CLKINSTOPPED                          => open,
       CLKFBSTOPPED                          => open,
       PWRDWN                                => '0',
-      RST                                   => sys_rst_i
+      RST                                   => mmcm_rst_int
     );
+
+    mmcm_rst_int <= sys_rst_i or mmcm_rst_i;
 
     -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
     cmp_adc_clk_fb_bufg : BUFG
