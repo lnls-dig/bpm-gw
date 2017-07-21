@@ -308,6 +308,7 @@ architecture rtl of wb_fmc516 is
   signal fs_rst_n                           : std_logic;
   signal fs_rst_sync_n                      : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal mmcm_adc_locked                    : std_logic;
+  signal mmcm_rst_reg                       : std_logic := '0';
 
   -- ADC clock + data single ended inputs
   signal adc_in                             : t_adc_in_array(c_num_adc_channels-1 downto 0);
@@ -1032,6 +1033,9 @@ begin
     sys_rst_n_i                             => sys_rst_sync_n,
     -- ADC clock generation reset. Just a regular asynchronous reset.
     sys_clk_200Mhz_i                        => sys_clk_200Mhz_i,
+
+    -- MMCM reset port
+    mmcm_rst_i                              => mmcm_rst_reg,
 
     -----------------------------
     -- External ports
