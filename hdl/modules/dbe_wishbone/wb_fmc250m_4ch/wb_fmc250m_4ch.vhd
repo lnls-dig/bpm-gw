@@ -1240,7 +1240,7 @@ begin
   )
   port map (
     sys_clk_i                                 => sys_clk_i,
-    sys_rst_n_i                               => sys_rst_n_i,
+    sys_rst_n_i                               => sys_rst_sync_n,
 
     -----------------------------
     -- Wishbone Control Interface signals
