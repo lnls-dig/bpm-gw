@@ -26,6 +26,7 @@ use unisim.vcomponents.all;
 
 library work;
 use work.fmc_adc_pkg.all;
+use work.gencores_pkg.all;
 
 entity fmc_adc_clk is
 generic
@@ -48,6 +49,9 @@ port
   sys_clk_i                                 : in std_logic;
   sys_clk_200Mhz_i                          : in std_logic;
   sys_rst_i                                 : in std_logic;
+
+  -- MMCM reset port
+  mmcm_rst_i                                : in std_logic := '0';
 
   -----------------------------
   -- External ports
@@ -79,7 +83,15 @@ end fmc_adc_clk;
 
 architecture rtl of fmc_adc_clk is
 
+  constant c_num_tlvl_clks                  : natural := 3; -- CLK_SYS, FS_CLK, FS_CLK2x
+  constant c_clk_sys_id                     : natural := 0;
+  constant c_clk_adc_id                     : natural := 1;
+  constant c_clk_adc2x_id                   : natural := 2;
+
   alias c_mmcm_param is g_mmcm_param;
+
+  signal reset_clks                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
+  signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
 
   -- Clock and reset signals
   signal adc_clk_ibufgds                    : std_logic;
@@ -105,6 +117,8 @@ architecture rtl of fmc_adc_clk is
   signal adc_clk_mmcm_out                   : std_logic;
   signal adc_clk2x_mmcm_out                 : std_logic;
   signal mmcm_adc_locked_int                : std_logic;
+  signal mmcm_adc_locked_sync               : std_logic;
+  signal mmcm_rst_int                       : std_logic;
 
   -- Clock delay signals
   signal iodelay_update                     : std_logic;
@@ -427,8 +441,10 @@ begin
       CLKINSTOPPED                          => open,
       CLKFBSTOPPED                          => open,
       PWRDWN                                => '0',
-      RST                                   => sys_rst_i
+      RST                                   => mmcm_rst_int
     );
+
+    mmcm_rst_int <= sys_rst_i or mmcm_rst_i;
 
     -- Global clock buffer for MMCM feedback. Deskew MMCM configuration
     cmp_adc_clk_fb_bufg : BUFG
@@ -451,6 +467,25 @@ begin
     );
 
   end generate;
+
+  -- Generate a well-behaved MMCM locked, to be used as a reset signal
+  cmp_reset : gc_reset
+  generic map(
+    g_clocks                                  => c_num_tlvl_clks
+  )
+  port map(
+    free_clk_i                                => sys_clk_i,
+    locked_i                                  => mmcm_adc_locked_int,
+    clks_i                                    => reset_clks,
+    rstn_o                                    => reset_rstn
+  );
+
+  reset_clks(c_clk_sys_id)                    <= sys_clk_i;
+  reset_clks(c_clk_adc_id)                    <= adc_clk_bufg;
+  reset_clks(c_clk_adc2x_id)                  <= adc_clk2x_bufg;
+
+  -- Use the slower clock to sync
+  mmcm_adc_locked_sync                        <= reset_rstn(c_clk_adc_id);
 
   -- Only instantiate BUFG if BUFIO and BUFR not selected and not a reference clock
   gen_without_ref_clk : if (not g_with_ref_clk) generate
@@ -518,7 +553,7 @@ begin
   end generate;
 
   gen_true_mmcm_lock_ref_clk : if (g_with_ref_clk) generate
-    adc_clk_chain_glob_o.mmcm_adc_locked      <= mmcm_adc_locked_int;
+    adc_clk_chain_glob_o.mmcm_adc_locked      <= mmcm_adc_locked_sync;
   end generate;
 
   gen_false_mmcm_lock_ref_clk : if (not g_with_ref_clk) generate

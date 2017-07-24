@@ -74,6 +74,9 @@ port
   sys_rst_n_i                               : in std_logic;
   sys_clk_200Mhz_i                          : in std_logic;
 
+  -- MMCM reset port
+  mmcm_rst_i                                : in std_logic := '0';
+
   -----------------------------
   -- External ports
   -----------------------------
@@ -227,6 +230,9 @@ begin
         sys_clk_i                           => sys_clk_i,
         sys_clk_200Mhz_i                    => sys_clk_200Mhz_i,
         sys_rst_i                           => sys_rst,
+
+        -- MMCM reset port
+        mmcm_rst_i                          => mmcm_rst_i,
 
         -----------------------------
         -- External ports

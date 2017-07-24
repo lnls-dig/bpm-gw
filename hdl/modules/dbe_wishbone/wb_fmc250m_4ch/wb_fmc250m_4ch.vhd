@@ -322,6 +322,7 @@ architecture rtl of wb_fmc250m_4ch is
   signal fs_rst2x_sync_n                    : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_rst                            : std_logic; -- ADC reset from wishbone
   signal mmcm_adc_locked                    : std_logic;
+  signal mmcm_rst_reg                       : std_logic;
 
   -- ADC clock + data single ended inputs
   signal adc_in                             : t_adc_in_array(c_num_adc_channels-1 downto 0);
@@ -530,9 +531,9 @@ architecture rtl of wb_fmc250m_4ch is
   end component;
 
 begin
+
   -- Reset signals and sychronization with positive edge of
   -- respective clock
-  --sys_rst_n <= sys_rst_n_i and mmcm_adc_locked;
   sys_rst_n <= sys_rst_n_i;
   fs_rst_n <= sys_rst_n and mmcm_adc_locked;
 
@@ -545,9 +546,6 @@ begin
     rst_n_o                                 => sys_rst_sync_n
   );
 
-
-  --sys_rst_sync_n <= sys_rst_n;
-
   -- Reset synchronization with FS clock domain (just clock 1
   -- is used for now). Align the reset deassertion to the next
   -- clock edge
@@ -557,8 +555,7 @@ begin
       port map(
         clk_i                                       => fs_clk(i),
         arst_n_i                                    => fs_rst_n,
-        --rst_n_o                                      => fs_rst_sync_n
-        rst_n_o                                      => fs_rst_sync_n(i)
+        rst_n_o                                     => fs_rst_sync_n(i)
       );
 
       cmp_reset_fs2x_synch : reset_synch
@@ -571,7 +568,6 @@ begin
       -- Output adc sync'ed reset to downstream FPGA logic
       adc_rst_n_o(i) <= fs_rst_sync_n(i);
       adc_rst2x_n_o(i) <= fs_rst2x_sync_n(i);
-      --fs_rst_sync_n(i) <= fs_rst_n;
     end generate;
   end generate;
 
@@ -979,6 +975,7 @@ begin
   fmc_led3_int                              <= regs_acommon_out.monitor_led3_o;
 
   adc_test_data_en                          <= regs_acommon_out.monitor_test_data_en_o;
+  mmcm_rst_reg                              <= regs_acommon_out.monitor_mmcm_rst_o;
 
   -----------------------------
   -- Pins connections for ADC interface structures
@@ -1120,6 +1117,9 @@ begin
     -- ADC clock generation reset. Just a regular asynchronous reset.
     sys_clk_200Mhz_i                        => sys_clk_200Mhz_i,
 
+    -- MMCM reset port
+    mmcm_rst_i                              => mmcm_rst_reg,
+
     -----------------------------
     -- External ports
     -----------------------------
@@ -1245,7 +1245,7 @@ begin
   )
   port map (
     sys_clk_i                                 => sys_clk_i,
-    sys_rst_n_i                               => sys_rst_n_i,
+    sys_rst_n_i                               => sys_rst_sync_n,
 
     -----------------------------
     -- Wishbone Control Interface signals

@@ -309,6 +309,7 @@ architecture rtl of wb_fmc130m_4ch is
   signal fs_rst2x_sync_n                    : std_logic_vector(c_num_adc_channels-1 downto 0);
   signal adc_rst                            : std_logic; -- ADC reset from wishbone
   signal mmcm_adc_locked                    : std_logic;
+  signal mmcm_rst_reg                       : std_logic;
 
   -- ADC clock + data single ended inputs
   signal adc_in                             : t_adc_sdr_in_array(c_num_adc_channels-1 downto 0);
@@ -964,6 +965,7 @@ begin
   fmc_led3_int                              <= regs_acommon_out.monitor_led3_o;
 
   adc_test_data_en                          <= regs_acommon_out.monitor_test_data_en_o;
+  mmcm_rst_reg                              <= regs_acommon_out.monitor_mmcm_rst_o;
 
   -----------------------------
   -- Pins connections for ADC interface structures
@@ -1095,6 +1097,9 @@ begin
     sys_rst_n_i                             => sys_rst_sync_n,
     -- ADC clock generation reset. Just a regular asynchronous reset.
     sys_clk_200Mhz_i                        => sys_clk_200Mhz_i,
+
+    -- MMCM reset port
+    mmcm_rst_i                              => mmcm_rst_reg,
 
     -----------------------------
     -- External ports
