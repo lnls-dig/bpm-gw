@@ -1,9 +1,0 @@
-WARNING!     WARNING!    WARNING!
-
-Be advised that the new version of hdlmake
-differs from the old one in the use of Manifests
-variables.
-
-For instance, in the TOP simulation Manifests
-we have to add a include_dirs variable to tell
-hdlmake to search in that directories.
