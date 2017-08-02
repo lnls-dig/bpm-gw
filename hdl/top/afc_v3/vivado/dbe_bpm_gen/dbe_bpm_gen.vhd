@@ -26,9 +26,9 @@ use work.wishbone_pkg.all;
 -- Memory core generator
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
-use work.dbe_wishbone_pkg.all;
+use work.ifc_wishbone_pkg.all;
 -- Custom common cores
-use work.dbe_common_pkg.all;
+use work.ifc_common_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- FMC ADC definitions
@@ -46,7 +46,7 @@ use work.ipcores_pkg.all;
 -- Meta Package
 use work.synthesis_descriptor_pkg.all;
 -- AXI cores
-use work.bpm_axi_pkg.all;
+use work.pcie_cntr_axi_pkg.all;
 -- Trigger Modules
 use work.trigger_pkg.all;
 
