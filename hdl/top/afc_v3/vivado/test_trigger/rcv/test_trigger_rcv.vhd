@@ -39,7 +39,7 @@ use ieee.numeric_std.all;
 
 library work;
 -- Custom common cores
-use work.dbe_common_pkg.all;
+use work.ifc_common_pkg.all;
 use work.gencores_pkg.all;
 
 

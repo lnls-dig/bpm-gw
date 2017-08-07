@@ -1,1 +1,0 @@
-files = [ "rf_ch_swap.vhd" ];

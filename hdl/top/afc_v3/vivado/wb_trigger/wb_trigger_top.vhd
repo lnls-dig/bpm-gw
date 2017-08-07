@@ -44,9 +44,9 @@ use work.wishbone_pkg.all;
 -- Memory core generator
 use work.gencores_pkg.all;
 -- Custom Wishbone Modules
-use work.dbe_wishbone_pkg.all;
+use work.ifc_wishbone_pkg.all;
 -- Custom common cores
-use work.dbe_common_pkg.all;
+use work.ifc_common_pkg.all;
 -- Trigger definitons
 use work.trigger_pkg.all;
 -- Positicon Calc constants
@@ -57,7 +57,7 @@ use work.genram_pkg.all;
 -- Meta Package
 --use work.synthesis_descriptor_pkg.all;
 -- AXI cores
---use work.bpm_axi_pkg.all;
+--use work.pcie_cntr_axi_pkg.all;
 use work.bpm_pcie_a7_const_pkg.all;
 -- PCIe Core
 use work.bpm_pcie_a7_pkg.all;
