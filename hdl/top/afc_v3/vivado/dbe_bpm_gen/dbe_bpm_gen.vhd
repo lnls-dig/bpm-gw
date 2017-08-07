@@ -601,6 +601,35 @@ architecture rtl of dbe_bpm_gen is
     return v_facq_chan;
   end f_acq_channel_adc_param;
 
+  -- FIXME: get these values from machine_pkg.vhd for each machine
+  function f_acq_channel_mix_param(adc_type : string)
+      return t_facq_chan_param is
+    variable v_facq_chan                  : t_facq_chan_param;
+  begin
+    if (adc_type = "FMC130M") then
+      v_facq_chan := (width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(8, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    elsif (adc_type = "FMC250M") then
+      v_facq_chan := (width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(8, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    elsif (adc_type = "FMCPICO_1M") then
+      v_facq_chan := (width => to_unsigned(256, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(8, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(32, c_acq_atom_width_log2) -- 2^5 = 32-bit
+                     );
+    else
+      v_facq_chan := (width => to_unsigned(128, c_acq_chan_cmplt_width_log2),
+                      num_atoms => to_unsigned(8, c_acq_num_atoms_width_log2),
+                      atom_width => to_unsigned(16, c_acq_atom_width_log2) -- 2^4 = 16-bit
+                     );
+    end if;
+    return v_facq_chan;
+  end f_acq_channel_mix_param;
+
   -- Swap/de-swap settings
   constant c_pos_calc_delay_vec_width         : natural := 8;
   constant c_pos_calc_swap_div_freq_vec_width : natural := 16;
@@ -700,12 +729,13 @@ architecture rtl of dbe_bpm_gen is
                                                 to_unsigned(32, c_acq_atom_width_log2);
 
   constant c_facq_params_adc                : t_facq_chan_param := f_acq_channel_adc_param(g_fmc_adc_type);
+  constant c_facq_params_mix                : t_facq_chan_param := f_acq_channel_mix_param(g_fmc_adc_type);
 
   constant c_facq_channels                  : t_facq_chan_param_array(c_acq_num_channels-1 downto 0) :=
   (
      c_acq_adc_id            => c_facq_params_adc,
      c_acq_adc_swap_id       => c_facq_params_adc,
-     c_acq_mixiq_id          => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
+     c_acq_mixiq_id          => c_facq_params_mix,
      c_dummy0_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
      c_acq_tbtdecimiq_id     => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
      c_dummy1_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
@@ -3260,14 +3290,14 @@ begin
   --------------------
   -- MIXER I/Q 1 data
   --------------------
-  acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).val         <= dsp1_mixq_ch3 &
+                                                                 dsp1_mixi_ch3 &
+                                                                 dsp1_mixq_ch2 &
+                                                                 dsp1_mixi_ch2 &
+                                                                 dsp1_mixq_ch1 &
+                                                                 dsp1_mixi_ch1 &
+                                                                 dsp1_mixq_ch0 &
+                                                                 dsp1_mixi_ch0;
   acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).dvalid      <= dsp1_mix_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_mixiq_id).pulse;
 
@@ -3430,14 +3460,14 @@ begin
   --------------------
   -- MIXER I/Q 2 data
   --------------------
-  acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).val         <= dsp2_mixq_ch3 &
+                                                                 dsp2_mixi_ch3 &
+                                                                 dsp2_mixq_ch2 &
+                                                                 dsp2_mixi_ch2 &
+                                                                 dsp2_mixq_ch1 &
+                                                                 dsp2_mixi_ch1 &
+                                                                 dsp2_mixq_ch0 &
+                                                                 dsp2_mixi_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).dvalid      <= dsp2_mix_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_mixiq_id).pulse;
 
@@ -3600,14 +3630,14 @@ begin
   --------------------
   -- MIXER I/Q 3 data
   --------------------
-  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp1_mixq_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixq_ch0), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp1_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).val         <= dsp1_mixq_ch3 &
+                                                                 dsp1_mixi_ch3 &
+                                                                 dsp1_mixq_ch2 &
+                                                                 dsp1_mixi_ch2 &
+                                                                 dsp1_mixq_ch1 &
+                                                                 dsp1_mixi_ch1 &
+                                                                 dsp1_mixq_ch0 &
+                                                                 dsp1_mixi_ch0;
   acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).dvalid      <= dsp1_mix_valid;
   acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_mixiq_id).pulse;
 
@@ -3770,14 +3800,14 @@ begin
   --------------------
   -- MIXER I/Q 4 data
   --------------------
-  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).val         <= std_logic_vector(resize(signed(dsp2_mixq_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch3), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch2), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch1), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixq_ch0), 32)) &
-                                                                 std_logic_vector(resize(signed(dsp2_mixi_ch0), 32));
+  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).val         <= dsp2_mixq_ch3 &
+                                                                 dsp2_mixi_ch3 &
+                                                                 dsp2_mixq_ch2 &
+                                                                 dsp2_mixi_ch2 &
+                                                                 dsp2_mixq_ch1 &
+                                                                 dsp2_mixi_ch1 &
+                                                                 dsp2_mixq_ch0 &
+                                                                 dsp2_mixi_ch0;
   acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).dvalid      <= dsp2_mix_valid;
   acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_mixiq_id).pulse;
 
