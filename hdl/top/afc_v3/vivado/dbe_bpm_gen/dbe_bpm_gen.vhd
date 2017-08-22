@@ -636,12 +636,11 @@ architecture rtl of dbe_bpm_gen is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 19;
+  constant c_slaves                         : natural := 15;
   -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
   -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Acq_Core PM 1, Acq_Core PM 2,
-  -- Trigger MUX PM 1, Trigger MUX PM 2, Repo URL, SDB synthesis top,
-  -- general-cores, dsp-cores
+  -- Trigger MUX PM 1, Trigger MUX PM 2
 
   -- Slaves indexes
   constant c_slv_pos_calc_1_id             : natural := 0;
@@ -659,6 +658,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_acq_core_pm_1_id          : natural := 12;
   constant c_slv_trig_mux_pm_0_id          : natural := 13;
   constant c_slv_trig_mux_pm_1_id          : natural := 14;
+  -- These are not account in the number of slaves as these are special
   constant c_slv_sdb_repo_url_id           : natural := 15;
   constant c_slv_sdb_top_syn_id            : natural := 16;
   constant c_slv_sdb_dsp_cores_id          : natural := 17;
@@ -811,7 +811,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
 
   -- WB SDB (Self describing bus) layout
-  constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
+  constant c_layout : t_sdb_record_array(c_slaves+4-1 downto 0) :=
     (c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00310000"),   -- Position Calc Core 1 control port
      c_slv_fmc_adc_1_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00320000"),   -- FMC_ADC control 1 port
