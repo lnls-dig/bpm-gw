@@ -786,47 +786,92 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_adc3_of_i]
 #######################################################################
 
 #PCIe clock
-#// MGT216_CLK1_N   -> MGTREFCLK0N_216
-set_property PACKAGE_PIN G18 [get_ports pcie_clk_n_i]
-#// MGT216_CLK1_P   -> MGTREFCLK0P_216
-set_property PACKAGE_PIN H18 [get_ports pcie_clk_p_i]
-#PCIe lane 0
-#// TX216_0_P            -> MGTPTXP0_216
-set_property PACKAGE_PIN B23 [get_ports {pci_exp_txp_o[0]}]
-#// TX216_0_N            -> MGTPTXN0_216
-set_property PACKAGE_PIN A23 [get_ports {pci_exp_txn_o[0]}]
-#// RX216_0_P            -> MGTPRXP0_216
-set_property PACKAGE_PIN F21 [get_ports {pci_exp_rxp_i[0]}]
-#// RX216_0_N            -> MGTPRXN0_216
-set_property PACKAGE_PIN E21 [get_ports {pci_exp_rxn_i[0]}]
-#PCIe lane 1
-#// TX216_1_P            -> MGTPTXP1_216
-set_property PACKAGE_PIN D22 [get_ports {pci_exp_txp_o[1]}]
-#// TX216_1_N            -> MGTPTXN1_216
-set_property PACKAGE_PIN C22 [get_ports {pci_exp_txn_o[1]}]
-#// RX216_1_P            -> MGTPRXP1_216
-set_property PACKAGE_PIN D20 [get_ports {pci_exp_rxp_i[1]}]
-#// RX216_1_N            -> MGTPRXN1_216
-set_property PACKAGE_PIN C20 [get_ports {pci_exp_rxn_i[1]}]
-#PCIe lane 2
-#// TX216_2_P            -> MGTPTXP2_216
-set_property PACKAGE_PIN B21 [get_ports {pci_exp_txp_o[2]}]
-#// TX216_2_N            -> MGTPTXN2_216
-set_property PACKAGE_PIN A21 [get_ports {pci_exp_txn_o[2]}]
-#// RX216_2_P            -> MGTPRXP2_216
-set_property PACKAGE_PIN F19 [get_ports {pci_exp_rxp_i[2]}]
-#// RX216_2_N            -> MGTPRXN2_216
-set_property PACKAGE_PIN E19 [get_ports {pci_exp_rxn_i[2]}]
-#PCIe lane 3
-#// TX216_3_P            -> MGTPTXP3_216
-set_property PACKAGE_PIN B19 [get_ports {pci_exp_txp_o[3]}]
-#// TX216_3_N            -> MGTPTXN3_216
-set_property PACKAGE_PIN A19 [get_ports {pci_exp_txn_o[3]}]
-#// RX216_3_P            -> MGTPRXP3_216
-set_property PACKAGE_PIN D18 [get_ports {pci_exp_rxp_i[3]}]
-#// RX216_3_N            -> MGTPRXN3_216
-set_property PACKAGE_PIN C18 [get_ports {pci_exp_rxn_i[3]}]
+# MGT216_CLK1_N -> MGTREFCLK0N_216
+set_property PACKAGE_PIN G18                     [get_ports pcie_clk_n_i]
+# MGT216_CLK1_P -> MGTREFCLK0P_216
+set_property PACKAGE_PIN H18                     [get_ports pcie_clk_p_i]
 
+#XDC supplied by PCIe IP core generates
+# GTP connection in reverse order, we have to swap it.
+# Simply providing correct connections will generate
+# errors "Cannot set LOC ... because the PACKAGE_PIN
+# is occupied by ...".
+# So, firstly set PCIe lanes to temporary locations
+#PCIe lane 0
+# TX213_0_P            -> MGTPTXP0_213
+set_property PACKAGE_PIN AN19                    [get_ports {pci_exp_txp_o[0]}]
+# TX213_0_N            -> MGTPTXN0_213
+set_property PACKAGE_PIN AP19                    [get_ports {pci_exp_txn_o[0]}]
+# RX213_0_P            -> MGTPRXP0_213
+set_property PACKAGE_PIN AL18                    [get_ports {pci_exp_rxp_i[0]}]
+# RX213_0_N            -> MGTPRXN0_213
+set_property PACKAGE_PIN AM18                    [get_ports {pci_exp_rxn_i[0]}]
+#PCIe lane 1
+# TX213_1_P            -> MGTPTXP1_213
+set_property PACKAGE_PIN AN21                    [get_ports {pci_exp_txp_o[1]}]
+# TX213_1_N            -> MGTPTXN1_213
+set_property PACKAGE_PIN AP21                    [get_ports {pci_exp_txn_o[1]}]
+# RX213_1_P            -> MGTPRXP1_213
+set_property PACKAGE_PIN AJ19                    [get_ports {pci_exp_rxp_i[1]}]
+# RX213_1_N            -> MGTPRXN1_213
+set_property PACKAGE_PIN AK19                    [get_ports {pci_exp_rxn_i[1]}]
+#PCIe lane 2
+# TX213_2_P            -> MGTPTXP2_213
+set_property PACKAGE_PIN AL22                    [get_ports {pci_exp_txp_o[2]}]
+# TX213_2_N            -> MGTPTXN2_213
+set_property PACKAGE_PIN AM22                    [get_ports {pci_exp_txn_o[2]}]
+# RX213_2_P            -> MGTPRXP2_213
+set_property PACKAGE_PIN AL20                    [get_ports {pci_exp_rxp_i[2]}]
+# RX213_2_N            -> MGTPRXN2_213
+set_property PACKAGE_PIN AM20                    [get_ports {pci_exp_rxn_i[2]}]
+#PCIe lane 3
+# TX213_3_P            -> MGTPTXP3_213
+set_property PACKAGE_PIN AN23                    [get_ports {pci_exp_txp_o[3]}]
+# TX213_3_N            -> MGTPTXN3_213
+set_property PACKAGE_PIN AP23                    [get_ports {pci_exp_txn_o[3]}]
+# RX213_3_P            -> MGTPRXP3_213
+set_property PACKAGE_PIN AJ21                    [get_ports {pci_exp_rxp_i[3]}]
+# RX213_3_N            -> MGTPRXN3_213
+set_property PACKAGE_PIN AK21                    [get_ports {pci_exp_rxn_i[3]}]
+
+# Now assign the correct ones
+
+#PCIe lane 0
+# TX216_0_P            -> MGTPTXP0_216
+set_property PACKAGE_PIN B23                     [get_ports {pci_exp_txp_o[0]}]
+# TX216_0_N            -> MGTPTXN0_216
+set_property PACKAGE_PIN A23                     [get_ports {pci_exp_txn_o[0]}]
+# RX216_0_P            -> MGTPRXP0_216
+set_property PACKAGE_PIN F21                     [get_ports {pci_exp_rxp_i[0]}]
+# RX216_0_N            -> MGTPRXN0_216
+set_property PACKAGE_PIN E21                     [get_ports {pci_exp_rxn_i[0]}]
+#PCIe lane 1
+# TX216_1_P            -> MGTPTXP1_216
+set_property PACKAGE_PIN D22                     [get_ports {pci_exp_txp_o[1]}]
+# TX216_1_N            -> MGTPTXN1_216
+set_property PACKAGE_PIN C22                     [get_ports {pci_exp_txn_o[1]}]
+# RX216_1_P            -> MGTPRXP1_216
+set_property PACKAGE_PIN D20                     [get_ports {pci_exp_rxp_i[1]}]
+# RX216_1_N            -> MGTPRXN1_216
+set_property PACKAGE_PIN C20                     [get_ports {pci_exp_rxn_i[1]}]
+#PCIe lane 2
+# TX216_2_P            -> MGTPTXP2_216
+set_property PACKAGE_PIN B21                     [get_ports {pci_exp_txp_o[2]}]
+# TX216_2_N            -> MGTPTXN2_216
+set_property PACKAGE_PIN A21                     [get_ports {pci_exp_txn_o[2]}]
+# RX216_2_P            -> MGTPRXP2_216
+set_property PACKAGE_PIN F19                     [get_ports {pci_exp_rxp_i[2]}]
+# RX216_2_N            -> MGTPRXN2_216
+set_property PACKAGE_PIN E19                     [get_ports {pci_exp_rxn_i[2]}]
+#PCIe lane 3
+# TX216_3_P            -> MGTPTXP3_216
+set_property PACKAGE_PIN B19                     [get_ports {pci_exp_txp_o[3]}]
+# TX216_3_N            -> MGTPTXN3_216
+set_property PACKAGE_PIN A19                     [get_ports {pci_exp_txn_o[3]}]
+# RX216_3_P            -> MGTPRXP3_216
+set_property PACKAGE_PIN D18                     [get_ports {pci_exp_rxp_i[3]}]
+# RX216_3_N            -> MGTPRXN3_216
+set_property PACKAGE_PIN C18                     [get_ports {pci_exp_rxn_i[3]}]
 
 #######################################################################
 ##               Pinout and Related I/O Constraints                  ##
