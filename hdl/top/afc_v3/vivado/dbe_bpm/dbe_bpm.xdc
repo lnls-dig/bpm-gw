@@ -1089,7 +1089,10 @@ set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =
 # 3. This pin will be probably the Q pin of the driving FF, but for a timing,
 #     analysis we want a valid startpoint. So, we get only this by using the all_fanin
 #     command
-set pcie_user_ddr_reset                          [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets -hier -filter {NAME =~ */theTlpControl/Memory_Space/ddr_reset}] -filter {IS_LEAF && (DIRECTION == "OUT")}]]
+# FIXME. This might not work if the tools change the name of the "ddr_reset" net.
+# Instead, use the actual name of the driving "ddr_reset" net
+#set pcie_user_ddr_reset                          [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets -hier -filter {NAME =~ */theTlpControl/Memory_Space/ddr_reset}] -filter {IS_LEAF && (DIRECTION == "OUT")}]]
+set pcie_user_ddr_reset                          [get_cells -hier -filter {NAME =~ */theTlpControl/Memory_Space/General_Control_i_reg[16]}]
 set_max_delay -from                              [get_cells $pcie_user_ddr_reset] 5.000
 
 # Constraint DDR <-> PCIe clocks CDC
