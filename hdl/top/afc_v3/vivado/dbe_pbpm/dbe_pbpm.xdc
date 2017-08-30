@@ -2,10 +2,6 @@
 ##                      Artix 7 AMC V3                               ##
 #######################################################################
 
-# All timing constraint translations are rough conversions, intended to act as a template for further manual refinement. The translations should not be expected to produce semantically identical results to the original ucf. Each xdc timing constraint must be manually inspected and verified to ensure it captures the desired intent
-
-# In xdc, all clocks are related by default. This differs from ucf, where clocks are unrelated unless specified otherwise. As a result, you may now see cross-clock paths that were previously unconstrained in ucf. Commented out xdc false path constraints have been generated and can be uncommented, should you wish to remove these new paths. These commands are located after the last clock definition
-
 # FPGA_CLK1_P
 set_property IOSTANDARD DIFF_SSTL15 [get_ports sys_clk_p_i]
 set_property IN_TERM UNTUNED_SPLIT_50 [get_ports sys_clk_p_i]
@@ -286,6 +282,98 @@ set_property PACKAGE_PIN Y25 [get_ports fmc2_a_sda_b]                   ;# LA2_L
 set_property IOSTANDARD LVCMOS25 [get_ports fmc2_a_sda_b]
 
 #######################################################################
+##                          PCIe constraints                        ##
+#######################################################################
+
+#PCIe clock
+# MGT216_CLK1_N -> MGTREFCLK0N_216
+set_property PACKAGE_PIN G18                     [get_ports pcie_clk_n_i]
+# MGT216_CLK1_P -> MGTREFCLK0P_216
+set_property PACKAGE_PIN H18                     [get_ports pcie_clk_p_i]
+
+#XDC supplied by PCIe IP core generates
+# GTP connection in reverse order, we have to swap it.
+# Simply providing correct connections will generate
+# errors "Cannot set LOC ... because the PACKAGE_PIN
+# is occupied by ...".
+# So, firstly set PCIe lanes to temporary locations
+#PCIe lane 0
+# TX213_0_P            -> MGTPTXP0_213
+set_property PACKAGE_PIN AN19                    [get_ports {pci_exp_txp_o[0]}]
+# TX213_0_N            -> MGTPTXN0_213
+set_property PACKAGE_PIN AP19                    [get_ports {pci_exp_txn_o[0]}]
+# RX213_0_P            -> MGTPRXP0_213
+set_property PACKAGE_PIN AL18                    [get_ports {pci_exp_rxp_i[0]}]
+# RX213_0_N            -> MGTPRXN0_213
+set_property PACKAGE_PIN AM18                    [get_ports {pci_exp_rxn_i[0]}]
+#PCIe lane 1
+# TX213_1_P            -> MGTPTXP1_213
+set_property PACKAGE_PIN AN21                    [get_ports {pci_exp_txp_o[1]}]
+# TX213_1_N            -> MGTPTXN1_213
+set_property PACKAGE_PIN AP21                    [get_ports {pci_exp_txn_o[1]}]
+# RX213_1_P            -> MGTPRXP1_213
+set_property PACKAGE_PIN AJ19                    [get_ports {pci_exp_rxp_i[1]}]
+# RX213_1_N            -> MGTPRXN1_213
+set_property PACKAGE_PIN AK19                    [get_ports {pci_exp_rxn_i[1]}]
+#PCIe lane 2
+# TX213_2_P            -> MGTPTXP2_213
+set_property PACKAGE_PIN AL22                    [get_ports {pci_exp_txp_o[2]}]
+# TX213_2_N            -> MGTPTXN2_213
+set_property PACKAGE_PIN AM22                    [get_ports {pci_exp_txn_o[2]}]
+# RX213_2_P            -> MGTPRXP2_213
+set_property PACKAGE_PIN AL20                    [get_ports {pci_exp_rxp_i[2]}]
+# RX213_2_N            -> MGTPRXN2_213
+set_property PACKAGE_PIN AM20                    [get_ports {pci_exp_rxn_i[2]}]
+#PCIe lane 3
+# TX213_3_P            -> MGTPTXP3_213
+set_property PACKAGE_PIN AN23                    [get_ports {pci_exp_txp_o[3]}]
+# TX213_3_N            -> MGTPTXN3_213
+set_property PACKAGE_PIN AP23                    [get_ports {pci_exp_txn_o[3]}]
+# RX213_3_P            -> MGTPRXP3_213
+set_property PACKAGE_PIN AJ21                    [get_ports {pci_exp_rxp_i[3]}]
+# RX213_3_N            -> MGTPRXN3_213
+set_property PACKAGE_PIN AK21                    [get_ports {pci_exp_rxn_i[3]}]
+
+# Now assign the correct ones
+
+#PCIe lane 0
+# TX216_0_P            -> MGTPTXP0_216
+set_property PACKAGE_PIN B23                     [get_ports {pci_exp_txp_o[0]}]
+# TX216_0_N            -> MGTPTXN0_216
+set_property PACKAGE_PIN A23                     [get_ports {pci_exp_txn_o[0]}]
+# RX216_0_P            -> MGTPRXP0_216
+set_property PACKAGE_PIN F21                     [get_ports {pci_exp_rxp_i[0]}]
+# RX216_0_N            -> MGTPRXN0_216
+set_property PACKAGE_PIN E21                     [get_ports {pci_exp_rxn_i[0]}]
+#PCIe lane 1
+# TX216_1_P            -> MGTPTXP1_216
+set_property PACKAGE_PIN D22                     [get_ports {pci_exp_txp_o[1]}]
+# TX216_1_N            -> MGTPTXN1_216
+set_property PACKAGE_PIN C22                     [get_ports {pci_exp_txn_o[1]}]
+# RX216_1_P            -> MGTPRXP1_216
+set_property PACKAGE_PIN D20                     [get_ports {pci_exp_rxp_i[1]}]
+# RX216_1_N            -> MGTPRXN1_216
+set_property PACKAGE_PIN C20                     [get_ports {pci_exp_rxn_i[1]}]
+#PCIe lane 2
+# TX216_2_P            -> MGTPTXP2_216
+set_property PACKAGE_PIN B21                     [get_ports {pci_exp_txp_o[2]}]
+# TX216_2_N            -> MGTPTXN2_216
+set_property PACKAGE_PIN A21                     [get_ports {pci_exp_txn_o[2]}]
+# RX216_2_P            -> MGTPRXP2_216
+set_property PACKAGE_PIN F19                     [get_ports {pci_exp_rxp_i[2]}]
+# RX216_2_N            -> MGTPRXN2_216
+set_property PACKAGE_PIN E19                     [get_ports {pci_exp_rxn_i[2]}]
+#PCIe lane 3
+# TX216_3_P            -> MGTPTXP3_216
+set_property PACKAGE_PIN B19                     [get_ports {pci_exp_txp_o[3]}]
+# TX216_3_N            -> MGTPTXN3_216
+set_property PACKAGE_PIN A19                     [get_ports {pci_exp_txn_o[3]}]
+# RX216_3_P            -> MGTPRXP3_216
+set_property PACKAGE_PIN D18                     [get_ports {pci_exp_rxp_i[3]}]
+# RX216_3_N            -> MGTPRXN3_216
+set_property PACKAGE_PIN C18                     [get_ports {pci_exp_rxn_i[3]}]
+
+#######################################################################
 ##               Pinout and Related I/O Constraints                  ##
 #######################################################################
 
@@ -304,130 +392,105 @@ set_property IOSTANDARD LVCMOS25 [get_ports fmc2_a_sda_b]
 ##                    Timing constraints                             ##
 #######################################################################
 
-# Overrides default_delay hdl parameter for the VARIABLE mode.
-# For Artix7: Average Tap Delay at 200 MHz = 78 ps, at 300 MHz = 52 ps ???
-
 #######################################################################
 ##                          Clocks                                   ##
 #######################################################################
 
 # 125 MHz AMC TCLKB input clock
-create_clock -period 8.000 -name sys_clk_p_i [get_ports sys_clk_p_i]
+create_clock -period 8.000 -name sys_clk_p_i       [get_ports sys_clk_p_i]
 
 ## 100 MHz wihsbone clock
-# A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
-create_clock -name clk_sys -period 10.000 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout0_buf/O}]
-
+create_generated_clock -name clk_sys               [get_pins -hier -filter {NAME =~ *cmp_sys_pll_inst/cmp_sys_pll/CLKOUT0}]
+set clk_sys_period                                 [get_property PERIOD [get_clocks clk_sys]]
 # 200 MHz DDR3 and IDELAY CONTROL clock
-# A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
-create_clock -name clk_200mhz -period 5.000 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout1_buf/O}]
+create_generated_clock -name clk_200mhz            [get_pins -hier -filter {NAME =~ *cmp_sys_pll_inst/cmp_sys_pll/CLKOUT1}]
+set clk_200mhz_period                              [get_property PERIOD [get_clocks clk_200mhz]]
 
-# A PERIOD placed on an internal net will result in a clock defined with an internal source. Any upstream source clock latency will not be analyzed
-create_clock -name clk_300mhz -period 3.333 [get_pins -hier -filter {NAME =~ */cmp_sys_pll_inst/cmp_clkout2_buf/O}]
+# DDR3 clock generated by IP
+set clk_pll_ddr_period                             [get_property PERIOD [get_clocks clk_pll_i]]
+set clk_pll_ddr_period_less                        [expr $clk_pll_ddr_period - 1.000]
 
-set_clock_groups -asynchronous \
-  -group [get_clocks -include_generated_clocks pcie_clk] \
-  -group [get_clocks -include_generated_clocks clk_200mhz] \
-  -group [get_clocks -include_generated_clocks clk_300mhz]
+# PCIE clock generated by IP
+set clk_125mhz_period                             [get_property PERIOD [get_clocks clk_125mhz]]
 
 #######################################################################
 ##                         Cross Clock Constraints                   ##
 #######################################################################
 
-# Reset synchronization path
-set_false_path -through [get_nets -hier -filter {NAME =~ *cmp_reset/master_rstn}]
+# Reset synchronization path.
+set_false_path -through                            [get_pins -hier -filter {NAME =~ *cmp_reset/master_rstn_reg/C}]
+# Get the cell driving the corresponding net
+set reset_ffs                                      [get_nets -hier -filter {NAME =~ *cmp_reset*/master_rstn*}]
+set_property ASYNC_REG TRUE                        [get_cells [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets $reset_ffs]]]]
+
 # DDR 3 temperature monitor reset path
-# chain of FFs synched with clk_sys. We use asynchronous assertion and
-# synchronous deassertion
-set_false_path -through [get_nets -hier -filter {NAME =~ *theTlpControl/Memory_Space/wb_FIFO_Rst}]
+# chain of FFs synched with clk_sys.
+#  We use asynchronous assertion and
+#  synchronous deassertion
+set_false_path -through                            [get_nets -hier -filter {NAME =~ *theTlpControl/Memory_Space/wb_FIFO_Rst}]
 # DDR 3 temperature monitor reset path
-set_max_delay -datapath_only -from [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
-
-#######################################################################
-##                                Data                               ##
-#######################################################################
-
-#######################################################################
-##                          PCIe constraints                        ##
-#######################################################################
-
-#PCIe clock
-# MGT216_CLK1_N -> MGTREFCLK0N_216
-set_property PACKAGE_PIN G18 [get_ports pcie_clk_n_i]
-# MGT216_CLK1_P -> MGTREFCLK0P_216
-set_property PACKAGE_PIN H18 [get_ports pcie_clk_p_i]
-#PCIe lane 0
-# TX216_0_P            -> MGTPTXP0_216
-set_property PACKAGE_PIN B23 [get_ports {pci_exp_txp_o[0]}]
-# TX216_0_N            -> MGTPTXN0_216
-set_property PACKAGE_PIN A23 [get_ports {pci_exp_txn_o[0]}]
-# RX216_0_P            -> MGTPRXP0_216
-set_property PACKAGE_PIN F21 [get_ports {pci_exp_rxp_i[0]}]
-# RX216_0_N            -> MGTPRXN0_216
-set_property PACKAGE_PIN E21 [get_ports {pci_exp_rxn_i[0]}]
-#PCIe lane 1
-# TX216_1_P            -> MGTPTXP1_216
-set_property PACKAGE_PIN D22 [get_ports {pci_exp_txp_o[1]}]
-# TX216_1_N            -> MGTPTXN1_216
-set_property PACKAGE_PIN C22 [get_ports {pci_exp_txn_o[1]}]
-# RX216_1_P            -> MGTPRXP1_216
-set_property PACKAGE_PIN D20 [get_ports {pci_exp_rxp_i[1]}]
-# RX216_1_N            -> MGTPRXN1_216
-set_property PACKAGE_PIN C20 [get_ports {pci_exp_rxn_i[1]}]
-#PCIe lane 2
-# TX216_2_P            -> MGTPTXP2_216
-set_property PACKAGE_PIN B21 [get_ports {pci_exp_txp_o[2]}]
-# TX216_2_N            -> MGTPTXN2_216
-set_property PACKAGE_PIN A21 [get_ports {pci_exp_txn_o[2]}]
-# RX216_2_P            -> MGTPRXP2_216
-set_property PACKAGE_PIN F19 [get_ports {pci_exp_rxp_i[2]}]
-# RX216_2_N            -> MGTPRXN2_216
-set_property PACKAGE_PIN E19 [get_ports {pci_exp_rxn_i[2]}]
-#PCIe lane 3
-# TX216_3_P            -> MGTPTXP3_216
-set_property PACKAGE_PIN B19 [get_ports {pci_exp_txp_o[3]}]
-# TX216_3_N            -> MGTPTXN3_216
-set_property PACKAGE_PIN A19 [get_ports {pci_exp_txn_o[3]}]
-# RX216_3_P            -> MGTPRXP3_216
-set_property PACKAGE_PIN D18 [get_ports {pci_exp_rxp_i[3]}]
-# RX216_3_N            -> MGTPRXN3_216
-set_property PACKAGE_PIN C18 [get_ports {pci_exp_rxn_i[3]}]
-
-#######################################################################
-# Pinout and Related I/O Constraints
-#######################################################################
-
-#######################################################################
-# Timing Constraints
-#######################################################################
-# The following cross clock domain false path constraints can be uncommented in order to mimic ucf constraints behavior (see message at the beginning of this file)
-set_false_path -from [get_clocks sys_clk_p_i] -to [get_clocks [list clk_sys clk_200mhz pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_sys] -to [get_clocks [list sys_clk_p_i clk_200mhz pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_200mhz] -to [get_clocks [list sys_clk_p_i clk_sys pcie_clk clk_125mhz clk_userclk clk_userclk2 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks pcie_clk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_125mhz] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_userclk] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
-set_false_path -from [get_clocks clk_userclk2] -to [get_clocks [list sys_clk_p_i clk_sys clk_200mhz cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_A.ddr_byte_lane_A/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_B.ddr_byte_lane_B/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_C.ddr_byte_lane_C/iserdes_clk_1 cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/DDRs_ctrl_module/u_ddr_core/u_ddr_core_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/iserdes_clk_1]]
+set_max_delay -datapath_only -from                 [get_cells -hier -filter {NAME =~ *ddr3_infrastructure/rstdiv0_sync_r1_reg*}] -to [get_cells -hier -filter {NAME =~ *temp_mon_enabled.u_tempmon/xadc_supplied_temperature.rst_r1*}] 20.000
 
 # FIFO generated CDC. Xilinx recommends 2x the slower clock period delay. But let's be more strict and allow
 # only 1x faster clock period delay
-set_max_delay -datapath_only -from [get_clocks clk_pll_i] -to [get_clocks clk_userclk2] 8.000
-set_max_delay -datapath_only -from [get_clocks clk_userclk2] -to [get_clocks clk_pll_i] 8.000
+set_max_delay -datapath_only -from               [get_clocks clk_pll_i]    -to [get_clocks clk_userclk2]   $clk_pll_ddr_period
+set_max_delay -datapath_only -from               [get_clocks clk_userclk2] -to [get_clocks clk_pll_i]      $clk_pll_ddr_period
 
-# CDC FIFO from FMCPICO to CLK_SYS. Give it "faster clock period" ns
-set_max_delay -datapath_only -from [get_clocks clk_300mhz] -to [get_clocks clk_sys] 3.333
-set_max_delay -datapath_only -from [get_clocks clk_sys] -to [get_clocks clk_300mhz] 3.333
+# Wishbone <-> PCIe. Using 1x source clock
+set_max_delay -datapath_only -from               [get_clocks clk_sys]     -to [get_clocks clk_125mhz]   $clk_sys_period
+set_max_delay -datapath_only -from               [get_clocks clk_125mhz]  -to [get_clocks clk_sys]      $clk_125mhz_period
 
-#######################################################################
-##                      Placement Constraints                        ##
-#######################################################################
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+# PCIe <-> DDR3. Give 1x the source clock
+set_max_delay -from                              [get_clocks clk_pll_i] -to [get_clocks clk_125mhz] $clk_pll_ddr_period
 
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] 10.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] 10.000
-#set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] 10.000
+# Acquisition core <-> DDR3 clock. 1x source clock destination
+set_max_delay -datapath_only -from               [get_clocks clk_sys]   -to [get_clocks clk_pll_i] $clk_sys_period
+set_max_delay -datapath_only -from               [get_clocks clk_pll_i] -to [get_clocks clk_sys]   $clk_pll_ddr_period
+
+# DDR3 reset path. Copied from
+# ddr_core.xdc and modified accordingly
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *cmp_pcie_cntr/user_lnk_up_int_i/C}] -to [get_cells -hier *rstdiv0_sync_r*] 5
+
+# Constraint the asynchronous reset of the DDR3 module. It should be safe to declare it
+# as a false path, but let's give it a 5 ns, as the constraint above.
+# Here we want to get a valid startpoint from the NET name ddr_reset. So, we must:
+# 1. Get the complete name of this NET
+# 2. Get the pin name that is connected to this NET and filter it
+#     so get only the OUT pins and the LEAF name of it (as opposed to
+#     a hierarchical name)
+# 3. This pin will be probably the Q pin of the driving FF, but for a timing,
+#     analysis we want a valid startpoint. So, we get only this by using the all_fanin
+#     command
+# FIXME. This might not work if the tools change the name of the "ddr_reset" net.
+# Instead, use the actual name of the driving "ddr_reset" net
+#set pcie_user_ddr_reset                          [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets -hier -filter {NAME =~ */theTlpControl/Memory_Space/ddr_reset}] -filter {IS_LEAF && (DIRECTION == "OUT")}]]
+set pcie_user_ddr_reset                          [get_cells -hier -filter {NAME =~ */theTlpControl/Memory_Space/General_Control_i_reg[16]}]
+set_max_delay -from                              [get_cells $pcie_user_ddr_reset] 5.000
+
+# Constraint DDR <-> PCIe clocks CDC
+set_max_delay -datapath_only -from               [get_clocks -include_generated_clocks pcie_clk] -to [get_clocks -include_generated_clocks clk_pll_i] 5.000
+set_max_delay -datapath_only -from               [get_clocks -include_generated_clocks clk_pll_i] -to [get_clocks -include_generated_clocks pcie_clk] 5.000
+
+# Acquisition core register CDC
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_shots*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_fc_fifo/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_*_pkt*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_shots*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_ddr3_iface/lmt_curr_chan*/C}] -to [get_clocks clk_pll_i] $clk_pll_ddr_period
+
+# This path is only valid after acq_start signal, which is controlled by software and
+# is activated many many miliseconds after all of the other. So, give it 2x the clock
+# period
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 8.000
+
+# This path is only valid after acq_start
+# signal, which is controlled by software and
+# is activated many many miliseconds after
+# all of the other. So, give it 1x the
+# destination clock period
+set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =~ *acq_core/*acq_core_regs/*/C}] -to [get_clocks clk_sys] $clk_sys_period
 
 # Use Distributed RAM, as these FIFOs are small and sparse through the module
 # Cannot make this work with hierarchical matching... only by specifying the
@@ -442,22 +505,23 @@ set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_acq_f
 
 #######################################################################
 ##                      Placement Constraints                        ##
+#######################################################################
 
 # Constrain the PCIe core elements placement, so that it won't fail
 # timing analysis.
 # Comment out because we use nonstandard GTP location
 create_pblock GRP_pcie_core
-add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ */cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i/*}]
+add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ *pcie_core_i/*}]
 resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
 #
 ## Place the DMA design not far from PCIe core, otherwise it also breaks timing
 #create_pblock GRP_ddr_core
-#add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -hier -filter  {NAME =~ */cmp_xwb_bpm_pcie/cmp_wb_bpm_pcie/cmp_bpm_pcie/pcie_core_i/DDRs_ctrl_module/ddr_core_inst/*]]
+#add_cells_to_pblock [get_pblocks GRP_ddr_core] [get_cells -hier -filter  {NAME =~ *pcie_core_i/DDRs_ctrl_module/ddr_core_inst/*]]
 #resize_pblock [get_pblocks GRP_ddr_core] -add {CLOCKREGION_X1Y0:CLOCKREGION_X1Y1}
 #
 ## Place DDR core temperature monitor
 #create_pblock GRP_ddr_core_temp_mon
-#add_cells_to_pblock [get_pblocks GRP_ddr_core_temp_mon] [get_cells -quiet [list cmp_xwb_bpm_pcie_a7/cmp_wb_bpm_pcie_a7/cmp_bpm_pcie_a7/u_ddr_core/temp_mon_enabled.u_tempmon/*]]
+#add_cells_to_pblock [get_pblocks GRP_ddr_core_temp_mon] [get_cells -quiet -hier -filter [NAME =~ *u_ddr_core/temp_mon_enabled.u_tempmon/*]]
 #resize_pblock [get_pblocks GRP_ddr_core_temp_mon] -add {CLOCKREGION_X0Y2:CLOCKREGION_X0Y3}
 #
 ## The FMC #1 is poor placed on PCB, so we constraint it to the rightmost clock regions of the FPGA
@@ -469,13 +533,14 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y
 #add_cells_to_pblock [get_pblocks GRP_fmc2] [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_4ch/*}]
 #resize_pblock [get_pblocks GRP_fmc2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 #
-### Constraint Position Calc Cores
-#create_pblock GRP_position_calc_core1
-#add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo1] [get_cells -quiet {list cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
-#resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
-#create_pblock GRP_position_calc_core_cdc_fifo2
-#add_cells_to_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] [get_cells -quiet {list cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*cdc_fifo*}]
-#resize_pblock [get_pblocks GRP_position_calc_core_cdc_fifo2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+## Constraint Position Calc Cores
+create_pblock GRP_position_calc_core1
+add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -hier -filter {NAME =~ *cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
+resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
+
+create_pblock GRP_position_calc_core2
+add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -hier -filter {NAME =~ *cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
+resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 #
 ## Place acquisition core 0
 #create_pblock GRP_acq_core_0
@@ -487,25 +552,25 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y
 #######################################################################
 
 ## Mixer CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_mixer/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_mixer/*}]]
+#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
+#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
 
 ## CIC TBT CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
 
-## TBT CORDIC CE
-#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/cmp_cordic_core/*}]]
-#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_tbt_cordic/cmp_cordic_core/*}]]
+### TBT CORDIC CE
+#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
+#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
 
 ## CIC FOFB CE
-#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
+#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
 
-## FOFB CORDIC CE
-# FIXME: get CE from VHDL code
-#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/cmp_cordic_core/*}]]
-#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_fofb_cordic/cmp_cordic_core/*}]]
+### FOFB CORDIC CE
+## FIXME: get CE from VHDL code
+#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
+#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
 
 ## CIC MONIT 1 CE
 set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
