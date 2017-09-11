@@ -663,6 +663,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_sdb_top_syn_id            : natural := 16;
   constant c_slv_sdb_dsp_cores_id          : natural := 17;
   constant c_slv_sdb_gen_cores_id          : natural := 18;
+  constant c_slv_sdb_infra_cores_id        : natural := 19;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -811,7 +812,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
 
   -- WB SDB (Self describing bus) layout
-  constant c_layout : t_sdb_record_array(c_slaves+4-1 downto 0) :=
+  constant c_layout : t_sdb_record_array(c_slaves+5-1 downto 0) :=
     (c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00310000"),   -- Position Calc Core 1 control port
      c_slv_fmc_adc_1_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00320000"),   -- FMC_ADC control 1 port
@@ -832,7 +833,8 @@ architecture rtl of dbe_bpm_gen is
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
-     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info)
+     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info),
+     c_slv_sdb_infra_cores_id  => f_sdb_embed_synthesis(c_sdb_infra_cores_syn_info)
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
