@@ -674,7 +674,14 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_acq_fifo_size                  : natural := 1024;
 
+  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
+  constant c_acq_num_cores                  : natural := 4;
+  -- Type of DDR3 core interface
+  constant c_ddr_interface_type             : string := "AXIS";
+
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
+  -- Post-Mortem Acq Cores dont need Multishot. So, set them to 0
+  constant c_acq_multishot_ram_size         : t_property_value_array(c_acq_num_cores-1 downto 0) := (0, 0, 8192, 8192);
   constant c_acq_ddr_addr_res_width         : natural := 32;
   constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
 
@@ -698,11 +705,6 @@ architecture rtl of dbe_bpm_gen is
   constant c_trigger_sw_clk_id              : natural := 17;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
-
-  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
-  constant c_acq_num_cores                  : natural := 4;
-  -- Type of DDR3 core interface
-  constant c_ddr_interface_type             : string := "AXIS";
 
   -- Acquisition core IDs
   constant c_acq_core_0_id                  : natural := 0;
@@ -3960,7 +3962,7 @@ begin
     g_ddr_payload_width                       => c_ddr_payload_width,
     g_ddr_dq_width                            => c_ddr_dq_width,
     g_ddr_addr_width                          => c_ddr_addr_width,
-    --g_multishot_ram_size                      => 2048,
+    g_multishot_ram_size                      => c_acq_multishot_ram_size,
     g_fifo_fc_size                            => c_acq_fifo_size,
     --g_sim_readback                            => false
     g_acq_num_cores                           => c_acq_num_cores,
