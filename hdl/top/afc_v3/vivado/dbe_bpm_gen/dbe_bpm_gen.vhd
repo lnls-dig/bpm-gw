@@ -663,6 +663,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_sdb_top_syn_id            : natural := 16;
   constant c_slv_sdb_dsp_cores_id          : natural := 17;
   constant c_slv_sdb_gen_cores_id          : natural := 18;
+  constant c_slv_sdb_infra_cores_id        : natural := 19;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -673,7 +674,14 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_acq_fifo_size                  : natural := 1024;
 
+  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
+  constant c_acq_num_cores                  : natural := 4;
+  -- Type of DDR3 core interface
+  constant c_ddr_interface_type             : string := "AXIS";
+
   constant c_acq_addr_width                 : natural := c_ddr_addr_width;
+  -- Post-Mortem Acq Cores dont need Multishot. So, set them to 0
+  constant c_acq_multishot_ram_size         : t_property_value_array(c_acq_num_cores-1 downto 0) := (0, 0, 4096, 4096);
   constant c_acq_ddr_addr_res_width         : natural := 32;
   constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
 
@@ -697,11 +705,6 @@ architecture rtl of dbe_bpm_gen is
   constant c_trigger_sw_clk_id              : natural := 17;
 
   constant c_acq_pos_ddr3_width             : natural := 32;
-
-  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
-  constant c_acq_num_cores                  : natural := 4;
-  -- Type of DDR3 core interface
-  constant c_ddr_interface_type             : string := "AXIS";
 
   -- Acquisition core IDs
   constant c_acq_core_0_id                  : natural := 0;
@@ -811,7 +814,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
 
   -- WB SDB (Self describing bus) layout
-  constant c_layout : t_sdb_record_array(c_slaves+4-1 downto 0) :=
+  constant c_layout : t_sdb_record_array(c_slaves+5-1 downto 0) :=
     (c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
                                                                                  x"00310000"),   -- Position Calc Core 1 control port
      c_slv_fmc_adc_1_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00320000"),   -- FMC_ADC control 1 port
@@ -832,7 +835,8 @@ architecture rtl of dbe_bpm_gen is
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
-     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info)
+     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info),
+     c_slv_sdb_infra_cores_id  => f_sdb_embed_synthesis(c_sdb_infra_cores_syn_info)
     );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well
@@ -3958,7 +3962,7 @@ begin
     g_ddr_payload_width                       => c_ddr_payload_width,
     g_ddr_dq_width                            => c_ddr_dq_width,
     g_ddr_addr_width                          => c_ddr_addr_width,
-    --g_multishot_ram_size                      => 2048,
+    g_multishot_ram_size                      => c_acq_multishot_ram_size,
     g_fifo_fc_size                            => c_acq_fifo_size,
     --g_sim_readback                            => false
     g_acq_num_cores                           => c_acq_num_cores,
