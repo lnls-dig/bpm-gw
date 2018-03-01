@@ -49,6 +49,8 @@ use work.synthesis_descriptor_pkg.all;
 use work.pcie_cntr_axi_pkg.all;
 -- Trigger Modules
 use work.trigger_pkg.all;
+-- Trigger Common Modules
+use work.trigger_common_pkg.all;
 
 entity dbe_bpm_gen is
 generic(
