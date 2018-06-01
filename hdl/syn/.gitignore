@@ -82,3 +82,11 @@ planAhead_run_*/
 *par
 *synthesize
 *translate
+
+*bitstream.tcl
+*map.tcl
+*par.tcl
+*synthesize.tcl
+*translate.tcl
+*project.tcl
+*files.tcl
