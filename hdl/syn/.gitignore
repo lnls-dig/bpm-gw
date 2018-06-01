@@ -68,3 +68,17 @@ planAhead_run_*/
 *.srcs/
 *.jou
 *.log
+
+# hdlmake stuff
+
+*tcl_bitstream
+*tcl_map
+*tcl_par
+*tcl_synthesize
+*tcl_translate
+
+*bitstream
+*map
+*par
+*synthesize
+*translate
