@@ -1,6 +1,8 @@
 target = "xilinx"
 action = "synthesis"
 
+language = "vhdl"
+
 syn_device = "xc7a200t"
 syn_grade = "-2"
 syn_package = "ffg1156"
