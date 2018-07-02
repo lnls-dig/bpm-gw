@@ -2,6 +2,7 @@
 
 ## Project Folder Organization
 
+```
 *
 |
 |-- hdl:
@@ -43,6 +44,7 @@
 |    |
 |    |-- top:
 |             Top design modules.
+```
 
 ## Cloning Instructions
 
