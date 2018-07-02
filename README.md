@@ -105,7 +105,7 @@ Go to a syn directory. It must have a synthesis manifest file:
 Run the following commands. You must have hdlmake command available
 in your PATH environment variable.
 
-    ./build_synthesis_local.sh
+    ./build_bitstream_local.sh
 
 ## Known Issues
 
