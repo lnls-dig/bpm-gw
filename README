@@ -1,11 +1,6 @@
-==============================================================================
+# Sirius Beam Position Monitor FPGA firmware
 
-Repository containing the Beam Position Monitor FPGA firmware and
-software.
-
-==============================================================================
-
-Folder Hierarchy organization:
+## Project Folder Organization
 
 *
 |
@@ -48,134 +43,71 @@ Folder Hierarchy organization:
 |    |
 |    |-- top:
 |             Top design modules.
-|
-|-- sw:
-|    |    Software related to interfacing the BPM carrier board with a PC
-|    |      via PCIe.
-|    |
-|    |-- drivers:
-|    |        Linux Kernel code for device drivers
-|    |
-|    |-- include:
-|    |        Header files for device structures and definitions
-|    |
-|    |-- lib:
-|             Utilities and API functions exported by the drivers
-|
-|-- embedded-sw (based on the original project by Alessandrio Rubini
-|    |            and others  <http://www.ohwr.org/projects/wrpc-sw>):
-|    |
-|    |      Embedded software that runs inside the LM32 softcore processor.
-|    |
-|    |-- arch:
-|    |        Architecture specific code, like linker scripts and boot code.
-|    |
-|    |-- boards:
-|    |        Board specific parameters and initialization.
-|    |
-|    |-- dev:
-|    |        Device specific code, such as UART, GPIO and DMA interfaces
-|    |
-|    |-- include:
-|    |    |   General headers, mostly API device headers.
-|    |    |
-|    |    |-- hw:
-|    |    |       Device specific registers and structures. This definitions
-|    |    |         are included by the more general headers located inside
-|    |    |         the "include" top directory.
-|    |    |
-|    |    |-- memmgr:
-|    |            Memory pool for "dynamic" allocated memory.
-|    |
-|    |-- lib:
-|    |        Utilities and general functions, such as the memmgr subsystem
-|    |          and a printf-like function.
-|    |
-|    |-- tests:
-|    |        Folder dedicated to software testing.
-|    |
-|    |-- tools:
-|    |        General tools for generating RAM loadable file by the firmware
-|    |          FPGA.
 
-==============================================================================
-
-Cloning this repository:
+## Cloning Instructions
 
 This repository makes use of git submodules, located at 'hdl/ip_cores' folder:
   hdl/ip_cores/general-cores
   hdl/ip_cores/etherbone-core
+  hdl/ip_cores/dsp-cores
+  hdl/ip_cores/infra-cores
 
 To clone the whole repository use the following command:
 
-  $ git clone --recursive git://github.com/lerwys/bpm-sw.git (read only)
+    git clone --recursive git://github.com/lnls-dig/bpm-gw.git (read only)
+
   or
-  $ git clone --recursive git@github.com:lerwys/bpm-sw.git (read+write)
+
+    git clone --recursive git@github.com:lnls-dig/bpm-gw.git (read+write)
 
 For older versions of Git (<1.6.5), use the following:
 
-  $ git clone git://github.com/lerwys/bpm-sw.git
-  or
-  $ git clone git@github.com:lerwys/bpm-sw.git
+    git clone git://github.com/lnls-dig/bpm-gw.git
 
-  $ git submodule init
-  $ git submodule update
+or
+
+    git clone git@github.com:lnls-dig/bpm-gw.git
+
+    git submodule init
+    git submodule update
 
 To update each submodule within this project use:
 
-  $ git submodule foreach git rebase origin master
+    git submodule foreach git rebase origin master
 
-==============================================================================
-
-Simulation instructions:
+## Simulation Instructions
 
 Go to a testbench directory. It must have a top manifest file:
-  cd /hdl/testbench/path_to_testbench
 
-Run the following commands. You must have hdlmake2 command available
-  in your PATH environment variable.
+    cd hdl/testbench/path_to_testbench
 
-Create the (ISim) simualation makefile
+Run the following commands. You must have hdlmake command available
+in your PATH environment variable.
 
-  $ hdlmake2 --make-isim
+Create the simualation makefile
+
+    hdlmake
 
 Compile the project
 
-  $ make
-
-Create the simulation executable ELF file
-
-  $ make fuse TOP_MODULE=<top_level_testbench_module_without_the_extension>
+    make
 
 Execute the simulation with GUI and aditional commands
 
-  $ ./isim_proj -view wave.wcfg -tclbatch isim_cmd -gui
+    vsim -do run.do &
 
-==============================================================================
+## Synthesis Instructions
 
-Synthesis instructions:
+Go to a syn directory. It must have a synthesis manifest file:
 
-Go to a syn directory. It must have a top manifest file:
-  cd /hdl/top/path_to_top_design
+    cd hdl/syn/path_to_syn_design
 
-Run the following commands. You must have hdlmake2 command available
-  in your PATH environment variable.
+Run the following commands. You must have hdlmake command available
+in your PATH environment variable.
 
-  Create the synthesis makefile and an ISE project
+    ./build_synthesis_local.sh
 
-  $ hdlmake2 --make-ise --ise-proj
-
-Compile the source files locally
-
-  $ make local
-
-Load the generated .bit file with iMPACT or other tool
-
-  $ impact
-
-==============================================================================
-
-Known Issues:
+## Known Issues
 
 wb_fmc150/sim/: This folder containts behavioral simulation models
   for memories (ROMs). However, the xilinx initialization file (.mif)
