@@ -36,3 +36,12 @@ work/
 *.edif
 *.mif
 .Xil/
+
+######################
+# Impact files
+######################
+
+*impact.xsl
+*impact_impact.xwbt
+*usage_statistics_webtalk.html
+*webtalk_impact.xml
