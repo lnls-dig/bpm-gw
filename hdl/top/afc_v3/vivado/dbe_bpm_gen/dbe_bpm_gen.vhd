@@ -706,8 +706,9 @@ architecture rtl of dbe_bpm_gen is
   constant c_acq_monit_amp_id               : natural := 16;
   constant c_acq_monit_pos_id               : natural := 17;
   constant c_trigger_sw_clk_id              : natural := 18;
+  constant c_phase_sync_trigger_id          : natural := 19;
 
-  constant c_trig_num_channels              : natural := 1;
+  constant c_trig_num_channels              : natural := 2;
   -- Number of channels per acquisition core
   constant c_acq_num_channels               : natural := 18; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT1 AMP +
@@ -2996,6 +2997,12 @@ begin
     rffe_swclk_o                            => dsp1_clk_rffe_swap,
 
     -----------------------------
+    -- Synchronization trigger for RFFE swap clock
+    -----------------------------
+
+    sync_trig_i                             => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_id).pulse,
+
+    -----------------------------
     -- Debug signals
     -----------------------------
 
@@ -3212,6 +3219,12 @@ begin
     -- Output to RFFE board
     -----------------------------
     rffe_swclk_o                            => dsp2_clk_rffe_swap,
+
+    -----------------------------
+    -- Synchronization trigger for RFFE swap clock
+    -----------------------------
+
+    sync_trig_i                             => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_id).pulse,
 
     -----------------------------
     -- Debug signals
