@@ -4318,8 +4318,8 @@ begin
   ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
-  trig_ref_clk <= clk_sys;
-  trig_ref_rst_n <= clk_sys_rstn;
+  trig_ref_clk <= clk_aux;
+  trig_ref_rst_n <= clk_aux_rstn;
 
   cmp_xwb_trigger : xwb_trigger
     generic map (
