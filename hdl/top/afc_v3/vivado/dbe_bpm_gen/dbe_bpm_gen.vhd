@@ -1469,6 +1469,15 @@ architecture rtl of dbe_bpm_gen is
   );
   end component;
 
+  component clk_gen_mgt is
+  port(
+    sys_clk_p_i                             : in std_logic;
+    sys_clk_n_i                             : in std_logic;
+    sys_clk_o                               : out std_logic;
+    sys_clk_bufg_o                          : out std_logic
+  );
+  end component;
+
   -- Xilinx PLL
   component sys_pll is
   generic(
@@ -1632,7 +1641,7 @@ begin
   -- Auxiliary clock generation
   -----------------------------------------------------------------------------
 
-  cmp_aux_clk_gen : clk_gen
+  cmp_aux_clk_gen : clk_gen_mgt
   port map (
     sys_clk_p_i                             => aux_clk_p_i,
     sys_clk_n_i                             => aux_clk_n_i,
