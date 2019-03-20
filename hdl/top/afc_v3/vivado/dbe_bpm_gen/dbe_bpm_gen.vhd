@@ -63,6 +63,9 @@ port(
   sys_clk_p_i                                : in std_logic;
   sys_clk_n_i                                : in std_logic;
 
+  aux_clk_p_i                                : in std_logic;
+  aux_clk_n_i                                : in std_logic;
+
   -----------------------------------------
   -- Reset Button
   -----------------------------------------
@@ -810,6 +813,10 @@ architecture rtl of dbe_bpm_gen is
   constant c_clk_200mhz_id                  : natural := 1;
   constant c_clk_300mhz_id                  : natural := 2;
 
+  -- Number of auxiliary clocks
+  constant c_num_aux_clks                   : natural := 1; -- CLK_AUX
+  constant c_clk_aux_id                     : natural := 0;
+
   -- FMC_ADC layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
   constant c_fmc_adc_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"0000FFFF", x"00006000");
@@ -961,6 +968,11 @@ architecture rtl of dbe_bpm_gen is
   signal clk_300mhz_rst                     : std_logic;
   signal clk_300mhz_rstn                    : std_logic;
 
+  signal clk_aux                            : std_logic;
+  signal clk_aux_locked                     : std_logic;
+  signal clk_aux_rstn                       : std_logic;
+  signal clk_aux_rst                        : std_logic;
+
   signal rst_button_sys_pp                  : std_logic;
   signal rst_button_sys                     : std_logic;
   signal rst_button_sys_n                   : std_logic;
@@ -968,6 +980,10 @@ architecture rtl of dbe_bpm_gen is
   -- "c_num_tlvl_clks" clocks
   signal reset_clks                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
   signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
+
+  -- "c_num_aux_clks" clocks
+  signal reset_aux_clks                     : std_logic_vector(c_num_aux_clks-1 downto 0);
+  signal reset_aux_rstn                     : std_logic_vector(c_num_aux_clks-1 downto 0);
 
   signal rs232_rstn                         : std_logic;
   signal fs_rstn_dbg                        : std_logic;
@@ -995,6 +1011,9 @@ architecture rtl of dbe_bpm_gen is
    -- Global Clock Single ended
   signal sys_clk_gen                        : std_logic;
   signal sys_clk_gen_bufg                   : std_logic;
+
+  signal aux_clk_gen                        : std_logic;
+  signal aux_clk_gen_bufg                   : std_logic;
 
   -- FMC_ADC 1 Signals
   signal wbs_fmc1_in_array                  : t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
@@ -1605,6 +1624,62 @@ begin
   );
 
   rst_button_sys_n                          <= not rst_button_sys;
+
+  -----------------------------------------------------------------------------
+  -- Auxiliary clock generation
+  -----------------------------------------------------------------------------
+
+  cmp_aux_clk_gen : clk_gen
+  port map (
+    sys_clk_p_i                             => aux_clk_p_i,
+    sys_clk_n_i                             => aux_clk_n_i,
+    sys_clk_o                               => aux_clk_gen,
+    sys_clk_bufg_o                          => aux_clk_gen_bufg
+  );
+
+   -- Auxiliary clock
+  cmp_aux_sys_pll_inst : sys_pll
+  generic map (
+    -- RF*5/36 ~ 69.44 MHz input clock ~ 14.4 ns
+    g_clkin_period                          => 14.400,
+    g_divclk_divide                         => 5,
+    g_clkbout_mult_f                        => 18,
+
+    -- 125 MHz output clock
+    g_clk0_divide_f                         => 10
+  )
+  port map (
+    rst_i                                   => '0',
+    clk_i                                   => aux_clk_gen_bufg,
+    --clk_i                                   => aux_clk_gen,
+    clk0_o                                  => clk_aux,              -- 125MHz locked clock
+    clk1_o                                  => open,
+    clk2_o                                  => open,
+    locked_o                                => clk_aux_locked        -- '1' when the PLL has locked
+  );
+
+  -- Reset synchronization. Hold reset line until few locked cycles have passed.
+  cmp_aux_reset : gc_reset
+  generic map(
+    g_clocks                                => c_num_aux_clks        -- CLK_AUX
+  )
+  port map(
+    --free_clk_i                              => aux_clk_gen,
+    free_clk_i                              => aux_clk_gen_bufg,
+    locked_i                                => clk_aux_locked,
+    clks_i                                  => reset_aux_clks,
+    rstn_o                                  => reset_aux_rstn
+  );
+
+  reset_aux_clks(c_clk_aux_id)              <= clk_aux;
+
+  -- Auxiliary reset
+  clk_aux_rstn                              <= reset_aux_rstn(c_clk_aux_id);
+  clk_aux_rst                               <= not(reset_aux_rstn(c_clk_aux_id));
+
+  -----------------------------------------------------------------------------
+  -- Top-Level Crossbar
+  -----------------------------------------------------------------------------
 
   -- The top-most Wishbone B.4 crossbar
   cmp_interconnect : xwb_sdb_crossbar
