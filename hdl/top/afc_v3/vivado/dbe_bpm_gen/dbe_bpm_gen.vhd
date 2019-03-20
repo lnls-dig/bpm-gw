@@ -774,8 +774,8 @@ architecture rtl of dbe_bpm_gen is
   constant c_trig_with_output_sync          : boolean := true;
 
   -- Trigger RCV intern IDs
-  constant c_trig_rcv_intern_chan_1_id      : positive := 0; -- Internal Channel 1
-  constant c_trig_rcv_intern_chan_2_id      : positive := 1; -- Internal Channel 2
+  constant c_trig_rcv_intern_chan_1_id      : natural := 0; -- Internal Channel 1
+  constant c_trig_rcv_intern_chan_2_id      : natural := 1; -- Internal Channel 2
 
   -- Trigger core IDs
   constant c_trig_mux_0_id                  : natural := 0;
