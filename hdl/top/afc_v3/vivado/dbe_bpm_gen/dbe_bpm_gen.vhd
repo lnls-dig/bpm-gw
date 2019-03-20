@@ -1532,7 +1532,10 @@ architecture rtl of dbe_bpm_gen is
 
 begin
 
-  -- Clock generation
+  -----------------------------------------------------------------------------
+  -- Main clock generation
+  -----------------------------------------------------------------------------
+
   cmp_clk_gen : clk_gen
   port map (
     sys_clk_p_i                             => sys_clk_p_i,
