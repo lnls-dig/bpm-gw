@@ -44,7 +44,7 @@ begin
 
   cpm_ibufgds_clk_gen_mgt : IBUFDS_GTE2
   port map (
-    O                                       => s_sys_clk,  -- Clock buffer output
+    O                                       => s_sys_clk,            -- Clock buffer output
     ODIV2                                   => open,
     CEB                                     => '0',
     I                                       => s_sys_clk_ibuf_p,     -- Diff_p clock buffer input (connect directly to top-level port)
@@ -55,8 +55,8 @@ begin
 
   cmp_bufg_clk_gen_mgt : BUFG
   port map (
-    O                                       => sys_clk_bufg_o, -- 1-bit output: Clock buffer output
-    I                                       => s_sys_clk  -- 1-bit input: Clock buffer input
+    O                                       => sys_clk_bufg_o,       -- 1-bit output: Clock buffer output
+    I                                       => s_sys_clk             -- 1-bit input: Clock buffer input
   );
 
 end syn;
