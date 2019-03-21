@@ -17,16 +17,38 @@ architecture syn of clk_gen_mgt is
 
   -- Internal clock signal
   signal s_sys_clk                          : std_logic;
+  signal s_sys_clk_ibuf_p                   : std_logic;
+  signal s_sys_clk_ibuf_n                   : std_logic;
 
 begin
+
+  cmp_ibuf_clk_gen_mgt_p : IBUF
+  generic map (
+    IBUF_LOW_PWR                            => TRUE,                 -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+    IOSTANDARD                              => "DEFAULT"
+  )
+  port map (
+    O                                       => s_sys_clk_ibuf_p,     -- Buffer output
+    I                                       => sys_clk_p_i           -- Buffer input (connect directly to top-level port)
+  );
+
+  cmp_ibuf_clk_gen_mgt_n : IBUF
+  generic map (
+    IBUF_LOW_PWR                            => TRUE,                 -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+    IOSTANDARD                              => "DEFAULT"
+  )
+  port map (
+    O                                       => s_sys_clk_ibuf_n,     -- Buffer output
+    I                                       => sys_clk_n_i           -- Buffer input (connect directly to top-level port)
+  );
 
   cpm_ibufgds_clk_gen_mgt : IBUFDS_GTE2
   port map (
     O                                       => s_sys_clk,  -- Clock buffer output
     ODIV2                                   => open,
     CEB                                     => '0',
-    I                                       => sys_clk_p_i,  -- Diff_p clock buffer input (connect directly to top-level port)
-    IB                                      => sys_clk_n_i -- Diff_n clock buffer input (connect directly to top-level port)
+    I                                       => s_sys_clk_ibuf_p,     -- Diff_p clock buffer input (connect directly to top-level port)
+    IB                                      => s_sys_clk_ibuf_n      -- Diff_n clock buffer input (connect directly to top-level port)
   );
 
   sys_clk_o <= s_sys_clk;
