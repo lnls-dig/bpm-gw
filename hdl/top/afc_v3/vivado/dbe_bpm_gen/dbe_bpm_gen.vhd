@@ -1654,7 +1654,7 @@ begin
   generic map (
     -- RF*5/36 ~ 69.44 MHz input clock ~ 14.4 ns
     g_clkin_period                          => 14.400,
-    g_divclk_divide                         => 5,
+    g_divclk_divide                         => 1,
     g_clkbout_mult_f                        => 18,
 
     -- 125 MHz output clock
