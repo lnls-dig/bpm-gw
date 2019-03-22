@@ -997,8 +997,14 @@ set fmc2_ref_clk_2x_period                         [get_property PERIOD [get_clo
 # Reset synchronization path.
 set_false_path -through                            [get_pins -hier -filter {NAME =~ *cmp_reset/master_rstn_reg/C}]
 # Get the cell driving the corresponding net
-set reset_ffs                                      [get_nets -hier -filter {NAME =~ *cmp_reset*/master_rstn*}]
-set_property ASYNC_REG TRUE                        [get_cells [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets $reset_ffs]]]]
+set reset_sys_ffs                                  [get_nets -hier -filter {NAME =~ *cmp_reset*/master_rstn*}]
+set_property ASYNC_REG TRUE                        [get_cells [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets $reset_sys_ffs]]]]
+
+# Reset synchronization path.
+set_false_path -through                            [get_pins -hier -filter {NAME =~ *cmp_aux_reset/master_rstn_reg/C}]
+# Get the cell driving the corresponding net
+set reset_aux_ffs                                  [get_nets -hier -filter {NAME =~ *cmp_aux_reset*/master_rstn*}]
+set_property ASYNC_REG TRUE                        [get_cells [all_fanin -flat -only_cells -startpoints_only [get_pins -of_objects [get_nets $reset_aux_ffs]]]]
 
 # DDR 3 temperature monitor reset path
 # chain of FFs synched with clk_sys.
