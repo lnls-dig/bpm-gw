@@ -11,7 +11,7 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports sys_clk_n_i]
 set_property IN_TERM UNTUNED_SPLIT_50 [get_ports sys_clk_n_i]
 
 # LINK01_CLK1_P
-# set_property PACKAGE_PIN AG18 [get_ports aux_clk_n_i]
+set_property PACKAGE_PIN AG18 [get_ports aux_clk_p_i]
 # LINK01_CLK1_N
 set_property PACKAGE_PIN AH18 [get_ports aux_clk_n_i]
 
