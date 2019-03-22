@@ -677,7 +677,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_ma_pcie_id                    : natural := 0;
   constant c_ma_rs232_syscon_id            : natural := 1;
 
-  constant c_acq_fifo_size                  : natural := 1024;
+  constant c_acq_fifo_size                  : natural := 256;
 
   -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
   constant c_acq_num_cores                  : natural := 4;
