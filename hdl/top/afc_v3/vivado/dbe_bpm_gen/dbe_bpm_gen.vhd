@@ -768,7 +768,7 @@ architecture rtl of dbe_bpm_gen is
 
   -- Trigger
   constant c_trig_sync_edge                 : string   := "positive";
-  constant c_trig_trig_num                  : positive := 8; -- 8 MLVDS triggers
+  constant c_trig_num                       : positive := 8; -- 8 MLVDS triggers
   constant c_trig_intern_num                : positive := c_trig_num_channels + c_acq_num_channels;
   constant c_trig_rcv_intern_num            : positive := 2; -- 2 FMCs
   constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
@@ -4348,7 +4348,7 @@ begin
       g_address_granularity                => BYTE,
       g_interface_mode                     => PIPELINED,
       g_sync_edge                          => c_trig_sync_edge,
-      g_trig_num                           => c_trig_trig_num,
+      g_trig_num                           => c_trig_num,
       g_intern_num                         => c_trig_intern_num,
       g_rcv_intern_num                     => c_trig_rcv_intern_num,
       g_num_mux_interfaces                 => c_trig_num_mux_interfaces,
