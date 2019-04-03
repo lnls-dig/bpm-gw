@@ -35,6 +35,9 @@ port(
   sys_clk_p_i                                : in std_logic;
   sys_clk_n_i                                : in std_logic;
 
+  aux_clk_p_i                                : in std_logic;
+  aux_clk_n_i                                : in std_logic;
+
   -----------------------------------------
   -- Reset Button
   -----------------------------------------
@@ -322,6 +325,9 @@ architecture rtl of dbe_bpm2 is
     -----------------------------------------
     sys_clk_p_i                                : in std_logic;
     sys_clk_n_i                                : in std_logic;
+
+    aux_clk_p_i                                : in std_logic;
+    aux_clk_n_i                                : in std_logic;
 
     -----------------------------------------
     -- Reset Button
@@ -816,6 +822,9 @@ begin
     -----------------------------------------
     sys_clk_p_i                               => sys_clk_p_i,
     sys_clk_n_i                               => sys_clk_n_i,
+
+    aux_clk_p_i                               => aux_clk_p_i,
+    aux_clk_n_i                               => aux_clk_n_i,
 
     -----------------------------------------
     -- Reset Button
