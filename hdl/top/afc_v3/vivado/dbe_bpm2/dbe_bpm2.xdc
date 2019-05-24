@@ -1319,9 +1319,6 @@ set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_fmc_a
 # Use Distributed RAMs for FMC ACQ FIFOs. They are small and sparse.
 set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_acq_fc_fifo/cmp_fc_source/*/*ram_reg*}]
 
-# Use Distributed RAMs for ACQ Multishot FWFT FIFO
-set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_acq_multishot_dpram/cmp_pre_out_fwft_fifo*/*ram_reg*}]
-
 # Use Distributed RAMs for ACQ Multishot FC source
 set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_acq_multishot_dpram/cmp_fc_source*/*ram_reg*}]
 
