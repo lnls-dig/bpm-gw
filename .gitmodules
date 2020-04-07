@@ -3,7 +3,7 @@
 	url = https://github.com/lnls-dig/general-cores.git
 [submodule "hdl/ip_cores/etherbone-core"]
 	path = hdl/ip_cores/etherbone-core
-	url = git://ohwr.org/hdl-core-lib/etherbone-core.git
+	url = https://ohwr.org/project/etherbone-core.git
 [submodule "hdl/ip_cores/dsp-cores"]
 	path = hdl/ip_cores/dsp-cores
 	url = https://github.com/lnls-dig/dsp-cores.git
