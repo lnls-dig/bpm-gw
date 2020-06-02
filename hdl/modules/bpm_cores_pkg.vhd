@@ -88,6 +88,28 @@ package bpm_cores_pkg is
       valid_o   : out std_logic);
   end component lut_sweep;
 
+  component dds_sin_lut
+    port (
+      clka  : in  std_logic;
+      addra : in  std_logic_vector;
+      douta : out std_logic_vector);
+  end component dds_sin_lut;
+
+  component dds_cos_lut
+    port (
+      clka  : in  std_logic;
+      addra : in  std_logic_vector;
+      douta : out std_logic_vector);
+  end component dds_cos_lut;
+
+  component sw_windowing_n_251_tukey_0_2
+    port (
+      clka  : in  std_logic;
+      addra : in  std_logic_vector(7 downto 0);
+      douta : out std_logic_vector(23 downto 0)
+      );
+  end component sw_windowing_n_251_tukey_0_2;
+
 end bpm_cores_pkg;
 
 package body bpm_cores_pkg is
