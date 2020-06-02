@@ -4,4 +4,5 @@ modules = { "local" : [
             "downconv",
             "hpf_adcinput",
             "input_gen",
+            "fixed_dds",
          ] };
