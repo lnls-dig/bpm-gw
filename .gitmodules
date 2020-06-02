@@ -1,9 +1,6 @@
 [submodule "hdl/ip_cores/general-cores"]
 	path = hdl/ip_cores/general-cores
 	url = https://github.com/lnls-dig/general-cores.git
-[submodule "hdl/ip_cores/etherbone-core"]
-	path = hdl/ip_cores/etherbone-core
-	url = https://ohwr.org/project/etherbone-core.git
 [submodule "hdl/ip_cores/dsp-cores"]
 	path = hdl/ip_cores/dsp-cores
 	url = https://github.com/lnls-dig/dsp-cores.git
