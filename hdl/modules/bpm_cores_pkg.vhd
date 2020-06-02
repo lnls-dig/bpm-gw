@@ -59,6 +59,35 @@ package bpm_cores_pkg is
       d_o   : out std_logic_vector(g_output_width-1 downto 0));
   end component input_gen;
 
+  component fixed_dds is
+    generic (
+      g_number_of_points : natural := 203;
+      g_output_width     : natural := 16;
+      g_sin_file         : string  := "./dds_sin.ram";
+      g_cos_file         : string  := "./dds_cos.ram");
+    port (
+      clk_i   : in  std_logic;
+      ce_i    : in  std_logic;
+      rst_i   : in  std_logic;
+      valid_i : in  std_logic;
+      sin_o   : out std_logic_vector(g_output_width-1 downto 0);
+      cos_o   : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o : out std_logic);
+  end component fixed_dds;
+
+  component lut_sweep is
+    generic (
+      g_number_of_points : natural := 203;
+      g_bus_size         : natural := 16);
+    port (
+      rst_i     : in  std_logic;
+      clk_i     : in  std_logic;
+      ce_i      : in  std_logic;
+      valid_i   : in  std_logic;
+      address_o : out std_logic_vector(g_bus_size-1 downto 0);
+      valid_o   : out std_logic);
+  end component lut_sweep;
+
 end bpm_cores_pkg;
 
 package body bpm_cores_pkg is
