@@ -31,6 +31,19 @@ package bpm_cores_pkg is
       valid_o  : out std_logic);
   end component downconv;
 
+
+  component hpf_adcinput
+  port
+  (
+    clk_i    : in  std_logic;
+    rst_n_i  : in  std_logic;
+    ce_i     : in  std_logic;
+
+    data_i   : in  std_logic_vector(15 downto 0);
+    data_o   : out std_logic_vector(15 downto 0)
+  );
+  end component hpf_adcinput;
+
 end bpm_cores_pkg;
 
 package body bpm_cores_pkg is
