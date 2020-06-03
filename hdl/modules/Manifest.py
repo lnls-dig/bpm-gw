@@ -9,4 +9,5 @@ modules = { "local" : [
             "sw_windowing",
             "position_calc",
             "wb_bpm_swap",
+            "wb_position_calc",
          ] };
