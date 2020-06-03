@@ -7,4 +7,5 @@ modules = { "local" : [
             "fixed_dds",
             "machine",
             "sw_windowing",
+            "position_calc",
          ] };
