@@ -35,6 +35,8 @@ use work.wb_stream_generic_pkg.all;
 use work.fmc_adc_pkg.all;
 -- DSP definitions
 use work.dsp_cores_pkg.all;
+-- BPM definitions
+use work.bpm_cores_pkg.all;
 -- Positicon Calc constants
 use work.machine_pkg.all;
 -- Genrams

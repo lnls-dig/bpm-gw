@@ -41,6 +41,8 @@ use work.etherbone_pkg.all;
 use work.fmc_adc_pkg.all;
 -- DSP definitions
 use work.dsp_cores_pkg.all;
+-- BPM definitions
+use work.bpm_cores_pkg.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
