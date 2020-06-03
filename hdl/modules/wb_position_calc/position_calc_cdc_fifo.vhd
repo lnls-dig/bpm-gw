@@ -23,7 +23,6 @@ use ieee.numeric_std.all;
 library work;
 -- Genrams
 use work.genram_pkg.all;
-use work.dsp_cores_pkg.all;
 
 entity position_calc_cdc_fifo is
 generic

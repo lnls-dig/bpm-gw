@@ -26,6 +26,8 @@ library work;
 use work.wishbone_pkg.all;
 -- DSP Cores
 use work.dsp_cores_pkg.all;
+-- BPM cores
+use work.bpm_cores_pkg.all;
 -- Position Calc
 use work.position_calc_core_pkg.all;
 

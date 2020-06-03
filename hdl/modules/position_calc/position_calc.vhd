@@ -25,8 +25,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
---library UNISIM;
---use UNISIM.vcomponents.all;
 library work;
 use work.dsp_cores_pkg.all;
 use work.genram_pkg.all;

@@ -24,6 +24,8 @@ library work;
 use work.wishbone_pkg.all;
 -- DSP Cores
 use work.dsp_cores_pkg.all;
+-- BPM Cores
+use work.bpm_cores_pkg.all;
 -- Register Bank
 use work.bpm_swap_wbgen2_pkg.all;
 

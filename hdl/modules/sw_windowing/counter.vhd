@@ -24,9 +24,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-library UNISIM;
-use UNISIM.vcomponents.all;
-
 entity counter is
 
   generic (

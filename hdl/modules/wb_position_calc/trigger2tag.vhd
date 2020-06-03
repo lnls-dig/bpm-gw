@@ -20,9 +20,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library work;
-use work.dsp_cores_pkg.all;
-
 entity trigger2tag is
 generic (
   g_delay_width                            : natural := 9;

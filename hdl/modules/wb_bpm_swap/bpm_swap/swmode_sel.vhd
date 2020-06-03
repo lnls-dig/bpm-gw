@@ -18,21 +18,20 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
--- DSP Cores
-use work.dsp_cores_pkg.all;
+use work.bpm_cores_pkg.all;
 
 entity swmode_sel is
 port(
   clk_i                                     :    in  std_logic;
   rst_n_i                                   :    in  std_logic;
-  
+
   -- Swap master clock
   clk_swap_i                                :    in  std_logic;
 
   -- Swap and de-swap signals
   swap_o                                    :    out std_logic;
   deswap_o                                  :    out std_logic;
-  
+
   -- Swap mode setting
   swap_mode_i                               :    in  t_swap_mode
 );

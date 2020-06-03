@@ -20,14 +20,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library UNISIM;
-use UNISIM.vcomponents.all;
-
 library work;
 -- Main Wishbone Definitions
 use work.wishbone_pkg.all;
 -- DSP Cores
 use work.dsp_cores_pkg.all;
+-- BPM cores
+use work.bpm_cores_pkg.all;
 -- Position Calc
 use work.position_calc_core_pkg.all;
 -- Counter Generator Definitions
