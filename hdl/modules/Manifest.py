@@ -6,4 +6,5 @@ modules = { "local" : [
             "input_gen",
             "fixed_dds",
             "machine",
+            "sw_windowing",
          ] };
