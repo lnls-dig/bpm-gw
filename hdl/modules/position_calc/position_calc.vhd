@@ -28,6 +28,7 @@ use ieee.math_real.all;
 library work;
 use work.dsp_cores_pkg.all;
 use work.genram_pkg.all;
+use work.bpm_cores_pkg.all;
 
 entity position_calc is
   generic(
