@@ -10,4 +10,5 @@ modules = { "local" : [
             "position_calc",
             "wb_bpm_swap",
             "wb_position_calc",
+            "mixer",
          ] };
