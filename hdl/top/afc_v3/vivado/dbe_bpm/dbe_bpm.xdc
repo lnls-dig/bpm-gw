@@ -1132,6 +1132,8 @@ set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =
 set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 8.000
 set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc1_ref_clk] 8.000
 set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc2_ref_clk] 8.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc1_ref_clk] 8.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc2_ref_clk] 8.000
 
 # This path is only valid after acq_start
 # signal, which is controlled by software and
