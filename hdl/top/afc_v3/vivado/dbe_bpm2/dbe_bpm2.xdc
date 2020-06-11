@@ -1101,11 +1101,13 @@ set_input_jitter fmc2_adc_clk3_p_i 0.050
 # ADC generated clocks
 create_generated_clock -name fmc1_ref_clk          [get_pins -hier -filter {NAME =~ *cmp1_xwb_fmc*cmp_mmcm_adc_clk/CLKOUT0}]
 set fmc1_ref_clk_period                            [get_property PERIOD [get_clocks fmc1_ref_clk]]
+set fmc1_ref_clk_period_double                     [expr $fmc1_ref_clk_period * 2.000]
 create_generated_clock -name fmc1_ref_clk_2x       [get_pins -hier -filter {NAME =~ *cmp1_xwb_fmc*cmp_mmcm_adc_clk/CLKOUT1}]
 set fmc1_ref_clk_2x_period                         [get_property PERIOD [get_clocks fmc1_ref_clk_2x]]
 
 create_generated_clock -name fmc2_ref_clk          [get_pins -hier -filter {NAME =~ *cmp2_xwb_fmc*cmp_mmcm_adc_clk/CLKOUT0}]
 set fmc2_ref_clk_period                            [get_property PERIOD [get_clocks fmc2_ref_clk]]
+set fmc2_ref_clk_period_double                     [expr $fmc2_ref_clk_period * 2.000]
 create_generated_clock -name fmc2_ref_clk_2x       [get_pins -hier -filter {NAME =~ *cmp2_xwb_fmc*cmp_mmcm_adc_clk/CLKOUT1}]
 set fmc2_ref_clk_2x_period                         [get_property PERIOD [get_clocks fmc2_ref_clk_2x]]
 
@@ -1293,11 +1295,12 @@ set_max_delay -datapath_only -from               [get_pins -hier -filter {NAME =
 # This path is only valid after acq_start signal, which is controlled by software and
 # is activated many many miliseconds after all of the other. So, give it 2x the clock
 # period
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_pins -hier -filter {NAME =~ *acq_core/*/acq_in_post_trig_reg/D}] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc1_ref_clk] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc2_ref_clk] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc1_ref_clk] 8.000
-set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc2_ref_clk] 8.000
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc1_ref_clk] $fmc1_ref_clk_period_double
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc2_ref_clk] $fmc2_ref_clk_period_double
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc1_ref_clk] $fmc1_ref_clk_period_double
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[acq_chan_ctl_which_o][*]/C}] -to [get_clocks fmc2_ref_clk] $fmc2_ref_clk_period_double
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc1_ref_clk] $fmc1_ref_clk_period_double
+set_max_delay -datapath_only -from [get_pins -hier -filter {NAME =~ *acq_core/*/regs_o_reg[*samples_o][*]/C}] -to [get_clocks fmc2_ref_clk] $fmc2_ref_clk_period_double
 
 # This path is only valid after acq_start
 # signal, which is controlled by software and
