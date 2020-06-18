@@ -11,4 +11,5 @@ modules = { "local" : [
             "wb_bpm_swap",
             "wb_position_calc",
             "mixer",
+            "wb_orbit_intlk",
          ] };

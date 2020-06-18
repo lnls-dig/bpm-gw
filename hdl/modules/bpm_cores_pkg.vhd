@@ -1052,6 +1052,211 @@ package bpm_cores_pkg is
         );
   end component;
 
+  component wb_orbit_intlk
+  generic
+  (
+    -- Wishbone
+    g_INTERFACE_MODE                           : t_wishbone_interface_mode      := CLASSIC;
+    g_ADDRESS_GRANULARITY                      : t_wishbone_address_granularity := WORD;
+    g_WITH_EXTRA_WB_REG                        : boolean := false;
+    -- Position
+    g_ADC_WIDTH                                : natural := 16;
+    g_DECIM_WIDTH                              : natural := 32
+  );
+  port
+  (
+    -----------------------------
+    -- Clocks and resets
+    -----------------------------
+
+    rst_n_i                                    : in std_logic;
+    clk_i                                      : in std_logic; -- Wishbone clock
+    fs_rst_n_i                                 : in std_logic;
+    fs_clk_i                                   : in std_logic;
+
+    -----------------------------
+    -- Wishbone signals
+    -----------------------------
+
+    wb_adr_i                                  : in  std_logic_vector(c_WISHBONE_ADDRESS_WIDTH-1 downto 0) := (others => '0');
+    wb_dat_i                                  : in  std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0) := (others => '0');
+    wb_dat_o                                  : out std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0);
+    wb_sel_i                                  : in  std_logic_vector(c_WISHBONE_DATA_WIDTH/8-1 downto 0) := (others => '0');
+    wb_we_i                                   : in  std_logic := '0';
+    wb_cyc_i                                  : in  std_logic := '0';
+    wb_stb_i                                  : in  std_logic := '0';
+    wb_ack_o                                  : out std_logic;
+    wb_stall_o                                : out std_logic;
+
+    -----------------------------
+    -- Downstream ADC and position signals
+    -----------------------------
+
+    adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch3_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_tag_i                               : in std_logic_vector(0 downto 0) := (others => '0');
+    adc_ds_swap_valid_i                        : in std_logic := '0';
+
+    decim_ds_pos_x_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_y_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_q_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_sum_i                         : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_valid_i                       : in std_logic;
+
+    -----------------------------
+    -- Upstream ADC and position signals
+    -----------------------------
+
+    adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch3_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_tag_i                               : in std_logic_vector(0 downto 0) := (others => '0');
+    adc_us_swap_valid_i                        : in std_logic := '0';
+
+    decim_us_pos_x_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_y_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_q_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_sum_i                         : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_valid_i                       : in std_logic;
+
+    -----------------------------
+    -- Interlock outputs
+    -----------------------------
+    intlk_trans_bigger_x_o                     : out std_logic;
+    intlk_trans_bigger_y_o                     : out std_logic;
+
+    intlk_trans_bigger_ltc_x_o                 : out std_logic;
+    intlk_trans_bigger_ltc_y_o                 : out std_logic;
+
+    intlk_trans_bigger_o                       : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_ltc_o                          : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_o                              : out std_logic;
+
+    intlk_ang_bigger_x_o                       : out std_logic;
+    intlk_ang_bigger_y_o                       : out std_logic;
+
+    intlk_ang_bigger_ltc_x_o                   : out std_logic;
+    intlk_ang_bigger_ltc_y_o                   : out std_logic;
+
+    intlk_ang_bigger_o                         : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_ltc_o                            : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_o                                : out std_logic;
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_ltc_o                                : out std_logic;
+    -- conditional to intlk_en_i
+    intlk_o                                    : out std_logic
+  );
+  end component;
+
+  component xwb_orbit_intlk
+  generic
+  (
+    -- Wishbone
+    g_INTERFACE_MODE                           : t_wishbone_interface_mode      := CLASSIC;
+    g_ADDRESS_GRANULARITY                      : t_wishbone_address_granularity := WORD;
+    g_WITH_EXTRA_WB_REG                        : boolean := false;
+    -- Position
+    g_ADC_WIDTH                                : natural := 16;
+    g_DECIM_WIDTH                              : natural := 32
+  );
+  port
+  (
+    -----------------------------
+    -- Clocks and resets
+    -----------------------------
+
+    rst_n_i                                    : in std_logic;
+    clk_i                                      : in std_logic; -- Wishbone clock
+    fs_rst_n_i                                 : in std_logic;
+    fs_clk_i                                   : in std_logic;
+
+    -----------------------------
+    -- Wishbone signals
+    -----------------------------
+
+    wb_slv_i                                   : in t_wishbone_slave_in;
+    wb_slv_o                                   : out t_wishbone_slave_out;
+
+    -----------------------------
+    -- Downstream ADC and position signals
+    -----------------------------
+
+    adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_ch3_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_ds_tag_i                               : in std_logic_vector(0 downto 0) := (others => '0');
+    adc_ds_swap_valid_i                        : in std_logic := '0';
+
+    decim_ds_pos_x_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_y_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_q_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_sum_i                         : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_ds_pos_valid_i                       : in std_logic;
+
+    -----------------------------
+    -- Upstream ADC and position signals
+    -----------------------------
+
+    adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_ch3_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
+    adc_us_tag_i                               : in std_logic_vector(0 downto 0) := (others => '0');
+    adc_us_swap_valid_i                        : in std_logic := '0';
+
+    decim_us_pos_x_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_y_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_q_i                           : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_sum_i                         : in std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    decim_us_pos_valid_i                       : in std_logic;
+
+    -----------------------------
+    -- Interlock outputs
+    -----------------------------
+    intlk_trans_bigger_x_o                     : out std_logic;
+    intlk_trans_bigger_y_o                     : out std_logic;
+
+    intlk_trans_bigger_ltc_x_o                 : out std_logic;
+    intlk_trans_bigger_ltc_y_o                 : out std_logic;
+
+    intlk_trans_bigger_o                       : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_ltc_o                          : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_o                              : out std_logic;
+
+    intlk_ang_bigger_x_o                       : out std_logic;
+    intlk_ang_bigger_y_o                       : out std_logic;
+
+    intlk_ang_bigger_ltc_x_o                   : out std_logic;
+    intlk_ang_bigger_ltc_y_o                   : out std_logic;
+
+    intlk_ang_bigger_o                         : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_ltc_o                            : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_o                                : out std_logic;
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_ltc_o                                : out std_logic;
+    -- conditional to intlk_en_i
+    intlk_o                                    : out std_logic
+  );
+  end component;
+
 end bpm_cores_pkg;
 
 package body bpm_cores_pkg is
