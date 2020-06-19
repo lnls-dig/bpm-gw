@@ -21,3 +21,4 @@
 // Wishbone Address Width
 `define WB_ADDRESS_BUS_WIDTH 32
 `define WB_BWSEL_WIDTH ((`WB_DATA_BUS_WIDTH + 7) / 8)
+`define WB_WORD_ACC 2
