@@ -21,9 +21,9 @@
 // Common definitions
 `include "defines.v"
 // Wishbone Master
-// `include "wishbone_test_master.v"
+`include "wishbone_test_master.v"
 // bpm swap Register definitions
-// `include "regs/wb_orbit_intlk_regs.vh"
+`include "regs/wb_orbit_intlk_regs.vh"
 
 module wb_orbit_intlk_tb;
 
@@ -45,6 +45,14 @@ module wb_orbit_intlk_tb;
   );
 
   assign sys_rst = ~sys_rstn;
+
+  //**************************************************************************
+  // Wishbone Master
+  //**************************************************************************
+
+  WB_TEST_MASTER WB0(
+    .wb_clk                                 (sys_clk)
+  );
 
   //**************************************************************************
   // DUT
@@ -108,27 +116,25 @@ module wb_orbit_intlk_tb;
   wire intlk_ltc;
   wire intlk;
 
-  orbit_intlk #(
+  wb_orbit_intlk #(
     .g_ADC_WIDTH         (16),
-    .g_DECIM_WIDTH       (32),
-    .g_INTLK_LMT_WIDTH   (32)
+    .g_DECIM_WIDTH       (32)
   )
   DUT (
+    .rst_n_i                     (sys_rstn),
+    .clk_i                       (sys_clk),
     .ref_rst_n_i                 (sys_rstn),
     .ref_clk_i                   (sys_clk),
 
-    .intlk_en_i                  (intlk_en),
-    .intlk_clr_i                 (intlk_clr),
-    .intlk_min_sum_en_i          (intlk_min_sum_en),
-    .intlk_min_sum_i             (intlk_min_sum),
-    .intlk_trans_en_i            (intlk_trans_en),
-    .intlk_trans_clr_i           (intlk_trans_clr),
-    .intlk_trans_max_x_i         (intlk_trans_max_x),
-    .intlk_trans_max_y_i         (intlk_trans_max_y),
-    .intlk_ang_en_i              (intlk_ang_en),
-    .intlk_ang_clr_i             (intlk_ang_clr),
-    .intlk_ang_max_x_i           (intlk_ang_max_x),
-    .intlk_ang_max_y_i           (intlk_ang_max_y),
+    .wb_adr_i                    (WB0.wb_addr),
+    .wb_dat_i                    (WB0.wb_data_o),
+    .wb_dat_o                    (WB0.wb_data_i),
+    .wb_cyc_i                    (WB0.wb_cyc),
+    .wb_sel_i                    (WB0.wb_bwsel),
+    .wb_stb_i                    (WB0.wb_stb),
+    .wb_we_i                     (WB0.wb_we),
+    .wb_ack_o                    (WB0.wb_ack_i),
+    .wb_stall_o                  (),
 
     .fs_clk_ds_i                 (sys_clk),
 
@@ -280,6 +286,7 @@ module wb_orbit_intlk_tb;
     $display("@%0d: Waiting for all resets...", $time);
     $display("-----------------------------------");
 
+    wait (WB0.ready);
     wait (sys_rstn);
 
     $display("@%0d: Reset done!", $time);
@@ -594,6 +601,32 @@ module wb_orbit_intlk_tb;
   // Tasks
   /////////////////////////////////////////////////////////////////////////////
 
+  task wb_busy_wait;
+    input [`WB_ADDRESS_BUS_WIDTH-1:0] addr;
+    input [`WB_DATA_BUS_WIDTH-1:0] mask;
+    input [`WB_DATA_BUS_WIDTH-1:0] offset;
+    input verbose;
+
+    reg [`WB_DATA_BUS_WIDTH-1:0] tmp_reg0;
+  begin
+    WB0.monitor_bus(1'b0);
+    WB0.verbose(1'b0);
+
+    WB0.read32(addr, tmp_reg0);
+
+    while (((tmp_reg0 & mask) >> offset) != 'h1) begin
+      if (verbose)
+        $write(".");
+
+      @(posedge sys_clk);
+      WB0.read32(addr, tmp_reg0);
+    end
+
+    WB0.monitor_bus(1'b1);
+    WB0.verbose(1'b1);
+  end
+  endtask
+
   task wb_intlk_transaction;
     input integer test_id;
     input test_intlk_en;
@@ -620,6 +653,12 @@ module wb_orbit_intlk_tb;
     input [c_DECIM_WIDTH-1:0] test_decim_us_pos_sum;
 
     input test_intlk_status;
+
+    reg [`WB_DATA_BUS_WIDTH:0] wb_reg;
+    reg [`WB_DATA_BUS_WIDTH:0] intlk_wb;
+    integer err;
+    integer err_intlk;
+    integer err_wb;
   begin
     $display("#############################");
     $display("######## TEST #%03d ######", test_id);
@@ -635,17 +674,46 @@ module wb_orbit_intlk_tb;
     $display("## Interlock angular MAX Y = %03d", test_intlk_ang_max_y);
 
     $display("Setting interlock parameters scenario");
-    @(posedge sys_clk);
 
-    intlk_en          = test_intlk_en;
-    intlk_min_sum_en  = test_intlk_min_sum_en;
-    intlk_min_sum     = test_intlk_min_sum;
-    intlk_trans_en    = test_intlk_trans_en;
-    intlk_trans_max_x = test_intlk_trans_max_x;
-    intlk_trans_max_y = test_intlk_trans_max_y;
-    intlk_ang_en      = test_intlk_ang_en;
-    intlk_ang_max_x   = test_intlk_ang_max_x;
-    intlk_ang_max_y   = test_intlk_ang_max_y;
+    $display("Setting minimum sum threshold");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_MIN_SUM >> `WB_WORD_ACC, test_intlk_min_sum);
+
+    $display("Setting minimum sum enable");
+    @(posedge sys_clk);
+    WB0.read32(`ADDR_ORBIT_INTLK_CTRL, wb_reg);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, wb_reg | (test_intlk_min_sum_en << `ORBIT_INTLK_CTRL_MIN_SUM_EN_OFFSET));
+
+    $display("Setting translation threshold X");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_TRANS_MAX_X >> `WB_WORD_ACC, test_intlk_trans_max_x);
+
+    $display("Setting translation threshold Y");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_TRANS_MAX_Y >> `WB_WORD_ACC, test_intlk_trans_max_y);
+
+    $display("Setting translation threshold enable");
+    @(posedge sys_clk);
+    WB0.read32(`ADDR_ORBIT_INTLK_CTRL, wb_reg);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, wb_reg | (test_intlk_trans_en << `ORBIT_INTLK_CTRL_TRANS_EN_OFFSET));
+
+    $display("Setting angular threshold X");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_ANG_MAX_X >> `WB_WORD_ACC, test_intlk_ang_max_x);
+
+    $display("Setting angular threshold Y");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_ANG_MAX_Y >> `WB_WORD_ACC, test_intlk_ang_max_y);
+
+    $display("Setting angular threshold enable");
+    @(posedge sys_clk);
+    WB0.read32(`ADDR_ORBIT_INTLK_CTRL, wb_reg);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, wb_reg | (test_intlk_ang_en << `ORBIT_INTLK_CTRL_ANG_EN_OFFSET));
+
+    $display("Setting interlock enable");
+    @(posedge sys_clk);
+    WB0.read32(`ADDR_ORBIT_INTLK_CTRL, wb_reg);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, wb_reg | (test_intlk_en << `ORBIT_INTLK_CTRL_EN_OFFSET));
 
     test_in_progress = 1'b1;
 
@@ -684,32 +752,59 @@ module wb_orbit_intlk_tb;
 
     repeat (20) begin
       @(posedge sys_clk);
+      $write(".");
     end
 
+    err = 0;
+    err_intlk = 0;
+    err_wb = 0;
+
+    $display("\n");
+
+    $display("Reading interlock register");
+    WB0.read32(`ADDR_ORBIT_INTLK_STS >> `WB_WORD_ACC, wb_reg);
+    @(posedge sys_clk);
+
     if (test_intlk_status == intlk) begin
-      $display("Interlock module correctly identified a condition: %d/%d", test_intlk_status, intlk);
-      $display("TEST #%03d: PASS!", test_id);
+      $display("Interlock module correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
     end else begin
-      $display("Interlock module DID NOT correctly identified a condition: %d/%d", test_intlk_status, intlk);
+      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      err = 1;
+      err_intlk = 1;
+    end
+
+    intlk_wb = (wb_reg & `ORBIT_INTLK_STS_INTLK_BIGGER) >> `ORBIT_INTLK_STS_INTLK_BIGGER_OFFSET;
+    if (test_intlk_status == intlk_wb) begin
+      $display("Wishbone register correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_wb);
+    end else begin
+      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      err = 1;
+      err_wb = 1;
+    end
+
+    if (err) begin
       $display("TEST #%03d: FAIL!", test_id);
       $finish;
+    end else begin
+      $display("TEST #%03d: PASS!", test_id);
     end
 
     @(posedge sys_clk);
     test_in_progress = 1'b0;
 
-    // clear any possible interlocks
-    intlk_clr         = 1'b1;
-    intlk_trans_clr   = 1'b1;
-    intlk_ang_clr     = 1'b1;
+    $display("Clearing interlock flags");
 
-    $display("Clearing any possible interlock status flags");
+    $display("Clearing translation interlock flag");
     @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, `ORBIT_INTLK_CTRL_TRANS_CLR);
 
-    // clear any possible interlocks
-    intlk_clr         = 1'b0;
-    intlk_trans_clr   = 1'b0;
-    intlk_ang_clr     = 1'b0;
+    $display("Clearing angular interlock flag");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, `ORBIT_INTLK_CTRL_ANG_CLR);
+
+    $display("Clearing interlock flag");
+    @(posedge sys_clk);
+    WB0.write32(`ADDR_ORBIT_INTLK_CTRL >> `WB_WORD_ACC, `ORBIT_INTLK_CTRL_CLR);
 
     // give some time for all the modules that need a reset between tests
     repeat (2) begin
