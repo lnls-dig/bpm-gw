@@ -54,15 +54,15 @@ port
   -- Wishbone signals
   -----------------------------
 
-  wb_adr_i                                  : in  std_logic_vector(c_WISHBONE_ADDRESS_WIDTH-1 downto 0) := (others => '0');
-  wb_dat_i                                  : in  std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0) := (others => '0');
-  wb_dat_o                                  : out std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0);
-  wb_sel_i                                  : in  std_logic_vector(c_WISHBONE_DATA_WIDTH/8-1 downto 0) := (others => '0');
-  wb_we_i                                   : in  std_logic := '0';
-  wb_cyc_i                                  : in  std_logic := '0';
-  wb_stb_i                                  : in  std_logic := '0';
-  wb_ack_o                                  : out std_logic;
-  wb_stall_o                                : out std_logic;
+  wb_adr_i                                   : in  std_logic_vector(c_WISHBONE_ADDRESS_WIDTH-1 downto 0) := (others => '0');
+  wb_dat_i                                   : in  std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0) := (others => '0');
+  wb_dat_o                                   : out std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0);
+  wb_sel_i                                   : in  std_logic_vector(c_WISHBONE_DATA_WIDTH/8-1 downto 0) := (others => '0');
+  wb_we_i                                    : in  std_logic := '0';
+  wb_cyc_i                                   : in  std_logic := '0';
+  wb_stb_i                                   : in  std_logic := '0';
+  wb_ack_o                                   : out std_logic;
+  wb_stall_o                                 : out std_logic;
 
   -----------------------------
   -- Downstream ADC and position signals
