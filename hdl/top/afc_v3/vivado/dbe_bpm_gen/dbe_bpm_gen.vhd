@@ -53,6 +53,8 @@ use work.pcie_cntr_axi_pkg.all;
 use work.trigger_pkg.all;
 -- Trigger Common Modules
 use work.trigger_common_pkg.all;
+-- Orbit interlock
+use work.orbit_intlk_pkg.all;
 
 entity dbe_bpm_gen is
 generic(
@@ -643,11 +645,11 @@ architecture rtl of dbe_bpm_gen is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 15;
+  constant c_slaves                         : natural := 16;
   -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
   -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Acq_Core PM 1, Acq_Core PM 2,
-  -- Trigger MUX PM 1, Trigger MUX PM 2
+  -- Trigger MUX PM 1, Trigger MUX PM 2, Orbit Interlock
 
   -- Slaves indexes
   constant c_slv_pos_calc_1_id             : natural := 0;
@@ -665,12 +667,13 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_acq_core_pm_1_id          : natural := 12;
   constant c_slv_trig_mux_pm_0_id          : natural := 13;
   constant c_slv_trig_mux_pm_1_id          : natural := 14;
+  constant c_slv_orbit_intlk_id            : natural := 15;
   -- These are not account in the number of slaves as these are special
-  constant c_slv_sdb_repo_url_id           : natural := 15;
-  constant c_slv_sdb_top_syn_id            : natural := 16;
-  constant c_slv_sdb_dsp_cores_id          : natural := 17;
-  constant c_slv_sdb_gen_cores_id          : natural := 18;
-  constant c_slv_sdb_infra_cores_id        : natural := 19;
+  constant c_slv_sdb_repo_url_id           : natural := 16;
+  constant c_slv_sdb_top_syn_id            : natural := 17;
+  constant c_slv_sdb_dsp_cores_id          : natural := 18;
+  constant c_slv_sdb_gen_cores_id          : natural := 19;
+  constant c_slv_sdb_infra_cores_id        : natural := 20;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -772,7 +775,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_trig_sync_edge                 : string   := "positive";
   constant c_trig_num                       : positive := 8; -- 8 MLVDS triggers
   constant c_trig_intern_num                : positive := c_trig_num_channels + c_acq_num_channels;
-  constant c_trig_rcv_intern_num            : positive := 2; -- 2 FMCs
+  constant c_trig_rcv_intern_num            : positive := 3; -- 2 FMCs + 1 Interlock
   constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
   constant c_trig_out_resolver              : string := "fanout";
   constant c_trig_in_resolver               : string := "or";
@@ -782,6 +785,7 @@ architecture rtl of dbe_bpm_gen is
   -- Trigger RCV intern IDs
   constant c_trig_rcv_intern_chan_1_id      : natural := 0; -- Internal Channel 1
   constant c_trig_rcv_intern_chan_2_id      : natural := 1; -- Internal Channel 2
+  constant c_trig_rcv_intern_chan_intlk_id  : natural := 2; -- Internal Channel 3, Interlock
 
   -- Trigger core IDs
   constant c_trig_mux_0_id                  : natural := 0;
@@ -849,6 +853,7 @@ architecture rtl of dbe_bpm_gen is
      c_slv_acq_core_pm_1_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00430000"),   -- Data Acquisition 1 Post-Mortem port
      c_slv_trig_mux_pm_0_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00440000"),   -- Trigger Mux Post-Mortem 1 port
      c_slv_trig_mux_pm_1_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00450000"),   -- Trigger Mux Post-Mortem 2 port
+     c_slv_orbit_intlk_id      => f_sdb_embed_device(c_xwb_orbit_intlk_sdb,      x"00460000"),   -- Orbit Interlock port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
@@ -1120,6 +1125,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_tag                        : std_logic_vector(0 downto 0);
   signal dsp1_adc_valid                      : std_logic;
 
   signal dsp1_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -1236,6 +1242,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_tag                        : std_logic_vector(0 downto 0);
   signal dsp2_adc_valid                      : std_logic;
 
   signal dsp2_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -1356,12 +1363,16 @@ architecture rtl of dbe_bpm_gen is
   signal trig_fmc1_channel_2                : t_trig_channel;
   signal trig_fmc2_channel_1                : t_trig_channel;
   signal trig_fmc2_channel_2                : t_trig_channel;
+  signal trig_1_channel_intlk               : t_trig_channel;
+  signal trig_2_channel_intlk               : t_trig_channel;
 
   -- Post-Mortem triggers
   signal trig_fmc1_pm_channel_1             : t_trig_channel;
   signal trig_fmc1_pm_channel_2             : t_trig_channel;
   signal trig_fmc2_pm_channel_1             : t_trig_channel;
   signal trig_fmc2_pm_channel_2             : t_trig_channel;
+  signal trig_1_pm_channel_intlk            : t_trig_channel;
+  signal trig_2_pm_channel_intlk            : t_trig_channel;
 
   signal trig_dbg                           : std_logic_vector(7 downto 0);
 
@@ -1386,6 +1397,9 @@ architecture rtl of dbe_bpm_gen is
   signal dbg_serial_data                    : std_logic_vector(31 downto 0);
   signal dbg_spi_data                       : std_logic_vector(31 downto 0);
 
+  -- Interlock signals
+  signal intlk_ltc                          : std_logic;
+  signal intlk                              : std_logic;
   -- Chipscope control signals
   signal CONTROL0                           : std_logic_vector(35 downto 0);
   signal CONTROL1                           : std_logic_vector(35 downto 0);
@@ -2989,6 +3003,7 @@ begin
     adc_ch1_swap_o                          => dsp1_adc_ch1_data,
     adc_ch2_swap_o                          => dsp1_adc_ch2_data,
     adc_ch3_swap_o                          => dsp1_adc_ch3_data,
+    adc_tag_o                               => dsp1_adc_tag,
     adc_swap_valid_o                        => dsp1_adc_valid,
 
     mix_ch0_i_o                             => dsp1_mixi_ch0,
@@ -3219,6 +3234,7 @@ begin
     adc_ch1_swap_o                          => dsp2_adc_ch1_data,
     adc_ch2_swap_o                          => dsp2_adc_ch2_data,
     adc_ch3_swap_o                          => dsp2_adc_ch3_data,
+    adc_tag_o                               => dsp2_adc_tag,
     adc_swap_valid_o                        => dsp2_adc_valid,
 
     mix_ch0_i_o                             => dsp2_mixi_ch0,
@@ -4340,6 +4356,85 @@ begin
   cbar_master_i(c_slv_acq_core_pm_1_id) <= acq_core_slave_o(c_acq_core_3_id);
 
   ----------------------------------------------------------------------
+  --                        Orbit Interlock                           --
+  ----------------------------------------------------------------------
+  cmp_xwb_orbit_intlk : xwb_orbit_intlk
+  generic map
+  (
+    -- Wishbone
+    g_ADDRESS_GRANULARITY                      => BYTE,
+    g_INTERFACE_MODE                           => PIPELINED,
+    -- Position
+    g_ADC_WIDTH                                => c_num_unprocessed_se_bits,
+    g_DECIM_WIDTH                              => c_pos_calc_fofb_decim_width
+  )
+  port map
+  (
+    -----------------------------
+    -- Clocks and resets
+    -----------------------------
+
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    ref_clk_i                                  => fs1_clk,
+    ref_rst_n_i                                => fs1_rstn,
+
+    -----------------------------
+    -- Wishbone signals
+    -----------------------------
+
+    wb_slv_i                                   => cbar_master_o(c_slv_orbit_intlk_id),
+    wb_slv_o                                   => cbar_master_i(c_slv_orbit_intlk_id),
+
+    -----------------------------
+    -- Downstream ADC and position signals
+    -----------------------------
+
+    fs_clk_ds_i                                => fs1_clk,
+
+    adc_ds_ch0_swap_i                          => dsp1_adc_se_ch0_data,
+    adc_ds_ch1_swap_i                          => dsp1_adc_se_ch1_data,
+    adc_ds_ch2_swap_i                          => dsp1_adc_se_ch2_data,
+    adc_ds_ch3_swap_i                          => dsp1_adc_se_ch3_data,
+    adc_ds_tag_i                               => dsp1_adc_tag,
+    adc_ds_swap_valid_i                        => dsp1_adc_valid,
+
+    decim_ds_pos_x_i                           => dsp1_fofb_pos_x,
+    decim_ds_pos_y_i                           => dsp1_fofb_pos_y,
+    decim_ds_pos_q_i                           => dsp1_fofb_pos_q,
+    decim_ds_pos_sum_i                         => dsp1_fofb_pos_sum,
+    decim_ds_pos_valid_i                       => dsp1_fofb_pos_valid,
+
+    -----------------------------
+    -- Upstream ADC and position signals
+    -----------------------------
+
+    fs_clk_us_i                                => fs2_clk,
+
+    adc_us_ch0_swap_i                          => dsp2_adc_se_ch0_data,
+    adc_us_ch1_swap_i                          => dsp2_adc_se_ch1_data,
+    adc_us_ch2_swap_i                          => dsp2_adc_se_ch2_data,
+    adc_us_ch3_swap_i                          => dsp2_adc_se_ch3_data,
+    adc_us_tag_i                               => dsp2_adc_tag,
+    adc_us_swap_valid_i                        => dsp2_adc_valid,
+
+    decim_us_pos_x_i                           => dsp2_fofb_pos_x,
+    decim_us_pos_y_i                           => dsp2_fofb_pos_y,
+    decim_us_pos_q_i                           => dsp2_fofb_pos_q,
+    decim_us_pos_sum_i                         => dsp2_fofb_pos_sum,
+    decim_us_pos_valid_i                       => dsp2_fofb_pos_valid,
+
+    -----------------------------
+    -- Interlock outputs
+    -----------------------------
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_ltc_o                                => intlk_ltc,
+    -- conditional to intlk_en_i
+    intlk_o                                    => intlk
+  );
+
+  ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
   trig_ref_clk <= clk_aux;
@@ -4407,17 +4502,28 @@ begin
   trig_fmc2_pm_channel_1.pulse <= '0';
   trig_fmc2_pm_channel_2.pulse <= fmc2_trig_hw;
 
+  -- Interlock
+  trig_1_channel_intlk.pulse <= intlk;
+  trig_2_channel_intlk.pulse <= intlk;
+
+  trig_1_pm_channel_intlk.pulse <= '0';
+  trig_2_pm_channel_intlk.pulse <= '0';
+
   -- Assign intern triggers to trigger module
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_channel_1;
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_channel_2;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_channel_1;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_channel_2;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_channel_1;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_channel_2;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_channel_intlk;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_channel_1;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_channel_2;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_channel_intlk;
 
   -- Post-Mortem triggers
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_pm_channel_2;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_pm_channel_intlk;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_pm_channel_intlk;
 
   trig_dir_o <= trig_dir_int;
 
