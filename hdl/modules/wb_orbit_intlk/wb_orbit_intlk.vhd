@@ -188,7 +188,7 @@ architecture rtl of wb_orbit_intlk is
   signal intlk_ang_ltc                      : std_logic;
   signal intlk_ang                          : std_logic;
   signal intlk_ltc                          : std_logic;
-  signal intlk                              : std_logic
+  signal intlk                              : std_logic;
 
   component wb_orbit_intlk_regs
   port (
@@ -224,7 +224,7 @@ begin
     g_slave_granularity                     => g_ADDRESS_GRANULARITY
   )
   port map (
-    clk_sys_i                               => clk_sys_i,
+    clk_sys_i                               => clk_i,
     rst_n_i                                 => rst_n_i,
     master_i                                => wb_slv_adp_in,
     master_o                                => wb_slv_adp_out,
@@ -249,7 +249,7 @@ begin
   cmp_wb_orbit_intlk_regs : wb_orbit_intlk_regs
   port map (
     rst_n_i                                 => rst_n_i,
-    clk_sys_i                               => clk_sys_i,
+    clk_sys_i                               => clk_i,
     wb_adr_i                                => wb_slv_adp_out.adr(2 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
@@ -307,9 +307,9 @@ begin
   (
     g_ADC_WIDTH                                => g_ADC_WIDTH,
     g_DECIM_WIDTH                              => g_DECIM_WIDTH,
-    g_INTLK_LMT_WIDTH                          => c_INTLK_LMT_WIDTH,
-  );
-  port
+    g_INTLK_LMT_WIDTH                          => c_INTLK_LMT_WIDTH
+  )
+  port map
   (
     -----------------------------
     -- Clocks and resets
