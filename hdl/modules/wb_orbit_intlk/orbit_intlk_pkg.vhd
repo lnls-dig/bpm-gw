@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library work;
+use work.wishbone_pkg.all;
 
 package orbit_intlk_pkg is
 
@@ -418,6 +419,22 @@ package orbit_intlk_pkg is
     decim_us_pos_valid_o                       : out std_logic
   );
   end component;
+
+  constant c_xwb_orbit_intlk_sdb : t_sdb_device := (
+    abi_class     => x"0000",                 -- undocumented device
+    abi_ver_major => x"01",
+    abi_ver_minor => x"00",
+    wbd_endian    => c_sdb_endian_big,
+    wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
+    sdb_component => (
+    addr_first    => x"0000000000000000",
+    addr_last     => x"00000000000000FF",
+    product => (
+    vendor_id     => x"1000000000001215",     -- LNLS
+    device_id     => x"87efeda8",
+    version       => x"00000001",
+    date          => x"20200612",
+    name          => "LNLS_INTLK_REGS    ")));
 
 end orbit_intlk_pkg;
 
