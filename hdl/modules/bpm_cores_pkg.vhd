@@ -1180,7 +1180,7 @@ package bpm_cores_pkg is
     -----------------------------
 
     rst_n_i                                    : in std_logic;
-    clk_sys_i                                  : in std_logic; -- Wishbone clock
+    clk_i                                      : in std_logic; -- Wishbone clock
     ref_rst_n_i                                : in std_logic;
     ref_clk_i                                  : in std_logic;
 
