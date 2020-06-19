@@ -1071,8 +1071,8 @@ package bpm_cores_pkg is
 
     rst_n_i                                    : in std_logic;
     clk_i                                      : in std_logic; -- Wishbone clock
-    fs_rst_n_i                                 : in std_logic;
-    fs_clk_i                                   : in std_logic;
+    ref_rst_n_i                                : in std_logic;
+    ref_clk_i                                  : in std_logic;
 
     -----------------------------
     -- Wishbone signals
@@ -1092,6 +1092,8 @@ package bpm_cores_pkg is
     -- Downstream ADC and position signals
     -----------------------------
 
+    fs_clk_ds_i                                : in std_logic;
+
     adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
     adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
     adc_ds_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -1108,6 +1110,8 @@ package bpm_cores_pkg is
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
+
+    fs_clk_us_i                                : in std_logic;
 
     adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
     adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -1176,9 +1180,9 @@ package bpm_cores_pkg is
     -----------------------------
 
     rst_n_i                                    : in std_logic;
-    clk_i                                      : in std_logic; -- Wishbone clock
-    fs_rst_n_i                                 : in std_logic;
-    fs_clk_i                                   : in std_logic;
+    clk_sys_i                                  : in std_logic; -- Wishbone clock
+    ref_rst_n_i                                : in std_logic;
+    ref_clk_i                                  : in std_logic;
 
     -----------------------------
     -- Wishbone signals
@@ -1190,6 +1194,8 @@ package bpm_cores_pkg is
     -----------------------------
     -- Downstream ADC and position signals
     -----------------------------
+
+    fs_clk_ds_i                                : in std_logic;
 
     adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
     adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -1207,6 +1213,8 @@ package bpm_cores_pkg is
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
+
+    fs_clk_us_i                                : in std_logic;
 
     adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
     adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');

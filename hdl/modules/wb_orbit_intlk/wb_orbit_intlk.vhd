@@ -47,8 +47,8 @@ port
 
   rst_n_i                                    : in std_logic;
   clk_i                                      : in std_logic; -- Wishbone clock
-  fs_rst_n_i                                 : in std_logic;
-  fs_clk_i                                   : in std_logic;
+  ref_rst_n_i                                : in std_logic;
+  ref_clk_i                                  : in std_logic;
 
   -----------------------------
   -- Wishbone signals
@@ -68,6 +68,8 @@ port
   -- Downstream ADC and position signals
   -----------------------------
 
+  fs_clk_ds_i                                : in std_logic;
+
   adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
   adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
   adc_ds_ch2_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -84,6 +86,8 @@ port
   -----------------------------
   -- Upstream ADC and position signals
   -----------------------------
+
+  fs_clk_us_i                                : in std_logic;
 
   adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
   adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -259,7 +263,7 @@ begin
     wb_we_i                                 => wb_slv_adp_out.we,
     wb_ack_o                                => wb_slv_adp_in.ack,
     wb_stall_o                              => wb_slv_adp_in.stall,
-    fs_clk_i                                => fs_clk_i,
+    fs_clk_i                                => ref_clk_i,
     regs_i                                  => regs_in,
     regs_o                                  => regs_out
   );
@@ -315,8 +319,8 @@ begin
     -- Clocks and resets
     -----------------------------
 
-    fs_rst_n_i                                 => fs_rst_n_i,
-    fs_clk_i                                   => fs_clk_i,
+    ref_rst_n_i                                => ref_rst_n_i,
+    ref_clk_i                                  => ref_clk_i,
 
     -----------------------------
     -- Interlock enable and limits signals
@@ -344,6 +348,7 @@ begin
     -----------------------------
     -- Downstream ADC and position signals
     -----------------------------
+    fs_clk_ds_i                                => fs_clk_ds_i,
 
     adc_ds_ch0_swap_i                          => adc_ds_ch0_swap_i,
     adc_ds_ch1_swap_i                          => adc_ds_ch1_swap_i,
@@ -361,6 +366,8 @@ begin
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
+
+    fs_clk_us_i                                => fs_clk_us_i,
 
     adc_us_ch0_swap_i                          => adc_us_ch0_swap_i,
     adc_us_ch1_swap_i                          => adc_us_ch1_swap_i,

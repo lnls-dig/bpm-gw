@@ -46,9 +46,9 @@ port
   -----------------------------
 
   rst_n_i                                    : in std_logic;
-  clk_i                                      : in std_logic; -- Wishbone clock
-  fs_rst_n_i                                 : in std_logic;
-  fs_clk_i                                   : in std_logic;
+  clk_sys_i                                  : in std_logic; -- Wishbone clock
+  ref_rst_n_i                                : in std_logic;
+  ref_clk_i                                  : in std_logic;
 
   -----------------------------
   -- Wishbone signals
@@ -60,6 +60,8 @@ port
   -----------------------------
   -- Downstream ADC and position signals
   -----------------------------
+
+  fs_clk_ds_i                                : in std_logic;
 
   adc_ds_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
   adc_ds_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -77,6 +79,8 @@ port
   -----------------------------
   -- Upstream ADC and position signals
   -----------------------------
+
+  fs_clk_us_i                                : in std_logic;
 
   adc_us_ch0_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
   adc_us_ch1_swap_i                          : in std_logic_vector(g_ADC_WIDTH-1 downto 0) := (others => '0');
@@ -150,8 +154,8 @@ begin
 
     rst_n_i                                   => rst_n_i,
     clk_i                                     => clk_i,
-    fs_rst_n_i                                => fs_rst_n_i,
-    fs_clk_i                                  => fs_clk_i,
+    ref_rst_n_i                               => ref_rst_n_i,
+    ref_clk_i                                 => ref_clk_i,
 
     -----------------------------
     -- Wishbone signals
@@ -171,6 +175,8 @@ begin
     -- Downstream ADC and position signals
     -----------------------------
 
+    fs_clk_ds_i                               => fs_clk_ds_i,
+
     adc_ds_ch0_swap_i                         => adc_ds_ch0_swap_i,
     adc_ds_ch1_swap_i                         => adc_ds_ch1_swap_i,
     adc_ds_ch2_swap_i                         => adc_ds_ch2_swap_i,
@@ -187,6 +193,8 @@ begin
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
+
+    fs_clk_us_i                               => fs_clk_us_i,
 
     adc_us_ch0_swap_i                         => adc_us_ch0_swap_i,
     adc_us_ch1_swap_i                         => adc_us_ch1_swap_i,
