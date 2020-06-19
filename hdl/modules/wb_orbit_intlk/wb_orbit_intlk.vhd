@@ -26,7 +26,7 @@ use work.wishbone_pkg.all;
 -- Orbit interlock cores
 use work.orbit_intlk_pkg.all;
 -- Regs
-use work.wb_orbit_intlk_regs_pkg.all;
+use work.orbit_intlk_wbgen2_pkg.all;
 
 entity wb_orbit_intlk is
 generic
