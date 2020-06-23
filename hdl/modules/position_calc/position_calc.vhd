@@ -248,22 +248,22 @@ architecture rtl of position_calc is
 
 
   -- width for decimation counters
-  constant c_cic_fofb_width   : natural := f_log2_size(g_fofb_ratio);
-  constant c_cic_monit1_width : natural := f_log2_size(g_monit1_ratio);
-  constant c_cic_monit2_width : natural := f_log2_size(g_monit2_ratio);
-  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio);
-  constant c_adc_width        : natural := f_log2_size(g_adc_ratio);
+  constant c_cic_fofb_width   : natural := f_log2_size(g_fofb_ratio+1);
+  constant c_cic_monit1_width : natural := f_log2_size(g_monit1_ratio+1);
+  constant c_cic_monit2_width : natural := f_log2_size(g_monit2_ratio+1);
+  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio+1);
+  constant c_adc_width        : natural := f_log2_size(g_adc_ratio+1);
 
   -- width for ce counters
-  constant c_adc_ce_width         : natural := f_log2_size(c_adc_ratio_full);
-  constant c_tbt_ce_width         : natural := f_log2_size(c_tbt_ratio_full);
-  constant c_fofb_ce_width        : natural := f_log2_size(c_fofb_ratio_full);
-  constant c_monit1_ce_width      : natural := f_log2_size(c_monit1_ratio_full);
-  constant c_monit2_ce_width      : natural := f_log2_size(c_monit2_ratio_full);
-  constant c_tbt_cordic_ce_width  : natural := f_log2_size(g_tbt_cordic_ratio);
-  constant c_fofb_cordic_ce_width : natural := f_log2_size(g_fofb_cordic_ratio);
-  constant c_monit1_cic_ce_width  : natural := f_log2_size(g_monit1_cic_ratio);
-  constant c_monit2_cic_ce_width  : natural := f_log2_size(g_monit2_cic_ratio);
+  constant c_adc_ce_width         : natural := f_log2_size(c_adc_ratio_full+1);
+  constant c_tbt_ce_width         : natural := f_log2_size(c_tbt_ratio_full+1);
+  constant c_fofb_ce_width        : natural := f_log2_size(c_fofb_ratio_full+1);
+  constant c_monit1_ce_width      : natural := f_log2_size(c_monit1_ratio_full+1);
+  constant c_monit2_ce_width      : natural := f_log2_size(c_monit2_ratio_full+1);
+  constant c_tbt_cordic_ce_width  : natural := f_log2_size(g_tbt_cordic_ratio+1);
+  constant c_fofb_cordic_ce_width : natural := f_log2_size(g_fofb_cordic_ratio+1);
+  constant c_monit1_cic_ce_width  : natural := f_log2_size(g_monit1_cic_ratio+1);
+  constant c_monit2_cic_ce_width  : natural := f_log2_size(g_monit2_cic_ratio+1);
 
 
   constant c_fofb_ratio_slv : std_logic_vector(c_cic_fofb_width-1 downto 0)
@@ -309,11 +309,11 @@ architecture rtl of position_calc is
     := std_logic_vector(to_unsigned(g_monit2_cic_ratio, c_monit2_cic_ce_width));
 
   --Cordic
-  constant c_tbt_cordic_xy_width : natural := g_tbt_decim_width+f_log2_size(g_tbt_cordic_stages)+2;  -- internal width of cordic: input_width + right padding + left padding
-  constant c_tbt_cordic_ph_width : natural := g_tbt_decim_width+f_log2_size(g_tbt_cordic_stages);  -- right padding for cordic stages
+  constant c_tbt_cordic_xy_width : natural := g_tbt_decim_width+f_log2_size(g_tbt_cordic_stages+1)+2;  -- internal width of cordic: input_width + right padding + left padding
+  constant c_tbt_cordic_ph_width : natural := g_tbt_decim_width+f_log2_size(g_tbt_cordic_stages+1);  -- right padding for cordic stages
 
-  constant c_fofb_cordic_xy_width : natural := g_fofb_decim_width+f_log2_size(g_fofb_cordic_stages)+2;  -- internal width of cordic: input_width + right padding + left padding
-  constant c_fofb_cordic_ph_width : natural := g_fofb_decim_width+f_log2_size(g_fofb_cordic_stages);  -- right padding for cordic stages
+  constant c_fofb_cordic_xy_width : natural := g_fofb_decim_width+f_log2_size(g_fofb_cordic_stages+1)+2;  -- internal width of cordic: input_width + right padding + left padding
+  constant c_fofb_cordic_ph_width : natural := g_fofb_decim_width+f_log2_size(g_fofb_cordic_stages+1);  -- right padding for cordic stages
 
 
 
