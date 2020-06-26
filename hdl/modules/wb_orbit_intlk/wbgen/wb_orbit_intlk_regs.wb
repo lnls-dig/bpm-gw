@@ -1,0 +1,328 @@
+peripheral {
+  name = "BPM Orbit Interlock Interface Registers";
+  description = "BPM Orbit interlock interface.";
+  -- Prefix for all generated ports
+  prefix = "orbit_intlk";
+  -- Name of the vhdl entity to be generated
+  hdl_entity = "wb_orbit_intlk_regs";
+
+  reg {
+    name = "General Control Signals";
+    description = "General Controls";
+    prefix = "ctrl";
+
+    field {
+       name = "Enable";
+       description = "Interlock enable";
+       prefix = "en";
+       type = BIT;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Clear";
+       description = "Interlock clear";
+       prefix = "clr";
+        type = MONOSTABLE;
+        access_bus = WRITE_ONLY;
+        access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Minimum sum enable";
+       description = "Interlock minimum sum enable";
+       prefix = "min_sum_en";
+       type = BIT;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Translation Interlock Enable";
+       description = "Translation Interlock enable";
+       prefix = "trans_en";
+       type = BIT;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Translation Interlock Clear";
+       description = "Translation Interlock clear";
+       prefix = "trans_clr";
+       type = MONOSTABLE;
+       access_bus = WRITE_ONLY;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Angular Interlock Enable";
+       description = "Angular Interlock enable";
+       prefix = "ang_en";
+       type = BIT;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Angular Interlock Clear";
+       description = "Angular Interlock clear";
+       prefix = "ang_clr";
+       type = MONOSTABLE;
+       access_bus = WRITE_ONLY;
+       access_dev = READ_ONLY;
+    };
+
+    field {
+       name = "Reserved";
+       description = "Ignore on write, read as 0's";
+       prefix = "reserved";
+       type = SLV;
+       size = 24;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "General Status Signals";
+    description = "General Status";
+    prefix = "sts";
+
+    field {
+       name = "Translation Bigger X";
+       description = "Translation Bigger X";
+       prefix = "trans_bigger_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger Y";
+       description = "Translation Bigger Y";
+       prefix = "trans_bigger_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger Latched X";
+       description = "Translation Bigger Latched X";
+       prefix = "trans_bigger_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger Latched Y";
+       description = "Translation Bigger Latched Y";
+       prefix = "trans_bigger_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger Any (X/Y)";
+       description = "Translation Bigger Any (X/Y)";
+       prefix = "trans_bigger_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger";
+       description = "Translation Bigger";
+       prefix = "trans_bigger";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Bigger Latched";
+       description = "Translation Bigger Latched";
+       prefix = "trans_bigger_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger X";
+       description = "Angular Bigger X";
+       prefix = "ang_bigger_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger Y";
+       description = "Angular Bigger Y";
+       prefix = "ang_bigger_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger Latched X";
+       description = "Angular Bigger Latched X";
+       prefix = "ang_bigger_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger Latched Y";
+       description = "Angular Bigger Latched Y";
+       prefix = "ang_bigger_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger Any (X/Y)";
+       description = "Angular Bigger Any (X/Y)";
+       prefix = "ang_bigger_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger";
+       description = "Angular Bigger";
+       prefix = "ang_bigger";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Bigger Latched";
+       description = "Angular Bigger Latched";
+       prefix = "ang_bigger_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Interlock Bigger";
+       description = "Interlock Bigger";
+       prefix = "intlk_bigger";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Interlock Bigger Latched";
+       description = "Interlock Bigger Latched";
+       prefix = "intlk_bigger_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Reserved";
+       description = "Ignore on write, read as 0's";
+       prefix = "reserved";
+       type = SLV;
+       size = 16;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+  };
+
+  reg {
+    name = "Minimum sum threshold";
+    description = "Minimum sum threshold to enable interlock";
+    prefix = "min_sum";
+
+    field {
+       name = "Minimum Sum Threshold";
+       description = "Minimum Sum Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Translation X threshold";
+    description = "Translation X threshold to trip interlock";
+    prefix = "trans_max_x";
+
+    field {
+       name = "Maximum X Threshold";
+       description = "Minimum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Translation Y threshold";
+    description = "Translation Y threshold to trip interlock";
+    prefix = "trans_max_y";
+
+    field {
+       name = "Maximum Y Threshold";
+       description = "Maximum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Angular X threshold";
+    description = "Angular X threshold to trip interlock";
+    prefix = "ang_max_x";
+
+    field {
+       name = "Maximum X Threshold";
+       description = "Maximum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Angular Y threshold";
+    description = "Angular Y threshold to trip interlock";
+    prefix = "ang_max_y";
+
+    field {
+       name = "Maximum Y Threshold";
+       description = "Maximum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+};
