@@ -35,6 +35,8 @@ use work.wb_stream_generic_pkg.all;
 use work.fmc_adc_pkg.all;
 -- DSP definitions
 use work.dsp_cores_pkg.all;
+-- BPM definitions
+use work.bpm_cores_pkg.all;
 -- Positicon Calc constants
 use work.machine_pkg.all;
 -- Genrams
@@ -51,6 +53,8 @@ use work.pcie_cntr_axi_pkg.all;
 use work.trigger_pkg.all;
 -- Trigger Common Modules
 use work.trigger_common_pkg.all;
+-- Orbit interlock
+use work.orbit_intlk_pkg.all;
 
 entity dbe_bpm_gen is
 generic(
@@ -641,11 +645,11 @@ architecture rtl of dbe_bpm_gen is
 
   -- Top crossbar layout
   -- Number of slaves
-  constant c_slaves                         : natural := 15;
+  constant c_slaves                         : natural := 16;
   -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
   -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
   -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Acq_Core PM 1, Acq_Core PM 2,
-  -- Trigger MUX PM 1, Trigger MUX PM 2
+  -- Trigger MUX PM 1, Trigger MUX PM 2, Orbit Interlock
 
   -- Slaves indexes
   constant c_slv_pos_calc_1_id             : natural := 0;
@@ -663,12 +667,13 @@ architecture rtl of dbe_bpm_gen is
   constant c_slv_acq_core_pm_1_id          : natural := 12;
   constant c_slv_trig_mux_pm_0_id          : natural := 13;
   constant c_slv_trig_mux_pm_1_id          : natural := 14;
+  constant c_slv_orbit_intlk_id            : natural := 15;
   -- These are not account in the number of slaves as these are special
-  constant c_slv_sdb_repo_url_id           : natural := 15;
-  constant c_slv_sdb_top_syn_id            : natural := 16;
-  constant c_slv_sdb_dsp_cores_id          : natural := 17;
-  constant c_slv_sdb_gen_cores_id          : natural := 18;
-  constant c_slv_sdb_infra_cores_id        : natural := 19;
+  constant c_slv_sdb_repo_url_id           : natural := 16;
+  constant c_slv_sdb_top_syn_id            : natural := 17;
+  constant c_slv_sdb_dsp_cores_id          : natural := 18;
+  constant c_slv_sdb_gen_cores_id          : natural := 19;
+  constant c_slv_sdb_infra_cores_id        : natural := 20;
 
   -- Number of masters
   constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
@@ -770,7 +775,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_trig_sync_edge                 : string   := "positive";
   constant c_trig_num                       : positive := 8; -- 8 MLVDS triggers
   constant c_trig_intern_num                : positive := c_trig_num_channels + c_acq_num_channels;
-  constant c_trig_rcv_intern_num            : positive := 2; -- 2 FMCs
+  constant c_trig_rcv_intern_num            : positive := 3; -- 2 FMCs + 1 Interlock
   constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
   constant c_trig_out_resolver              : string := "fanout";
   constant c_trig_in_resolver               : string := "or";
@@ -780,6 +785,7 @@ architecture rtl of dbe_bpm_gen is
   -- Trigger RCV intern IDs
   constant c_trig_rcv_intern_chan_1_id      : natural := 0; -- Internal Channel 1
   constant c_trig_rcv_intern_chan_2_id      : natural := 1; -- Internal Channel 2
+  constant c_trig_rcv_intern_chan_intlk_id  : natural := 2; -- Internal Channel 3, Interlock
 
   -- Trigger core IDs
   constant c_trig_mux_0_id                  : natural := 0;
@@ -847,6 +853,7 @@ architecture rtl of dbe_bpm_gen is
      c_slv_acq_core_pm_1_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00430000"),   -- Data Acquisition 1 Post-Mortem port
      c_slv_trig_mux_pm_0_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00440000"),   -- Trigger Mux Post-Mortem 1 port
      c_slv_trig_mux_pm_1_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00450000"),   -- Trigger Mux Post-Mortem 2 port
+     c_slv_orbit_intlk_id      => f_sdb_embed_device(c_xwb_orbit_intlk_sdb,      x"00460000"),   -- Orbit Interlock port
      c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
      c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
      c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
@@ -1118,6 +1125,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp1_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp1_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp1_adc_tag                        : std_logic_vector(0 downto 0);
   signal dsp1_adc_valid                      : std_logic;
 
   signal dsp1_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -1234,6 +1242,7 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_adc_ch1_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch2_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_adc_ch3_data                   : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
+  signal dsp2_adc_tag                        : std_logic_vector(0 downto 0);
   signal dsp2_adc_valid                      : std_logic;
 
   signal dsp2_adc_se_ch0_data                : std_logic_vector(c_num_unprocessed_se_bits-1 downto 0);
@@ -1354,12 +1363,16 @@ architecture rtl of dbe_bpm_gen is
   signal trig_fmc1_channel_2                : t_trig_channel;
   signal trig_fmc2_channel_1                : t_trig_channel;
   signal trig_fmc2_channel_2                : t_trig_channel;
+  signal trig_1_channel_intlk               : t_trig_channel;
+  signal trig_2_channel_intlk               : t_trig_channel;
 
   -- Post-Mortem triggers
   signal trig_fmc1_pm_channel_1             : t_trig_channel;
   signal trig_fmc1_pm_channel_2             : t_trig_channel;
   signal trig_fmc2_pm_channel_1             : t_trig_channel;
   signal trig_fmc2_pm_channel_2             : t_trig_channel;
+  signal trig_1_pm_channel_intlk            : t_trig_channel;
+  signal trig_2_pm_channel_intlk            : t_trig_channel;
 
   signal trig_dbg                           : std_logic_vector(7 downto 0);
 
@@ -1384,77 +1397,9 @@ architecture rtl of dbe_bpm_gen is
   signal dbg_serial_data                    : std_logic_vector(31 downto 0);
   signal dbg_spi_data                       : std_logic_vector(31 downto 0);
 
-  -- Chipscope control signals
-  signal CONTROL0                           : std_logic_vector(35 downto 0);
-  signal CONTROL1                           : std_logic_vector(35 downto 0);
-  signal CONTROL2                           : std_logic_vector(35 downto 0);
-  signal CONTROL3                           : std_logic_vector(35 downto 0);
-  signal CONTROL4                           : std_logic_vector(35 downto 0);
-
-  -- Chipscope ILA 0 signals
-  signal TRIG_ILA0_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA0_3                        : std_logic_vector(31 downto 0);
-
-  -- Chipscope ILA 1 signals
-  signal TRIG_ILA1_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA1_3                        : std_logic_vector(31 downto 0);
-
-  -- Chipscope ILA 2 signals
-  signal TRIG_ILA2_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA2_3                        : std_logic_vector(31 downto 0);
-
-  -- Chipscope ILA 3 signals
-  signal TRIG_ILA3_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA3_3                        : std_logic_vector(31 downto 0);
-
-  -- Chipscope ILA 4 signals
-  signal TRIG_ILA4_0                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_1                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_2                        : std_logic_vector(31 downto 0);
-  signal TRIG_ILA4_3                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 6 signals
-  --signal TRIG_ILA6_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA6_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA6_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA6_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA6_4                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 7 signals
-  --signal TRIG_ILA7_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA7_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA7_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA7_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA7_4                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 8 signals
-  --signal TRIG_ILA8_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA8_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA8_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA8_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA8_4                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 9 signals
-  --signal TRIG_ILA9_0                        : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA9_1                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA9_2                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA9_3                        : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA9_4                        : std_logic_vector(31 downto 0);
-
-  ---- Chipscope ILA 10 signals
-  --signal TRIG_ILA10_0                       : std_logic_vector(7 downto 0);
-  --signal TRIG_ILA10_1                       : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA10_2                       : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA10_3                       : std_logic_vector(31 downto 0);
-  --signal TRIG_ILA10_4                       : std_logic_vector(31 downto 0);
+  -- Interlock signals
+  signal intlk_ltc                          : std_logic;
+  signal intlk                              : std_logic;
 
   ---------------------------
   --      Components       --
@@ -1503,42 +1448,6 @@ architecture rtl of dbe_bpm_gen is
     locked_o                                : out std_logic
   );
   end component;
-
-  -- Xilinx Chipscope Controller
-  component chipscope_icon_1_port
-  port (
-    CONTROL0                                : inout std_logic_vector(35 downto 0)
-  );
-  end component;
-
-  component chipscope_icon_4_port
-  port (
-    CONTROL0                                : inout std_logic_vector(35 downto 0);
-    CONTROL1                                : inout std_logic_vector(35 downto 0);
-    CONTROL2                                : inout std_logic_vector(35 downto 0);
-    CONTROL3                                : inout std_logic_vector(35 downto 0)
-  );
-  end component;
-
-  component chipscope_ila
-  port (
-    control                                 : inout std_logic_vector(35 downto 0);
-    clk                                     : in std_logic;
-    trig0                                   : in std_logic_vector(31 downto 0);
-    trig1                                   : in std_logic_vector(31 downto 0);
-    trig2                                   : in std_logic_vector(31 downto 0);
-    trig3                                   : in std_logic_vector(31 downto 0)
-  );
-  end component;
-
-  -- Xilinx Chipscope Logic Analyser
-  -- Functions
-  -- Generate dummy (0) values
-  function f_zeros(size : integer)
-      return std_logic_vector is
-  begin
-      return std_logic_vector(to_unsigned(0, size));
-  end f_zeros;
 
 begin
 
@@ -2987,6 +2896,7 @@ begin
     adc_ch1_swap_o                          => dsp1_adc_ch1_data,
     adc_ch2_swap_o                          => dsp1_adc_ch2_data,
     adc_ch3_swap_o                          => dsp1_adc_ch3_data,
+    adc_tag_o                               => dsp1_adc_tag,
     adc_swap_valid_o                        => dsp1_adc_valid,
 
     mix_ch0_i_o                             => dsp1_mixi_ch0,
@@ -3217,6 +3127,7 @@ begin
     adc_ch1_swap_o                          => dsp2_adc_ch1_data,
     adc_ch2_swap_o                          => dsp2_adc_ch2_data,
     adc_ch3_swap_o                          => dsp2_adc_ch3_data,
+    adc_tag_o                               => dsp2_adc_tag,
     adc_swap_valid_o                        => dsp2_adc_valid,
 
     mix_ch0_i_o                             => dsp2_mixi_ch0,
@@ -4338,6 +4249,85 @@ begin
   cbar_master_i(c_slv_acq_core_pm_1_id) <= acq_core_slave_o(c_acq_core_3_id);
 
   ----------------------------------------------------------------------
+  --                        Orbit Interlock                           --
+  ----------------------------------------------------------------------
+  cmp_xwb_orbit_intlk : xwb_orbit_intlk
+  generic map
+  (
+    -- Wishbone
+    g_ADDRESS_GRANULARITY                      => BYTE,
+    g_INTERFACE_MODE                           => PIPELINED,
+    -- Position
+    g_ADC_WIDTH                                => c_num_unprocessed_se_bits,
+    g_DECIM_WIDTH                              => c_pos_calc_fofb_decim_width
+  )
+  port map
+  (
+    -----------------------------
+    -- Clocks and resets
+    -----------------------------
+
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    ref_clk_i                                  => fs1_clk,
+    ref_rst_n_i                                => fs1_rstn,
+
+    -----------------------------
+    -- Wishbone signals
+    -----------------------------
+
+    wb_slv_i                                   => cbar_master_o(c_slv_orbit_intlk_id),
+    wb_slv_o                                   => cbar_master_i(c_slv_orbit_intlk_id),
+
+    -----------------------------
+    -- Downstream ADC and position signals
+    -----------------------------
+
+    fs_clk_ds_i                                => fs1_clk,
+
+    adc_ds_ch0_swap_i                          => dsp1_adc_se_ch0_data,
+    adc_ds_ch1_swap_i                          => dsp1_adc_se_ch1_data,
+    adc_ds_ch2_swap_i                          => dsp1_adc_se_ch2_data,
+    adc_ds_ch3_swap_i                          => dsp1_adc_se_ch3_data,
+    adc_ds_tag_i                               => dsp1_adc_tag,
+    adc_ds_swap_valid_i                        => dsp1_adc_valid,
+
+    decim_ds_pos_x_i                           => dsp1_fofb_pos_x,
+    decim_ds_pos_y_i                           => dsp1_fofb_pos_y,
+    decim_ds_pos_q_i                           => dsp1_fofb_pos_q,
+    decim_ds_pos_sum_i                         => dsp1_fofb_pos_sum,
+    decim_ds_pos_valid_i                       => dsp1_fofb_pos_valid,
+
+    -----------------------------
+    -- Upstream ADC and position signals
+    -----------------------------
+
+    fs_clk_us_i                                => fs2_clk,
+
+    adc_us_ch0_swap_i                          => dsp2_adc_se_ch0_data,
+    adc_us_ch1_swap_i                          => dsp2_adc_se_ch1_data,
+    adc_us_ch2_swap_i                          => dsp2_adc_se_ch2_data,
+    adc_us_ch3_swap_i                          => dsp2_adc_se_ch3_data,
+    adc_us_tag_i                               => dsp2_adc_tag,
+    adc_us_swap_valid_i                        => dsp2_adc_valid,
+
+    decim_us_pos_x_i                           => dsp2_fofb_pos_x,
+    decim_us_pos_y_i                           => dsp2_fofb_pos_y,
+    decim_us_pos_q_i                           => dsp2_fofb_pos_q,
+    decim_us_pos_sum_i                         => dsp2_fofb_pos_sum,
+    decim_us_pos_valid_i                       => dsp2_fofb_pos_valid,
+
+    -----------------------------
+    -- Interlock outputs
+    -----------------------------
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_ltc_o                                => intlk_ltc,
+    -- conditional to intlk_en_i
+    intlk_o                                    => intlk
+  );
+
+  ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
   trig_ref_clk <= clk_aux;
@@ -4405,658 +4395,29 @@ begin
   trig_fmc2_pm_channel_1.pulse <= '0';
   trig_fmc2_pm_channel_2.pulse <= fmc2_trig_hw;
 
+  -- Interlock
+  trig_1_channel_intlk.pulse <= intlk;
+  trig_2_channel_intlk.pulse <= intlk;
+
+  trig_1_pm_channel_intlk.pulse <= '0';
+  trig_2_pm_channel_intlk.pulse <= '0';
+
   -- Assign intern triggers to trigger module
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_channel_1;
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_channel_2;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_channel_1;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_channel_2;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_channel_1;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_channel_2;
+  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_channel_intlk;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_channel_1;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_channel_2;
+  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_channel_intlk;
 
   -- Post-Mortem triggers
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc1_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc1_pm_channel_2;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id) <= trig_fmc2_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id) <= trig_fmc2_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_pm_channel_intlk;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_pm_channel_1;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_pm_channel_2;
+  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_pm_channel_intlk;
 
   trig_dir_o <= trig_dir_int;
-
-  ----------------------------------------------------------------------
-  --                      Triggers Chipscope                          --
-  ----------------------------------------------------------------------
-  --cmp_chipscope_icon_0 : chipscope_icon_1_port
-  --port map (
-  --  CONTROL0                                => CONTROL0
-  --);
-
-  --cmp_chipscope_ila_0 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL0,
-  --  CLK                                    => fs_clk_array(0),
-  --  TRIG0                                  => TRIG_ILA0_0,
-  --  TRIG1                                  => TRIG_ILA0_1,
-  --  TRIG2                                  => TRIG_ILA0_2,
-  --  TRIG3                                  => TRIG_ILA0_3
-  --);
-
-  --TRIG_ILA0_0(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA0_0(29 downto 12)                 <= trig_pulse_transm(c_trig_mux_0_id, 0 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 1 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 2 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 3 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 4 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 5 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 6 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 7 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 8 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 9 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 10).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 11).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 12).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 13).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 14).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 15).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 16).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_0_id, 17).pulse;
-
-  --TRIG_ILA0_0(11 downto 8)                  <= trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id).pulse &
-  --                                             trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id).pulse &
-  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id).pulse &
-  --                                             trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id).pulse;
-  --TRIG_ILA0_0(7 downto 0)                   <= trig_dir_int;
-
-  --TRIG_ILA0_1(31 downto 26)                 <= (others => '0');
-  --TRIG_ILA0_1(25 downto 18)                 <= trig_dbg;
-  --TRIG_ILA0_1(17 downto 0)                  <= trig_pulse_transm(c_trig_mux_1_id, 0 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 1 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 2 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 3 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 4 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 5 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 6 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 7 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 8 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 9 ).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 10).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 11).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 12).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 13).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 14).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 15).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 16).pulse &
-  --                                             trig_pulse_transm(c_trig_mux_1_id, 17).pulse;
-  --TRIG_ILA0_2 (31 downto 18)                <= (others => '0');
-  --TRIG_ILA0_2 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_0_id, 0 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 1 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 2 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 3 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 4 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 5 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 6 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 7 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 8 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 9 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 10).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 11).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 12).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 13).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 14).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 15).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 16).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_0_id, 17).pulse;
-  --TRIG_ILA0_3 (31 downto 18)                <= (others => '0');
-  --TRIG_ILA0_3 (17 downto 0)                 <= trig_pulse_rcv(c_trig_mux_1_id, 0 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 1 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 2 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 3 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 4 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 5 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 6 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 7 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 8 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 9 ).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 10).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 11).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 12).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 13).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 14).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 15).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 16).pulse &
-  --                                             trig_pulse_rcv(c_trig_mux_1_id, 17).pulse;
-
-  ----------------------------------------------------------------------
-  --                      DSP Chipscope                               --
-  ----------------------------------------------------------------------
-
-  ---- Chipscope Analysis
-  --cmp_chipscope_icon_13 : chipscope_icon_13_port
-  --port map (
-  --   CONTROL0                               => CONTROL0,
-  --   CONTROL1                               => CONTROL1,
-  --   CONTROL2                               => CONTROL2,
-  --   CONTROL3                               => CONTROL3,
-  --   CONTROL4                               => CONTROL4,
-  --   CONTROL5                               => CONTROL5,
-  --   CONTROL6                               => CONTROL6,
-  --   CONTROL7                               => CONTROL7,
-  --   CONTROL8                               => CONTROL8,
-  --   CONTROL9                               => CONTROL9,
-  --   CONTROL10                              => CONTROL10,
-  --   CONTROL11                              => CONTROL11,
-  --   CONTROL12                              => CONTROL12
-  --);
-
-  ----cmp_chipscope_ila_0_adc : chipscope_ila
-  --cmp_chipscope_ila_adc : chipscope_ila_8192_5_port
-  --port map (
-  --  CONTROL                                => CONTROL0,
-  --  CLK                                    => fs_clk,
-  --  TRIG0                                  => TRIG_ILA0_0,
-  --  TRIG1                                  => TRIG_ILA0_1,
-  --  TRIG2                                  => TRIG_ILA0_2,
-  --  TRIG3                                  => TRIG_ILA0_3,
-  --  TRIG4                                  => TRIG_ILA0_4
-  --);
-
-  ---- ADC Data
-  --TRIG_ILA0_0                               <= dsp_adc_ch1_data & dsp_adc_ch0_data;
-  --TRIG_ILA0_1                               <= dsp_adc_ch3_data & dsp_adc_ch2_data;
-
-  --TRIG_ILA0_2                               <= dbg_adc_ch1_cond & dbg_adc_ch0_cond;
-  --TRIG_ILA0_3                               <= dbg_adc_ch3_cond & dbg_adc_ch2_cond;
-  --TRIG_ILA0_4(dbg_cur_address'left downto 0)
-  --	                                    <= dbg_cur_address;
-
-  ---- Mix and BPF data
-  --cmp_chipscope_ila_1024_bpf_mix : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL1,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA1_0,
-  --  TRIG1                                   => TRIG_ILA1_1,
-  --  TRIG2                                   => TRIG_ILA1_2,
-  --  TRIG3                                   => TRIG_ILA1_3,
-  --  TRIG4                                   => TRIG_ILA1_4
-  --);
-
-  --TRIG_ILA1_0(0)                            <= dsp_bpf_valid;
-  --TRIG_ILA1_0(1)                            <= '0';
-  --TRIG_ILA1_0(2)                            <= '0';
-  --TRIG_ILA1_0(3)                            <= '0';
-  --TRIG_ILA1_0(4)                            <= '0';
-  --TRIG_ILA1_0(5)                            <= '0';
-  --TRIG_ILA1_0(6)                            <= '0';
-
-  --TRIG_ILA1_1(dsp_bpf_ch0'left downto 0)    <= dsp_bpf_ch0;
-  --TRIG_ILA1_2(dsp_bpf_ch2'left downto 0)    <= dsp_bpf_ch2;
-  --TRIG_ILA1_3(dsp_mix_ch0'left downto 0)    <= dsp_mix_ch0;
-  --TRIG_ILA1_4(dsp_mix_ch2'left downto 0)    <= dsp_mix_ch2;
-
-  ----TBT amplitudes data
-  --cmp_chipscope_ila_1024_tbt_amp : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL2,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA2_0,
-  --  TRIG1                                   => TRIG_ILA2_1,
-  --  TRIG2                                   => TRIG_ILA2_2,
-  --  TRIG3                                   => TRIG_ILA2_3,
-  --  TRIG4                                   => TRIG_ILA2_4
-  --);
-
-  --TRIG_ILA2_0(0)                            <= dsp_tbt_amp_valid;
-  --TRIG_ILA2_0(1)                            <= '0';
-  --TRIG_ILA2_0(2)                            <= '0';
-  --TRIG_ILA2_0(3)                            <= '0';
-  --TRIG_ILA2_0(4)                            <= '0';
-  --TRIG_ILA2_0(5)                            <= '0';
-  --TRIG_ILA2_0(6)                            <= '0';
-
-  --TRIG_ILA2_1(dsp_tbt_amp_ch0'left downto 0) <= dsp_tbt_amp_ch0;
-  --TRIG_ILA2_2(dsp_tbt_amp_ch1'left downto 0) <= dsp_tbt_amp_ch1;
-  --TRIG_ILA2_3(dsp_tbt_amp_ch2'left downto 0) <= dsp_tbt_amp_ch2;
-  --TRIG_ILA2_4(dsp_tbt_amp_ch3'left downto 0) <= dsp_tbt_amp_ch3;
-
-  ---- TBT position data
-  --cmp_chipscope_ila_1024_tbt_pos : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL3,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA3_0,
-  --  TRIG1                                   => TRIG_ILA3_1,
-  --  TRIG2                                   => TRIG_ILA3_2,
-  --  TRIG3                                   => TRIG_ILA3_3,
-  --  TRIG4                                   => TRIG_ILA3_4
-  --);
-
-  --TRIG_ILA3_0(0)                            <= dsp_tbt_pos_valid;
-  --TRIG_ILA3_0(1)                            <= '0';
-  --TRIG_ILA3_0(2)                            <= '0';
-  --TRIG_ILA3_0(3)                            <= '0';
-  --TRIG_ILA3_0(4)                            <= '0';
-  --TRIG_ILA3_0(5)                            <= '0';
-  --TRIG_ILA3_0(6)                            <= '0';
-
-  --TRIG_ILA3_1(dsp_tbt_pos_x'left downto 0)       <= dsp_tbt_pos_x;
-  --TRIG_ILA3_2(dsp_tbt_pos_y'left downto 0)       <= dsp_tbt_pos_y;
-  --TRIG_ILA3_3(dsp_tbt_pos_q'left downto 0)       <= dsp_tbt_pos_q;
-  --TRIG_ILA3_4(dsp_tbt_pos_sum'left downto 0)     <= dsp_tbt_pos_sum;
-
-  ---- FOFB amplitudes data
-
-  --cmp_chipscope_ila_1024_fofb_amp : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL4,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA4_0,
-  --  TRIG1                                   => TRIG_ILA4_1,
-  --  TRIG2                                   => TRIG_ILA4_2,
-  --  TRIG3                                   => TRIG_ILA4_3,
-  --  TRIG4                                   => TRIG_ILA4_4
-  --);
-
-  --TRIG_ILA4_0(0)                            <= dsp_fofb_amp_valid;
-  --TRIG_ILA4_0(1)                            <= '0';
-  --TRIG_ILA4_0(2)                            <= '0';
-  --TRIG_ILA4_0(3)                            <= '0';
-  --TRIG_ILA4_0(4)                            <= '0';
-  --TRIG_ILA4_0(5)                            <= '0';
-  --TRIG_ILA4_0(6)                            <= '0';
-
-  --TRIG_ILA4_1(dsp_fofb_amp_ch0'left downto 0)  <= dsp_fofb_amp_ch0;
-  --TRIG_ILA4_2(dsp_fofb_amp_ch1'left downto 0)  <= dsp_fofb_amp_ch1;
-  --TRIG_ILA4_3(dsp_fofb_amp_ch2'left downto 0)  <= dsp_fofb_amp_ch2;
-  --TRIG_ILA4_4(dsp_fofb_amp_ch3'left downto 0)  <= dsp_fofb_amp_ch3;
-
-  ---- FOFB position data
-  --cmp_chipscope_ila_1024_fofb_pos : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL5,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA5_0,
-  --  TRIG1                                   => TRIG_ILA5_1,
-  --  TRIG2                                   => TRIG_ILA5_2,
-  --  TRIG3                                   => TRIG_ILA5_3,
-  --  TRIG4                                   => TRIG_ILA5_4
-  --);
-
-  --TRIG_ILA5_0(0)                            <= dsp_fofb_pos_valid;
-  --TRIG_ILA5_0(1)                            <= '0';
-  --TRIG_ILA5_0(2)                            <= '0';
-  --TRIG_ILA5_0(3)                            <= '0';
-  --TRIG_ILA5_0(4)                            <= '0';
-  --TRIG_ILA5_0(5)                            <= '0';
-  --TRIG_ILA5_0(6)                            <= '0';
-
-  --TRIG_ILA5_1(dsp_fofb_pos_x'left downto 0)        <= dsp_fofb_pos_x;
-  --TRIG_ILA5_2(dsp_fofb_pos_y'left downto 0)        <= dsp_fofb_pos_y;
-  --TRIG_ILA5_3(dsp_fofb_pos_q'left downto 0)        <= dsp_fofb_pos_q;
-  --TRIG_ILA5_4(dsp_fofb_pos_sum'left downto 0)      <= dsp_fofb_pos_sum;
-
-  ---- Monitoring position amplitude
-  --cmp_chipscope_ila_1024_monit_amp : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL6,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA6_0,
-  --  TRIG1                                   => TRIG_ILA6_1,
-  --  TRIG2                                   => TRIG_ILA6_2,
-  --  TRIG3                                   => TRIG_ILA6_3,
-  --  TRIG4                                   => TRIG_ILA6_4
-  --);
-
-  --TRIG_ILA6_0(0)                            <= dsp_monit_amp_valid;
-  --TRIG_ILA6_0(1)                            <= '0';
-  --TRIG_ILA6_0(2)                            <= '0';
-  --TRIG_ILA6_0(3)                            <= '0';
-  --TRIG_ILA6_0(4)                            <= '0';
-  --TRIG_ILA6_0(5)                            <= '0';
-  --TRIG_ILA6_0(6)                            <= '0';
-
-  --TRIG_ILA6_1(dsp_monit_amp_ch0'left downto 0)  <= dsp_monit_amp_ch0;
-  --TRIG_ILA6_2(dsp_monit_amp_ch1'left downto 0)  <= dsp_monit_amp_ch1;
-  --TRIG_ILA6_3(dsp_monit_amp_ch2'left downto 0)  <= dsp_monit_amp_ch2;
-  --TRIG_ILA6_4(dsp_monit_amp_ch3'left downto 0)  <= dsp_monit_amp_ch3;
-
-  ---- Monitoring position data
-
-  ---- cmp_chipscope_ila_4096_monit_pos : chipscope_ila_4096
-  --cmp_chipscope_ila_1024_monit_pos : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL7,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA7_0,
-  --  TRIG1                                   => TRIG_ILA7_1,
-  --  TRIG2                                   => TRIG_ILA7_2,
-  --  TRIG3                                   => TRIG_ILA7_3,
-  --  TRIG4                                   => TRIG_ILA7_4
-  --);
-
-  --TRIG_ILA7_0(0)                            <= dsp_monit_pos_valid;
-  --TRIG_ILA7_0(1)                            <= '0';
-  --TRIG_ILA7_0(2)                            <= '0';
-  --TRIG_ILA7_0(3)                            <= '0';
-  --TRIG_ILA7_0(4)                            <= '0';
-  --TRIG_ILA7_0(5)                            <= '0';
-  --TRIG_ILA7_0(6)                            <= '0';
-
-  --TRIG_ILA7_1(dsp_monit_pos_x'left downto 0)      <= dsp_monit_pos_x;
-  --TRIG_ILA7_2(dsp_monit_pos_y'left downto 0)      <= dsp_monit_pos_y;
-  --TRIG_ILA7_3(dsp_monit_pos_q'left downto 0)      <= dsp_monit_pos_q;
-  --TRIG_ILA7_4(dsp_monit_pos_sum'left downto 0)    <= dsp_monit_pos_sum;
-
-  ---- Monitoring 1 position data
-  --cmp_chipscope_ila_1024_monit_pos_1 : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL8,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA8_0,
-  --  TRIG1                                   => TRIG_ILA8_1,
-  --  TRIG2                                   => TRIG_ILA8_2,
-  --  TRIG3                                   => TRIG_ILA8_3,
-  --  TRIG4                                   => TRIG_ILA8_4
-  --);
-
-  --TRIG_ILA8_0(0)                            <= dsp_monit_pos_1_valid;
-  --TRIG_ILA8_0(1)                            <= '0';
-  --TRIG_ILA8_0(2)                            <= '0';
-  --TRIG_ILA8_0(3)                            <= '0';
-  --TRIG_ILA8_0(4)                            <= '0';
-  --TRIG_ILA8_0(5)                            <= '0';
-  --TRIG_ILA8_0(6)                            <= '0';
-
-  --TRIG_ILA8_1(dsp_monit_pos_x_1'left downto 0)     <= dsp_monit_pos_x_1;
-  --TRIG_ILA8_2(dsp_monit_pos_y_1'left downto 0)     <= dsp_monit_pos_y_1;
-  --TRIG_ILA8_3(dsp_monit_pos_q_1'left downto 0)     <= dsp_monit_pos_q_1;
-  --TRIG_ILA8_4(dsp_monit_pos_sum_1'left downto 0)   <= dsp_monit_pos_sum_1;
-
-  ---- TBT Phase data
-  --cmp_chipscope_ila_1024_tbt_pha : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL9,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA9_0,
-  --  TRIG1                                   => TRIG_ILA9_1,
-  --  TRIG2                                   => TRIG_ILA9_2,
-  --  TRIG3                                   => TRIG_ILA9_3,
-  --  TRIG4                                   => TRIG_ILA9_4
-  --);
-
-  --TRIG_ILA9_0(0)                            <= dsp_tbt_pha_valid;
-  --TRIG_ILA9_0(1)                            <= '0';
-  --TRIG_ILA9_0(2)                            <= '0';
-  --TRIG_ILA9_0(3)                            <= '0';
-  --TRIG_ILA9_0(4)                            <= '0';
-  --TRIG_ILA9_0(5)                            <= '0';
-  --TRIG_ILA9_0(6)                            <= '0';
-
-  --TRIG_ILA9_1(dsp_tbt_pha_ch0'left downto 0)      <= dsp_tbt_pha_ch0;
-  --TRIG_ILA9_2(dsp_tbt_pha_ch1'left downto 0)      <= dsp_tbt_pha_ch1;
-  --TRIG_ILA9_3(dsp_tbt_pha_ch2'left downto 0)      <= dsp_tbt_pha_ch2;
-  --TRIG_ILA9_4(dsp_tbt_pha_ch3'left downto 0)      <= dsp_tbt_pha_ch3;
-
-  ---- FOFB Phase data
-  --cmp_chipscope_ila_1024_fofb_pha : chipscope_ila_1024
-  --port map (
-  --  CONTROL                                 => CONTROL10,
-  --  CLK                                     => fs_clk,
-  --  TRIG0                                   => TRIG_ILA10_0,
-  --  TRIG1                                   => TRIG_ILA10_1,
-  --  TRIG2                                   => TRIG_ILA10_2,
-  --  TRIG3                                   => TRIG_ILA10_3,
-  --  TRIG4                                   => TRIG_ILA10_4
-  --);
-
-  --TRIG_ILA10_0(0)                           <= dsp_fofb_pha_valid;
-  --TRIG_ILA10_0(1)                           <= '0';
-  --TRIG_ILA10_0(2)                           <= '0';
-  --TRIG_ILA10_0(3)                           <= '0';
-  --TRIG_ILA10_0(4)                           <= '0';
-  --TRIG_ILA10_0(5)                           <= '0';
-  --TRIG_ILA10_0(6)                           <= '0';
-
-  --TRIG_ILA10_1(dsp_fofb_pha_ch0'left downto 0)    <= dsp_fofb_pha_ch0;
-  --TRIG_ILA10_2(dsp_fofb_pha_ch1'left downto 0)    <= dsp_fofb_pha_ch1;
-  --TRIG_ILA10_3(dsp_fofb_pha_ch2'left downto 0)    <= dsp_fofb_pha_ch2;
-  --TRIG_ILA10_4(dsp_fofb_pha_ch3'left downto 0)    <= dsp_fofb_pha_ch3;
-
-  ----------------------------------------------------------------------
-  --                AFC Diagnostics Chipscope                         --
-  ----------------------------------------------------------------------
-
-  -- Xilinx Chipscope
-  --cmp_chipscope_icon_0 : chipscope_icon_4_port
-  --port map (
-  --  CONTROL0                                => CONTROL0,
-  --  CONTROL1                                => CONTROL1,
-  --  CONTROL2                                => CONTROL2,
-  --  CONTROL3                                => CONTROL3
-  --);
-
-  --cmp_chipscope_ila_1 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL1,
-  --  CLK                                    => clk_sys,
-  --  TRIG0                                  => TRIG_ILA1_0,
-  --  TRIG1                                  => TRIG_ILA1_1,
-  --  TRIG2                                  => TRIG_ILA1_2,
-  --  TRIG3                                  => TRIG_ILA1_3
-  --);
-
-  --TRIG_ILA1_0                               <= cbar_master_o(c_slv_afc_diag_id).dat;
-  --TRIG_ILA1_1                               <= cbar_master_i(c_slv_afc_diag_id).dat;
-  --TRIG_ILA1_2                               <= cbar_master_o(c_slv_afc_diag_id).adr;
-  --TRIG_ILA1_3(31 downto 8)                  <= (others => '0');
-  --TRIG_ILA1_3(7 downto 0)                   <= cbar_master_i(c_slv_afc_diag_id).ack &
-  --                                              cbar_master_o(c_slv_afc_diag_id).we &
-  --                                              cbar_master_o(c_slv_afc_diag_id).stb &
-  --                                              cbar_master_o(c_slv_afc_diag_id).sel &
-  --                                              cbar_master_o(c_slv_afc_diag_id).cyc;
-
-  --cmp_chipscope_ila_2 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL2,
-  --  CLK                                    => clk_sys,
-  --  TRIG0                                  => TRIG_ILA2_0,
-  --  TRIG1                                  => TRIG_ILA2_1,
-  --  TRIG2                                  => TRIG_ILA2_2,
-  --  TRIG3                                  => TRIG_ILA2_3
-  --);
-
-  --TRIG_ILA2_0(31 downto 4)                  <= (others => '0');
-  --TRIG_ILA2_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
-  --TRIG_ILA2_1                               <= (others => '0');
-  --TRIG_ILA2_2                               <= (others => '0');
-  --TRIG_ILA2_3                               <= (others => '0');
-
-  --cmp_chipscope_ila_3 : chipscope_ila
-  --port map (
-  --  CONTROL                                => CONTROL3,
-  --  CLK                                    => clk_sys,
-  --  TRIG0                                  => TRIG_ILA3_0,
-  --  TRIG1                                  => TRIG_ILA3_1,
-  --  TRIG2                                  => TRIG_ILA3_2,
-  --  TRIG3                                  => TRIG_ILA3_3
-  --);
-
-  --TRIG_ILA3_0(31 downto 4)                  <= (others => '0');
-  --TRIG_ILA3_0(3 downto 0)                   <= diag_spi_so_o & diag_spi_clk_i & diag_spi_si_i & diag_spi_cs_i;
-  --TRIG_ILA3_1                               <= (others => '0');
-  --TRIG_ILA3_2                               <= (others => '0');
-  --TRIG_ILA3_3                               <= (others => '0');
-
-  --cmp_chipscope_ila_0_fmc_adc_clk0 : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL0,
-  --  CLK                                     => fs1_clk,
-  --  TRIG0                                   => TRIG_ILA0_0,
-  --  TRIG1                                   => TRIG_ILA0_1,
-  --  TRIG2                                   => TRIG_ILA0_2,
-  --  TRIG3                                   => TRIG_ILA0_3
-  --);
-
-  ---- fmc_adc WBS master output data
-  ----TRIG_ILA0_0                               <= wbs_fmc_adc_out_array(3).dat &
-  ----                                               wbs_fmc_adc_out_array(2).dat;
-  --TRIG_ILA0_0                               <= fmc1_data(31 downto 16) &
-  --                                               fmc1_data(47 downto 32);
-
-  ---- fmc_adc WBS master output data
-  --TRIG_ILA0_1(11 downto 0)                   <= fmc1_adc_dly_debug_int(1).clk_chain.idelay.pulse &
-  --                                              fmc1_adc_dly_debug_int(1).data_chain.idelay.pulse &
-  --                                              fmc1_adc_dly_debug_int(1).clk_chain.idelay.val &
-  --                                              fmc1_adc_dly_debug_int(1).data_chain.idelay.val;
-  --TRIG_ILA0_1(31 downto 12)                  <= (others => '0');
-
-  ---- fmc_adc WBS master output control signals
-  --TRIG_ILA0_2(17 downto 0)                   <=  wbs_fmc1_out_array(1).cyc &
-  --                                               wbs_fmc1_out_array(1).stb &
-  --                                               wbs_fmc1_out_array(1).adr &
-  --                                               wbs_fmc1_out_array(1).sel &
-  --                                               wbs_fmc1_out_array(1).we &
-  --                                               wbs_fmc1_out_array(2).cyc &
-  --                                               wbs_fmc1_out_array(2).stb &
-  --                                               wbs_fmc1_out_array(2).adr &
-  --                                               wbs_fmc1_out_array(2).sel &
-  --                                               wbs_fmc1_out_array(2).we;
-  --TRIG_ILA0_2(18)                            <= '0';
-  --TRIG_ILA0_2(22 downto 19)                  <= fmc1_data_valid;
-  --TRIG_ILA0_2(23)                            <= fmc1_mmcm_lock_int;
-  --TRIG_ILA0_2(24)                            <= fmc1_pll_status_int;
-  --TRIG_ILA0_2(25)                            <= fmc1_debug_valid_int(1);
-  --TRIG_ILA0_2(26)                            <= fmc1_debug_full_int(1);
-  --TRIG_ILA0_2(27)                            <= fmc1_debug_empty_int(1);
-  --TRIG_ILA0_2(31 downto 28)                  <= (others => '0');
-
-  --TRIG_ILA0_3                                <= (others => '0');
-
-  --cmp_chipscope_ila_1_ddr_acq : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL1,
-  --  CLK                                     => ddr_aximm_clk,
-  --  TRIG0                                   => TRIG_ILA1_0,
-  --  TRIG1                                   => TRIG_ILA1_1,
-  --  TRIG2                                   => TRIG_ILA1_2,
-  --  TRIG3                                   => TRIG_ILA1_3
-  --);
-
-  --TRIG_ILA1_0                               <= memc_wr_data(207 downto 192) &
-  --                                               memc_wr_data(143 downto 128);
-  --TRIG_ILA1_1                               <= memc_wr_data(79 downto 64) &
-  --                                               memc_wr_data(15 downto 0);
-
-  --TRIG_ILA1_2                               <= memc_cmd_addr_resized;
-  --TRIG_ILA1_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA1_3(27 downto 0)                  <= ddr_aximm_rstn &
-  --                                               clk_200mhz_rstn &
-  --                                               memc_cmd_instr & -- std_logic_vector(2 downto 0);
-  --                                               memc_cmd_en &
-  --                                               memc_cmd_rdy &
-  --                                               memc_wr_end &
-  --                                               memc_wr_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
-  --                                               memc_wr_en &
-  --                                               memc_wr_rdy &
-  --                                               memarb_acc_req &
-  --                                               memarb_acc_gnt;
-
-  --cmp_chipscope_ila_2_generic : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL2,
-  --  CLK                                     => clk_sys,
-  --  TRIG0                                   => TRIG_ILA2_0,
-  --  TRIG1                                   => TRIG_ILA2_1,
-  --  TRIG2                                   => TRIG_ILA2_2,
-  --  TRIG3                                   => TRIG_ILA2_3
-  --);
-
-  --TRIG_ILA2_0(5 downto 0)                   <= clk_sys_rst &
-  --                                              clk_sys_rstn &
-  --                                              rst_button_sys_n &
-  --                                              rst_button_sys &
-  --                                              rst_button_sys_pp &
-  --                                              sys_rst_button_n_i;
-
-  --TRIG_ILA2_0(31 downto 6)                  <= (others => '0');
-  --TRIG_ILA2_1                               <= (others => '0');
-  --TRIG_ILA2_2                               <= (others => '0');
-  --TRIG_ILA2_3                               <= (others => '0');
-
-  ---- The clocks to/from peripherals are derived from the bus clock.
-  ---- Therefore we don't have to worry about synchronization here, just
-  ---- keep in mind that the data/ss lines will appear longer than normal
-  --cmp_chipscope_ila_3_pcie : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL3,
-  --  CLK                                     => clk_sys, -- Wishbone clock
-  --  TRIG0                                   => TRIG_ILA3_0,
-  --  TRIG1                                   => TRIG_ILA3_1,
-  --  TRIG2                                   => TRIG_ILA3_2,
-  --  TRIG3                                   => TRIG_ILA3_3
-  --);
-
-  --TRIG_ILA3_0                               <= wb_ma_pcie_dat_in(31 downto 0);
-  --TRIG_ILA3_1                               <= wb_ma_pcie_dat_out(31 downto 0);
-  --TRIG_ILA3_2(31 downto wb_ma_pcie_addr_out'left + 1) <= (others => '0');
-  --TRIG_ILA3_2(wb_ma_pcie_addr_out'left downto 0)
-  --                                          <= wb_ma_pcie_addr_out(wb_ma_pcie_addr_out'left downto 0);
-  --TRIG_ILA3_3(31 downto 5)                  <= (others => '0');
-  --TRIG_ILA3_3(4 downto 0)                   <= wb_ma_pcie_ack_in &
-  --                                              wb_ma_pcie_we_out &
-  --                                              wb_ma_pcie_stb_out &
-  --                                              wb_ma_pcie_sel_out &
-  --                                              wb_ma_pcie_cyc_out;
-
-  --cmp_chipscope_ila_3_pcie_ddr_read : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL3,
-  --  CLK                                     => ddr_aximm_clk, -- DDR3 controller clk
-  --  TRIG0                                   => TRIG_ILA3_0,
-  --  TRIG1                                   => TRIG_ILA3_1,
-  --  TRIG2                                   => TRIG_ILA3_2,
-  --  TRIG3                                   => TRIG_ILA3_3
-  --);
-
-  --TRIG_ILA3_0                               <= dbg_app_rd_data(207 downto 192) &
-  --                                              dbg_app_rd_data(143 downto 128);
-  --TRIG_ILA3_1                               <= dbg_app_rd_data(79 downto 64) &
-  --                                              dbg_app_rd_data(15 downto 0);
-
-  --TRIG_ILA3_2                               <= dbg_app_addr;
-
-  --TRIG_ILA3_3(31 downto 11)                 <= (others => '0');
-  --TRIG_ILA3_3(10 downto 0)                  <=  dbg_app_rd_data_end &
-  --                                               dbg_app_rd_data_valid &
-  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
-  --                                               dbg_app_en &
-  --                                               dbg_app_rdy &
-  --                                               dbg_arb_req &
-  --                                               dbg_arb_gnt;
-
-  --cmp_chipscope_ila_5_pcie_ddr_write : chipscope_ila
-  --port map (
-  --  CONTROL                                 => CONTROL4,
-  --  CLK                                     => ddr_aximm_clk, -- DDR3 controller clk
-  --  TRIG0                                   => TRIG_ILA4_0,
-  --  TRIG1                                   => TRIG_ILA4_1,
-  --  TRIG2                                   => TRIG_ILA4_2,
-  --  TRIG3                                   => TRIG_ILA4_3
-  --);
-
-  --TRIG_ILA4_0                               <= dbg_app_wdf_data(207 downto 192) &
-  --                                               dbg_app_wdf_data(143 downto 128);
-  --TRIG_ILA4_1                               <= dbg_app_wdf_data(79 downto 64) &
-  --                                               dbg_app_wdf_data(15 downto 0);
-
-  --TRIG_ILA4_2                               <= dbg_app_addr;
-  --TRIG_ILA4_3(31 downto 30)                 <= (others => '0');
-  --TRIG_ILA4_3(29 downto 0)                  <= ddr_aximm_rstn &
-  --                                               clk_200mhz_rstn &
-  --                                               dbg_app_cmd & -- std_logic_vector(2 downto 0);
-  --                                               dbg_app_en &
-  --                                               dbg_app_rdy &
-  --                                               dbg_app_wdf_end &
-  --                                               dbg_app_wdf_mask(15 downto 0) & -- std_logic_vector(31 downto 0);
-  --                                               dbg_app_wdf_wren &
-  --                                               dbg_app_wdf_rdy &
-  --                                               dbg_arb_req &
-  --                                               dbg_arb_gnt;
 
 end rtl;
