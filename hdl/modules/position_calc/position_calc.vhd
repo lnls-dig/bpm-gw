@@ -72,10 +72,20 @@ entity position_calc is
     g_monit1_ratio      : natural := 100;  --ratio between fofb and monit 1
     g_monit1_cic_ratio  : positive := 8;
 
+    -- desync counter width. Tied to register width
+    g_monit1_tag_desync_cnt_width : natural := 14;
+    -- width of CIC mask number of samples
+    g_monit1_cic_mask_samples_width : natural := 16;
+
     g_monit2_cic_delay  : natural := 1;
     g_monit2_cic_stages : natural := 1;
     g_monit2_ratio      : natural := 100;  -- ratio between monit 1 and 2
     g_monit2_cic_ratio  : positive := 8;
+
+    -- desync counter width. Tied to register width
+    g_monit2_tag_desync_cnt_width : natural := 14;
+    -- width of CIC mask number of samples
+    g_monit2_cic_mask_samples_width : natural := 16;
 
     g_monit_decim_width : natural := 32;
 
@@ -184,12 +194,28 @@ entity position_calc is
     fofb_pha_valid_o : out std_logic;
     fofb_pha_ce_o    : out std_logic;
 
+    monit1_tag_i                         : in std_logic_vector(0 downto 0);
+    monit1_tag_en_i                      : in std_logic := '0';
+    monit1_tag_desync_cnt_rst_i          : in std_logic := '0';
+    monit1_tag_desync_cnt_o              : out std_logic_vector(g_monit1_tag_desync_cnt_width-1 downto 0);
+    monit1_decim_mask_en_i               : in std_logic := '0';
+    monit1_decim_mask_num_samples_beg_i  : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
+    monit1_decim_mask_num_samples_end_i  : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
+
     monit1_amp_ch0_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_ch1_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_ch2_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_ch3_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_valid_o : out std_logic;
     monit1_amp_ce_o    : out std_logic;
+
+    monit_tag_i                         : in std_logic_vector(0 downto 0);
+    monit_tag_en_i                      : in std_logic := '0';
+    monit_tag_desync_cnt_rst_i          : in std_logic := '0';
+    monit_tag_desync_cnt_o              : out std_logic_vector(g_monit2_tag_desync_cnt_width-1 downto 0);
+    monit_decim_mask_en_i               : in std_logic := '0';
+    monit_decim_mask_num_samples_beg_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
+    monit_decim_mask_num_samples_end_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
 
     monit_amp_ch0_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit_amp_ch1_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -238,8 +264,10 @@ architecture rtl of position_calc is
 
   constant c_adc_tag_width           : natural := 1;
   constant c_tbt_tag_width           : natural := 1;
+  constant c_monit1_tag_width        : natural := 1;
+  constant c_monit2_tag_width        : natural := 1;
 
--- full ratio is the accumulated ratio between data and clock.
+  -- full ratio is the accumulated ratio between data and clock.
   constant c_adc_ratio_full    : natural := g_adc_ratio;
   constant c_tbt_ratio_full    : natural := g_tbt_ratio*c_adc_ratio_full;
   constant c_fofb_ratio_full   : natural := g_fofb_ratio*c_adc_ratio_full;
@@ -248,11 +276,11 @@ architecture rtl of position_calc is
 
 
   -- width for decimation counters
+  constant c_adc_width        : natural := f_log2_size(g_adc_ratio+1);
+  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio+1);
   constant c_cic_fofb_width   : natural := f_log2_size(g_fofb_ratio+1);
   constant c_cic_monit1_width : natural := f_log2_size(g_monit1_ratio+1);
   constant c_cic_monit2_width : natural := f_log2_size(g_monit2_ratio+1);
-  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio+1);
-  constant c_adc_width        : natural := f_log2_size(g_adc_ratio+1);
 
   -- width for ce counters
   constant c_adc_ce_width         : natural := f_log2_size(c_adc_ratio_full+1);
@@ -371,9 +399,13 @@ architecture rtl of position_calc is
   -- desync
   type t_tbt_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_tbt_tag_desync_cnt_width-1 downto 0);
   type t_fofb_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_fofb_decim_desync_cnt_width-1 downto 0);
+  type t_monit1_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_monit1_tag_desync_cnt_width-1 downto 0);
+  type t_monit2_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_monit2_tag_desync_cnt_width-1 downto 0);
 
   signal tbt_tag_desync_cnt             : t_tbt_desync_cnt_array := (others => (others => '0'));
   signal fofb_tag_desync_cnt            : t_fofb_desync_cnt_array := (others => (others => '0'));
+  signal monit1_tag_desync_cnt          : t_monit1_desync_cnt_array := (others => (others => '0'));
+  signal monit2_tag_desync_cnt          : t_monit2_desync_cnt_array := (others => (others => '0'));
 
   ----------------------------
   --Clocks and clock enables--
@@ -416,7 +448,7 @@ begin
     -- Generate clock enable
     cmp_ce_adc : strobe_gen
       generic map (
-        g_maxrate   => c_adc_ratio_full,
+        g_maxrate   => g_adc_ratio,
         g_bus_width => c_adc_ce_width)
       port map (
         clk_i    => clk_i,
@@ -706,6 +738,9 @@ begin
         g_max_rate         => g_monit1_ratio,
         g_bus_width        => c_cic_monit1_width,
         g_with_ce_synch    => true,
+        g_tag_desync_cnt_width => g_monit1_tag_desync_cnt_width,
+        g_tag_width            => c_monit1_tag_width,
+        g_data_mask_width      => g_monit1_cic_mask_samples_width,
         g_round_convergent => c_cic_round_convergent)
       port map (
         clk_i    => clk_i,
@@ -714,6 +749,13 @@ begin
         ce_out_i => ce_monit1(chan),
         valid_i  => valid_fofb_cordic(chan),
         data_i   => fofb_mag(chan),
+        data_tag_i                  => monit1_tag_i,
+        data_tag_en_i               => monit1_tag_en_i,
+        data_tag_desync_cnt_rst_i   => monit1_tag_desync_cnt_rst_i,
+        data_tag_desync_cnt_o       => monit1_tag_desync_cnt(chan),
+        data_mask_num_samples_beg_i => monit1_decim_mask_num_samples_beg_i,
+        data_mask_num_samples_end_i => monit1_decim_mask_num_samples_end_i,
+        data_mask_en_i              => monit1_decim_mask_en_i,
         ratio_i  => c_monit1_ratio_slv,
         data_o   => monit1_mag(chan),
         valid_o  => valid_monit1(chan));
@@ -727,6 +769,9 @@ begin
         g_max_rate         => g_monit2_ratio,
         g_bus_width        => c_cic_monit2_width,
         g_with_ce_synch    => true,
+        g_tag_desync_cnt_width => g_monit2_tag_desync_cnt_width,
+        g_tag_width            => c_monit2_tag_width,
+        g_data_mask_width      => g_monit2_cic_mask_samples_width,
         g_round_convergent => c_cic_round_convergent)
       port map (
         clk_i    => clk_i,
@@ -735,6 +780,13 @@ begin
         ce_out_i => ce_monit2(chan),
         valid_i  => valid_monit1(chan),
         data_i   => monit1_mag(chan),
+        data_tag_i                  => monit_tag_i,
+        data_tag_en_i               => monit_tag_en_i,
+        data_tag_desync_cnt_rst_i   => monit_tag_desync_cnt_rst_i,
+        data_tag_desync_cnt_o       => monit2_tag_desync_cnt(chan),
+        data_mask_num_samples_beg_i => monit_decim_mask_num_samples_beg_i,
+        data_mask_num_samples_end_i => monit_decim_mask_num_samples_end_i,
+        data_mask_en_i              => monit_decim_mask_en_i,
         ratio_i  => c_monit2_ratio_slv,
         data_o   => monit2_mag(chan),
         valid_o  => valid_monit2(chan));
@@ -767,6 +819,8 @@ begin
   -- desync counters. Use only one of the channels as a sample
   tbt_tag_desync_cnt_o <= tbt_tag_desync_cnt(0);
   fofb_decim_desync_cnt_o <= fofb_tag_desync_cnt(0);
+  monit1_tag_desync_cnt_o <= monit1_tag_desync_cnt(0);
+  monit_tag_desync_cnt_o <= monit2_tag_desync_cnt(0);
 
   -- Wiring intermediate signals to outputs
 
