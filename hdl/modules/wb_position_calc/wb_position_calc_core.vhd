@@ -297,7 +297,7 @@ architecture rtl of wb_position_calc_core is
   ---------------------------------------------------------
   --                     Constants                       --
   ---------------------------------------------------------
-  constant c_periph_addr_size               : natural := 6+2;
+  constant c_periph_addr_size               : natural := 7+2;
 
   constant c_cdc_tbt_width                  : natural := 4*g_tbt_decim_width;
   constant c_cdc_fofb_width                 : natural := 4*g_fofb_decim_width;
@@ -391,7 +391,7 @@ architecture rtl of wb_position_calc_core is
   constant c_layout : t_sdb_record_array(c_slaves-1 downto 0) :=
   ( 0 => f_sdb_embed_device(c_xwb_pos_calc_core_regs_sdb,
                                                         x"00000000"),   -- Register interface
-    1 => f_sdb_embed_device(c_xwb_bpm_swap_sdb,         x"00000100")    -- WB swap
+    1 => f_sdb_embed_device(c_xwb_bpm_swap_sdb,         x"00000400")    -- WB swap
   );
 
   -- Self Describing Bus ROM Address. It will be an addressed slave as well.
@@ -718,20 +718,22 @@ architecture rtl of wb_position_calc_core is
 
   component wb_pos_calc_regs is
     port (
-      rst_n_i    : in  std_logic;
-      clk_sys_i  : in  std_logic;
-      wb_adr_i   : in  std_logic_vector(5 downto 0);
-      wb_dat_i   : in  std_logic_vector(31 downto 0);
-      wb_dat_o   : out std_logic_vector(31 downto 0);
-      wb_cyc_i   : in  std_logic;
-      wb_sel_i   : in  std_logic_vector(3 downto 0);
-      wb_stb_i   : in  std_logic;
-      wb_we_i    : in  std_logic;
-      wb_ack_o   : out std_logic;
-      wb_stall_o : out std_logic;
-      fs_clk2x_i : in  std_logic;
-      regs_i     : in  t_pos_calc_in_registers;
-      regs_o     : out t_pos_calc_out_registers);
+      rst_n_i    : in     std_logic;
+      clk_sys_i  : in     std_logic;
+      wb_adr_i   : in     std_logic_vector(6 downto 0);
+      wb_dat_i   : in     std_logic_vector(31 downto 0);
+      wb_dat_o   : out    std_logic_vector(31 downto 0);
+      wb_cyc_i   : in     std_logic;
+      wb_sel_i   : in     std_logic_vector(3 downto 0);
+      wb_stb_i   : in     std_logic;
+      wb_we_i    : in     std_logic;
+      wb_ack_o   : out    std_logic;
+      wb_err_o   : out    std_logic;
+      wb_rty_o   : out    std_logic;
+      wb_stall_o : out    std_logic;
+      fs_clk2x_i : in     std_logic;
+      regs_i     : in     t_pos_calc_in_registers;
+      regs_o     : out    t_pos_calc_out_registers);
   end component wb_pos_calc_regs;
 
 begin
@@ -857,7 +859,7 @@ begin
   port map(
     rst_n_i                                 => rst_n_i,
     clk_sys_i                               => clk_i,
-    wb_adr_i                                => wb_slv_adp_out.adr(5 downto 0),
+    wb_adr_i                                => wb_slv_adp_out.adr(6 downto 0),
     wb_dat_i                                => wb_slv_adp_out.dat,
     wb_dat_o                                => wb_slv_adp_in.dat,
     wb_cyc_i                                => wb_slv_adp_out.cyc,
