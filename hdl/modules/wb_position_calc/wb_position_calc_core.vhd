@@ -261,16 +261,10 @@ port
   rffe_swclk_o                              : out std_logic;
 
   -----------------------------
-  -- Synchronization trigger for RFFE swap clock
+  -- Synchronization trigger for all rates. Slow clock
   -----------------------------
 
-  sync_trig_i                               : in std_logic;
-
-  -----------------------------
-  -- Synchronization trigger for TBT Filter Chain
-  -----------------------------
-
-  sync_tbt_trig_i                           : in std_logic := '0';
+  sync_trig_slow_i                          : in std_logic;
 
   -----------------------------
   -- Debug signals
@@ -321,10 +315,30 @@ architecture rtl of wb_position_calc_core is
   constant c_tbt_decim_tag_dly_width        : natural := 9;
   constant c_tbt_tag_desync_cnt_width       : natural := 14;
   constant c_tbt_cic_mask_samples_width     : natural := 10;
+
+  constant c_monit1_decim_tag_dly_width     : natural := 9;
+  constant c_monit1_tag_desync_cnt_width    : natural := 14;
+  constant c_monit1_cic_mask_samples_width  : natural := 10;
+
+  constant c_monit2_decim_tag_dly_width     : natural := 9;
+  constant c_monit2_tag_desync_cnt_width    : natural := 14;
+  constant c_monit2_cic_mask_samples_width  : natural := 10;
+
   constant c_fofb_decim_desync_cnt_width    : natural := 14;
   constant c_fofb_cic_mask_samples_width    : natural := 16;
 
-  constant c_tbt_ratio_log2                 : natural := f_log2_size(g_tbt_ratio);
+  -- full ratio is the accumulated ratio between data and clock.
+  constant c_adc_ratio_full                 : natural := g_adc_ratio;
+  constant c_tbt_ratio_full                 : natural := g_tbt_ratio*c_adc_ratio_full;
+  constant c_fofb_ratio_full                : natural := g_fofb_ratio*c_adc_ratio_full;
+  constant c_monit1_ratio_full              : natural := g_monit1_ratio*c_fofb_ratio_full;
+  constant c_monit2_ratio_full               : natural := g_monit2_ratio*c_monit1_ratio_full;
+
+  constant c_adc_ratio_full_log2            : natural := f_log2_size(c_adc_ratio_full+1);
+  constant c_tbt_ratio_full_log2            : natural := f_log2_size(c_tbt_ratio_full+1);
+  constant c_fofb_ratio_full_log2           : natural := f_log2_size(c_fofb_ratio_full+1);
+  constant c_monit1_ratio_full_log2         : natural := f_log2_size(c_monit1_ratio_full+1);
+  constant c_monit2_ratio_full_log2         : natural := f_log2_size(c_monit2_ratio_full+1);
 
   constant c_k_width                        : natural := 24;
 
@@ -470,7 +484,6 @@ architecture rtl of wb_position_calc_core is
 
   signal tbt_decim_tag_en                   : std_logic := '0';
   signal tbt_decim_tag_dly_c                : std_logic_vector(c_tbt_decim_tag_dly_width-1 downto 0) := (others => '0');
-  signal tbt_decim_tag_raw                  : std_logic := '0';
   signal tbt_decim_tag_logic                : std_logic;
   signal tbt_decim_tag                      : std_logic_vector(0 downto 0);
   signal tbt_decim_mask_en                  : std_logic := '0';
@@ -536,6 +549,13 @@ architecture rtl of wb_position_calc_core is
   --                   Monitoring data                   --
   ---------------------------------------------------------
 
+  signal monit1_decim_tag_en                : std_logic := '0';
+  signal monit1_decim_tag_dly_c             : std_logic_vector(c_monit1_decim_tag_dly_width-1 downto 0) := (others => '0');
+  signal monit1_decim_tag_logic             : std_logic;
+  signal monit1_decim_tag                   : std_logic_vector(0 downto 0);
+  signal monit1_decim_mask_en               : std_logic := '0';
+  signal monit1_decim_mask_num_samples_beg  : unsigned(c_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
+  signal monit1_decim_mask_num_samples_end  : unsigned(c_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
   signal monit1_amp_ch0                     : std_logic_vector(g_monit_decim_width-1 downto 0);
   signal monit1_amp_ch1                     : std_logic_vector(g_monit_decim_width-1 downto 0);
   signal monit1_amp_ch2                     : std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -549,6 +569,13 @@ architecture rtl of wb_position_calc_core is
   signal monit1_amp_ch3_wb_sync             : std_logic_vector(g_monit_decim_width-1 downto 0);
   signal monit1_amp_valid_wb_sync           : std_logic;
 
+  signal monit_decim_tag_en                 : std_logic := '0';
+  signal monit_decim_tag_dly_c              : std_logic_vector(c_monit2_decim_tag_dly_width-1 downto 0) := (others => '0');
+  signal monit_decim_tag_logic              : std_logic;
+  signal monit_decim_tag                    : std_logic_vector(0 downto 0);
+  signal monit_decim_mask_en                : std_logic := '0';
+  signal monit_decim_mask_num_samples_beg   : unsigned(c_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
+  signal monit_decim_mask_num_samples_end   : unsigned(c_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
   signal monit_amp_ch0                      : std_logic_vector(g_monit_decim_width-1 downto 0);
   signal monit_amp_ch1                      : std_logic_vector(g_monit_decim_width-1 downto 0);
   signal monit_amp_ch2                      : std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -641,27 +668,27 @@ architecture rtl of wb_position_calc_core is
   signal fifo_fofb_pos_out                  : std_logic_vector(c_cdc_fofb_width-1 downto 0);
   signal fifo_fofb_pos_valid_out            : std_logic;
 
-  signal fifo_monit1_amp_out                 : std_logic_vector(c_cdc_monit_width-1 downto 0);
-  signal fifo_monit1_amp_valid_out           : std_logic;
-  signal fifo_monit1_amp_out_wb_sync         : std_logic_vector(c_cdc_monit_width-1 downto 0);
-  signal fifo_monit1_amp_valid_out_wb_sync   : std_logic;
+  signal fifo_monit1_amp_out                : std_logic_vector(c_cdc_monit_width-1 downto 0);
+  signal fifo_monit1_amp_valid_out          : std_logic;
+  signal fifo_monit1_amp_out_wb_sync        : std_logic_vector(c_cdc_monit_width-1 downto 0);
+  signal fifo_monit1_amp_valid_out_wb_sync  : std_logic;
 
-  signal fifo_monit1_pos_out                 : std_logic_vector(c_cdc_monit_width-1 downto 0);
-  signal fifo_monit1_pos_valid_out           : std_logic;
-  signal fifo_monit1_pos_out_wb_sync         : std_logic_vector(c_cdc_monit_width-1 downto 0);
-  signal fifo_monit1_pos_valid_out_wb_sync   : std_logic;
+  signal fifo_monit1_pos_out                : std_logic_vector(c_cdc_monit_width-1 downto 0);
+  signal fifo_monit1_pos_valid_out          : std_logic;
+  signal fifo_monit1_pos_out_wb_sync        : std_logic_vector(c_cdc_monit_width-1 downto 0);
+  signal fifo_monit1_pos_valid_out_wb_sync  : std_logic;
 
-  signal monit1_amp_ch3_out_wb_sync          : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_amp_ch2_out_wb_sync          : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_amp_ch1_out_wb_sync          : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_amp_ch0_out_wb_sync          : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_amp_valid_out_wb_sync        : std_logic;
+  signal monit1_amp_ch3_out_wb_sync         : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_amp_ch2_out_wb_sync         : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_amp_ch1_out_wb_sync         : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_amp_ch0_out_wb_sync         : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_amp_valid_out_wb_sync       : std_logic;
 
-  signal monit1_pos_sum_out_wb_sync          : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_pos_q_out_wb_sync            : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_pos_y_out_wb_sync            : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_pos_x_out_wb_sync            : std_logic_vector(g_monit_decim_width-1 downto 0);
-  signal monit1_pos_valid_out_wb_sync        : std_logic;
+  signal monit1_pos_sum_out_wb_sync         : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_pos_q_out_wb_sync           : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_pos_y_out_wb_sync           : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_pos_x_out_wb_sync           : std_logic_vector(g_monit_decim_width-1 downto 0);
+  signal monit1_pos_valid_out_wb_sync       : std_logic;
 
   signal fifo_monit_amp_out                 : std_logic_vector(c_cdc_monit_width-1 downto 0);
   signal fifo_monit_amp_valid_out           : std_logic;
@@ -1095,7 +1122,7 @@ begin
     ch_tag_o                                  => adc_tag_sp,
     ch_valid_o                                => adc_valid_sp,
     rffe_swclk_o                              => rffe_swclk_o,
-    sync_trig_i                               => sync_trig_i
+    sync_trig_i                               => sync_trig_slow_i
   );
 
   adc_ch0_swap_o                              <= adc_ch0_sp;
@@ -1151,17 +1178,33 @@ begin
   fofb_decim_mask_en                        <= regs_out.sw_data_mask_en_o;
   fofb_decim_mask_num_samples               <= unsigned(regs_out.sw_data_mask_samples_o);
 
+  monit1_decim_tag_en                       <= regs_out.monit1_tag_en_o;
+  monit1_decim_tag_dly_c                    <= regs_out.monit1_tag_dly_o(c_monit1_decim_tag_dly_width-1 downto 0);
+  monit1_decim_mask_en                      <= regs_out.monit1_data_mask_ctl_en_o;
+  monit1_decim_mask_num_samples_beg         <= unsigned(regs_out.monit1_data_mask_samples_beg_o(c_monit1_cic_mask_samples_width-1 downto 0));
+  monit1_decim_mask_num_samples_end         <= unsigned(regs_out.monit1_data_mask_samples_end_o(c_monit1_cic_mask_samples_width-1 downto 0));
+
+  monit_decim_tag_en                        <= regs_out.monit_tag_en_o;
+  monit_decim_tag_dly_c                     <= regs_out.monit_tag_dly_o(c_monit2_decim_tag_dly_width-1 downto 0);
+  monit_decim_mask_en                       <= regs_out.monit_data_mask_ctl_en_o;
+  monit_decim_mask_num_samples_beg          <= unsigned(regs_out.monit_data_mask_samples_beg_o(c_monit2_cic_mask_samples_width-1 downto 0));
+  monit_decim_mask_num_samples_end          <= unsigned(regs_out.monit_data_mask_samples_end_o(c_monit2_cic_mask_samples_width-1 downto 0));
+
+  ----------------------------------------------
+  -- Generate Triggers for all data rates
+  ----------------------------------------------
+
   -- Generate proper tag for TBT
   cmp_tbt_tag : swap_freqgen
   generic map (
     g_delay_vec_width                       => c_tbt_decim_tag_dly_width,
-    g_swap_div_freq_vec_width               => c_tbt_ratio_log2
+    g_swap_div_freq_vec_width               => c_tbt_ratio_full_log2
   )
   port map (
     clk_i                                   => fs_clk_i,
     rst_n_i                                 => fs_rst_n_i,
 
-    sync_trig_i                             => sync_tbt_trig_i,
+    sync_trig_i                             => sync_trig_slow_i,
 
     -- Swap and de-swap signals
     swap_o                                  => open,
@@ -1171,14 +1214,76 @@ begin
     swap_mode_i                             => c_swmode_swap_deswap,
 
     -- Swap frequency settings
-    swap_div_f_i                            => std_logic_vector(to_unsigned(g_tbt_ratio,
-                                                                            c_tbt_ratio_log2)),
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_tbt_ratio_full,
+                                                                            c_tbt_ratio_full_log2)),
 
     -- De-swap delay setting
     deswap_delay_i                          => tbt_decim_tag_dly_c
   );
 
   tbt_decim_tag(0) <= tbt_decim_tag_logic;
+
+  -- Generate proper tag for MONIT1
+  cmp_monit1_tag : swap_freqgen
+  generic map (
+    g_delay_vec_width                       => c_monit1_decim_tag_dly_width,
+    g_swap_div_freq_vec_width               => c_monit1_ratio_full_log2
+  )
+  port map (
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+
+    sync_trig_i                             => sync_trig_slow_i,
+
+    -- Swap and de-swap signals
+    swap_o                                  => open,
+    deswap_o                                => monit1_decim_tag_logic,
+
+    -- Swap mode setting
+    swap_mode_i                             => c_swmode_swap_deswap,
+
+    -- Swap frequency settings
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit1_ratio_full,
+                                                                            c_monit1_ratio_full_log2)),
+
+    -- De-swap delay setting
+    deswap_delay_i                          => monit1_decim_tag_dly_c
+  );
+
+  monit1_decim_tag(0) <= monit1_decim_tag_logic;
+
+  -- Generate proper tag for MONIT
+  cmp_monit_tag : swap_freqgen
+  generic map (
+    g_delay_vec_width                       => c_monit2_decim_tag_dly_width,
+    g_swap_div_freq_vec_width               => c_monit2_ratio_full_log2
+  )
+  port map (
+    clk_i                                   => fs_clk_i,
+    rst_n_i                                 => fs_rst_n_i,
+
+    sync_trig_i                             => sync_trig_slow_i,
+
+    -- Swap and de-swap signals
+    swap_o                                  => open,
+    deswap_o                                => monit_decim_tag_logic,
+
+    -- Swap mode setting
+    swap_mode_i                             => c_swmode_swap_deswap,
+
+    -- Swap frequency settings
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit2_ratio_full,
+                                                                            c_monit2_ratio_full_log2)),
+
+    -- De-swap delay setting
+    deswap_delay_i                          => monit_decim_tag_dly_c
+  );
+
+  monit_decim_tag(0) <= monit_decim_tag_logic;
+
+  ----------------------------------------------
+  -- Position calculation
+  ----------------------------------------------
 
   cmp_position_calc : position_calc
   generic map
@@ -1219,10 +1324,16 @@ begin
     g_monit1_ratio                          => g_monit1_ratio,
     g_monit1_cic_ratio                      => g_monit1_cic_ratio,
 
+    g_monit1_tag_desync_cnt_width           => c_monit1_tag_desync_cnt_width,
+    g_monit1_cic_mask_samples_width         => c_monit1_cic_mask_samples_width,
+
     g_monit2_cic_delay                      => g_monit2_cic_delay,
     g_monit2_cic_stages                     => g_monit2_cic_stages,
     g_monit2_ratio                          => g_monit2_ratio,
     g_monit2_cic_ratio                      => g_monit2_cic_ratio,
+
+    g_monit2_tag_desync_cnt_width           => c_monit2_tag_desync_cnt_width,
+    g_monit2_cic_mask_samples_width         => c_monit2_cic_mask_samples_width,
 
     g_monit_decim_width                     => g_monit_decim_width,
 
@@ -1331,6 +1442,14 @@ begin
     fofb_pha_valid_o                        => fofb_pha_valid,
     fofb_pha_ce_o                           => fofb_pha_ce,
 
+    -- Synchronization trigger for TBT filter chain
+    monit1_tag_i                            => monit1_decim_tag,
+    monit1_tag_en_i                         => monit1_decim_tag_en,
+    monit1_tag_desync_cnt_rst_i             => regs_out.monit1_tag_desync_cnt_rst_o,
+    monit1_tag_desync_cnt_o                 => regs_in.monit1_tag_desync_cnt_i,
+    monit1_decim_mask_en_i                  => monit1_decim_mask_en,
+    monit1_decim_mask_num_samples_beg_i     => monit1_decim_mask_num_samples_beg,
+    monit1_decim_mask_num_samples_end_i     => monit1_decim_mask_num_samples_end,
     monit1_amp_ch0_o                        => monit1_amp_ch0,
     monit1_amp_ch1_o                        => monit1_amp_ch1,
     monit1_amp_ch2_o                        => monit1_amp_ch2,
@@ -1338,6 +1457,14 @@ begin
     monit1_amp_valid_o                      => monit1_amp_valid,
     monit1_amp_ce_o                         => monit1_amp_ce,
 
+    -- Synchronization trigger for TBT filter chain
+    monit_tag_i                             => monit_decim_tag,
+    monit_tag_en_i                          => monit_decim_tag_en,
+    monit_tag_desync_cnt_rst_i              => regs_out.monit_tag_desync_cnt_rst_o,
+    monit_tag_desync_cnt_o                  => regs_in.monit_tag_desync_cnt_i,
+    monit_decim_mask_en_i                   => monit_decim_mask_en,
+    monit_decim_mask_num_samples_beg_i      => monit_decim_mask_num_samples_beg,
+    monit_decim_mask_num_samples_end_i      => monit_decim_mask_num_samples_end,
     monit_amp_ch0_o                         => monit_amp_ch0,
     monit_amp_ch1_o                         => monit_amp_ch1,
     monit_amp_ch2_o                         => monit_amp_ch2,
