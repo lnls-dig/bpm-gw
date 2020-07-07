@@ -807,16 +807,10 @@ package bpm_cores_pkg is
         rffe_swclk_o : out std_logic;
 
         -----------------------------
-        -- Synchronization trigger for RFFE swap clock
+        -- Synchronization trigger for all rates. Slow clock
         -----------------------------
 
-        sync_trig_i  : in std_logic;
-
-        -----------------------------
-        -- Synchronization trigger for TBT Filter Chain
-        -----------------------------
-
-        sync_tbt_trig_i                           : in std_logic := '0';
+        sync_trig_slow_i  : in std_logic;
 
         -----------------------------
         -- Debug signals
@@ -1047,16 +1041,10 @@ package bpm_cores_pkg is
         rffe_swclk_o : out std_logic;
 
         -----------------------------
-        -- Synchronization trigger for RFFE swap clock
+        -- Synchronization trigger for all rates. Slow clock
         -----------------------------
 
-        sync_trig_i : in std_logic;
-
-        -----------------------------
-        -- Synchronization trigger for TBT Filter Chain
-        -----------------------------
-
-        sync_tbt_trig_i                           : in std_logic := '0';
+        sync_trig_slow_i  : in std_logic;
 
         -----------------------------
         -- Debug signals
