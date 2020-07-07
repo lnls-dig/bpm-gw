@@ -1211,15 +1211,9 @@ begin
     -- Swap and de-swap signals
     swap_o                                  => open,
     deswap_o                                => tbt_decim_tag_logic,
-
-    -- Swap mode setting
     swap_mode_i                             => c_swmode_swap_deswap,
-
-    -- Swap frequency settings
     swap_div_f_i                            => std_logic_vector(to_unsigned(c_tbt_ratio_full,
                                                                             c_tbt_ratio_full_log2)),
-
-    -- De-swap delay setting
     deswap_delay_i                          => tbt_decim_tag_dly_c
   );
 
@@ -1240,15 +1234,9 @@ begin
     -- Swap and de-swap signals
     swap_o                                  => open,
     deswap_o                                => monit1_decim_tag_logic,
-
-    -- Swap mode setting
     swap_mode_i                             => c_swmode_swap_deswap,
-
-    -- Swap frequency settings
     swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit1_ratio_full,
                                                                             c_monit1_ratio_full_log2)),
-
-    -- De-swap delay setting
     deswap_delay_i                          => monit1_decim_tag_dly_c
   );
 
@@ -1269,15 +1257,9 @@ begin
     -- Swap and de-swap signals
     swap_o                                  => open,
     deswap_o                                => monit_decim_tag_logic,
-
-    -- Swap mode setting
     swap_mode_i                             => c_swmode_swap_deswap,
-
-    -- Swap frequency settings
     swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit2_ratio_full,
                                                                             c_monit2_ratio_full_log2)),
-
-    -- De-swap delay setting
     deswap_delay_i                          => monit_decim_tag_dly_c
   );
 
