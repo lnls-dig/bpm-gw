@@ -328,17 +328,17 @@ architecture rtl of wb_position_calc_core is
   constant c_fofb_cic_mask_samples_width    : natural := 16;
 
   -- full ratio is the accumulated ratio between data and clock.
-  constant c_adc_ratio_full                 : natural := g_adc_ratio;
-  constant c_tbt_ratio_full                 : natural := g_tbt_ratio*c_adc_ratio_full;
-  constant c_fofb_ratio_full                : natural := g_fofb_ratio*c_adc_ratio_full;
-  constant c_monit1_ratio_full              : natural := g_monit1_ratio*c_fofb_ratio_full;
-  constant c_monit2_ratio_full               : natural := g_monit2_ratio*c_monit1_ratio_full;
+  constant c_adc_ratio                      : natural := g_adc_ratio;
+  constant c_tbt_ratio                      : natural := g_tbt_ratio;
+  constant c_fofb_ratio                     : natural := g_fofb_ratio;
+  constant c_monit1_ratio                   : natural := g_monit1_ratio;
+  constant c_monit2_ratio                   : natural := g_monit2_ratio;
 
-  constant c_adc_ratio_full_log2            : natural := f_log2_size(c_adc_ratio_full+1);
-  constant c_tbt_ratio_full_log2            : natural := f_log2_size(c_tbt_ratio_full+1);
-  constant c_fofb_ratio_full_log2           : natural := f_log2_size(c_fofb_ratio_full+1);
-  constant c_monit1_ratio_full_log2         : natural := f_log2_size(c_monit1_ratio_full+1);
-  constant c_monit2_ratio_full_log2         : natural := f_log2_size(c_monit2_ratio_full+1);
+  constant c_adc_ratio_log2                 : natural := f_log2_size(c_adc_ratio+1);
+  constant c_tbt_ratio_log2                 : natural := f_log2_size(c_tbt_ratio+1);
+  constant c_fofb_ratio_log2                : natural := f_log2_size(c_fofb_ratio+1);
+  constant c_monit1_ratio_log2              : natural := f_log2_size(c_monit1_ratio+1);
+  constant c_monit2_ratio_log2              : natural := f_log2_size(c_monit2_ratio+1);
 
   constant c_k_width                        : natural := 24;
 
@@ -1200,7 +1200,7 @@ begin
   cmp_tbt_tag : swap_freqgen
   generic map (
     g_delay_vec_width                       => c_tbt_decim_tag_dly_width,
-    g_swap_div_freq_vec_width               => c_tbt_ratio_full_log2
+    g_swap_div_freq_vec_width               => c_tbt_ratio_log2
   )
   port map (
     clk_i                                   => fs_clk_i,
@@ -1212,8 +1212,8 @@ begin
     swap_o                                  => open,
     deswap_o                                => tbt_decim_tag_logic,
     swap_mode_i                             => c_swmode_swap_deswap,
-    swap_div_f_i                            => std_logic_vector(to_unsigned(c_tbt_ratio_full,
-                                                                            c_tbt_ratio_full_log2)),
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_tbt_ratio,
+                                                                            c_tbt_ratio_log2)),
     deswap_delay_i                          => tbt_decim_tag_dly_c
   );
 
@@ -1223,7 +1223,7 @@ begin
   cmp_monit1_tag : swap_freqgen
   generic map (
     g_delay_vec_width                       => c_monit1_decim_tag_dly_width,
-    g_swap_div_freq_vec_width               => c_monit1_ratio_full_log2
+    g_swap_div_freq_vec_width               => c_monit1_ratio_log2
   )
   port map (
     clk_i                                   => fs_clk_i,
@@ -1235,8 +1235,8 @@ begin
     swap_o                                  => open,
     deswap_o                                => monit1_decim_tag_logic,
     swap_mode_i                             => c_swmode_swap_deswap,
-    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit1_ratio_full,
-                                                                            c_monit1_ratio_full_log2)),
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit1_ratio,
+                                                                            c_monit1_ratio_log2)),
     deswap_delay_i                          => monit1_decim_tag_dly_c
   );
 
@@ -1246,7 +1246,7 @@ begin
   cmp_monit_tag : swap_freqgen
   generic map (
     g_delay_vec_width                       => c_monit2_decim_tag_dly_width,
-    g_swap_div_freq_vec_width               => c_monit2_ratio_full_log2
+    g_swap_div_freq_vec_width               => c_monit2_ratio_log2
   )
   port map (
     clk_i                                   => fs_clk_i,
@@ -1258,8 +1258,8 @@ begin
     swap_o                                  => open,
     deswap_o                                => monit_decim_tag_logic,
     swap_mode_i                             => c_swmode_swap_deswap,
-    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit2_ratio_full,
-                                                                            c_monit2_ratio_full_log2)),
+    swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit2_ratio,
+                                                                            c_monit2_ratio_log2)),
     deswap_delay_i                          => monit_decim_tag_dly_c
   );
 
