@@ -2997,7 +2997,7 @@ begin
     -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_slow_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_slow_id).pulse,
 
     -----------------------------
     -- Debug signals
