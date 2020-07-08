@@ -1228,6 +1228,7 @@ begin
   port map (
     clk_i                                   => fs_clk_i,
     rst_n_i                                 => fs_rst_n_i,
+    en_i                                    => fofb_amp_ce,
 
     sync_trig_i                             => sync_trig_slow_i,
 
@@ -1237,6 +1238,7 @@ begin
     swap_mode_i                             => c_swmode_swap_deswap,
     swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit1_ratio,
                                                                             c_monit1_ratio_log2)),
+    swap_div_f_cnt_en_i                     => fofb_amp_valid,
     deswap_delay_i                          => monit1_decim_tag_dly_c
   );
 
@@ -1251,6 +1253,7 @@ begin
   port map (
     clk_i                                   => fs_clk_i,
     rst_n_i                                 => fs_rst_n_i,
+    en_i                                    => monit1_amp_ce,
 
     sync_trig_i                             => sync_trig_slow_i,
 
@@ -1260,6 +1263,7 @@ begin
     swap_mode_i                             => c_swmode_swap_deswap,
     swap_div_f_i                            => std_logic_vector(to_unsigned(c_monit2_ratio,
                                                                             c_monit2_ratio_log2)),
+    swap_div_f_cnt_en_i                     => monit1_amp_valid,
     deswap_delay_i                          => monit_decim_tag_dly_c
   );
 
