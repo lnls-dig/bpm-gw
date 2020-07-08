@@ -369,6 +369,8 @@ package bpm_cores_pkg is
     clk_i                                   : in  std_logic;
     rst_n_i                                 : in  std_logic;
 
+    en_i                                    : in  std_logic := '1';
+
     sync_trig_i                             : in  std_logic;
 
     -- Swap and de-swap signals
@@ -380,6 +382,7 @@ package bpm_cores_pkg is
 
     -- Swap frequency settings
     swap_div_f_i                            : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+    swap_div_f_cnt_en_i                     : in  std_logic := '1';
 
     -- De-swap delay setting
     deswap_delay_i                          : in  std_logic_vector(g_delay_vec_width-1 downto 0)
@@ -411,6 +414,8 @@ package bpm_cores_pkg is
   port(
     clk_i                                     :    in  std_logic;
     rst_n_i                                   :    in  std_logic;
+
+    en_i                                      :    in  std_logic := '1';
 
     -- Swap master clock
     clk_swap_i                                :    in  std_logic;
