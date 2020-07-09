@@ -79,6 +79,10 @@ begin
             end if;
 
             deswap <= '0';
+
+          when others =>
+            swap <= '0';
+            deswap <= '0';
         end case;
       end if;
     end if;
