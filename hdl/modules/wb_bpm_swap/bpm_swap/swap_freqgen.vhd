@@ -140,11 +140,13 @@ begin
           if cnst_swap_div_f /= cnst_swap_div_f_old then
             count <= 0;
             clk_swap <= '1';
-          elsif count = cnst_swap_div_f then
-            count <= 0;
-            clk_swap  <= not clk_swap;
           elsif swap_div_f_cnt_en_i = '1' then
-            count <= count + 1;
+            if count = cnst_swap_div_f then
+              count <= 0;
+              clk_swap  <= not clk_swap;
+            else
+              count <= count + 1;
+            end if;
           end if;
         end if;
 
