@@ -80,6 +80,7 @@ architecture rtl of swap_freqgen is
   signal cnst_swap_div_f     : natural range 0 to 2**g_swap_div_freq_vec_width-1;
   signal clk_swap            : std_logic;
   signal deswap              : std_logic;
+  signal synch_pending       : std_logic;
 
 begin
   ----------------------------------------------------------------
@@ -132,14 +133,17 @@ begin
       if rst_n_i = '0' then
         count <= 0;
         clk_swap  <= '1';
+        synch_pending <= '0';
       else
         if en_i = '1' then
           -- Clear SW counter if we received a new SW divider period
           -- This is important to ensure that we don't swap signals
           -- between crossed antennas
-          if cnst_swap_div_f /= cnst_swap_div_f_old then
+          if cnst_swap_div_f /= cnst_swap_div_f_old or
+              synch_pending = '1' then
             count <= 0;
             clk_swap <= '1';
+            synch_pending <= '0';
           elsif swap_div_f_cnt_en_i = '1' then
             if count = cnst_swap_div_f then
               count <= 0;
@@ -154,8 +158,7 @@ begin
         if(sync_trig_i = '1' and           -- sync trig arrived,
             (count /= cnst_swap_div_f    -- but no sync necessary
             or clk_swap = '0')) then     -- unless it's synchronized with a different phase, then reset it
-          count <= 0;
-          clk_swap <= '1';
+          synch_pending <= '1';
         end if;
 
       end if;
