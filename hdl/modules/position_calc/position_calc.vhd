@@ -47,7 +47,7 @@ entity position_calc is
     g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif";
 
     -- desync counter width. Tied to register width
-    g_tbt_tag_desync_cnt_width : natural := 14;
+    g_tbt_tag_desync_cnt_width   : natural := 14;
     -- width of CIC mask number of samples
     g_tbt_cic_mask_samples_width : natural := 16;
 
@@ -72,10 +72,20 @@ entity position_calc is
     g_monit1_ratio      : natural := 100;  --ratio between fofb and monit 1
     g_monit1_cic_ratio  : positive := 8;
 
+    -- desync counter width. Tied to register width
+    g_monit1_tag_desync_cnt_width   : natural := 14;
+    -- width of CIC mask number of samples
+    g_monit1_cic_mask_samples_width : natural := 16;
+
     g_monit2_cic_delay  : natural := 1;
     g_monit2_cic_stages : natural := 1;
     g_monit2_ratio      : natural := 100;  -- ratio between monit 1 and 2
     g_monit2_cic_ratio  : positive := 8;
+
+    -- desync counter width. Tied to register width
+    g_monit2_tag_desync_cnt_width : natural := 14;
+    -- width of CIC mask number of samples
+    g_monit2_cic_mask_samples_width : natural := 16;
 
     g_monit_decim_width : natural := 32;
 
@@ -138,27 +148,28 @@ entity position_calc is
     tbt_decim_ch2_q_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
     tbt_decim_ch3_i_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
     tbt_decim_ch3_q_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_decim_valid_o   : out std_logic;
-    tbt_decim_ce_o      : out std_logic;
+    tbt_decim_valid_o : out std_logic;
+    tbt_decim_ce_o    : out std_logic;
 
-    tbt_amp_ch0_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_amp_ch1_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_amp_ch2_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_amp_ch3_o : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_amp_ch0_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_amp_ch1_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_amp_ch2_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_amp_ch3_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
     tbt_amp_valid_o : out std_logic;
     tbt_amp_ce_o    : out std_logic;
 
-    tbt_pha_ch0_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_pha_ch1_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_pha_ch2_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-    tbt_pha_ch3_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_pha_ch0_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_pha_ch1_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_pha_ch2_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
+    tbt_pha_ch3_o   : out std_logic_vector(g_tbt_decim_width-1 downto 0);
     tbt_pha_valid_o : out std_logic;
     tbt_pha_ce_o    : out std_logic;
 
-    fofb_decim_desync_cnt_rst_i  : in std_logic := '0';
-    fofb_decim_desync_cnt_o      : out std_logic_vector(g_fofb_decim_desync_cnt_width-1 downto 0);
-    fofb_decim_mask_en_i : in std_logic := '0';
+    fofb_decim_desync_cnt_rst_i   : in std_logic := '0';
+    fofb_decim_desync_cnt_o       : out std_logic_vector(g_fofb_decim_desync_cnt_width-1 downto 0);
+    fofb_decim_mask_en_i          : in std_logic := '0';
     fofb_decim_mask_num_samples_i : in unsigned(g_fofb_cic_mask_samples_width-1 downto 0) := (others => '0');
+
     fofb_decim_ch0_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_decim_ch0_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_decim_ch1_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
@@ -167,22 +178,30 @@ entity position_calc is
     fofb_decim_ch2_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_decim_ch3_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_decim_ch3_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_decim_valid_o   : out std_logic;
-    fofb_decim_ce_o      : out std_logic;
+    fofb_decim_valid_o : out std_logic;
+    fofb_decim_ce_o    : out std_logic;
 
-    fofb_amp_ch0_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_amp_ch1_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_amp_ch2_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_amp_ch3_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_amp_ch0_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_amp_ch1_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_amp_ch2_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_amp_ch3_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_amp_valid_o : out std_logic;
     fofb_amp_ce_o    : out std_logic;
 
-    fofb_pha_ch0_o      : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_pha_ch1_o      : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_pha_ch2_o      : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-    fofb_pha_ch3_o      : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_pha_ch0_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_pha_ch1_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_pha_ch2_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
+    fofb_pha_ch3_o   : out std_logic_vector(g_fofb_decim_width-1 downto 0);
     fofb_pha_valid_o : out std_logic;
     fofb_pha_ce_o    : out std_logic;
+
+    monit1_tag_i                         : in std_logic_vector(0 downto 0);
+    monit1_tag_en_i                      : in std_logic := '0';
+    monit1_tag_desync_cnt_rst_i          : in std_logic := '0';
+    monit1_tag_desync_cnt_o              : out std_logic_vector(g_monit1_tag_desync_cnt_width-1 downto 0);
+    monit1_decim_mask_en_i               : in std_logic := '0';
+    monit1_decim_mask_num_samples_beg_i  : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
+    monit1_decim_mask_num_samples_end_i  : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
 
     monit1_amp_ch0_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_ch1_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -190,6 +209,14 @@ entity position_calc is
     monit1_amp_ch3_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit1_amp_valid_o : out std_logic;
     monit1_amp_ce_o    : out std_logic;
+
+    monit_tag_i                         : in std_logic_vector(0 downto 0);
+    monit_tag_en_i                      : in std_logic := '0';
+    monit_tag_desync_cnt_rst_i          : in std_logic := '0';
+    monit_tag_desync_cnt_o              : out std_logic_vector(g_monit2_tag_desync_cnt_width-1 downto 0);
+    monit_decim_mask_en_i               : in std_logic := '0';
+    monit_decim_mask_num_samples_beg_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
+    monit_decim_mask_num_samples_end_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
 
     monit_amp_ch0_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
     monit_amp_ch1_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -238,8 +265,10 @@ architecture rtl of position_calc is
 
   constant c_adc_tag_width           : natural := 1;
   constant c_tbt_tag_width           : natural := 1;
+  constant c_monit1_tag_width        : natural := 1;
+  constant c_monit2_tag_width        : natural := 1;
 
--- full ratio is the accumulated ratio between data and clock.
+  -- full ratio is the accumulated ratio between data and clock.
   constant c_adc_ratio_full    : natural := g_adc_ratio;
   constant c_tbt_ratio_full    : natural := g_tbt_ratio*c_adc_ratio_full;
   constant c_fofb_ratio_full   : natural := g_fofb_ratio*c_adc_ratio_full;
@@ -248,11 +277,11 @@ architecture rtl of position_calc is
 
 
   -- width for decimation counters
+  constant c_adc_width        : natural := f_log2_size(g_adc_ratio+1);
+  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio+1);
   constant c_cic_fofb_width   : natural := f_log2_size(g_fofb_ratio+1);
   constant c_cic_monit1_width : natural := f_log2_size(g_monit1_ratio+1);
   constant c_cic_monit2_width : natural := f_log2_size(g_monit2_ratio+1);
-  constant c_cic_tbt_width    : natural := f_log2_size(g_tbt_ratio+1);
-  constant c_adc_width        : natural := f_log2_size(g_adc_ratio+1);
 
   -- width for ce counters
   constant c_adc_ce_width         : natural := f_log2_size(c_adc_ratio_full+1);
@@ -371,9 +400,13 @@ architecture rtl of position_calc is
   -- desync
   type t_tbt_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_tbt_tag_desync_cnt_width-1 downto 0);
   type t_fofb_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_fofb_decim_desync_cnt_width-1 downto 0);
+  type t_monit1_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_monit1_tag_desync_cnt_width-1 downto 0);
+  type t_monit2_desync_cnt_array is array (3 downto 0) of std_logic_vector(g_monit2_tag_desync_cnt_width-1 downto 0);
 
   signal tbt_tag_desync_cnt             : t_tbt_desync_cnt_array := (others => (others => '0'));
   signal fofb_tag_desync_cnt            : t_fofb_desync_cnt_array := (others => (others => '0'));
+  signal monit1_tag_desync_cnt          : t_monit1_desync_cnt_array := (others => (others => '0'));
+  signal monit2_tag_desync_cnt          : t_monit2_desync_cnt_array := (others => (others => '0'));
 
   ----------------------------
   --Clocks and clock enables--
@@ -416,58 +449,58 @@ begin
     -- Generate clock enable
     cmp_ce_adc : strobe_gen
       generic map (
-        g_maxrate   => c_adc_ratio_full,
+        g_maxrate   => g_adc_ratio,
         g_bus_width => c_adc_ce_width)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => '1',
-        ratio_i  => c_adc_ratio_slv_full,
-        strobe_o => ce_adc(chan));
+        clk_i       => clk_i,
+        rst_i       => rst_i,
+        ce_i        => '1',
+        ratio_i     => c_adc_ratio_slv_full,
+        strobe_o    => ce_adc(chan));
 
     cmp_ce_tbt_cordic : strobe_gen
       generic map (
         g_maxrate   => g_tbt_cordic_ratio,
         g_bus_width => c_tbt_cordic_ce_width)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => '1',
-        ratio_i  => c_tbt_cordic_ratio_slv,
-        strobe_o => ce_tbt_cordic(chan));
+        clk_i       => clk_i,
+        rst_i       => rst_i,
+        ce_i        => '1',
+        ratio_i     => c_tbt_cordic_ratio_slv,
+        strobe_o    => ce_tbt_cordic(chan));
 
     cmp_ce_fofb_cordic : strobe_gen
       generic map (
         g_maxrate   => g_fofb_cordic_ratio,
         g_bus_width => c_fofb_cordic_ce_width)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => '1',
-        ratio_i  => c_fofb_cordic_ratio_slv,
-        strobe_o => ce_fofb_cordic(chan));
+        clk_i       => clk_i,
+        rst_i       => rst_i,
+        ce_i        => '1',
+        ratio_i     => c_fofb_cordic_ratio_slv,
+        strobe_o    => ce_fofb_cordic(chan));
 
     cmp_ce_monit1 : strobe_gen
       generic map (
         g_maxrate   => g_monit1_cic_ratio,
         g_bus_width => c_monit1_cic_ce_width)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => '1',
-        ratio_i  => c_monit1_cic_ratio_slv,
-        strobe_o => ce_monit1(chan));
+        clk_i       => clk_i,
+        rst_i       => rst_i,
+        ce_i        => '1',
+        ratio_i     => c_monit1_cic_ratio_slv,
+        strobe_o    => ce_monit1(chan));
 
     cmp_ce_monit2 : strobe_gen
       generic map (
         g_maxrate   => g_monit2_cic_ratio,
         g_bus_width => c_monit2_cic_ce_width)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => '1',
-        ratio_i  => c_monit2_cic_ratio_slv,
-        strobe_o => ce_monit2(chan));
+        clk_i       => clk_i,
+        rst_i       => rst_i,
+        ce_i        => '1',
+        ratio_i     => c_monit2_cic_ratio_slv,
+        strobe_o    => ce_monit2(chan));
 
     -- Position calculation
 
@@ -497,16 +530,16 @@ begin
 
       cmp_tbt_cic : cic_dual
         generic map (
-          g_input_width      => g_mixed_width,
-          g_output_width     => g_tbt_decim_width,
-          g_stages           => g_tbt_cic_stages,
-          g_delay            => g_tbt_cic_delay,
-          g_max_rate         => g_tbt_ratio,
-          g_bus_width        => c_cic_tbt_width,
-          g_tag_desync_cnt_width => g_tbt_tag_desync_cnt_width,
-          g_tag_width             => c_tbt_tag_width,
-          g_data_mask_width       => g_tbt_cic_mask_samples_width,
-          g_round_convergent => c_cic_round_convergent)
+          g_input_width            => g_mixed_width,
+          g_output_width           => g_tbt_decim_width,
+          g_stages                 => g_tbt_cic_stages,
+          g_delay                  => g_tbt_cic_delay,
+          g_max_rate               => g_tbt_ratio,
+          g_bus_width              => c_cic_tbt_width,
+          g_tag_desync_cnt_width   => g_tbt_tag_desync_cnt_width,
+          g_tag_width              => c_tbt_tag_width,
+          g_data_mask_width        => g_tbt_cic_mask_samples_width,
+          g_round_convergent       => c_cic_round_convergent)
         port map (
           clk_i                    => clk_i,
           rst_i                    => rst_i,
@@ -542,49 +575,49 @@ begin
           g_iter_per_clk       => g_tbt_cordic_iter_per_clk,
           g_rounding           => true)
         port map (
-          clk_i     => clk_i,
-          ce_data_i => ce_adc(chan),
-          valid_i   => valid_tbt(chan),
-          ce_i      => ce_tbt_cordic(chan),
-          x_i       => tbt_i(chan),
-          y_i       => tbt_q(chan),
-          mag_o     => tbt_mag(chan),
-          phase_o   => tbt_phase(chan),
-          valid_o   => valid_tbt_cordic(chan));
+          clk_i                => clk_i,
+          ce_data_i            => ce_adc(chan),
+          valid_i              => valid_tbt(chan),
+          ce_i                 => ce_tbt_cordic(chan),
+          x_i                  => tbt_i(chan),
+          y_i                  => tbt_q(chan),
+          mag_o                => tbt_mag(chan),
+          phase_o              => tbt_phase(chan),
+          valid_o              => valid_tbt_cordic(chan));
 
       cmp_fofb_cic : cic_dual
         generic map (
-          g_input_width      => g_mixed_width,
-          g_output_width     => g_fofb_decim_width,
-          g_stages           => g_fofb_cic_stages,
-          g_delay            => g_fofb_cic_delay,
-          g_max_rate         => g_fofb_ratio,
-          g_bus_width        => c_cic_fofb_width,
-          g_tag_desync_cnt_width => g_fofb_decim_desync_cnt_width,
-          g_tag_width        => c_adc_tag_width,
-          g_data_mask_width  => g_fofb_cic_mask_samples_width,
-          g_round_convergent => c_cic_round_convergent)
+          g_input_width            => g_mixed_width,
+          g_output_width           => g_fofb_decim_width,
+          g_stages                 => g_fofb_cic_stages,
+          g_delay                  => g_fofb_cic_delay,
+          g_max_rate               => g_fofb_ratio,
+          g_bus_width              => c_cic_fofb_width,
+          g_tag_desync_cnt_width   => g_fofb_decim_desync_cnt_width,
+          g_tag_width              => c_adc_tag_width,
+          g_data_mask_width        => g_fofb_cic_mask_samples_width,
+          g_round_convergent       => c_cic_round_convergent)
         port map (
-          clk_i              => clk_i,
-          rst_i              => rst_i,
-          ce_i               => ce_adc(chan),
-          valid_i            => iq_valid(chan),
-          I_i                => full_i(chan),
-          I_tag_i            => full_i_tag(chan),
-          I_tag_en_i         => input_tag_en(chan),
-          I_tag_desync_cnt_rst_i => fofb_decim_desync_cnt_rst_i,
-          I_tag_desync_cnt_o     => fofb_tag_desync_cnt(chan),
+          clk_i                    => clk_i,
+          rst_i                    => rst_i,
+          ce_i                     => ce_adc(chan),
+          valid_i                  => iq_valid(chan),
+          I_i                      => full_i(chan),
+          I_tag_i                  => full_i_tag(chan),
+          I_tag_en_i               => input_tag_en(chan),
+          I_tag_desync_cnt_rst_i   => fofb_decim_desync_cnt_rst_i,
+          I_tag_desync_cnt_o       => fofb_tag_desync_cnt(chan),
           I_mask_num_samples_beg_i => fofb_decim_mask_num_samples_i,
-          I_mask_en_i        => fofb_decim_mask_en_i,
-          Q_i                => full_q(chan),
-          Q_tag_i            => full_q_tag(chan),
-          Q_tag_en_i         => input_tag_en(chan),
+          I_mask_en_i              => fofb_decim_mask_en_i,
+          Q_i                      => full_q(chan),
+          Q_tag_i                  => full_q_tag(chan),
+          Q_tag_en_i               => input_tag_en(chan),
           Q_mask_num_samples_beg_i => fofb_decim_mask_num_samples_i,
-          Q_mask_en_i        => fofb_decim_mask_en_i,
-          ratio_i            => c_fofb_ratio_slv,
-          I_o                => fofb_i(chan),
-          Q_o                => fofb_q(chan),
-          valid_o            => valid_fofb(chan));
+          Q_mask_en_i              => fofb_decim_mask_en_i,
+          ratio_i                  => c_fofb_ratio_slv,
+          I_o                      => fofb_i(chan),
+          Q_o                      => fofb_q(chan),
+          valid_o                  => valid_fofb(chan));
 
       cmp_fofb_cordic : cordic_iter_slv
         generic map (
@@ -597,15 +630,15 @@ begin
           g_iter_per_clk       => g_fofb_cordic_iter_per_clk,
           g_rounding           => true)
         port map (
-          clk_i     => clk_i,
-          ce_data_i => ce_adc(chan),
-          valid_i   => valid_fofb(chan),
-          ce_i      => ce_fofb_cordic(chan),
-          x_i       => fofb_i(chan),
-          y_i       => fofb_q(chan),
-          mag_o     => fofb_mag(chan),
-          phase_o   => fofb_phase(chan),
-          valid_o   => valid_fofb_cordic(chan));
+          clk_i                => clk_i,
+          ce_data_i            => ce_adc(chan),
+          valid_i              => valid_fofb(chan),
+          ce_i                 => ce_fofb_cordic(chan),
+          x_i                  => fofb_i(chan),
+          y_i                  => fofb_q(chan),
+          mag_o                => fofb_mag(chan),
+          phase_o              => fofb_phase(chan),
+          valid_o              => valid_fofb_cordic(chan));
 
     end generate;
 
@@ -623,39 +656,39 @@ begin
 
       cmp_tbt_cic : cic_dyn
         generic map (
-          g_input_width       => g_input_width,
-          g_output_width      => g_tbt_decim_width,
-          g_stages            => g_tbt_cic_stages,
-          g_delay             => g_tbt_cic_delay,
-          g_max_rate          => g_tbt_ratio,
-          g_bus_width         => c_cic_tbt_width,
-          g_with_ce_synch     => true,
-          g_tag_desync_cnt_width => g_tbt_tag_desync_cnt_width,
-          g_tag_width         => c_tbt_tag_width,
-          g_data_mask_width   => g_tbt_cic_mask_samples_width,
-          g_round_convergent  => c_cic_round_convergent)
+          g_input_width                => g_input_width,
+          g_output_width               => g_tbt_decim_width,
+          g_stages                     => g_tbt_cic_stages,
+          g_delay                      => g_tbt_cic_delay,
+          g_max_rate                   => g_tbt_ratio,
+          g_bus_width                  => c_cic_tbt_width,
+          g_with_ce_synch              => true,
+          g_tag_desync_cnt_width       => g_tbt_tag_desync_cnt_width,
+          g_tag_width                  => c_tbt_tag_width,
+          g_data_mask_width            => g_tbt_cic_mask_samples_width,
+          g_round_convergent           => c_cic_round_convergent)
         port map (
-          clk_i               => clk_i,
-          rst_i               => rst_i,
-          ce_i                => ce_adc(chan),
+          clk_i                        => clk_i,
+          rst_i                        => rst_i,
+          ce_i                         => ce_adc(chan),
           -- Synchronize the CE with the already in place
           -- rate, so we don't have to
           -- change them downstream
-          ce_out_i            => ce_tbt_cordic(chan),
-          valid_i             => adc_input_abs_valid(chan),
-          data_i              => adc_input_abs(chan),
-          ratio_i             => c_tbt_ratio_slv,
-          data_tag_i          => tbt_tag_i,
-          data_tag_en_i       => tbt_tag_en_i,
-          data_tag_desync_cnt_rst_i => tbt_tag_desync_cnt_rst_i,
-          data_tag_desync_cnt_o => tbt_tag_desync_cnt(chan),
-          data_mask_en_i      => tbt_decim_mask_en_i,
-          data_mask_num_samples_beg_i => tbt_decim_mask_num_samples_beg_i,
-          data_mask_num_samples_end_i => tbt_decim_mask_num_samples_end_i,
+          ce_out_i                     => ce_tbt_cordic(chan),
+          valid_i                      => adc_input_abs_valid(chan),
+          data_i                       => adc_input_abs(chan),
+          ratio_i                      => c_tbt_ratio_slv,
+          data_tag_i                   => tbt_tag_i,
+          data_tag_en_i                => tbt_tag_en_i,
+          data_tag_desync_cnt_rst_i    => tbt_tag_desync_cnt_rst_i,
+          data_tag_desync_cnt_o        => tbt_tag_desync_cnt(chan),
+          data_mask_en_i               => tbt_decim_mask_en_i,
+          data_mask_num_samples_beg_i  => tbt_decim_mask_num_samples_beg_i,
+          data_mask_num_samples_end_i  => tbt_decim_mask_num_samples_end_i,
           -- Reuse signal names so we don't have to
           -- change them downstream
-          data_o              => tbt_mag(chan),
-          valid_o             => valid_tbt_cordic(chan));
+          data_o                       => tbt_mag(chan),
+          valid_o                      => valid_tbt_cordic(chan));
 
       -- We don't have phase information for chains
       -- without downconversion
@@ -663,33 +696,33 @@ begin
 
       cmp_fofb_cic : cic_dyn
         generic map (
-          g_input_width       => g_input_width,
-          g_output_width      => g_fofb_decim_width,
-          g_stages            => g_fofb_cic_stages,
-          g_delay             => g_fofb_cic_delay,
-          g_max_rate          => g_fofb_ratio,
-          g_bus_width         => c_cic_fofb_width,
-          g_with_ce_synch     => true,
-          g_tag_width         => c_adc_tag_width,
-          g_data_mask_width   => g_fofb_cic_mask_samples_width,
-          g_round_convergent  => c_cic_round_convergent)
+          g_input_width                 => g_input_width,
+          g_output_width                => g_fofb_decim_width,
+          g_stages                      => g_fofb_cic_stages,
+          g_delay                       => g_fofb_cic_delay,
+          g_max_rate                    => g_fofb_ratio,
+          g_bus_width                   => c_cic_fofb_width,
+          g_with_ce_synch               => true,
+          g_tag_width                   => c_adc_tag_width,
+          g_data_mask_width             => g_fofb_cic_mask_samples_width,
+          g_round_convergent            => c_cic_round_convergent)
         port map (
-          clk_i               => clk_i,
-          rst_i               => rst_i,
-          ce_i                => ce_adc(chan),
-          ce_out_i            => ce_fofb_cordic(chan),
-          valid_i             => adc_input_abs_valid(chan),
-          data_i              => adc_input_abs(chan),
-          data_tag_i          => adc_input_abs_tag(chan),
+          clk_i                         => clk_i,
+          rst_i                         => rst_i,
+          ce_i                          => ce_adc(chan),
+          ce_out_i                      => ce_fofb_cordic(chan),
+          valid_i                       => adc_input_abs_valid(chan),
+          data_i                        => adc_input_abs(chan),
+          data_tag_i                    => adc_input_abs_tag(chan),
           -- Don't use CIC synchronization feature
-          data_tag_en_i       => '0',
-          data_mask_num_samples_beg_i => (others => '0'),
-          data_mask_en_i      => '0',
-          ratio_i             => c_fofb_ratio_slv,
+          data_tag_en_i                 => '0',
+          data_mask_num_samples_beg_i   => (others => '0'),
+          data_mask_en_i                => '0',
+          ratio_i                       => c_fofb_ratio_slv,
           -- Reuse signal names so we don't have to
           -- change them downstream
-          data_o              => fofb_mag(chan),
-          valid_o             => valid_fofb_cordic(chan));
+          data_o                        => fofb_mag(chan),
+          valid_o                       => valid_fofb_cordic(chan));
 
           -- We don't have phase information for chains
           -- without downconversion
@@ -699,45 +732,65 @@ begin
 
     cmp_monit1_cic : cic_dyn
       generic map (
-        g_input_width      => g_fofb_decim_width,
-        g_output_width     => g_monit_decim_width,
-        g_stages           => g_monit1_cic_stages,
-        g_delay            => g_monit1_cic_delay,
-        g_max_rate         => g_monit1_ratio,
-        g_bus_width        => c_cic_monit1_width,
-        g_with_ce_synch    => true,
-        g_round_convergent => c_cic_round_convergent)
+        g_input_width               => g_fofb_decim_width,
+        g_output_width              => g_monit_decim_width,
+        g_stages                    => g_monit1_cic_stages,
+        g_delay                     => g_monit1_cic_delay,
+        g_max_rate                  => g_monit1_ratio,
+        g_bus_width                 => c_cic_monit1_width,
+        g_with_ce_synch             => true,
+        g_tag_desync_cnt_width      => g_monit1_tag_desync_cnt_width,
+        g_tag_width                 => c_monit1_tag_width,
+        g_data_mask_width           => g_monit1_cic_mask_samples_width,
+        g_round_convergent          => c_cic_round_convergent)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => ce_fofb_cordic(chan),
-        ce_out_i => ce_monit1(chan),
-        valid_i  => valid_fofb_cordic(chan),
-        data_i   => fofb_mag(chan),
-        ratio_i  => c_monit1_ratio_slv,
-        data_o   => monit1_mag(chan),
-        valid_o  => valid_monit1(chan));
+        clk_i                       => clk_i,
+        rst_i                       => rst_i,
+        ce_i                        => ce_fofb_cordic(chan),
+        ce_out_i                    => ce_monit1(chan),
+        valid_i                     => valid_fofb_cordic(chan),
+        data_i                      => fofb_mag(chan),
+        data_tag_i                  => monit1_tag_i,
+        data_tag_en_i               => monit1_tag_en_i,
+        data_tag_desync_cnt_rst_i   => monit1_tag_desync_cnt_rst_i,
+        data_tag_desync_cnt_o       => monit1_tag_desync_cnt(chan),
+        data_mask_num_samples_beg_i => monit1_decim_mask_num_samples_beg_i,
+        data_mask_num_samples_end_i => monit1_decim_mask_num_samples_end_i,
+        data_mask_en_i              => monit1_decim_mask_en_i,
+        ratio_i                     => c_monit1_ratio_slv,
+        data_o                      => monit1_mag(chan),
+        valid_o                     => valid_monit1(chan));
 
     cmp_monit2_cic : cic_dyn
       generic map (
-        g_input_width      => g_monit_decim_width,
-        g_output_width     => g_monit_decim_width,
-        g_stages           => g_monit2_cic_stages,
-        g_delay            => g_monit2_cic_delay,
-        g_max_rate         => g_monit2_ratio,
-        g_bus_width        => c_cic_monit2_width,
-        g_with_ce_synch    => true,
-        g_round_convergent => c_cic_round_convergent)
+        g_input_width               => g_monit_decim_width,
+        g_output_width              => g_monit_decim_width,
+        g_stages                    => g_monit2_cic_stages,
+        g_delay                     => g_monit2_cic_delay,
+        g_max_rate                  => g_monit2_ratio,
+        g_bus_width                 => c_cic_monit2_width,
+        g_with_ce_synch             => true,
+        g_tag_desync_cnt_width      => g_monit2_tag_desync_cnt_width,
+        g_tag_width                 => c_monit2_tag_width,
+        g_data_mask_width           => g_monit2_cic_mask_samples_width,
+        g_round_convergent          => c_cic_round_convergent)
       port map (
-        clk_i    => clk_i,
-        rst_i    => rst_i,
-        ce_i     => ce_monit1(chan),
-        ce_out_i => ce_monit2(chan),
-        valid_i  => valid_monit1(chan),
-        data_i   => monit1_mag(chan),
-        ratio_i  => c_monit2_ratio_slv,
-        data_o   => monit2_mag(chan),
-        valid_o  => valid_monit2(chan));
+        clk_i                       => clk_i,
+        rst_i                       => rst_i,
+        ce_i                        => ce_monit1(chan),
+        ce_out_i                    => ce_monit2(chan),
+        valid_i                     => valid_monit1(chan),
+        data_i                      => monit1_mag(chan),
+        data_tag_i                  => monit_tag_i,
+        data_tag_en_i               => monit_tag_en_i,
+        data_tag_desync_cnt_rst_i   => monit_tag_desync_cnt_rst_i,
+        data_tag_desync_cnt_o       => monit2_tag_desync_cnt(chan),
+        data_mask_num_samples_beg_i => monit_decim_mask_num_samples_beg_i,
+        data_mask_num_samples_end_i => monit_decim_mask_num_samples_end_i,
+        data_mask_en_i              => monit_decim_mask_en_i,
+        ratio_i                     => c_monit2_ratio_slv,
+        data_o                      => monit2_mag(chan),
+        valid_o                     => valid_monit2(chan));
 
 
   end generate gen_ddc;
@@ -765,8 +818,10 @@ begin
       sum_o   => fofb_pos_sum_o);
 
   -- desync counters. Use only one of the channels as a sample
-  tbt_tag_desync_cnt_o <= tbt_tag_desync_cnt(0);
+  tbt_tag_desync_cnt_o    <= tbt_tag_desync_cnt(0);
   fofb_decim_desync_cnt_o <= fofb_tag_desync_cnt(0);
+  monit1_tag_desync_cnt_o <= monit1_tag_desync_cnt(0);
+  monit_tag_desync_cnt_o  <= monit2_tag_desync_cnt(0);
 
   -- Wiring intermediate signals to outputs
 
@@ -789,20 +844,20 @@ begin
   tbt_decim_ch2_q_o <= tbt_q(2);
   tbt_decim_ch3_i_o <= tbt_i(3);
   tbt_decim_ch3_q_o <= tbt_q(3);
-  tbt_decim_valid_o   <= valid_tbt(0);
-  tbt_decim_ce_o      <= ce_adc(0);
+  tbt_decim_valid_o <= valid_tbt(0);
+  tbt_decim_ce_o    <= ce_adc(0);
 
-  tbt_amp_ch0_o <= tbt_mag(0);
-  tbt_amp_ch1_o <= tbt_mag(1);
-  tbt_amp_ch2_o <= tbt_mag(2);
-  tbt_amp_ch3_o <= tbt_mag(3);
+  tbt_amp_ch0_o   <= tbt_mag(0);
+  tbt_amp_ch1_o   <= tbt_mag(1);
+  tbt_amp_ch2_o   <= tbt_mag(2);
+  tbt_amp_ch3_o   <= tbt_mag(3);
   tbt_amp_valid_o <= valid_tbt_cordic(0);
   tbt_amp_ce_o    <= ce_tbt_cordic(0);
 
-  tbt_pha_ch0_o      <= tbt_phase(0);
-  tbt_pha_ch1_o      <= tbt_phase(1);
-  tbt_pha_ch2_o      <= tbt_phase(2);
-  tbt_pha_ch3_o      <= tbt_phase(3);
+  tbt_pha_ch0_o   <= tbt_phase(0);
+  tbt_pha_ch1_o   <= tbt_phase(1);
+  tbt_pha_ch2_o   <= tbt_phase(2);
+  tbt_pha_ch3_o   <= tbt_phase(3);
   tbt_pha_valid_o <= valid_tbt_cordic(0);
   tbt_pha_ce_o    <= ce_tbt_cordic(0);
 
@@ -814,20 +869,20 @@ begin
   fofb_decim_ch2_q_o <= fofb_q(2);
   fofb_decim_ch3_i_o <= fofb_i(3);
   fofb_decim_ch3_q_o <= fofb_q(3);
-  fofb_decim_valid_o   <= valid_fofb(0);
-  fofb_decim_ce_o      <= ce_adc(0);
+  fofb_decim_valid_o <= valid_fofb(0);
+  fofb_decim_ce_o    <= ce_adc(0);
 
-  fofb_amp_ch0_o <= fofb_mag(0);
-  fofb_amp_ch1_o <= fofb_mag(1);
-  fofb_amp_ch2_o <= fofb_mag(2);
-  fofb_amp_ch3_o <= fofb_mag(3);
+  fofb_amp_ch0_o   <= fofb_mag(0);
+  fofb_amp_ch1_o   <= fofb_mag(1);
+  fofb_amp_ch2_o   <= fofb_mag(2);
+  fofb_amp_ch3_o   <= fofb_mag(3);
   fofb_amp_valid_o <= valid_fofb_cordic(0);
   fofb_amp_ce_o    <= ce_fofb_cordic(0);
 
-  fofb_pha_ch0_o      <= fofb_phase(0);
-  fofb_pha_ch1_o      <= fofb_phase(1);
-  fofb_pha_ch2_o      <= fofb_phase(2);
-  fofb_pha_ch3_o      <= fofb_phase(3);
+  fofb_pha_ch0_o   <= fofb_phase(0);
+  fofb_pha_ch1_o   <= fofb_phase(1);
+  fofb_pha_ch2_o   <= fofb_phase(2);
+  fofb_pha_ch3_o   <= fofb_phase(3);
   fofb_pha_valid_o <= valid_fofb_cordic(0);
   fofb_pha_ce_o    <= ce_fofb_cordic(0);
 

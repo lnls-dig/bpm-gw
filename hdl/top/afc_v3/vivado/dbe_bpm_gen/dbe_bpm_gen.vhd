@@ -714,8 +714,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_acq_monit_amp_id               : natural := 16;
   constant c_acq_monit_pos_id               : natural := 17;
   constant c_trigger_sw_clk_id              : natural := 18;
-  constant c_phase_sync_trigger_id          : natural := 19;
-  constant c_phase_sync_trigger_tbt_id      : natural := 20;
+  constant c_phase_sync_trigger_slow_id     : natural := 19;
 
   constant c_trig_num_channels              : natural := 3;
   -- Number of channels per acquisition core
@@ -2995,16 +2994,10 @@ begin
     rffe_swclk_o                            => dsp1_clk_rffe_swap,
 
     -----------------------------
-    -- Synchronization trigger for RFFE swap clock
+    -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_i                             => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_id).pulse,
-
-    -----------------------------
-    -- Synchronization trigger for TBT Filter Chain
-    -----------------------------
-
-    sync_tbt_trig_i                         => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_tbt_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_slow_id).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3226,16 +3219,10 @@ begin
     rffe_swclk_o                            => dsp2_clk_rffe_swap,
 
     -----------------------------
-    -- Synchronization trigger for RFFE swap clock
+    -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_i                             => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_id).pulse,
-
-    -----------------------------
-    -- Synchronization trigger for TBT Filter Chain
-    -----------------------------
-
-    sync_tbt_trig_i                         => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_tbt_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_slow_id).pulse,
 
     -----------------------------
     -- Debug signals

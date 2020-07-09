@@ -28,6 +28,8 @@ entity swap_freqgen is
     clk_i                                   : in  std_logic;
     rst_n_i                                 : in  std_logic;
 
+    en_i                                    : in  std_logic := '1';
+
     sync_trig_i                             : in  std_logic;
 
     -- Swap and de-swap signals
@@ -39,6 +41,7 @@ entity swap_freqgen is
 
     -- Swap frequency settings
     swap_div_f_i                            : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+    swap_div_f_cnt_en_i                     : in  std_logic := '1';
 
     -- De-swap delay setting
     deswap_delay_i                          : in  std_logic_vector(g_delay_vec_width-1 downto 0)
@@ -51,6 +54,7 @@ architecture rtl of swap_freqgen is
     port(
       clk_i       : in  std_logic;
       rst_n_i     : in  std_logic;
+      en_i        : in  std_logic := '1';
       clk_swap_i  : in  std_logic;
       swap_mode_i : in  t_swap_mode;
       swap_o      : out std_logic;
@@ -85,6 +89,7 @@ begin
   port map (
     clk_i        =>  clk_i,
     rst_n_i      =>  rst_n_i,
+    en_i         =>  '1',
     clk_swap_i   =>  clk_swap,
     swap_mode_i  =>  swap_mode_i,
     swap_o       =>  swap_o,
@@ -113,8 +118,10 @@ begin
         cnst_swap_div_f_old <= 0;
         cnst_swap_div_f     <= 0;
       else
-        cnst_swap_div_f_old <= (to_integer(unsigned(swap_div_f_i))-1);
-        cnst_swap_div_f     <= cnst_swap_div_f_old;
+        if en_i = '1' then
+          cnst_swap_div_f_old <= (to_integer(unsigned(swap_div_f_i))-1);
+          cnst_swap_div_f     <= cnst_swap_div_f_old;
+        end if;
       end if;
     end if;
   end process p_reg_swap_div;
@@ -126,21 +133,31 @@ begin
         count <= 0;
         clk_swap  <= '1';
       else
-        -- Clear SW counter if we received a new SW divider period
-        -- This is important to ensure that we don't swap signals
-        -- between crossed antennas
-        if cnst_swap_div_f /= cnst_swap_div_f_old or
-            (sync_trig_i = '1' and           -- sync trig arrived,
-                (count /= cnst_swap_div_f    -- but no sync necessary
-                or clk_swap = '0')) then     -- unless it's synchronized with a different phase, then reset it
+        if en_i = '1' then
+          -- Clear SW counter if we received a new SW divider period
+          -- This is important to ensure that we don't swap signals
+          -- between crossed antennas
+          if cnst_swap_div_f /= cnst_swap_div_f_old then
+            count <= 0;
+            clk_swap <= '1';
+          elsif swap_div_f_cnt_en_i = '1' then
+            if count = cnst_swap_div_f then
+              count <= 0;
+              clk_swap  <= not clk_swap;
+            else
+              count <= count + 1;
+            end if;
+          end if;
+        end if;
+
+        -- Clear SW counter on sync_trig regardless of en_i
+        if(sync_trig_i = '1' and           -- sync trig arrived,
+            (count /= cnst_swap_div_f    -- but no sync necessary
+            or clk_swap = '0')) then     -- unless it's synchronized with a different phase, then reset it
           count <= 0;
           clk_swap <= '1';
-        elsif count = cnst_swap_div_f then
-          count <= 0;
-          clk_swap  <= not clk_swap;
-        else
-          count <= count + 1;
         end if;
+
       end if;
     end if;
   end process p_freq_swap;

@@ -25,6 +25,8 @@ port(
   clk_i                                     :    in  std_logic;
   rst_n_i                                   :    in  std_logic;
 
+  en_i                                      :    in  std_logic := '1';
+
   -- Swap master clock
   clk_swap_i                                :    in  std_logic;
 
@@ -50,33 +52,39 @@ begin
       swap <= '0';
       deswap <= '0';
     else
-      case swap_mode_i is
-        when c_swmode_swap_deswap =>
-          if clk_swap_i = '1' then
-            swap <= '1';
-            deswap <= '1';
-          else
+      if en_i = '1' then
+        case swap_mode_i is
+          when c_swmode_swap_deswap =>
+            if clk_swap_i = '1' then
+              swap <= '1';
+              deswap <= '1';
+            else
+              swap <= '0';
+              deswap <= '0';
+            end if;
+
+          when c_swmode_static_direct =>
             swap <= '0';
             deswap <= '0';
-          end if;
 
-        when c_swmode_static_direct =>
-          swap <= '0';
-          deswap <= '0';
-
-        when c_swmode_static_inverted =>
-          swap <= '1';
-          deswap <= '0';
-
-        when c_swmode_rffe_swap =>
-          if clk_swap_i = '1' then
+          when c_swmode_static_inverted =>
             swap <= '1';
-          else
-            swap <= '0';
-          end if;
+            deswap <= '0';
 
-          deswap <= '0';
-      end case;
+          when c_swmode_rffe_swap =>
+            if clk_swap_i = '1' then
+              swap <= '1';
+            else
+              swap <= '0';
+            end if;
+
+            deswap <= '0';
+
+          when others =>
+            swap <= '0';
+            deswap <= '0';
+        end case;
+      end if;
     end if;
   end if;
   end process p_swap_mode;

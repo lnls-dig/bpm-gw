@@ -213,10 +213,14 @@ package bpm_cores_pkg is
       g_monit1_cic_stages        : natural  := 1;
       g_monit1_ratio             : natural  := 100;
       g_monit1_cic_ratio         : positive := 8;
-      g_monit2_cic_delay         : natural  := 1;
-      g_monit2_cic_stages        : natural  := 1;
-      g_monit2_ratio             : natural  := 100;
+      g_monit1_tag_desync_cnt_width : natural := 14;
+      g_monit1_cic_mask_samples_width : natural := 16;
+      g_monit2_cic_delay         : natural := 1;
+      g_monit2_cic_stages        : natural := 1;
+      g_monit2_ratio             : natural := 100;
       g_monit2_cic_ratio         : positive := 8;
+      g_monit2_tag_desync_cnt_width : natural := 14;
+      g_monit2_cic_mask_samples_width : natural := 16;
       g_monit_decim_width        : natural  := 32;
       g_tbt_cordic_stages        : positive := 12;
       g_tbt_cordic_iter_per_clk  : positive := 3;
@@ -304,12 +308,26 @@ package bpm_cores_pkg is
       fofb_pha_ch3_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
       fofb_pha_valid_o   : out std_logic;
       fofb_pha_ce_o      : out std_logic;
+      monit1_tag_i                        : in std_logic_vector(0 downto 0);
+      monit1_tag_en_i                     : in std_logic := '0';
+      monit1_tag_desync_cnt_rst_i         : in std_logic := '0';
+      monit1_tag_desync_cnt_o             : out std_logic_vector(g_monit1_tag_desync_cnt_width-1 downto 0);
+      monit1_decim_mask_en_i              : in std_logic := '0';
+      monit1_decim_mask_num_samples_beg_i : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
+      monit1_decim_mask_num_samples_end_i : in unsigned(g_monit1_cic_mask_samples_width-1 downto 0) := (others => '0');
       monit1_amp_ch0_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit1_amp_ch1_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit1_amp_ch2_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit1_amp_ch3_o   : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit1_amp_valid_o : out std_logic;
       monit1_amp_ce_o    : out std_logic;
+      monit_tag_i                         : in std_logic_vector(0 downto 0);
+      monit_tag_en_i                      : in std_logic := '0';
+      monit_tag_desync_cnt_rst_i          : in std_logic := '0';
+      monit_tag_desync_cnt_o              : out std_logic_vector(g_monit2_tag_desync_cnt_width-1 downto 0);
+      monit_decim_mask_en_i               : in std_logic := '0';
+      monit_decim_mask_num_samples_beg_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
+      monit_decim_mask_num_samples_end_i  : in unsigned(g_monit2_cic_mask_samples_width-1 downto 0) := (others => '0');
       monit_amp_ch0_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit_amp_ch1_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
       monit_amp_ch2_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
@@ -351,6 +369,8 @@ package bpm_cores_pkg is
     clk_i                                   : in  std_logic;
     rst_n_i                                 : in  std_logic;
 
+    en_i                                    : in  std_logic := '1';
+
     sync_trig_i                             : in  std_logic;
 
     -- Swap and de-swap signals
@@ -362,6 +382,7 @@ package bpm_cores_pkg is
 
     -- Swap frequency settings
     swap_div_f_i                            : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+    swap_div_f_cnt_en_i                     : in  std_logic := '1';
 
     -- De-swap delay setting
     deswap_delay_i                          : in  std_logic_vector(g_delay_vec_width-1 downto 0)
@@ -393,6 +414,8 @@ package bpm_cores_pkg is
   port(
     clk_i                                     :    in  std_logic;
     rst_n_i                                   :    in  std_logic;
+
+    en_i                                      :    in  std_logic := '1';
 
     -- Swap master clock
     clk_swap_i                                :    in  std_logic;
@@ -789,16 +812,10 @@ package bpm_cores_pkg is
         rffe_swclk_o : out std_logic;
 
         -----------------------------
-        -- Synchronization trigger for RFFE swap clock
+        -- Synchronization trigger for all rates. Slow clock
         -----------------------------
 
-        sync_trig_i  : in std_logic;
-
-        -----------------------------
-        -- Synchronization trigger for TBT Filter Chain
-        -----------------------------
-
-        sync_tbt_trig_i                           : in std_logic := '0';
+        sync_trig_slow_i  : in std_logic;
 
         -----------------------------
         -- Debug signals
@@ -1029,16 +1046,10 @@ package bpm_cores_pkg is
         rffe_swclk_o : out std_logic;
 
         -----------------------------
-        -- Synchronization trigger for RFFE swap clock
+        -- Synchronization trigger for all rates. Slow clock
         -----------------------------
 
-        sync_trig_i : in std_logic;
-
-        -----------------------------
-        -- Synchronization trigger for TBT Filter Chain
-        -----------------------------
-
-        sync_tbt_trig_i                           : in std_logic := '0';
+        sync_trig_slow_i  : in std_logic;
 
         -----------------------------
         -- Debug signals

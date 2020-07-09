@@ -77,9 +77,11 @@ architecture rtl of bpm_swap is
   port(
     clk_i              : in  std_logic;
     rst_n_i            : in  std_logic;
+    en_i               : in  std_logic := '1';
     sync_trig_i        : in  std_logic;
     swap_mode_i        : in  std_logic_vector(1 downto 0);
     swap_div_f_i       : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+    swap_div_f_cnt_en_i : in  std_logic := '1';
     deswap_delay_i     : in  std_logic_vector(g_delay_vec_width-1 downto 0);
     swap_o             : out std_logic;
     deswap_o           : out std_logic
