@@ -139,13 +139,15 @@ begin
           -- Clear SW counter if we received a new SW divider period
           -- This is important to ensure that we don't swap signals
           -- between crossed antennas
-          if cnst_swap_div_f /= cnst_swap_div_f_old or
-              synch_pending = '1' then
+          if cnst_swap_div_f /= cnst_swap_div_f_old then
             count <= 0;
             clk_swap <= '1';
-            synch_pending <= '0';
           elsif swap_div_f_cnt_en_i = '1' then
-            if count = cnst_swap_div_f then
+            if synch_pending = '1' then
+              count <= 0;
+              clk_swap <= '1';
+              synch_pending <= '0';
+            elsif count = cnst_swap_div_f then
               count <= 0;
               clk_swap  <= not clk_swap;
             else
