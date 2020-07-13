@@ -1561,13 +1561,13 @@ begin
    -- Auxiliary clock
   cmp_aux_sys_pll_inst : sys_pll
   generic map (
-    -- RF*5/36 ~ 69.44 MHz input clock ~ 14.4 ns
-    g_clkin_period                          => 14.400,
+    -- RF/8 ~ 62.500 input clock ~ 16 ns
+    g_clkin_period                          => 16.000,
     g_divclk_divide                         => 1,
-    g_clkbout_mult_f                        => 18,
+    g_clkbout_mult_f                        => 16,
 
     -- 125 MHz output clock
-    g_clk0_divide_f                         => 10
+    g_clk0_divide_f                         => 8
   )
   port map (
     rst_i                                   => '0',
