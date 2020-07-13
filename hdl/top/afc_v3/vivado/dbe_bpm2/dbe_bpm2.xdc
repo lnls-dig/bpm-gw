@@ -1057,7 +1057,7 @@ set_property IDELAY_VALUE 0 [get_cells -hier -filter {NAME =~ *cmp2_xwb_fmc250m_
 create_clock -period 8.000 -name sys_clk_p_i       [get_ports sys_clk_p_i]
 
 # 64.440 MHz AMC TCLKB input clock
-create_clock -period 14.400 -name aux_clk_p_i      [get_ports aux_clk_p_i]
+create_clock -period 16.000 -name aux_clk_p_i      [get_ports aux_clk_p_i]
 
 ## 100 MHz wihsbone clock
 create_generated_clock -name clk_sys               [get_pins -hier -filter {NAME =~ *cmp_sys_pll_inst/cmp_sys_pll/CLKOUT0}]
