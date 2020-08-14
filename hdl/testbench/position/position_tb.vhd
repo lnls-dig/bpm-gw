@@ -29,6 +29,7 @@ use std.textio.all;
 
 library work;
 use work.dsp_cores_pkg.all;
+use work.bpm_cores_pkg.all;
 use work.machine_pkg;
 
 entity position_tb is
@@ -155,131 +156,6 @@ architecture test of position_tb is
 
   end procedure p_out_file;
 
-
-  component position_calc is
-    generic (
-      g_input_width              : natural;
-      g_mixed_width              : natural;
-      g_adc_ratio                : natural;
-      g_dds_width                : natural;
-      g_dds_points               : natural;
-      g_sin_file                 : string;
-      g_cos_file                 : string;
-      g_tbt_cic_delay            : natural;
-      g_tbt_cic_stages           : natural;
-      g_tbt_ratio                : natural;
-      g_tbt_decim_width          : natural;
-      g_fofb_cic_delay           : natural;
-      g_fofb_cic_stages          : natural;
-      g_fofb_ratio               : natural;
-      g_fofb_decim_width         : natural;
-      g_monit1_cic_delay         : natural;
-      g_monit1_cic_stages        : natural;
-      g_monit1_ratio             : natural;
-      g_monit1_cic_ratio         : positive;
-      g_monit2_cic_delay         : natural;
-      g_monit2_cic_stages        : natural;
-      g_monit2_ratio             : natural;
-      g_monit2_cic_ratio         : positive;
-      g_monit_decim_width        : natural;
-      g_tbt_cordic_stages        : positive;
-      g_tbt_cordic_iter_per_clk  : positive;
-      g_tbt_cordic_ratio         : positive;
-      g_fofb_cordic_stages       : positive;
-      g_fofb_cordic_iter_per_clk : positive;
-      g_fofb_cordic_ratio        : positive;
-      g_k_width                  : natural;
-      g_IQ_width                 : natural);
-    port (
-      adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
-      adc_ch1_i          : in  std_logic_vector(g_input_width-1 downto 0);
-      adc_ch2_i          : in  std_logic_vector(g_input_width-1 downto 0);
-      adc_ch3_i          : in  std_logic_vector(g_input_width-1 downto 0);
-      clk_i              : in  std_logic;
-      rst_i              : in  std_logic;
-      ksum_i             : in  std_logic_vector(g_k_width-1 downto 0);
-      kx_i               : in  std_logic_vector(g_k_width-1 downto 0);
-      ky_i               : in  std_logic_vector(g_k_width-1 downto 0);
-      mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch0_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch1_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch1_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch2_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch2_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch3_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_ch3_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
-      mix_valid_o        : out std_logic;
-      mix_ce_o           : out std_logic;
-      tbt_decim_ch0_i_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch0_q_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch1_i_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch1_q_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch2_i_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch2_q_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch3_i_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_ch3_q_o  : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_decim_valid_o  : out std_logic;
-      tbt_decim_ce_o     : out std_logic;
-      tbt_amp_ch0_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_amp_ch1_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_amp_ch2_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_amp_ch3_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_amp_valid_o    : out std_logic;
-      tbt_amp_ce_o       : out std_logic;
-      tbt_pha_ch0_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pha_ch1_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pha_ch2_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pha_ch3_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pha_valid_o    : out std_logic;
-      tbt_pha_ce_o       : out std_logic;
-      fofb_decim_ch0_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch0_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch1_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch1_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch2_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch2_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch3_i_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_ch3_q_o : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_decim_valid_o : out std_logic;
-      fofb_decim_ce_o    : out std_logic;
-      fofb_amp_ch0_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_amp_ch1_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_amp_ch2_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_amp_ch3_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_amp_valid_o   : out std_logic;
-      fofb_amp_ce_o      : out std_logic;
-      fofb_pha_ch0_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pha_ch1_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pha_ch2_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pha_ch3_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pha_valid_o   : out std_logic;
-      fofb_pha_ce_o      : out std_logic;
-      monit_amp_ch0_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_amp_ch1_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_amp_ch2_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_amp_ch3_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_amp_valid_o  : out std_logic;
-      monit_amp_ce_o     : out std_logic;
-      tbt_pos_x_o        : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pos_y_o        : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pos_q_o        : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pos_sum_o      : out std_logic_vector(g_tbt_decim_width-1 downto 0);
-      tbt_pos_valid_o    : out std_logic;
-      tbt_pos_ce_o       : out std_logic;
-      fofb_pos_x_o       : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pos_y_o       : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pos_q_o       : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pos_sum_o     : out std_logic_vector(g_fofb_decim_width-1 downto 0);
-      fofb_pos_valid_o   : out std_logic;
-      fofb_pos_ce_o      : out std_logic;
-      monit_pos_x_o      : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_pos_y_o      : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_pos_q_o      : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_pos_sum_o    : out std_logic_vector(g_monit_decim_width-1 downto 0);
-      monit_pos_valid_o  : out std_logic;
-      monit_pos_ce_o     : out std_logic);
-  end component position_calc;
-
 begin
 
   clk_gen : process
@@ -348,8 +224,6 @@ begin
       g_adc_ratio               => c_adc_ratio,
       g_dds_width               => c_dds_width,
       g_dds_points              => c_dds_points,
-      g_sin_file                => "../../../dsp-cores/hdl/modules/position_calc/dds_sin.nif",
-      g_cos_file                => "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif",
       g_tbt_cic_delay           => c_tbt_cic_delay,
       g_tbt_cic_stages          => c_tbt_cic_stages,
       g_tbt_ratio               => c_tbt_ratio,
@@ -382,6 +256,8 @@ begin
       adc_ch1_i => b,
       adc_ch2_i => c,
       adc_ch3_i => d,
+      adc_valid_i => '1',
+      adc_tag_i => (others => '0'),
 
       clk_i => clock,
       rst_i => reset,
@@ -410,6 +286,7 @@ begin
       tbt_decim_ch3_q_o  => open,
       tbt_decim_valid_o  => open,
       tbt_decim_ce_o     => open,
+      tbt_tag_i          => (others => '0'),
       tbt_amp_ch0_o      => a_tbt_out,
       tbt_amp_ch1_o      => b_tbt_out,
       tbt_amp_ch2_o      => c_tbt_out,
@@ -446,6 +323,8 @@ begin
       monit_amp_ch3_o    => open,
       monit_amp_valid_o  => open,
       monit_amp_ce_o     => open,
+      monit_tag_i        => (others => '0'),
+      monit1_tag_i       => (others => '0'),
 
       tbt_pos_x_o     => tbt_pos_x_out,
       tbt_pos_y_o     => tbt_pos_y_out,
