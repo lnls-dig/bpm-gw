@@ -78,13 +78,13 @@ architecture test of position_tb is
   constant c_monit2_cic_ratio  : positive := machine_pkg.c_pos_calc_monit2_cic_ratio;
 
   constant c_ksum : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e8, 24));
+    std_logic_vector(to_unsigned(1e7, 24));
 
   constant c_kx : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e8, 24));
+    std_logic_vector(to_unsigned(1e7, 24));
 
   constant c_ky : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e8, 24));
+    std_logic_vector(to_unsigned(1e7, 24));
 
 
   signal clock     : std_logic := '0';
