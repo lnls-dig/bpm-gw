@@ -388,6 +388,9 @@ architecture rtl of position_calc is
   signal fofb_x_pre, fofb_y_pre, fofb_q_pre, fofb_sum_pre :
     std_logic_vector(g_fofb_decim_width-1 downto 0) := (others => '0');
 
+  signal fofb_pos_x_int, fofb_pos_y_int, fofb_pos_q_int, fofb_pos_sum_int :
+    std_logic_vector(g_fofb_decim_width-1 downto 0) := (others => '0');
+
   signal tbt_x_pre, tbt_y_pre, tbt_q_pre, tbt_sum_pre :
     std_logic_vector(g_tbt_decim_width-1 downto 0) := (others => '0');
 
@@ -782,6 +785,11 @@ begin
 
   end generate gen_ddc;
 
+  -- x, y, and q are fixed point with:
+  -- sign bit = MSB
+  -- word length = g_width
+  -- integer length = g_k_width + 1
+  -- fractional length = g_width - (integer length)
   cmp_fofb_ds : delta_sigma
     generic map (
       g_width   => g_fofb_decim_width,
@@ -799,10 +807,10 @@ begin
       valid_i => valid_fofb_cordic(0),
       valid_o => valid_fofb_ds,
       rst_i   => rst_i,
-      x_o     => fofb_pos_x_o,
-      y_o     => fofb_pos_y_o,
-      q_o     => fofb_pos_q_o,
-      sum_o   => fofb_pos_sum_o);
+      x_o     => fofb_pos_x_int,
+      y_o     => fofb_pos_y_int,
+      q_o     => fofb_pos_q_int,
+      sum_o   => fofb_pos_sum_int);
 
   -- desync counters. Use only one of the channels as a sample
   tbt_tag_desync_cnt_o    <= tbt_tag_desync_cnt(0);
@@ -890,10 +898,15 @@ begin
   fofb_pos_valid_o <= valid_fofb_ds;
   fofb_pos_ce_o    <= ce_fofb_cordic(0);
 
+  fofb_pos_x_o   <= std_logic_vector(shift_right(signed(fofb_pos_x_int), g_fofb_decim_width-g_k_width));
+  fofb_pos_y_o   <= std_logic_vector(shift_right(signed(fofb_pos_y_int), g_fofb_decim_width-g_k_width));
+  fofb_pos_q_o   <= std_logic_vector(shift_right(signed(fofb_pos_q_int), g_fofb_decim_width-g_k_width));
+  fofb_pos_sum_o <= fofb_pos_sum_int;
+
+  -- Removed to speed synthesis during test
   tbt_pos_valid_o <= '0';
   tbt_pos_ce_o    <= '0';
 
-  -- Removed to speed synthesis during test
   tbt_pos_x_o   <= (others => '0');
   tbt_pos_y_o   <= (others => '0');
   tbt_pos_q_o   <= (others => '0');
