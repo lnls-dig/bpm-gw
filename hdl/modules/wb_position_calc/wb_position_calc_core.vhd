@@ -33,8 +33,6 @@ use work.position_calc_core_pkg.all;
 use work.counters_gen_pkg.all;
 -- WB registers
 use work.pos_calc_wbgen2_pkg.all;
--- Common Cores
-use work.ifc_common_pkg.all;
 
 entity wb_position_calc_core is
 generic
@@ -340,7 +338,8 @@ architecture rtl of wb_position_calc_core is
   constant c_monit1_ratio_log2              : natural := f_log2_size(c_monit1_ratio+1);
   constant c_monit2_ratio_log2              : natural := f_log2_size(c_monit2_ratio+1);
 
-  constant c_k_width                        : natural := 24;
+  -- This must not exceed the width determined at the register file
+  constant c_k_width                        : natural := g_k_width;
 
   constant c_cnt_width_raw                  : natural := g_adc_ratio;
   constant c_cnt_width_mix                  : natural := g_IQ_width;
@@ -1335,7 +1334,7 @@ begin
     g_fofb_cordic_ratio                     => g_fofb_cordic_ratio,
 
     -- width of K constants
-    g_k_width                               => g_k_width,
+    g_k_width                               => c_k_width,
 
     --width for IQ output
     g_IQ_width                              => g_IQ_width
