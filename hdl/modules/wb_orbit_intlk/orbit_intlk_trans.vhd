@@ -267,7 +267,7 @@ begin
       end if;
     end process;
 
-    -- Divide by 2
+    -- Divide by 2 and take absolute value for comparison
     p_trans_divide : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
@@ -275,7 +275,7 @@ begin
           trans(i) <= (others => '0');
           trans_valid(i) <= '0';
         else
-          trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
+          trans(i) <= std_logic_vector(abs(shift_right(signed(trans_sum_reg(i)), 1)));
           trans_valid(i) <= trans_sum_valid_reg(i);
         end if;
       end if;
