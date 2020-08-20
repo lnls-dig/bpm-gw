@@ -165,6 +165,7 @@ architecture rtl of orbit_intlk_ang is
   signal ang_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
+  signal ang_intlk_det_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_intlk_ltc_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_intlk_bigger_or  : t_bit_array(c_NUM_CHANNELS downto 0);
   signal ang_intlk_bigger     : std_logic;
@@ -328,6 +329,8 @@ begin
       end if;
     end process;
 
+    ang_intlk_det_all(i) <= ang_bigger_reg(i) and ang_bigger_valid_reg(i);
+
     -- latch all interlocks
     p_latch : process(fs_clk_i)
     begin
@@ -339,8 +342,7 @@ begin
           -- only clear on "clear" signal
           if intlk_ang_clr_i = '1' then
             ang_intlk_ltc_all(i) <= '0';
-          elsif ang_bigger_reg(i) = '1' and
-                ang_bigger_valid_reg(i) = '1' and
+          elsif ang_intlk_det_all(i) = '1' and
                 intlk_ang_en_i = '1' then
             ang_intlk_ltc_all(i) <= '1';
           end if;
@@ -349,7 +351,7 @@ begin
           if intlk_ang_clr_i = '1' or intlk_ang_en_i = '0' then
             ang_intlk_all(i) <= '0';
           else
-            ang_intlk_all(i) <= ang_intlk_ltc_all(i);
+            ang_intlk_all(i) <= ang_intlk_det_all(i);
           end if;
         end if;
       end if;

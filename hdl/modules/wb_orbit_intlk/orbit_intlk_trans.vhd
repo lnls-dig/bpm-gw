@@ -164,6 +164,7 @@ architecture rtl of orbit_intlk_trans is
   signal trans_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
+  signal trans_intlk_det_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_intlk_ltc_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_intlk_bigger_or  : t_bit_array(c_NUM_CHANNELS downto 0);
   signal trans_intlk_bigger     : std_logic;
@@ -313,6 +314,8 @@ begin
       end if;
     end process;
 
+    trans_intlk_det_all(i) <= trans_bigger_reg(i) and trans_bigger_valid_reg(i);
+
     -- latch all interlocks
     p_latch : process(fs_clk_i)
     begin
@@ -324,8 +327,7 @@ begin
           -- only clear on "clear" signal
           if intlk_trans_clr_i = '1' then
             trans_intlk_ltc_all(i) <= '0';
-          elsif trans_bigger_reg(i) = '1' and
-                trans_bigger_valid_reg(i) = '1' and
+          elsif trans_intlk_det_all(i) = '1' and
                 intlk_trans_en_i = '1' then
             trans_intlk_ltc_all(i) <= '1';
           end if;
@@ -334,7 +336,7 @@ begin
           if intlk_trans_clr_i = '1' or intlk_trans_en_i = '0' then
             trans_intlk_all(i) <= '0';
           else
-            trans_intlk_all(i) <= trans_intlk_ltc_all(i);
+            trans_intlk_all(i) <= trans_intlk_det_all(i);
           end if;
         end if;
       end if;
