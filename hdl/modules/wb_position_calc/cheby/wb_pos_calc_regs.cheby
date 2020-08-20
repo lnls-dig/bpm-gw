@@ -1,0 +1,1987 @@
+memory-map:
+  bus: wb-32-be
+  name: pos_calc
+  description: Position Calculation Core registers
+  comment: |
+    Wishbone slave for Position Calculation Core
+  x-wbgen:
+    hdl_entity: wb_pos_calc_regs
+  children:
+# --------------------------------------------
+# ------- Config Threshold Registers ---------
+# --------------------------------------------
+  - reg:
+      name: ds_tbt_thres
+      address: 0x00000000
+      width: 32
+      access: rw
+      description: Config divisor threshold TBT register
+      comment: |
+        Config Divisor for TBT rate.
+        Minimum amplitude sum in which the position
+        calculation is performed
+      children:
+      - field:
+          name: val
+          range: 25-0
+          description: Config divisor threshold TBT
+          comment: |
+            Minimum amplitude sum in which the position
+            calculation for TBT rate is performed, in FIX26_22
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-26
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: ds_fofb_thres
+      address: 0x00000004
+      width: 32
+      access: rw
+      description: Config divisor threshold FOFB register
+      comment: |
+        Config Divisor for FOFB rate.
+        Minimum amplitude sum in which the position
+        calculation is performed
+      children:
+      - field:
+          name: val
+          range: 25-0
+          description: Config divisor threshold FOFB
+          comment: |
+            Minimum amplitude sum in which the position
+            calculation for FOFB rate is performed, in FIX26_22
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-26
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: ds_monit_thres
+      address: 0x00000008
+      width: 32
+      access: rw
+      description: Config divisor threshold Monit. register
+      comment: |
+        Config Divisor for Monit. rate.
+        Minimum amplitude sum in which the position
+        calculation is performed
+      children:
+      - field:
+          name: val
+          range: 25-0
+          description: Config Divisor Threshold Monit.
+          comment: |
+            Minimum amplitude sum in which the position
+            calculation for Monit. rate is performed, in FIX26_22
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-26
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+# --------------------------------------------
+# -------  Kx, Ky and Ksum Registers ---------
+# --------------------------------------------
+  - reg:
+      name: kx
+      address: 0x0000000c
+      width: 32
+      access: rw
+      description: BPM sensitivity (X axis) parameter register
+      comment: |
+        BPM sensitivity (X axis) parameter
+      children:
+      - field:
+          name: val
+          range: 24-0
+          description: BPM sensitivity (X axis) parameter register
+          comment: |
+            BPM sensitivity (X axis) parameter, in UFIX25_0.
+            It effectively multiplies the calculated position
+            with a determined value. Typical values lie around
+            10000000d
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: ky
+      address: 0x00000010
+      width: 32
+      access: rw
+      description: BPM sensitivity (Y axis) parameter register
+      comment: |
+        BPM sensitivity (Y axis) parameter
+      children:
+      - field:
+          name: val
+          range: 24-0
+          description: BPM sensitivity (Y axis) parameter register
+          comment: |
+            BPM sensitivity (Y axis) parameter, in UFIX25_0.
+            It effectively multiplies the calculated position
+            with a determined value. Typical values lie around
+            10000000d
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: ksum
+      address: 0x00000014
+      width: 32
+      access: rw
+      description: BPM sensitivity (Sum) parameter register
+      comment: |
+        BPM sensitivity (Sum) parameter
+      children:
+      - field:
+          name: val
+          range: 24-0
+          description: BPM sensitivity (Sum) parameter register
+          comment: |
+            BPM sensitivity (Sum) parameter, in FIX25_24.
+            It effectively multiplies the calculated position
+            with a determined value. Typical values lie around
+            1.0d
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+# --------------------------------------------
+# -------------  DSP Counters ----------------
+# --------------------------------------------
+  - reg:
+      name: dsp_ctnr_tbt
+      address: 0x00000018
+      width: 32
+      access: ro
+      description: DSP TBT incorrect TDM counter
+      comment: |
+        This register counts the number of errors on TDM tranfers
+        for TBT DSP chain
+      children:
+      - field:
+          name: ch01
+          range: 15-0
+          description: TBT incorrect counter for channels 0/1 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels 0/1 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: ch23
+          range: 31-16
+          description: TBT incorrect counter for channels 2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels 2/3 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: dsp_ctnr_fofb
+      address: 0x0000001c
+      width: 32
+      access: ro
+      description: DSP FOFB incorrect TDM counter
+      comment: |
+        This register counts the number of errors on TDM tranfers
+        for FOFB DSP chain
+      children:
+      - field:
+          name: ch01
+          range: 15-0
+          description: FOFB incorrect counter for channels 0/1 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels 0/1 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: ch23
+          range: 31-16
+          description: FOFB incorrect counter for channels 2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels 2/3 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: dsp_ctnr1_monit
+      address: 0x00000020
+      width: 32
+      access: ro
+      description: DSP Monit. incorrect TDM counter part 1
+      comment: |
+        This register counts the number of errors on TDM tranfers
+        for CIC and CFIR filters of the Monit. DSP chain
+      children:
+      - field:
+          name: cic
+          range: 15-0
+          description: Monit. CIC incorrect counter for channels 0/1/2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels  0/1/2/3 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: cfir
+          range: 31-16
+          description: Monit. CFIR incorrect counter for channels 0/1/2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels 0/1/2/3 (multiplexed)
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: dsp_ctnr2_monit
+      address: 0x00000024
+      width: 32
+      access: ro
+      description: DSP Monit. incorrect TDM counter part 2
+      comment: |
+        This register counts the number of errors on TDM tranfers
+        for PFIR filter of the Monit. and Monit_01 DSP chain
+      children:
+      - field:
+          name: pfir
+          range: 15-0
+          description: Monit. PFIR incorrect counter for channels 0/1/2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels  0/1/2/3 (multiplexed) on Monit. chain
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: fir_01
+          range: 31-16
+          description: Monit. 0.1 Hz incorrect counter for channels 0/1/2/3 (multiplexed)
+          comment: |
+            This register holds the number of incorrect transfers
+            on TDM for channels  0/1/2/3 (multiplexed) on Monit_01 chain
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: dsp_err_clr
+      address: 0x00000028
+      width: 32
+      access: wo
+      description: DSP error clearing
+      comment: |
+        This register clears the error counters
+      children:
+      - field:
+          name: tbt
+          range: 0
+          description: Clear TBT error counters
+          comment: |
+            This register clears the error counter for the TBT rate
+            write 0: no effect
+            write 1: clear error counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: fofb
+          range: 1
+          description: Clear FOFB error counters
+          comment: |
+            This register clears the error counter for the FOFB rate
+            write 0: no effect
+            write 1: clear error counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: monit_part1
+          range: 2
+          description: Clear Monit. CIC and CFIR error counters
+          comment: |
+            This register clears the error counter for the CIC and CFIR rate
+            write 0: no effect
+            write 1: clear error counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: monit_part2
+          range: 3
+          description: Clear Monit. PFIR and Monit. 0.1 error counters
+          comment: |
+            This register clears the error counter for the Monit. PFIR
+            and Monit. 0.1 rate
+            write 0: no effect
+            write 1: clear error counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+# --------------------------------------------
+# -----  DDS General Config Registers --------
+# --------------------------------------------
+  - reg:
+      name: dds_cfg
+      address: 0x0000002c
+      width: 32
+      access: rw
+      description: DDS general config registers for all channels
+      comment: |
+        DDS general config registers for all channels
+      children:
+      - field:
+          name: valid_ch0
+          range: 0
+          description: Valid signal for channel 0 DDS
+          comment: |
+            Valid signal for channel 0 DDS:
+            write 0: no effect
+            write 1: write phase increment and offset into DDS
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: test_data
+          range: 1
+          description: Test data counter for all channels
+          comment: |
+            Test data counter for all channels:
+            write 0: real data
+            write 1: test counter data
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: reserved_ch0
+          range: 7-2
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+      - field:
+          name: valid_ch1
+          range: 8
+          description: Valid signal for channel 1 DDS
+          comment: |
+            Valid signal for channel 1 DDS:
+            write 0: no effect
+            write 1: write phase increment and offset into DDS
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: reserved_ch1
+          range: 15-9
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+      - field:
+          name: valid_ch2
+          range: 16
+          description: Valid signal for channel 2 DDS
+          comment: |
+            Valid signal for channel 2 DDS:
+            write 0: no effect
+            write 1: write phase increment and offset into DDS
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: reserved_ch2
+          range: 23-17
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+      - field:
+          name: valid_ch3
+          range: 24
+          description: Valid signal for channel 3 DDS
+          comment: |
+            Valid signal for channel 3 DDS:
+            write 0: no effect
+            write 1: write phase increment and offset into DDS
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: WRITE_ONLY
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: reserved_ch3
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+# --------------------------------------------
+# ----- DDS Phase Increment Registers --------
+# --------------------------------------------
+  - reg:
+      name: dds_pinc_ch0
+      address: 0x00000030
+      width: 32
+      access: rw
+      description: DDS phase increment parameter register for channel 0
+      comment: |
+        DDS phase increment parameter register for channel 0
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase increment parameter register for channel 0
+          comment: |
+            DDS phase increment parameter register for channel 0.
+            It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,
+            in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_pinc_ch1
+      address: 0x00000034
+      width: 32
+      access: rw
+      description: DDS phase increment parameter register for channel 1
+      comment: |
+        DDS phase increment parameter register for channel 1
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase increment parameter register for channel 1
+          comment: |
+            DDS phase increment parameter register for channel 1.
+            It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,
+            in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_pinc_ch2
+      address: 0x00000038
+      width: 32
+      access: rw
+      description: DDS phase increment parameter register for channel 2
+      comment: |
+        DDS phase increment parameter register for channel 2
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase increment parameter register for channel 2
+          comment: |
+            DDS phase increment parameter register for channel 2.
+            It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,
+            in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_pinc_ch3
+      address: 0x0000003c
+      width: 32
+      access: rw
+      description: DDS phase increment parameter register for channel 3
+      comment: |
+        DDS phase increment parameter register for channel 3
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase increment parameter register for channel 3
+          comment: |
+            DDS phase increment parameter register for channel 3.
+            It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,
+            in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+# --------------------------------------------
+# ------ DDS Phase Offset  Registers ---------
+# --------------------------------------------
+  - reg:
+      name: dds_poff_ch0
+      address: 0x00000040
+      width: 32
+      access: rw
+      description: DDS phase offset parameter register for channel 0
+      comment: |
+        DDS phase offset parameter register for channel 0
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase offset parameter register for channel 0
+          comment: |
+            DDS phase offset parameter register for channel 0.
+            It is determined as a fraction of a cycle, in FIX30_29.
+            For instance, 0.5 = 180 deegres offset
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_poff_ch1
+      address: 0x00000044
+      width: 32
+      access: rw
+      description: DDS phase offset parameter register for channel 1
+      comment: |
+        DDS phase offset parameter register for channel 1
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase offset parameter register for channel 1
+          comment: |
+            DDS phase offset parameter register for channel 1.
+            It is determined as a fraction of a cycle, in FIX30_29.
+            For instance, 0.5 = 180 deegres offset
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_poff_ch2
+      address: 0x00000048
+      width: 32
+      access: rw
+      description: DDS phase offset parameter register for channel 2
+      comment: |
+        DDS phase offset parameter register for channel 2
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase offset parameter register for channel 2
+          comment: |
+            DDS phase offset parameter register for channel 2.
+            It is determined as a fraction of a cycle, in FIX30_29.
+            For instance, 0.5 = 180 deegres offset
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: dds_poff_ch3
+      address: 0x0000004c
+      width: 32
+      access: rw
+      description: DDS phase offset parameter register for channel 3
+      comment: |
+        DDS phase offset parameter register for channel 3
+      children:
+      - field:
+          name: val
+          range: 29-0
+          description: DDS phase offset parameter register for channel 3
+          comment: |
+            DDS phase offset parameter register for channel 2.
+            It is determined as a fraction of a cycle, in FIX30_29.
+            For instance, 0.5 = 180 deegres offset
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-30
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+# --------------------------------------------------------------------------
+#  Monit. Amplitude Values
+# --------------------------------------------------------------------------
+  - reg:
+      name: dsp_monit_amp_ch0
+      address: 0x00000050
+      width: 32
+      access: ro
+      description: Monit. Amplitude Value for channel 0
+      comment: |
+        Monit. Amplitude Value for channel 0
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Amplitude Value for channel 0
+        field_comment: |
+          Monit. Amplitude Value for channel 0
+          read: Amplitude Value Monit. channel 0
+          write: no effect
+  - reg:
+      name: dsp_monit_amp_ch1
+      address: 0x00000054
+      width: 32
+      access: ro
+      description: Monit. Amplitude Value for channel 1
+      comment: |
+        Monit. Amplitude Value for channel 1
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Amplitude Value for channel 1
+        field_comment: |
+          Monit. Amplitude Value for channel 1
+          read: Amplitude Value Monit. channel 1
+          write: no effect
+  - reg:
+      name: dsp_monit_amp_ch2
+      address: 0x00000058
+      width: 32
+      access: ro
+      description: Monit. Amplitude Value for channel 2
+      comment: |
+        Monit. Amplitude Value for channel 2
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Amplitude Value for channel 2
+        field_comment: |
+          Monit. Amplitude Value for channel 2
+          read: Amplitude Value Monit. channel 2
+          write: no effect
+  - reg:
+      name: dsp_monit_amp_ch3
+      address: 0x0000005c
+      width: 32
+      access: ro
+      description: Monit. Amplitude Value for channel 3
+      comment: |
+        Monit. Amplitude Value for channel 3
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Amplitude Value for channel 3
+        field_comment: |
+          Monit. Amplitude Value for channel 3
+          read: Amplitude Value Monit. channel 3
+          write: no effect
+# --------------------------------------------------------------------------
+#  Monit. Position Values
+# --------------------------------------------------------------------------
+  - reg:
+      name: dsp_monit_pos_x
+      address: 0x00000060
+      width: 32
+      access: ro
+      description: Monit. X Position Value
+      comment: |
+        Monit. X Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. X Position Value
+        field_comment: |
+          Monit. X Position Value
+          read: Monit. X Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit_pos_y
+      address: 0x00000064
+      width: 32
+      access: ro
+      description: Monit. Y Position Value
+      comment: |
+        Monit. Y Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Y Position Value
+        field_comment: |
+          Monit. Y Position Value
+          read: Monit. Y Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit_pos_q
+      address: 0x00000068
+      width: 32
+      access: ro
+      description: Monit. Q Position Value
+      comment: |
+        Monit. Q Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Q Position Value
+        field_comment: |
+          Monit. Q Position Value
+          read: Monit. Q Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit_pos_sum
+      address: 0x0000006c
+      width: 32
+      access: ro
+      description: Monit. Sum Position Value
+      comment: |
+        Monit. Sum Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. Sum Position Value
+        field_comment: |
+          Monit. Sum Position Value
+          read: Monit. Sum Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit_updt
+      address: 0x00000070
+      width: 32
+      access: wo
+      description: Monit. Amp/Pos update trigger
+      comment: |
+        Monit. Amp/Pos update trigger
+      x-wbgen:
+        type: PASS_THROUGH
+        field_description: Monit. Amp/Pos Update (ignore on read)
+      x-hdl:
+        type: wire
+      x-hdl:
+        write-strobe: True
+# --------------------------------------------------------------------------
+#  Monit. 1 Amplitude Values
+# --------------------------------------------------------------------------
+  - reg:
+      name: dsp_monit1_amp_ch0
+      address: 0x00000074
+      width: 32
+      access: ro
+      description: Monit. 1 Amplitude Value for channel 0
+      comment: |
+        Monit. 1 Amplitude Value for channel 0
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Amplitude Value for channel 0
+        field_comment: |
+          Monit. 1 Amplitude Value for channel 0
+          read: Amplitude Value Monit. channel 0
+          write: no effect
+  - reg:
+      name: dsp_monit1_amp_ch1
+      address: 0x00000078
+      width: 32
+      access: ro
+      description: Monit. 1 Amplitude Value for channel 1
+      comment: |
+        Monit. 1 Amplitude Value for channel 1
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Amplitude Value for channel 1
+        field_comment: |
+          Monit. 1 Amplitude Value for channel 1
+          read: Amplitude Value Monit. 1 channel 1
+          write: no effect
+  - reg:
+      name: dsp_monit1_amp_ch2
+      address: 0x0000007c
+      width: 32
+      access: ro
+      description: Monit. 1 Amplitude Value for channel 2
+      comment: |
+        Monit. 1 Amplitude Value for channel 2
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Amplitude Value for channel 2
+        field_comment: |
+          Monit. 1 Amplitude Value for channel 2
+          read: Amplitude Value Monit. 1 channel 2
+          write: no effect
+  - reg:
+      name: dsp_monit1_amp_ch3
+      address: 0x00000080
+      width: 32
+      access: ro
+      description: Monit. 1 Amplitude Value for channel 3
+      comment: |
+        Monit. 1 Amplitude Value for channel 3
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Amplitude Value for channel 3
+        field_comment: |
+          Monit. 1 Amplitude Value for channel 3
+          read: Amplitude Value Monit. 1 channel 3
+          write: no effect
+# --------------------------------------------------------------------------
+#  Monit. 1 Position Values
+# --------------------------------------------------------------------------
+  - reg:
+      name: dsp_monit1_pos_x
+      address: 0x00000084
+      width: 32
+      access: ro
+      description: Monit. 1 X Position Value
+      comment: |
+        Monit. 1 X Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 X Position Value
+        field_comment: |
+          Monit. 1 X Position Value
+          read: Monit. 1 X Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit1_pos_y
+      address: 0x00000088
+      width: 32
+      access: ro
+      description: Monit. 1 Y Position Value
+      comment: |
+        Monit. 1 Y Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Y Position Value
+        field_comment: |
+          Monit. 1 Y Position Value
+          read: Monit. 1 Y Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit1_pos_q
+      address: 0x0000008c
+      width: 32
+      access: ro
+      description: Monit. 1 Q Position Value
+      comment: |
+        Monit. 1 Q Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Q Position Value
+        field_comment: |
+          Monit. 1 Q Position Value
+          read: Monit. 1 Q Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit1_pos_sum
+      address: 0x00000090
+      width: 32
+      access: ro
+      description: Monit. 1 Sum Position Value
+      comment: |
+        Monit. 1 Sum Position Value
+      x-wbgen:
+        type: SLV
+        access_bus: READ_ONLY
+        access_dev: WRITE_ONLY
+        field_description: Monit. 1 Sum Position Value
+        field_comment: |
+          Monit. 1 Sum Position Value
+          read: Monit. Sum Position Value
+          write: no effect
+  - reg:
+      name: dsp_monit1_updt
+      address: 0x00000094
+      width: 32
+      access: wo
+      description: Monit. 1 Amp/Pos update trigger
+      comment: |
+        Monit. 1 Amp/Pos update trigger
+      x-wbgen:
+        type: PASS_THROUGH
+        field_description: Monit. 1 Amp/Pos Update (ignore on read)
+      x-hdl:
+        type: wire
+      x-hdl:
+        write-strobe: True
+# --------------------------------------------------------------------------
+#  Monit. Amplitude/Position Values New Interface
+# --------------------------------------------------------------------------
+  - block:
+      name: ampfifo_monit
+      address: 0x00000098
+      size: 20
+      description: AMP FIFO Monitoring
+      comment: |
+        This FIFO holds most recent amplitude values from DSP Monit. chain
+      align: False
+      x-wbgen:
+        kind: fifo
+        direction: CORE_TO_BUS
+        depth: 16
+        wire_full: True
+        wire_empty: True
+        wire_count: True
+      children:
+      - reg:
+          name: ampfifo_monit_r0
+          address: 0x00000000
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring' data output register 0
+          children:
+          - field:
+              name: amp_ch0
+              range: 31-0
+              description: Channel 0 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit_r1
+          address: 0x00000004
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring' data output register 1
+          children:
+          - field:
+              name: amp_ch1
+              range: 31-0
+              description: Channel 1 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit_r2
+          address: 0x00000008
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring' data output register 2
+          children:
+          - field:
+              name: amp_ch2
+              range: 31-0
+              description: Channel 2 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit_r3
+          address: 0x0000000c
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring' data output register 3
+          children:
+          - field:
+              name: amp_ch3
+              range: 31-0
+              description: Channel 3 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit_csr
+          address: 0x00000010
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring' control/status register
+          x-wbgen:
+            kind: fifocs
+          children:
+          - field:
+              name: full
+              range: 16
+              description: FIFO full flag
+              comment: |
+                1: FIFO 'AMP FIFO Monitoring' is full
+                0: FIFO is not full
+              x-wbgen:
+                type: BIT
+                kind: full
+          - field:
+              name: empty
+              range: 17
+              description: FIFO empty flag
+              comment: |
+                1: FIFO 'AMP FIFO Monitoring' is empty
+                0: FIFO is not empty
+              x-wbgen:
+                type: BIT
+                kind: empty
+          - field:
+              name: count
+              range: 3-0
+              description: FIFO counter
+              comment: |
+                Number of data records currently being stored in FIFO 'AMP FIFO Monitoring'
+              x-wbgen:
+                kind: count
+  - block:
+      name: posfifo_monit
+      address: 0x000000ac
+      size: 20
+      description: POS FIFO Monitoring
+      comment: |
+        This FIFO holds most recent position values from DSP Monit. chain
+      align: False
+      x-wbgen:
+        kind: fifo
+        direction: CORE_TO_BUS
+        depth: 16
+        wire_full: True
+        wire_empty: True
+        wire_count: True
+      children:
+      - reg:
+          name: posfifo_monit_r0
+          address: 0x00000000
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring' data output register 0
+          children:
+          - field:
+              name: pos_x
+              range: 31-0
+              description: Channel X Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit_r1
+          address: 0x00000004
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring' data output register 1
+          children:
+          - field:
+              name: pos_y
+              range: 31-0
+              description: Channel Y Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit_r2
+          address: 0x00000008
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring' data output register 2
+          children:
+          - field:
+              name: pos_q
+              range: 31-0
+              description: Channel Q Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit_r3
+          address: 0x0000000c
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring' data output register 3
+          children:
+          - field:
+              name: pos_sum
+              range: 31-0
+              description: Channel Sum Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit_csr
+          address: 0x00000010
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring' control/status register
+          x-wbgen:
+            kind: fifocs
+          children:
+          - field:
+              name: full
+              range: 16
+              description: FIFO full flag
+              comment: |
+                1: FIFO 'POS FIFO Monitoring' is full
+                0: FIFO is not full
+              x-wbgen:
+                type: BIT
+                kind: full
+          - field:
+              name: empty
+              range: 17
+              description: FIFO empty flag
+              comment: |
+                1: FIFO 'POS FIFO Monitoring' is empty
+                0: FIFO is not empty
+              x-wbgen:
+                type: BIT
+                kind: empty
+          - field:
+              name: count
+              range: 3-0
+              description: FIFO counter
+              comment: |
+                Number of data records currently being stored in FIFO 'POS FIFO Monitoring'
+              x-wbgen:
+                kind: count
+# --------------------------------------------------------------------------
+#  Monit. 1 Amplitude/Position Values New Interface
+# --------------------------------------------------------------------------
+  - block:
+      name: ampfifo_monit1
+      address: 0x000000c0
+      size: 20
+      description: AMP FIFO Monitoring 1
+      comment: |
+        This FIFO holds most recent amplitude values from DSP Monit. 1 chain
+      align: False
+      x-wbgen:
+        kind: fifo
+        direction: CORE_TO_BUS
+        depth: 16
+        wire_full: True
+        wire_empty: True
+        wire_count: True
+      children:
+      - reg:
+          name: ampfifo_monit1_r0
+          address: 0x00000000
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring 1' data output register 0
+          children:
+          - field:
+              name: amp_ch0
+              range: 31-0
+              description: Channel 0 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit1_r1
+          address: 0x00000004
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring 1' data output register 1
+          children:
+          - field:
+              name: amp_ch1
+              range: 31-0
+              description: Channel 1 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit1_r2
+          address: 0x00000008
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring 1' data output register 2
+          children:
+          - field:
+              name: amp_ch2
+              range: 31-0
+              description: Channel 2 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit1_r3
+          address: 0x0000000c
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring 1' data output register 3
+          children:
+          - field:
+              name: amp_ch3
+              range: 31-0
+              description: Channel 3 Amplitude
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: ampfifo_monit1_csr
+          address: 0x00000010
+          width: 32
+          access: ro
+          description: FIFO 'AMP FIFO Monitoring 1' control/status register
+          x-wbgen:
+            kind: fifocs
+          children:
+          - field:
+              name: full
+              range: 16
+              description: FIFO full flag
+              comment: |
+                1: FIFO 'AMP FIFO Monitoring 1' is full
+                0: FIFO is not full
+              x-wbgen:
+                type: BIT
+                kind: full
+          - field:
+              name: empty
+              range: 17
+              description: FIFO empty flag
+              comment: |
+                1: FIFO 'AMP FIFO Monitoring 1' is empty
+                0: FIFO is not empty
+              x-wbgen:
+                type: BIT
+                kind: empty
+          - field:
+              name: count
+              range: 3-0
+              description: FIFO counter
+              comment: |
+                Number of data records currently being stored in FIFO 'AMP FIFO Monitoring 1'
+              x-wbgen:
+                kind: count
+  - block:
+      name: posfifo_monit1
+      address: 0x000000d4
+      size: 20
+      description: POS FIFO Monitoring 1
+      comment: |
+        This FIFO holds most recent position values from DSP Monit. 1 chain
+      align: False
+      x-wbgen:
+        kind: fifo
+        direction: CORE_TO_BUS
+        depth: 16
+        wire_full: True
+        wire_empty: True
+        wire_count: True
+      children:
+      - reg:
+          name: posfifo_monit1_r0
+          address: 0x00000000
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring 1' data output register 0
+          children:
+          - field:
+              name: pos_x
+              range: 31-0
+              description: Channel X Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit1_r1
+          address: 0x00000004
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring 1' data output register 1
+          children:
+          - field:
+              name: pos_y
+              range: 31-0
+              description: Channel Y Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit1_r2
+          address: 0x00000008
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring 1' data output register 2
+          children:
+          - field:
+              name: pos_q
+              range: 31-0
+              description: Channel Q Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit1_r3
+          address: 0x0000000c
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring 1' data output register 3
+          children:
+          - field:
+              name: pos_sum
+              range: 31-0
+              description: Channel Sum Position
+              x-wbgen:
+                type: SLV
+      - reg:
+          name: posfifo_monit1_csr
+          address: 0x00000010
+          width: 32
+          access: ro
+          description: FIFO 'POS FIFO Monitoring 1' control/status register
+          x-wbgen:
+            kind: fifocs
+          children:
+          - field:
+              name: full
+              range: 16
+              description: FIFO full flag
+              comment: |
+                1: FIFO 'POS FIFO Monitoring 1' is full
+                0: FIFO is not full
+              x-wbgen:
+                type: BIT
+                kind: full
+          - field:
+              name: empty
+              range: 17
+              description: FIFO empty flag
+              comment: |
+                1: FIFO 'POS FIFO Monitoring 1' is empty
+                0: FIFO is not empty
+              x-wbgen:
+                type: BIT
+                kind: empty
+          - field:
+              name: count
+              range: 3-0
+              description: FIFO counter
+              comment: |
+                Number of data records currently being stored in FIFO 'POS FIFO Monitoring 1'
+              x-wbgen:
+                kind: count
+  - reg:
+      name: sw_tag
+      address: 0x000000e8
+      width: 32
+      access: rw
+      description: Switching Tag synchronization
+      comment: |
+        Switching Tag synchronization
+      children:
+      - field:
+          name: en
+          range: 0
+          description: Tag Synchronization Enable
+          comment: |
+            Switching Tag synchronization
+            write 0: disable tag synchronization
+            write 1: enable tag synchronization
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: desync_cnt_rst
+          range: 8
+          description: Switching Desynchronization Counter Reset
+          comment: |
+            Switching Desynchronization Counter Reset
+            write 0: no change
+            write 1: reset counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: desync_cnt
+          range: 22-9
+          description: Switching Desynchronization Counter
+          comment: |
+            Switching Desynchronization Counter
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: sw_data_mask
+      address: 0x000000ec
+      width: 32
+      access: rw
+      description: Switching Data Mask
+      comment: |
+        Switching Data Mask
+      children:
+      - field:
+          name: en
+          range: 0
+          description: Switching Data Mask Enable
+          comment: |
+            Switching Data Mask Enable
+            write 0: disable data mask
+            write 1: enable data mask
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: samples
+          range: 16-1
+          description: Switching Data Mask Samples
+          comment: |
+            Switching Data Mask Samples
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: tbt_tag
+      address: 0x000000f0
+      width: 32
+      access: rw
+      description: TbT Synchronizing Trigger
+      comment: |
+        TbT trigger synchronizing trigger. Used for achieving a true TbT
+      children:
+      - field:
+          name: en
+          range: 0
+          description: TbT Synchronizing Trigger Enable
+          comment: |
+            TbT Synchronizing Trigger Enable
+            write 0: disable trigger
+            write 1: enable trigger
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: dly
+          range: 16-1
+          description: TbT Synchronizing Trigger Delay
+          comment: |
+            TbT Synchronizing Trigger Delay
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: desync_cnt_rst
+          range: 17
+          description: TbT Desynchronization Counter Reset
+          comment: |
+            TbT Desynchronization Counter Reset
+            write 0: no change
+            write 1: reset counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: desync_cnt
+          range: 31-18
+          description: TbT Desynchronization Counter
+          comment: |
+            TbT Desynchronization Counter
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: tbt_data_mask_ctl
+      address: 0x000000f4
+      width: 32
+      access: rw
+      description: TbT Masking Control
+      comment: |
+        TbT Masking Control
+      children:
+      - field:
+          name: en
+          range: 0
+          description: TbT Masking Enable
+          comment: |
+            TbT Masking
+            write 0: disable data mask
+            write 1: enable data mask
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+  - reg:
+      name: tbt_data_mask_samples
+      address: 0x000000f8
+      width: 32
+      access: rw
+      description: TbT Data Masking Samples
+      comment: |
+        TbT data masking samples. Used for selecting a valid window for TbT. Increases SNR
+      children:
+      - field:
+          name: beg
+          range: 15-0
+          description: TbT Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the beginning of the TbT cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: end
+          range: 31-16
+          description: TbT Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the ending of the TbT cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: monit1_tag
+      address: 0x000000fc
+      width: 32
+      access: rw
+      description: MONIT1 Synchronizing Trigger
+      comment: |
+        MONIT1 trigger synchronizing trigger. Used for achieving a true MONIT1
+      children:
+      - field:
+          name: en
+          range: 0
+          description: MONIT1 Synchronizing Trigger Enable
+          comment: |
+            MONIT1 Synchronizing Trigger Enable
+            write 0: disable trigger
+            write 1: enable trigger
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: dly
+          range: 16-1
+          description: MONIT1 Synchronizing Trigger Delay
+          comment: |
+            MONIT1 Synchronizing Trigger Delay
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: desync_cnt_rst
+          range: 17
+          description: MONIT1 Desynchronization Counter Reset
+          comment: |
+            MONIT1 Desynchronization Counter Reset
+            write 0: no change
+            write 1: reset counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: desync_cnt
+          range: 31-18
+          description: MONIT1 Desynchronization Counter
+          comment: |
+            MONIT1 Desynchronization Counter
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: monit1_data_mask_ctl
+      address: 0x00000100
+      width: 32
+      access: rw
+      description: MONIT1 Masking Control
+      comment: |
+        MONIT1 Masking Control
+      children:
+      - field:
+          name: en
+          range: 0
+          description: MONIT1 Masking Enable
+          comment: |
+            MONIT1 Masking
+            write 0: disable data mask
+            write 1: enable data mask
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+  - reg:
+      name: monit1_data_mask_samples
+      address: 0x00000104
+      width: 32
+      access: rw
+      description: MONIT1 Data Masking Samples
+      comment: |
+        MONIT1 data masking samples. Used for selecting a valid window for MONIT1. Increases SNR
+      children:
+      - field:
+          name: beg
+          range: 15-0
+          description: MONIT1 Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the beginning of the MONIT1 cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: end
+          range: 31-16
+          description: MONIT1 Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the ending of the MONIT1 cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: monit_tag
+      address: 0x00000108
+      width: 32
+      access: rw
+      description: MONIT Synchronizing Trigger
+      comment: |
+        MONIT trigger synchronizing trigger. Used for achieving a true MONIT
+      children:
+      - field:
+          name: en
+          range: 0
+          description: MONIT Synchronizing Trigger Enable
+          comment: |
+            MONIT Synchronizing Trigger Enable
+            write 0: disable trigger
+            write 1: enable trigger
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: dly
+          range: 16-1
+          description: MONIT Synchronizing Trigger Delay
+          comment: |
+            MONIT Synchronizing Trigger Delay
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: desync_cnt_rst
+          range: 17
+          description: MONIT Desynchronization Counter Reset
+          comment: |
+            MONIT Desynchronization Counter Reset
+            write 0: no change
+            write 1: reset counter
+          x-wbgen:
+            type: MONOSTABLE
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+      - field:
+          name: desync_cnt
+          range: 31-18
+          description: MONIT Desynchronization Counter
+          comment: |
+            MONIT Desynchronization Counter
+            write: number of samples to delay trigger
+            read:  number of samples being delayed
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: monit_data_mask_ctl
+      address: 0x0000010c
+      width: 32
+      access: rw
+      description: MONIT Masking Control
+      comment: |
+        MONIT Masking Control
+      children:
+      - field:
+          name: en
+          range: 0
+          description: MONIT Masking Enable
+          comment: |
+            MONIT Masking
+            write 0: disable data mask
+            write 1: enable data mask
+          x-wbgen:
+            type: BIT
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+            size: 1
+  - reg:
+      name: monit_data_mask_samples
+      address: 0x00000110
+      width: 32
+      access: rw
+      description: MONIT Data Masking Samples
+      comment: |
+        MONIT data masking samples. Used for selecting a valid window for MONIT. Increases SNR
+      children:
+      - field:
+          name: beg
+          range: 15-0
+          description: MONIT Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the beginning of the MONIT cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: end
+          range: 31-16
+          description: MONIT Beginning Data Masking Samples
+          comment: |
+            Select the number of samples to mask at the ending of the MONIT cycle
+            write: number of samples to mask
+            read:  number of samples being masked
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
