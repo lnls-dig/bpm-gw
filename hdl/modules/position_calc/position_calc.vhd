@@ -101,6 +101,9 @@ entity position_calc is
     -- width of K constants
     g_k_width : natural := 25;
 
+    -- width of offset constants
+    g_offset_width : natural := 32;
+
     --width for IQ output
     g_IQ_width : natural := 32
     );
@@ -120,6 +123,9 @@ entity position_calc is
     ksum_i : in std_logic_vector(g_k_width-1 downto 0);
     kx_i   : in std_logic_vector(g_k_width-1 downto 0);
     ky_i   : in std_logic_vector(g_k_width-1 downto 0);
+
+    offset_x_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
+    offset_y_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
 
     mix_ch0_i_o : out std_logic_vector(g_IQ_width-1 downto 0);
     mix_ch0_q_o : out std_logic_vector(g_IQ_width-1 downto 0);
@@ -793,7 +799,8 @@ begin
   cmp_fofb_ds : delta_sigma
     generic map (
       g_width   => g_fofb_decim_width,
-      g_k_width => g_k_width)
+      g_k_width => g_k_width,
+      g_offset_width => g_offset_width)
     port map (
       a_i     => fofb_mag(0),
       b_i     => fofb_mag(1),
@@ -802,6 +809,8 @@ begin
       kx_i    => kx_i,
       ky_i    => ky_i,
       ksum_i  => ksum_i,
+      offset_x_i  => offset_x_i,
+      offset_y_i  => offset_y_i,
       clk_i   => clk_i,
       ce_i    => ce_fofb_cordic(0),
       valid_i => valid_fofb_cordic(0),

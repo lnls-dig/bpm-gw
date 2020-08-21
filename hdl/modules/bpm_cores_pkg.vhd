@@ -229,6 +229,7 @@ package bpm_cores_pkg is
       g_fofb_cordic_iter_per_clk : positive := 3;
       g_fofb_cordic_ratio        : positive := 4;
       g_k_width                  : natural  := 25;
+      g_offset_width             : natural  := 32;
       g_IQ_width                 : natural  := 32);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -243,6 +244,8 @@ package bpm_cores_pkg is
       ksum_i             : in  std_logic_vector(g_k_width-1 downto 0);
       kx_i               : in  std_logic_vector(g_k_width-1 downto 0);
       ky_i               : in  std_logic_vector(g_k_width-1 downto 0);
+      offset_x_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
+      offset_y_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
       mix_ch0_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
       mix_ch1_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
