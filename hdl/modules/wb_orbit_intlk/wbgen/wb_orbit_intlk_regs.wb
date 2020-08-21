@@ -217,18 +217,18 @@ peripheral {
     };
 
     field {
-       name = "Interlock Bigger";
-       description = "Interlock Bigger";
-       prefix = "intlk_bigger";
+       name = "Interlock Trip";
+       description = "Interlock Trip";
+       prefix = "intlk";
        type = BIT;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
     };
 
     field {
-       name = "Interlock Bigger Latched";
-       description = "Interlock Bigger Latched";
-       prefix = "intlk_bigger_ltc";
+       name = "Interlock Trip Latched";
+       description = "Interlock Trip Latched";
+       prefix = "intlk_ltc";
        type = BIT;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
