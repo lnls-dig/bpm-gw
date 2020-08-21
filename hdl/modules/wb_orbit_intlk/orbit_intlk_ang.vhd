@@ -402,7 +402,7 @@ begin
         if intlk_ang_clr_i = '1' or intlk_ang_en_i = '0' then
           ang_intlk <= '0';
         else
-          ang_intlk <= ang_intlk_ltc;
+          ang_intlk <= ang_intlk_any;
         end if;
       end if;
     end if;

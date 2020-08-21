@@ -558,7 +558,7 @@ begin
         if intlk_clr_i = '1' or intlk_en_i = '0' then
           intlk <= '0';
         elsif intlk_en_i = '1' then
-          intlk <= intlk_ltc;
+          intlk <= intlk_all;
         end if;
       end if;
     end if;

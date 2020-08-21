@@ -387,7 +387,7 @@ begin
         if intlk_trans_clr_i = '1' or intlk_trans_en_i = '0' then
           trans_intlk <= '0';
         else
-          trans_intlk <= trans_intlk_ltc;
+          trans_intlk <= trans_intlk_any;
         end if;
       end if;
     end if;
