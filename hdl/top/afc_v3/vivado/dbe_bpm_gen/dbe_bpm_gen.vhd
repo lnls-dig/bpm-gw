@@ -2858,6 +2858,9 @@ begin
     -- width of K constants
     g_k_width                               => c_pos_calc_k_width,
 
+    -- width of offset constants
+    g_offset_width                          => c_pos_calc_offset_width,
+
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
 
@@ -3082,6 +3085,9 @@ begin
 
     -- width of K constants
     g_k_width                               => c_pos_calc_k_width,
+
+    -- width of offset constants
+    g_offset_width                          => c_pos_calc_offset_width,
 
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
