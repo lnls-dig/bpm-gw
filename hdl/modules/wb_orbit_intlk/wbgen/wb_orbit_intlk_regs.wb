@@ -325,4 +325,68 @@ peripheral {
     };
   };
 
+  reg {
+    name = "Minimum translation X threshold";
+    description = "Minimum translation X threshold to trip interlock";
+    prefix = "trans_min_x";
+
+    field {
+       name = "Minimum X Threshold";
+       description = "Minimum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum translation Y threshold";
+    description = "Minimum translation Y threshold to trip interlock";
+    prefix = "trans_min_y";
+
+    field {
+       name = "Minimum Y Threshold";
+       description = "Minimum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum angular X threshold";
+    description = "Minimum angular X threshold to trip interlock";
+    prefix = "ang_min_x";
+
+    field {
+       name = "Minimum X Threshold";
+       description = "Minimum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum angular Y threshold";
+    description = "Minimum angular Y threshold to trip interlock";
+    prefix = "ang_min_y";
+
+    field {
+       name = "Minimum Y Threshold";
+       description = "Minimum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
 };
