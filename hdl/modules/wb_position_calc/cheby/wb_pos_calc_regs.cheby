@@ -1985,3 +1985,38 @@ memory-map:
             access_bus: READ_WRITE
             access_dev: READ_ONLY
             clock: fs_clk2x_i
+# --------------------------------------------
+# -----  X/Y position offsets Registers ------
+# --------------------------------------------
+  - reg:
+      name: offset_x
+      address: 0x00000114
+      width: 32
+      access: rw
+      description: BPM X position offset parameter register
+      comment: |
+        BPM X position offset to be subtracted from calculated positions
+      x-wbgen:
+        type: SLV
+        access_bus: READ_WRITE
+        access_dev: READ_ONLY
+        clock: fs_clk2x_i
+        field_description: BPM X position offset
+        field_comment: |
+          BPM X position offset to be subtracted from calculated positions
+  - reg:
+      name: offset_y
+      address: 0x00000118
+      width: 32
+      access: rw
+      description: BPM Y position offset parameter register
+      comment: |
+        BPM Y position offset to be subtracted from calculated positions
+      x-wbgen:
+        type: SLV
+        access_bus: READ_WRITE
+        access_dev: READ_ONLY
+        clock: fs_clk2x_i
+        field_description: BPM Y position offset
+        field_comment: |
+          BPM Y position offset to be subtracted from calculated positions

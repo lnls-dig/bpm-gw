@@ -1,6 +1,6 @@
 #ifndef __CHEBY__POS_CALC__H__
 #define __CHEBY__POS_CALC__H__
-#define POS_CALC_SIZE 276
+#define POS_CALC_SIZE 284
 
 /* Config divisor threshold TBT register */
 #define POS_CALC_DS_TBT_THRES 0x0UL
@@ -402,6 +402,12 @@
 #define POS_CALC_MONIT_DATA_MASK_SAMPLES_END_MASK 0xffff0000UL
 #define POS_CALC_MONIT_DATA_MASK_SAMPLES_END_SHIFT 16
 
+/* BPM X position offset parameter register */
+#define POS_CALC_OFFSET_X 0x114UL
+
+/* BPM Y position offset parameter register */
+#define POS_CALC_OFFSET_Y 0x118UL
+
 struct pos_calc {
   /* [0x0]: REG (rw) Config divisor threshold TBT register */
   uint32_t ds_tbt_thres;
@@ -621,6 +627,12 @@ struct pos_calc {
 
   /* [0x110]: REG (rw) MONIT Data Masking Samples */
   uint32_t monit_data_mask_samples;
+
+  /* [0x114]: REG (rw) BPM X position offset parameter register */
+  uint32_t offset_x;
+
+  /* [0x118]: REG (rw) BPM Y position offset parameter register */
+  uint32_t offset_y;
 };
 
 #endif /* __CHEBY__POS_CALC__H__ */
