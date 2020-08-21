@@ -228,7 +228,7 @@ package bpm_cores_pkg is
       g_fofb_cordic_stages       : positive := 15;
       g_fofb_cordic_iter_per_clk : positive := 3;
       g_fofb_cordic_ratio        : positive := 4;
-      g_k_width                  : natural  := 24;
+      g_k_width                  : natural  := 25;
       g_IQ_width                 : natural  := 32);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -642,7 +642,7 @@ package bpm_cores_pkg is
         g_fofb_cordic_ratio        : positive := 4;
 
         -- width of K constants
-        g_k_width : natural := 24;
+        g_k_width : natural := 25;
 
         --width for IQ output
         g_IQ_width : natural := 32;
@@ -884,7 +884,7 @@ package bpm_cores_pkg is
         g_monit_decim_width : natural := 32;
 
         -- width of K constants
-        g_k_width : natural := 24;
+        g_k_width : natural := 25;
 
         --width for IQ output
         g_IQ_width : natural := 32;

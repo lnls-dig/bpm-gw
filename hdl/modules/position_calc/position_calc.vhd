@@ -99,7 +99,7 @@ entity position_calc is
     g_fofb_cordic_ratio        : positive := 4;
 
     -- width of K constants
-    g_k_width : natural := 24;
+    g_k_width : natural := 25;
 
     --width for IQ output
     g_IQ_width : natural := 32
