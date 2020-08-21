@@ -262,13 +262,13 @@ peripheral {
   };
 
   reg {
-    name = "Translation X threshold";
-    description = "Translation X threshold to trip interlock";
+    name = "Maximum translation X threshold";
+    description = "Maximum translation X threshold to trip interlock";
     prefix = "trans_max_x";
 
     field {
        name = "Maximum X Threshold";
-       description = "Minimum X Threshold";
+       description = "Maximum X Threshold";
        type = SLV;
        size = 32;
        access_bus = READ_WRITE;
@@ -278,8 +278,8 @@ peripheral {
   };
 
   reg {
-    name = "Translation Y threshold";
-    description = "Translation Y threshold to trip interlock";
+    name = "Maximum translation Y threshold";
+    description = "Maximum translation Y threshold to trip interlock";
     prefix = "trans_max_y";
 
     field {
@@ -294,8 +294,8 @@ peripheral {
   };
 
   reg {
-    name = "Angular X threshold";
-    description = "Angular X threshold to trip interlock";
+    name = "Maximum angular X threshold";
+    description = "Maximum angular X threshold to trip interlock";
     prefix = "ang_max_x";
 
     field {
@@ -310,8 +310,8 @@ peripheral {
   };
 
   reg {
-    name = "Angular Y threshold";
-    description = "Angular Y threshold to trip interlock";
+    name = "Maximum angular Y threshold";
+    description = "Maximum angular Y threshold to trip interlock";
     prefix = "ang_max_y";
 
     field {
