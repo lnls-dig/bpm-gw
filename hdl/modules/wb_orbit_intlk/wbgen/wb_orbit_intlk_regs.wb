@@ -235,11 +235,137 @@ peripheral {
     };
 
     field {
+       name = "Translation Smaller X";
+       description = "Translation Smaller X";
+       prefix = "trans_smaller_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Y";
+       description = "Translation Smaller Y";
+       prefix = "trans_smaller_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched X";
+       description = "Translation Smaller Latched X";
+       prefix = "trans_smaller_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched Y";
+       description = "Translation Smaller Latched Y";
+       prefix = "trans_smaller_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Any (X/Y)";
+       description = "Translation Smaller Any (X/Y)";
+       prefix = "trans_smaller_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller";
+       description = "Translation Smaller";
+       prefix = "trans_smaller";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched";
+       description = "Translation Smaller Latched";
+       prefix = "trans_smaller_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller X";
+       description = "Angular Smaller X";
+       prefix = "ang_smaller_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Y";
+       description = "Angular Smaller Y";
+       prefix = "ang_smaller_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched X";
+       description = "Angular Smaller Latched X";
+       prefix = "ang_smaller_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched Y";
+       description = "Angular Smaller Latched Y";
+       prefix = "ang_smaller_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Any (X/Y)";
+       description = "Angular Smaller Any (X/Y)";
+       prefix = "ang_smaller_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller";
+       description = "Angular Smaller";
+       prefix = "ang_smaller";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched";
+       description = "Angular Smaller Latched";
+       prefix = "ang_smaller_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
        name = "Reserved";
        description = "Ignore on write, read as 0's";
        prefix = "reserved";
        type = SLV;
-       size = 16;
+       size = 2;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
     };
