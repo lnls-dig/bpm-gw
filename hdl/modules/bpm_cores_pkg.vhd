@@ -647,6 +647,9 @@ package bpm_cores_pkg is
         -- width of K constants
         g_k_width : natural := 25;
 
+        -- width of offset constants
+        g_offset_width  : natural := 32;
+
         --width for IQ output
         g_IQ_width : natural := 32;
 
@@ -888,6 +891,9 @@ package bpm_cores_pkg is
 
         -- width of K constants
         g_k_width : natural := 25;
+
+        -- width of offset constants
+        g_offset_width  : natural := 32;
 
         --width for IQ output
         g_IQ_width : natural := 32;

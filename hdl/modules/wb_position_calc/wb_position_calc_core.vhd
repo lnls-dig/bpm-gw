@@ -89,6 +89,9 @@ generic
   -- width of K constants
   g_k_width                                 : natural := 25;
 
+  -- width of offset constants
+  g_offset_width                            : natural := 32;
+
   --width for IQ output
   g_IQ_width                                : natural := 32;
 
@@ -338,6 +341,7 @@ architecture rtl of wb_position_calc_core is
 
   -- This must not exceed the width determined at the register file
   constant c_k_width                        : natural := g_k_width;
+  constant c_offset_width                   : natural := g_offset_width;
 
   constant c_cnt_width_raw                  : natural := g_adc_ratio;
   constant c_cnt_width_mix                  : natural := g_IQ_width;
@@ -529,6 +533,8 @@ architecture rtl of wb_position_calc_core is
   signal regs_monit_data_mask_ctl_en_o       : std_logic;
   signal regs_monit_data_mask_samples_beg_o  : std_logic_vector(15 downto 0);
   signal regs_monit_data_mask_samples_end_o  : std_logic_vector(15 downto 0);
+  signal regs_pos_calc_offset_x_o            : std_logic_vector(31 downto 0);
+  signal regs_pos_calc_offset_y_o            : std_logic_vector(31 downto 0);
 
   -----------------------------
   -- Wishbone crossbar signals
@@ -978,7 +984,9 @@ architecture rtl of wb_position_calc_core is
       pos_calc_monit_tag_desync_cnt_i         : in    std_logic_vector(13 downto 0);
       pos_calc_monit_data_mask_ctl_en_o       : out   std_logic;
       pos_calc_monit_data_mask_samples_beg_o  : out   std_logic_vector(15 downto 0);
-      pos_calc_monit_data_mask_samples_end_o  : out   std_logic_vector(15 downto 0)
+      pos_calc_monit_data_mask_samples_end_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_offset_x_o                     : out   std_logic_vector(31 downto 0);
+      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0)
   );
   end component wb_pos_calc_regs;
 
@@ -1241,7 +1249,9 @@ begin
     pos_calc_monit_tag_desync_cnt_i         => regs_monit_tag_desync_cnt_i,
     pos_calc_monit_data_mask_ctl_en_o       => regs_monit_data_mask_ctl_en_o,
     pos_calc_monit_data_mask_samples_beg_o  => regs_monit_data_mask_samples_beg_o,
-    pos_calc_monit_data_mask_samples_end_o  => regs_monit_data_mask_samples_end_o
+    pos_calc_monit_data_mask_samples_end_o  => regs_monit_data_mask_samples_end_o,
+    pos_calc_offset_x_o                     => regs_pos_calc_offset_x_o,
+    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o
   );
 
   -- Unused wishbone signals
@@ -1708,6 +1718,9 @@ begin
     -- width of K constants
     g_k_width                               => c_k_width,
 
+    -- width of offset constants
+    g_offset_width                          => c_offset_width,
+
     --width for IQ output
     g_IQ_width                              => g_IQ_width
   )
@@ -1727,6 +1740,9 @@ begin
     ksum_i                                  => regs_ksum_val_o(c_k_width-1 downto 0),
     kx_i                                    => regs_kx_val_o(c_k_width-1 downto 0),
     ky_i                                    => regs_ky_val_o(c_k_width-1 downto 0),
+
+    offset_x_i                              => regs_pos_calc_offset_x_o(c_offset_width-1 downto 0),
+    offset_y_i                              => regs_pos_calc_offset_y_o(c_offset_width-1 downto 0),
 
     mix_ch0_i_o                             => mix_ch0_i,
     mix_ch0_q_o                             => mix_ch0_q,
