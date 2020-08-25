@@ -308,7 +308,7 @@ begin
           trans(i) <= (others => '0');
           trans_valid(i) <= '0';
         else
-          trans(i) <= std_logic_vector(abs(shift_right(signed(trans_sum_reg(i)), 1)));
+          trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
           trans_valid(i) <= trans_sum_valid_reg(i);
         end if;
       end if;
