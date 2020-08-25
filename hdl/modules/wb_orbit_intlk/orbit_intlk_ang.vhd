@@ -323,7 +323,7 @@ begin
           ang(i) <= (others => '0');
           ang_valid(i) <= '0';
         else
-          ang(i) <= std_logic_vector(abs(signed(ang_sum_reg(i))));
+          ang(i) <= std_logic_vector(signed(ang_sum_reg(i)));
           ang_valid(i) <= ang_sum_valid_reg(i);
         end if;
       end if;
