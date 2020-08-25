@@ -101,15 +101,30 @@ port
   intlk_trans_bigger_x_o                     : out std_logic;
   intlk_trans_bigger_y_o                     : out std_logic;
 
+  -- only cleared when intlk_trans_clr_i is asserted
   intlk_trans_bigger_ltc_x_o                 : out std_logic;
   intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-  intlk_trans_bigger_o                       : out std_logic;
+  intlk_trans_bigger_any_o                   : out std_logic;
 
   -- only cleared when intlk_trans_clr_i is asserted
-  intlk_trans_ltc_o                          : out std_logic;
+  intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
-  intlk_trans_o                              : out std_logic;
+  intlk_trans_bigger_o                       : out std_logic;
+
+  intlk_trans_smaller_x_o                    : out std_logic;
+  intlk_trans_smaller_y_o                    : out std_logic;
+
+  -- only cleared when intlk_trans_clr_i is asserted
+  intlk_trans_smaller_ltc_x_o                : out std_logic;
+  intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+  intlk_trans_smaller_any_o                  : out std_logic;
+
+  -- only cleared when intlk_trans_clr_i is asserted
+  intlk_trans_smaller_ltc_o                  : out std_logic;
+  -- conditional to intlk_trans_en_i
+  intlk_trans_smaller_o                      : out std_logic;
 
   intlk_ang_bigger_x_o                       : out std_logic;
   intlk_ang_bigger_y_o                       : out std_logic;
@@ -117,12 +132,25 @@ port
   intlk_ang_bigger_ltc_x_o                   : out std_logic;
   intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-  intlk_ang_bigger_o                         : out std_logic;
+  intlk_ang_bigger_any_o                     : out std_logic;
 
   -- only cleared when intlk_ang_clr_i is asserted
-  intlk_ang_ltc_o                            : out std_logic;
+  intlk_ang_bigger_ltc_o                     : out std_logic;
   -- conditional to intlk_ang_en_i
-  intlk_ang_o                                : out std_logic;
+  intlk_ang_bigger_o                         : out std_logic;
+
+  intlk_ang_smaller_x_o                      : out std_logic;
+  intlk_ang_smaller_y_o                      : out std_logic;
+
+  intlk_ang_smaller_ltc_x_o                  : out std_logic;
+  intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+  intlk_ang_smaller_any_o                    : out std_logic;
+
+  -- only cleared when intlk_ang_clr_i is asserted
+  intlk_ang_smaller_ltc_o                    : out std_logic;
+  -- conditional to intlk_ang_en_i
+  intlk_ang_smaller_o                        : out std_logic;
 
   -- only cleared when intlk_clr_i is asserted
   intlk_ltc_o                                : out std_logic;
@@ -218,12 +246,21 @@ begin
     intlk_trans_bigger_ltc_x_o                => intlk_trans_bigger_ltc_x_o,
     intlk_trans_bigger_ltc_y_o                => intlk_trans_bigger_ltc_y_o,
 
+    intlk_trans_bigger_any_o                  => intlk_trans_bigger_any_o,
+
+    intlk_trans_bigger_ltc_o                  => intlk_trans_bigger_ltc_o,
     intlk_trans_bigger_o                      => intlk_trans_bigger_o,
 
-    -- only cleared when intlk_trans_clr_i is
-    intlk_trans_ltc_o                         => intlk_trans_ltc_o,
-    -- conditional to intlk_trans_en_i
-    intlk_trans_o                             => intlk_trans_o,
+    intlk_trans_smaller_x_o                   => intlk_trans_smaller_x_o,
+    intlk_trans_smaller_y_o                   => intlk_trans_smaller_y_o,
+
+    intlk_trans_smaller_ltc_x_o               => intlk_trans_smaller_ltc_x_o,
+    intlk_trans_smaller_ltc_y_o               => intlk_trans_smaller_ltc_y_o,
+
+    intlk_trans_smaller_any_o                 => intlk_trans_smaller_any_o,
+
+    intlk_trans_smaller_ltc_o                 => intlk_trans_smaller_ltc_o,
+    intlk_trans_smaller_o                     => intlk_trans_smaller_o,
 
     intlk_ang_bigger_x_o                      => intlk_ang_bigger_x_o,
     intlk_ang_bigger_y_o                      => intlk_ang_bigger_y_o,
@@ -231,16 +268,23 @@ begin
     intlk_ang_bigger_ltc_x_o                  => intlk_ang_bigger_ltc_x_o,
     intlk_ang_bigger_ltc_y_o                  => intlk_ang_bigger_ltc_y_o,
 
+    intlk_ang_bigger_any_o                    => intlk_ang_bigger_any_o,
+
+    intlk_ang_bigger_ltc_o                    => intlk_ang_bigger_ltc_o,
     intlk_ang_bigger_o                        => intlk_ang_bigger_o,
 
-    -- only cleared when intlk_ang_clr_i is as
-    intlk_ang_ltc_o                           => intlk_ang_ltc_o,
-    -- conditional to intlk_ang_en_i
-    intlk_ang_o                               => intlk_ang_o,
+    intlk_ang_smaller_x_o                     => intlk_ang_smaller_x_o,
+    intlk_ang_smaller_y_o                     => intlk_ang_smaller_y_o,
 
-    -- only cleared when intlk_clr_i is assert
+    intlk_ang_smaller_ltc_x_o                 => intlk_ang_smaller_ltc_x_o,
+    intlk_ang_smaller_ltc_y_o                 => intlk_ang_smaller_ltc_y_o,
+
+    intlk_ang_smaller_any_o                   => intlk_ang_smaller_any_o,
+
+    intlk_ang_smaller_ltc_o                   => intlk_ang_smaller_ltc_o,
+    intlk_ang_smaller_o                       => intlk_ang_smaller_o,
+
     intlk_ltc_o                               => intlk_ltc_o,
-    -- conditional to intlk_en_i
     intlk_o                                   => intlk_o
   );
 
