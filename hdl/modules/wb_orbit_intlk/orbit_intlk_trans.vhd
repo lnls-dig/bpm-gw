@@ -191,6 +191,7 @@ architecture rtl of orbit_intlk_trans is
   signal trans_intlk_bigger_ltc_all  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_intlk_bigger_or       : t_bit_array(c_NUM_CHANNELS downto 0);
   signal trans_intlk_bigger_all      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_bigger_ltc_or   : t_bit_array(c_NUM_CHANNELS downto 0);
   signal trans_intlk_bigger_ltc      : std_logic;
   signal trans_intlk_bigger_any      : std_logic;
   signal trans_intlk_bigger          : std_logic;
@@ -199,6 +200,7 @@ architecture rtl of orbit_intlk_trans is
   signal trans_intlk_smaller_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_intlk_smaller_or      : t_bit_array(c_NUM_CHANNELS downto 0);
   signal trans_intlk_smaller_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_smaller_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
   signal trans_intlk_smaller_ltc     : std_logic;
   signal trans_intlk_smaller_any     : std_logic;
   signal trans_intlk_smaller         : std_logic;
@@ -443,6 +445,10 @@ begin
   ----------------------------------
   -- Translation interlock merging
   ----------------------------------
+
+  ----------------------------------
+  -- Bigger
+  ----------------------------------
   trans_intlk_bigger_or(0) <= '0';
   -- ORing all trans_bigger
   gen_trans_intlk_bigger : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
@@ -452,6 +458,18 @@ begin
   trans_intlk_bigger <= trans_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_trans_bigger_o  <= trans_intlk_bigger;
 
+  trans_intlk_bigger_ltc_or(0) <= '0';
+  -- ORing all trans_bigger_ltc
+  gen_trans_intlk_bigger_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    trans_intlk_bigger_ltc_or(i+1) <= trans_intlk_bigger_ltc_or(i) or trans_intlk_bigger_ltc_all(i);
+  end generate;
+
+  trans_intlk_bigger_ltc <= trans_intlk_bigger_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_trans_bigger_ltc_o  <= trans_intlk_bigger_ltc;
+
+  ----------------------------------
+  -- Smaller
+  ----------------------------------
   trans_intlk_smaller_or(0) <= '0';
   -- ORing all trans_smaller
   gen_trans_intlk_smaller : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
@@ -460,5 +478,14 @@ begin
 
   trans_intlk_smaller <= trans_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_trans_smaller_o  <= trans_intlk_smaller;
+
+  trans_intlk_smaller_ltc_or(0) <= '0';
+  -- ORing all trans_smaller_ltc
+  gen_trans_intlk_smaller_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    trans_intlk_smaller_ltc_or(i+1) <= trans_intlk_smaller_ltc_or(i) or trans_intlk_smaller_ltc_all(i);
+  end generate;
+
+  trans_intlk_smaller_ltc <= trans_intlk_smaller_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_trans_smaller_ltc_o  <= trans_intlk_smaller_ltc;
 
 end rtl;

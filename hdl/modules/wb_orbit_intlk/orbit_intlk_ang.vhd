@@ -192,6 +192,7 @@ architecture rtl of orbit_intlk_ang is
   signal ang_intlk_bigger_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_intlk_bigger_or      : t_bit_array(c_NUM_CHANNELS downto 0);
   signal ang_intlk_bigger_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_bigger_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
   signal ang_intlk_bigger_ltc     : std_logic;
   signal ang_intlk_bigger_any     : std_logic;
   signal ang_intlk_bigger         : std_logic;
@@ -200,6 +201,7 @@ architecture rtl of orbit_intlk_ang is
   signal ang_intlk_smaller_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_intlk_smaller_or      : t_bit_array(c_NUM_CHANNELS downto 0);
   signal ang_intlk_smaller_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_smaller_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
   signal ang_intlk_smaller_ltc     : std_logic;
   signal ang_intlk_smaller_any     : std_logic;
   signal ang_intlk_smaller         : std_logic;
@@ -456,7 +458,11 @@ begin
   intlk_ang_smaller_y_o    <= ang_intlk_smaller_all(c_CHAN_Y_IDX);
 
   ----------------------------------
-  -- anglular interlock merging
+  -- Angular interlock merging
+  ----------------------------------
+
+  ----------------------------------
+  -- Bigger
   ----------------------------------
   ang_intlk_bigger_or(0) <= '0';
   -- ORing all ang_bigger
@@ -467,6 +473,18 @@ begin
   ang_intlk_bigger <= ang_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_ang_bigger_o  <= ang_intlk_bigger;
 
+  ang_intlk_bigger_ltc_or(0) <= '0';
+  -- ORing all ang_bigger_ltc
+  gen_ang_intlk_bigger_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    ang_intlk_bigger_ltc_or(i+1) <= ang_intlk_bigger_ltc_or(i) or ang_intlk_bigger_ltc_all(i);
+  end generate;
+
+  ang_intlk_bigger_ltc <= ang_intlk_bigger_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_ang_bigger_ltc_o  <= ang_intlk_bigger_ltc;
+
+  ----------------------------------
+  -- Smaller
+  ----------------------------------
   ang_intlk_smaller_or(0) <= '0';
   -- ORing all ang_smaller
   gen_ang_intlk_smaller : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
@@ -475,5 +493,14 @@ begin
 
   ang_intlk_smaller <= ang_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_ang_smaller_o  <= ang_intlk_smaller;
+
+  ang_intlk_smaller_ltc_or(0) <= '0';
+  -- ORing all ang_smaller_ltc
+  gen_ang_intlk_smaller_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    ang_intlk_smaller_ltc_or(i+1) <= ang_intlk_smaller_ltc_or(i) or ang_intlk_smaller_ltc_all(i);
+  end generate;
+
+  ang_intlk_smaller_ltc <= ang_intlk_smaller_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_ang_smaller_ltc_o  <= ang_intlk_smaller_ltc;
 
 end rtl;
