@@ -297,8 +297,15 @@ begin
     p_trans_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        trans_sum_reg(i) <= trans_sum(i);
-        trans_sum_valid_reg(i) <= trans_sum_valid(i);
+        if fs_rst_n_i = '0' then
+          trans_sum_valid_reg(i) <= '0';
+        else
+          if trans_sum_valid(i) = '1' then
+            trans_sum_reg(i) <= trans_sum(i);
+          end if;
+
+          trans_sum_valid_reg(i) <= trans_sum_valid(i);
+        end if;
       end if;
     end process;
 
@@ -307,10 +314,12 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          trans(i) <= (others => '0');
           trans_valid(i) <= '0';
         else
-          trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
+          if trans_sum_valid_reg(i) = '1' then
+            trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
+          end if;
+
           trans_valid(i) <= trans_sum_valid_reg(i);
         end if;
       end if;
@@ -343,8 +352,15 @@ begin
     p_trans_thold_bigger_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        trans_bigger_reg(i) <= trans_bigger(i);
-        trans_bigger_valid_reg(i) <= trans_bigger_valid(i);
+        if fs_rst_n_i = '0' then
+          trans_bigger_valid_reg(i) <= '0';
+        else
+          if trans_bigger_valid(i) = '1' then
+            trans_bigger_reg(i) <= trans_bigger(i);
+          end if;
+
+          trans_bigger_valid_reg(i) <= trans_bigger_valid(i);
+        end if;
       end if;
     end process;
 
@@ -376,8 +392,15 @@ begin
     p_trans_thold_smaller_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        trans_smaller_reg(i) <= trans_smaller(i);
-        trans_smaller_valid_reg(i) <= trans_smaller_valid(i);
+        if fs_rst_n_i = '0' then
+          trans_smaller_valid_reg(i) <= '0';
+        else
+          if trans_smaller_valid(i) = '1' then
+            trans_smaller_reg(i) <= trans_smaller(i);
+          end if;
+
+          trans_smaller_valid_reg(i) <= trans_smaller_valid(i);
+        end if;
       end if;
     end process;
 

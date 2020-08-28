@@ -312,8 +312,15 @@ begin
     p_ang_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        ang_sum_reg(i) <= ang_sum(i);
-        ang_sum_valid_reg(i) <= ang_sum_valid(i);
+        if fs_rst_n_i = '0' then
+          ang_sum_valid_reg(i) <= '0';
+        else
+          if ang_sum_valid(i) = '1' then
+            ang_sum_reg(i) <= ang_sum(i);
+          end if;
+
+          ang_sum_valid_reg(i) <= ang_sum_valid(i);
+        end if;
       end if;
     end process;
 
@@ -322,10 +329,12 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          ang(i) <= (others => '0');
           ang_valid(i) <= '0';
         else
-          ang(i) <= std_logic_vector(signed(ang_sum_reg(i)));
+          if ang_sum_valid_reg(i) = '1' then
+            ang(i) <= std_logic_vector(signed(ang_sum_reg(i)));
+          end if;
+
           ang_valid(i) <= ang_sum_valid_reg(i);
         end if;
       end if;
@@ -358,8 +367,15 @@ begin
     p_ang_thold_bigger_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        ang_bigger_reg(i) <= ang_bigger(i);
-        ang_bigger_valid_reg(i) <= ang_bigger_valid(i);
+        if fs_rst_n_i = '0' then
+          ang_bigger_valid_reg(i) <= '0';
+        else
+          if ang_bigger_valid(i) = '1' then
+            ang_bigger_reg(i) <= ang_bigger(i);
+          end if;
+
+          ang_bigger_valid_reg(i) <= ang_bigger_valid(i);
+        end if;
       end if;
     end process;
 
@@ -391,8 +407,15 @@ begin
     p_ang_thold_smaller_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        ang_smaller_reg(i) <= ang_smaller(i);
-        ang_smaller_valid_reg(i) <= ang_smaller_valid(i);
+        if fs_rst_n_i = '0' then
+          ang_smaller_valid_reg(i) <= '0';
+        else
+          if ang_smaller_valid(i) = '1' then
+            ang_smaller_reg(i) <= ang_smaller(i);
+          end if;
+
+          ang_smaller_valid_reg(i) <= ang_smaller_valid(i);
+        end if;
       end if;
     end process;
 
