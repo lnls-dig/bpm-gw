@@ -160,7 +160,6 @@ architecture rtl of orbit_intlk_ang is
   signal intlk_ang_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
   signal intlk_ang_max_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
   signal intlk_ang_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_min_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -174,6 +173,7 @@ architecture rtl of orbit_intlk_ang is
   signal ang_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_neg           : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
 
@@ -370,8 +370,8 @@ begin
     -- Detect position < Threshold
     ----------------------------------
     -- Compare with threshold. Use the simple identity that:
-    -- A < B is the same as A + (-B) and we check if MSB Carry
-    -- is 0
+    -- A < B is the same as -A > -B = -A + B > 0 and we check
+    -- if MSB Carry is 1
     cmp_ang_thold_smaller : gc_big_adder2
     generic map (
       g_data_bits => c_DECIM_WIDTH
@@ -380,15 +380,14 @@ begin
       clk_i        => fs_clk_i,
       stall_i      => '0',
       valid_i      => ang_valid(i),
-      a_i          => ang(i),
-      b_i          => intlk_ang_min_neg(i),
+      a_i          => ang_neg(i),
+      b_i          => intlk_ang_min(i),
       c_i          => '0',
-      c2_o         => ang_smaller_n(i),
+      c2_o         => ang_smaller(i),
       c2x2_valid_o => ang_smaller_valid(i)
     );
 
-    intlk_ang_min_neg(i) <= std_logic_vector(-signed(intlk_ang_min(i)));
-    ang_smaller(i) <= not ang_smaller_n(i);
+    ang_neg(i) <= std_logic_vector(-signed(ang(i)));
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_smaller_reg : process(fs_clk_i)
