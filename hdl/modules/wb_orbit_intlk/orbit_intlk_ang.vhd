@@ -282,11 +282,11 @@ begin
   -------------------------------------------------------------------------
   -- Angular interlock detector. Only for X and Y.
   -- Calculation is a simple (us = upstream, ds = downstream):
-  -- x_ang = abs(x_us - x_ds) / distance_between_bpms OR
-  -- x_ang * distance_between_bpms = abs(x_us - x_ds)
+  -- x_ang = x_us - x_ds / distance_between_bpms OR
+  -- x_ang * distance_between_bpms = x_us - x_ds
   --
-  -- y_ang = abs(y_us - y_ds) / distance_between_bpms OR
-  -- y_ang * distance_between_bpms = abs(y_us - y_ds)
+  -- y_ang = y_us - y_ds / distance_between_bpms OR
+  -- y_ang * distance_between_bpms = y_us - y_ds
   -------------------------------------------------------------------------
   gen_ang_intlk : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
 
@@ -324,21 +324,8 @@ begin
       end if;
     end process;
 
-    -- Absolute sum value
-    p_ang_divide : process(fs_clk_i)
-    begin
-      if rising_edge(fs_clk_i) then
-        if fs_rst_n_i = '0' then
-          ang_valid(i) <= '0';
-        else
-          if ang_sum_valid_reg(i) = '1' then
-            ang(i) <= std_logic_vector(signed(ang_sum_reg(i)));
-          end if;
-
-          ang_valid(i) <= ang_sum_valid_reg(i);
-        end if;
-      end if;
-    end process;
+    ang(i) <= ang_sum_reg(i);
+    ang_valid(i) <= ang_sum_valid_reg(i);
 
     ----------------------------------
     -- Detect position > Threshold
