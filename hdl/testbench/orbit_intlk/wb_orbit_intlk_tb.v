@@ -641,6 +641,61 @@ module wb_orbit_intlk_tb;
         test_intlk_status
     );
 
+    ////////////////////////
+    // TEST #7
+    // Negative position
+    // X/Y within limits.
+    ////////////////////////
+    test_id = 7;
+    test_intlk_en = 1'b1;
+
+    test_intlk_min_sum_en = 1'b1;
+    test_intlk_min_sum = 'h0_1000;
+
+    test_intlk_trans_en  = 1'b1;
+
+    test_intlk_trans_max_x = 'h0000_0000;
+    test_intlk_trans_max_y = 'h0000_0000;
+
+    test_intlk_ang_en  = 1'b0;
+
+    test_intlk_ang_max_x = 'h1_55CC0;
+    test_intlk_ang_max_y = 'h1_55CC0;
+
+    test_decim_ds_pos_x = 'hFFFF_FF00;
+    test_decim_ds_pos_y = 'hFFFF_FF00;
+    test_decim_ds_pos_q = 'h0;
+    test_decim_ds_pos_sum = 'h0001_0000;
+
+    test_decim_us_pos_x = 'hFFFF_FF00;
+    test_decim_us_pos_y = 'hFFFF_FF00;
+    test_decim_us_pos_q = 'h0;
+    test_decim_us_pos_sum = 'h0001_0000;
+
+    test_intlk_status = 1'b0;
+
+    wb_intlk_transaction(
+        test_id,
+        test_intlk_en,
+        test_intlk_min_sum_en,
+        test_intlk_min_sum,
+        test_intlk_trans_en ,
+        test_intlk_trans_max_x,
+        test_intlk_trans_max_y,
+        test_intlk_ang_en ,
+        test_intlk_ang_max_x,
+        test_intlk_ang_max_y,
+        test_decim_ds_pos_x,
+        test_decim_ds_pos_y,
+        test_decim_ds_pos_q,
+        test_decim_ds_pos_sum,
+        test_decim_us_pos_x,
+        test_decim_us_pos_y,
+        test_decim_us_pos_q,
+        test_decim_us_pos_sum,
+        test_intlk_status
+    );
+
     $display("Simulation Done!");
     $display("All Tests Passed!");
     $display("---------------------------------------------");
