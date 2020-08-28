@@ -223,7 +223,6 @@ architecture rtl of orbit_intlk is
   signal intlk_sum_bigger           : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_valid     : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_reg       : t_bit_array(c_NUM_BPMS-1 downto 0);
-  signal intlk_sum_bigger_valid_reg : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_or        : t_bit_array(c_NUM_BPMS downto 0);
   signal intlk_sum_bigger_any       : std_logic;
   signal intlk_sum_bigger_en        : std_logic;
@@ -387,8 +386,11 @@ begin
     p_sum_thold_bigger_reg : process(ref_clk_i)
     begin
       if rising_edge(ref_clk_i) then
-        intlk_sum_bigger_reg(i) <= intlk_sum_bigger(i);
-        intlk_sum_bigger_valid_reg(i) <= intlk_sum_bigger_valid(i);
+        if ref_rst_n_i = '0' then
+          intlk_sum_bigger_reg(i) <= '0';
+        elsif intlk_sum_bigger_valid(i) = '1' then
+          intlk_sum_bigger_reg(i) <= intlk_sum_bigger(i);
+        end if;
       end if;
     end process;
 
@@ -397,8 +399,7 @@ begin
   intlk_sum_bigger_or(0) <= '0';
   -- ORing all trans_bigger
   gen_intlk_sum_bigger : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
-    intlk_sum_bigger_or(i+1) <= intlk_sum_bigger_or(i) or (intlk_sum_bigger_reg(i) and
-                                                            intlk_sum_bigger_valid_reg(i));
+    intlk_sum_bigger_or(i+1) <= intlk_sum_bigger_or(i) or intlk_sum_bigger_reg(i);
   end generate;
 
   p_reg_enable : process(ref_clk_i)
