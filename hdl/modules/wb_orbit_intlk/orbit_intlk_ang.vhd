@@ -157,10 +157,10 @@ architecture rtl of orbit_intlk_ang is
   signal decim_pos_valid_array  : t_bit_array(c_NUM_BPMS-1 downto 0);
 
   -- interlock limits
-  signal intlk_ang_max   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_min   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_min_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -342,13 +342,13 @@ begin
       stall_i      => '0',
       valid_i      => ang_valid(i),
       a_i          => ang(i),
-      b_i          => intlk_ang_max_n(i),
-      c_i          => '1',
+      b_i          => intlk_ang_max_neg(i),
+      c_i          => '0',
       c2_o         => ang_bigger(i),
       c2x2_valid_o => ang_bigger_valid(i)
     );
 
-    intlk_ang_max_n(i) <= not intlk_ang_max(i);
+    intlk_ang_max_neg(i) <= std_logic_vector(-signed(intlk_ang_max(i)));
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_bigger_reg : process(fs_clk_i)
@@ -381,13 +381,13 @@ begin
       stall_i      => '0',
       valid_i      => ang_valid(i),
       a_i          => ang(i),
-      b_i          => intlk_ang_min_n(i),
-      c_i          => '1',
+      b_i          => intlk_ang_min_neg(i),
+      c_i          => '0',
       c2_o         => ang_smaller_n(i),
       c2x2_valid_o => ang_smaller_valid(i)
     );
 
-    intlk_ang_min_n(i) <= not intlk_ang_min(i);
+    intlk_ang_min_neg(i) <= std_logic_vector(-signed(intlk_ang_min(i)));
     ang_smaller(i) <= not ang_smaller_n(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.

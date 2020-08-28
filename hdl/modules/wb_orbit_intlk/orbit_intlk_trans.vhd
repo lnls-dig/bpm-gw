@@ -156,10 +156,10 @@ architecture rtl of orbit_intlk_trans is
   signal decim_pos_valid_array   : t_bit_array(c_NUM_BPMS-1 downto 0);
 
   -- interlock limits
-  signal intlk_trans_max   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_trans_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_trans_min   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_trans_min_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_min_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -339,13 +339,13 @@ begin
       stall_i      => '0',
       valid_i      => trans_valid(i),
       a_i          => trans(i),
-      b_i          => intlk_trans_max_n(i),
-      c_i          => '1',
+      b_i          => intlk_trans_max_neg(i),
+      c_i          => '0',
       c2_o         => trans_bigger(i),
       c2x2_valid_o => trans_bigger_valid(i)
     );
 
-    intlk_trans_max_n(i) <= not intlk_trans_max(i);
+    intlk_trans_max_neg(i) <= std_logic_vector(-signed(intlk_trans_max(i)));
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_trans_thold_bigger_reg : process(fs_clk_i)
@@ -378,13 +378,13 @@ begin
       stall_i      => '0',
       valid_i      => trans_valid(i),
       a_i          => trans(i),
-      b_i          => intlk_trans_min_n(i),
-      c_i          => '1',
+      b_i          => intlk_trans_min_neg(i),
+      c_i          => '0',
       c2_o         => trans_smaller_n(i),
       c2x2_valid_o => trans_smaller_valid(i)
     );
 
-    intlk_trans_min_n(i) <= not intlk_trans_min(i);
+    intlk_trans_min_neg(i) <= std_logic_vector(-signed(intlk_trans_min(i)));
     trans_smaller(i) <= not trans_smaller_n(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
