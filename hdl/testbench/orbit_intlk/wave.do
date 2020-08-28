@@ -203,8 +203,7 @@ add wave -noupdate /wb_orbit_intlk_tb/DUT/intlk
 add wave -noupdate /wb_orbit_intlk_tb/DUT/intlk_ltc
 add wave -noupdate /wb_orbit_intlk_tb/DUT/c_PERIPH_ADDR_SIZE
 add wave -noupdate /wb_orbit_intlk_tb/DUT/c_INTLK_LMT_WIDTH
-add wave -noupdate -divider orbit_intlk_cdc
-add wave -noupdate -divider intlk_trans
+add wave -noupdate -divider orbit_intlk
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/g_ADC_WIDTH
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/g_DECIM_WIDTH
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/g_INTLK_LMT_WIDTH
@@ -306,7 +305,6 @@ add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_min_sum_valid
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_valid
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_reg
-add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_valid_reg
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_or
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_any
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/intlk_sum_bigger_en
@@ -337,11 +335,105 @@ add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/decim_us_pos_valid
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/c_ADC_WIDTH
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/c_DECIM_WIDTH
 add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/c_INTLK_LMT_WIDTH
+add wave -noupdate -divider intlk_trans
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/g_ADC_WIDTH
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/g_DECIM_WIDTH
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/g_INTLK_LMT_WIDTH
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/fs_rst_n_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/fs_clk_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_en_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_clr_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_max_x_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_max_y_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_min_x_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_min_y_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_ch0_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_ch1_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_ch2_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_ch3_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_tag_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_ds_swap_valid_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_ds_pos_x_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_ds_pos_y_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_ds_pos_q_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_ds_pos_sum_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_ds_pos_valid_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_ch0_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_ch1_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_ch2_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_ch3_swap_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_tag_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_us_swap_valid_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_us_pos_x_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_us_pos_y_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_us_pos_q_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_us_pos_sum_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_us_pos_valid_i
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_x_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_y_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_ltc_x_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_ltc_y_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_any_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_ltc_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_bigger_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_x_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_y_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_ltc_x_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_ltc_y_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_any_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_ltc_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_smaller_o
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_array
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_tag_array
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_valid_array
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_pos_array
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_pos_valid_array
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_max
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_max_neg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/intlk_trans_min
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_valid_and
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/adc_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_pos_valid_and
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/decim_pos_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_sum
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_sum_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_sum_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_sum_valid_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_neg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_bigger
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_bigger_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_bigger_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_bigger_valid_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_smaller
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_smaller_valid
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_smaller_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_smaller_valid_reg
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_det_bigger_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_ltc_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_or
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_ltc_or
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_ltc
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger_any
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_bigger
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_det_smaller_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_ltc_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_or
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_all
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_ltc_or
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_ltc
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller_any
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/trans_intlk_smaller
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/c_ADC_WIDTH
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/c_DECIM_WIDTH
+add wave -noupdate /wb_orbit_intlk_tb/DUT/cmp_orbit_intlk/cmp_orbit_intlk_trans/c_INTLK_LMT_WIDTH
 add wave -noupdate -divider intlk_ang
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {2375000000 fs} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 191
+WaveRestoreCursors {{Cursor 1} {8395000000 fs} 0} {{Cursor 2} {8058029839 fs} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 249
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -355,4 +447,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {1663754167 fs} {2422960308 fs}
+WaveRestoreZoom {7491367289 fs} {8810980669 fs}
