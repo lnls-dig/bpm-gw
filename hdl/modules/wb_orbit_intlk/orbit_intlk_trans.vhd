@@ -174,7 +174,6 @@ architecture rtl of orbit_intlk_trans is
   signal trans_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
 
   signal trans_bigger             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
