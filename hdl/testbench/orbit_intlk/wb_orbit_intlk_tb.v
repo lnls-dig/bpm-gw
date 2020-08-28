@@ -103,16 +103,16 @@ module wb_orbit_intlk_tb;
   wire intlk_trans_bigger_y;
   wire intlk_trans_bigger_ltc_x;
   wire intlk_trans_bigger_ltc_y;
+  wire intlk_trans_bigger_any;
+  wire intlk_trans_bigger_ltc;
   wire intlk_trans_bigger;
-  wire intlk_trans_ltc;
-  wire intlk_trans;
   wire intlk_ang_bigger_x;
   wire intlk_ang_bigger_y;
   wire intlk_ang_bigger_ltc_x;
   wire intlk_ang_bigger_ltc_y;
+  wire intlk_ang_bigger_any;
+  wire intlk_ang_bigger_ltc;
   wire intlk_ang_bigger;
-  wire intlk_ang_ltc;
-  wire intlk_ang;
   wire intlk_ltc;
   wire intlk;
 
@@ -172,10 +172,10 @@ module wb_orbit_intlk_tb;
     .intlk_trans_bigger_ltc_x_o  (intlk_trans_bigger_ltc_x),
     .intlk_trans_bigger_ltc_y_o  (intlk_trans_bigger_ltc_y),
 
-    .intlk_trans_bigger_o        (intlk_trans_bigger),
+    .intlk_trans_bigger_any_o    (intlk_trans_bigger_any),
 
-    .intlk_trans_ltc_o           (intlk_trans_ltc),
-    .intlk_trans_o               (intlk_trans),
+    .intlk_trans_bigger_ltc_o    (intlk_trans_bigger_ltc),
+    .intlk_trans_bigger_o        (intlk_trans_bigger),
 
     .intlk_ang_bigger_x_o        (intlk_ang_bigger_x),
     .intlk_ang_bigger_y_o        (intlk_ang_bigger_y),
@@ -183,10 +183,10 @@ module wb_orbit_intlk_tb;
     .intlk_ang_bigger_ltc_x_o    (intlk_ang_bigger_ltc_x),
     .intlk_ang_bigger_ltc_y_o    (intlk_ang_bigger_ltc_y),
 
-    .intlk_ang_bigger_o          (intlk_ang_bigger),
+    .intlk_ang_bigger_any_o      (intlk_ang_bigger_any),
 
-    .intlk_ang_ltc_o             (intlk_ang_ltc),
-    .intlk_ang_o                 (intlk_ang),
+    .intlk_ang_bigger_ltc_o      (intlk_ang_bigger_ltc),
+    .intlk_ang_bigger_o          (intlk_ang_bigger),
 
     .intlk_ltc_o                 (intlk_ltc),
     .intlk_o                     (intlk)
@@ -820,19 +820,19 @@ module wb_orbit_intlk_tb;
     WB0.read32(`ADDR_ORBIT_INTLK_STS >> `WB_WORD_ACC, wb_reg);
     @(posedge sys_clk);
 
-    if (test_intlk_status == intlk) begin
-      $display("Interlock module correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+    if (test_intlk_status == intlk_ltc) begin
+      $display("Interlock module correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_ltc);
     end else begin
-      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_ltc);
       err = 1;
       err_intlk = 1;
     end
 
-    intlk_wb = (wb_reg & `ORBIT_INTLK_STS_INTLK_BIGGER) >> `ORBIT_INTLK_STS_INTLK_BIGGER_OFFSET;
+    intlk_wb = (wb_reg & `ORBIT_INTLK_STS_INTLK_LTC) >> `ORBIT_INTLK_STS_INTLK_LTC_OFFSET;
     if (test_intlk_status == intlk_wb) begin
       $display("Wishbone register correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_wb);
     end else begin
-      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      $display("Wishbone register DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_wb);
       err = 1;
       err_wb = 1;
     end
