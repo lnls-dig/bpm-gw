@@ -157,7 +157,7 @@ architecture rtl of orbit_intlk_trans is
 
   -- interlock limits
   signal intlk_trans_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_trans_max_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max_n   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
   signal intlk_trans_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
@@ -172,7 +172,7 @@ architecture rtl of orbit_intlk_trans is
   signal trans_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_neg           : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal trans_bigger             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
@@ -338,13 +338,13 @@ begin
       stall_i      => '0',
       valid_i      => trans_valid(i),
       a_i          => trans(i),
-      b_i          => intlk_trans_max_neg(i),
-      c_i          => '0',
+      b_i          => intlk_trans_max_n(i),
+      c_i          => '1',
       c2_o         => trans_bigger(i),
       c2x2_valid_o => trans_bigger_valid(i)
     );
 
-    intlk_trans_max_neg(i) <= std_logic_vector(-signed(intlk_trans_max(i)));
+    intlk_trans_max_n(i) <= not intlk_trans_max(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_trans_thold_bigger_reg : process(fs_clk_i)
@@ -376,14 +376,14 @@ begin
       clk_i        => fs_clk_i,
       stall_i      => '0',
       valid_i      => trans_valid(i),
-      a_i          => trans_neg(i),
+      a_i          => trans_n(i),
       b_i          => intlk_trans_min(i),
-      c_i          => '0',
+      c_i          => '1',
       c2_o         => trans_smaller(i),
       c2x2_valid_o => trans_smaller_valid(i)
     );
 
-    trans_neg(i) <= std_logic_vector(-signed(trans(i)));
+    trans_n(i) <= not trans(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_trans_thold_smaller_reg : process(fs_clk_i)

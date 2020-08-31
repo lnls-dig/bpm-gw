@@ -158,7 +158,7 @@ architecture rtl of orbit_intlk_ang is
 
   -- interlock limits
   signal intlk_ang_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_max_neg : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
   signal intlk_ang_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
@@ -173,7 +173,7 @@ architecture rtl of orbit_intlk_ang is
   signal ang_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_neg           : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_n           : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
 
@@ -342,13 +342,13 @@ begin
       stall_i      => '0',
       valid_i      => ang_valid(i),
       a_i          => ang(i),
-      b_i          => intlk_ang_max_neg(i),
-      c_i          => '0',
+      b_i          => intlk_ang_max_n(i),
+      c_i          => '1',
       c2_o         => ang_bigger(i),
       c2x2_valid_o => ang_bigger_valid(i)
     );
 
-    intlk_ang_max_neg(i) <= std_logic_vector(-signed(intlk_ang_max(i)));
+    intlk_ang_max_n(i) <= not intlk_ang_max(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_bigger_reg : process(fs_clk_i)
@@ -380,14 +380,14 @@ begin
       clk_i        => fs_clk_i,
       stall_i      => '0',
       valid_i      => ang_valid(i),
-      a_i          => ang_neg(i),
+      a_i          => ang_n(i),
       b_i          => intlk_ang_min(i),
-      c_i          => '0',
+      c_i          => '1',
       c2_o         => ang_smaller(i),
       c2x2_valid_o => ang_smaller_valid(i)
     );
 
-    ang_neg(i) <= std_logic_vector(-signed(ang(i)));
+    ang_n(i) <= not ang(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_smaller_reg : process(fs_clk_i)
