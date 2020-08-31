@@ -157,9 +157,11 @@ architecture rtl of orbit_intlk_ang is
   signal decim_pos_valid_array  : t_bit_array(c_NUM_BPMS-1 downto 0);
 
   -- interlock limits
-  signal intlk_ang_max     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_min     : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_n        : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -173,16 +175,18 @@ architecture rtl of orbit_intlk_ang is
   signal ang_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_n           : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_high_bit      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal ang_bigger             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_bigger_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal ang_smaller            : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_comb       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_n          : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_valid      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_reg        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
@@ -344,11 +348,20 @@ begin
       a_i          => ang(i),
       b_i          => intlk_ang_max_n(i),
       c_i          => '1',
-      c2_o         => ang_bigger(i),
+      c2_o         => ang_bigger_comb(i),
       c2x2_valid_o => ang_bigger_valid(i)
     );
 
     intlk_ang_max_n(i) <= not intlk_ang_max(i);
+
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    ang_high_bit(i) <= ang(i)(ang(i)'high);
+    intlk_ang_max_high_bit(i) <= intlk_ang_max(i)(intlk_ang_max(i)'high);
+
+    ang_bigger(i) <= ang_bigger_comb(i) when
+                       (ang_high_bit(i) xnor intlk_ang_max_high_bit(i)) = '1' else
+                        intlk_ang_max_high_bit(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_bigger_reg : process(fs_clk_i)
@@ -383,11 +396,19 @@ begin
       a_i          => ang_n(i),
       b_i          => intlk_ang_min(i),
       c_i          => '1',
-      c2_o         => ang_smaller(i),
+      c2_o         => ang_smaller_comb(i),
       c2x2_valid_o => ang_smaller_valid(i)
     );
 
     ang_n(i) <= not ang(i);
+
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    intlk_ang_min_high_bit(i) <= intlk_ang_min(i)(intlk_ang_min(i)'high);
+
+    ang_smaller(i) <= ang_smaller_comb(i) when
+                      (ang_high_bit(i) xnor intlk_ang_min_high_bit(i)) = '1' else
+                       ang_high_bit(i);
 
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_smaller_reg : process(fs_clk_i)
