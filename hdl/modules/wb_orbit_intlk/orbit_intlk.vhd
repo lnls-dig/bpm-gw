@@ -59,12 +59,16 @@ port
   intlk_trans_clr_i                          : in std_logic;
   intlk_trans_max_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
   intlk_trans_max_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_trans_min_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_trans_min_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
   -- Angular interlock on/off
   intlk_ang_en_i                             : in std_logic;
   -- Angular interlock clear
   intlk_ang_clr_i                            : in std_logic;
   intlk_ang_max_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
   intlk_ang_max_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_ang_min_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_ang_min_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
   -----------------------------
   -- Downstream ADC and position signals
@@ -110,14 +114,34 @@ port
   intlk_trans_bigger_x_o                     : out std_logic;
   intlk_trans_bigger_y_o                     : out std_logic;
 
+  -- only cleared when intlk_trans_clr_i is asserted
   intlk_trans_bigger_ltc_x_o                 : out std_logic;
   intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-  intlk_trans_bigger_o                       : out std_logic;
+  intlk_trans_bigger_any_o                   : out std_logic;
 
   -- only cleared when intlk_trans_clr_i is asserted
-  intlk_trans_ltc_o                          : out std_logic;
+  intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
+  intlk_trans_bigger_o                       : out std_logic;
+
+  intlk_trans_smaller_x_o                    : out std_logic;
+  intlk_trans_smaller_y_o                    : out std_logic;
+
+  -- only cleared when intlk_trans_clr_i is asserted
+  intlk_trans_smaller_ltc_x_o                : out std_logic;
+  intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+  intlk_trans_smaller_any_o                  : out std_logic;
+
+  -- only cleared when intlk_trans_clr_i is asserted
+  intlk_trans_smaller_ltc_o                  : out std_logic;
+  -- conditional to intlk_trans_en_i
+  intlk_trans_smaller_o                      : out std_logic;
+
+  -- only cleared when intlk_clr_i is asserted
+  intlk_trans_ltc_o                          : out std_logic;
+  -- conditional to intlk_en_i
   intlk_trans_o                              : out std_logic;
 
   intlk_ang_bigger_x_o                       : out std_logic;
@@ -126,11 +150,29 @@ port
   intlk_ang_bigger_ltc_x_o                   : out std_logic;
   intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-  intlk_ang_bigger_o                         : out std_logic;
+  intlk_ang_bigger_any_o                     : out std_logic;
 
   -- only cleared when intlk_ang_clr_i is asserted
-  intlk_ang_ltc_o                            : out std_logic;
+  intlk_ang_bigger_ltc_o                     : out std_logic;
   -- conditional to intlk_ang_en_i
+  intlk_ang_bigger_o                         : out std_logic;
+
+  intlk_ang_smaller_x_o                      : out std_logic;
+  intlk_ang_smaller_y_o                      : out std_logic;
+
+  intlk_ang_smaller_ltc_x_o                  : out std_logic;
+  intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+  intlk_ang_smaller_any_o                    : out std_logic;
+
+  -- only cleared when intlk_ang_clr_i is asserted
+  intlk_ang_smaller_ltc_o                    : out std_logic;
+  -- conditional to intlk_ang_en_i
+  intlk_ang_smaller_o                        : out std_logic;
+
+  -- only cleared when intlk_clr_i is asserted
+  intlk_ang_ltc_o                            : out std_logic;
+  -- conditional to intlk_en_i
   intlk_ang_o                                : out std_logic;
 
   -- only cleared when intlk_clr_i is asserted
@@ -157,10 +199,19 @@ architecture rtl of orbit_intlk is
   signal decim_pos_sum_array   : t_decim_data_array(c_NUM_BPMS-1 downto 0);
   signal decim_pos_valid_array : t_bit_array(c_NUM_BPMS-1 downto 0);
 
-  signal intlk_trans_ltc      : std_logic;
-  signal intlk_trans          : std_logic;
-  signal intlk_ang_ltc        : std_logic;
-  signal intlk_ang            : std_logic;
+  signal intlk_trans_bigger_ltc  : std_logic;
+  signal intlk_trans_bigger      : std_logic;
+  signal intlk_trans_smaller_ltc : std_logic;
+  signal intlk_trans_smaller     : std_logic;
+  signal intlk_trans_ltc         : std_logic;
+  signal intlk_trans             : std_logic;
+
+  signal intlk_ang_bigger_ltc    : std_logic;
+  signal intlk_ang_bigger        : std_logic;
+  signal intlk_ang_smaller_ltc   : std_logic;
+  signal intlk_ang_smaller       : std_logic;
+  signal intlk_ang_ltc           : std_logic;
+  signal intlk_ang               : std_logic;
 
   signal intlk_all            : std_logic;
   signal intlk_ltc            : std_logic;
@@ -172,7 +223,6 @@ architecture rtl of orbit_intlk is
   signal intlk_sum_bigger           : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_valid     : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_reg       : t_bit_array(c_NUM_BPMS-1 downto 0);
-  signal intlk_sum_bigger_valid_reg : t_bit_array(c_NUM_BPMS-1 downto 0);
   signal intlk_sum_bigger_or        : t_bit_array(c_NUM_BPMS downto 0);
   signal intlk_sum_bigger_any       : std_logic;
   signal intlk_sum_bigger_en        : std_logic;
@@ -336,8 +386,11 @@ begin
     p_sum_thold_bigger_reg : process(ref_clk_i)
     begin
       if rising_edge(ref_clk_i) then
-        intlk_sum_bigger_reg(i) <= intlk_sum_bigger(i);
-        intlk_sum_bigger_valid_reg(i) <= intlk_sum_bigger_valid(i);
+        if ref_rst_n_i = '0' then
+          intlk_sum_bigger_reg(i) <= '0';
+        elsif intlk_sum_bigger_valid(i) = '1' then
+          intlk_sum_bigger_reg(i) <= intlk_sum_bigger(i);
+        end if;
       end if;
     end process;
 
@@ -346,8 +399,7 @@ begin
   intlk_sum_bigger_or(0) <= '0';
   -- ORing all trans_bigger
   gen_intlk_sum_bigger : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
-    intlk_sum_bigger_or(i+1) <= intlk_sum_bigger_or(i) or (intlk_sum_bigger_reg(i) and
-                                                            intlk_sum_bigger_valid_reg(i));
+    intlk_sum_bigger_or(i+1) <= intlk_sum_bigger_or(i) or intlk_sum_bigger_reg(i);
   end generate;
 
   p_reg_enable : process(ref_clk_i)
@@ -397,6 +449,8 @@ begin
     intlk_trans_clr_i                          => intlk_trans_clr_i,
     intlk_trans_max_x_i                        => intlk_trans_max_x_i,
     intlk_trans_max_y_i                        => intlk_trans_max_y_i,
+    intlk_trans_min_x_i                        => intlk_trans_min_x_i,
+    intlk_trans_min_y_i                        => intlk_trans_min_y_i,
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -441,14 +495,35 @@ begin
     intlk_trans_bigger_ltc_x_o                 => intlk_trans_bigger_ltc_x_o,
     intlk_trans_bigger_ltc_y_o                 => intlk_trans_bigger_ltc_y_o,
 
-    intlk_trans_bigger_o                       => intlk_trans_bigger_o,
+    intlk_trans_bigger_any_o                   => intlk_trans_bigger_any_o,
 
-    intlk_trans_ltc_o                          => intlk_trans_ltc,
-    intlk_trans_o                              => intlk_trans
+    intlk_trans_bigger_ltc_o                   => intlk_trans_bigger_ltc,
+    intlk_trans_bigger_o                       => intlk_trans_bigger,
+
+    intlk_trans_smaller_x_o                    => intlk_trans_smaller_x_o,
+    intlk_trans_smaller_y_o                    => intlk_trans_smaller_y_o,
+
+    intlk_trans_smaller_ltc_x_o                => intlk_trans_smaller_ltc_x_o,
+    intlk_trans_smaller_ltc_y_o                => intlk_trans_smaller_ltc_y_o,
+
+    intlk_trans_smaller_any_o                  => intlk_trans_smaller_any_o,
+
+    intlk_trans_smaller_ltc_o                  => intlk_trans_smaller_ltc,
+    intlk_trans_smaller_o                      => intlk_trans_smaller
   );
+
+  intlk_trans_ltc <= intlk_trans_bigger_ltc or intlk_trans_smaller_ltc;
+  intlk_trans <= intlk_trans_bigger or intlk_trans_smaller;
+
+  -- Outputs
 
   intlk_trans_ltc_o <= intlk_trans_ltc;
   intlk_trans_o <= intlk_trans;
+
+  intlk_trans_bigger_ltc_o <= intlk_trans_bigger_ltc;
+  intlk_trans_bigger_o <= intlk_trans_bigger;
+  intlk_trans_smaller_ltc_o <= intlk_trans_smaller_ltc;
+  intlk_trans_smaller_o <= intlk_trans_smaller;
 
   -----------------------------
   -- Angular interlock
@@ -480,6 +555,8 @@ begin
     intlk_ang_clr_i                            => intlk_ang_clr_i,
     intlk_ang_max_x_i                          => intlk_ang_max_x_i,
     intlk_ang_max_y_i                          => intlk_ang_max_y_i,
+    intlk_ang_min_x_i                          => intlk_ang_min_x_i,
+    intlk_ang_min_y_i                          => intlk_ang_min_y_i,
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -524,14 +601,35 @@ begin
     intlk_ang_bigger_ltc_x_o                   => intlk_ang_bigger_ltc_x_o,
     intlk_ang_bigger_ltc_y_o                   => intlk_ang_bigger_ltc_y_o,
 
-    intlk_ang_bigger_o                         => intlk_ang_bigger_o,
+    intlk_ang_bigger_any_o                     => intlk_ang_bigger_any_o,
 
-    intlk_ang_ltc_o                            => intlk_ang_ltc,
-    intlk_ang_o                                => intlk_ang
+    intlk_ang_bigger_ltc_o                     => intlk_ang_bigger_ltc,
+    intlk_ang_bigger_o                         => intlk_ang_bigger,
+
+    intlk_ang_smaller_x_o                      => intlk_ang_smaller_x_o,
+    intlk_ang_smaller_y_o                      => intlk_ang_smaller_y_o,
+
+    intlk_ang_smaller_ltc_x_o                  => intlk_ang_smaller_ltc_x_o,
+    intlk_ang_smaller_ltc_y_o                  => intlk_ang_smaller_ltc_y_o,
+
+    intlk_ang_smaller_any_o                    => intlk_ang_smaller_any_o,
+
+    intlk_ang_smaller_ltc_o                    => intlk_ang_smaller_ltc,
+    intlk_ang_smaller_o                        => intlk_ang_smaller
   );
+
+  intlk_ang_ltc <= intlk_ang_bigger_ltc or intlk_ang_smaller_ltc;
+  intlk_ang <= intlk_ang_bigger or intlk_ang_smaller;
+
+  -- Outputs
 
   intlk_ang_ltc_o <= intlk_ang_ltc;
   intlk_ang_o <= intlk_ang;
+
+  intlk_ang_bigger_ltc_o <= intlk_ang_bigger_ltc;
+  intlk_ang_bigger_o <= intlk_ang_bigger;
+  intlk_ang_smaller_ltc_o <= intlk_ang_smaller_ltc;
+  intlk_ang_smaller_o <= intlk_ang_smaller;
 
   -------------------------------------------------------------------------
   -- General interlock detector. Only for X and Y.
@@ -558,7 +656,7 @@ begin
         if intlk_clr_i = '1' or intlk_en_i = '0' then
           intlk <= '0';
         elsif intlk_en_i = '1' then
-          intlk <= intlk_ltc;
+          intlk <= intlk_all;
         end if;
       end if;
     end if;

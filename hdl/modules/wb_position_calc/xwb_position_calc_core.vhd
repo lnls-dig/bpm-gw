@@ -86,7 +86,10 @@ generic
   g_fofb_cordic_ratio                       : positive := 4;
 
   -- width of K constants
-  g_k_width                                 : natural := 16;
+  g_k_width                                 : natural := 25;
+
+  -- width of offset constants
+  g_offset_width                            : natural := 32;
 
   --width for IQ output
   g_IQ_width                                : natural := 32;

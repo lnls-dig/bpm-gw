@@ -86,7 +86,8 @@ package machine_pkg is
   constant c_pos_calc_fofb_cordic_iter_per_clk  : positive := 3;
   constant c_pos_calc_fofb_cordic_ratio         : positive := 8;
 
-  constant c_pos_calc_k_width                   : natural := 24;
+  constant c_pos_calc_k_width                   : natural := 25;
+  constant c_pos_calc_offset_width              : natural := 32;
   constant c_pos_calc_IQ_width                  : natural := c_pos_calc_mixed_width;
 
   constant c_pos_calc_k_sum                     : natural := 85e5;

@@ -53,6 +53,8 @@ port
   intlk_trans_clr_i                          : in std_logic;
   intlk_trans_max_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
   intlk_trans_max_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_trans_min_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_trans_min_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
   -----------------------------
   -- Downstream ADC and position signals
@@ -97,12 +99,25 @@ port
   intlk_trans_bigger_ltc_x_o                 : out std_logic;
   intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-  intlk_trans_bigger_o                       : out std_logic;
+  intlk_trans_bigger_any_o                   : out std_logic;
 
   -- only cleared when intlk_trans_clr_i is asserted
-  intlk_trans_ltc_o                          : out std_logic;
+  intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
-  intlk_trans_o                              : out std_logic
+  intlk_trans_bigger_o                       : out std_logic;
+
+  intlk_trans_smaller_x_o                    : out std_logic;
+  intlk_trans_smaller_y_o                    : out std_logic;
+
+  intlk_trans_smaller_ltc_x_o                : out std_logic;
+  intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+  intlk_trans_smaller_any_o                  : out std_logic;
+
+  -- only cleared when intlk_trans_clr_i is asserted
+  intlk_trans_smaller_ltc_o                  : out std_logic;
+  -- conditional to intlk_trans_en_i
+  intlk_trans_smaller_o                      : out std_logic
 );
 end orbit_intlk_trans;
 
@@ -141,8 +156,11 @@ architecture rtl of orbit_intlk_trans is
   signal decim_pos_valid_array   : t_bit_array(c_NUM_BPMS-1 downto 0);
 
   -- interlock limits
-  signal intlk_trans_max   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_trans_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_max_n        : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_min          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_trans_min_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -156,21 +174,39 @@ architecture rtl of orbit_intlk_trans is
   signal trans_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_high_bit      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal trans_bigger             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_bigger_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
-  signal trans_intlk_ltc_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_intlk_bigger_or  : t_bit_array(c_NUM_CHANNELS downto 0);
-  signal trans_intlk_bigger     : std_logic;
-  signal trans_intlk_all        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_intlk_ltc        : std_logic;
-  signal trans_intlk_any        : std_logic;
-  signal trans_intlk            : std_logic;
+  signal trans_smaller             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_smaller_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_smaller_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_smaller_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_smaller_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+
+  signal trans_intlk_det_bigger_all  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_bigger_ltc_all  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_bigger_or       : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal trans_intlk_bigger_all      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_bigger_ltc_or   : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal trans_intlk_bigger_ltc      : std_logic;
+  signal trans_intlk_bigger_any      : std_logic;
+  signal trans_intlk_bigger          : std_logic;
+
+  signal trans_intlk_det_smaller_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_smaller_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_smaller_or      : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal trans_intlk_smaller_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal trans_intlk_smaller_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal trans_intlk_smaller_ltc     : std_logic;
+  signal trans_intlk_smaller_any     : std_logic;
+  signal trans_intlk_smaller         : std_logic;
 
 begin
 
@@ -209,9 +245,11 @@ begin
   -- Interlock limits
   -- X limits
   intlk_trans_max(0)  <= intlk_trans_max_x_i;
+  intlk_trans_min(0)  <= intlk_trans_min_x_i;
 
   -- Y limits
   intlk_trans_max(1)  <= intlk_trans_max_y_i;
+  intlk_trans_min(1)  <= intlk_trans_min_y_i;
 
   ----------------------------------
   -- Calculate translation
@@ -262,30 +300,39 @@ begin
     p_trans_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        trans_sum_reg(i) <= trans_sum(i);
-        trans_sum_valid_reg(i) <= trans_sum_valid(i);
+        if fs_rst_n_i = '0' then
+          trans_sum_valid_reg(i) <= '0';
+        else
+          if trans_sum_valid(i) = '1' then
+            trans_sum_reg(i) <= trans_sum(i);
+          end if;
+
+          trans_sum_valid_reg(i) <= trans_sum_valid(i);
+        end if;
       end if;
     end process;
 
-    -- Divide by 2
+    -- Divide by 2 and take absolute value for comparison
     p_trans_divide : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          trans(i) <= (others => '0');
           trans_valid(i) <= '0';
         else
-          trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
+          if trans_sum_valid_reg(i) = '1' then
+            trans(i) <= std_logic_vector(shift_right(signed(trans_sum_reg(i)), 1));
+          end if;
+
           trans_valid(i) <= trans_sum_valid_reg(i);
         end if;
       end if;
     end process;
 
     ----------------------------------
-    -- Detect position >= Threshold
+    -- Detect position > Threshold
     ----------------------------------
     -- Compare with threshold. Use the simple identity that:
-    -- A >= B is the same as A + (-B) and we check if MSB Carry
+    -- A > B is the same as A + (-B) and we check if MSB Carry
     -- is 1
     cmp_trans_thold_bigger : gc_big_adder2
     generic map (
@@ -298,43 +345,126 @@ begin
       a_i          => trans(i),
       b_i          => intlk_trans_max_n(i),
       c_i          => '1',
-      c2_o         => trans_bigger(i),
+      c2_o         => trans_bigger_comb(i),
       c2x2_valid_o => trans_bigger_valid(i)
     );
 
     intlk_trans_max_n(i) <= not intlk_trans_max(i);
 
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    trans_high_bit(i) <= trans(i)(trans(i)'high);
+    intlk_trans_max_high_bit(i) <= intlk_trans_max(i)(intlk_trans_max(i)'high);
+
+    trans_bigger(i) <= trans_bigger_comb(i) when
+                       (trans_high_bit(i) xnor intlk_trans_max_high_bit(i)) = '1' else
+                        intlk_trans_max_high_bit(i);
+
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_trans_thold_bigger_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        trans_bigger_reg(i) <= trans_bigger(i);
-        trans_bigger_valid_reg(i) <= trans_bigger_valid(i);
+        if fs_rst_n_i = '0' then
+          trans_bigger_valid_reg(i) <= '0';
+        else
+          if trans_bigger_valid(i) = '1' then
+            trans_bigger_reg(i) <= trans_bigger(i);
+          end if;
+
+          trans_bigger_valid_reg(i) <= trans_bigger_valid(i);
+        end if;
       end if;
     end process;
+
+    ----------------------------------
+    -- Detect position < Threshold
+    ----------------------------------
+    -- Compare with threshold. Use the simple identity that:
+    -- A < B is the same as -A > -B = -A + B > 0 and we check
+    -- if MSB Carry is 1
+    cmp_trans_thold_smaller : gc_big_adder2
+    generic map (
+      g_data_bits => c_DECIM_WIDTH
+    )
+    port map (
+      clk_i        => fs_clk_i,
+      stall_i      => '0',
+      valid_i      => trans_valid(i),
+      a_i          => trans_n(i),
+      b_i          => intlk_trans_min(i),
+      c_i          => '1',
+      c2_o         => trans_smaller_comb(i),
+      c2x2_valid_o => trans_smaller_valid(i)
+    );
+
+    trans_n(i) <= not trans(i);
+
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    intlk_trans_min_high_bit(i) <= intlk_trans_min(i)(intlk_trans_min(i)'high);
+
+    trans_smaller(i) <= trans_smaller_comb(i) when
+                      (trans_high_bit(i) xnor intlk_trans_min_high_bit(i)) = '1' else
+                       trans_high_bit(i);
+
+    -- gc_big_adder2 outputs are unregistered. So register them.
+    p_trans_thold_smaller_reg : process(fs_clk_i)
+    begin
+      if rising_edge(fs_clk_i) then
+        if fs_rst_n_i = '0' then
+          trans_smaller_valid_reg(i) <= '0';
+        else
+          if trans_smaller_valid(i) = '1' then
+            trans_smaller_reg(i) <= trans_smaller(i);
+          end if;
+
+          trans_smaller_valid_reg(i) <= trans_smaller_valid(i);
+        end if;
+      end if;
+    end process;
+
+    ----------------------------------
+    -- Latch interlocks
+    ----------------------------------
+
+    trans_intlk_det_bigger_all(i) <= trans_bigger_reg(i) and trans_bigger_valid_reg(i);
+    trans_intlk_det_smaller_all(i) <= trans_smaller_reg(i) and trans_smaller_valid_reg(i);
 
     -- latch all interlocks
     p_latch : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          trans_intlk_ltc_all(i) <= '0';
+          trans_intlk_bigger_ltc_all(i) <= '0';
+          trans_intlk_smaller_ltc_all(i) <= '0';
         else
           -- latch up translation interlock status
           -- only clear on "clear" signal
           if intlk_trans_clr_i = '1' then
-            trans_intlk_ltc_all(i) <= '0';
-          elsif trans_bigger_reg(i) = '1' and
-                trans_bigger_valid_reg(i) = '1' and
+            trans_intlk_bigger_ltc_all(i) <= '0';
+          elsif trans_intlk_det_bigger_all(i) = '1' and
                 intlk_trans_en_i = '1' then
-            trans_intlk_ltc_all(i) <= '1';
+            trans_intlk_bigger_ltc_all(i) <= '1';
+          end if;
+
+          if intlk_trans_clr_i = '1' then
+            trans_intlk_smaller_ltc_all(i) <= '0';
+          elsif trans_intlk_det_smaller_all(i) = '1' and
+                intlk_trans_en_i = '1' then
+            trans_intlk_smaller_ltc_all(i) <= '1';
           end if;
 
           -- register translation interlock when active
           if intlk_trans_clr_i = '1' or intlk_trans_en_i = '0' then
-            trans_intlk_all(i) <= '0';
+            trans_intlk_bigger_all(i) <= '0';
           else
-            trans_intlk_all(i) <= trans_intlk_ltc_all(i);
+            trans_intlk_bigger_all(i) <= trans_intlk_det_bigger_all(i);
+          end if;
+
+          if intlk_trans_clr_i = '1' or intlk_trans_en_i = '0' then
+            trans_intlk_smaller_all(i) <= '0';
+          else
+            trans_intlk_smaller_all(i) <= trans_intlk_det_smaller_all(i);
           end if;
         end if;
       end if;
@@ -342,56 +472,62 @@ begin
 
   end generate;
 
-  intlk_trans_bigger_ltc_x_o  <= trans_intlk_ltc_all(c_CHAN_X_IDX);
-  intlk_trans_bigger_ltc_y_o  <= trans_intlk_ltc_all(c_CHAN_Y_IDX);
+  intlk_trans_bigger_ltc_x_o  <= trans_intlk_bigger_ltc_all(c_CHAN_X_IDX);
+  intlk_trans_bigger_ltc_y_o  <= trans_intlk_bigger_ltc_all(c_CHAN_Y_IDX);
 
-  intlk_trans_bigger_x_o    <= trans_intlk_all(c_CHAN_X_IDX);
-  intlk_trans_bigger_y_o    <= trans_intlk_all(c_CHAN_Y_IDX);
+  intlk_trans_bigger_x_o    <= trans_intlk_bigger_all(c_CHAN_X_IDX);
+  intlk_trans_bigger_y_o    <= trans_intlk_bigger_all(c_CHAN_Y_IDX);
+
+  intlk_trans_smaller_ltc_x_o  <= trans_intlk_smaller_ltc_all(c_CHAN_X_IDX);
+  intlk_trans_smaller_ltc_y_o  <= trans_intlk_smaller_ltc_all(c_CHAN_Y_IDX);
+
+  intlk_trans_smaller_x_o    <= trans_intlk_smaller_all(c_CHAN_X_IDX);
+  intlk_trans_smaller_y_o    <= trans_intlk_smaller_all(c_CHAN_Y_IDX);
 
   ----------------------------------
   -- Translation interlock merging
   ----------------------------------
+
+  ----------------------------------
+  -- Bigger
+  ----------------------------------
   trans_intlk_bigger_or(0) <= '0';
   -- ORing all trans_bigger
   gen_trans_intlk_bigger : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
-    trans_intlk_bigger_or(i+1) <= trans_intlk_bigger_or(i) or trans_intlk_all(i);
+    trans_intlk_bigger_or(i+1) <= trans_intlk_bigger_or(i) or trans_intlk_bigger_all(i);
   end generate;
 
   trans_intlk_bigger <= trans_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_trans_bigger_o  <= trans_intlk_bigger;
 
+  trans_intlk_bigger_ltc_or(0) <= '0';
+  -- ORing all trans_bigger_ltc
+  gen_trans_intlk_bigger_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    trans_intlk_bigger_ltc_or(i+1) <= trans_intlk_bigger_ltc_or(i) or trans_intlk_bigger_ltc_all(i);
+  end generate;
+
+  trans_intlk_bigger_ltc <= trans_intlk_bigger_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_trans_bigger_ltc_o  <= trans_intlk_bigger_ltc;
+
   ----------------------------------
-  -- Translation interlock status reg
+  -- Smaller
   ----------------------------------
+  trans_intlk_smaller_or(0) <= '0';
+  -- ORing all trans_smaller
+  gen_trans_intlk_smaller : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    trans_intlk_smaller_or(i+1) <= trans_intlk_smaller_or(i) or trans_intlk_smaller_all(i);
+  end generate;
 
-  trans_intlk_any <= trans_intlk_bigger;
+  trans_intlk_smaller <= trans_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_trans_smaller_o  <= trans_intlk_smaller;
 
-  p_trans_out : process(fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        trans_intlk_ltc <= '0';
-        trans_intlk <= '0';
-      else
-        -- latch up translation interlock status
-        -- only clear on "clear" signal
-        if intlk_trans_clr_i = '1' then
-          trans_intlk_ltc <= '0';
-        elsif trans_intlk_any = '1' then
-          trans_intlk_ltc <= '1';
-        end if;
+  trans_intlk_smaller_ltc_or(0) <= '0';
+  -- ORing all trans_smaller_ltc
+  gen_trans_intlk_smaller_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    trans_intlk_smaller_ltc_or(i+1) <= trans_intlk_smaller_ltc_or(i) or trans_intlk_smaller_ltc_all(i);
+  end generate;
 
-        -- register translation interlock when active
-        if intlk_trans_clr_i = '1' or intlk_trans_en_i = '0' then
-          trans_intlk <= '0';
-        else
-          trans_intlk <= trans_intlk_ltc;
-        end if;
-      end if;
-    end if;
-  end process;
-
-  intlk_trans_ltc_o <= trans_intlk_ltc;
-  intlk_trans_o     <= trans_intlk;
+  trans_intlk_smaller_ltc <= trans_intlk_smaller_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_trans_smaller_ltc_o  <= trans_intlk_smaller_ltc;
 
 end rtl;

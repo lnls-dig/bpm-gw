@@ -69,12 +69,16 @@ package orbit_intlk_pkg is
     intlk_trans_clr_i                          : in std_logic;
     intlk_trans_max_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
     intlk_trans_max_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_trans_min_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_trans_min_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
     -- Angular interlock on/off
     intlk_ang_en_i                             : in std_logic;
     -- Angular interlock clear
     intlk_ang_clr_i                            : in std_logic;
     intlk_ang_max_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
     intlk_ang_max_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_ang_min_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_ang_min_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -120,14 +124,34 @@ package orbit_intlk_pkg is
     intlk_trans_bigger_x_o                     : out std_logic;
     intlk_trans_bigger_y_o                     : out std_logic;
 
+    -- only cleared when intlk_trans_clr_i is asserted
     intlk_trans_bigger_ltc_x_o                 : out std_logic;
     intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-    intlk_trans_bigger_o                       : out std_logic;
+    intlk_trans_bigger_any_o                   : out std_logic;
 
     -- only cleared when intlk_trans_clr_i is asserted
-    intlk_trans_ltc_o                          : out std_logic;
+    intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
+    intlk_trans_bigger_o                       : out std_logic;
+
+    intlk_trans_smaller_x_o                    : out std_logic;
+    intlk_trans_smaller_y_o                    : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_x_o                : out std_logic;
+    intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+    intlk_trans_smaller_any_o                  : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_o                  : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_smaller_o                      : out std_logic;
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_trans_ltc_o                          : out std_logic;
+    -- conditional to intlk_en_i
     intlk_trans_o                              : out std_logic;
 
     intlk_ang_bigger_x_o                       : out std_logic;
@@ -136,11 +160,29 @@ package orbit_intlk_pkg is
     intlk_ang_bigger_ltc_x_o                   : out std_logic;
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-    intlk_ang_bigger_o                         : out std_logic;
+    intlk_ang_bigger_any_o                     : out std_logic;
 
     -- only cleared when intlk_ang_clr_i is asserted
-    intlk_ang_ltc_o                            : out std_logic;
+    intlk_ang_bigger_ltc_o                     : out std_logic;
     -- conditional to intlk_ang_en_i
+    intlk_ang_bigger_o                         : out std_logic;
+
+    intlk_ang_smaller_x_o                      : out std_logic;
+    intlk_ang_smaller_y_o                      : out std_logic;
+
+    intlk_ang_smaller_ltc_x_o                  : out std_logic;
+    intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+    intlk_ang_smaller_any_o                    : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_smaller_ltc_o                    : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_smaller_o                        : out std_logic;
+
+    -- only cleared when intlk_clr_i is asserted
+    intlk_ang_ltc_o                            : out std_logic;
+    -- conditional to intlk_en_i
     intlk_ang_o                                : out std_logic;
 
     -- only cleared when intlk_clr_i is asserted
@@ -177,6 +219,8 @@ package orbit_intlk_pkg is
     intlk_trans_clr_i                          : in std_logic;
     intlk_trans_max_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
     intlk_trans_max_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_trans_min_x_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_trans_min_y_i                        : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -221,12 +265,25 @@ package orbit_intlk_pkg is
     intlk_trans_bigger_ltc_x_o                 : out std_logic;
     intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-    intlk_trans_bigger_o                       : out std_logic;
+    intlk_trans_bigger_any_o                   : out std_logic;
 
     -- only cleared when intlk_trans_clr_i is asserted
-    intlk_trans_ltc_o                          : out std_logic;
+    intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
-    intlk_trans_o                              : out std_logic
+    intlk_trans_bigger_o                       : out std_logic;
+
+    intlk_trans_smaller_x_o                    : out std_logic;
+    intlk_trans_smaller_y_o                    : out std_logic;
+
+    intlk_trans_smaller_ltc_x_o                : out std_logic;
+    intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+    intlk_trans_smaller_any_o                  : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_o                  : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_smaller_o                      : out std_logic
   );
   end component;
 
@@ -257,6 +314,8 @@ package orbit_intlk_pkg is
     intlk_ang_clr_i                            : in std_logic;
     intlk_ang_max_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
     intlk_ang_max_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_ang_min_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+    intlk_ang_min_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -301,12 +360,25 @@ package orbit_intlk_pkg is
     intlk_ang_bigger_ltc_x_o                   : out std_logic;
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-    intlk_ang_bigger_o                         : out std_logic;
+    intlk_ang_bigger_any_o                     : out std_logic;
 
     -- only cleared when intlk_ang_clr_i is asserted
-    intlk_ang_ltc_o                            : out std_logic;
+    intlk_ang_bigger_ltc_o                     : out std_logic;
     -- conditional to intlk_ang_en_i
-    intlk_ang_o                                : out std_logic
+    intlk_ang_bigger_o                         : out std_logic;
+
+    intlk_ang_smaller_x_o                      : out std_logic;
+    intlk_ang_smaller_y_o                      : out std_logic;
+
+    intlk_ang_smaller_ltc_x_o                  : out std_logic;
+    intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+    intlk_ang_smaller_any_o                    : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_smaller_ltc_o                    : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_smaller_o                        : out std_logic
   );
   end component;
 

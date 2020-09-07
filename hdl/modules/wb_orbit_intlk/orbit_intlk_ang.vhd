@@ -53,6 +53,8 @@ port
   intlk_ang_clr_i                            : in std_logic;
   intlk_ang_max_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
   intlk_ang_max_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_ang_min_x_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
+  intlk_ang_min_y_i                          : in std_logic_vector(g_INTLK_LMT_WIDTH-1 downto 0);
 
   -----------------------------
   -- Downstream ADC and position signals
@@ -97,12 +99,25 @@ port
   intlk_ang_bigger_ltc_x_o                   : out std_logic;
   intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-  intlk_ang_bigger_o                         : out std_logic;
+  intlk_ang_bigger_any_o                     : out std_logic;
 
   -- only cleared when intlk_ang_clr_i is asserted
-  intlk_ang_ltc_o                            : out std_logic;
+  intlk_ang_bigger_ltc_o                     : out std_logic;
   -- conditional to intlk_ang_en_i
-  intlk_ang_o                                : out std_logic
+  intlk_ang_bigger_o                         : out std_logic;
+
+  intlk_ang_smaller_x_o                      : out std_logic;
+  intlk_ang_smaller_y_o                      : out std_logic;
+
+  intlk_ang_smaller_ltc_x_o                  : out std_logic;
+  intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+  intlk_ang_smaller_any_o                    : out std_logic;
+
+  -- only cleared when intlk_ang_clr_i is asserted
+  intlk_ang_smaller_ltc_o                    : out std_logic;
+  -- conditional to intlk_ang_en_i
+  intlk_ang_smaller_o                        : out std_logic
 );
 end orbit_intlk_ang;
 
@@ -142,8 +157,11 @@ architecture rtl of orbit_intlk_ang is
   signal decim_pos_valid_array  : t_bit_array(c_NUM_BPMS-1 downto 0);
 
   -- interlock limits
-  signal intlk_ang_max   : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal intlk_ang_max_n : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_max_n        : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min          : t_intlk_lmt_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal intlk_ang_min_high_bit : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   -- valid AND
   signal adc_valid_and       : t_bit_array(c_NUM_BPMS downto 0);
@@ -157,21 +175,40 @@ architecture rtl of orbit_intlk_ang is
   signal ang_sum_valid     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_sum_valid_reg : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang               : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_high_bit      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_n             : t_decim_data_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_valid         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal ang_bigger             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_bigger_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
-  signal ang_intlk_ltc_all    : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_intlk_bigger_or  : t_bit_array(c_NUM_CHANNELS downto 0);
-  signal ang_intlk_bigger     : std_logic;
-  signal ang_intlk_all        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_intlk_ltc        : std_logic;
-  signal ang_intlk_any        : std_logic;
-  signal ang_intlk            : std_logic;
+  signal ang_smaller            : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_comb       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_n          : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_valid      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_reg        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_smaller_valid_reg  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+
+  signal ang_intlk_det_bigger_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_bigger_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_bigger_or      : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal ang_intlk_bigger_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_bigger_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal ang_intlk_bigger_ltc     : std_logic;
+  signal ang_intlk_bigger_any     : std_logic;
+  signal ang_intlk_bigger         : std_logic;
+
+  signal ang_intlk_det_smaller_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_smaller_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_smaller_or      : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal ang_intlk_smaller_all     : t_bit_array(c_NUM_CHANNELS-1 downto 0);
+  signal ang_intlk_smaller_ltc_or  : t_bit_array(c_NUM_CHANNELS downto 0);
+  signal ang_intlk_smaller_ltc     : std_logic;
+  signal ang_intlk_smaller_any     : std_logic;
+  signal ang_intlk_smaller         : std_logic;
 
 begin
 
@@ -220,9 +257,11 @@ begin
   -- Interlock limits
   -- X limits
   intlk_ang_max(0)  <= intlk_ang_max_x_i;
+  intlk_ang_min(0)  <= intlk_ang_min_x_i;
 
   -- Y limits
   intlk_ang_max(1)  <= intlk_ang_max_y_i;
+  intlk_ang_min(1)  <= intlk_ang_min_y_i;
 
   ----------------------------------
   -- Calculate angular
@@ -247,11 +286,11 @@ begin
   -------------------------------------------------------------------------
   -- Angular interlock detector. Only for X and Y.
   -- Calculation is a simple (us = upstream, ds = downstream):
-  -- x_ang = abs(x_us - x_ds) / distance_between_bpms OR
-  -- x_ang * distance_between_bpms = abs(x_us - x_ds)
+  -- x_ang = x_us - x_ds / distance_between_bpms OR
+  -- x_ang * distance_between_bpms = x_us - x_ds
   --
-  -- y_ang = abs(y_us - y_ds) / distance_between_bpms OR
-  -- y_ang * distance_between_bpms = abs(y_us - y_ds)
+  -- y_ang = y_us - y_ds / distance_between_bpms OR
+  -- y_ang * distance_between_bpms = y_us - y_ds
   -------------------------------------------------------------------------
   gen_ang_intlk : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
 
@@ -277,30 +316,26 @@ begin
     p_ang_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        ang_sum_reg(i) <= ang_sum(i);
-        ang_sum_valid_reg(i) <= ang_sum_valid(i);
-      end if;
-    end process;
-
-    -- Absolute sum value
-    p_ang_divide : process(fs_clk_i)
-    begin
-      if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          ang(i) <= (others => '0');
-          ang_valid(i) <= '0';
+          ang_sum_valid_reg(i) <= '0';
         else
-          ang(i) <= std_logic_vector(abs(signed(ang_sum_reg(i))));
-          ang_valid(i) <= ang_sum_valid_reg(i);
+          if ang_sum_valid(i) = '1' then
+            ang_sum_reg(i) <= ang_sum(i);
+          end if;
+
+          ang_sum_valid_reg(i) <= ang_sum_valid(i);
         end if;
       end if;
     end process;
 
+    ang(i) <= ang_sum_reg(i);
+    ang_valid(i) <= ang_sum_valid_reg(i);
+
     ----------------------------------
-    -- Detect position >= Threshold
+    -- Detect position > Threshold
     ----------------------------------
     -- Compare with threshold. Use the simple identity that:
-    -- A >= B is the same as A + (-B) and we check if MSB Carry
+    -- A > B is the same as A + (-B) and we check if MSB Carry
     -- is 1
     cmp_ang_thold_bigger : gc_big_adder2
     generic map (
@@ -313,43 +348,126 @@ begin
       a_i          => ang(i),
       b_i          => intlk_ang_max_n(i),
       c_i          => '1',
-      c2_o         => ang_bigger(i),
+      c2_o         => ang_bigger_comb(i),
       c2x2_valid_o => ang_bigger_valid(i)
     );
 
     intlk_ang_max_n(i) <= not intlk_ang_max(i);
 
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    ang_high_bit(i) <= ang(i)(ang(i)'high);
+    intlk_ang_max_high_bit(i) <= intlk_ang_max(i)(intlk_ang_max(i)'high);
+
+    ang_bigger(i) <= ang_bigger_comb(i) when
+                       (ang_high_bit(i) xnor intlk_ang_max_high_bit(i)) = '1' else
+                        intlk_ang_max_high_bit(i);
+
     -- gc_big_adder2 outputs are unregistered. So register them.
     p_ang_thold_bigger_reg : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
-        ang_bigger_reg(i) <= ang_bigger(i);
-        ang_bigger_valid_reg(i) <= ang_bigger_valid(i);
+        if fs_rst_n_i = '0' then
+          ang_bigger_valid_reg(i) <= '0';
+        else
+          if ang_bigger_valid(i) = '1' then
+            ang_bigger_reg(i) <= ang_bigger(i);
+          end if;
+
+          ang_bigger_valid_reg(i) <= ang_bigger_valid(i);
+        end if;
       end if;
     end process;
+
+    ----------------------------------
+    -- Detect position < Threshold
+    ----------------------------------
+    -- Compare with threshold. Use the simple identity that:
+    -- A < B is the same as -A > -B = -A + B > 0 and we check
+    -- if MSB Carry is 1
+    cmp_ang_thold_smaller : gc_big_adder2
+    generic map (
+      g_data_bits => c_DECIM_WIDTH
+    )
+    port map (
+      clk_i        => fs_clk_i,
+      stall_i      => '0',
+      valid_i      => ang_valid(i),
+      a_i          => ang_n(i),
+      b_i          => intlk_ang_min(i),
+      c_i          => '1',
+      c2_o         => ang_smaller_comb(i),
+      c2x2_valid_o => ang_smaller_valid(i)
+    );
+
+    ang_n(i) <= not ang(i);
+
+    -- comparison of different sign operands fails with the above method.
+    -- Just compare the sign bits, for these cases.
+    intlk_ang_min_high_bit(i) <= intlk_ang_min(i)(intlk_ang_min(i)'high);
+
+    ang_smaller(i) <= ang_smaller_comb(i) when
+                      (ang_high_bit(i) xnor intlk_ang_min_high_bit(i)) = '1' else
+                       ang_high_bit(i);
+
+    -- gc_big_adder2 outputs are unregistered. So register them.
+    p_ang_thold_smaller_reg : process(fs_clk_i)
+    begin
+      if rising_edge(fs_clk_i) then
+        if fs_rst_n_i = '0' then
+          ang_smaller_valid_reg(i) <= '0';
+        else
+          if ang_smaller_valid(i) = '1' then
+            ang_smaller_reg(i) <= ang_smaller(i);
+          end if;
+
+          ang_smaller_valid_reg(i) <= ang_smaller_valid(i);
+        end if;
+      end if;
+    end process;
+
+    ----------------------------------
+    -- Latch interlocks
+    ----------------------------------
+
+    ang_intlk_det_bigger_all(i) <= ang_bigger_reg(i) and ang_bigger_valid_reg(i);
+    ang_intlk_det_smaller_all(i) <= ang_smaller_reg(i) and ang_smaller_valid_reg(i);
 
     -- latch all interlocks
     p_latch : process(fs_clk_i)
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          ang_intlk_ltc_all(i) <= '0';
+          ang_intlk_bigger_ltc_all(i) <= '0';
+          ang_intlk_smaller_ltc_all(i) <= '0';
         else
-          -- latch up angle interlock status
+          -- latch up anglation interlock status
           -- only clear on "clear" signal
           if intlk_ang_clr_i = '1' then
-            ang_intlk_ltc_all(i) <= '0';
-          elsif ang_bigger_reg(i) = '1' and
-                ang_bigger_valid_reg(i) = '1' and
+            ang_intlk_bigger_ltc_all(i) <= '0';
+          elsif ang_intlk_det_bigger_all(i) = '1' and
                 intlk_ang_en_i = '1' then
-            ang_intlk_ltc_all(i) <= '1';
+            ang_intlk_bigger_ltc_all(i) <= '1';
+          end if;
+
+          if intlk_ang_clr_i = '1' then
+            ang_intlk_smaller_ltc_all(i) <= '0';
+          elsif ang_intlk_det_smaller_all(i) = '1' and
+                intlk_ang_en_i = '1' then
+            ang_intlk_smaller_ltc_all(i) <= '1';
           end if;
 
           -- register anglation interlock when active
           if intlk_ang_clr_i = '1' or intlk_ang_en_i = '0' then
-            ang_intlk_all(i) <= '0';
+            ang_intlk_bigger_all(i) <= '0';
           else
-            ang_intlk_all(i) <= ang_intlk_ltc_all(i);
+            ang_intlk_bigger_all(i) <= ang_intlk_det_bigger_all(i);
+          end if;
+
+          if intlk_ang_clr_i = '1' or intlk_ang_en_i = '0' then
+            ang_intlk_smaller_all(i) <= '0';
+          else
+            ang_intlk_smaller_all(i) <= ang_intlk_det_smaller_all(i);
           end if;
         end if;
       end if;
@@ -357,56 +475,62 @@ begin
 
   end generate;
 
-  intlk_ang_bigger_ltc_x_o  <= ang_intlk_ltc_all(c_CHAN_X_IDX);
-  intlk_ang_bigger_ltc_y_o  <= ang_intlk_ltc_all(c_CHAN_Y_IDX);
+  intlk_ang_bigger_ltc_x_o  <= ang_intlk_bigger_ltc_all(c_CHAN_X_IDX);
+  intlk_ang_bigger_ltc_y_o  <= ang_intlk_bigger_ltc_all(c_CHAN_Y_IDX);
 
-  intlk_ang_bigger_x_o    <= ang_intlk_all(c_CHAN_X_IDX);
-  intlk_ang_bigger_y_o    <= ang_intlk_all(c_CHAN_Y_IDX);
+  intlk_ang_bigger_x_o    <= ang_intlk_bigger_all(c_CHAN_X_IDX);
+  intlk_ang_bigger_y_o    <= ang_intlk_bigger_all(c_CHAN_Y_IDX);
+
+  intlk_ang_smaller_ltc_x_o  <= ang_intlk_smaller_ltc_all(c_CHAN_X_IDX);
+  intlk_ang_smaller_ltc_y_o  <= ang_intlk_smaller_ltc_all(c_CHAN_Y_IDX);
+
+  intlk_ang_smaller_x_o    <= ang_intlk_smaller_all(c_CHAN_X_IDX);
+  intlk_ang_smaller_y_o    <= ang_intlk_smaller_all(c_CHAN_Y_IDX);
 
   ----------------------------------
   -- Angular interlock merging
   ----------------------------------
+
+  ----------------------------------
+  -- Bigger
+  ----------------------------------
   ang_intlk_bigger_or(0) <= '0';
   -- ORing all ang_bigger
   gen_ang_intlk_bigger : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
-    ang_intlk_bigger_or(i+1) <= ang_intlk_bigger_or(i) or ang_intlk_all(i);
+    ang_intlk_bigger_or(i+1) <= ang_intlk_bigger_or(i) or ang_intlk_bigger_all(i);
   end generate;
 
   ang_intlk_bigger <= ang_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_ang_bigger_o  <= ang_intlk_bigger;
 
+  ang_intlk_bigger_ltc_or(0) <= '0';
+  -- ORing all ang_bigger_ltc
+  gen_ang_intlk_bigger_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    ang_intlk_bigger_ltc_or(i+1) <= ang_intlk_bigger_ltc_or(i) or ang_intlk_bigger_ltc_all(i);
+  end generate;
+
+  ang_intlk_bigger_ltc <= ang_intlk_bigger_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_ang_bigger_ltc_o  <= ang_intlk_bigger_ltc;
+
   ----------------------------------
-  -- Angular interlock status reg
+  -- Smaller
   ----------------------------------
+  ang_intlk_smaller_or(0) <= '0';
+  -- ORing all ang_smaller
+  gen_ang_intlk_smaller : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    ang_intlk_smaller_or(i+1) <= ang_intlk_smaller_or(i) or ang_intlk_smaller_all(i);
+  end generate;
 
-  ang_intlk_any <= ang_intlk_bigger;
+  ang_intlk_smaller <= ang_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_ang_smaller_o  <= ang_intlk_smaller;
 
-  p_ang_out : process(fs_clk_i)
-  begin
-    if rising_edge(fs_clk_i) then
-      if fs_rst_n_i = '0' then
-        ang_intlk_ltc <= '0';
-        ang_intlk <= '0';
-      else
-        -- latch up angular interlock status
-        -- only clear on "clear" signal
-        if intlk_ang_clr_i = '1' then
-          ang_intlk_ltc <= '0';
-        elsif ang_intlk_any = '1' then
-          ang_intlk_ltc <= '1';
-        end if;
+  ang_intlk_smaller_ltc_or(0) <= '0';
+  -- ORing all ang_smaller_ltc
+  gen_ang_intlk_smaller_ltc : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
+    ang_intlk_smaller_ltc_or(i+1) <= ang_intlk_smaller_ltc_or(i) or ang_intlk_smaller_ltc_all(i);
+  end generate;
 
-        -- register angular interlock when active
-        if intlk_ang_clr_i = '1' or intlk_ang_en_i = '0' then
-          ang_intlk <= '0';
-        else
-          ang_intlk <= ang_intlk_ltc;
-        end if;
-      end if;
-    end if;
-  end process;
-
-  intlk_ang_ltc_o     <= ang_intlk_ltc;
-  intlk_ang_o         <= ang_intlk;
+  ang_intlk_smaller_ltc <= ang_intlk_smaller_ltc_or(c_INTLK_GEN_UPTO_CHANNEL+1);
+  intlk_ang_smaller_ltc_o  <= ang_intlk_smaller_ltc;
 
 end rtl;

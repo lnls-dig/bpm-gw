@@ -31,10 +31,6 @@ use work.bpm_cores_pkg.all;
 use work.position_calc_core_pkg.all;
 -- Counter Generator Definitions
 use work.counters_gen_pkg.all;
--- WB registers
-use work.pos_calc_wbgen2_pkg.all;
--- Common Cores
-use work.ifc_common_pkg.all;
 
 entity wb_position_calc_core is
 generic
@@ -91,7 +87,10 @@ generic
   g_fofb_cordic_ratio                       : positive := 4;
 
   -- width of K constants
-  g_k_width                                 : natural := 16;
+  g_k_width                                 : natural := 25;
+
+  -- width of offset constants
+  g_offset_width                            : natural := 32;
 
   --width for IQ output
   g_IQ_width                                : natural := 32;
@@ -340,7 +339,9 @@ architecture rtl of wb_position_calc_core is
   constant c_monit1_ratio_log2              : natural := f_log2_size(c_monit1_ratio+1);
   constant c_monit2_ratio_log2              : natural := f_log2_size(c_monit2_ratio+1);
 
-  constant c_k_width                        : natural := 24;
+  -- This must not exceed the width determined at the register file
+  constant c_k_width                        : natural := g_k_width;
+  constant c_offset_width                   : natural := g_offset_width;
 
   constant c_cnt_width_raw                  : natural := g_adc_ratio;
   constant c_cnt_width_mix                  : natural := g_IQ_width;
@@ -405,8 +406,135 @@ architecture rtl of wb_position_calc_core is
   signal resized_addr                       : std_logic_vector(c_wishbone_address_width-1 downto 0);
 
   -- Register interface signals
-  signal regs_out                           : t_pos_calc_out_registers;
-  signal regs_in                            : t_pos_calc_in_registers;
+  signal regs_ds_tbt_thres_val_o             : std_logic_vector(25 downto 0);
+  signal regs_ds_tbt_thres_reserved_i        : std_logic_vector(5 downto 0) := (others => '0');
+  signal regs_ds_fofb_thres_val_o            : std_logic_vector(25 downto 0);
+  signal regs_ds_fofb_thres_reserved_i       : std_logic_vector(5 downto 0) := (others => '0');
+  signal regs_ds_monit_thres_val_o           : std_logic_vector(25 downto 0);
+  signal regs_ds_monit_thres_reserved_i      : std_logic_vector(5 downto 0) := (others => '0');
+  signal regs_kx_val_o                       : std_logic_vector(24 downto 0);
+  signal regs_kx_reserved_i                  : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_ky_val_o                       : std_logic_vector(24 downto 0);
+  signal regs_ky_reserved_i                  : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_ksum_val_o                     : std_logic_vector(24 downto 0);
+  signal regs_ksum_reserved_i                : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_dsp_ctnr_tbt_ch01_i            : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr_tbt_ch23_i            : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr_fofb_ch01_i           : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr_fofb_ch23_i           : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr1_monit_cic_i          : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr1_monit_cfir_i         : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr2_monit_pfir_i         : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_ctnr2_monit_fir_01_i       : std_logic_vector(15 downto 0) := (others => '0');
+  signal regs_dsp_err_clr_tbt_o              : std_logic;
+  signal regs_dsp_err_clr_fofb_o             : std_logic;
+  signal regs_dsp_err_clr_monit_part1_o      : std_logic;
+  signal regs_dsp_err_clr_monit_part2_o      : std_logic;
+  signal regs_dds_cfg_valid_ch0_o            : std_logic;
+  signal regs_dds_cfg_test_data_o            : std_logic;
+  signal regs_dds_cfg_reserved_ch0_i         : std_logic_vector(5 downto 0) := (others => '0');
+  signal regs_dds_cfg_valid_ch1_o            : std_logic;
+  signal regs_dds_cfg_reserved_ch1_i         : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_dds_cfg_valid_ch2_o            : std_logic;
+  signal regs_dds_cfg_reserved_ch2_i         : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_dds_cfg_valid_ch3_o            : std_logic;
+  signal regs_dds_cfg_reserved_ch3_i         : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_dds_pinc_ch0_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_pinc_ch0_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_pinc_ch1_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_pinc_ch1_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_pinc_ch2_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_pinc_ch2_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_pinc_ch3_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_pinc_ch3_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_poff_ch0_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_poff_ch0_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_poff_ch1_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_poff_ch1_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_poff_ch2_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_poff_ch2_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dds_poff_ch3_val_o             : std_logic_vector(29 downto 0);
+  signal regs_dds_poff_ch3_reserved_i        : std_logic_vector(1 downto 0) := (others => '0');
+  signal regs_dsp_monit_amp_ch0_i            : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_amp_ch1_i            : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_amp_ch2_i            : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_amp_ch3_i            : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_pos_x_i              : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_pos_y_i              : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_pos_q_i              : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_pos_sum_i            : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit_updt_o               : std_logic_vector(31 downto 0);
+  signal regs_dsp_monit_updt_wr_o            : std_logic;
+  signal regs_dsp_monit1_amp_ch0_i           : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_amp_ch1_i           : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_amp_ch2_i           : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_amp_ch3_i           : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_pos_x_i             : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_pos_y_i             : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_pos_q_i             : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_pos_sum_i           : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_dsp_monit1_updt_o              : std_logic_vector(31 downto 0);
+  signal regs_dsp_monit1_updt_wr_o           : std_logic;
+  signal regs_ampfifo_monit_wr_req_i         : std_logic := '0';
+  signal regs_ampfifo_monit_wr_full_o        : std_logic;
+  signal regs_ampfifo_monit_wr_empty_o       : std_logic;
+  signal regs_ampfifo_monit_wr_usedw_o       : std_logic_vector(3 downto 0);
+  signal regs_ampfifo_monit_amp_ch0_i        : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit_amp_ch1_i        : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit_amp_ch2_i        : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit_amp_ch3_i        : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit_wr_req_i         : std_logic := '0';
+  signal regs_posfifo_monit_wr_full_o        : std_logic;
+  signal regs_posfifo_monit_wr_empty_o       : std_logic;
+  signal regs_posfifo_monit_wr_usedw_o       : std_logic_vector(3 downto 0);
+  signal regs_posfifo_monit_pos_x_i          : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit_pos_y_i          : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit_pos_q_i          : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit_pos_sum_i        : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit1_wr_req_i        : std_logic := '0';
+  signal regs_ampfifo_monit1_wr_full_o       : std_logic;
+  signal regs_ampfifo_monit1_wr_empty_o      : std_logic;
+  signal regs_ampfifo_monit1_wr_usedw_o      : std_logic_vector(3 downto 0);
+  signal regs_ampfifo_monit1_amp_ch0_i       : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit1_amp_ch1_i       : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit1_amp_ch2_i       : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_ampfifo_monit1_amp_ch3_i       : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit1_wr_req_i        : std_logic := '0';
+  signal regs_posfifo_monit1_wr_full_o       : std_logic;
+  signal regs_posfifo_monit1_wr_empty_o      : std_logic;
+  signal regs_posfifo_monit1_wr_usedw_o      : std_logic_vector(3 downto 0);
+  signal regs_posfifo_monit1_pos_x_i         : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit1_pos_y_i         : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit1_pos_q_i         : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_posfifo_monit1_pos_sum_i       : std_logic_vector(31 downto 0) := (others => '0');
+  signal regs_sw_tag_en_o                    : std_logic;
+  signal regs_sw_tag_desync_cnt_rst_o        : std_logic;
+  signal regs_sw_tag_desync_cnt_i            : std_logic_vector(13 downto 0) := (others => '0');
+  signal regs_sw_data_mask_en_o              : std_logic;
+  signal regs_sw_data_mask_samples_o         : std_logic_vector(15 downto 0);
+  signal regs_tbt_tag_en_o                   : std_logic;
+  signal regs_tbt_tag_dly_o                  : std_logic_vector(15 downto 0);
+  signal regs_tbt_tag_desync_cnt_rst_o       : std_logic;
+  signal regs_tbt_tag_desync_cnt_i           : std_logic_vector(13 downto 0) := (others => '0');
+  signal regs_tbt_data_mask_ctl_en_o         : std_logic;
+  signal regs_tbt_data_mask_samples_beg_o    : std_logic_vector(15 downto 0);
+  signal regs_tbt_data_mask_samples_end_o    : std_logic_vector(15 downto 0);
+  signal regs_monit1_tag_en_o                : std_logic;
+  signal regs_monit1_tag_dly_o               : std_logic_vector(15 downto 0);
+  signal regs_monit1_tag_desync_cnt_rst_o    : std_logic;
+  signal regs_monit1_tag_desync_cnt_i        : std_logic_vector(13 downto 0) := (others => '0');
+  signal regs_monit1_data_mask_ctl_en_o      : std_logic;
+  signal regs_monit1_data_mask_samples_beg_o : std_logic_vector(15 downto 0);
+  signal regs_monit1_data_mask_samples_end_o : std_logic_vector(15 downto 0);
+  signal regs_monit_tag_en_o                 : std_logic;
+  signal regs_monit_tag_dly_o                : std_logic_vector(15 downto 0);
+  signal regs_monit_tag_desync_cnt_rst_o     : std_logic;
+  signal regs_monit_tag_desync_cnt_i         : std_logic_vector(13 downto 0) := (others => '0');
+  signal regs_monit_data_mask_ctl_en_o       : std_logic;
+  signal regs_monit_data_mask_samples_beg_o  : std_logic_vector(15 downto 0);
+  signal regs_monit_data_mask_samples_end_o  : std_logic_vector(15 downto 0);
+  signal regs_pos_calc_offset_x_o            : std_logic_vector(31 downto 0);
+  signal regs_pos_calc_offset_y_o            : std_logic_vector(31 downto 0);
 
   -----------------------------
   -- Wishbone crossbar signals
@@ -718,22 +846,148 @@ architecture rtl of wb_position_calc_core is
 
   component wb_pos_calc_regs is
     port (
-      rst_n_i    : in     std_logic;
-      clk_sys_i  : in     std_logic;
-      wb_adr_i   : in     std_logic_vector(6 downto 0);
-      wb_dat_i   : in     std_logic_vector(31 downto 0);
-      wb_dat_o   : out    std_logic_vector(31 downto 0);
-      wb_cyc_i   : in     std_logic;
-      wb_sel_i   : in     std_logic_vector(3 downto 0);
-      wb_stb_i   : in     std_logic;
-      wb_we_i    : in     std_logic;
-      wb_ack_o   : out    std_logic;
-      wb_err_o   : out    std_logic;
-      wb_rty_o   : out    std_logic;
-      wb_stall_o : out    std_logic;
-      fs_clk2x_i : in     std_logic;
-      regs_i     : in     t_pos_calc_in_registers;
-      regs_o     : out    t_pos_calc_out_registers);
+      rst_n_i                                 : in     std_logic;
+      clk_sys_i                               : in     std_logic;
+      wb_adr_i                                : in     std_logic_vector(6 downto 0);
+      wb_dat_i                                : in     std_logic_vector(31 downto 0);
+      wb_dat_o                                : out    std_logic_vector(31 downto 0);
+      wb_cyc_i                                : in     std_logic;
+      wb_sel_i                                : in     std_logic_vector(3 downto 0);
+      wb_stb_i                                : in     std_logic;
+      wb_we_i                                 : in     std_logic;
+      wb_ack_o                                : out    std_logic;
+      wb_stall_o                              : out    std_logic;
+      fs_clk2x_i                              : in     std_logic;
+      pos_calc_ds_tbt_thres_val_o             : out   std_logic_vector(25 downto 0);
+      pos_calc_ds_tbt_thres_reserved_i        : in    std_logic_vector(5 downto 0);
+      pos_calc_ds_fofb_thres_val_o            : out   std_logic_vector(25 downto 0);
+      pos_calc_ds_fofb_thres_reserved_i       : in    std_logic_vector(5 downto 0);
+      pos_calc_ds_monit_thres_val_o           : out   std_logic_vector(25 downto 0);
+      pos_calc_ds_monit_thres_reserved_i      : in    std_logic_vector(5 downto 0);
+      pos_calc_kx_val_o                       : out   std_logic_vector(24 downto 0);
+      pos_calc_kx_reserved_i                  : in    std_logic_vector(6 downto 0);
+      pos_calc_ky_val_o                       : out   std_logic_vector(24 downto 0);
+      pos_calc_ky_reserved_i                  : in    std_logic_vector(6 downto 0);
+      pos_calc_ksum_val_o                     : out   std_logic_vector(24 downto 0);
+      pos_calc_ksum_reserved_i                : in    std_logic_vector(6 downto 0);
+      pos_calc_dsp_ctnr_tbt_ch01_i            : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr_tbt_ch23_i            : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr_fofb_ch01_i           : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr_fofb_ch23_i           : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr1_monit_cic_i          : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr1_monit_cfir_i         : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr2_monit_pfir_i         : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_ctnr2_monit_fir_01_i       : in    std_logic_vector(15 downto 0);
+      pos_calc_dsp_err_clr_tbt_o              : out   std_logic;
+      pos_calc_dsp_err_clr_fofb_o             : out   std_logic;
+      pos_calc_dsp_err_clr_monit_part1_o      : out   std_logic;
+      pos_calc_dsp_err_clr_monit_part2_o      : out   std_logic;
+      pos_calc_dds_cfg_valid_ch0_o            : out   std_logic;
+      pos_calc_dds_cfg_test_data_o            : out   std_logic;
+      pos_calc_dds_cfg_reserved_ch0_i         : in    std_logic_vector(5 downto 0);
+      pos_calc_dds_cfg_valid_ch1_o            : out   std_logic;
+      pos_calc_dds_cfg_reserved_ch1_i         : in    std_logic_vector(6 downto 0);
+      pos_calc_dds_cfg_valid_ch2_o            : out   std_logic;
+      pos_calc_dds_cfg_reserved_ch2_i         : in    std_logic_vector(6 downto 0);
+      pos_calc_dds_cfg_valid_ch3_o            : out   std_logic;
+      pos_calc_dds_cfg_reserved_ch3_i         : in    std_logic_vector(6 downto 0);
+      pos_calc_dds_pinc_ch0_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_pinc_ch0_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_pinc_ch1_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_pinc_ch1_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_pinc_ch2_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_pinc_ch2_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_pinc_ch3_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_pinc_ch3_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_poff_ch0_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_poff_ch0_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_poff_ch1_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_poff_ch1_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_poff_ch2_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_poff_ch2_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dds_poff_ch3_val_o             : out   std_logic_vector(29 downto 0);
+      pos_calc_dds_poff_ch3_reserved_i        : in    std_logic_vector(1 downto 0);
+      pos_calc_dsp_monit_amp_ch0_i            : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_amp_ch1_i            : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_amp_ch2_i            : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_amp_ch3_i            : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_pos_x_i              : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_pos_y_i              : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_pos_q_i              : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_pos_sum_i            : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_updt_o               : out   std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit_updt_wr_o            : out   std_logic;
+      pos_calc_dsp_monit1_amp_ch0_i           : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_amp_ch1_i           : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_amp_ch2_i           : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_amp_ch3_i           : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_pos_x_i             : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_pos_y_i             : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_pos_q_i             : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_pos_sum_i           : in    std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_updt_o              : out   std_logic_vector(31 downto 0);
+      pos_calc_dsp_monit1_updt_wr_o           : out   std_logic;
+      pos_calc_ampfifo_monit_wr_req_i         : in    std_logic;
+      pos_calc_ampfifo_monit_wr_full_o        : out   std_logic;
+      pos_calc_ampfifo_monit_wr_empty_o       : out   std_logic;
+      pos_calc_ampfifo_monit_wr_usedw_o       : out   std_logic_vector(3 downto 0);
+      pos_calc_ampfifo_monit_amp_ch0_i        : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit_amp_ch1_i        : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit_amp_ch2_i        : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit_amp_ch3_i        : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit_wr_req_i         : in    std_logic;
+      pos_calc_posfifo_monit_wr_full_o        : out   std_logic;
+      pos_calc_posfifo_monit_wr_empty_o       : out   std_logic;
+      pos_calc_posfifo_monit_wr_usedw_o       : out   std_logic_vector(3 downto 0);
+      pos_calc_posfifo_monit_pos_x_i          : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit_pos_y_i          : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit_pos_q_i          : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit_pos_sum_i        : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit1_wr_req_i        : in    std_logic;
+      pos_calc_ampfifo_monit1_wr_full_o       : out   std_logic;
+      pos_calc_ampfifo_monit1_wr_empty_o      : out   std_logic;
+      pos_calc_ampfifo_monit1_wr_usedw_o      : out   std_logic_vector(3 downto 0);
+      pos_calc_ampfifo_monit1_amp_ch0_i       : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit1_amp_ch1_i       : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit1_amp_ch2_i       : in    std_logic_vector(31 downto 0);
+      pos_calc_ampfifo_monit1_amp_ch3_i       : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit1_wr_req_i        : in    std_logic;
+      pos_calc_posfifo_monit1_wr_full_o       : out   std_logic;
+      pos_calc_posfifo_monit1_wr_empty_o      : out   std_logic;
+      pos_calc_posfifo_monit1_wr_usedw_o      : out   std_logic_vector(3 downto 0);
+      pos_calc_posfifo_monit1_pos_x_i         : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit1_pos_y_i         : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit1_pos_q_i         : in    std_logic_vector(31 downto 0);
+      pos_calc_posfifo_monit1_pos_sum_i       : in    std_logic_vector(31 downto 0);
+      pos_calc_sw_tag_en_o                    : out   std_logic;
+      pos_calc_sw_tag_desync_cnt_rst_o        : out   std_logic;
+      pos_calc_sw_tag_desync_cnt_i            : in    std_logic_vector(13 downto 0);
+      pos_calc_sw_data_mask_en_o              : out   std_logic;
+      pos_calc_sw_data_mask_samples_o         : out   std_logic_vector(15 downto 0);
+      pos_calc_tbt_tag_en_o                   : out   std_logic;
+      pos_calc_tbt_tag_dly_o                  : out   std_logic_vector(15 downto 0);
+      pos_calc_tbt_tag_desync_cnt_rst_o       : out   std_logic;
+      pos_calc_tbt_tag_desync_cnt_i           : in    std_logic_vector(13 downto 0);
+      pos_calc_tbt_data_mask_ctl_en_o         : out   std_logic;
+      pos_calc_tbt_data_mask_samples_beg_o    : out   std_logic_vector(15 downto 0);
+      pos_calc_tbt_data_mask_samples_end_o    : out   std_logic_vector(15 downto 0);
+      pos_calc_monit1_tag_en_o                : out   std_logic;
+      pos_calc_monit1_tag_dly_o               : out   std_logic_vector(15 downto 0);
+      pos_calc_monit1_tag_desync_cnt_rst_o    : out   std_logic;
+      pos_calc_monit1_tag_desync_cnt_i        : in    std_logic_vector(13 downto 0);
+      pos_calc_monit1_data_mask_ctl_en_o      : out   std_logic;
+      pos_calc_monit1_data_mask_samples_beg_o : out   std_logic_vector(15 downto 0);
+      pos_calc_monit1_data_mask_samples_end_o : out   std_logic_vector(15 downto 0);
+      pos_calc_monit_tag_en_o                 : out   std_logic;
+      pos_calc_monit_tag_dly_o                : out   std_logic_vector(15 downto 0);
+      pos_calc_monit_tag_desync_cnt_rst_o     : out   std_logic;
+      pos_calc_monit_tag_desync_cnt_i         : in    std_logic_vector(13 downto 0);
+      pos_calc_monit_data_mask_ctl_en_o       : out   std_logic;
+      pos_calc_monit_data_mask_samples_beg_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_monit_data_mask_samples_end_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_offset_x_o                     : out   std_logic_vector(31 downto 0);
+      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0)
+  );
   end component wb_pos_calc_regs;
 
 begin
@@ -869,8 +1123,135 @@ begin
     wb_ack_o                                => wb_slv_adp_in.ack,
     wb_stall_o                              => wb_slv_adp_in.stall,
     fs_clk2x_i                              => fs_clk_i,
-    regs_i                                  => regs_in,
-    regs_o                                  => regs_out
+    pos_calc_ds_tbt_thres_val_o             => regs_ds_tbt_thres_val_o,
+    pos_calc_ds_tbt_thres_reserved_i        => regs_ds_tbt_thres_reserved_i,
+    pos_calc_ds_fofb_thres_val_o            => regs_ds_fofb_thres_val_o,
+    pos_calc_ds_fofb_thres_reserved_i       => regs_ds_fofb_thres_reserved_i,
+    pos_calc_ds_monit_thres_val_o           => regs_ds_monit_thres_val_o,
+    pos_calc_ds_monit_thres_reserved_i      => regs_ds_monit_thres_reserved_i,
+    pos_calc_kx_val_o                       => regs_kx_val_o,
+    pos_calc_kx_reserved_i                  => regs_kx_reserved_i,
+    pos_calc_ky_val_o                       => regs_ky_val_o,
+    pos_calc_ky_reserved_i                  => regs_ky_reserved_i,
+    pos_calc_ksum_val_o                     => regs_ksum_val_o,
+    pos_calc_ksum_reserved_i                => regs_ksum_reserved_i,
+    pos_calc_dsp_ctnr_tbt_ch01_i            => regs_dsp_ctnr_tbt_ch01_i,
+    pos_calc_dsp_ctnr_tbt_ch23_i            => regs_dsp_ctnr_tbt_ch23_i,
+    pos_calc_dsp_ctnr_fofb_ch01_i           => regs_dsp_ctnr_fofb_ch01_i,
+    pos_calc_dsp_ctnr_fofb_ch23_i           => regs_dsp_ctnr_fofb_ch23_i,
+    pos_calc_dsp_ctnr1_monit_cic_i          => regs_dsp_ctnr1_monit_cic_i,
+    pos_calc_dsp_ctnr1_monit_cfir_i         => regs_dsp_ctnr1_monit_cfir_i,
+    pos_calc_dsp_ctnr2_monit_pfir_i         => regs_dsp_ctnr2_monit_pfir_i,
+    pos_calc_dsp_ctnr2_monit_fir_01_i       => regs_dsp_ctnr2_monit_fir_01_i,
+    pos_calc_dsp_err_clr_tbt_o              => regs_dsp_err_clr_tbt_o,
+    pos_calc_dsp_err_clr_fofb_o             => regs_dsp_err_clr_fofb_o,
+    pos_calc_dsp_err_clr_monit_part1_o      => regs_dsp_err_clr_monit_part1_o,
+    pos_calc_dsp_err_clr_monit_part2_o      => regs_dsp_err_clr_monit_part2_o,
+    pos_calc_dds_cfg_valid_ch0_o            => regs_dds_cfg_valid_ch0_o,
+    pos_calc_dds_cfg_test_data_o            => regs_dds_cfg_test_data_o,
+    pos_calc_dds_cfg_reserved_ch0_i         => regs_dds_cfg_reserved_ch0_i,
+    pos_calc_dds_cfg_valid_ch1_o            => regs_dds_cfg_valid_ch1_o,
+    pos_calc_dds_cfg_reserved_ch1_i         => regs_dds_cfg_reserved_ch1_i,
+    pos_calc_dds_cfg_valid_ch2_o            => regs_dds_cfg_valid_ch2_o,
+    pos_calc_dds_cfg_reserved_ch2_i         => regs_dds_cfg_reserved_ch2_i,
+    pos_calc_dds_cfg_valid_ch3_o            => regs_dds_cfg_valid_ch3_o,
+    pos_calc_dds_cfg_reserved_ch3_i         => regs_dds_cfg_reserved_ch3_i,
+    pos_calc_dds_pinc_ch0_val_o             => regs_dds_pinc_ch0_val_o,
+    pos_calc_dds_pinc_ch0_reserved_i        => regs_dds_pinc_ch0_reserved_i,
+    pos_calc_dds_pinc_ch1_val_o             => regs_dds_pinc_ch1_val_o,
+    pos_calc_dds_pinc_ch1_reserved_i        => regs_dds_pinc_ch1_reserved_i,
+    pos_calc_dds_pinc_ch2_val_o             => regs_dds_pinc_ch2_val_o,
+    pos_calc_dds_pinc_ch2_reserved_i        => regs_dds_pinc_ch2_reserved_i,
+    pos_calc_dds_pinc_ch3_val_o             => regs_dds_pinc_ch3_val_o,
+    pos_calc_dds_pinc_ch3_reserved_i        => regs_dds_pinc_ch3_reserved_i,
+    pos_calc_dds_poff_ch0_val_o             => regs_dds_poff_ch0_val_o,
+    pos_calc_dds_poff_ch0_reserved_i        => regs_dds_poff_ch0_reserved_i,
+    pos_calc_dds_poff_ch1_val_o             => regs_dds_poff_ch1_val_o,
+    pos_calc_dds_poff_ch1_reserved_i        => regs_dds_poff_ch1_reserved_i,
+    pos_calc_dds_poff_ch2_val_o             => regs_dds_poff_ch2_val_o,
+    pos_calc_dds_poff_ch2_reserved_i        => regs_dds_poff_ch2_reserved_i,
+    pos_calc_dds_poff_ch3_val_o             => regs_dds_poff_ch3_val_o,
+    pos_calc_dds_poff_ch3_reserved_i        => regs_dds_poff_ch3_reserved_i,
+    pos_calc_dsp_monit_amp_ch0_i            => regs_dsp_monit_amp_ch0_i,
+    pos_calc_dsp_monit_amp_ch1_i            => regs_dsp_monit_amp_ch1_i,
+    pos_calc_dsp_monit_amp_ch2_i            => regs_dsp_monit_amp_ch2_i,
+    pos_calc_dsp_monit_amp_ch3_i            => regs_dsp_monit_amp_ch3_i,
+    pos_calc_dsp_monit_pos_x_i              => regs_dsp_monit_pos_x_i,
+    pos_calc_dsp_monit_pos_y_i              => regs_dsp_monit_pos_y_i,
+    pos_calc_dsp_monit_pos_q_i              => regs_dsp_monit_pos_q_i,
+    pos_calc_dsp_monit_pos_sum_i            => regs_dsp_monit_pos_sum_i,
+    pos_calc_dsp_monit_updt_o               => regs_dsp_monit_updt_o,
+    pos_calc_dsp_monit_updt_wr_o            => regs_dsp_monit_updt_wr_o,
+    pos_calc_dsp_monit1_amp_ch0_i           => regs_dsp_monit1_amp_ch0_i,
+    pos_calc_dsp_monit1_amp_ch1_i           => regs_dsp_monit1_amp_ch1_i,
+    pos_calc_dsp_monit1_amp_ch2_i           => regs_dsp_monit1_amp_ch2_i,
+    pos_calc_dsp_monit1_amp_ch3_i           => regs_dsp_monit1_amp_ch3_i,
+    pos_calc_dsp_monit1_pos_x_i             => regs_dsp_monit1_pos_x_i,
+    pos_calc_dsp_monit1_pos_y_i             => regs_dsp_monit1_pos_y_i,
+    pos_calc_dsp_monit1_pos_q_i             => regs_dsp_monit1_pos_q_i,
+    pos_calc_dsp_monit1_pos_sum_i           => regs_dsp_monit1_pos_sum_i,
+    pos_calc_dsp_monit1_updt_o              => regs_dsp_monit1_updt_o,
+    pos_calc_dsp_monit1_updt_wr_o           => regs_dsp_monit1_updt_wr_o,
+    pos_calc_ampfifo_monit_wr_req_i         => regs_ampfifo_monit_wr_req_i,
+    pos_calc_ampfifo_monit_wr_full_o        => regs_ampfifo_monit_wr_full_o,
+    pos_calc_ampfifo_monit_wr_empty_o       => regs_ampfifo_monit_wr_empty_o,
+    pos_calc_ampfifo_monit_wr_usedw_o       => regs_ampfifo_monit_wr_usedw_o,
+    pos_calc_ampfifo_monit_amp_ch0_i        => regs_ampfifo_monit_amp_ch0_i,
+    pos_calc_ampfifo_monit_amp_ch1_i        => regs_ampfifo_monit_amp_ch1_i,
+    pos_calc_ampfifo_monit_amp_ch2_i        => regs_ampfifo_monit_amp_ch2_i,
+    pos_calc_ampfifo_monit_amp_ch3_i        => regs_ampfifo_monit_amp_ch3_i,
+    pos_calc_posfifo_monit_wr_req_i         => regs_posfifo_monit_wr_req_i,
+    pos_calc_posfifo_monit_wr_full_o        => regs_posfifo_monit_wr_full_o,
+    pos_calc_posfifo_monit_wr_empty_o       => regs_posfifo_monit_wr_empty_o,
+    pos_calc_posfifo_monit_wr_usedw_o       => regs_posfifo_monit_wr_usedw_o,
+    pos_calc_posfifo_monit_pos_x_i          => regs_posfifo_monit_pos_x_i,
+    pos_calc_posfifo_monit_pos_y_i          => regs_posfifo_monit_pos_y_i,
+    pos_calc_posfifo_monit_pos_q_i          => regs_posfifo_monit_pos_q_i,
+    pos_calc_posfifo_monit_pos_sum_i        => regs_posfifo_monit_pos_sum_i,
+    pos_calc_ampfifo_monit1_wr_req_i        => regs_ampfifo_monit1_wr_req_i,
+    pos_calc_ampfifo_monit1_wr_full_o       => regs_ampfifo_monit1_wr_full_o,
+    pos_calc_ampfifo_monit1_wr_empty_o      => regs_ampfifo_monit1_wr_empty_o,
+    pos_calc_ampfifo_monit1_wr_usedw_o      => regs_ampfifo_monit1_wr_usedw_o,
+    pos_calc_ampfifo_monit1_amp_ch0_i       => regs_ampfifo_monit1_amp_ch0_i,
+    pos_calc_ampfifo_monit1_amp_ch1_i       => regs_ampfifo_monit1_amp_ch1_i,
+    pos_calc_ampfifo_monit1_amp_ch2_i       => regs_ampfifo_monit1_amp_ch2_i,
+    pos_calc_ampfifo_monit1_amp_ch3_i       => regs_ampfifo_monit1_amp_ch3_i,
+    pos_calc_posfifo_monit1_wr_req_i        => regs_posfifo_monit1_wr_req_i,
+    pos_calc_posfifo_monit1_wr_full_o       => regs_posfifo_monit1_wr_full_o,
+    pos_calc_posfifo_monit1_wr_empty_o      => regs_posfifo_monit1_wr_empty_o,
+    pos_calc_posfifo_monit1_wr_usedw_o      => regs_posfifo_monit1_wr_usedw_o,
+    pos_calc_posfifo_monit1_pos_x_i         => regs_posfifo_monit1_pos_x_i,
+    pos_calc_posfifo_monit1_pos_y_i         => regs_posfifo_monit1_pos_y_i,
+    pos_calc_posfifo_monit1_pos_q_i         => regs_posfifo_monit1_pos_q_i,
+    pos_calc_posfifo_monit1_pos_sum_i       => regs_posfifo_monit1_pos_sum_i,
+    pos_calc_sw_tag_en_o                    => regs_sw_tag_en_o,
+    pos_calc_sw_tag_desync_cnt_rst_o        => regs_sw_tag_desync_cnt_rst_o,
+    pos_calc_sw_tag_desync_cnt_i            => regs_sw_tag_desync_cnt_i,
+    pos_calc_sw_data_mask_en_o              => regs_sw_data_mask_en_o,
+    pos_calc_sw_data_mask_samples_o         => regs_sw_data_mask_samples_o,
+    pos_calc_tbt_tag_en_o                   => regs_tbt_tag_en_o,
+    pos_calc_tbt_tag_dly_o                  => regs_tbt_tag_dly_o,
+    pos_calc_tbt_tag_desync_cnt_rst_o       => regs_tbt_tag_desync_cnt_rst_o,
+    pos_calc_tbt_tag_desync_cnt_i           => regs_tbt_tag_desync_cnt_i,
+    pos_calc_tbt_data_mask_ctl_en_o         => regs_tbt_data_mask_ctl_en_o,
+    pos_calc_tbt_data_mask_samples_beg_o    => regs_tbt_data_mask_samples_beg_o,
+    pos_calc_tbt_data_mask_samples_end_o    => regs_tbt_data_mask_samples_end_o,
+    pos_calc_monit1_tag_en_o                => regs_monit1_tag_en_o,
+    pos_calc_monit1_tag_dly_o               => regs_monit1_tag_dly_o,
+    pos_calc_monit1_tag_desync_cnt_rst_o    => regs_monit1_tag_desync_cnt_rst_o,
+    pos_calc_monit1_tag_desync_cnt_i        => regs_monit1_tag_desync_cnt_i,
+    pos_calc_monit1_data_mask_ctl_en_o      => regs_monit1_data_mask_ctl_en_o,
+    pos_calc_monit1_data_mask_samples_beg_o => regs_monit1_data_mask_samples_beg_o,
+    pos_calc_monit1_data_mask_samples_end_o => regs_monit1_data_mask_samples_end_o,
+    pos_calc_monit_tag_en_o                 => regs_monit_tag_en_o,
+    pos_calc_monit_tag_dly_o                => regs_monit_tag_dly_o,
+    pos_calc_monit_tag_desync_cnt_rst_o     => regs_monit_tag_desync_cnt_rst_o,
+    pos_calc_monit_tag_desync_cnt_i         => regs_monit_tag_desync_cnt_i,
+    pos_calc_monit_data_mask_ctl_en_o       => regs_monit_data_mask_ctl_en_o,
+    pos_calc_monit_data_mask_samples_beg_o  => regs_monit_data_mask_samples_beg_o,
+    pos_calc_monit_data_mask_samples_end_o  => regs_monit_data_mask_samples_end_o,
+    pos_calc_offset_x_o                     => regs_pos_calc_offset_x_o,
+    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o
   );
 
   -- Unused wishbone signals
@@ -878,24 +1259,24 @@ begin
   wb_slv_adp_in.rty                         <= '0';
 
   -- Registers fixed assignments
-  regs_in.ds_tbt_thres_reserved_i           <= (others => '0');
-  regs_in.ds_fofb_thres_reserved_i          <= (others => '0');
-  regs_in.ds_monit_thres_reserved_i         <= (others => '0');
-  regs_in.kx_reserved_i                     <= (others => '0');
-  regs_in.ky_reserved_i                     <= (others => '0');
-  regs_in.ksum_reserved_i                   <= (others => '0');
-  regs_in.dds_cfg_reserved_ch0_i            <= (others => '0');
-  regs_in.dds_cfg_reserved_ch1_i            <= (others => '0');
-  regs_in.dds_cfg_reserved_ch2_i            <= (others => '0');
-  regs_in.dds_cfg_reserved_ch3_i            <= (others => '0');
-  regs_in.dds_pinc_ch0_reserved_i           <= (others => '0');
-  regs_in.dds_pinc_ch1_reserved_i           <= (others => '0');
-  regs_in.dds_pinc_ch2_reserved_i           <= (others => '0');
-  regs_in.dds_pinc_ch3_reserved_i           <= (others => '0');
-  regs_in.dds_poff_ch0_reserved_i           <= (others => '0');
-  regs_in.dds_poff_ch1_reserved_i           <= (others => '0');
-  regs_in.dds_poff_ch2_reserved_i           <= (others => '0');
-  regs_in.dds_poff_ch3_reserved_i           <= (others => '0');
+  regs_ds_tbt_thres_reserved_i              <= (others => '0');
+  regs_ds_fofb_thres_reserved_i             <= (others => '0');
+  regs_ds_monit_thres_reserved_i            <= (others => '0');
+  regs_kx_reserved_i                        <= (others => '0');
+  regs_ky_reserved_i                        <= (others => '0');
+  regs_ksum_reserved_i                      <= (others => '0');
+  regs_dds_cfg_reserved_ch0_i               <= (others => '0');
+  regs_dds_cfg_reserved_ch1_i               <= (others => '0');
+  regs_dds_cfg_reserved_ch2_i               <= (others => '0');
+  regs_dds_cfg_reserved_ch3_i               <= (others => '0');
+  regs_dds_pinc_ch0_reserved_i              <= (others => '0');
+  regs_dds_pinc_ch1_reserved_i              <= (others => '0');
+  regs_dds_pinc_ch2_reserved_i              <= (others => '0');
+  regs_dds_pinc_ch3_reserved_i              <= (others => '0');
+  regs_dds_poff_ch0_reserved_i              <= (others => '0');
+  regs_dds_poff_ch1_reserved_i              <= (others => '0');
+  regs_dds_poff_ch2_reserved_i              <= (others => '0');
+  regs_dds_poff_ch3_reserved_i              <= (others => '0');
 
   --------------------------------------------------------------------------------
   -- This is the old interface for acquiring data from Monit. It goes like this:
@@ -909,54 +1290,54 @@ begin
   ------------------------------------
 
   -- Sync with clk_i
-  regs_in.dsp_monit1_amp_ch0_i               <=
-    std_logic_vector(resize(signed(monit1_amp_ch0_wb_sync), regs_in.dsp_monit1_amp_ch0_i'length));
-  regs_in.dsp_monit1_amp_ch1_i               <=
-    std_logic_vector(resize(signed(monit1_amp_ch1_wb_sync), regs_in.dsp_monit1_amp_ch1_i'length));
-  regs_in.dsp_monit1_amp_ch2_i               <=
-    std_logic_vector(resize(signed(monit1_amp_ch2_wb_sync), regs_in.dsp_monit1_amp_ch2_i'length));
-  regs_in.dsp_monit1_amp_ch3_i               <=
-    std_logic_vector(resize(signed(monit1_amp_ch3_wb_sync), regs_in.dsp_monit1_amp_ch3_i'length));
+  regs_dsp_monit1_amp_ch0_i               <=
+    std_logic_vector(resize(signed(monit1_amp_ch0_wb_sync), regs_dsp_monit1_amp_ch0_i'length));
+  regs_dsp_monit1_amp_ch1_i               <=
+    std_logic_vector(resize(signed(monit1_amp_ch1_wb_sync), regs_dsp_monit1_amp_ch1_i'length));
+  regs_dsp_monit1_amp_ch2_i               <=
+    std_logic_vector(resize(signed(monit1_amp_ch2_wb_sync), regs_dsp_monit1_amp_ch2_i'length));
+  regs_dsp_monit1_amp_ch3_i               <=
+    std_logic_vector(resize(signed(monit1_amp_ch3_wb_sync), regs_dsp_monit1_amp_ch3_i'length));
 
   -- Sync with clk_i
-  regs_in.dsp_monit1_pos_x_i                 <=
-    std_logic_vector(resize(signed(monit1_pos_x_wb_sync), regs_in.dsp_monit1_pos_x_i'length));
-  regs_in.dsp_monit1_pos_y_i                 <=
-    std_logic_vector(resize(signed(monit1_pos_y_wb_sync), regs_in.dsp_monit1_pos_y_i'length));
-  regs_in.dsp_monit1_pos_q_i                 <=
-    std_logic_vector(resize(signed(monit1_pos_q_wb_sync), regs_in.dsp_monit1_pos_q_i'length));
-  regs_in.dsp_monit1_pos_sum_i               <=
-    std_logic_vector(resize(signed(monit1_pos_sum_wb_sync), regs_in.dsp_monit1_pos_sum_i'length));
+  regs_dsp_monit1_pos_x_i                 <=
+    std_logic_vector(resize(signed(monit1_pos_x_wb_sync), regs_dsp_monit1_pos_x_i'length));
+  regs_dsp_monit1_pos_y_i                 <=
+    std_logic_vector(resize(signed(monit1_pos_y_wb_sync), regs_dsp_monit1_pos_y_i'length));
+  regs_dsp_monit1_pos_q_i                 <=
+    std_logic_vector(resize(signed(monit1_pos_q_wb_sync), regs_dsp_monit1_pos_q_i'length));
+  regs_dsp_monit1_pos_sum_i               <=
+    std_logic_vector(resize(signed(monit1_pos_sum_wb_sync), regs_dsp_monit1_pos_sum_i'length));
 
   -- Sync with clk_i
-  dsp_monit1_updt <= regs_out.dsp_monit1_updt_wr_o;
+  dsp_monit1_updt <= regs_dsp_monit1_updt_wr_o;
 
   ------------------------------------
   -- Monit
   ------------------------------------
 
   -- Sync with clk_i
-  regs_in.dsp_monit_amp_ch0_i               <=
-    std_logic_vector(resize(signed(monit_amp_ch0_wb_sync), regs_in.dsp_monit_amp_ch0_i'length));
-  regs_in.dsp_monit_amp_ch1_i               <=
-    std_logic_vector(resize(signed(monit_amp_ch1_wb_sync), regs_in.dsp_monit_amp_ch1_i'length));
-  regs_in.dsp_monit_amp_ch2_i               <=
-    std_logic_vector(resize(signed(monit_amp_ch2_wb_sync), regs_in.dsp_monit_amp_ch2_i'length));
-  regs_in.dsp_monit_amp_ch3_i               <=
-    std_logic_vector(resize(signed(monit_amp_ch3_wb_sync), regs_in.dsp_monit_amp_ch3_i'length));
+  regs_dsp_monit_amp_ch0_i               <=
+    std_logic_vector(resize(signed(monit_amp_ch0_wb_sync), regs_dsp_monit_amp_ch0_i'length));
+  regs_dsp_monit_amp_ch1_i               <=
+    std_logic_vector(resize(signed(monit_amp_ch1_wb_sync), regs_dsp_monit_amp_ch1_i'length));
+  regs_dsp_monit_amp_ch2_i               <=
+    std_logic_vector(resize(signed(monit_amp_ch2_wb_sync), regs_dsp_monit_amp_ch2_i'length));
+  regs_dsp_monit_amp_ch3_i               <=
+    std_logic_vector(resize(signed(monit_amp_ch3_wb_sync), regs_dsp_monit_amp_ch3_i'length));
 
   -- Sync with clk_i
-  regs_in.dsp_monit_pos_x_i                 <=
-    std_logic_vector(resize(signed(monit_pos_x_wb_sync), regs_in.dsp_monit_pos_x_i'length));
-  regs_in.dsp_monit_pos_y_i                 <=
-    std_logic_vector(resize(signed(monit_pos_y_wb_sync), regs_in.dsp_monit_pos_y_i'length));
-  regs_in.dsp_monit_pos_q_i                 <=
-    std_logic_vector(resize(signed(monit_pos_q_wb_sync), regs_in.dsp_monit_pos_q_i'length));
-  regs_in.dsp_monit_pos_sum_i               <=
-    std_logic_vector(resize(signed(monit_pos_sum_wb_sync), regs_in.dsp_monit_pos_sum_i'length));
+  regs_dsp_monit_pos_x_i                 <=
+    std_logic_vector(resize(signed(monit_pos_x_wb_sync), regs_dsp_monit_pos_x_i'length));
+  regs_dsp_monit_pos_y_i                 <=
+    std_logic_vector(resize(signed(monit_pos_y_wb_sync), regs_dsp_monit_pos_y_i'length));
+  regs_dsp_monit_pos_q_i                 <=
+    std_logic_vector(resize(signed(monit_pos_q_wb_sync), regs_dsp_monit_pos_q_i'length));
+  regs_dsp_monit_pos_sum_i               <=
+    std_logic_vector(resize(signed(monit_pos_sum_wb_sync), regs_dsp_monit_pos_sum_i'length));
 
   -- Sync with clk_i
-  dsp_monit_updt <= regs_out.dsp_monit_updt_wr_o;
+  dsp_monit_updt <= regs_dsp_monit_updt_wr_o;
 
   --------------------------------------------------------------------------------
   -- This is the new interface for acquiring data from Monit. It goes like this:
@@ -968,56 +1349,56 @@ begin
   -- Monit 1
   ------------------------------------
 
-  regs_in.ampfifo_monit1_wr_req_i         <= monit1_amp_valid_out_wb_sync when
-                                             regs_out.ampfifo_monit1_wr_full_o = '0' else '0';
-  regs_in.ampfifo_monit1_amp_ch0_i   <=
-    std_logic_vector(resize(signed(monit1_amp_ch0_out_wb_sync), regs_in.ampfifo_monit1_amp_ch0_i'length));
-  regs_in.ampfifo_monit1_amp_ch1_i   <=
-    std_logic_vector(resize(signed(monit1_amp_ch1_out_wb_sync), regs_in.ampfifo_monit1_amp_ch1_i'length));
-  regs_in.ampfifo_monit1_amp_ch2_i   <=
-    std_logic_vector(resize(signed(monit1_amp_ch2_out_wb_sync), regs_in.ampfifo_monit1_amp_ch2_i'length));
-  regs_in.ampfifo_monit1_amp_ch3_i   <=
-    std_logic_vector(resize(signed(monit1_amp_ch3_out_wb_sync), regs_in.ampfifo_monit1_amp_ch3_i'length));
+  regs_ampfifo_monit1_wr_req_i         <= monit1_amp_valid_out_wb_sync when
+                                             regs_ampfifo_monit1_wr_full_o = '0' else '0';
+  regs_ampfifo_monit1_amp_ch0_i   <=
+    std_logic_vector(resize(signed(monit1_amp_ch0_out_wb_sync), regs_ampfifo_monit1_amp_ch0_i'length));
+  regs_ampfifo_monit1_amp_ch1_i   <=
+    std_logic_vector(resize(signed(monit1_amp_ch1_out_wb_sync), regs_ampfifo_monit1_amp_ch1_i'length));
+  regs_ampfifo_monit1_amp_ch2_i   <=
+    std_logic_vector(resize(signed(monit1_amp_ch2_out_wb_sync), regs_ampfifo_monit1_amp_ch2_i'length));
+  regs_ampfifo_monit1_amp_ch3_i   <=
+    std_logic_vector(resize(signed(monit1_amp_ch3_out_wb_sync), regs_ampfifo_monit1_amp_ch3_i'length));
 
-  regs_in.posfifo_monit1_wr_req_i         <= monit1_pos_valid_out_wb_sync when
-                                          regs_out.posfifo_monit1_wr_full_o = '0' else '0';
-  regs_in.posfifo_monit1_pos_x_i     <=
-    std_logic_vector(resize(signed(monit1_pos_x_out_wb_sync), regs_in.posfifo_monit1_pos_x_i'length));
-  regs_in.posfifo_monit1_pos_y_i     <=
-    std_logic_vector(resize(signed(monit1_pos_y_out_wb_sync), regs_in.posfifo_monit1_pos_y_i'length));
-  regs_in.posfifo_monit1_pos_q_i     <=
-    std_logic_vector(resize(signed(monit1_pos_q_out_wb_sync), regs_in.posfifo_monit1_pos_q_i'length));
-  regs_in.posfifo_monit1_pos_sum_i   <=
-    std_logic_vector(resize(signed(monit1_pos_sum_out_wb_sync), regs_in.posfifo_monit1_pos_sum_i'length));
+  regs_posfifo_monit1_wr_req_i         <= monit1_pos_valid_out_wb_sync when
+                                          regs_posfifo_monit1_wr_full_o = '0' else '0';
+  regs_posfifo_monit1_pos_x_i     <=
+    std_logic_vector(resize(signed(monit1_pos_x_out_wb_sync), regs_posfifo_monit1_pos_x_i'length));
+  regs_posfifo_monit1_pos_y_i     <=
+    std_logic_vector(resize(signed(monit1_pos_y_out_wb_sync), regs_posfifo_monit1_pos_y_i'length));
+  regs_posfifo_monit1_pos_q_i     <=
+    std_logic_vector(resize(signed(monit1_pos_q_out_wb_sync), regs_posfifo_monit1_pos_q_i'length));
+  regs_posfifo_monit1_pos_sum_i   <=
+    std_logic_vector(resize(signed(monit1_pos_sum_out_wb_sync), regs_posfifo_monit1_pos_sum_i'length));
 
   ------------------------------------
   -- Monit
   ------------------------------------
 
-  regs_in.ampfifo_monit_wr_req_i          <= monit_amp_valid_out_wb_sync when
-                                          regs_out.ampfifo_monit_wr_full_o = '0' else '0';
-  regs_in.ampfifo_monit_amp_ch0_i   <=
-    std_logic_vector(resize(signed(monit_amp_ch0_out_wb_sync), regs_in.ampfifo_monit_amp_ch0_i'length));
-  regs_in.ampfifo_monit_amp_ch1_i   <=
-    std_logic_vector(resize(signed(monit_amp_ch1_out_wb_sync), regs_in.ampfifo_monit_amp_ch1_i'length));
-  regs_in.ampfifo_monit_amp_ch2_i   <=
-    std_logic_vector(resize(signed(monit_amp_ch2_out_wb_sync), regs_in.ampfifo_monit_amp_ch2_i'length));
-  regs_in.ampfifo_monit_amp_ch3_i   <=
-    std_logic_vector(resize(signed(monit_amp_ch3_out_wb_sync), regs_in.ampfifo_monit_amp_ch3_i'length));
+  regs_ampfifo_monit_wr_req_i          <= monit_amp_valid_out_wb_sync when
+                                          regs_ampfifo_monit_wr_full_o = '0' else '0';
+  regs_ampfifo_monit_amp_ch0_i   <=
+    std_logic_vector(resize(signed(monit_amp_ch0_out_wb_sync), regs_ampfifo_monit_amp_ch0_i'length));
+  regs_ampfifo_monit_amp_ch1_i   <=
+    std_logic_vector(resize(signed(monit_amp_ch1_out_wb_sync), regs_ampfifo_monit_amp_ch1_i'length));
+  regs_ampfifo_monit_amp_ch2_i   <=
+    std_logic_vector(resize(signed(monit_amp_ch2_out_wb_sync), regs_ampfifo_monit_amp_ch2_i'length));
+  regs_ampfifo_monit_amp_ch3_i   <=
+    std_logic_vector(resize(signed(monit_amp_ch3_out_wb_sync), regs_ampfifo_monit_amp_ch3_i'length));
 
-  regs_in.posfifo_monit_wr_req_i          <= monit_pos_valid_out_wb_sync when
-                                          regs_out.posfifo_monit_wr_full_o = '0' else '0';
-  regs_in.posfifo_monit_pos_x_i     <=
-    std_logic_vector(resize(signed(monit_pos_x_out_wb_sync), regs_in.posfifo_monit_pos_x_i'length));
-  regs_in.posfifo_monit_pos_y_i     <=
-    std_logic_vector(resize(signed(monit_pos_y_out_wb_sync), regs_in.posfifo_monit_pos_y_i'length));
-  regs_in.posfifo_monit_pos_q_i     <=
-    std_logic_vector(resize(signed(monit_pos_q_out_wb_sync), regs_in.posfifo_monit_pos_q_i'length));
-  regs_in.posfifo_monit_pos_sum_i   <=
-    std_logic_vector(resize(signed(monit_pos_sum_out_wb_sync), regs_in.posfifo_monit_pos_sum_i'length));
+  regs_posfifo_monit_wr_req_i          <= monit_pos_valid_out_wb_sync when
+                                          regs_posfifo_monit_wr_full_o = '0' else '0';
+  regs_posfifo_monit_pos_x_i     <=
+    std_logic_vector(resize(signed(monit_pos_x_out_wb_sync), regs_posfifo_monit_pos_x_i'length));
+  regs_posfifo_monit_pos_y_i     <=
+    std_logic_vector(resize(signed(monit_pos_y_out_wb_sync), regs_posfifo_monit_pos_y_i'length));
+  regs_posfifo_monit_pos_q_i     <=
+    std_logic_vector(resize(signed(monit_pos_q_out_wb_sync), regs_posfifo_monit_pos_q_i'length));
+  regs_posfifo_monit_pos_sum_i   <=
+    std_logic_vector(resize(signed(monit_pos_sum_out_wb_sync), regs_posfifo_monit_pos_sum_i'length));
 
   -- Test data
-  test_data <= regs_out.dds_cfg_test_data_o;
+  test_data <= regs_dds_cfg_test_data_o;
 
   gen_with_downconv : if (g_with_downconv) generate
 
@@ -1168,29 +1549,29 @@ begin
   dsp_chc                                   <= adc_ch1_sp;
   dsp_chd                                   <= adc_ch3_sp;
   dsp_ch_tag                                <= adc_tag_sp;
-  dsp_ch_tag_en                             <= regs_out.sw_tag_en_o;
+  dsp_ch_tag_en                             <= regs_sw_tag_en_o;
   dsp_ch_valid                              <= adc_valid_sp;
 
-  tbt_decim_tag_en                          <= regs_out.tbt_tag_en_o;
-  tbt_decim_tag_dly_c                       <= regs_out.tbt_tag_dly_o(c_tbt_decim_tag_dly_width-1 downto 0);
-  tbt_decim_mask_en                         <= regs_out.tbt_data_mask_ctl_en_o;
-  tbt_decim_mask_num_samples_beg            <= unsigned(regs_out.tbt_data_mask_samples_beg_o(c_tbt_cic_mask_samples_width-1 downto 0));
-  tbt_decim_mask_num_samples_end            <= unsigned(regs_out.tbt_data_mask_samples_end_o(c_tbt_cic_mask_samples_width-1 downto 0));
+  tbt_decim_tag_en                          <= regs_tbt_tag_en_o;
+  tbt_decim_tag_dly_c                       <= regs_tbt_tag_dly_o(c_tbt_decim_tag_dly_width-1 downto 0);
+  tbt_decim_mask_en                         <= regs_tbt_data_mask_ctl_en_o;
+  tbt_decim_mask_num_samples_beg            <= unsigned(regs_tbt_data_mask_samples_beg_o(c_tbt_cic_mask_samples_width-1 downto 0));
+  tbt_decim_mask_num_samples_end            <= unsigned(regs_tbt_data_mask_samples_end_o(c_tbt_cic_mask_samples_width-1 downto 0));
 
-  fofb_decim_mask_en                        <= regs_out.sw_data_mask_en_o;
-  fofb_decim_mask_num_samples               <= unsigned(regs_out.sw_data_mask_samples_o);
+  fofb_decim_mask_en                        <= regs_sw_data_mask_en_o;
+  fofb_decim_mask_num_samples               <= unsigned(regs_sw_data_mask_samples_o);
 
-  monit1_decim_tag_en                       <= regs_out.monit1_tag_en_o;
-  monit1_decim_tag_dly_c                    <= regs_out.monit1_tag_dly_o(c_monit1_decim_tag_dly_width-1 downto 0);
-  monit1_decim_mask_en                      <= regs_out.monit1_data_mask_ctl_en_o;
-  monit1_decim_mask_num_samples_beg         <= unsigned(regs_out.monit1_data_mask_samples_beg_o(c_monit1_cic_mask_samples_width-1 downto 0));
-  monit1_decim_mask_num_samples_end         <= unsigned(regs_out.monit1_data_mask_samples_end_o(c_monit1_cic_mask_samples_width-1 downto 0));
+  monit1_decim_tag_en                       <= regs_monit1_tag_en_o;
+  monit1_decim_tag_dly_c                    <= regs_monit1_tag_dly_o(c_monit1_decim_tag_dly_width-1 downto 0);
+  monit1_decim_mask_en                      <= regs_monit1_data_mask_ctl_en_o;
+  monit1_decim_mask_num_samples_beg         <= unsigned(regs_monit1_data_mask_samples_beg_o(c_monit1_cic_mask_samples_width-1 downto 0));
+  monit1_decim_mask_num_samples_end         <= unsigned(regs_monit1_data_mask_samples_end_o(c_monit1_cic_mask_samples_width-1 downto 0));
 
-  monit_decim_tag_en                        <= regs_out.monit_tag_en_o;
-  monit_decim_tag_dly_c                     <= regs_out.monit_tag_dly_o(c_monit2_decim_tag_dly_width-1 downto 0);
-  monit_decim_mask_en                       <= regs_out.monit_data_mask_ctl_en_o;
-  monit_decim_mask_num_samples_beg          <= unsigned(regs_out.monit_data_mask_samples_beg_o(c_monit2_cic_mask_samples_width-1 downto 0));
-  monit_decim_mask_num_samples_end          <= unsigned(regs_out.monit_data_mask_samples_end_o(c_monit2_cic_mask_samples_width-1 downto 0));
+  monit_decim_tag_en                        <= regs_monit_tag_en_o;
+  monit_decim_tag_dly_c                     <= regs_monit_tag_dly_o(c_monit2_decim_tag_dly_width-1 downto 0);
+  monit_decim_mask_en                       <= regs_monit_data_mask_ctl_en_o;
+  monit_decim_mask_num_samples_beg          <= unsigned(regs_monit_data_mask_samples_beg_o(c_monit2_cic_mask_samples_width-1 downto 0));
+  monit_decim_mask_num_samples_end          <= unsigned(regs_monit_data_mask_samples_end_o(c_monit2_cic_mask_samples_width-1 downto 0));
 
   ----------------------------------------------
   -- Generate Triggers for all data rates
@@ -1335,7 +1716,10 @@ begin
     g_fofb_cordic_ratio                     => g_fofb_cordic_ratio,
 
     -- width of K constants
-    g_k_width                               => g_k_width,
+    g_k_width                               => c_k_width,
+
+    -- width of offset constants
+    g_offset_width                          => c_offset_width,
 
     --width for IQ output
     g_IQ_width                              => g_IQ_width
@@ -1353,9 +1737,12 @@ begin
     clk_i                                   => fs_clk_i,
     rst_i                                   => fs_rst,
 
-    ksum_i                                  => regs_out.ksum_val_o(c_k_width-1 downto 0),
-    kx_i                                    => regs_out.kx_val_o(c_k_width-1 downto 0),
-    ky_i                                    => regs_out.ky_val_o(c_k_width-1 downto 0),
+    ksum_i                                  => regs_ksum_val_o(c_k_width-1 downto 0),
+    kx_i                                    => regs_kx_val_o(c_k_width-1 downto 0),
+    ky_i                                    => regs_ky_val_o(c_k_width-1 downto 0),
+
+    offset_x_i                              => regs_pos_calc_offset_x_o(c_offset_width-1 downto 0),
+    offset_y_i                              => regs_pos_calc_offset_y_o(c_offset_width-1 downto 0),
 
     mix_ch0_i_o                             => mix_ch0_i,
     mix_ch0_q_o                             => mix_ch0_q,
@@ -1371,8 +1758,8 @@ begin
     -- Synchronization trigger for TBT filter chain
     tbt_tag_i                               => tbt_decim_tag,
     tbt_tag_en_i                            => tbt_decim_tag_en,
-    tbt_tag_desync_cnt_rst_i                => regs_out.tbt_tag_desync_cnt_rst_o,
-    tbt_tag_desync_cnt_o                    => regs_in.tbt_tag_desync_cnt_i,
+    tbt_tag_desync_cnt_rst_i                => regs_tbt_tag_desync_cnt_rst_o,
+    tbt_tag_desync_cnt_o                    => regs_tbt_tag_desync_cnt_i,
     tbt_decim_mask_en_i                     => tbt_decim_mask_en,
     tbt_decim_mask_num_samples_beg_i        => tbt_decim_mask_num_samples_beg,
     tbt_decim_mask_num_samples_end_i        => tbt_decim_mask_num_samples_end,
@@ -1401,8 +1788,8 @@ begin
     tbt_pha_valid_o                         => tbt_pha_valid,
     tbt_pha_ce_o                            => tbt_pha_ce,
 
-    fofb_decim_desync_cnt_rst_i             => regs_out.sw_tag_desync_cnt_rst_o,
-    fofb_decim_desync_cnt_o                 => regs_in.sw_tag_desync_cnt_i,
+    fofb_decim_desync_cnt_rst_i             => regs_sw_tag_desync_cnt_rst_o,
+    fofb_decim_desync_cnt_o                 => regs_sw_tag_desync_cnt_i,
     fofb_decim_mask_en_i                    => fofb_decim_mask_en,
     fofb_decim_mask_num_samples_i           => fofb_decim_mask_num_samples,
     fofb_decim_ch0_i_o                      => fofb_decim_ch0_i,
@@ -1433,8 +1820,8 @@ begin
     -- Synchronization trigger for TBT filter chain
     monit1_tag_i                            => monit1_decim_tag,
     monit1_tag_en_i                         => monit1_decim_tag_en,
-    monit1_tag_desync_cnt_rst_i             => regs_out.monit1_tag_desync_cnt_rst_o,
-    monit1_tag_desync_cnt_o                 => regs_in.monit1_tag_desync_cnt_i,
+    monit1_tag_desync_cnt_rst_i             => regs_monit1_tag_desync_cnt_rst_o,
+    monit1_tag_desync_cnt_o                 => regs_monit1_tag_desync_cnt_i,
     monit1_decim_mask_en_i                  => monit1_decim_mask_en,
     monit1_decim_mask_num_samples_beg_i     => monit1_decim_mask_num_samples_beg,
     monit1_decim_mask_num_samples_end_i     => monit1_decim_mask_num_samples_end,
@@ -1448,8 +1835,8 @@ begin
     -- Synchronization trigger for TBT filter chain
     monit_tag_i                             => monit_decim_tag,
     monit_tag_en_i                          => monit_decim_tag_en,
-    monit_tag_desync_cnt_rst_i              => regs_out.monit_tag_desync_cnt_rst_o,
-    monit_tag_desync_cnt_o                  => regs_in.monit_tag_desync_cnt_i,
+    monit_tag_desync_cnt_rst_i              => regs_monit_tag_desync_cnt_rst_o,
+    monit_tag_desync_cnt_o                  => regs_monit_tag_desync_cnt_i,
     monit_decim_mask_en_i                   => monit_decim_mask_en,
     monit_decim_mask_num_samples_beg_i      => monit_decim_mask_num_samples_beg,
     monit_decim_mask_num_samples_end_i      => monit_decim_mask_num_samples_end,

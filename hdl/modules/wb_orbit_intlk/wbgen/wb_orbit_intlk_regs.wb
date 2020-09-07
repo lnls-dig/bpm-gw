@@ -217,18 +217,144 @@ peripheral {
     };
 
     field {
-       name = "Interlock Bigger";
-       description = "Interlock Bigger";
-       prefix = "intlk_bigger";
+       name = "Interlock Trip";
+       description = "Interlock Trip";
+       prefix = "intlk";
        type = BIT;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
     };
 
     field {
-       name = "Interlock Bigger Latched";
-       description = "Interlock Bigger Latched";
-       prefix = "intlk_bigger_ltc";
+       name = "Interlock Trip Latched";
+       description = "Interlock Trip Latched";
+       prefix = "intlk_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller X";
+       description = "Translation Smaller X";
+       prefix = "trans_smaller_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Y";
+       description = "Translation Smaller Y";
+       prefix = "trans_smaller_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched X";
+       description = "Translation Smaller Latched X";
+       prefix = "trans_smaller_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched Y";
+       description = "Translation Smaller Latched Y";
+       prefix = "trans_smaller_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Any (X/Y)";
+       description = "Translation Smaller Any (X/Y)";
+       prefix = "trans_smaller_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller";
+       description = "Translation Smaller";
+       prefix = "trans_smaller";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Translation Smaller Latched";
+       description = "Translation Smaller Latched";
+       prefix = "trans_smaller_ltc";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller X";
+       description = "Angular Smaller X";
+       prefix = "ang_smaller_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Y";
+       description = "Angular Smaller Y";
+       prefix = "ang_smaller_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched X";
+       description = "Angular Smaller Latched X";
+       prefix = "ang_smaller_ltc_x";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched Y";
+       description = "Angular Smaller Latched Y";
+       prefix = "ang_smaller_ltc_y";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Any (X/Y)";
+       description = "Angular Smaller Any (X/Y)";
+       prefix = "ang_smaller_any";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller";
+       description = "Angular Smaller";
+       prefix = "ang_smaller";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Angular Smaller Latched";
+       description = "Angular Smaller Latched";
+       prefix = "ang_smaller_ltc";
        type = BIT;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
@@ -239,7 +365,7 @@ peripheral {
        description = "Ignore on write, read as 0's";
        prefix = "reserved";
        type = SLV;
-       size = 16;
+       size = 2;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
     };
@@ -262,13 +388,13 @@ peripheral {
   };
 
   reg {
-    name = "Translation X threshold";
-    description = "Translation X threshold to trip interlock";
+    name = "Maximum translation X threshold";
+    description = "Maximum translation X threshold to trip interlock";
     prefix = "trans_max_x";
 
     field {
        name = "Maximum X Threshold";
-       description = "Minimum X Threshold";
+       description = "Maximum X Threshold";
        type = SLV;
        size = 32;
        access_bus = READ_WRITE;
@@ -278,8 +404,8 @@ peripheral {
   };
 
   reg {
-    name = "Translation Y threshold";
-    description = "Translation Y threshold to trip interlock";
+    name = "Maximum translation Y threshold";
+    description = "Maximum translation Y threshold to trip interlock";
     prefix = "trans_max_y";
 
     field {
@@ -294,8 +420,8 @@ peripheral {
   };
 
   reg {
-    name = "Angular X threshold";
-    description = "Angular X threshold to trip interlock";
+    name = "Maximum angular X threshold";
+    description = "Maximum angular X threshold to trip interlock";
     prefix = "ang_max_x";
 
     field {
@@ -310,13 +436,77 @@ peripheral {
   };
 
   reg {
-    name = "Angular Y threshold";
-    description = "Angular Y threshold to trip interlock";
+    name = "Maximum angular Y threshold";
+    description = "Maximum angular Y threshold to trip interlock";
     prefix = "ang_max_y";
 
     field {
        name = "Maximum Y Threshold";
        description = "Maximum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum translation X threshold";
+    description = "Minimum translation X threshold to trip interlock";
+    prefix = "trans_min_x";
+
+    field {
+       name = "Minimum X Threshold";
+       description = "Minimum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum translation Y threshold";
+    description = "Minimum translation Y threshold to trip interlock";
+    prefix = "trans_min_y";
+
+    field {
+       name = "Minimum Y Threshold";
+       description = "Minimum Y Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum angular X threshold";
+    description = "Minimum angular X threshold to trip interlock";
+    prefix = "ang_min_x";
+
+    field {
+       name = "Minimum X Threshold";
+       description = "Minimum X Threshold";
+       type = SLV;
+       size = 32;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Minimum angular Y threshold";
+    description = "Minimum angular Y threshold to trip interlock";
+    prefix = "ang_min_y";
+
+    field {
+       name = "Minimum Y Threshold";
+       description = "Minimum Y Threshold";
        type = SLV;
        size = 32;
        access_bus = READ_WRITE;

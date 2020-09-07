@@ -893,88 +893,6 @@ peripheral {
   };
 
   ----------------------------------------------------------------------------
-  -- Monit. Amplitude/Position Values New Interface
-  ----------------------------------------------------------------------------
-
-   fifo_reg {
-       size = 16;
-       direction = CORE_TO_BUS;
-       prefix = "ampfifo_monit";
-       name = "AMP FIFO Monitoring";
-       description = "This FIFO holds most recent amplitude values from DSP Monit. chain";
-       flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
-       flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
-
-       field {
-           name = "Channel 0 Amplitude";
-           prefix = "amp_ch0";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel 1 Amplitude";
-           prefix = "amp_ch1";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel 2 Amplitude";
-           prefix = "amp_ch2";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel 3 Amplitude";
-           prefix = "amp_ch3";
-           type = SLV;
-           size = 32;
-       };
-
-    };
-
-   fifo_reg {
-       size = 16;
-       direction = CORE_TO_BUS;
-       prefix = "posfifo_monit";
-       name = "POS FIFO Monitoring";
-       description = "This FIFO holds most recent position values from DSP Monit. chain";
-       flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
-       flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
-
-       field {
-           name = "Channel X Position";
-           prefix = "pos_x";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel Y Position";
-           prefix = "pos_y";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel Q Position";
-           prefix = "pos_q";
-           type = SLV;
-           size = 32;
-       };
-
-       field {
-           name = "Channel Sum Position";
-           prefix = "pos_sum";
-           type = SLV;
-           size = 32;
-       };
-
-    };
-
-  ----------------------------------------------------------------------------
   -- Monit. 1 Amplitude Values
   ----------------------------------------------------------------------------
 
@@ -1129,6 +1047,88 @@ peripheral {
       size = 32;
     };
   };
+
+  ----------------------------------------------------------------------------
+  -- Monit. Amplitude/Position Values New Interface
+  ----------------------------------------------------------------------------
+
+   fifo_reg {
+       size = 16;
+       direction = CORE_TO_BUS;
+       prefix = "ampfifo_monit";
+       name = "AMP FIFO Monitoring";
+       description = "This FIFO holds most recent amplitude values from DSP Monit. chain";
+       flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+       flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+
+       field {
+           name = "Channel 0 Amplitude";
+           prefix = "amp_ch0";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel 1 Amplitude";
+           prefix = "amp_ch1";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel 2 Amplitude";
+           prefix = "amp_ch2";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel 3 Amplitude";
+           prefix = "amp_ch3";
+           type = SLV;
+           size = 32;
+       };
+
+    };
+
+   fifo_reg {
+       size = 16;
+       direction = CORE_TO_BUS;
+       prefix = "posfifo_monit";
+       name = "POS FIFO Monitoring";
+       description = "This FIFO holds most recent position values from DSP Monit. chain";
+       flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+       flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+
+       field {
+           name = "Channel X Position";
+           prefix = "pos_x";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel Y Position";
+           prefix = "pos_y";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel Q Position";
+           prefix = "pos_q";
+           type = SLV;
+           size = 32;
+       };
+
+       field {
+           name = "Channel Sum Position";
+           prefix = "pos_sum";
+           type = SLV;
+           size = 32;
+       };
+
+    };
 
   ----------------------------------------------------------------------------
   -- Monit. 1 Amplitude/Position Values New Interface

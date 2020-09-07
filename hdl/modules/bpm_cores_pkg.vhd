@@ -228,7 +228,8 @@ package bpm_cores_pkg is
       g_fofb_cordic_stages       : positive := 15;
       g_fofb_cordic_iter_per_clk : positive := 3;
       g_fofb_cordic_ratio        : positive := 4;
-      g_k_width                  : natural  := 24;
+      g_k_width                  : natural  := 25;
+      g_offset_width             : natural  := 32;
       g_IQ_width                 : natural  := 32);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -243,6 +244,8 @@ package bpm_cores_pkg is
       ksum_i             : in  std_logic_vector(g_k_width-1 downto 0);
       kx_i               : in  std_logic_vector(g_k_width-1 downto 0);
       ky_i               : in  std_logic_vector(g_k_width-1 downto 0);
+      offset_x_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
+      offset_y_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
       mix_ch0_q_o        : out std_logic_vector(g_IQ_width-1 downto 0);
       mix_ch1_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
@@ -642,7 +645,10 @@ package bpm_cores_pkg is
         g_fofb_cordic_ratio        : positive := 4;
 
         -- width of K constants
-        g_k_width : natural := 24;
+        g_k_width : natural := 25;
+
+        -- width of offset constants
+        g_offset_width  : natural := 32;
 
         --width for IQ output
         g_IQ_width : natural := 32;
@@ -884,7 +890,10 @@ package bpm_cores_pkg is
         g_monit_decim_width : natural := 32;
 
         -- width of K constants
-        g_k_width : natural := 24;
+        g_k_width : natural := 25;
+
+        -- width of offset constants
+        g_offset_width  : natural := 32;
 
         --width for IQ output
         g_IQ_width : natural := 32;
@@ -1143,15 +1152,30 @@ package bpm_cores_pkg is
     intlk_trans_bigger_x_o                     : out std_logic;
     intlk_trans_bigger_y_o                     : out std_logic;
 
+    -- only cleared when intlk_trans_clr_i is asserted
     intlk_trans_bigger_ltc_x_o                 : out std_logic;
     intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-    intlk_trans_bigger_o                       : out std_logic;
+    intlk_trans_bigger_any_o                   : out std_logic;
 
     -- only cleared when intlk_trans_clr_i is asserted
-    intlk_trans_ltc_o                          : out std_logic;
+    intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
-    intlk_trans_o                              : out std_logic;
+    intlk_trans_bigger_o                       : out std_logic;
+
+    intlk_trans_smaller_x_o                    : out std_logic;
+    intlk_trans_smaller_y_o                    : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_x_o                : out std_logic;
+    intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+    intlk_trans_smaller_any_o                  : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_o                  : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_smaller_o                      : out std_logic;
 
     intlk_ang_bigger_x_o                       : out std_logic;
     intlk_ang_bigger_y_o                       : out std_logic;
@@ -1159,12 +1183,25 @@ package bpm_cores_pkg is
     intlk_ang_bigger_ltc_x_o                   : out std_logic;
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-    intlk_ang_bigger_o                         : out std_logic;
+    intlk_ang_bigger_any_o                     : out std_logic;
 
     -- only cleared when intlk_ang_clr_i is asserted
-    intlk_ang_ltc_o                            : out std_logic;
+    intlk_ang_bigger_ltc_o                     : out std_logic;
     -- conditional to intlk_ang_en_i
-    intlk_ang_o                                : out std_logic;
+    intlk_ang_bigger_o                         : out std_logic;
+
+    intlk_ang_smaller_x_o                      : out std_logic;
+    intlk_ang_smaller_y_o                      : out std_logic;
+
+    intlk_ang_smaller_ltc_x_o                  : out std_logic;
+    intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+    intlk_ang_smaller_any_o                    : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_smaller_ltc_o                    : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_smaller_o                        : out std_logic;
 
     -- only cleared when intlk_clr_i is asserted
     intlk_ltc_o                                : out std_logic;
@@ -1246,15 +1283,30 @@ package bpm_cores_pkg is
     intlk_trans_bigger_x_o                     : out std_logic;
     intlk_trans_bigger_y_o                     : out std_logic;
 
+    -- only cleared when intlk_trans_clr_i is asserted
     intlk_trans_bigger_ltc_x_o                 : out std_logic;
     intlk_trans_bigger_ltc_y_o                 : out std_logic;
 
-    intlk_trans_bigger_o                       : out std_logic;
+    intlk_trans_bigger_any_o                   : out std_logic;
 
     -- only cleared when intlk_trans_clr_i is asserted
-    intlk_trans_ltc_o                          : out std_logic;
+    intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
-    intlk_trans_o                              : out std_logic;
+    intlk_trans_bigger_o                       : out std_logic;
+
+    intlk_trans_smaller_x_o                    : out std_logic;
+    intlk_trans_smaller_y_o                    : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_x_o                : out std_logic;
+    intlk_trans_smaller_ltc_y_o                : out std_logic;
+
+    intlk_trans_smaller_any_o                  : out std_logic;
+
+    -- only cleared when intlk_trans_clr_i is asserted
+    intlk_trans_smaller_ltc_o                  : out std_logic;
+    -- conditional to intlk_trans_en_i
+    intlk_trans_smaller_o                      : out std_logic;
 
     intlk_ang_bigger_x_o                       : out std_logic;
     intlk_ang_bigger_y_o                       : out std_logic;
@@ -1262,12 +1314,25 @@ package bpm_cores_pkg is
     intlk_ang_bigger_ltc_x_o                   : out std_logic;
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
-    intlk_ang_bigger_o                         : out std_logic;
+    intlk_ang_bigger_any_o                     : out std_logic;
 
     -- only cleared when intlk_ang_clr_i is asserted
-    intlk_ang_ltc_o                            : out std_logic;
+    intlk_ang_bigger_ltc_o                     : out std_logic;
     -- conditional to intlk_ang_en_i
-    intlk_ang_o                                : out std_logic;
+    intlk_ang_bigger_o                         : out std_logic;
+
+    intlk_ang_smaller_x_o                      : out std_logic;
+    intlk_ang_smaller_y_o                      : out std_logic;
+
+    intlk_ang_smaller_ltc_x_o                  : out std_logic;
+    intlk_ang_smaller_ltc_y_o                  : out std_logic;
+
+    intlk_ang_smaller_any_o                    : out std_logic;
+
+    -- only cleared when intlk_ang_clr_i is asserted
+    intlk_ang_smaller_ltc_o                    : out std_logic;
+    -- conditional to intlk_ang_en_i
+    intlk_ang_smaller_o                        : out std_logic;
 
     -- only cleared when intlk_clr_i is asserted
     intlk_ltc_o                                : out std_logic;

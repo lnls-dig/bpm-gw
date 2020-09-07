@@ -103,16 +103,16 @@ module wb_orbit_intlk_tb;
   wire intlk_trans_bigger_y;
   wire intlk_trans_bigger_ltc_x;
   wire intlk_trans_bigger_ltc_y;
+  wire intlk_trans_bigger_any;
+  wire intlk_trans_bigger_ltc;
   wire intlk_trans_bigger;
-  wire intlk_trans_ltc;
-  wire intlk_trans;
   wire intlk_ang_bigger_x;
   wire intlk_ang_bigger_y;
   wire intlk_ang_bigger_ltc_x;
   wire intlk_ang_bigger_ltc_y;
+  wire intlk_ang_bigger_any;
+  wire intlk_ang_bigger_ltc;
   wire intlk_ang_bigger;
-  wire intlk_ang_ltc;
-  wire intlk_ang;
   wire intlk_ltc;
   wire intlk;
 
@@ -172,10 +172,10 @@ module wb_orbit_intlk_tb;
     .intlk_trans_bigger_ltc_x_o  (intlk_trans_bigger_ltc_x),
     .intlk_trans_bigger_ltc_y_o  (intlk_trans_bigger_ltc_y),
 
-    .intlk_trans_bigger_o        (intlk_trans_bigger),
+    .intlk_trans_bigger_any_o    (intlk_trans_bigger_any),
 
-    .intlk_trans_ltc_o           (intlk_trans_ltc),
-    .intlk_trans_o               (intlk_trans),
+    .intlk_trans_bigger_ltc_o    (intlk_trans_bigger_ltc),
+    .intlk_trans_bigger_o        (intlk_trans_bigger),
 
     .intlk_ang_bigger_x_o        (intlk_ang_bigger_x),
     .intlk_ang_bigger_y_o        (intlk_ang_bigger_y),
@@ -183,10 +183,10 @@ module wb_orbit_intlk_tb;
     .intlk_ang_bigger_ltc_x_o    (intlk_ang_bigger_ltc_x),
     .intlk_ang_bigger_ltc_y_o    (intlk_ang_bigger_ltc_y),
 
-    .intlk_ang_bigger_o          (intlk_ang_bigger),
+    .intlk_ang_bigger_any_o      (intlk_ang_bigger_any),
 
-    .intlk_ang_ltc_o             (intlk_ang_ltc),
-    .intlk_ang_o                 (intlk_ang),
+    .intlk_ang_bigger_ltc_o      (intlk_ang_bigger_ltc),
+    .intlk_ang_bigger_o          (intlk_ang_bigger),
 
     .intlk_ltc_o                 (intlk_ltc),
     .intlk_o                     (intlk)
@@ -586,6 +586,116 @@ module wb_orbit_intlk_tb;
         test_intlk_status
     );
 
+    ////////////////////////
+    // TEST #6
+    // Negative position
+    // X/Y within limits.
+    ////////////////////////
+    test_id = 6;
+    test_intlk_en = 1'b1;
+
+    test_intlk_min_sum_en = 1'b1;
+    test_intlk_min_sum = 'h0_1000;
+
+    test_intlk_trans_en  = 1'b1;
+
+    test_intlk_trans_max_x = 'h10_0000;
+    test_intlk_trans_max_y = 'h10_0000;
+
+    test_intlk_ang_en  = 1'b0;
+
+    test_intlk_ang_max_x = 'h1_55CC0;
+    test_intlk_ang_max_y = 'h1_55CC0;
+
+    test_decim_ds_pos_x = 'h0010_0000;
+    test_decim_ds_pos_y = 'h0010_0000;
+    test_decim_ds_pos_q = 'h0;
+    test_decim_ds_pos_sum = 'h0001_0000;
+
+    test_decim_us_pos_x = 'hFFFF_FF00;
+    test_decim_us_pos_y = 'hFFFF_FF00;
+    test_decim_us_pos_q = 'h0;
+    test_decim_us_pos_sum = 'h0001_0000;
+
+    test_intlk_status = 1'b0;
+
+    wb_intlk_transaction(
+        test_id,
+        test_intlk_en,
+        test_intlk_min_sum_en,
+        test_intlk_min_sum,
+        test_intlk_trans_en ,
+        test_intlk_trans_max_x,
+        test_intlk_trans_max_y,
+        test_intlk_ang_en ,
+        test_intlk_ang_max_x,
+        test_intlk_ang_max_y,
+        test_decim_ds_pos_x,
+        test_decim_ds_pos_y,
+        test_decim_ds_pos_q,
+        test_decim_ds_pos_sum,
+        test_decim_us_pos_x,
+        test_decim_us_pos_y,
+        test_decim_us_pos_q,
+        test_decim_us_pos_sum,
+        test_intlk_status
+    );
+
+    ////////////////////////
+    // TEST #7
+    // Negative position
+    // X/Y within limits.
+    ////////////////////////
+    test_id = 7;
+    test_intlk_en = 1'b1;
+
+    test_intlk_min_sum_en = 1'b1;
+    test_intlk_min_sum = 'h0_1000;
+
+    test_intlk_trans_en  = 1'b1;
+
+    test_intlk_trans_max_x = 'h0000_0000;
+    test_intlk_trans_max_y = 'h0000_0000;
+
+    test_intlk_ang_en  = 1'b0;
+
+    test_intlk_ang_max_x = 'h1_55CC0;
+    test_intlk_ang_max_y = 'h1_55CC0;
+
+    test_decim_ds_pos_x = 'hFFFF_FF00;
+    test_decim_ds_pos_y = 'hFFFF_FF00;
+    test_decim_ds_pos_q = 'h0;
+    test_decim_ds_pos_sum = 'h0001_0000;
+
+    test_decim_us_pos_x = 'hFFFF_FF00;
+    test_decim_us_pos_y = 'hFFFF_FF00;
+    test_decim_us_pos_q = 'h0;
+    test_decim_us_pos_sum = 'h0001_0000;
+
+    test_intlk_status = 1'b0;
+
+    wb_intlk_transaction(
+        test_id,
+        test_intlk_en,
+        test_intlk_min_sum_en,
+        test_intlk_min_sum,
+        test_intlk_trans_en ,
+        test_intlk_trans_max_x,
+        test_intlk_trans_max_y,
+        test_intlk_ang_en ,
+        test_intlk_ang_max_x,
+        test_intlk_ang_max_y,
+        test_decim_ds_pos_x,
+        test_decim_ds_pos_y,
+        test_decim_ds_pos_q,
+        test_decim_ds_pos_sum,
+        test_decim_us_pos_x,
+        test_decim_us_pos_y,
+        test_decim_us_pos_q,
+        test_decim_us_pos_sum,
+        test_intlk_status
+    );
+
     $display("Simulation Done!");
     $display("All Tests Passed!");
     $display("---------------------------------------------");
@@ -765,19 +875,19 @@ module wb_orbit_intlk_tb;
     WB0.read32(`ADDR_ORBIT_INTLK_STS >> `WB_WORD_ACC, wb_reg);
     @(posedge sys_clk);
 
-    if (test_intlk_status == intlk) begin
-      $display("Interlock module correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+    if (test_intlk_status == intlk_ltc) begin
+      $display("Interlock module correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_ltc);
     end else begin
-      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_ltc);
       err = 1;
       err_intlk = 1;
     end
 
-    intlk_wb = (wb_reg & `ORBIT_INTLK_STS_INTLK_BIGGER) >> `ORBIT_INTLK_STS_INTLK_BIGGER_OFFSET;
+    intlk_wb = (wb_reg & `ORBIT_INTLK_STS_INTLK_LTC) >> `ORBIT_INTLK_STS_INTLK_LTC_OFFSET;
     if (test_intlk_status == intlk_wb) begin
       $display("Wishbone register correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_wb);
     end else begin
-      $display("Interlock module DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk);
+      $display("Wishbone register DID NOT correctly identified a condition: expected %d/ got %d", test_intlk_status, intlk_wb);
       err = 1;
       err_wb = 1;
     end
