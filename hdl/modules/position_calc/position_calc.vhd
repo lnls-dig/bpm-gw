@@ -798,28 +798,28 @@ begin
   -- fractional length = g_width - (integer length)
   cmp_fofb_ds : delta_sigma
     generic map (
-      g_width   => g_fofb_decim_width,
-      g_k_width => g_k_width,
+      g_width        => g_fofb_decim_width,
+      g_k_width      => g_k_width,
       g_offset_width => g_offset_width)
     port map (
-      a_i     => fofb_mag(0),
-      b_i     => fofb_mag(1),
-      c_i     => fofb_mag(2),
-      d_i     => fofb_mag(3),
-      kx_i    => kx_i,
-      ky_i    => ky_i,
-      ksum_i  => ksum_i,
-      offset_x_i  => offset_x_i,
-      offset_y_i  => offset_y_i,
-      clk_i   => clk_i,
-      ce_i    => ce_fofb_cordic(0),
-      valid_i => valid_fofb_cordic(0),
-      valid_o => valid_fofb_ds,
-      rst_i   => rst_i,
-      x_o     => fofb_pos_x_int,
-      y_o     => fofb_pos_y_int,
-      q_o     => fofb_pos_q_int,
-      sum_o   => fofb_pos_sum_int);
+      a_i        => fofb_mag(0),
+      b_i        => fofb_mag(1),
+      c_i        => fofb_mag(2),
+      d_i        => fofb_mag(3),
+      kx_i       => kx_i,
+      ky_i       => ky_i,
+      ksum_i     => ksum_i,
+      offset_x_i => offset_x_i,
+      offset_y_i => offset_y_i,
+      clk_i      => clk_i,
+      ce_i       => ce_fofb_cordic(0),
+      valid_i    => valid_fofb_cordic(0),
+      valid_o    => valid_fofb_ds,
+      rst_i      => rst_i,
+      x_o        => fofb_pos_x_int,
+      y_o        => fofb_pos_y_int,
+      q_o        => fofb_pos_q_int,
+      sum_o      => fofb_pos_sum_int);
 
   -- desync counters. Use only one of the channels as a sample
   tbt_tag_desync_cnt_o    <= tbt_tag_desync_cnt(0);
