@@ -4285,11 +4285,11 @@ begin
     adc_ds_tag_i                               => dsp1_adc_tag,
     adc_ds_swap_valid_i                        => dsp1_adc_valid,
 
-    decim_ds_pos_x_i                           => dsp1_fofb_pos_x,
-    decim_ds_pos_y_i                           => dsp1_fofb_pos_y,
-    decim_ds_pos_q_i                           => dsp1_fofb_pos_q,
-    decim_ds_pos_sum_i                         => dsp1_fofb_pos_sum,
-    decim_ds_pos_valid_i                       => dsp1_fofb_pos_valid,
+    decim_ds_pos_x_i                           => dsp1_monit1_pos_x,
+    decim_ds_pos_y_i                           => dsp1_monit1_pos_y,
+    decim_ds_pos_q_i                           => dsp1_monit1_pos_q,
+    decim_ds_pos_sum_i                         => dsp1_monit1_pos_sum,
+    decim_ds_pos_valid_i                       => dsp1_monit1_pos_valid,
 
     -----------------------------
     -- Upstream ADC and position signals
@@ -4304,11 +4304,11 @@ begin
     adc_us_tag_i                               => dsp2_adc_tag,
     adc_us_swap_valid_i                        => dsp2_adc_valid,
 
-    decim_us_pos_x_i                           => dsp2_fofb_pos_x,
-    decim_us_pos_y_i                           => dsp2_fofb_pos_y,
-    decim_us_pos_q_i                           => dsp2_fofb_pos_q,
-    decim_us_pos_sum_i                         => dsp2_fofb_pos_sum,
-    decim_us_pos_valid_i                       => dsp2_fofb_pos_valid,
+    decim_us_pos_x_i                           => dsp2_monit1_pos_x,
+    decim_us_pos_y_i                           => dsp2_monit1_pos_y,
+    decim_us_pos_q_i                           => dsp2_monit1_pos_q,
+    decim_us_pos_sum_i                         => dsp2_monit1_pos_sum,
+    decim_us_pos_valid_i                       => dsp2_monit1_pos_valid,
 
     -----------------------------
     -- Interlock outputs

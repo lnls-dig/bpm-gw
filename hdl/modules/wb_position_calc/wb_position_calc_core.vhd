@@ -2375,7 +2375,7 @@ begin
   monit1_pos_y_o    <= fifo_monit1_pos_out(2*g_monit_decim_width-1 downto g_monit_decim_width);
   monit1_pos_x_o    <= fifo_monit1_pos_out(g_monit_decim_width-1 downto 0);
 
-  monit1_pos_valid_o <= fifo_monit_pos_valid_out;
+  monit1_pos_valid_o <= fifo_monit1_pos_valid_out;
 
   p_reg_monit1_pos_sync_wb : process(clk_i)
   begin
