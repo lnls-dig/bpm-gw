@@ -23,6 +23,11 @@ syn_properties = [
     ["steps.post_route_phys_opt_design.is_enabled", "1"],
     ["steps.write_bitstream.args.verbose", "1"]]
 
+board = "afc"
+
+# For appending the afc_ref_design.xdc to synthesis
+afc_base_xdc = ['acq']
+
 import os
 import sys
 if os.path.isfile("synthesis_descriptor_pkg.vhd"):
@@ -32,4 +37,19 @@ else:
 
 machine_pkg = "pbpm_fmcpico1M"
 
-modules = { "local" : [ "../../../top/afc_v3/vivado/dbe_pbpm" ] }
+# Pass more XDC to afc-gw so it will merge it last with
+# other .xdc. We need this as we depend on variables defined
+# on afc_base xdc files.
+xdc_files = [
+    "dbe_pbpm.xdc",
+]
+
+additional_xdc = []
+for f in xdc_files:
+    additional_xdc.append(os.path.abspath(f))
+
+modules = {
+    "local" : [
+        "../../../top/afc_v3/dbe_pbpm"
+    ]
+}

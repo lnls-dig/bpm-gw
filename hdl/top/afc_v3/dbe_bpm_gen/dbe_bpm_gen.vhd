@@ -53,6 +53,10 @@ use work.pcie_cntr_axi_pkg.all;
 use work.trigger_pkg.all;
 -- Trigger Common Modules
 use work.trigger_common_pkg.all;
+-- AFC definitions
+use work.afc_base_pkg.all;
+-- AFC Acq definitions
+use work.afc_base_acq_pkg.all;
 -- Orbit interlock
 use work.orbit_intlk_pkg.all;
 
@@ -61,47 +65,111 @@ generic(
   g_fmc_adc_type                             : string := "FMC250M"
 );
 port(
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- Clocking pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   sys_clk_p_i                                : in std_logic;
   sys_clk_n_i                                : in std_logic;
 
   aux_clk_p_i                                : in std_logic;
   aux_clk_n_i                                : in std_logic;
 
-  -----------------------------------------
+  afc_fp2_clk1_p_i                           : in std_logic;
+  afc_fp2_clk1_n_i                           : in std_logic;
+
+  ---------------------------------------------------------------------------
   -- Reset Button
-  -----------------------------------------
-  sys_rst_button_n_i                         : in std_logic;
+  ---------------------------------------------------------------------------
+  sys_rst_button_n_i                         : in std_logic := '1';
 
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- UART pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
 
-  rs232_txd_o                                : out std_logic;
-  rs232_rxd_i                                : in std_logic;
+  uart_rxd_i                                 : in  std_logic := '1';
+  uart_txd_o                                 : out std_logic;
 
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- Trigger pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
+  trig_dir_o                                 : out   std_logic_vector(c_NUM_TRIG-1 downto 0);
+  trig_b                                     : inout std_logic_vector(c_NUM_TRIG-1 downto 0);
 
-  trig_dir_o                                 : out   std_logic_vector(7 downto 0);
-  trig_b                                     : inout std_logic_vector(7 downto 0);
-
-  -----------------------------
+  ---------------------------------------------------------------------------
   -- AFC Diagnostics
-  -----------------------------
+  ---------------------------------------------------------------------------
 
-  diag_spi_cs_i                              : in std_logic;
-  diag_spi_si_i                              : in std_logic;
+  diag_spi_cs_i                              : in std_logic := '0';
+  diag_spi_si_i                              : in std_logic := '0';
   diag_spi_so_o                              : out std_logic;
-  diag_spi_clk_i                             : in std_logic;
+  diag_spi_clk_i                             : in std_logic := '0';
 
-  -----------------------------
+  ---------------------------------------------------------------------------
   -- ADN4604ASVZ
-  -----------------------------
+  ---------------------------------------------------------------------------
   adn4604_vadj2_clk_updt_n_o                 : out std_logic;
+
+  ---------------------------------------------------------------------------
+  -- AFC I2C.
+  ---------------------------------------------------------------------------
+  -- Si57x oscillator
+  afc_si57x_scl_b                            : inout std_logic;
+  afc_si57x_sda_b                            : inout std_logic;
+
+  -- Si57x oscillator output enable
+  afc_si57x_oe_o                             : out   std_logic;
+
+  ---------------------------------------------------------------------------
+  -- PCIe pins
+  ---------------------------------------------------------------------------
+
+  -- DDR3 memory pins
+  ddr3_dq_b                                  : inout std_logic_vector(c_DDR_DQ_WIDTH-1 downto 0);
+  ddr3_dqs_p_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+  ddr3_dqs_n_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+  ddr3_addr_o                                : out   std_logic_vector(c_DDR_ROW_WIDTH-1 downto 0);
+  ddr3_ba_o                                  : out   std_logic_vector(c_DDR_BANK_WIDTH-1 downto 0);
+  ddr3_cs_n_o                                : out   std_logic_vector(0 downto 0);
+  ddr3_ras_n_o                               : out   std_logic;
+  ddr3_cas_n_o                               : out   std_logic;
+  ddr3_we_n_o                                : out   std_logic;
+  ddr3_reset_n_o                             : out   std_logic;
+  ddr3_ck_p_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+  ddr3_ck_n_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+  ddr3_cke_o                                 : out   std_logic_vector(c_DDR_CKE_WIDTH-1 downto 0);
+  ddr3_dm_o                                  : out   std_logic_vector(c_DDR_DM_WIDTH-1 downto 0);
+  ddr3_odt_o                                 : out   std_logic_vector(c_DDR_ODT_WIDTH-1 downto 0);
+
+  -- PCIe transceivers
+  pci_exp_rxp_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_rxn_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_txp_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_txn_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+
+  -- PCI clock and reset signals
+  pcie_clk_p_i                               : in std_logic;
+  pcie_clk_n_i                               : in std_logic;
+
+  ---------------------------------------------------------------------------
+  -- User LEDs
+  ---------------------------------------------------------------------------
+  leds_o                                     : out std_logic_vector(2 downto 0);
+
+  ---------------------------------------------------------------------------
+  -- FMC interface
+  ---------------------------------------------------------------------------
+
+  board_i2c_scl_b                            : inout std_logic;
+  board_i2c_sda_b                            : inout std_logic;
+
+  ---------------------------------------------------------------------------
+  -- Flash memory SPI interface
+  ---------------------------------------------------------------------------
+  --
+  -- spi_sclk_o                              : out std_logic;
+  -- spi_cs_n_o                              : out std_logic;
+  -- spi_mosi_o                              : out std_logic;
+  -- spi_miso_i                              : in  std_logic := '0';
 
   -----------------------------
   -- FMC1_130m_4ch ports
@@ -490,64 +558,7 @@ port(
   --fmcpico_2_sm_sda_b                         : inout std_logic;
 
   fmcpico_2_a_scl_o                          : out std_logic;
-  fmcpico_2_a_sda_b                          : inout std_logic;
-
-  -----------------------------------------
-  -- Position Calc signals
-  -----------------------------------------
-
-  -- Uncross signals
-  --clk_swap_o                                 : out std_logic;
-  --clk_swap2x_o                               : out std_logic;
-  --flag1_o                                    : out std_logic;
-  --flag2_o                                    : out std_logic;
-
-  -----------------------------------------
-  -- General board status
-  -----------------------------------------
-  --fmc_mmcm_lock_led_o                       : out std_logic;
-  --fmc_pll_status_led_o                      : out std_logic
-
-  -----------------------------------------
-  -- PCIe pins
-  -----------------------------------------
-
-  -- DDR3 memory pins
-  ddr3_dq_b                                 : inout std_logic_vector(c_ddr_dq_width-1 downto 0);
-  ddr3_dqs_p_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-  ddr3_dqs_n_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-  ddr3_addr_o                               : out   std_logic_vector(c_ddr_row_width-1 downto 0);
-  ddr3_ba_o                                 : out   std_logic_vector(c_ddr_bank_width-1 downto 0);
-  ddr3_cs_n_o                               : out   std_logic_vector(0 downto 0);
-  ddr3_ras_n_o                              : out   std_logic;
-  ddr3_cas_n_o                              : out   std_logic;
-  ddr3_we_n_o                               : out   std_logic;
-  ddr3_reset_n_o                            : out   std_logic;
-  ddr3_ck_p_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-  ddr3_ck_n_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-  ddr3_cke_o                                : out   std_logic_vector(c_ddr_cke_width-1 downto 0);
-  ddr3_dm_o                                 : out   std_logic_vector(c_ddr_dm_width-1 downto 0);
-  ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
-
-  -- PCIe transceivers
-  pci_exp_rxp_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_rxn_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_txp_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_txn_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-
-  -- PCI clock and reset signals
-  pcie_clk_p_i                              : in std_logic;
-  pcie_clk_n_i                              : in std_logic;
-
-  -----------------------------------------
-  -- Button pins
-  -----------------------------------------
-  --buttons_i                                 : in std_logic_vector(7 downto 0);
-
-  -----------------------------------------
-  -- User LEDs
-  -----------------------------------------
-  leds_o                                    : out std_logic_vector(2 downto 0)
+  fmcpico_2_a_sda_b                          : inout std_logic
 );
 end dbe_bpm_gen;
 
@@ -639,229 +650,271 @@ architecture rtl of dbe_bpm_gen is
     return v_facq_chan;
   end f_acq_channel_mix_param;
 
+  -----------------------------------------------------------------------------
+  -- General constants
+  -----------------------------------------------------------------------------
+
+  constant c_SYS_CLOCK_FREQ                  : natural := 100000000;
+  constant c_REF_CLOCK_FREQ                  : natural := 69306000; -- RF*5/36
+  -- number of the ADC reference clock used for all downstream
+  -- FPGA logic
+  constant c_ADC_REF_CLK                     : natural := 2;
+
+  constant c_NUM_USER_IRQ                    : natural := 1;
+
   -- Swap/de-swap settings
-  constant c_pos_calc_delay_vec_width         : natural := 8;
-  constant c_pos_calc_swap_div_freq_vec_width : natural := 16;
+  constant c_POS_CALC_DELAY_VEC_WIDTH         : natural := 8;
+  constant c_POS_CALC_SWAP_DIV_FREQ_VEC_WIDTH : natural := 16;
 
-  -- Top crossbar layout
-  -- Number of slaves
-  constant c_slaves                         : natural := 16;
-  -- FMC_ADC_1, FMC_ADC_2, Acq_Core 1, Acq_Core 2,
-  -- Position_calc_1, Posiotion_calc_2, Peripherals, AFC diagnostics, ]
-  -- Trigger Interface, Trigger MUX 1, Trigger MUX 2, Acq_Core PM 1, Acq_Core PM 2,
-  -- Trigger MUX PM 1, Trigger MUX PM 2, Orbit Interlock
+  constant c_AFC_SI57x_I2C_FREQ              : natural := 400000;
+  constant c_AFC_SI57x_INIT_OSC              : boolean := true;
+  constant c_AFC_SI57x_INIT_RFREQ_VALUE      : std_logic_vector(37 downto 0) := "00" & x"2bc0af3b8";
+  constant c_AFC_SI57x_INIT_N1_VALUE         : std_logic_vector(6 downto 0) := "0000111";
+  constant c_AFC_SI57x_INIT_HS_VALUE         : std_logic_vector(2 downto 0) := "000";
 
-  -- Slaves indexes
-  constant c_slv_pos_calc_1_id             : natural := 0;
-  constant c_slv_fmc_adc_1_id              : natural := 1;
-  constant c_slv_acq_core_0_id             : natural := 2;
-  constant c_slv_pos_calc_2_id             : natural := 3;
-  constant c_slv_fmc_adc_2_id              : natural := 4;
-  constant c_slv_acq_core_1_id             : natural := 5;
-  constant c_slv_periph_id                 : natural := 6;
-  constant c_slv_afc_diag_id               : natural := 7;
-  constant c_slv_trig_iface_id             : natural := 8;
-  constant c_slv_trig_mux_0_id             : natural := 9;
-  constant c_slv_trig_mux_1_id             : natural := 10;
-  constant c_slv_acq_core_pm_0_id          : natural := 11;
-  constant c_slv_acq_core_pm_1_id          : natural := 12;
-  constant c_slv_trig_mux_pm_0_id          : natural := 13;
-  constant c_slv_trig_mux_pm_1_id          : natural := 14;
-  constant c_slv_orbit_intlk_id            : natural := 15;
-  -- These are not account in the number of slaves as these are special
-  constant c_slv_sdb_repo_url_id           : natural := 16;
-  constant c_slv_sdb_top_syn_id            : natural := 17;
-  constant c_slv_sdb_dsp_cores_id          : natural := 18;
-  constant c_slv_sdb_gen_cores_id          : natural := 19;
-  constant c_slv_sdb_infra_cores_id        : natural := 20;
+  -----------------------------------------------------------------------------
+  -- AFC Si57x signals
+  -----------------------------------------------------------------------------
 
-  -- Number of masters
-  constant c_masters                        : natural := 2;            -- RS232-Syscon, PCIe
+  signal afc_si57x_sta_reconfig_done         : std_logic;
+  signal afc_si57x_sta_reconfig_done_pp      : std_logic;
+  signal afc_si57x_reconfig_rst              : std_logic;
+  signal afc_si57x_reconfig_rst_n            : std_logic;
 
-  -- Master indexes
-  constant c_ma_pcie_id                    : natural := 0;
-  constant c_ma_rs232_syscon_id            : natural := 1;
+  signal afc_si57x_ext_wr                    : std_logic;
+  signal afc_si57x_ext_rfreq_value           : std_logic_vector(37 downto 0);
+  signal afc_si57x_ext_n1_value              : std_logic_vector(6 downto 0);
+  signal afc_si57x_ext_hs_value              : std_logic_vector(2 downto 0);
 
-  constant c_acq_fifo_size                  : natural := 256;
+  -----------------------------------------------------------------------------
+  -- Acquisition signals
+  -----------------------------------------------------------------------------
 
-  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
-  constant c_acq_num_cores                  : natural := 4;
+  constant c_ACQ_FIFO_SIZE                   : natural := 256;
+
   -- Type of DDR3 core interface
-  constant c_ddr_interface_type             : string := "AXIS";
+  constant c_DDR_INTERFACE_TYPE              : string := "AXIS";
 
-  constant c_acq_addr_width                 : natural := c_ddr_addr_width;
-  -- Post-Mortem Acq Cores dont need Multishot. So, set them to 0
-  constant c_acq_multishot_ram_size         : t_property_value_array(c_acq_num_cores-1 downto 0) := (0, 0, 4096, 4096);
-  constant c_acq_ddr_addr_res_width         : natural := 32;
-  constant c_acq_ddr_addr_diff              : natural := c_acq_ddr_addr_res_width-c_ddr_addr_width;
+  constant c_ACQ_ADC_ID                     : natural := 0;
+  constant c_ACQ_ADC_SWAP_ID                : natural := 1;
+  constant c_ACQ_MIXIQ_ID                   : natural := 2;
+  constant c_DUMMY0_ID                      : natural := 3;
+  constant c_ACQ_TBTDECIMIQ_ID              : natural := 4;
+  constant c_DUMMY1_ID                      : natural := 5;
+  constant c_ACQ_TBT_AMP_ID                 : natural := 6;
+  constant c_ACQ_TBT_PHASE_ID               : natural := 7;
+  constant c_ACQ_TBT_POS_ID                 : natural := 8;
+  constant c_ACQ_FOFBDECIMIQ_ID             : natural := 9;
+  constant c_DUMMY2_ID                      : natural := 10;
+  constant c_ACQ_FOFB_AMP_ID                : natural := 11;
+  constant c_ACQ_FOFB_PHASE_ID              : natural := 12;
+  constant c_ACQ_FOFB_POS_ID                : natural := 13;
+  constant c_ACQ_MONIT1_AMP_ID              : natural := 14;
+  constant c_ACQ_MONIT1_POS_ID              : natural := 15;
+  constant c_ACQ_MONIT_AMP_ID               : natural := 16;
+  constant c_ACQ_MONIT_POS_ID               : natural := 17;
+  constant c_TRIGGER_SW_CLK_ID              : natural := 18;
+  constant c_PHASE_SYNC_TRIGGER_SLOW_ID     : natural := 19;
 
-  constant c_acq_adc_id                     : natural := 0;
-  constant c_acq_adc_swap_id                : natural := 1;
-  constant c_acq_mixiq_id                   : natural := 2;
-  constant c_dummy0_id                      : natural := 3;
-  constant c_acq_tbtdecimiq_id              : natural := 4;
-  constant c_dummy1_id                      : natural := 5;
-  constant c_acq_tbt_amp_id                 : natural := 6;
-  constant c_acq_tbt_phase_id               : natural := 7;
-  constant c_acq_tbt_pos_id                 : natural := 8;
-  constant c_acq_fofbdecimiq_id             : natural := 9;
-  constant c_dummy2_id                      : natural := 10;
-  constant c_acq_fofb_amp_id                : natural := 11;
-  constant c_acq_fofb_phase_id              : natural := 12;
-  constant c_acq_fofb_pos_id                : natural := 13;
-  constant c_acq_monit1_amp_id              : natural := 14;
-  constant c_acq_monit1_pos_id              : natural := 15;
-  constant c_acq_monit_amp_id               : natural := 16;
-  constant c_acq_monit_pos_id               : natural := 17;
-  constant c_trigger_sw_clk_id              : natural := 18;
-  constant c_phase_sync_trigger_slow_id     : natural := 19;
-
-  constant c_trig_num_channels              : natural := 3;
   -- Number of channels per acquisition core
-  constant c_acq_num_channels               : natural := 18; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
+  constant c_ACQ_NUM_CHANNELS               : natural := 18; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT1 AMP +
                                                             -- MONIT1 POS for each FMC
 
-  constant c_acq_pos_ddr3_width             : natural := 32;
+  constant c_ACQ_POS_DDR3_WIDTH             : natural := 32;
 
   -- Acquisition core IDs
-  constant c_acq_core_0_id                  : natural := 0;
-  constant c_acq_core_1_id                  : natural := 1;
-  constant c_acq_core_2_id                  : natural := 2;
-  constant c_acq_core_3_id                  : natural := 3;
+  constant c_ACQ_CORE_0_ID                  : natural := 0;
+  constant c_ACQ_CORE_1_ID                  : natural := 1;
+  constant c_ACQ_CORE_2_ID                  : natural := 2;
+  constant c_ACQ_CORE_3_ID                  : natural := 3;
+  -- Number of acquisition cores. Same as the number of RTM_LAMP
+  -- Number of acquisition cores (FMC1, FMC2, Post Mortem 1, Post Mortem 2)
+  constant c_ACQ_NUM_CORES                  : natural := 4;
 
-  constant c_acq_width_u64                  : unsigned(c_acq_chan_cmplt_width_log2-1 downto 0) :=
-                                                to_unsigned(64, c_acq_chan_cmplt_width_log2);
-  constant c_acq_width_u128                 : unsigned(c_acq_chan_cmplt_width_log2-1 downto 0) :=
-                                                to_unsigned(128, c_acq_chan_cmplt_width_log2);
-  constant c_acq_width_u256                 : unsigned(c_acq_chan_cmplt_width_log2-1 downto 0) :=
-                                                to_unsigned(256, c_acq_chan_cmplt_width_log2);
-  constant c_acq_num_atoms_u4               : unsigned(c_acq_num_atoms_width_log2-1 downto 0) :=
-                                                to_unsigned(4, c_acq_num_atoms_width_log2);
-  constant c_acq_num_atoms_u8               : unsigned(c_acq_num_atoms_width_log2-1 downto 0) :=
-                                                to_unsigned(8, c_acq_num_atoms_width_log2);
-  constant c_acq_atom_width_u16              : unsigned(c_acq_atom_width_log2-1 downto 0) :=
-                                                to_unsigned(16, c_acq_atom_width_log2);
-  constant c_acq_atom_width_u32             : unsigned(c_acq_atom_width_log2-1 downto 0) :=
-                                                to_unsigned(32, c_acq_atom_width_log2);
+  constant c_ACQ_ADDR_WIDTH                 : natural := c_DDR_ADDR_WIDTH;
+  -- Post-Mortem Acq Cores dont need Multishot. So, set them to 0
+  constant c_ACQ_MULTISHOT_RAM_SIZE         : t_property_value_array(c_ACQ_NUM_CORES-1 downto 0) := (0, 0, 4096, 4096);
+  constant c_ACQ_DDR_ADDR_RES_WIDTH         : natural := 32;
+  constant c_ACQ_DDR_ADDR_DIFF              : natural := c_ACQ_DDR_ADDR_RES_WIDTH-c_DDR_ADDR_WIDTH;
 
-  constant c_facq_params_adc                : t_facq_chan_param := f_acq_channel_adc_param(g_fmc_adc_type);
-  constant c_facq_params_mix                : t_facq_chan_param := f_acq_channel_mix_param(g_fmc_adc_type);
+  constant c_ACQ_WIDTH_U64                  : unsigned(c_ACQ_CHAN_CMPLT_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(64, c_ACQ_CHAN_CMPLT_WIDTH_LOG2);
+  constant c_ACQ_WIDTH_U128                 : unsigned(c_ACQ_CHAN_CMPLT_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(128, c_ACQ_CHAN_CMPLT_WIDTH_LOG2);
+  constant c_ACQ_WIDTH_U256                 : unsigned(c_ACQ_CHAN_CMPLT_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(256, c_ACQ_CHAN_CMPLT_WIDTH_LOG2);
+  constant c_ACQ_NUM_ATOMS_U4               : unsigned(c_ACQ_NUM_ATOMS_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(4, c_ACQ_NUM_ATOMS_WIDTH_LOG2);
+  constant c_ACQ_NUM_ATOMS_U8               : unsigned(c_ACQ_NUM_ATOMS_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(8, c_ACQ_NUM_ATOMS_WIDTH_LOG2);
+  constant c_ACQ_ATOM_WIDTH_U16              : unsigned(c_ACQ_ATOM_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(16, c_ACQ_ATOM_WIDTH_LOG2);
+  constant c_ACQ_ATOM_WIDTH_U32             : unsigned(c_ACQ_ATOM_WIDTH_LOG2-1 downto 0) :=
+                                                to_unsigned(32, c_ACQ_ATOM_WIDTH_LOG2);
 
-  constant c_facq_channels                  : t_facq_chan_param_array(c_acq_num_channels-1 downto 0) :=
+  constant c_FACQ_PARAMS_ADC                : t_facq_chan_param := f_acq_channel_adc_param(g_FMC_ADC_TYPE);
+  constant c_FACQ_PARAMS_MIX                : t_facq_chan_param := f_acq_channel_mix_param(g_FMC_ADC_TYPE);
+
+  constant c_FACQ_CHANNELS                  : t_facq_chan_param_array(c_ACQ_NUM_CHANNELS-1 downto 0) :=
   (
-     c_acq_adc_id            => c_facq_params_adc,
-     c_acq_adc_swap_id       => c_facq_params_adc,
-     c_acq_mixiq_id          => c_facq_params_mix,
-     c_dummy0_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_tbtdecimiq_id     => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
-     c_dummy1_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_tbt_amp_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_tbt_phase_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_tbt_pos_id        => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_fofbdecimiq_id    => (width => c_acq_width_u256, num_atoms => c_acq_num_atoms_u8, atom_width => c_acq_atom_width_u32),
-     c_dummy2_id             => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_fofb_amp_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_fofb_phase_id     => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_fofb_pos_id       => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_monit1_amp_id     => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_monit1_pos_id     => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_monit_amp_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32),
-     c_acq_monit_pos_id      => (width => c_acq_width_u128, num_atoms => c_acq_num_atoms_u4, atom_width => c_acq_atom_width_u32)
+     c_ACQ_ADC_ID            => c_FACQ_PARAMS_ADC,
+     c_ACQ_ADC_SWAP_ID       => c_FACQ_PARAMS_ADC,
+     c_ACQ_MIXIQ_ID          => c_FACQ_PARAMS_MIX,
+     c_DUMMY0_ID             => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_TBTDECIMIQ_ID     => (width => c_ACQ_WIDTH_U256, num_atoms => c_ACQ_NUM_ATOMS_U8, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_DUMMY1_ID             => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_TBT_AMP_ID        => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_TBT_PHASE_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_TBT_POS_ID        => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_FOFBDECIMIQ_ID    => (width => c_ACQ_WIDTH_U256, num_atoms => c_ACQ_NUM_ATOMS_U8, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_DUMMY2_ID             => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_FOFB_AMP_ID       => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_FOFB_PHASE_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_FOFB_POS_ID       => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_MONIT1_AMP_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_MONIT1_POS_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_MONIT_AMP_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_MONIT_POS_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32)
   );
 
-  -- Trigger
-  constant c_trig_sync_edge                 : string   := "positive";
-  constant c_trig_num                       : positive := 8; -- 8 MLVDS triggers
-  constant c_trig_intern_num                : positive := c_trig_num_channels + c_acq_num_channels;
-  constant c_trig_rcv_intern_num            : positive := 3; -- 2 FMCs + 1 Interlock
-  constant c_trig_num_mux_interfaces        : natural  := c_acq_num_cores;
-  constant c_trig_out_resolver              : string := "fanout";
-  constant c_trig_in_resolver               : string := "or";
-  constant c_trig_with_input_sync           : boolean := true;
-  constant c_trig_with_output_sync          : boolean := true;
+  signal acq_chan_array                      : t_facq_chan_array2d(c_ACQ_NUM_CORES-1 downto 0, c_ACQ_NUM_CHANNELS-1 downto 0);
 
-  -- Trigger RCV intern IDs
-  constant c_trig_rcv_intern_chan_1_id      : natural := 0; -- Internal Channel 1
-  constant c_trig_rcv_intern_chan_2_id      : natural := 1; -- Internal Channel 2
-  constant c_trig_rcv_intern_chan_intlk_id  : natural := 2; -- Internal Channel 3, Interlock
+  -- Acquisition clocks
+  -- ADC clock
+  signal fs1_clk                             : std_logic;
+  signal fs1_clk2x                           : std_logic;
+  signal fs2_clk                             : std_logic;
+  signal fs2_clk2x                           : std_logic;
+  signal fs1_rstn                            : std_logic;
+  signal fs1_rst2xn                          : std_logic;
+  signal fs2_rstn                            : std_logic;
+  signal fs2_rst2xn                          : std_logic;
+  signal fs_rstn_dbg                         : std_logic;
+  signal fs_rst2xn_dbg                       : std_logic;
+  signal fs_clk_dbg                          : std_logic;
+  signal fs_clk2x_dbg                        : std_logic;
+  signal fs_clk_array                        : std_logic_vector(c_ACQ_NUM_CORES-1 downto 0);
+  signal fs_rst_n_array                      : std_logic_vector(c_ACQ_NUM_CORES-1 downto 0);
+  signal fs_rst_array                        : std_logic_vector(c_ACQ_NUM_CORES-1 downto 0);
+  signal fs_ce_array                         : std_logic_vector(c_ACQ_NUM_CORES-1 downto 0);
+
+  -----------------------------------------------------------------------------
+  -- Trigger signals
+  -----------------------------------------------------------------------------
 
   -- Trigger core IDs
-  constant c_trig_mux_0_id                  : natural := 0;
-  constant c_trig_mux_1_id                  : natural := 1;
-  constant c_trig_mux_2_id                  : natural := 2;
-  constant c_trig_mux_3_id                  : natural := 3;
+  constant c_TRIG_MUX_SYNC_EDGE              : string   := "positive";
 
-  -- GPIO num pinscalc
-  constant c_leds_num_pins                  : natural := 3;
-  constant c_with_leds_heartbeat            : t_boolean_array(c_leds_num_pins-1 downto 0) :=
-                                                (2 => false,  -- Red LED
-                                                 1 => true,   -- Green LED
-                                                 0 => false); -- Blue LED
-  constant c_buttons_num_pins               : natural := 8;
+  constant c_TRIG_MUX_NUM_CHANNELS           : natural  := 3;
 
-  -- Counter width. It willl count up to 2^32 clock cycles
-  constant c_counter_width                  : natural := 32;
+  constant c_TRIG_MUX_INTERN_NUM             : positive := c_TRIG_MUX_NUM_CHANNELS + c_ACQ_NUM_CHANNELS;
+  constant c_TRIG_MUX_OUT_RESOLVER           : string   := "fanout";
+  constant c_TRIG_MUX_IN_RESOLVER            : string   := "or";
+  constant c_TRIG_MUX_WITH_INPUT_SYNC        : boolean  := true;
+  constant c_TRIG_MUX_WITH_OUTPUT_SYNC       : boolean  := true;
 
-  -- TICs counter period. 100MHz clock -> msec granularity
-  constant c_tics_cntr_period               : natural := 100000;
+  -- Trigger RCV intern IDs
+  constant c_TRIG_RCV_INTERN_CHAN_1_ID       : natural := 0; -- Internal Channel 1
+  constant c_TRIG_RCV_INTERN_CHAN_2_ID       : natural := 1; -- Internal Channel 2
+  constant c_TRIG_RCV_INTERN_CHAN_INTLK_ID   : natural := 2; -- Internal Channel 3, Interlock
+  constant c_TRIG_MUX_RCV_INTERN_NUM         : positive := 3; -- 2 FMCs + 1 Interlock
 
-  -- Number of reset clock cycles (FF)
-  constant c_button_rst_width               : natural := 255;
+  -- Trigger core IDs
+  constant c_TRIG_MUX_0_ID                   : natural := 0;
+  constant c_TRIG_MUX_1_ID                   : natural := 1;
+  constant c_TRIG_MUX_2_ID                   : natural := 2;
+  constant c_TRIG_MUX_3_ID                   : natural := 3;
+  constant c_TRIG_MUX_NUM_CORES              : natural  := c_ACQ_NUM_CORES;
 
-  -- number of the ADC reference clock used for all downstream
-  -- FPGA logic
-  constant c_adc_ref_clk                    : natural := 2;
+  signal trig_rcv_intern                     : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_RCV_INTERN_NUM-1 downto 0);
+  signal trig_pulse_transm                   : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
+  signal trig_pulse_rcv                      : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
 
-  -- Number of top level clocks
-  constant c_num_tlvl_clks                  : natural := 3; -- CLK_SYS and CLK_200 MHz and CLK_300 MHz
-  constant c_clk_sys_id                     : natural := 0;
-  constant c_clk_200mhz_id                  : natural := 1;
-  constant c_clk_300mhz_id                  : natural := 2;
+  signal trig_fmc1_channel_1                 : t_trig_channel;
+  signal trig_fmc1_channel_2                 : t_trig_channel;
+  signal trig_fmc2_channel_1                 : t_trig_channel;
+  signal trig_fmc2_channel_2                 : t_trig_channel;
+  signal trig_1_channel_intlk                : t_trig_channel;
+  signal trig_2_channel_intlk                : t_trig_channel;
 
-  -- Number of auxiliary clocks
-  constant c_num_aux_clks                   : natural := 1; -- CLK_AUX
-  constant c_clk_aux_id                     : natural := 0;
+  -- Post-Mortem triggers
+  signal trig_fmc1_pm_channel_1              : t_trig_channel;
+  signal trig_fmc1_pm_channel_2              : t_trig_channel;
+  signal trig_fmc2_pm_channel_1              : t_trig_channel;
+  signal trig_fmc2_pm_channel_2              : t_trig_channel;
+  signal trig_1_pm_channel_intlk             : t_trig_channel;
+  signal trig_2_pm_channel_intlk             : t_trig_channel;
+
+  -----------------------------------------------------------------------------
+  -- User Signals
+  -----------------------------------------------------------------------------
+
+  -- FMC_ADC_1, FMC_ADC_2,
+  -- Position_calc_1, Posiotion_calc_2,
+  -- Orbit Interlock
+  constant c_SLV_POS_CALC_1_ID               : natural := 0;
+  constant c_SLV_FMC_ADC_1_ID                : natural := 1;
+  constant c_SLV_POS_CALC_2_ID               : natural := 2;
+  constant c_SLV_FMC_ADC_2_ID                : natural := 3;
+  constant c_SLV_ORBIT_INTLK_ID              : natural := 4;
+  constant c_USER_NUM_CORES                  : natural := 5;
 
   -- FMC_ADC layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
-  constant c_fmc_adc_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"0000FFFF", x"00006000");
+  constant c_FMC_ADC_BRIDGE_SDB : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"0000FFFF", x"00006000");
 
   -- Position CAlC. layout. Regs, SWAP
-  constant c_pos_calc_core_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000600");
+  constant c_POS_CALC_CORE_BRIDGE_SDB : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000600");
 
-  -- General peripherals layout. UART, LEDs (GPIO), Buttons (GPIO) and Tics counter
-  constant c_periph_bridge_sdb : t_sdb_bridge := f_xwb_bridge_manual_sdb(x"00000FFF", x"00000400");
+  constant c_USER_SDB_RECORD_ARRAY           : t_sdb_record_array(c_USER_NUM_CORES-1 downto 0) :=
+  (
+    c_SLV_POS_CALC_1_ID             => f_sdb_auto_bridge(c_POS_CALC_CORE_BRIDGE_SDB,  true),
+    c_SLV_FMC_ADC_1_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
+    c_SLV_POS_CALC_2_ID             => f_sdb_auto_bridge(c_POS_CALC_CORE_BRIDGE_SDB,  true),
+    c_SLV_FMC_ADC_2_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
+    c_SLV_ORBIT_INTLK_ID            => f_sdb_auto_device(c_XWB_ORBIT_INTLK_SDB,       true)
+  );
 
-  -- WB SDB (Self describing bus) layout
-  constant c_layout : t_sdb_record_array(c_slaves+5-1 downto 0) :=
-    (c_slv_pos_calc_1_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
-                                                                                 x"00310000"),   -- Position Calc Core 1 control port
-     c_slv_fmc_adc_1_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00320000"),   -- FMC_ADC control 1 port
-     c_slv_acq_core_0_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00330000"),   -- Data Acquisition control port
-     c_slv_pos_calc_2_id       => f_sdb_embed_bridge(c_pos_calc_core_bridge_sdb,
-                                                                                 x"00340000"),   -- Position Calc Core 2 control port
-     c_slv_fmc_adc_2_id        => f_sdb_embed_bridge(c_fmc_adc_bridge_sdb,       x"00350000"),   -- FMC_ADC control 2 port
-     c_slv_acq_core_1_id       => f_sdb_embed_device(c_xwb_acq_core_sdb,         x"00360000"),   -- Data Acquisition control port
-     c_slv_periph_id           => f_sdb_embed_bridge(c_periph_bridge_sdb,        x"00370000"),   -- General peripherals control port
-     c_slv_afc_diag_id         => f_sdb_embed_device(c_xwb_afc_diag_sdb,         x"00380000"),   -- AFC Diagnostics control port
-     c_slv_trig_iface_id       => f_sdb_embed_device(c_xwb_trigger_iface_sdb,    x"00390000"),   -- Trigger Interface port
-     c_slv_trig_mux_0_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00400000"),   -- Trigger Mux 1 port
-     c_slv_trig_mux_1_id       => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00410000"),   -- Trigger Mux 2 port
-     c_slv_acq_core_pm_0_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00420000"),   -- Data Acquisition 0 Post-Mortem port
-     c_slv_acq_core_pm_1_id    => f_sdb_embed_device(c_xwb_acq_core_pm_sdb,      x"00430000"),   -- Data Acquisition 1 Post-Mortem port
-     c_slv_trig_mux_pm_0_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00440000"),   -- Trigger Mux Post-Mortem 1 port
-     c_slv_trig_mux_pm_1_id    => f_sdb_embed_device(c_xwb_trigger_mux_sdb,      x"00450000"),   -- Trigger Mux Post-Mortem 2 port
-     c_slv_orbit_intlk_id      => f_sdb_embed_device(c_xwb_orbit_intlk_sdb,      x"00460000"),   -- Orbit Interlock port
-     c_slv_sdb_repo_url_id     => f_sdb_embed_repo_url(c_sdb_repo_url),
-     c_slv_sdb_top_syn_id      => f_sdb_embed_synthesis(c_sdb_top_syn_info),
-     c_slv_sdb_dsp_cores_id    => f_sdb_embed_synthesis(c_sdb_dsp_cores_syn_info),
-     c_slv_sdb_gen_cores_id    => f_sdb_embed_synthesis(c_sdb_general_cores_syn_info),
-     c_slv_sdb_infra_cores_id  => f_sdb_embed_synthesis(c_sdb_infra_cores_syn_info)
-    );
+  signal clk_sys                             : std_logic;
+  signal clk_sys_rstn                        : std_logic;
+  signal clk_sys_rst                         : std_logic;
+  signal clk_aux                             : std_logic;
+  signal clk_aux_rstn                        : std_logic;
+  signal clk_aux_rst                         : std_logic;
+  signal clk_aux_raw                         : std_logic;
+  signal clk_aux_raw_rstn                    : std_logic;
+  signal clk_aux_raw_rst                     : std_logic;
+  signal clk_fp2_clk1_p                      : std_logic;
+  signal clk_fp2_clk1_n                      : std_logic;
+  signal clk_200mhz                          : std_logic;
+  signal clk_200mhz_rstn                     : std_logic;
+  signal clk_300mhz                          : std_logic;
+  signal clk_300mhz_rstn                     : std_logic;
+  signal clk_master                          : std_logic;
+  signal clk_master_rstn                     : std_logic;
+  signal clk_pcie                            : std_logic;
+  signal clk_pcie_rstn                       : std_logic;
+  signal clk_trig_ref                        : std_logic;
+  signal clk_trig_ref_rstn                   : std_logic;
 
-  -- Self Describing Bus ROM Address. It will be an addressed slave as well
-  constant c_sdb_address                    : t_wishbone_address := x"00000000";
+  signal pcb_rev_id                          : std_logic_vector(3 downto 0);
+
+  signal irq_user                            : std_logic_vector(c_NUM_USER_IRQ + 5 downto 6) := (others => '0');
+
+  signal trig_out                            : t_trig_channel_array(c_NUM_TRIG-1 downto 0);
+  signal trig_in                             : t_trig_channel_array(c_NUM_TRIG-1 downto 0) := (others => c_TRIG_CHANNEL_DUMMY);
+
+  signal trig_dbg                            : std_logic_vector(c_NUM_TRIG-1 downto 0);
+  signal trig_dbg_data_sync                  : std_logic_vector(c_NUM_TRIG-1 downto 0);
+  signal trig_dbg_data_degliteched           : std_logic_vector(c_NUM_TRIG-1 downto 0);
+
+  signal user_wb_out                         : t_wishbone_master_out_array(c_USER_NUM_CORES-1 downto 0);
+  signal user_wb_in                          : t_wishbone_master_in_array(c_USER_NUM_CORES-1 downto 0) := (others => c_DUMMY_WB_MASTER_IN);
+
+  -----------------------------------------------------------------------------
+  -- DSP Signals
+  -----------------------------------------------------------------------------
 
   constant c_num_unprocessed_bits           : natural := f_num_bits_adc(g_fmc_adc_type);
   constant c_num_unprocessed_se_bits        : natural := f_num_bits_se_adc(g_fmc_adc_type);
@@ -879,150 +932,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_adc_data_ch3_lsb               : natural := c_adc_data_ch2_msb + 1;
   constant c_adc_data_ch3_msb               : natural := c_num_unprocessed_bits-1 + c_adc_data_ch3_lsb;
 
-  -- Crossbar master/slave arrays
-  signal cbar_slave_i                       : t_wishbone_slave_in_array (c_masters-1 downto 0);
-  signal cbar_slave_o                       : t_wishbone_slave_out_array(c_masters-1 downto 0);
-  signal cbar_master_i                      : t_wishbone_master_in_array(c_slaves-1 downto 0);
-  signal cbar_master_o                      : t_wishbone_master_out_array(c_slaves-1 downto 0);
-  signal acq_core_slave_i                   : t_wishbone_slave_in_array (c_acq_num_cores-1 downto 0);
-  signal acq_core_slave_o                   : t_wishbone_slave_out_array(c_acq_num_cores-1 downto 0);
-
-  -- LM32 signals
-  signal clk_sys                            : std_logic;
-  signal lm32_interrupt                     : std_logic_vector(31 downto 0);
-  signal lm32_rstn                          : std_logic;
-
-  -- PCIe signals
-  signal wb_ma_pcie_ack_in                  : std_logic;
-  signal wb_ma_pcie_dat_in                  : std_logic_vector(63 downto 0);
-  signal wb_ma_pcie_addr_out                : std_logic_vector(28 downto 0);
-  signal wb_ma_pcie_dat_out                 : std_logic_vector(63 downto 0);
-  signal wb_ma_pcie_we_out                  : std_logic;
-  signal wb_ma_pcie_stb_out                 : std_logic;
-  signal wb_ma_pcie_sel_out                 : std_logic;
-  signal wb_ma_pcie_cyc_out                 : std_logic;
-
-  signal wb_ma_pcie_rst                     : std_logic;
-  signal wb_ma_pcie_rstn                    : std_logic;
-  signal wb_ma_pcie_rstn_sync               : std_logic;
-
-  signal wb_ma_sladp_pcie_ack_in            : std_logic;
-  signal wb_ma_sladp_pcie_dat_in            : std_logic_vector(31 downto 0);
-  signal wb_ma_sladp_pcie_addr_out          : std_logic_vector(31 downto 0);
-  signal wb_ma_sladp_pcie_dat_out           : std_logic_vector(31 downto 0);
-  signal wb_ma_sladp_pcie_we_out            : std_logic;
-  signal wb_ma_sladp_pcie_stb_out           : std_logic;
-  signal wb_ma_sladp_pcie_sel_out           : std_logic_vector(3 downto 0);
-  signal wb_ma_sladp_pcie_cyc_out           : std_logic;
-
-  -- PCIe Debug signals
-
-  signal dbg_app_addr                       : std_logic_vector(31 downto 0);
-  signal dbg_app_cmd                        : std_logic_vector(2 downto 0);
-  signal dbg_app_en                         : std_logic;
-  signal dbg_app_wdf_data                   : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal dbg_app_wdf_end                    : std_logic;
-  signal dbg_app_wdf_wren                   : std_logic;
-  signal dbg_app_wdf_mask                   : std_logic_vector(c_ddr_payload_width/8-1 downto 0);
-  signal dbg_app_rd_data                    : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal dbg_app_rd_data_end                : std_logic;
-  signal dbg_app_rd_data_valid              : std_logic;
-  signal dbg_app_rdy                        : std_logic;
-  signal dbg_app_wdf_rdy                    : std_logic;
-  signal dbg_ddr_ui_clk                     : std_logic;
-  signal dbg_ddr_ui_reset                   : std_logic;
-
-  signal dbg_arb_req                        : std_logic_vector(1 downto 0);
-  signal dbg_arb_gnt                        : std_logic_vector(1 downto 0);
-
-  -- To/From Acquisition Core
-  signal acq_chan_array                     : t_facq_chan_array2d(c_acq_num_cores-1 downto 0, c_acq_num_channels-1 downto 0);
-
-  signal bpm_acq_dpram_dout_array           : std_logic_vector(c_acq_num_cores*f_acq_chan_find_widest(f_conv_facq_to_acq_chan_array(c_facq_channels))-1 downto 0);
-  signal bpm_acq_dpram_valid_array          : std_logic_vector(c_acq_num_cores-1 downto 0);
-
-  signal bpm_acq_ext_dout_array             : std_logic_vector(c_acq_num_cores*c_ddr_payload_width-1 downto 0);
-  signal bpm_acq_ext_valid_array            : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal bpm_acq_ext_addr_array             : std_logic_vector(c_acq_num_cores*c_acq_addr_width-1 downto 0);
-  signal bpm_acq_ext_sof_array              : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal bpm_acq_ext_eof_array              : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal bpm_acq_ext_dreq_array             : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal bpm_acq_ext_stall_array            : std_logic_vector(c_acq_num_cores-1 downto 0);
-
-  signal ddr_aximm_clk                      : std_logic;
-  signal ddr_aximm_rstn                     : std_logic;
-  signal ddr_aximm_r_ma_in                  : t_aximm_r_master_in;
-  signal ddr_aximm_r_ma_out                 : t_aximm_r_master_out;
-  signal ddr_aximm_w_ma_in                  : t_aximm_w_master_in;
-  signal ddr_aximm_w_ma_out                 : t_aximm_w_master_out;
-
-  signal dbg_ddr_rb_data                    : std_logic_vector(c_ddr_payload_width-1 downto 0);
-  signal dbg_ddr_rb_addr                    : std_logic_vector(c_acq_addr_width-1 downto 0);
-  signal dbg_ddr_rb_valid                   : std_logic;
-
-  -- memory arbiter interface
-  signal memarb_acc_req                     : std_logic;
-  signal memarb_acc_gnt                     : std_logic;
-
-  -- Clocks and resets signals
-  signal locked                             : std_logic;
-  signal clk_sys_pcie_rstn                  : std_logic;
-  signal clk_sys_pcie_rst                   : std_logic;
-  signal clk_sys_rstn                       : std_logic;
-  signal clk_sys_rst                        : std_logic;
-  signal clk_200mhz_rst                     : std_logic;
-  signal clk_200mhz_rstn                    : std_logic;
-  signal clk_300mhz_rst                     : std_logic;
-  signal clk_300mhz_rstn                    : std_logic;
-
-  signal clk_aux                            : std_logic;
-  signal clk_aux_locked                     : std_logic;
-  signal clk_aux_rstn                       : std_logic;
-  signal clk_aux_rst                        : std_logic;
-
-  signal rst_button_sys_pp                  : std_logic;
-  signal rst_button_sys                     : std_logic;
-  signal rst_button_sys_n                   : std_logic;
-
-  -- "c_num_tlvl_clks" clocks
-  signal reset_clks                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
-  signal reset_rstn                         : std_logic_vector(c_num_tlvl_clks-1 downto 0);
-
-  -- "c_num_aux_clks" clocks
-  signal reset_aux_clks                     : std_logic_vector(c_num_aux_clks-1 downto 0);
-  signal reset_aux_rstn                     : std_logic_vector(c_num_aux_clks-1 downto 0);
-
-  signal rs232_rstn                         : std_logic;
-  signal fs_rstn_dbg                        : std_logic;
-  signal fs_rst2xn_dbg                      : std_logic;
-  signal fs1_rstn                           : std_logic;
-  signal fs1_rst2xn                         : std_logic;
-  signal fs2_rstn                           : std_logic;
-  signal fs2_rst2xn                         : std_logic;
-
-  -- 200 Mhz clocck for iodelay_ctrl
-  signal clk_200mhz                         : std_logic;
-  signal clk_300mhz                         : std_logic;
-
-  -- ADC clock
-  signal fs1_clk                            : std_logic;
-  signal fs1_clk2x                          : std_logic;
-  signal fs2_clk                            : std_logic;
-  signal fs2_clk2x                          : std_logic;
-  signal fs_clk_dbg                         : std_logic;
-  signal fs_clk2x_dbg                       : std_logic;
-  signal fs_clk_array                       : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal fs_rst_n_array                     : std_logic_vector(c_acq_num_cores-1 downto 0);
-  signal fs_ce_array                        : std_logic_vector(c_acq_num_cores-1 downto 0);
-
-   -- Global Clock Single ended
-  signal sys_clk_gen                        : std_logic;
-  signal sys_clk_gen_bufg                   : std_logic;
-
-  signal aux_clk_gen                        : std_logic;
-  signal aux_clk_gen_bufg                   : std_logic;
-
-  -- FMC_ADC 1 Signals
+  -- FMC_ADC 2 Signals
   signal wbs_fmc1_in_array                  : t_wbs_source_in16_array(c_num_adc_channels-1 downto 0);
   signal wbs_fmc1_out_array                 : t_wbs_source_out16_array(c_num_adc_channels-1 downto 0);
 
@@ -1059,8 +969,6 @@ architecture rtl of dbe_bpm_gen is
 
   signal fmc1_trig_hw                        : std_logic;
   signal fmc1_trig_hw_in                     : std_logic;
-
-  signal trig_dir_int                       : std_logic_vector(7 downto 0);
 
   -- FMC_ADC 1 Debug
   signal fmc1_debug_valid_int                : std_logic_vector(c_num_adc_channels-1 downto 0);
@@ -1348,397 +1256,272 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_dbg_adc_ch2_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_dbg_adc_ch3_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
-  -- Trigger
-  signal trig_core_slave_i                  : t_wishbone_slave_in_array (c_trig_num_mux_interfaces-1 downto 0);
-  signal trig_core_slave_o                  : t_wishbone_slave_out_array(c_trig_num_mux_interfaces-1 downto 0);
-  signal trig_ref_clk                       : std_logic;
-  signal trig_ref_rst_n                     : std_logic;
-
-  signal trig_rcv_intern                    : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_rcv_intern_num-1 downto 0);
-  signal trig_pulse_transm                  : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
-  signal trig_pulse_rcv                     : t_trig_channel_array2d(c_trig_num_mux_interfaces-1 downto 0, c_trig_intern_num-1 downto 0);
-
-  signal trig_fmc1_channel_1                : t_trig_channel;
-  signal trig_fmc1_channel_2                : t_trig_channel;
-  signal trig_fmc2_channel_1                : t_trig_channel;
-  signal trig_fmc2_channel_2                : t_trig_channel;
-  signal trig_1_channel_intlk               : t_trig_channel;
-  signal trig_2_channel_intlk               : t_trig_channel;
-
-  -- Post-Mortem triggers
-  signal trig_fmc1_pm_channel_1             : t_trig_channel;
-  signal trig_fmc1_pm_channel_2             : t_trig_channel;
-  signal trig_fmc2_pm_channel_1             : t_trig_channel;
-  signal trig_fmc2_pm_channel_2             : t_trig_channel;
-  signal trig_1_pm_channel_intlk            : t_trig_channel;
-  signal trig_2_pm_channel_intlk            : t_trig_channel;
-
-  signal trig_dbg                           : std_logic_vector(7 downto 0);
-
-  -- GPIO LED signals
-  signal gpio_slave_led_o                   : t_wishbone_slave_out;
-  signal gpio_slave_led_i                   : t_wishbone_slave_in;
-  signal gpio_leds_out_int                  : std_logic_vector(c_leds_num_pins-1 downto 0);
-  signal gpio_leds_in_int                   : std_logic_vector(c_leds_num_pins-1 downto 0) := (others => '0');
-  -- signal leds_gpio_dummy_in                : std_logic_vector(c_leds_num_pins-1 downto 0);
-
-  signal buttons_dummy                      : std_logic_vector(7 downto 0) := (others => '0');
-
-  -- GPIO Button signals
-  signal gpio_slave_button_o                : t_wishbone_slave_out;
-  signal gpio_slave_button_i                : t_wishbone_slave_in;
-
-  -- AFC diagnostics signals
-  signal dbg_spi_clk                        : std_logic;
-  signal dbg_spi_valid                      : std_logic;
-  signal dbg_en                             : std_logic;
-  signal dbg_addr                           : std_logic_vector(7 downto 0);
-  signal dbg_serial_data                    : std_logic_vector(31 downto 0);
-  signal dbg_spi_data                       : std_logic_vector(31 downto 0);
-
   -- Interlock signals
   signal intlk_ltc                          : std_logic;
   signal intlk                              : std_logic;
 
-  ---------------------------
-  --      Components       --
-  ---------------------------
-
-  -- Clock generation
-  component clk_gen is
-  port(
-    sys_clk_p_i                             : in std_logic;
-    sys_clk_n_i                             : in std_logic;
-    sys_clk_o                               : out std_logic;
-    sys_clk_bufg_o                          : out std_logic
-  );
-  end component;
-
-  component clk_gen_mgt is
-  port(
-    sys_clk_p_i                             : in std_logic;
-    sys_clk_n_i                             : in std_logic;
-    sys_clk_o                               : out std_logic;
-    sys_clk_bufg_o                          : out std_logic
-  );
-  end component;
-
-  -- Xilinx PLL
-  component sys_pll is
-  generic(
-    -- 200 MHz input clock
-    g_clkin_period                          : real := 5.000;
-    g_divclk_divide                         : integer := 1;
-    g_clkbout_mult_f                        : integer := 5;
-
-    -- 100 MHz output clock
-    g_clk0_divide_f                         : integer := 10;
-    -- 200 MHz output clock
-    g_clk1_divide                           : integer := 5;
-    -- 200 MHz output clock
-    g_clk2_divide                           : integer := 5
-  );
-  port(
-    rst_i                                   : in std_logic := '0';
-    clk_i                                   : in std_logic := '0';
-    clk0_o                                  : out std_logic;
-    clk1_o                                  : out std_logic;
-    clk2_o                                  : out std_logic;
-    locked_o                                : out std_logic
-  );
-  end component;
-
 begin
 
-  -----------------------------------------------------------------------------
-  -- Main clock generation
-  -----------------------------------------------------------------------------
+  cmp_afc_base_acq : afc_base_acq
+    generic map (
+      g_DIVCLK_DIVIDE                          => 1,
+      g_CLKBOUT_MULT_F                         => 8,
+      g_CLK0_DIVIDE_F                          => 8, -- 100 MHz
+      g_CLK1_DIVIDE                            => 5, -- Must be 200 MHz
+      g_SYS_CLOCK_FREQ                         => c_SYS_CLOCK_FREQ,
+      -- AFC Si57x parameters
+      g_AFC_SI57x_I2C_FREQ                     => c_AFC_SI57x_I2C_FREQ,
+      -- Whether or not to initialize oscilator with the specified values
+      g_AFC_SI57x_INIT_OSC                     => c_AFC_SI57x_INIT_OSC,
+      -- Init Oscillator values
+      g_AFC_SI57x_INIT_RFREQ_VALUE             => c_AFC_SI57x_INIT_RFREQ_VALUE,
+      g_AFC_SI57x_INIT_N1_VALUE                => c_AFC_SI57x_INIT_N1_VALUE,
+      g_AFC_SI57x_INIT_HS_VALUE                => c_AFC_SI57x_INIT_HS_VALUE,
+      --  If true, instantiate a VIC/UART/DIAG/SPI.
+      g_WITH_VIC                               => true,
+      g_WITH_UART_MASTER                       => true,
+      g_WITH_DIAG                              => true,
+      g_WITH_TRIGGER                           => true,
+      g_WITH_SPI                               => false,
+      g_WITH_AFC_SI57x                         => true,
+      g_WITH_BOARD_I2C                         => true,
+      g_ACQ_NUM_CORES                          => c_ACQ_NUM_CORES,
+      g_TRIG_MUX_NUM_CORES                     => c_TRIG_MUX_NUM_CORES,
+      g_USER_NUM_CORES                         => c_USER_NUM_CORES,
+      -- Acquisition module generics
+      g_ACQ_NUM_CHANNELS                       => c_ACQ_NUM_CHANNELS,
+      g_ACQ_MULTISHOT_RAM_SIZE                 => c_ACQ_MULTISHOT_RAM_SIZE,
+      g_ACQ_FIFO_FC_SIZE                       => c_ACQ_FIFO_SIZE,
+      g_FACQ_CHANNELS                          => c_FACQ_CHANNELS,
+      -- Trigger Mux generic
+      g_TRIG_MUX_SYNC_EDGE                     => c_TRIG_MUX_SYNC_EDGE,
+      g_TRIG_MUX_INTERN_NUM                    => c_TRIG_MUX_INTERN_NUM,
+      g_TRIG_MUX_RCV_INTERN_NUM                => c_TRIG_MUX_RCV_INTERN_NUM,
+      g_TRIG_MUX_OUT_RESOLVER                  => c_TRIG_MUX_OUT_RESOLVER,
+      g_TRIG_MUX_IN_RESOLVER                   => c_TRIG_MUX_IN_RESOLVER,
+      g_TRIG_MUX_WITH_INPUT_SYNC               => c_TRIG_MUX_WITH_INPUT_SYNC,
+      g_TRIG_MUX_WITH_OUTPUT_SYNC              => c_TRIG_MUX_WITH_OUTPUT_SYNC,
+      -- User generic. Must be g_USER_NUM_CORES length
+      g_USER_SDB_RECORD_ARRAY                  => c_USER_SDB_RECORD_ARRAY,
+      -- Auxiliary clock used to sync incoming triggers in the trigger module.
+      -- If false, trigger will be synch'ed with clk_sys
+      g_WITH_AUX_CLK                           => true,
+      -- Number of user interrupts
+      g_NUM_USER_IRQ                           => c_NUM_USER_IRQ
+    )
+    port map (
+      ---------------------------------------------------------------------------
+      -- Clocking pins
+      ---------------------------------------------------------------------------
+      sys_clk_p_i                              => sys_clk_p_i,
+      sys_clk_n_i                              => sys_clk_n_i,
 
-  cmp_clk_gen : clk_gen
+      aux_clk_p_i                              => aux_clk_p_i,
+      aux_clk_n_i                              => aux_clk_n_i,
+
+      afc_fp2_clk1_p_i                         => afc_fp2_clk1_p_i,
+      afc_fp2_clk1_n_i                         => afc_fp2_clk1_n_i,
+
+      ---------------------------------------------------------------------------
+      -- Reset Button
+      ---------------------------------------------------------------------------
+      sys_rst_button_n_i                       => sys_rst_button_n_i,
+
+      ---------------------------------------------------------------------------
+      -- UART pins
+      ---------------------------------------------------------------------------
+
+      uart_rxd_i                               => uart_rxd_i,
+      uart_txd_o                               => uart_txd_o,
+
+      ---------------------------------------------------------------------------
+      -- Trigger pins
+      ---------------------------------------------------------------------------
+      trig_dir_o                               => trig_dir_o,
+      trig_b                                   => trig_b,
+
+      ---------------------------------------------------------------------------
+      -- AFC Diagnostics
+      ---------------------------------------------------------------------------
+
+      diag_spi_cs_i                            => diag_spi_cs_i,
+      diag_spi_si_i                            => diag_spi_si_i,
+      diag_spi_so_o                            => diag_spi_so_o,
+      diag_spi_clk_i                           => diag_spi_clk_i,
+
+      ---------------------------------------------------------------------------
+      -- ADN4604ASVZ
+      ---------------------------------------------------------------------------
+      adn4604_vadj2_clk_updt_n_o               => adn4604_vadj2_clk_updt_n_o,
+
+      ---------------------------------------------------------------------------
+      -- AFC I2C.
+      ---------------------------------------------------------------------------
+      -- Si57x oscillator
+      afc_si57x_scl_b                          => afc_si57x_scl_b,
+      afc_si57x_sda_b                          => afc_si57x_sda_b,
+
+      -- Si57x oscillator output enable
+      afc_si57x_oe_o                           => afc_si57x_oe_o,
+
+      ---------------------------------------------------------------------------
+      -- PCIe pins
+      ---------------------------------------------------------------------------
+
+      -- DDR3 memory pins
+      ddr3_dq_b                                => ddr3_dq_b,
+      ddr3_dqs_p_b                             => ddr3_dqs_p_b,
+      ddr3_dqs_n_b                             => ddr3_dqs_n_b,
+      ddr3_addr_o                              => ddr3_addr_o,
+      ddr3_ba_o                                => ddr3_ba_o,
+      ddr3_cs_n_o                              => ddr3_cs_n_o,
+      ddr3_ras_n_o                             => ddr3_ras_n_o,
+      ddr3_cas_n_o                             => ddr3_cas_n_o,
+      ddr3_we_n_o                              => ddr3_we_n_o,
+      ddr3_reset_n_o                           => ddr3_reset_n_o,
+      ddr3_ck_p_o                              => ddr3_ck_p_o,
+      ddr3_ck_n_o                              => ddr3_ck_n_o,
+      ddr3_cke_o                               => ddr3_cke_o,
+      ddr3_dm_o                                => ddr3_dm_o,
+      ddr3_odt_o                               => ddr3_odt_o,
+
+      -- PCIe transceivers
+      pci_exp_rxp_i                            => pci_exp_rxp_i,
+      pci_exp_rxn_i                            => pci_exp_rxn_i,
+      pci_exp_txp_o                            => pci_exp_txp_o,
+      pci_exp_txn_o                            => pci_exp_txn_o,
+
+      -- PCI clock and reset signals
+      pcie_clk_p_i                             => pcie_clk_p_i,
+      pcie_clk_n_i                             => pcie_clk_n_i,
+
+      ---------------------------------------------------------------------------
+      -- User LEDs
+      ---------------------------------------------------------------------------
+      leds_o                                   => leds_o,
+
+      ---------------------------------------------------------------------------
+      -- FMC interface
+      ---------------------------------------------------------------------------
+
+      board_i2c_scl_b                          => board_i2c_scl_b,
+      board_i2c_sda_b                          => board_i2c_sda_b,
+
+      ---------------------------------------------------------------------------
+      -- Flash memory SPI interface
+      ---------------------------------------------------------------------------
+     --
+     -- spi_sclk_o                               => spi_sclk_o,
+     -- spi_cs_n_o                               => spi_cs_n_o,
+     -- spi_mosi_o                               => spi_mosi_o,
+     -- spi_miso_i                               => spi_miso_i,
+     --
+      ---------------------------------------------------------------------------
+      -- Miscellanous AFC pins
+      ---------------------------------------------------------------------------
+
+      -- PCB version
+      pcb_rev_id_i                             => pcb_rev_id,
+
+      ---------------------------------------------------------------------------
+      --  User part
+      ---------------------------------------------------------------------------
+
+      --  Clocks and reset.
+      clk_sys_o                                => clk_sys,
+      rst_sys_n_o                              => clk_sys_rstn,
+
+      clk_aux_o                                => clk_aux,
+      rst_aux_n_o                              => clk_aux_rstn,
+
+      clk_aux_raw_o                            => clk_aux_raw,
+      rst_aux_raw_n_o                          => clk_aux_raw_rstn,
+
+      clk_200mhz_o                             => clk_200mhz,
+      rst_200mhz_n_o                           => clk_200mhz_rstn,
+
+      clk_pcie_o                               => clk_pcie,
+      rst_pcie_n_o                             => clk_pcie_rstn,
+
+      clk_300mhz_o                             => clk_300mhz,
+      rst_300mhz_n_o                           => clk_300mhz_rstn,
+
+      clk_trig_ref_o                           => clk_trig_ref,
+      rst_trig_ref_n_o                         => clk_trig_ref_rstn,
+
+      clk_fp2_clk1_p_o                         => clk_fp2_clk1_p,
+      clk_fp2_clk1_n_o                         => clk_fp2_clk1_n,
+
+      --  Interrupts
+      irq_user_i                               => irq_user,
+
+      -- Acquisition
+      fs_clk_array_i                           => fs_clk_array,
+      fs_ce_array_i                            => fs_ce_array,
+      fs_rst_n_array_i                         => fs_rst_n_array,
+
+      acq_chan_array_i                         => acq_chan_array,
+
+      -- Triggers                                 -- Triggers
+      trig_rcv_intern_i                        => trig_rcv_intern,
+      trig_pulse_transm_i                      => trig_pulse_transm,
+      trig_pulse_rcv_o                         => trig_pulse_rcv,
+
+      trig_dbg_o                               => trig_dbg,
+      trig_dbg_data_sync_o                     => trig_dbg_data_sync,
+      trig_dbg_data_degliteched_o              => trig_dbg_data_degliteched,
+
+      -- AFC Si57x
+      afc_si57x_ext_wr_i                       => afc_si57x_ext_wr,
+      afc_si57x_ext_rfreq_value_i              => afc_si57x_ext_rfreq_value,
+      afc_si57x_ext_n1_value_i                 => afc_si57x_ext_n1_value,
+      afc_si57x_ext_hs_value_i                 => afc_si57x_ext_hs_value,
+      afc_si57x_sta_reconfig_done_o            => afc_si57x_sta_reconfig_done,
+
+      afc_si57x_oe_i                           => '1',
+      afc_si57x_addr_i                         => "10101010",
+
+      --  The wishbone bus from the pcie/host to the application
+      --  LSB addresses are not available (used by the carrier).
+      --  For the exact used addresses see SDB Description.
+      --  This is a pipelined wishbone with byte granularity.
+      user_wb_o                                 => user_wb_out,
+      user_wb_i                                 => user_wb_in
+    );
+
+  pcb_rev_id <= (others => '0');
+  clk_aux_rst <= not clk_aux_rstn;
+  clk_aux_raw_rst <= not clk_aux_raw_rstn;
+
+  ----------------------------------------------------------------------
+  --                          AFC Si57x                               --
+  ----------------------------------------------------------------------
+
+  -- Generate large pulse for reset
+  cmp_afc_si57x_gc_posedge : gc_posedge
   port map (
-    sys_clk_p_i                             => sys_clk_p_i,
-    sys_clk_n_i                             => sys_clk_n_i,
-    sys_clk_o                               => sys_clk_gen,
-    sys_clk_bufg_o                          => sys_clk_gen_bufg
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    data_i                                     => afc_si57x_sta_reconfig_done,
+    pulse_o                                    => afc_si57x_sta_reconfig_done_pp
   );
 
-   -- Obtain core locking and generate necessary clocks
-  cmp_sys_pll_inst : sys_pll
+  cmp_afc_si57x_gc_extend_pulse : gc_extend_pulse
   generic map (
-    -- 125 MHz input clock
-    g_clkin_period                          => 8.000,
-    g_divclk_divide                         => 5,
-    g_clkbout_mult_f                        => 48,
-
-    -- 100 MHz output clock
-    g_clk0_divide_f                         => 12,
-    -- 200 MHz output clock
-    g_clk1_divide                           => 6,
-    -- 300 MHz output clock
-    g_clk2_divide                           => 4
+    g_width                                    => 50000
   )
   port map (
-    rst_i                                   => '0',
-    clk_i                                   => sys_clk_gen_bufg,
-    --clk_i                                   => sys_clk_gen,
-    clk0_o                                  => clk_sys,     -- 100MHz locked clock
-    clk1_o                                  => clk_200mhz,  -- 200MHz locked clock
-    clk2_o                                  => clk_300mhz,  -- 300MHz locked clock
-    locked_o                                => locked        -- '1' when the PLL has locked
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    pulse_i                                    => afc_si57x_sta_reconfig_done_pp,
+    extended_o                                 => afc_si57x_reconfig_rst
   );
 
-  -- Reset synchronization. Hold reset line until few locked cycles have passed.
-  cmp_reset : gc_reset
-  generic map(
-    g_clocks                                => c_num_tlvl_clks    -- CLK_SYS & CLK_200
-  )
-  port map(
-    --free_clk_i                              => sys_clk_gen,
-    free_clk_i                              => sys_clk_gen_bufg,
-    locked_i                                => locked,
-    clks_i                                  => reset_clks,
-    rstn_o                                  => reset_rstn
-  );
+  afc_si57x_reconfig_rst_n <= not afc_si57x_reconfig_rst;
 
-  reset_clks(c_clk_sys_id)                  <= clk_sys;
-  reset_clks(c_clk_200mhz_id)               <= clk_200mhz;
-  reset_clks(c_clk_300mhz_id)               <= clk_300mhz;
-
-  -- Reset for PCIe core. Caution when resetting the PCIe core after the
-  -- initialization. The PCIe core needs to retrain the link and the PCIe
-  -- host (linux OS, likely) will not be able to do that automatically,
-  -- probably.
-  clk_sys_pcie_rstn                         <= reset_rstn(c_clk_sys_id) and rst_button_sys_n;
-  clk_sys_pcie_rst                          <= not clk_sys_pcie_rstn;
-  -- Reset for all other modules
-  clk_sys_rstn                              <= reset_rstn(c_clk_sys_id) and rst_button_sys_n and
-                                                  rs232_rstn and wb_ma_pcie_rstn_sync;
-  clk_sys_rst                               <= not clk_sys_rstn;
-  -- Reset synchronous to clk200mhz
-  clk_200mhz_rstn                           <= reset_rstn(c_clk_200mhz_id);
-  clk_200mhz_rst                            <=  not(reset_rstn(c_clk_200mhz_id));
-  -- Reset synchronous to clk300mhz
-  clk_300mhz_rstn                           <= reset_rstn(c_clk_300mhz_id);
-  clk_300mhz_rst                            <=  not(reset_rstn(c_clk_300mhz_id));
-
-  -- Generate button reset synchronous to each clock domain
-  -- Detect button positive edge of clk_sys
-  cmp_button_sys_ffs : gc_sync_ffs
-  port map (
-    clk_i                                   => clk_sys,
-    rst_n_i                                 => '1',
-    data_i                                  => sys_rst_button_n_i,
-    npulse_o                                => rst_button_sys_pp
-  );
-
-  -- Generate the reset signal based on positive edge
-  -- of synched gc
-  cmp_button_sys_rst : gc_extend_pulse
-  generic map (
-    g_width                                 => c_button_rst_width
-  )
-  port map(
-    clk_i                                   => clk_sys,
-    rst_n_i                                 => '1',
-    pulse_i                                 => rst_button_sys_pp,
-    extended_o                              => rst_button_sys
-  );
-
-  rst_button_sys_n                          <= not rst_button_sys;
-
-  -----------------------------------------------------------------------------
-  -- Auxiliary clock generation
-  -----------------------------------------------------------------------------
-
-  cmp_aux_clk_gen : clk_gen_mgt
-  port map (
-    sys_clk_p_i                             => aux_clk_p_i,
-    sys_clk_n_i                             => aux_clk_n_i,
-    sys_clk_o                               => aux_clk_gen,
-    sys_clk_bufg_o                          => aux_clk_gen_bufg
-  );
-
-   -- Auxiliary clock
-  cmp_aux_sys_pll_inst : sys_pll
-  generic map (
-    -- RF*5/36 ~ 69.44 MHz input clock ~ 14.4 ns
-    g_clkin_period                          => 14.400,
-    g_divclk_divide                         => 1,
-    g_clkbout_mult_f                        => 18,
-
-    -- 125 MHz output clock
-    g_clk0_divide_f                         => 10
-  )
-  port map (
-    rst_i                                   => '0',
-    clk_i                                   => aux_clk_gen_bufg,
-    --clk_i                                   => aux_clk_gen,
-    clk0_o                                  => clk_aux,              -- 125MHz locked clock
-    clk1_o                                  => open,
-    clk2_o                                  => open,
-    locked_o                                => clk_aux_locked        -- '1' when the PLL has locked
-  );
-
-  -- Reset synchronization. Hold reset line until few locked cycles have passed.
-  cmp_aux_reset : gc_reset
-  generic map(
-    g_clocks                                => c_num_aux_clks        -- CLK_AUX
-  )
-  port map(
-    --free_clk_i                              => aux_clk_gen,
-    free_clk_i                              => aux_clk_gen_bufg,
-    locked_i                                => clk_aux_locked,
-    clks_i                                  => reset_aux_clks,
-    rstn_o                                  => reset_aux_rstn
-  );
-
-  reset_aux_clks(c_clk_aux_id)              <= clk_aux;
-
-  -- Auxiliary reset
-  clk_aux_rstn                              <= reset_aux_rstn(c_clk_aux_id);
-  clk_aux_rst                               <= not(reset_aux_rstn(c_clk_aux_id));
-
-  -----------------------------------------------------------------------------
-  -- Top-Level Crossbar
-  -----------------------------------------------------------------------------
-
-  -- The top-most Wishbone B.4 crossbar
-  cmp_interconnect : xwb_sdb_crossbar
-  generic map(
-    g_num_masters                           => c_masters,
-    g_num_slaves                            => c_slaves,
-    g_registered                            => true,
-    g_wraparound                            => true, -- Should be true for nested buses
-    g_layout                                => c_layout,
-    g_sdb_addr                              => c_sdb_address
-  )
-  port map(
-    clk_sys_i                               => clk_sys,
-    rst_n_i                                 => clk_sys_rstn,
-    -- Master connections (INTERCON is a slave)
-    slave_i                                 => cbar_slave_i,
-    slave_o                                 => cbar_slave_o,
-    -- Slave connections (INTERCON is a master)
-    master_i                                => cbar_master_i,
-    master_o                                => cbar_master_o
-  );
-
-  -- The LM32 is master 0+1
-  --lm32_rstn                                 <= clk_sys_rstn;
-
-  --cmp_lm32 : xwb_lm32
-  --generic map(
-  --  g_profile                               => "medium_icache_debug"
-  --) -- Including JTAG and I-cache (no divide)
-  --port map(
-  --  clk_sys_i                               => clk_sys,
-  --  rst_n_i                                 => lm32_rstn,
-  --  irq_i                                   => lm32_interrupt,
-  --  dwb_o                                   => cbar_slave_i(0), -- Data bus
-  --  dwb_i                                   => cbar_slave_o(0),
-  --  iwb_o                                   => cbar_slave_i(1), -- Instruction bus
-  --  iwb_i                                   => cbar_slave_o(1)
-  --);
-
-  -- Interrupt '0' is Button(0).
-  -- Interrupts 31 downto 1 are disabled
-
-  --lm32_interrupt <= (0 => not buttons_i(0), others => '0');
-
-  ----------------------------------
-  --         PCIe Core            --
-  ----------------------------------
-
-  cmp_xwb_bpm_pcie : xwb_bpm_pcie
-  generic map (
-    g_ma_interface_mode                       => PIPELINED,
-    g_ma_address_granularity                  => BYTE,
-    g_simulation                              => "FALSE"
-  )
-  port map (
-    -- DDR3 memory pins
-    ddr3_dq_b                                 => ddr3_dq_b,
-    ddr3_dqs_p_b                              => ddr3_dqs_p_b,
-    ddr3_dqs_n_b                              => ddr3_dqs_n_b,
-    ddr3_addr_o                               => ddr3_addr_o,
-    ddr3_ba_o                                 => ddr3_ba_o,
-    ddr3_cs_n_o                               => ddr3_cs_n_o,
-    ddr3_ras_n_o                              => ddr3_ras_n_o,
-    ddr3_cas_n_o                              => ddr3_cas_n_o,
-    ddr3_we_n_o                               => ddr3_we_n_o,
-    ddr3_reset_n_o                            => ddr3_reset_n_o,
-    ddr3_ck_p_o                               => ddr3_ck_p_o,
-    ddr3_ck_n_o                               => ddr3_ck_n_o,
-    ddr3_cke_o                                => ddr3_cke_o,
-    ddr3_dm_o                                 => ddr3_dm_o,
-    ddr3_odt_o                                => ddr3_odt_o,
-
-    -- PCIe transceivers
-    pci_exp_rxp_i                             => pci_exp_rxp_i,
-    pci_exp_rxn_i                             => pci_exp_rxn_i,
-    pci_exp_txp_o                             => pci_exp_txp_o,
-    pci_exp_txn_o                             => pci_exp_txn_o,
-
-    -- Necessity signals
-    ddr_clk_i                                 => clk_200mhz,   --200 MHz DDR core clock (connect through BUFG or PLL)
-    ddr_rst_i                                 => clk_sys_rst,
-    pcie_clk_p_i                              => pcie_clk_p_i, --100 MHz PCIe Clock (connect directly to input pin)
-    pcie_clk_n_i                              => pcie_clk_n_i, --100 MHz PCIe Clock
-    pcie_rst_n_i                              => clk_sys_pcie_rstn, -- PCIe core reset
-
-    -- DDR memory controller interface --
-    ddr_aximm_sl_aclk_o                       => ddr_aximm_clk,
-    ddr_aximm_sl_aresetn_o                    => ddr_aximm_rstn,
-    ddr_aximm_r_sl_i                          => ddr_aximm_r_ma_out,
-    ddr_aximm_r_sl_o                          => ddr_aximm_r_ma_in,
-    ddr_aximm_w_sl_i                          => ddr_aximm_w_ma_out,
-    ddr_aximm_w_sl_o                          => ddr_aximm_w_ma_in,
-
-    -- Wishbone interface --
-    wb_clk_i                                  => clk_sys,
-    -- Reset wishbone interface with the same reset as the other
-    -- modules, including a reset coming from the PCIe itself.
-    wb_rst_i                                  => clk_sys_rst,
-    wb_ma_i                                   => cbar_slave_o(c_ma_pcie_id),
-    wb_ma_o                                   => cbar_slave_i(c_ma_pcie_id),
-    -- Additional exported signals for instantiation
-    wb_ma_pcie_rst_o                          => wb_ma_pcie_rst
-  );
-
-  wb_ma_pcie_rstn                             <= not wb_ma_pcie_rst;
-
-  cmp_pcie_reset_synch : reset_synch
-  port map
-  (
-    clk_i                                    => clk_sys,
-    arst_n_i                                 => wb_ma_pcie_rstn,
-    rst_n_o                                  => wb_ma_pcie_rstn_sync
-  );
-
-  ----------------------------------
-  --         RS232 Core            --
-  ----------------------------------
-  cmp_xwb_rs232_syscon : xwb_rs232_syscon
-  generic map (
-    g_ma_interface_mode                       => PIPELINED,
-    g_ma_address_granularity                  => BYTE
-  )
-  port map(
-    -- WISHBONE common
-    wb_clk_i                                  => clk_sys,
-    wb_rstn_i                                 => clk_sys_rstn,
-
-    -- External ports
-    rs232_rxd_i                               => rs232_rxd_i,
-    rs232_txd_o                               => rs232_txd_o,
-
-    -- Reset to FPGA logic
-    rstn_o                                    => rs232_rstn,
-
-    -- WISHBONE master
-    wb_master_i                               => cbar_slave_o(c_ma_rs232_syscon_id),
-    wb_master_o                               => cbar_slave_i(c_ma_rs232_syscon_id)
-  );
+  ----------------------------------------------------------------------
+  --                      FMC ADCs                                    --
+  ----------------------------------------------------------------------
 
   -- Insert more FMC ADC boards here
   assert (g_fmc_adc_type = "FMC130M" or g_fmc_adc_type = "FMC250M" or g_fmc_adc_type = "FMCPICO_1M")
@@ -1772,7 +1555,7 @@ begin
       g_use_data_chains                       => "1111",
       --g_map_clk_data_chains                   => (-1,-1,-1,-1),
       -- Clock 1 is the adc reference clock
-      g_ref_clk                               => c_adc_ref_clk,
+      g_ref_clk                               => c_ADC_REF_CLK,
       g_packet_size                           => 32,
       g_sim                                   => 0
     )
@@ -1784,8 +1567,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_1_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_1_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_1_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_1_ID),
 
       -----------------------------
       -- External ports
@@ -1940,13 +1723,13 @@ begin
 
     fmc1_adc_valid                             <= '1';
 
-    fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
-    fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
-    fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
-    fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
+    fs1_clk                                    <= fmc1_clk(c_ADC_REF_CLK);
+    fs1_rstn                                   <= fmc1_rst_n(c_ADC_REF_CLK);
+    fs1_clk2x                                  <= fmc1_clk2x(c_ADC_REF_CLK);
+    fs1_rst2xn                                 <= fmc1_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_0_id, c_trigger_sw_clk_id).pulse;
+    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_trigger_sw_clk_id).pulse;
 
     -- Debug clock for chipscope
     fs_clk_dbg                                 <= fs1_clk;
@@ -1979,7 +1762,7 @@ begin
       g_use_data_chains                       => "1111",
       --g_map_clk_data_chains                   => (-1,-1,-1,-1),
       -- Clock 1 is the adc reference clock
-      g_ref_clk                               => c_adc_ref_clk,
+      g_ref_clk                               => c_ADC_REF_CLK,
       g_packet_size                           => 32,
       g_sim                                   => 0
     )
@@ -1991,8 +1774,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_2_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_2_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_2_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_2_ID),
 
       -----------------------------
       -- External ports
@@ -2148,13 +1931,13 @@ begin
 
     fmc2_adc_valid                             <= '1';
 
-    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
-    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
-    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
-    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+    fs2_clk                                    <= fmc2_clk(c_ADC_REF_CLK);
+    fs2_rstn                                   <= fmc2_rst_n(c_ADC_REF_CLK);
+    fs2_clk2x                                  <= fmc2_clk2x(c_ADC_REF_CLK);
+    fs2_rst2xn                                 <= fmc2_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
+    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_trigger_sw_clk_id).pulse;
 
   end generate;
 
@@ -2185,7 +1968,7 @@ begin
       g_use_data_chains                       => "1111",
       --g_map_clk_data_chains                   => (-1,-1,-1,-1),
       -- Clock 1 is the adc reference clock
-      g_ref_clk                               => c_adc_ref_clk,
+      g_ref_clk                               => c_ADC_REF_CLK,
       g_packet_size                           => 32,
       g_sim                                   => 0
     )
@@ -2197,8 +1980,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_1_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_1_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_1_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_1_ID),
 
       -----------------------------
       -- External ports
@@ -2364,13 +2147,13 @@ begin
 
     fmc1_adc_valid                             <= '1';
 
-    fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
-    fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
-    fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
-    fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
+    fs1_clk                                    <= fmc1_clk(c_ADC_REF_CLK);
+    fs1_rstn                                   <= fmc1_rst_n(c_ADC_REF_CLK);
+    fs1_clk2x                                  <= fmc1_clk2x(c_ADC_REF_CLK);
+    fs1_rst2xn                                 <= fmc1_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_0_id, c_trigger_sw_clk_id).pulse;
+    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_trigger_sw_clk_id).pulse;
 
     -- Debug clock for chipscope
     fs_clk_dbg                                 <= fs1_clk;
@@ -2403,7 +2186,7 @@ begin
       g_use_data_chains                       => "1111",
       --g_map_clk_data_chains                   => (-1,-1,-1,-1),
       -- Clock 1 is the adc reference clock
-      g_ref_clk                               => c_adc_ref_clk,
+      g_ref_clk                               => c_ADC_REF_CLK,
       g_packet_size                           => 32,
       g_sim                                   => 0
     )
@@ -2415,8 +2198,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_2_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_2_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_2_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_2_ID),
 
       -----------------------------
       -- External ports
@@ -2582,13 +2365,13 @@ begin
 
     fmc2_adc_valid                             <= '1';
 
-    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
-    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
-    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
-    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+    fs2_clk                                    <= fmc2_clk(c_ADC_REF_CLK);
+    fs2_rstn                                   <= fmc2_rst_n(c_ADC_REF_CLK);
+    fs2_clk2x                                  <= fmc2_clk2x(c_ADC_REF_CLK);
+    fs2_rst2xn                                 <= fmc2_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_trig_mux_1_id, c_trigger_sw_clk_id).pulse;
+    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_trigger_sw_clk_id).pulse;
 
   end generate;
 
@@ -2617,8 +2400,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_1_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_1_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_1_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_1_ID),
 
       -----------------------------
       -- External ports
@@ -2686,10 +2469,10 @@ begin
     fmc1_rst_n                                 <= (others => clk_sys_rstn);
     fmc1_rst2x_n                               <= (others => clk_sys_rstn);
 
-    fs1_clk                                    <= fmc1_clk(c_adc_ref_clk);
-    fs1_clk2x                                  <= fmc1_clk2x(c_adc_ref_clk);
-    fs1_rstn                                   <= fmc1_rst_n(c_adc_ref_clk);
-    fs1_rst2xn                                 <= fmc1_rst2x_n(c_adc_ref_clk);
+    fs1_clk                                    <= fmc1_clk(c_ADC_REF_CLK);
+    fs1_clk2x                                  <= fmc1_clk2x(c_ADC_REF_CLK);
+    fs1_rstn                                   <= fmc1_rst_n(c_ADC_REF_CLK);
+    fs1_rst2xn                                 <= fmc1_rst2x_n(c_ADC_REF_CLK);
 
     -- Temporary assignemnts
     fmcpico_1_sm_scl_o                         <= '0';
@@ -2718,8 +2501,8 @@ begin
       -----------------------------
       -- Wishbone Control Interface signals
       -----------------------------
-      wb_slv_i                                => cbar_master_o(c_slv_fmc_adc_2_id),
-      wb_slv_o                                => cbar_master_i(c_slv_fmc_adc_2_id),
+      wb_slv_i                                => user_wb_out(c_SLV_FMC_ADC_2_ID),
+      wb_slv_o                                => user_wb_in(c_SLV_FMC_ADC_2_ID),
 
       -----------------------------
       -- External ports
@@ -2787,10 +2570,10 @@ begin
     fmc2_rst_n                                 <= (others => clk_sys_rstn);
     fmc2_rst2x_n                               <= (others => clk_sys_rstn);
 
-    fs2_clk                                    <= fmc2_clk(c_adc_ref_clk);
-    fs2_clk2x                                  <= fmc2_clk2x(c_adc_ref_clk);
-    fs2_rstn                                   <= fmc2_rst_n(c_adc_ref_clk);
-    fs2_rst2xn                                 <= fmc2_rst2x_n(c_adc_ref_clk);
+    fs2_clk                                    <= fmc2_clk(c_ADC_REF_CLK);
+    fs2_clk2x                                  <= fmc2_clk2x(c_ADC_REF_CLK);
+    fs2_rstn                                   <= fmc2_rst_n(c_ADC_REF_CLK);
+    fs2_rst2xn                                 <= fmc2_rst2x_n(c_ADC_REF_CLK);
 
     ---- Connected through FPGA MUX
     ---- Temporary assignemnts
@@ -2865,8 +2648,8 @@ begin
     g_IQ_width                              => c_pos_calc_IQ_width,
 
     -- Swap/de-swap setup
-    g_delay_vec_width                       => c_pos_calc_delay_vec_width,
-    g_swap_div_freq_vec_width               => c_pos_calc_swap_div_freq_vec_width
+    g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,
+    g_swap_div_freq_vec_width               => c_POS_CALC_SWAP_DIV_FREQ_VEC_WIDTH
   )
   port map (
     rst_n_i                                 => clk_sys_rstn,
@@ -2879,8 +2662,8 @@ begin
     -----------------------------
     -- Wishbone signals
     -----------------------------
-    wb_slv_i                                => cbar_master_o(c_slv_pos_calc_1_id),
-    wb_slv_o                                => cbar_master_i(c_slv_pos_calc_1_id),
+    wb_slv_i                                => user_wb_out(c_SLV_POS_CALC_1_ID),
+    wb_slv_o                                => user_wb_in(c_SLV_POS_CALC_1_ID),
 
     -----------------------------
     -- Raw ADC signals
@@ -3000,7 +2783,7 @@ begin
     -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_0_id, c_phase_sync_trigger_slow_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_phase_sync_trigger_slow_id).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3093,8 +2876,8 @@ begin
     g_IQ_width                              => c_pos_calc_IQ_width,
 
     -- Swap/de-swap setup
-    g_delay_vec_width                       => c_pos_calc_delay_vec_width,
-    g_swap_div_freq_vec_width               => c_pos_calc_swap_div_freq_vec_width
+    g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,
+    g_swap_div_freq_vec_width               => c_POS_CALC_SWAP_DIV_FREQ_VEC_WIDTH
   )
   port map (
     rst_n_i                                 => clk_sys_rstn,
@@ -3107,8 +2890,8 @@ begin
     -----------------------------
     -- Wishbone signals
     -----------------------------
-    wb_slv_i                                => cbar_master_o(c_slv_pos_calc_2_id),
-    wb_slv_o                                => cbar_master_i(c_slv_pos_calc_2_id),
+    wb_slv_i                                => user_wb_out(c_SLV_POS_CALC_2_ID),
+    wb_slv_o                                => user_wb_in(c_SLV_POS_CALC_2_ID),
 
     -----------------------------
     -- Raw ADC signals
@@ -3228,7 +3011,7 @@ begin
     -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_slow_i                        => trig_pulse_rcv(c_trig_mux_1_id, c_phase_sync_trigger_slow_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_phase_sync_trigger_slow_id).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3256,91 +3039,12 @@ begin
                                                  dsp2_adc_se_ch3_data'length));
 
   ----------------------------------------------------------------------
-  --                      Peripherals Core                            --
-  ----------------------------------------------------------------------
-
-  cmp_xwb_dbe_periph : xwb_dbe_periph
-  generic map(
-    -- NOT used!
-    --g_interface_mode                          : t_wishbone_interface_mode      := CLASSIC;
-    -- NOT used!
-    --g_address_granularity                     : t_wishbone_address_granularity := WORD;
-    g_cntr_period                             => c_tics_cntr_period,
-    g_num_leds                                => c_leds_num_pins,
-    g_with_led_heartbeat                      => c_with_leds_heartbeat,
-    g_num_buttons                             => c_buttons_num_pins
-  )
-  port map(
-    clk_sys_i                                 => clk_sys,
-    rst_n_i                                   => clk_sys_rstn,
-
-    -- UART
-    --uart_rxd_i                                => uart_rxd_i,
-    --uart_txd_o                                => uart_txd_o,
-    uart_rxd_i                                => '1',
-    uart_txd_o                                => open,
-
-    -- LEDs
-    led_out_o                                 => gpio_leds_out_int,
-    led_in_i                                  => gpio_leds_in_int,
-    led_oen_o                                 => open,
-
-    -- Buttons
-    button_out_o                              => open,
-    --button_in_i                               => buttons_i,
-    button_in_i                               => buttons_dummy,
-    button_oen_o                              => open,
-
-    -- Wishbone
-    slave_i                                   => cbar_master_o(c_slv_periph_id),
-    slave_o                                   => cbar_master_i(c_slv_periph_id)
-  );
-
-  -- LED Red, LED Green, LED Blue
-  leds_o <= gpio_leds_out_int;
-
-  ----------------------------------------------------------------------
-  --                      AFC Diagnostics                             --
-  ----------------------------------------------------------------------
-
-  cmp_xwb_afc_diag : xwb_afc_diag
-  generic map(
-    g_interface_mode                          => PIPELINED,
-    g_address_granularity                     => BYTE
-  )
-  port map(
-    sys_clk_i                                 => clk_sys,
-    sys_rst_n_i                               => clk_sys_rstn,
-
-    -- Fast SPI clock. Same as Wishbone clock.
-    spi_clk_i                                 => clk_sys,
-
-    -----------------------------
-    -- Wishbone Control Interface signals
-    -----------------------------
-    wb_slv_i                                  => cbar_master_o(c_slv_afc_diag_id),
-    wb_slv_o                                  => cbar_master_i(c_slv_afc_diag_id),
-
-    dbg_spi_clk_o                             => dbg_spi_clk,
-    dbg_spi_valid_o                           => dbg_spi_valid,
-    dbg_en_o                                  => dbg_en,
-    dbg_addr_o                                => dbg_addr,
-    dbg_serial_data_o                         => dbg_serial_data,
-    dbg_spi_data_o                            => dbg_spi_data,
-
-    -----------------------------
-    -- SPI interface
-    -----------------------------
-
-    spi_cs                                    => diag_spi_cs_i,
-    spi_si                                    => diag_spi_si_i,
-    spi_so                                    => diag_spi_so_o,
-    spi_clk                                   => diag_spi_clk_i
-  );
-
-  ----------------------------------------------------------------------
   --                      Acquisition Core                            --
   ----------------------------------------------------------------------
+
+  fs_clk_array   <= fs2_clk & fs1_clk & fs2_clk & fs1_clk;
+  fs_ce_array    <= "1111";
+  fs_rst_n_array <= fs2_rstn & fs1_rstn & fs2_rstn & fs1_rstn;
 
   --------------------
   -- ADC 1 data
@@ -3351,7 +3055,7 @@ begin
                                                                  fmc1_adc_data_se_ch1 &
                                                                  fmc1_adc_data_se_ch0;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_id).dvalid        <= fmc1_adc_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 1 data
@@ -3362,7 +3066,7 @@ begin
                                                                  dsp1_adc_se_ch1_data &
                                                                  dsp1_adc_se_ch0_data;
   acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).dvalid   <= dsp1_adc_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_adc_swap_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 1 data
@@ -3377,7 +3081,7 @@ begin
                                                                  dsp1_mixq_ch0 &
                                                                  dsp1_mixi_ch0;
   acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).dvalid      <= dsp1_mix_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_mixiq_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_mixiq_id).pulse;
 
   --------------------
   -- DUMMY 0 (for compatibility)
@@ -3385,7 +3089,7 @@ begin
   acq_chan_array(c_acq_core_0_id, c_dummy0_id).val(to_integer(c_facq_channels(c_dummy0_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_0_id, c_dummy0_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_0_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_0_id, c_dummy0_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_dummy0_id).pulse;
 
   --------------------
   -- TBT I/Q 1 data
@@ -3400,7 +3104,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq_id).dvalid <= dsp1_tbtdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbtdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_tbtdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 1 (for compatibility)
@@ -3408,7 +3112,7 @@ begin
   acq_chan_array(c_acq_core_0_id, c_dummy1_id).val(to_integer(c_facq_channels(c_dummy1_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_0_id, c_dummy1_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_0_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_0_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_dummy1_id).pulse;
 
   --------------------
   -- TBT AMP 1 data
@@ -3419,7 +3123,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_amp_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_amp_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 1 data
@@ -3430,7 +3134,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).dvalid  <= dsp1_tbt_pha_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_phase_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 1 data
@@ -3441,7 +3145,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pos_x), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_tbt_pos_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 1 data
@@ -3456,7 +3160,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq_id).dvalid <= dsp1_fofbdecim_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofbdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_fofbdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 2 (for compatibility)
@@ -3464,7 +3168,7 @@ begin
   acq_chan_array(c_acq_core_0_id, c_dummy2_id).val(to_integer(c_facq_channels(c_dummy2_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_0_id, c_dummy2_id).dvalid          <= '0';
-  acq_chan_array(c_acq_core_0_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_0_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_dummy1_id).pulse;
 
   --------------------
   -- FOFB AMP 1 data
@@ -3475,7 +3179,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).dvalid   <= dsp1_fofb_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_amp_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 1 data
@@ -3486,7 +3190,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).dvalid <= dsp1_fofb_pha_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_phase_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 1 data
@@ -3497,7 +3201,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_x), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).dvalid   <= dsp1_fofb_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_fofb_pos_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT1 AMP 1 data
@@ -3508,7 +3212,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_monit1_amp_id).dvalid  <= dsp1_monit1_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit1_amp_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_monit1_amp_id).pulse;
 
   --------------------
   -- MONIT1 POS 1 data
@@ -3519,7 +3223,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit1_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit1_pos_x), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_monit1_pos_id).dvalid <= dsp1_monit1_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit1_pos_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_monit1_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 1 data
@@ -3530,7 +3234,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit_amp_ch0), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).dvalid  <= dsp1_monit_amp_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit_amp_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 1 data
@@ -3541,7 +3245,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit_pos_x), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).dvalid  <= dsp1_monit_pos_valid;
-  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_0_id, c_acq_monit_pos_id).pulse;
+  acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_monit_pos_id).pulse;
 
   --------------------
   -- ADC 2 data
@@ -3552,7 +3256,7 @@ begin
                                                                  fmc2_adc_data_se_ch1 &
                                                                  fmc2_adc_data_se_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_id).dvalid        <= fmc2_adc_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 2 data
@@ -3563,7 +3267,7 @@ begin
                                                                  dsp2_adc_se_ch1_data &
                                                                  dsp2_adc_se_ch0_data;
   acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).dvalid   <= dsp2_adc_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_adc_swap_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 2 data
@@ -3578,7 +3282,7 @@ begin
                                                                  dsp2_mixq_ch0 &
                                                                  dsp2_mixi_ch0;
   acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).dvalid      <= dsp2_mix_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_mixiq_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_mixiq_id).pulse;
 
   --------------------
   -- DUMMY 0 (for compatibility)
@@ -3586,7 +3290,7 @@ begin
   acq_chan_array(c_acq_core_1_id, c_dummy0_id).val(to_integer(c_facq_channels(c_dummy0_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_1_id, c_dummy0_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_1_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_1_id, c_dummy0_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_dummy0_id).pulse;
 
   --------------------
   -- TBT I/Q 2 data
@@ -3601,7 +3305,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq_id).dvalid <= dsp2_tbtdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbtdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_tbtdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 1 (for compatibility)
@@ -3609,7 +3313,7 @@ begin
   acq_chan_array(c_acq_core_1_id, c_dummy1_id).val(to_integer(c_facq_channels(c_dummy1_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_1_id, c_dummy1_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_1_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_1_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_dummy1_id).pulse;
 
   --------------------
   -- TBT AMP 2 data
@@ -3620,7 +3324,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_amp_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_amp_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 2 data
@@ -3631,7 +3335,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).dvalid  <= dsp2_tbt_pha_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_phase_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 2 data
@@ -3642,7 +3346,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pos_x), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_tbt_pos_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 2 data
@@ -3657,7 +3361,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq_id).dvalid <= dsp2_fofbdecim_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofbdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_fofbdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 2 (for compatibility)
@@ -3665,7 +3369,7 @@ begin
   acq_chan_array(c_acq_core_1_id, c_dummy2_id).val(to_integer(c_facq_channels(c_dummy2_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_1_id, c_dummy2_id).dvalid          <= '0';
-  acq_chan_array(c_acq_core_1_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_1_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_dummy1_id).pulse;
 
   --------------------
   -- FOFB AMP 2 data
@@ -3676,7 +3380,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).dvalid   <= dsp2_fofb_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_amp_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 2 data
@@ -3687,7 +3391,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).dvalid <= dsp2_fofb_pha_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_phase_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 2 data
@@ -3698,7 +3402,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_x), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).dvalid   <= dsp2_fofb_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_fofb_pos_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT1 AMP 2 data
@@ -3709,7 +3413,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).dvalid  <= dsp2_monit1_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit1_amp_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_monit1_amp_id).pulse;
 
   --------------------
   -- MONIT1 POS 2 data
@@ -3720,7 +3424,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit1_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit1_pos_x), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_monit1_pos_id).dvalid <= dsp2_monit1_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit1_pos_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_monit1_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 2 data
@@ -3731,7 +3435,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit_amp_ch0), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).dvalid  <= dsp2_monit_amp_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_amp_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 2 data
@@ -3742,7 +3446,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit_pos_x), 32));
   acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).dvalid  <= dsp2_monit_pos_valid;
-  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_1_id, c_acq_monit_pos_id).pulse;
+  acq_chan_array(c_acq_core_1_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_monit_pos_id).pulse;
 
   --------------------
   -- ADC 3 data
@@ -3753,7 +3457,7 @@ begin
                                                                  fmc1_adc_data_se_ch1 &
                                                                  fmc1_adc_data_se_ch0;
   acq_chan_array(c_acq_core_2_id, c_acq_adc_id).dvalid        <= fmc1_adc_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 3 data
@@ -3764,7 +3468,7 @@ begin
                                                                  dsp1_adc_se_ch1_data &
                                                                  dsp1_adc_se_ch0_data;
   acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).dvalid   <= dsp1_adc_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_adc_swap_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 3 data
@@ -3779,7 +3483,7 @@ begin
                                                                  dsp1_mixq_ch0 &
                                                                  dsp1_mixi_ch0;
   acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).dvalid      <= dsp1_mix_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_mixiq_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_mixiq_id).pulse;
 
   --------------------
   -- DUMMY 0 (for compatibility)
@@ -3787,7 +3491,7 @@ begin
   acq_chan_array(c_acq_core_2_id, c_dummy0_id).val(to_integer(c_facq_channels(c_dummy0_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_2_id, c_dummy0_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_2_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy0_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_dummy0_id).pulse;
 
   --------------------
   -- TBT I/Q 3 data
@@ -3802,7 +3506,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbtdecimq_ch0), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbtdecimi_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).dvalid <= dsp1_tbtdecim_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbtdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_tbtdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 1 (for compatibility)
@@ -3810,7 +3514,7 @@ begin
   acq_chan_array(c_acq_core_2_id, c_dummy1_id).val(to_integer(c_facq_channels(c_dummy1_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_2_id, c_dummy1_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_2_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_dummy1_id).pulse;
 
   --------------------
   -- TBT AMP 3 data
@@ -3821,7 +3525,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_amp_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).dvalid    <= dsp1_tbt_amp_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_amp_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 3 data
@@ -3832,7 +3536,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).dvalid  <= dsp1_tbt_pha_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_phase_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 3 data
@@ -3843,7 +3547,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_tbt_pos_x), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).dvalid    <= dsp1_tbt_pos_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_tbt_pos_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 3 data
@@ -3858,7 +3562,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp1_fofbdecimq_ch0), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_fofbdecimi_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).dvalid <= dsp1_fofbdecim_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofbdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_fofbdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 2 (for compatibility)
@@ -3866,7 +3570,7 @@ begin
   acq_chan_array(c_acq_core_2_id, c_dummy2_id).val(to_integer(c_facq_channels(c_dummy2_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_2_id, c_dummy2_id).dvalid          <= '0';
-  acq_chan_array(c_acq_core_2_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_2_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_dummy1_id).pulse;
 
   --------------------
   -- FOFB AMP 3 data
@@ -3877,7 +3581,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_amp_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).dvalid   <= dsp1_fofb_amp_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_amp_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 3 data
@@ -3888,7 +3592,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).dvalid <= dsp1_fofb_pha_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_phase_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 3 data
@@ -3899,7 +3603,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_fofb_pos_x), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).dvalid   <= dsp1_fofb_pos_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_fofb_pos_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT1 AMP 3 data
@@ -3910,7 +3614,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_monit1_amp_id).dvalid  <= dsp1_monit1_amp_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit1_amp_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_monit1_amp_id).pulse;
 
   --------------------
   -- MONIT1 POS 3 data
@@ -3921,7 +3625,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit1_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit1_pos_x), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_monit1_pos_id).dvalid <= dsp1_monit1_pos_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit1_pos_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_monit1_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 1 data
@@ -3932,7 +3636,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit_amp_ch0), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).dvalid  <= dsp1_monit_amp_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit_amp_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 1 data
@@ -3943,7 +3647,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp1_monit_pos_x), 32));
   acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).dvalid  <= dsp1_monit_pos_valid;
-  acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_2_id, c_acq_monit_pos_id).pulse;
+  acq_chan_array(c_acq_core_2_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_2_ID, c_acq_monit_pos_id).pulse;
 
   --------------------
   -- ADC 4 data
@@ -3954,7 +3658,7 @@ begin
                                                                  fmc2_adc_data_se_ch1 &
                                                                  fmc2_adc_data_se_ch0;
   acq_chan_array(c_acq_core_3_id, c_acq_adc_id).dvalid        <= fmc2_adc_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_id).trig          <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_adc_id).pulse;
 
   --------------------
   -- ADC SWAP 4 data
@@ -3965,7 +3669,7 @@ begin
                                                                  dsp2_adc_se_ch1_data &
                                                                  dsp2_adc_se_ch0_data;
   acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).dvalid   <= dsp2_adc_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_adc_swap_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_adc_swap_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_adc_swap_id).pulse;
 
   --------------------
   -- MIXER I/Q 4 data
@@ -3980,7 +3684,7 @@ begin
                                                                  dsp2_mixq_ch0 &
                                                                  dsp2_mixi_ch0;
   acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).dvalid      <= dsp2_mix_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_mixiq_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_mixiq_id).trig        <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_mixiq_id).pulse;
 
   --------------------
   -- DUMMY 0 (for compatibility)
@@ -3988,7 +3692,7 @@ begin
   acq_chan_array(c_acq_core_3_id, c_dummy0_id).val(to_integer(c_facq_channels(c_dummy0_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_3_id, c_dummy0_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_3_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy0_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_dummy0_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_dummy0_id).pulse;
 
   --------------------
   -- TBT I/Q 4 data
@@ -4003,7 +3707,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbtdecimq_ch0), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbtdecimi_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).dvalid <= dsp2_tbtdecim_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbtdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbtdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_tbtdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 1 (for compatibility)
@@ -4011,7 +3715,7 @@ begin
   acq_chan_array(c_acq_core_3_id, c_dummy1_id).val(to_integer(c_facq_channels(c_dummy1_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_3_id, c_dummy1_id).dvalid         <= '0';
-  acq_chan_array(c_acq_core_3_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy1_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_dummy1_id).trig           <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_dummy1_id).pulse;
 
   --------------------
   -- TBT AMP 4 data
@@ -4022,7 +3726,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_amp_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).dvalid    <= dsp2_tbt_amp_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_amp_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_amp_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_tbt_amp_id).pulse;
 
   --------------------
   -- TBT PHASE 4 data
@@ -4033,7 +3737,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pha_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).dvalid  <= dsp2_tbt_pha_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_phase_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_phase_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_tbt_phase_id).pulse;
 
   --------------------
   -- TBT POS 4 data
@@ -4044,7 +3748,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_tbt_pos_x), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).dvalid    <= dsp2_tbt_pos_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_tbt_pos_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_tbt_pos_id).trig      <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_tbt_pos_id).pulse;
 
   --------------------
   -- FOFB I/Q 4 data
@@ -4059,7 +3763,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp2_fofbdecimq_ch0), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_fofbdecimi_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).dvalid <= dsp2_fofbdecim_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofbdecimiq_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofbdecimiq_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_fofbdecimiq_id).pulse;
 
   --------------------
   -- DUMMY 2 (for compatibility)
@@ -4067,7 +3771,7 @@ begin
   acq_chan_array(c_acq_core_3_id, c_dummy2_id).val(to_integer(c_facq_channels(c_dummy2_id).width)-1 downto 0) <=
                                                                  (others => '0');
   acq_chan_array(c_acq_core_3_id, c_dummy2_id).dvalid          <= '0';
-  acq_chan_array(c_acq_core_3_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_trig_mux_3_id, c_dummy2_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_dummy2_id).trig            <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_dummy2_id).pulse;
 
   --------------------
   -- FOFB AMP 4 data
@@ -4078,7 +3782,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_amp_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).dvalid   <= dsp2_fofb_amp_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_amp_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_amp_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_fofb_amp_id).pulse;
 
   --------------------
   -- FOFB PHASE 4 data
@@ -4089,7 +3793,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pha_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pha_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).dvalid <= dsp2_fofb_pha_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_phase_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_phase_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_fofb_phase_id).pulse;
 
   --------------------
   -- FOFB POS 4 data
@@ -4100,7 +3804,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_fofb_pos_x), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).dvalid   <= dsp2_fofb_pos_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_fofb_pos_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_fofb_pos_id).trig     <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_fofb_pos_id).pulse;
 
   --------------------
   -- MONIT1 AMP 4 data
@@ -4111,7 +3815,7 @@ begin
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_monit1_amp_id).dvalid  <= dsp2_monit1_amp_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit1_amp_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_monit1_amp_id).pulse;
 
   --------------------
   -- MONIT1 POS 4 data
@@ -4122,7 +3826,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit1_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit1_pos_x), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_monit1_pos_id).dvalid <= dsp2_monit1_pos_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit1_pos_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_monit1_pos_id).trig   <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_monit1_pos_id).pulse;
 
   --------------------
   -- MONIT AMP 4 data
@@ -4133,7 +3837,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit_amp_ch1), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit_amp_ch0), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).dvalid  <= dsp2_monit_amp_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit_amp_id).pulse;
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_monit_amp_id).pulse;
 
   --------------------
   -- MONIT POS 4 data
@@ -4144,102 +3848,7 @@ begin
                                                                  std_logic_vector(resize(signed(dsp2_monit_pos_y), 32)) &
                                                                  std_logic_vector(resize(signed(dsp2_monit_pos_x), 32));
   acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).dvalid  <= dsp2_monit_pos_valid;
-  acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_trig_mux_3_id, c_acq_monit_pos_id).pulse;
-
-  cmp_xwb_facq_core_mux : xwb_facq_core_mux
-  generic map
-  (
-    g_interface_mode                          => PIPELINED,
-    g_address_granularity                     => BYTE,
-    g_acq_addr_width                          => c_acq_addr_width,
-    g_acq_num_channels                        => c_acq_num_channels,
-    g_facq_channels                           => c_facq_channels,
-    g_ddr_payload_width                       => c_ddr_payload_width,
-    g_ddr_dq_width                            => c_ddr_dq_width,
-    g_ddr_addr_width                          => c_ddr_addr_width,
-    g_multishot_ram_size                      => c_acq_multishot_ram_size,
-    g_fifo_fc_size                            => c_acq_fifo_size,
-    --g_sim_readback                            => false
-    g_acq_num_cores                           => c_acq_num_cores,
-    g_ddr_interface_type                      => c_ddr_interface_type,
-    g_max_burst_size                          => c_ddr_datamover_bpm_burst_size
-  )
-  port map
-  (
-    fs_clk_array_i                            => fs_clk_array,
-    fs_ce_array_i                             => fs_ce_array,
-    fs_rst_n_array_i                          => fs_rst_n_array,
-
-    -- Clock signals for Wishbone
-    sys_clk_i                                 => clk_sys,
-    sys_rst_n_i                               => clk_sys_rstn,
-
-    -- From DDR3 Controller
-    ext_clk_i                                 => ddr_aximm_clk,
-    ext_rst_n_i                               => ddr_aximm_rstn,
-
-    -----------------------------
-    -- Wishbone Control Interface signals
-    -----------------------------
-    wb_slv_i                                  => acq_core_slave_i,
-    wb_slv_o                                  => acq_core_slave_o,
-
-    -----------------------------
-    -- External Interface
-    -----------------------------
-    acq_chan_array_i                           => acq_chan_array,
-
-    -----------------------------
-    -- DRRAM Interface
-    -----------------------------
-    dpram_dout_array_o                         => bpm_acq_dpram_dout_array, -- to chipscope
-    dpram_valid_array_o                        => bpm_acq_dpram_valid_array, -- to chipscope
-
-    -----------------------------
-    -- External Interface (w/ FLow Control)
-    -----------------------------
-    ext_dout_array_o                           => bpm_acq_ext_dout_array, -- to chipscope
-    ext_valid_array_o                          => bpm_acq_ext_valid_array, -- to chipscope
-    ext_addr_array_o                           => bpm_acq_ext_addr_array, -- to chipscope
-    ext_sof_array_o                            => bpm_acq_ext_sof_array, -- to chipscope
-    ext_eof_array_o                            => bpm_acq_ext_eof_array, -- to chipscope
-    ext_dreq_array_o                           => bpm_acq_ext_dreq_array, -- to chipscope
-    ext_stall_array_o                          => bpm_acq_ext_stall_array, -- to chipscope
-
-    -----------------------------
-    -- Debug Interface
-    -----------------------------
-    dbg_ddr_rb_start_p_array_i                => (others => '0'),
-    dbg_ddr_rb_rdy_array_o                    => open,
-    dbg_ddr_rb_data_array_o                   => open,
-    dbg_ddr_rb_addr_array_o                   => open,
-    dbg_ddr_rb_valid_array_o                  => open,
-
-    -----------------------------
-    -- DDR3 SDRAM Interface
-    -----------------------------
-    -- AXIMM Read Channel
-    ddr_aximm_r_ma_i                          => ddr_aximm_r_ma_in,
-    ddr_aximm_r_ma_o                          => ddr_aximm_r_ma_out,
-    -- AXIMM Write Channel
-    ddr_aximm_w_ma_i                          => ddr_aximm_w_ma_in,
-    ddr_aximm_w_ma_o                          => ddr_aximm_w_ma_out
-  );
-
-  fs_clk_array   <= fs2_clk & fs1_clk & fs2_clk & fs1_clk;
-  fs_ce_array    <= "1111";
-  fs_rst_n_array <= fs2_rstn & fs1_rstn & fs2_rstn & fs1_rstn;
-
-  -- c_slv_acq_core_*_id is Wishbone slave index
-  -- c_acq_core_*_id is Acquisition core index
-  acq_core_slave_i <= cbar_master_o(c_slv_acq_core_pm_1_id) &
-                      cbar_master_o(c_slv_acq_core_pm_0_id) &
-                      cbar_master_o(c_slv_acq_core_1_id) &
-                      cbar_master_o(c_slv_acq_core_0_id);
-  cbar_master_i(c_slv_acq_core_0_id) <= acq_core_slave_o(c_acq_core_0_id);
-  cbar_master_i(c_slv_acq_core_1_id) <= acq_core_slave_o(c_acq_core_1_id);
-  cbar_master_i(c_slv_acq_core_pm_0_id) <= acq_core_slave_o(c_acq_core_2_id);
-  cbar_master_i(c_slv_acq_core_pm_1_id) <= acq_core_slave_o(c_acq_core_3_id);
+  acq_chan_array(c_acq_core_3_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_3_ID, c_acq_monit_pos_id).pulse;
 
   ----------------------------------------------------------------------
   --                        Orbit Interlock                           --
@@ -4269,8 +3878,8 @@ begin
     -- Wishbone signals
     -----------------------------
 
-    wb_slv_i                                   => cbar_master_o(c_slv_orbit_intlk_id),
-    wb_slv_o                                   => cbar_master_i(c_slv_orbit_intlk_id),
+    wb_slv_i                                   => user_wb_out(c_SLV_ORBIT_INTLK_ID),
+    wb_slv_o                                   => user_wb_in(c_SLV_ORBIT_INTLK_ID),
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -4323,55 +3932,6 @@ begin
   ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
-  trig_ref_clk <= clk_aux;
-  trig_ref_rst_n <= clk_aux_rstn;
-
-  cmp_xwb_trigger : xwb_trigger
-    generic map (
-      g_address_granularity                => BYTE,
-      g_interface_mode                     => PIPELINED,
-      g_sync_edge                          => c_trig_sync_edge,
-      g_trig_num                           => c_trig_num,
-      g_intern_num                         => c_trig_intern_num,
-      g_rcv_intern_num                     => c_trig_rcv_intern_num,
-      g_num_mux_interfaces                 => c_trig_num_mux_interfaces,
-      g_out_resolver                       => c_trig_out_resolver,
-      g_in_resolver                        => c_trig_in_resolver,
-      g_with_input_sync                    => c_trig_with_input_sync,
-      g_with_output_sync                   => c_trig_with_output_sync
-    )
-    port map (
-      clk_i                                => clk_sys,
-      rst_n_i                              => clk_sys_rstn,
-
-      ref_clk_i                            => trig_ref_clk,
-      ref_rst_n_i                          => trig_ref_rst_n,
-
-      fs_clk_array_i                       => fs_clk_array,
-      fs_rst_n_array_i                     => fs_rst_n_array,
-
-      wb_slv_trigger_iface_i               => cbar_master_o(c_slv_trig_iface_id),
-      wb_slv_trigger_iface_o               => cbar_master_i(c_slv_trig_iface_id),
-
-      wb_slv_trigger_mux_i                 => trig_core_slave_i,
-      wb_slv_trigger_mux_o                 => trig_core_slave_o,
-
-      trig_dir_o                           => trig_dir_int,
-      trig_rcv_intern_i                    => trig_rcv_intern,
-      trig_pulse_transm_i                  => trig_pulse_transm,
-      trig_pulse_rcv_o                     => trig_pulse_rcv,
-      trig_b                               => trig_b,
-      trig_dbg_o                           => trig_dbg
-  );
-
-  trig_core_slave_i <= cbar_master_o(c_slv_trig_mux_pm_1_id) &
-                       cbar_master_o(c_slv_trig_mux_pm_0_id) &
-                       cbar_master_o(c_slv_trig_mux_1_id) &
-                       cbar_master_o(c_slv_trig_mux_0_id);
-  cbar_master_i(c_slv_trig_mux_0_id)    <= trig_core_slave_o(c_trig_mux_0_id);
-  cbar_master_i(c_slv_trig_mux_1_id)    <= trig_core_slave_o(c_trig_mux_1_id);
-  cbar_master_i(c_slv_trig_mux_pm_0_id) <= trig_core_slave_o(c_trig_mux_2_id);
-  cbar_master_i(c_slv_trig_mux_pm_1_id) <= trig_core_slave_o(c_trig_mux_3_id);
 
   -- Assign FMCs trigger pulses to trigger channel interfaces
   trig_fmc1_channel_1.pulse <= fmc1_trig_hw;
@@ -4396,21 +3956,19 @@ begin
   trig_2_pm_channel_intlk.pulse <= '0';
 
   -- Assign intern triggers to trigger module
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_channel_1;
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_channel_2;
-  trig_rcv_intern(c_trig_mux_0_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_channel_intlk;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_channel_1;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_channel_2;
-  trig_rcv_intern(c_trig_mux_1_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_channel_intlk;
+  trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_1_ID)     <= trig_fmc1_channel_1;
+  trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_2_ID)     <= trig_fmc1_channel_2;
+  trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_INTLK_ID) <= trig_1_channel_intlk;
+  trig_rcv_intern(c_TRIG_MUX_1_ID, c_TRIG_RCV_INTERN_CHAN_1_ID)     <= trig_fmc2_channel_1;
+  trig_rcv_intern(c_TRIG_MUX_1_ID, c_TRIG_RCV_INTERN_CHAN_2_ID)     <= trig_fmc2_channel_2;
+  trig_rcv_intern(c_TRIG_MUX_1_ID, c_TRIG_RCV_INTERN_CHAN_INTLK_ID) <= trig_2_channel_intlk;
 
   -- Post-Mortem triggers
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc1_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc1_pm_channel_2;
-  trig_rcv_intern(c_trig_mux_2_id, c_trig_rcv_intern_chan_intlk_id) <= trig_1_pm_channel_intlk;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_1_id)     <= trig_fmc2_pm_channel_1;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_2_id)     <= trig_fmc2_pm_channel_2;
-  trig_rcv_intern(c_trig_mux_3_id, c_trig_rcv_intern_chan_intlk_id) <= trig_2_pm_channel_intlk;
-
-  trig_dir_o <= trig_dir_int;
+  trig_rcv_intern(c_TRIG_MUX_2_ID, c_TRIG_RCV_INTERN_CHAN_1_ID)     <= trig_fmc1_pm_channel_1;
+  trig_rcv_intern(c_TRIG_MUX_2_ID, c_TRIG_RCV_INTERN_CHAN_2_ID)     <= trig_fmc1_pm_channel_2;
+  trig_rcv_intern(c_TRIG_MUX_2_ID, c_TRIG_RCV_INTERN_CHAN_INTLK_ID) <= trig_1_pm_channel_intlk;
+  trig_rcv_intern(c_TRIG_MUX_3_ID, c_TRIG_RCV_INTERN_CHAN_1_ID)     <= trig_fmc2_pm_channel_1;
+  trig_rcv_intern(c_TRIG_MUX_3_ID, c_TRIG_RCV_INTERN_CHAN_2_ID)     <= trig_fmc2_pm_channel_2;
+  trig_rcv_intern(c_TRIG_MUX_3_ID, c_TRIG_RCV_INTERN_CHAN_INTLK_ID) <= trig_2_pm_channel_intlk;
 
 end rtl;

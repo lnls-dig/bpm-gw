@@ -3,6 +3,11 @@ action = "synthesis"
 
 language = "vhdl"
 
+# Allow the user to override fetchto using:
+#  hdlmake -p "fetchto='xxx'"
+if locals().get('fetchto', None) is None:
+    fetchto = "../../ip_cores"
+
 syn_device = "xc7a200t"
 syn_grade = "-2"
 syn_package = "ffg1156"
@@ -23,6 +28,11 @@ syn_properties = [
     ["steps.post_route_phys_opt_design.is_enabled", "1"],
     ["steps.write_bitstream.args.verbose", "1"]]
 
+board = "afc"
+
+# For appending the afc_ref_design.xdc to synthesis
+afc_base_xdc = ['acq']
+
 import os
 import sys
 if os.path.isfile("synthesis_descriptor_pkg.vhd"):
@@ -32,4 +42,19 @@ else:
 
 machine_pkg = "sirius_sr_250M";
 
-modules = { "local" : [ "../../../top/afc_v3/vivado/dbe_bpm2" ] }
+# Pass more XDC to afc-gw so it will merge it last with
+# other .xdc. We need this as we depend on variables defined
+# on afc_base xdc files.
+xdc_files = [
+    "../dbe_bpm2_common/dbe_bpm2.xdc",
+]
+
+additional_xdc = []
+for f in xdc_files:
+    additional_xdc.append(os.path.abspath(f))
+
+modules = {
+    "local" : [
+        "../../../top/afc_v3/dbe_bpm2"
+    ]
+}

@@ -26,50 +26,116 @@ library work;
 use work.fmc_adc_pkg.all;
 -- IP cores constants
 use work.ipcores_pkg.all;
+-- AFC definitions
+use work.afc_base_pkg.all;
 
 entity dbe_bpm2 is
 port(
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- Clocking pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   sys_clk_p_i                                : in std_logic;
   sys_clk_n_i                                : in std_logic;
 
   aux_clk_p_i                                : in std_logic;
   aux_clk_n_i                                : in std_logic;
 
-  -----------------------------------------
+  afc_fp2_clk1_p_i                           : in std_logic;
+  afc_fp2_clk1_n_i                           : in std_logic;
+
+  ---------------------------------------------------------------------------
   -- Reset Button
-  -----------------------------------------
-  sys_rst_button_n_i                         : in std_logic;
+  ---------------------------------------------------------------------------
+  sys_rst_button_n_i                         : in std_logic := '1';
 
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- UART pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
 
-  rs232_txd_o                                : out std_logic;
-  rs232_rxd_i                                : in std_logic;
+  uart_rxd_i                                 : in  std_logic := '1';
+  uart_txd_o                                 : out std_logic;
 
-  -----------------------------------------
+  ---------------------------------------------------------------------------
   -- Trigger pins
-  -----------------------------------------
+  ---------------------------------------------------------------------------
+  trig_dir_o                                 : out   std_logic_vector(c_NUM_TRIG-1 downto 0);
+  trig_b                                     : inout std_logic_vector(c_NUM_TRIG-1 downto 0);
 
-  trig_dir_o                                 : out   std_logic_vector(7 downto 0);
-  trig_b                                     : inout std_logic_vector(7 downto 0);
-
-  -----------------------------
+  ---------------------------------------------------------------------------
   -- AFC Diagnostics
-  -----------------------------
+  ---------------------------------------------------------------------------
 
-  diag_spi_cs_i                              : in std_logic;
-  diag_spi_si_i                              : in std_logic;
+  diag_spi_cs_i                              : in std_logic := '0';
+  diag_spi_si_i                              : in std_logic := '0';
   diag_spi_so_o                              : out std_logic;
-  diag_spi_clk_i                             : in std_logic;
+  diag_spi_clk_i                             : in std_logic := '0';
 
-  -----------------------------
+  ---------------------------------------------------------------------------
   -- ADN4604ASVZ
-  -----------------------------
+  ---------------------------------------------------------------------------
   adn4604_vadj2_clk_updt_n_o                 : out std_logic;
+
+  ---------------------------------------------------------------------------
+  -- AFC I2C.
+  ---------------------------------------------------------------------------
+  -- Si57x oscillator
+  afc_si57x_scl_b                            : inout std_logic;
+  afc_si57x_sda_b                            : inout std_logic;
+
+  -- Si57x oscillator output enable
+  afc_si57x_oe_o                             : out   std_logic;
+
+  ---------------------------------------------------------------------------
+  -- PCIe pins
+  ---------------------------------------------------------------------------
+
+  -- DDR3 memory pins
+  ddr3_dq_b                                  : inout std_logic_vector(c_DDR_DQ_WIDTH-1 downto 0);
+  ddr3_dqs_p_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+  ddr3_dqs_n_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+  ddr3_addr_o                                : out   std_logic_vector(c_DDR_ROW_WIDTH-1 downto 0);
+  ddr3_ba_o                                  : out   std_logic_vector(c_DDR_BANK_WIDTH-1 downto 0);
+  ddr3_cs_n_o                                : out   std_logic_vector(0 downto 0);
+  ddr3_ras_n_o                               : out   std_logic;
+  ddr3_cas_n_o                               : out   std_logic;
+  ddr3_we_n_o                                : out   std_logic;
+  ddr3_reset_n_o                             : out   std_logic;
+  ddr3_ck_p_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+  ddr3_ck_n_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+  ddr3_cke_o                                 : out   std_logic_vector(c_DDR_CKE_WIDTH-1 downto 0);
+  ddr3_dm_o                                  : out   std_logic_vector(c_DDR_DM_WIDTH-1 downto 0);
+  ddr3_odt_o                                 : out   std_logic_vector(c_DDR_ODT_WIDTH-1 downto 0);
+
+  -- PCIe transceivers
+  pci_exp_rxp_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_rxn_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_txp_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+  pci_exp_txn_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+
+  -- PCI clock and reset signals
+  pcie_clk_p_i                               : in std_logic;
+  pcie_clk_n_i                               : in std_logic;
+
+  ---------------------------------------------------------------------------
+  -- User LEDs
+  ---------------------------------------------------------------------------
+  leds_o                                     : out std_logic_vector(2 downto 0);
+
+  ---------------------------------------------------------------------------
+  -- FMC interface
+  ---------------------------------------------------------------------------
+
+  board_i2c_scl_b                            : inout std_logic;
+  board_i2c_sda_b                            : inout std_logic;
+
+  ---------------------------------------------------------------------------
+  -- Flash memory SPI interface
+  ---------------------------------------------------------------------------
+  --
+  -- spi_sclk_o                              : out std_logic;
+  -- spi_cs_n_o                              : out std_logic;
+  -- spi_mosi_o                              : out std_logic;
+  -- spi_miso_i                              : in  std_logic := '0';
 
   -----------------------------
   -- FMC1_250m_4ch ports
@@ -144,11 +210,10 @@ port(
   -- Clock reference selection (TS3USB221)
   fmc1_clk_sel_o                             : out std_logic;
 
-  -- EEPROM (Connected to the CPU)
+  -- EEPROM (Connected to the CPU). Use board I2C pins if needed as they are
+  -- behind a I2C switch that can access FMC I2C bus
   --eeprom_scl_pad_b                          : inout std_logic;
   --eeprom_sda_pad_b                          : inout std_logic;
-  fmc1_eeprom_scl_pad_b                     : inout std_logic;
-  fmc1_eeprom_sda_pad_b                     : inout std_logic;
 
   -- AMC7823 temperature monitor
   fmc1_amc7823_spi_cs_o                      : out std_logic;
@@ -248,64 +313,7 @@ port(
   -- FMC LEDs
   fmc2_led1_o                                : out std_logic;
   fmc2_led2_o                                : out std_logic;
-  fmc2_led3_o                                : out std_logic;
-
-  -----------------------------------------
-  -- Position Calc signals
-  -----------------------------------------
-
-  -- Uncross signals
-  --clk_swap_o                                 : out std_logic;
-  --clk_swap2x_o                               : out std_logic;
-  --flag1_o                                    : out std_logic;
-  --flag2_o                                    : out std_logic;
-
-  -----------------------------------------
-  -- General board status
-  -----------------------------------------
-  --fmc_mmcm_lock_led_o                       : out std_logic;
-  --fmc_pll_status_led_o                      : out std_logic
-
-  -----------------------------------------
-  -- PCIe pins
-  -----------------------------------------
-
-  -- DDR3 memory pins
-  ddr3_dq_b                                 : inout std_logic_vector(c_ddr_dq_width-1 downto 0);
-  ddr3_dqs_p_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-  ddr3_dqs_n_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-  ddr3_addr_o                               : out   std_logic_vector(c_ddr_row_width-1 downto 0);
-  ddr3_ba_o                                 : out   std_logic_vector(c_ddr_bank_width-1 downto 0);
-  ddr3_cs_n_o                               : out   std_logic_vector(0 downto 0);
-  ddr3_ras_n_o                              : out   std_logic;
-  ddr3_cas_n_o                              : out   std_logic;
-  ddr3_we_n_o                               : out   std_logic;
-  ddr3_reset_n_o                            : out   std_logic;
-  ddr3_ck_p_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-  ddr3_ck_n_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-  ddr3_cke_o                                : out   std_logic_vector(c_ddr_cke_width-1 downto 0);
-  ddr3_dm_o                                 : out   std_logic_vector(c_ddr_dm_width-1 downto 0);
-  ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
-
-  -- PCIe transceivers
-  pci_exp_rxp_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_rxn_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_txp_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-  pci_exp_txn_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-
-  -- PCI clock and reset signals
-  pcie_clk_p_i                              : in std_logic;
-  pcie_clk_n_i                              : in std_logic;
-
-  -----------------------------------------
-  -- Button pins
-  -----------------------------------------
-  --buttons_i                                 : in std_logic_vector(7 downto 0);
-
-  -----------------------------------------
-  -- User LEDs
-  -----------------------------------------
-  leds_o                                    : out std_logic_vector(2 downto 0)
+  fmc2_led3_o                                : out std_logic
 );
 end dbe_bpm2;
 
@@ -320,47 +328,111 @@ architecture rtl of dbe_bpm2 is
     g_fmc_adc_type                             : string := "FMC250M"
   );
   port(
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- Clocking pins
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     sys_clk_p_i                                : in std_logic;
     sys_clk_n_i                                : in std_logic;
 
     aux_clk_p_i                                : in std_logic;
     aux_clk_n_i                                : in std_logic;
 
-    -----------------------------------------
+    afc_fp2_clk1_p_i                           : in std_logic;
+    afc_fp2_clk1_n_i                           : in std_logic;
+
+    ---------------------------------------------------------------------------
     -- Reset Button
-    -----------------------------------------
-    sys_rst_button_n_i                         : in std_logic;
+    ---------------------------------------------------------------------------
+    sys_rst_button_n_i                         : in std_logic := '1';
 
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- UART pins
-    -----------------------------------------
+    ---------------------------------------------------------------------------
 
-    rs232_txd_o                                : out std_logic;
-    rs232_rxd_i                                : in std_logic;
+    uart_rxd_i                                 : in  std_logic := '1';
+    uart_txd_o                                 : out std_logic;
 
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- Trigger pins
-    -----------------------------------------
+    ---------------------------------------------------------------------------
+    trig_dir_o                                 : out   std_logic_vector(c_NUM_TRIG-1 downto 0);
+    trig_b                                     : inout std_logic_vector(c_NUM_TRIG-1 downto 0);
 
-    trig_dir_o                                 : out   std_logic_vector(7 downto 0);
-    trig_b                                     : inout std_logic_vector(7 downto 0);
-
-    -----------------------------
+    ---------------------------------------------------------------------------
     -- AFC Diagnostics
-    -----------------------------
+    ---------------------------------------------------------------------------
 
-    diag_spi_cs_i                              : in std_logic;
-    diag_spi_si_i                              : in std_logic;
+    diag_spi_cs_i                              : in std_logic := '0';
+    diag_spi_si_i                              : in std_logic := '0';
     diag_spi_so_o                              : out std_logic;
-    diag_spi_clk_i                             : in std_logic;
+    diag_spi_clk_i                             : in std_logic := '0';
 
-    -----------------------------
+    ---------------------------------------------------------------------------
     -- ADN4604ASVZ
-    -----------------------------
+    ---------------------------------------------------------------------------
     adn4604_vadj2_clk_updt_n_o                 : out std_logic;
+
+    ---------------------------------------------------------------------------
+    -- AFC I2C.
+    ---------------------------------------------------------------------------
+    -- Si57x oscillator
+    afc_si57x_scl_b                            : inout std_logic;
+    afc_si57x_sda_b                            : inout std_logic;
+
+    -- Si57x oscillator output enable
+    afc_si57x_oe_o                             : out   std_logic;
+
+    ---------------------------------------------------------------------------
+    -- PCIe pins
+    ---------------------------------------------------------------------------
+
+    -- DDR3 memory pins
+    ddr3_dq_b                                  : inout std_logic_vector(c_DDR_DQ_WIDTH-1 downto 0);
+    ddr3_dqs_p_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_dqs_n_b                               : inout std_logic_vector(c_DDR_DQS_WIDTH-1 downto 0);
+    ddr3_addr_o                                : out   std_logic_vector(c_DDR_ROW_WIDTH-1 downto 0);
+    ddr3_ba_o                                  : out   std_logic_vector(c_DDR_BANK_WIDTH-1 downto 0);
+    ddr3_cs_n_o                                : out   std_logic_vector(0 downto 0);
+    ddr3_ras_n_o                               : out   std_logic;
+    ddr3_cas_n_o                               : out   std_logic;
+    ddr3_we_n_o                                : out   std_logic;
+    ddr3_reset_n_o                             : out   std_logic;
+    ddr3_ck_p_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+    ddr3_ck_n_o                                : out   std_logic_vector(c_DDR_CK_WIDTH-1 downto 0);
+    ddr3_cke_o                                 : out   std_logic_vector(c_DDR_CKE_WIDTH-1 downto 0);
+    ddr3_dm_o                                  : out   std_logic_vector(c_DDR_DM_WIDTH-1 downto 0);
+    ddr3_odt_o                                 : out   std_logic_vector(c_DDR_ODT_WIDTH-1 downto 0);
+
+    -- PCIe transceivers
+    pci_exp_rxp_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+    pci_exp_rxn_i                              : in  std_logic_vector(c_PCIELANES - 1 downto 0);
+    pci_exp_txp_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+    pci_exp_txn_o                              : out std_logic_vector(c_PCIELANES - 1 downto 0);
+
+    -- PCI clock and reset signals
+    pcie_clk_p_i                               : in std_logic;
+    pcie_clk_n_i                               : in std_logic;
+
+    ---------------------------------------------------------------------------
+    -- User LEDs
+    ---------------------------------------------------------------------------
+    leds_o                                     : out std_logic_vector(2 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- FMC interface
+    ---------------------------------------------------------------------------
+
+    board_i2c_scl_b                            : inout std_logic;
+    board_i2c_sda_b                            : inout std_logic;
+
+    ---------------------------------------------------------------------------
+    -- Flash memory SPI interface
+    ---------------------------------------------------------------------------
+    --
+    -- spi_sclk_o                              : out std_logic;
+    -- spi_cs_n_o                              : out std_logic;
+    -- spi_mosi_o                              : out std_logic;
+    -- spi_miso_i                              : in  std_logic := '0';
 
     -----------------------------
     -- FMC1_130m_4ch ports
@@ -727,86 +799,29 @@ architecture rtl of dbe_bpm2 is
     -----------------------------------------
     -- FMC PICO 1M_4CH Ports
     -----------------------------------------
-    fmcpico_2_adc_cnv_o                             : out std_logic;
-    fmcpico_2_adc_sck_o                             : out std_logic;
-    fmcpico_2_adc_sck_rtrn_i                        : in std_logic := '0';
-    fmcpico_2_adc_sdo1_i                            : in std_logic := '0';
-    fmcpico_2_adc_sdo2_i                            : in std_logic := '0';
-    fmcpico_2_adc_sdo3_i                            : in std_logic := '0';
-    fmcpico_2_adc_sdo4_i                            : in std_logic := '0';
-    fmcpico_2_adc_busy_cmn_i                        : in std_logic := '0';
+    fmcpico_2_adc_cnv_o                        : out std_logic;
+    fmcpico_2_adc_sck_o                        : out std_logic;
+    fmcpico_2_adc_sck_rtrn_i                   : in std_logic := '0';
+    fmcpico_2_adc_sdo1_i                       : in std_logic := '0';
+    fmcpico_2_adc_sdo2_i                       : in std_logic := '0';
+    fmcpico_2_adc_sdo3_i                       : in std_logic := '0';
+    fmcpico_2_adc_sdo4_i                       : in std_logic := '0';
+    fmcpico_2_adc_busy_cmn_i                   : in std_logic := '0';
 
-    fmcpico_2_rng_r1_o                              : out std_logic;
-    fmcpico_2_rng_r2_o                              : out std_logic;
-    fmcpico_2_rng_r3_o                              : out std_logic;
-    fmcpico_2_rng_r4_o                              : out std_logic;
+    fmcpico_2_rng_r1_o                         : out std_logic;
+    fmcpico_2_rng_r2_o                         : out std_logic;
+    fmcpico_2_rng_r3_o                         : out std_logic;
+    fmcpico_2_rng_r4_o                         : out std_logic;
 
-    fmcpico_2_led1_o                                : out std_logic;
-    fmcpico_2_led2_o                                : out std_logic;
+    fmcpico_2_led1_o                           : out std_logic;
+    fmcpico_2_led2_o                           : out std_logic;
 
     ---- Connected through FPGA MUX
-    --fmcpico_2_sm_scl_o                              : out std_logic;
-    --fmcpico_2_sm_sda_b                              : inout std_logic;
+    --fmcpico_2_sm_scl_o                         : out std_logic;
+    --fmcpico_2_sm_sda_b                         : inout std_logic;
 
-    fmcpico_2_a_scl_o                               : out std_logic;
-    fmcpico_2_a_sda_b                               : inout std_logic;
-
-    -----------------------------------------
-    -- Position Calc signals
-    -----------------------------------------
-
-    -- Uncross signals
-    --clk_swap_o                                 : out std_logic;
-    --clk_swap2x_o                               : out std_logic;
-    --flag1_o                                    : out std_logic;
-    --flag2_o                                    : out std_logic;
-
-    -----------------------------------------
-    -- General board status
-    -----------------------------------------
-    --fmc_mmcm_lock_led_o                       : out std_logic;
-    --fmc_pll_status_led_o                      : out std_logic
-
-    -----------------------------------------
-    -- PCIe pins
-    -----------------------------------------
-
-    -- DDR3 memory pins
-    ddr3_dq_b                                 : inout std_logic_vector(c_ddr_dq_width-1 downto 0);
-    ddr3_dqs_p_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-    ddr3_dqs_n_b                              : inout std_logic_vector(c_ddr_dqs_width-1 downto 0);
-    ddr3_addr_o                               : out   std_logic_vector(c_ddr_row_width-1 downto 0);
-    ddr3_ba_o                                 : out   std_logic_vector(c_ddr_bank_width-1 downto 0);
-    ddr3_cs_n_o                               : out   std_logic_vector(0 downto 0);
-    ddr3_ras_n_o                              : out   std_logic;
-    ddr3_cas_n_o                              : out   std_logic;
-    ddr3_we_n_o                               : out   std_logic;
-    ddr3_reset_n_o                            : out   std_logic;
-    ddr3_ck_p_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-    ddr3_ck_n_o                               : out   std_logic_vector(c_ddr_ck_width-1 downto 0);
-    ddr3_cke_o                                : out   std_logic_vector(c_ddr_cke_width-1 downto 0);
-    ddr3_dm_o                                 : out   std_logic_vector(c_ddr_dm_width-1 downto 0);
-    ddr3_odt_o                                : out   std_logic_vector(c_ddr_odt_width-1 downto 0);
-
-    -- PCIe transceivers
-    pci_exp_rxp_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-    pci_exp_rxn_i                             : in  std_logic_vector(c_pcielanes - 1 downto 0);
-    pci_exp_txp_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-    pci_exp_txn_o                             : out std_logic_vector(c_pcielanes - 1 downto 0);
-
-    -- PCI clock and reset signals
-    pcie_clk_p_i                              : in std_logic;
-    pcie_clk_n_i                              : in std_logic;
-
-    -----------------------------------------
-    -- Button pins
-    -----------------------------------------
-    --buttons_i                                 : in std_logic_vector(7 downto 0);
-
-    -----------------------------------------
-    -- User LEDs
-    -----------------------------------------
-    leds_o                                    : out std_logic_vector(2 downto 0)
+    fmcpico_2_a_scl_o                          : out std_logic;
+    fmcpico_2_a_sda_b                          : inout std_logic
   );
   end component;
 
@@ -817,47 +832,111 @@ begin
     g_fmc_adc_type                            => "FMC250M"
   )
   port map (
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- Clocking pins
-    -----------------------------------------
-    sys_clk_p_i                               => sys_clk_p_i,
-    sys_clk_n_i                               => sys_clk_n_i,
+    ---------------------------------------------------------------------------
+    sys_clk_p_i                              => sys_clk_p_i,
+    sys_clk_n_i                              => sys_clk_n_i,
 
-    aux_clk_p_i                               => aux_clk_p_i,
-    aux_clk_n_i                               => aux_clk_n_i,
+    aux_clk_p_i                              => aux_clk_p_i,
+    aux_clk_n_i                              => aux_clk_n_i,
 
-    -----------------------------------------
+    afc_fp2_clk1_p_i                         => afc_fp2_clk1_p_i,
+    afc_fp2_clk1_n_i                         => afc_fp2_clk1_n_i,
+
+    ---------------------------------------------------------------------------
     -- Reset Button
-    -----------------------------------------
-    sys_rst_button_n_i                        => sys_rst_button_n_i,
+    ---------------------------------------------------------------------------
+    sys_rst_button_n_i                       => sys_rst_button_n_i,
 
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- UART pins
-    -----------------------------------------
+    ---------------------------------------------------------------------------
 
-    rs232_txd_o                               => rs232_txd_o,
-    rs232_rxd_i                               => rs232_rxd_i,
+    uart_rxd_i                               => uart_rxd_i,
+    uart_txd_o                               => uart_txd_o,
 
-    -----------------------------------------
+    ---------------------------------------------------------------------------
     -- Trigger pins
-    -----------------------------------------
+    ---------------------------------------------------------------------------
+    trig_dir_o                               => trig_dir_o,
+    trig_b                                   => trig_b,
 
-    trig_dir_o                                => trig_dir_o,
-    trig_b                                    => trig_b,
-
-    -----------------------------
+    ---------------------------------------------------------------------------
     -- AFC Diagnostics
-    -----------------------------
+    ---------------------------------------------------------------------------
 
-    diag_spi_cs_i                             => diag_spi_cs_i,
-    diag_spi_si_i                             => diag_spi_si_i,
-    diag_spi_so_o                             => diag_spi_so_o,
-    diag_spi_clk_i                            => diag_spi_clk_i,
+    diag_spi_cs_i                            => diag_spi_cs_i,
+    diag_spi_si_i                            => diag_spi_si_i,
+    diag_spi_so_o                            => diag_spi_so_o,
+    diag_spi_clk_i                           => diag_spi_clk_i,
 
-    -----------------------------
+    ---------------------------------------------------------------------------
     -- ADN4604ASVZ
-    -----------------------------
-    adn4604_vadj2_clk_updt_n_o                => adn4604_vadj2_clk_updt_n_o,
+    ---------------------------------------------------------------------------
+    adn4604_vadj2_clk_updt_n_o               => adn4604_vadj2_clk_updt_n_o,
+
+    ---------------------------------------------------------------------------
+    -- AFC I2C.
+    ---------------------------------------------------------------------------
+    -- Si57x oscillator
+    afc_si57x_scl_b                          => afc_si57x_scl_b,
+    afc_si57x_sda_b                          => afc_si57x_sda_b,
+
+    -- Si57x oscillator output enable
+    afc_si57x_oe_o                           => afc_si57x_oe_o,
+
+    ---------------------------------------------------------------------------
+    -- PCIe pins
+    ---------------------------------------------------------------------------
+
+    -- DDR3 memory pins
+    ddr3_dq_b                                => ddr3_dq_b,
+    ddr3_dqs_p_b                             => ddr3_dqs_p_b,
+    ddr3_dqs_n_b                             => ddr3_dqs_n_b,
+    ddr3_addr_o                              => ddr3_addr_o,
+    ddr3_ba_o                                => ddr3_ba_o,
+    ddr3_cs_n_o                              => ddr3_cs_n_o,
+    ddr3_ras_n_o                             => ddr3_ras_n_o,
+    ddr3_cas_n_o                             => ddr3_cas_n_o,
+    ddr3_we_n_o                              => ddr3_we_n_o,
+    ddr3_reset_n_o                           => ddr3_reset_n_o,
+    ddr3_ck_p_o                              => ddr3_ck_p_o,
+    ddr3_ck_n_o                              => ddr3_ck_n_o,
+    ddr3_cke_o                               => ddr3_cke_o,
+    ddr3_dm_o                                => ddr3_dm_o,
+    ddr3_odt_o                               => ddr3_odt_o,
+
+    -- PCIe transceivers
+    pci_exp_rxp_i                            => pci_exp_rxp_i,
+    pci_exp_rxn_i                            => pci_exp_rxn_i,
+    pci_exp_txp_o                            => pci_exp_txp_o,
+    pci_exp_txn_o                            => pci_exp_txn_o,
+
+    -- PCI clock and reset signals
+    pcie_clk_p_i                             => pcie_clk_p_i,
+    pcie_clk_n_i                             => pcie_clk_n_i,
+
+    ---------------------------------------------------------------------------
+    -- User LEDs
+    ---------------------------------------------------------------------------
+    leds_o                                   => leds_o,
+
+    ---------------------------------------------------------------------------
+    -- FMC interface
+    ---------------------------------------------------------------------------
+
+    board_i2c_scl_b                          => board_i2c_scl_b,
+    board_i2c_sda_b                          => board_i2c_sda_b,
+
+    ---------------------------------------------------------------------------
+    -- Flash memory SPI interface
+    ---------------------------------------------------------------------------
+    --
+    -- spi_sclk_o                               => spi_sclk_o,
+    -- spi_cs_n_o                               => spi_cs_n_o,
+    -- spi_mosi_o                               => spi_mosi_o,
+    -- spi_miso_i                               => spi_miso_i,
 
     -----------------------------
     -- FMC1_250m_4ch ports
@@ -932,11 +1011,10 @@ begin
     -- Clock reference selection (TS3USB221)
     fmc250_1_clk_sel_o                        => fmc1_clk_sel_o,
 
-    -- EEPROM (Connected to the CPU)
+    -- EEPROM (Connected to the CPU). Use board I2C pins if needed as they are
+    -- behind a I2C switch that can access FMC I2C bus
     --eeprom_scl_pad_b                         : inout std_logic;
     --eeprom_sda_pad_b                         : inout std_logic;
-    fmc250_1_eeprom_scl_pad_b                 => fmc1_eeprom_scl_pad_b,
-    fmc250_1_eeprom_sda_pad_b                 => fmc1_eeprom_sda_pad_b,
 
     -- AMC7823 temperature monitor
     fmc250_1_amc7823_spi_cs_o                 => fmc1_amc7823_spi_cs_o,
@@ -1036,64 +1114,7 @@ begin
     -- FMC LEDs
     fmc250_2_led1_o                           => fmc2_led1_o,
     fmc250_2_led2_o                           => fmc2_led2_o,
-    fmc250_2_led3_o                           => fmc2_led3_o,
-
-    -----------------------------------------
-    -- Position Calc signals
-    -----------------------------------------
-
-    -- Uncross signals
-    --clk_swap_o                                 : out std_logic;
-    --clk_swap2x_o                               : out std_logic;
-    --flag1_o                                    : out std_logic;
-    --flag2_o                                    : out std_logic;
-
-    -----------------------------------------
-    -- General board status
-    -----------------------------------------
-    --fmc_mmcm_lock_led_o                       : out std_logic;
-    --fmc_pll_status_led_o                      : out std_logic
-
-    -----------------------------------------
-    -- PCIe pins
-    -----------------------------------------
-
-    -- DDR3 memory pins
-    ddr3_dq_b                                 => ddr3_dq_b,
-    ddr3_dqs_p_b                              => ddr3_dqs_p_b,
-    ddr3_dqs_n_b                              => ddr3_dqs_n_b,
-    ddr3_addr_o                               => ddr3_addr_o,
-    ddr3_ba_o                                 => ddr3_ba_o,
-    ddr3_cs_n_o                               => ddr3_cs_n_o,
-    ddr3_ras_n_o                              => ddr3_ras_n_o,
-    ddr3_cas_n_o                              => ddr3_cas_n_o,
-    ddr3_we_n_o                               => ddr3_we_n_o,
-    ddr3_reset_n_o                            => ddr3_reset_n_o,
-    ddr3_ck_p_o                               => ddr3_ck_p_o,
-    ddr3_ck_n_o                               => ddr3_ck_n_o,
-    ddr3_cke_o                                => ddr3_cke_o,
-    ddr3_dm_o                                 => ddr3_dm_o,
-    ddr3_odt_o                                => ddr3_odt_o,
-
-    -- PCIe transceivers
-    pci_exp_rxp_i                             => pci_exp_rxp_i,
-    pci_exp_rxn_i                             => pci_exp_rxn_i,
-    pci_exp_txp_o                             => pci_exp_txp_o,
-    pci_exp_txn_o                             => pci_exp_txn_o,
-
-    -- PCI clock and reset signals
-    pcie_clk_p_i                              => pcie_clk_p_i,
-    pcie_clk_n_i                              => pcie_clk_n_i,
-
-    -----------------------------------------
-    -- Button pins
-    -----------------------------------------
-    --buttons_i                                 : in std_logic_vector(7 downto 0);
-
-    -----------------------------------------
-    -- User LEDs
-    -----------------------------------------
-    leds_o                                    => leds_o
+    fmc250_2_led3_o                           => fmc2_led3_o
   );
 
 end rtl;
