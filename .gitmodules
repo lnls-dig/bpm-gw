@@ -7,3 +7,6 @@
 [submodule "hdl/ip_cores/infra-cores"]
 	path = hdl/ip_cores/infra-cores
 	url = https://github.com/lnls-dig/infra-cores
+[submodule "hdl/ip_cores/afc-gw"]
+	path = hdl/ip_cores/afc-gw
+	url = https://github.com/lnls-dig/afc-gw
