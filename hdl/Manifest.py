@@ -6,5 +6,7 @@ modules = { "local": [
                 "ip_cores/dsp-cores",
                 "ip_cores/infra-cores",
                 "ip_cores/afc-gw",
+                "ip_cores/CommsCtrlFPGA",
+                "ip_cores/fofb-ctrl-gw",
             ]
     };
