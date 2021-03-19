@@ -1,0 +1,85 @@
+
+#
+# Mezzanine top level pin assignment file:
+# syntax: pin FMC_pin_name Core_Pin_name IO_Standard
+# % is replaced with FMC number if the carrier supports more than 1 mezzanine
+#
+
+mezzanine rtm-8sfp+-ohwr-v1
+
+# Not connected in the carrier
+# pin j6_b3   rtm_clk_ext_n_i               lvds_33
+# pin j6_a3   rtm_clk_ext_p_i               lvds_33
+#
+# Connected through a level translator
+# pin j6_c10  rtm_sfp_ctl_din_n_o           lvcmos33
+# pin j6_c9   rtm_sfp_ctl_str_n_o           lvcmos33
+# pin j6_c8   rtm_sfp_status_reg_clk_n_o    lvcmos33
+# pin j6_c7   rtm_sfp_ctl_oe_n_o            lvcmos33
+# pin j6_c6   rtm_sfp_status_reg_out_i      lvcmos33
+pin j6_c10  rtm_sfp_ctl_din_n_o           lvcmos25
+pin j6_c9   rtm_sfp_ctl_str_n_o           lvcmos25
+pin j6_c8   rtm_sfp_status_reg_clk_n_o    lvcmos25
+pin j6_c7   rtm_sfp_ctl_oe_n_o            lvcmos25
+pin j6_c6   rtm_sfp_status_reg_out_i      lvcmos25
+
+# Not connected in the carrier
+# pin j6_d3   rtm_sync_clk_n_o              lvds_25
+# pin j6_c3   rtm_sync_clk_p_o              lvds_25
+
+pin j2_b9   rtm_fpga_clk2_n_i
+pin j2_a9   rtm_fpga_clk2_p_i
+pin j2_b5   rtm_fpga_clk1_n_i
+pin j2_a5   rtm_fpga_clk1_p_i
+
+# Connected through a level translator
+# pin j2_a1   rtm_sfp_status_reg_pl_o       lvcmos33
+pin j2_a1   rtm_sfp_status_reg_pl_o       lvcmos25
+
+#pin j2_d10  rtm_sfp_rx_n_i[0]
+#pin j2_c10  rtm_sfp_rx_p_i[0]
+#pin j2_d9   rtm_sfp_rx_n_i[1]
+#pin j2_c9   rtm_sfp_rx_p_i[1]
+#pin j2_d8   rtm_sfp_rx_n_i[2]
+#pin j2_c8   rtm_sfp_rx_p_i[2]
+#pin j2_d7   rtm_sfp_rx_n_i[3]
+#pin j2_c7   rtm_sfp_rx_p_i[3]
+# Incompatible electrical standard with AFC when using
+# the Flash SPI
+pin j2_d6   rtm_sfp_rx_n_i[4]
+pin j2_c6   rtm_sfp_rx_p_i[4]
+pin j2_d5   rtm_sfp_rx_n_i[5]
+pin j2_c5   rtm_sfp_rx_p_i[5]
+pin j2_d4   rtm_sfp_rx_n_i[6]
+pin j2_c4   rtm_sfp_rx_p_i[6]
+pin j2_d3   rtm_sfp_rx_n_i[7]
+pin j2_c3   rtm_sfp_rx_p_i[7]
+
+#pin j2_f10  rtm_sfp_tx_n_o[0]
+#pin j2_e10  rtm_sfp_tx_p_o[0]
+#pin j2_f9   rtm_sfp_tx_n_o[1]
+#pin j2_e9   rtm_sfp_tx_p_o[1]
+#pin j2_f8   rtm_sfp_tx_n_o[2]
+#pin j2_e8   rtm_sfp_tx_p_o[2]
+#pin j2_f7   rtm_sfp_tx_n_o[3]
+#pin j2_e7   rtm_sfp_tx_p_o[3]
+# Incompatible electrical standard with AFC when using
+# the Flash SPI
+pin j2_f6   rtm_sfp_tx_n_o[4]
+pin j2_e6   rtm_sfp_tx_p_o[4]
+pin j2_f5   rtm_sfp_tx_n_o[5]
+pin j2_e5   rtm_sfp_tx_p_o[5]
+pin j2_f4   rtm_sfp_tx_n_o[6]
+pin j2_e4   rtm_sfp_tx_p_o[6]
+pin j2_f3   rtm_sfp_tx_n_o[7]
+pin j2_e3   rtm_sfp_tx_p_o[7]
+
+pin j2_c2   rtm_si570_oe_o                lvcmos25
+pin j2_c1   rtm_clk_in_sel_o              lvcmos25
+
+# Connected through a level translator
+# pin j2_e2   rtm_sda_b                     lvcmos25
+pin j2_e2   rtm_sda_b                     lvcmos15
+pin j2_e1   rtm_scl_b                     lvcmos25
+
+#eof
