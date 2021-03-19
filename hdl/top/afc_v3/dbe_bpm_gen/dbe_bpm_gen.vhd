@@ -29,6 +29,8 @@ use work.gencores_pkg.all;
 use work.ifc_wishbone_pkg.all;
 -- Custom common cores
 use work.ifc_common_pkg.all;
+-- Generic cores
+use work.ifc_generic_pkg.all;
 -- Wishbone stream modules and interface
 use work.wb_stream_generic_pkg.all;
 -- FMC ADC definitions
@@ -59,10 +61,18 @@ use work.afc_base_pkg.all;
 use work.afc_base_acq_pkg.all;
 -- Orbit interlock
 use work.orbit_intlk_pkg.all;
+-- DCC
+use work.fofb_cc_pkg.all;
+-- DCC wrappers
+use work.fofb_ctrl_pkg.all;
 
 entity dbe_bpm_gen is
 generic(
-  g_fmc_adc_type                             : string := "FMC250M"
+  g_fmc_adc_type                             : string := "FMC250M";
+  g_WITH_RTM_SFP                             : boolean := false;
+  g_NUM_SFPS                                 : integer := 4;
+  g_SFP_START_ID                             : integer := 4;
+  g_WITH_FOFB_DCC                            : boolean := false
 );
 port(
   ---------------------------------------------------------------------------
@@ -558,7 +568,63 @@ port(
   --fmcpico_2_sm_sda_b                         : inout std_logic;
 
   fmcpico_2_a_scl_o                          : out std_logic;
-  fmcpico_2_a_sda_b                          : inout std_logic
+  fmcpico_2_a_sda_b                          : inout std_logic;
+
+  ---------------------------------------------------------------------------
+  -- RTM board pins
+  ---------------------------------------------------------------------------
+  -- SFP
+  rtm_sfp_rx_p_i                             : in    std_logic_vector(g_NUM_SFPS+g_SFP_START_ID-1 downto g_SFP_START_ID) := (others => '0');
+  rtm_sfp_rx_n_i                             : in    std_logic_vector(g_NUM_SFPS+g_SFP_START_ID-1 downto g_SFP_START_ID) := (others => '1');
+  rtm_sfp_tx_p_o                             : out   std_logic_vector(g_NUM_SFPS+g_SFP_START_ID-1 downto g_SFP_START_ID);
+  rtm_sfp_tx_n_o                             : out   std_logic_vector(g_NUM_SFPS+g_SFP_START_ID-1 downto g_SFP_START_ID);
+
+  -- RTM I2C.
+  -- SFP configuration pins, behind a I2C MAX7356. I2C addr = 1110_100 & '0' = 0xE8
+  -- Si570 oscillator. Input 0 of CDCLVD1212. I2C addr = 1010101 & '0' = 0x55
+  rtm_scl_b                                  : inout std_logic;
+  rtm_sda_b                                  : inout std_logic;
+
+  -- Si570 oscillator output enable
+  rtm_si570_oe_o                             : out   std_logic;
+
+  ---- Clock to RTM connector. Input 1 of CDCLVD1212. Not connected directly to
+  -- AFC
+  --rtm_rtm_sync_clk_p_o                       : out   std_logic;
+  --rtm_rtm_sync_clk_n_o                       : out   std_logic;
+
+  -- Select between input 0 or 1 or CDCLVD1212. 0 is Si570, 1 is RTM sync clock
+  rtm_clk_in_sel_o                           : out   std_logic;
+
+  -- FPGA clocks from CDCLVD1212
+  rtm_fpga_clk1_p_i                          : in    std_logic := '0';
+  rtm_fpga_clk1_n_i                          : in    std_logic := '0';
+  rtm_fpga_clk2_p_i                          : in    std_logic := '0';
+  rtm_fpga_clk2_n_i                          : in    std_logic := '0';
+
+  -- SFP status bits. Behind 4 74HC165, 8-parallel-in/serial-out. 4 x 8 bits.
+  -- The PISO chips are organized like this:
+  --
+  -- Parallel load
+  rtm_sfp_status_reg_pl_o                    : out   std_logic;
+  -- Clock N
+  rtm_sfp_status_reg_clk_n_o                 : out   std_logic;
+  -- Serial output
+  rtm_sfp_status_reg_out_i                   : in    std_logic   := '0';
+
+  -- SFP control bits. Behind 4 74HC4094D, serial-in/8-parallel-out. 5 x 8 bits.
+  -- The SIPO chips are organized like this:
+  --
+  -- Strobe
+  rtm_sfp_ctl_str_n_o                        : out   std_logic;
+  -- Data input
+  rtm_sfp_ctl_din_n_o                        : out   std_logic;
+  -- Parallel output enable
+  rtm_sfp_ctl_oe_n_o                         : out   std_logic;
+
+  -- External clock from RTM to FPGA
+  rtm_ext_clk_p_i                            : in    std_logic  := '0';
+  rtm_ext_clk_n_i                            : in    std_logic  := '0'
 );
 end dbe_bpm_gen;
 
@@ -687,6 +753,160 @@ architecture rtl of dbe_bpm_gen is
   signal afc_si57x_ext_hs_value              : std_logic_vector(2 downto 0);
 
   -----------------------------------------------------------------------------
+  -- RTM SFP signals
+  -----------------------------------------------------------------------------
+
+  -- RTM 8SFP IDs
+  constant c_NUM_SFPS_FOFB                   : integer := 4; -- maximum of 4 supported
+  constant c_RTM_8SFP_NUM_CORES              : natural := 1;
+
+  constant c_RTM_8SFP_0_ID                   : natural := 0;
+
+  constant c_SLV_RTM_8SFP_CORE_IDS           : t_num_array(c_RTM_8SFP_NUM_CORES-1 downto 0) :=
+    f_gen_ramp(0, c_RTM_8SFP_NUM_CORES);
+
+  constant c_RTM_SI57x_I2C_FREQ              : integer := 400000;
+  constant c_RTM_SI57x_INIT_OSC              : boolean := true;
+  constant c_RTM_SI57x_INIT_RFREQ_VALUE      : std_logic_vector(37 downto 0) := "00" & x"2bc0af3b8";
+  constant c_RTM_SI57x_INIT_N1_VALUE         : std_logic_vector(6 downto 0) := "0000111";
+  constant c_RTM_SI57x_INIT_HS_VALUE         : std_logic_vector(2 downto 0) := "000";
+
+  -- Wishbone bus from user afc_base_acq to RTM
+  signal wb_rtm_master_out                   : t_wishbone_master_out_array(c_RTM_8SFP_NUM_CORES-1 downto 0);
+  signal wb_rtm_master_in                    : t_wishbone_master_in_array(c_RTM_8SFP_NUM_CORES-1 downto 0);
+
+  -- Fix SFP inversion from 1 to 8 to 8 to 1
+  signal rtm_sfp_fix_rx_p                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_fix_rx_n                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_fix_tx_p                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_fix_tx_n                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
+
+  -- SFPs to FOFB controller
+  signal rtm_sfp_rx_p                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_rx_n                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_tx_p                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_tx_n                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
+
+  signal rtm_clk1_p                          : std_logic;
+  signal rtm_clk1_n                          : std_logic;
+  signal rtm_clk2_p                          : std_logic;
+  signal rtm_clk2_n                          : std_logic;
+
+  signal rtm_ext_clk_p                       : std_logic;
+  signal rtm_ext_clk_n                       : std_logic;
+  signal rtm_sta_reconfig_done               : std_logic;
+  signal rtm_sta_reconfig_done_pp            : std_logic;
+  signal rtm_reconfig_rst                    : std_logic;
+  signal rtm_reconfig_rst_n                  : std_logic;
+
+  signal rtm_ext_wr                          : std_logic;
+  signal rtm_ext_rfreq_value                 : std_logic_vector(37 downto 0);
+  signal rtm_ext_n1_value                    : std_logic_vector(6 downto 0);
+  signal rtm_ext_hs_value                    : std_logic_vector(2 downto 0);
+
+  signal sfp_txdisable                       : std_logic_vector(7 downto 0) := (others => '0');
+  signal sfp_rs0                             : std_logic_vector(7 downto 0) := (others => '0');
+  signal sfp_rs1                             : std_logic_vector(7 downto 0) := (others => '0');
+
+  signal sfp_led1                            : std_logic_vector(7 downto 0);
+  signal sfp_los                             : std_logic_vector(7 downto 0);
+  signal sfp_txfault                         : std_logic_vector(7 downto 0);
+  signal sfp_detect_n                        : std_logic_vector(7 downto 0);
+
+  signal sfp_fix_txdisable                   : std_logic_vector(7 downto 0) := (others => '0');
+  signal sfp_fix_rs0                         : std_logic_vector(7 downto 0) := (others => '0');
+  signal sfp_fix_rs1                         : std_logic_vector(7 downto 0) := (others => '0');
+
+  signal sfp_fix_led1                        : std_logic_vector(7 downto 0);
+  signal sfp_fix_los                         : std_logic_vector(7 downto 0);
+  signal sfp_fix_txfault                     : std_logic_vector(7 downto 0);
+  signal sfp_fix_detect_n                    : std_logic_vector(7 downto 0);
+
+  -----------------------------------------------------------------------------
+  -- FOFB DCC signals
+  -----------------------------------------------------------------------------
+
+  -- FOFB CC
+  constant c_NUM_FOFB_CC_CORES               : natural := 1;
+
+  constant c_FOFB_CC_RTM_ID                  : natural := 0;
+
+  constant c_BPMS                            : integer := 1;
+  constant c_FAI_DW                          : integer := 16;
+  constant c_DMUX                            : integer := 2;
+  constant c_LANE_COUNT                      : integer := c_NUM_SFPS_FOFB;
+  constant c_USE_CHIPSCOPE                   : boolean := false;
+  constant c_FOFB_DCC_DATA_WIDTH             : natural := 32*PacketSize;
+
+  type t_fofb_cc_logic_array is array (natural range <>) of std_logic;
+  type t_fofb_cc_data_fai_array is array (natural range <>) of std_logic_vector(c_FAI_DW-1 downto 0);
+  type t_fofb_cc_buf_addr_array is array (natural range <>) of std_logic_vector(NodeW downto 0);
+  type t_fofb_cc_buf_data_array is array (natural range <>) of std_logic_vector(63 downto 0);
+  type t_fofb_cc_node_mask_array is array (natural range <>) of std_logic_vector(NodeNum-1 downto 0);
+  type t_fofb_cc_std32_array is array (natural range <>) of std_logic_vector(31 downto 0);
+  type t_fofb_cc_std4_array is array (natural range <>) of std_logic_vector(3 downto 0);
+  type t_fofb_cc_fod_data_array is array (natural range <>) of std_logic_vector(c_FOFB_DCC_DATA_WIDTH-1 downto 0);
+  type t_fofb_cc_fod_val_array is array (natural range <>) of std_logic_vector(c_LANE_COUNT-1 downto 0);
+  type t_fofb_cc_rio_array is array (natural range <>) of std_logic_vector(c_LANE_COUNT-1 downto 0);
+
+  signal fai_fa_block_start                  : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fai_fa_data_valid                   : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fai_fa_d                            : t_fofb_cc_data_fai_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+
+  signal fai_sim_data_sel                    : t_fofb_cc_std4_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+  signal fai_sim_enable                      : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '1');
+  signal fai_sim_trigger                     : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fai_sim_trigger_internal            : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fai_sim_armed                       : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+
+   signal fai_cfg_clk                        : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+   signal fai_cfg_val                        : t_fofb_cc_std32_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+
+
+  signal fofb_userclk                        : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fofb_userrst                        : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fofb_userrst_n                      : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal timeframe_start                     : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal timeframe_end                       : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fofb_dma_ok                         : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
+  signal fofb_node_mask                      : t_fofb_cc_node_mask_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+  signal fofb_timestamp_val                  : t_fofb_cc_std32_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+  signal fofb_link_status                    : t_fofb_cc_std32_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => (others => '0'));
+
+  signal fofb_fod_dat                        : t_fofb_cc_fod_data_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_fod_dat_val                    : t_fofb_cc_fod_val_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_fod_dat_fs_sync                : t_fofb_cc_fod_data_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_fod_dat_val_fs_sync            : t_fofb_cc_fod_val_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_rio_rx_p                       : t_fofb_cc_rio_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_rio_rx_n                       : t_fofb_cc_rio_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_rio_tx_p                       : t_fofb_cc_rio_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_rio_tx_n                       : t_fofb_cc_rio_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_rio_tx_disable                 : t_fofb_cc_rio_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+
+  signal fofb_ref_clk_p                      : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+  signal fofb_ref_clk_n                      : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0);
+
+  signal fofb_sysreset_n                     : std_logic_vector(c_NUM_FOFB_CC_CORES-1 downto 0);
+
+  -----------------------------------------------------------------------------
   -- Acquisition signals
   -----------------------------------------------------------------------------
 
@@ -715,11 +935,12 @@ architecture rtl of dbe_bpm_gen is
   constant c_ACQ_MONIT_POS_ID               : natural := 17;
   constant c_TRIGGER_SW_CLK_ID              : natural := 18;
   constant c_PHASE_SYNC_TRIGGER_SLOW_ID     : natural := 19;
+  constant c_ACQ_DCC_ID                     : natural := 20;
 
   -- Number of channels per acquisition core
-  constant c_ACQ_NUM_CHANNELS               : natural := 18; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
+  constant c_ACQ_NUM_CHANNELS               : natural := 21; -- ADC + ADC SWAP + MIXER + TBT AMP + TBT POS +
                                                             -- FOFB AMP + FOFB POS + MONIT AMP + MONIT POS + MONIT1 AMP +
-                                                            -- MONIT1 POS for each FMC
+                                                            -- MONIT1 POS for each FMC + trigger ID + DCC
 
   constant c_ACQ_POS_DDR3_WIDTH             : natural := 32;
 
@@ -756,6 +977,12 @@ architecture rtl of dbe_bpm_gen is
   constant c_FACQ_PARAMS_ADC                : t_facq_chan_param := f_acq_channel_adc_param(g_FMC_ADC_TYPE);
   constant c_FACQ_PARAMS_MIX                : t_facq_chan_param := f_acq_channel_mix_param(g_FMC_ADC_TYPE);
 
+  constant c_FACQ_PARAMS_DCC                 : t_facq_chan_param := (
+    width                                    => to_unsigned(128, c_ACQ_CHAN_CMPLT_WIDTH_LOG2),
+    num_atoms                                => to_unsigned(4, c_ACQ_NUM_ATOMS_WIDTH_LOG2),
+    atom_width                               => to_unsigned(32, c_ACQ_ATOM_WIDTH_LOG2)
+  );
+
   constant c_FACQ_CHANNELS                  : t_facq_chan_param_array(c_ACQ_NUM_CHANNELS-1 downto 0) :=
   (
      c_ACQ_ADC_ID            => c_FACQ_PARAMS_ADC,
@@ -775,7 +1002,13 @@ architecture rtl of dbe_bpm_gen is
      c_ACQ_MONIT1_AMP_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
      c_ACQ_MONIT1_POS_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
      c_ACQ_MONIT_AMP_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
-     c_ACQ_MONIT_POS_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32)
+     c_ACQ_MONIT_POS_ID      => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     -- Unused channel, for compatibility
+     c_TRIGGER_SW_CLK_ID     => (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     -- Unused channel, for compatibility
+     c_PHASE_SYNC_TRIGGER_SLOW_ID =>
+                                (width => c_ACQ_WIDTH_U128, num_atoms => c_ACQ_NUM_ATOMS_U4, atom_width => c_ACQ_ATOM_WIDTH_U32),
+     c_ACQ_DCC_ID            => c_FACQ_PARAMS_DCC
   );
 
   signal acq_chan_array                      : t_facq_chan_array2d(c_ACQ_NUM_CORES-1 downto 0, c_ACQ_NUM_CHANNELS-1 downto 0);
@@ -858,7 +1091,16 @@ architecture rtl of dbe_bpm_gen is
   constant c_SLV_POS_CALC_2_ID               : natural := 2;
   constant c_SLV_FMC_ADC_2_ID                : natural := 3;
   constant c_SLV_ORBIT_INTLK_ID              : natural := 4;
-  constant c_USER_NUM_CORES                  : natural := 5;
+
+  constant c_SLV_FOFB_START                  : natural := 5;
+  constant c_SLV_FOFB_CC_CORE_IDS           : t_num_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+    f_gen_ramp(c_SLV_FOFB_START, c_SLV_FOFB_START+c_NUM_FOFB_CC_CORES);
+  -- Because VHDL doesn't like non-globally static things...
+  --constant c_SLV_FOFB_CC_RTM_ID              : natural := c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID);
+  constant c_SLV_FOFB_CC_RTM_ID              : natural := 5;
+  constant c_SLV_FOFB_END                    : natural := c_SLV_FOFB_CC_RTM_ID + c_NUM_FOFB_CC_CORES -1;
+
+  constant c_USER_NUM_CORES                  : natural := c_SLV_FOFB_END+1;
 
   -- FMC_ADC layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
@@ -873,7 +1115,8 @@ architecture rtl of dbe_bpm_gen is
     c_SLV_FMC_ADC_1_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
     c_SLV_POS_CALC_2_ID             => f_sdb_auto_bridge(c_POS_CALC_CORE_BRIDGE_SDB,  true),
     c_SLV_FMC_ADC_2_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
-    c_SLV_ORBIT_INTLK_ID            => f_sdb_auto_device(c_XWB_ORBIT_INTLK_SDB,       true)
+    c_SLV_ORBIT_INTLK_ID            => f_sdb_auto_device(c_XWB_ORBIT_INTLK_SDB,       true),
+    c_SLV_FOFB_CC_RTM_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      g_WITH_FOFB_DCC)
   );
 
   signal clk_sys                             : std_logic;
@@ -1729,7 +1972,7 @@ begin
     fs1_rst2xn                                 <= fmc1_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_trigger_sw_clk_id).pulse;
+    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_TRIGGER_SW_CLK_ID).pulse;
 
     -- Debug clock for chipscope
     fs_clk_dbg                                 <= fs1_clk;
@@ -1937,7 +2180,7 @@ begin
     fs2_rst2xn                                 <= fmc2_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_trigger_sw_clk_id).pulse;
+    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_TRIGGER_SW_CLK_ID).pulse;
 
   end generate;
 
@@ -2153,7 +2396,7 @@ begin
     fs1_rst2xn                                 <= fmc1_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_trigger_sw_clk_id).pulse;
+    fmc1_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_TRIGGER_SW_CLK_ID).pulse;
 
     -- Debug clock for chipscope
     fs_clk_dbg                                 <= fs1_clk;
@@ -2371,7 +2614,7 @@ begin
     fs2_rst2xn                                 <= fmc2_rst2x_n(c_ADC_REF_CLK);
 
     -- Use ADC trigger for testing
-    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_trigger_sw_clk_id).pulse;
+    fmc2_trig_hw_in                            <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_TRIGGER_SW_CLK_ID).pulse;
 
   end generate;
 
@@ -2783,7 +3026,7 @@ begin
     -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_phase_sync_trigger_slow_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3011,7 +3254,7 @@ begin
     -- Synchronization trigger for all rates. Slow clock
     -----------------------------
 
-    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_phase_sync_trigger_slow_id).pulse,
+    sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3037,6 +3280,342 @@ begin
   dsp2_adc_se_ch3_data                       <= std_logic_vector(resize(signed(
                                                  dsp2_adc_ch3_data),
                                                  dsp2_adc_se_ch3_data'length));
+
+  ----------------------------------------------------------------------
+  --                          RTM 8SFP OHWR                           --
+  ----------------------------------------------------------------------
+
+  gen_fix_inv_sfps: for i in 0 to g_NUM_SFPS-1 generate
+
+    rtm_sfp_fix_rx_p(g_NUM_SFPS-1-i)  <= rtm_sfp_rx_p_i(g_SFP_START_ID+i);
+    rtm_sfp_fix_rx_n(g_NUM_SFPS-1-i)  <= rtm_sfp_rx_n_i(g_SFP_START_ID+i);
+    rtm_sfp_tx_p_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_p(g_NUM_SFPS-1-i);
+    rtm_sfp_tx_n_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_n(g_NUM_SFPS-1-i);
+
+  end generate;
+
+  gen_with_rtm_8sfp : if g_WITH_RTM_SFP generate
+
+    cmp_rtm8sfp_ohwr : rtm8sfp_ohwr
+    generic map (
+      g_NUM_SFPS                                 => g_NUM_SFPS,
+      g_SYS_CLOCK_FREQ                           => c_SYS_CLOCK_FREQ,
+      g_SI57x_I2C_FREQ                           => c_RTM_SI57x_I2C_FREQ,
+      -- Whether or not to initialize oscilator with the specified values
+      g_SI57x_INIT_OSC                           => c_RTM_SI57x_INIT_OSC,
+      -- Init Oscillator values
+      g_SI57x_INIT_RFREQ_VALUE                   => c_RTM_SI57x_INIT_RFREQ_VALUE,
+      g_SI57x_INIT_N1_VALUE                      => c_RTM_SI57x_INIT_N1_VALUE,
+      g_SI57x_INIT_HS_VALUE                      => c_RTM_SI57x_INIT_HS_VALUE
+    )
+    port map (
+      ---------------------------------------------------------------------------
+      -- clock and reset interface
+      ---------------------------------------------------------------------------
+      clk_sys_i                                  => clk_sys,
+      rst_n_i                                    => clk_sys_rstn,
+
+      ---------------------------------------------------------------------------
+      -- RTM board pins
+      ---------------------------------------------------------------------------
+      -- SFP
+      sfp_rx_p_i                                 => rtm_sfp_fix_rx_p,
+      sfp_rx_n_i                                 => rtm_sfp_fix_rx_n,
+      sfp_tx_p_o                                 => rtm_sfp_fix_tx_p,
+      sfp_tx_n_o                                 => rtm_sfp_fix_tx_n,
+
+      -- RTM I2C.
+      -- SFP configuration pins, behind a I2C MAX7356. I2C addr = 1110_100 & '0' = 0xE8
+      -- Si570 oscillator. Input 0 of CDCLVD1212. I2C addr = 1010101 & '0' = 0x55
+      rtm_scl_b                                  => rtm_scl_b,
+      rtm_sda_b                                  => rtm_sda_b,
+
+      -- Si570 oscillator output enable
+      si570_oe_o                                 => rtm_si570_oe_o,
+
+      ---- Clock to RTM connector. Input 1 of CDCLVD1212. Not connected to FPGA
+      -- rtm_sync_clk_p_o                           => rtm_sync_clk_p_o,
+      -- rtm_sync_clk_n_o                           => rtm_sync_clk_n_o,
+
+      -- Select between input 0 or 1 or CDCLVD1212. 0 is Si570, 1 is RTM sync clock
+      clk_in_sel_o                               => rtm_clk_in_sel_o,
+
+      -- FPGA clocks from CDCLVD1212
+      fpga_clk1_p_i                              => rtm_fpga_clk1_p_i,
+      fpga_clk1_n_i                              => rtm_fpga_clk1_n_i,
+      fpga_clk2_p_i                              => rtm_fpga_clk2_p_i,
+      fpga_clk2_n_i                              => rtm_fpga_clk2_n_i,
+
+      -- SFP status bits. Behind 4 74HC165, 8-parallel-in/serial-out. 4 x 8 bits.
+      --
+      -- Parallel load
+      sfp_status_reg_pl_o                        => rtm_sfp_status_reg_pl_o,
+      -- Clock N
+      sfp_status_reg_clk_n_o                     => rtm_sfp_status_reg_clk_n_o,
+      -- Serial output
+      sfp_status_reg_out_i                       => rtm_sfp_status_reg_out_i,
+
+      -- SFP control bits. Behind 4 74HC4094D, serial-in/8-parallel-out. 5 x 8 bits.
+      --
+      -- Strobe
+      sfp_ctl_reg_str_n_o                        => rtm_sfp_ctl_str_n_o,
+      -- Data input
+      sfp_ctl_reg_din_n_o                        => rtm_sfp_ctl_din_n_o,
+      -- Parallel output enable
+      sfp_ctl_reg_oe_n_o                         => rtm_sfp_ctl_oe_n_o,
+
+      -- External clock from RTM to FPGA
+      ext_clk_p_i                                => rtm_ext_clk_p_i,
+      ext_clk_n_i                                => rtm_ext_clk_n_i,
+
+      ---------------------------------------------------------------------------
+      -- Optional external RFFREQ interface
+      ---------------------------------------------------------------------------
+      ext_wr_i                                   => rtm_ext_wr,
+      ext_rfreq_value_i                          => rtm_ext_rfreq_value,
+      ext_n1_value_i                             => rtm_ext_n1_value,
+      ext_hs_value_i                             => rtm_ext_hs_value,
+
+      ---------------------------------------------------------------------------
+      -- Status pins
+      ---------------------------------------------------------------------------
+      sta_reconfig_done_o                        => rtm_sta_reconfig_done,
+
+      ---------------------------------------------------------------------------
+      -- FPGA side
+      ---------------------------------------------------------------------------
+      sfp_txdisable_i                            => sfp_txdisable,
+      sfp_rs0_i                                  => sfp_rs0,
+      sfp_rs1_i                                  => sfp_rs1,
+
+      sfp_led1_o                                 => sfp_led1,
+      sfp_los_o                                  => sfp_los,
+      sfp_txfault_o                              => sfp_txfault,
+      sfp_detect_n_o                             => sfp_detect_n,
+
+      fpga_sfp_rx_p_o                            => rtm_sfp_rx_p,
+      fpga_sfp_rx_n_o                            => rtm_sfp_rx_n,
+      fpga_sfp_tx_p_i                            => rtm_sfp_tx_p,
+      fpga_sfp_tx_n_i                            => rtm_sfp_tx_n,
+
+      fpga_si570_oe_i                            => '1',
+      fpga_si57x_addr_i                          => "10101010",
+
+      fpga_clk_in_sel_i                          => '0',
+
+      fpga_clk1_p_o                              => rtm_clk1_p,
+      fpga_clk1_n_o                              => rtm_clk1_n,
+      fpga_clk2_p_o                              => rtm_clk2_p,
+      fpga_clk2_n_o                              => rtm_clk2_n,
+
+      fpga_ext_clk_p_o                           => rtm_ext_clk_p,
+      fpga_ext_clk_n_o                           => rtm_ext_clk_n
+    );
+
+  end generate;
+
+  gen_without_rtm_8sfp : if (not g_WITH_RTM_SFP) generate
+
+    -- default assignmentes for unused pins
+    rtm_si570_oe_o             <= '0';
+    rtm_clk_in_sel_o           <= '0';
+    rtm_sfp_status_reg_pl_o    <= '0';
+    rtm_sfp_status_reg_clk_n_o <= '1';
+    rtm_sfp_ctl_str_n_o        <= '1';
+    rtm_sfp_ctl_din_n_o        <= '1';
+    rtm_sfp_ctl_oe_n_o         <= '1';
+
+  end generate;
+
+  gen_fix_sfp_ctl_status: for i in 0 to 7 generate
+
+    sfp_txdisable(i)      <=  sfp_fix_txdisable(7-i);
+    sfp_rs0(i)            <=  sfp_fix_rs0(7-i);
+    sfp_rs1(i)            <=  sfp_fix_rs1(7-i);
+
+    sfp_fix_led1(7-i)         <=  sfp_led1(i);
+    sfp_fix_los(7-i)          <=  sfp_los(i);
+    sfp_fix_txfault(7-i)      <=  sfp_txfault(i);
+    sfp_fix_detect_n(7-i)     <=  sfp_detect_n(i);
+
+  end generate;
+
+  -- Generate large pulse for reset
+  cmp_gc_posedge : gc_posedge
+  port map (
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    data_i                                     => rtm_sta_reconfig_done,
+    pulse_o                                    => rtm_sta_reconfig_done_pp
+  );
+
+  cmp_gc_extend_pulse : gc_extend_pulse
+  generic map (
+    g_width                                    => 50000
+  )
+  port map (
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => clk_sys_rstn,
+    pulse_i                                    => rtm_sta_reconfig_done_pp,
+    extended_o                                 => rtm_reconfig_rst
+  );
+
+  rtm_reconfig_rst_n <= not rtm_reconfig_rst;
+
+  ----------------------------------------------------------------------
+  --                          FOFB DCC RTM                            --
+  ----------------------------------------------------------------------
+
+  gen_fofb_sfps: for i in 0 to c_NUM_SFPS_FOFB-1 generate
+
+    -- RX lines
+    fofb_rio_rx_p(c_FOFB_CC_RTM_ID)(i) <= rtm_sfp_rx_p(i);
+    fofb_rio_rx_n(c_FOFB_CC_RTM_ID)(i) <= rtm_sfp_rx_n(i);
+
+    -- TX lines
+    rtm_sfp_tx_p(i) <= fofb_rio_tx_p(c_FOFB_CC_RTM_ID)(i);
+    rtm_sfp_tx_n(i) <= fofb_rio_tx_n(c_FOFB_CC_RTM_ID)(i);
+
+  end generate;
+
+  gen_unused_fofb_sfps: for i in c_NUM_SFPS_FOFB to g_NUM_SFPS-1 generate
+
+    -- TX lines
+    rtm_sfp_tx_p(i) <= '0';
+    rtm_sfp_tx_n(i) <= '1';
+
+  end generate;
+
+  -- Clocks. Use rtm_clk1_p as this goes to the same bank as SFP 0, 1, 2, 3
+  -- transceivers
+  fofb_ref_clk_p(c_FOFB_CC_RTM_ID) <= rtm_clk1_p;
+  fofb_ref_clk_n(c_FOFB_CC_RTM_ID) <= rtm_clk1_n;
+
+  -- Trigger signal for DCC timeframe_start.
+  -- Trigger pulses are synch'ed with the respective fs_clk
+  fai_sim_trigger(c_FOFB_CC_RTM_ID) <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_ACQ_DCC_ID).pulse;
+
+  gen_with_fofb_dcc : if g_WITH_FOFB_DCC generate
+
+    cmp_fofb_ctrl_wrapper_0 : xwb_fofb_ctrl_wrapper
+    generic map
+    (
+      g_INTERFACE_MODE                          => PIPELINED,
+      g_ADDRESS_GRANULARITY                     => BYTE,
+      g_ID                                      => 0,
+      g_DEVICE                                  => BPM,
+      g_PHYSICAL_INTERFACE                      => "SFP",
+      g_REFCLK_INPUT                            => "REFCLK0",
+      g_LANE_COUNT                              => c_LANE_COUNT,
+      g_USE_CHIPSCOPE                           => c_USE_CHIPSCOPE,
+      -- BPM synthetic data
+      g_SIM_BPM_DATA                            => true,
+      g_SIM_BLOCK_START_PERIOD                  => 10000,
+      g_SIM_BLOCK_VALID_LENGTH                  => 32
+    )
+    port map
+    (
+      ---------------------------------------------------------------------------
+      -- differential MGT/GTP clock inputs
+      ---------------------------------------------------------------------------
+      refclk_p_i                                 => fofb_ref_clk_p(c_FOFB_CC_RTM_ID),
+      refclk_n_i                                 => fofb_ref_clk_n(c_FOFB_CC_RTM_ID),
+
+      ---------------------------------------------------------------------------
+      -- clock and reset interface
+      ---------------------------------------------------------------------------
+      adcclk_i                                   => fs_clk_array(c_FOFB_CC_RTM_ID),
+      adcreset_i                                 => fs_rst_array(c_FOFB_CC_RTM_ID),
+      sysclk_i                                   => clk_sys,
+      sysreset_n_i                               => fofb_sysreset_n(c_FOFB_CC_RTM_ID),
+
+      ---------------------------------------------------------------------------
+      -- Wishbone Control Interface signals
+      ---------------------------------------------------------------------------
+      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID)),
+      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID)),
+
+      ---------------------------------------------------------------------------
+      -- fast acquisition data interface
+      -- Only used when g_SIM_BPM_DATA = false
+      ---------------------------------------------------------------------------
+      fai_fa_block_start_i                       => fai_fa_block_start(c_FOFB_CC_RTM_ID),
+      fai_fa_data_valid_i                        => fai_fa_data_valid(c_FOFB_CC_RTM_ID),
+      fai_fa_d_i                                 => fai_fa_d(c_FOFB_CC_RTM_ID),
+
+      ---------------------------------------------------------------------------
+      -- Synthetic data fast acquisition data interface.
+      -- Only used when g_SIM_BPM_DATA = true
+      ---------------------------------------------------------------------------
+      fai_sim_data_sel_i                         => fai_sim_data_sel(c_FOFB_CC_RTM_ID),
+      fai_sim_enable_i                           => fai_sim_enable(c_FOFB_CC_RTM_ID),
+      fai_sim_trigger_i                          => fai_sim_trigger(c_FOFB_CC_RTM_ID),
+      fai_sim_trigger_internal_i                 => fai_sim_trigger_internal(c_FOFB_CC_RTM_ID),
+      fai_sim_armed_o                            => fai_sim_armed(c_FOFB_CC_RTM_ID),
+
+      ---------------------------------------------------------------------------
+      -- serial I/Os for eight RocketIOs on the Libera
+      ---------------------------------------------------------------------------
+      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_RTM_ID),
+      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_RTM_ID),
+      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_RTM_ID),
+      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_RTM_ID),
+      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_RTM_ID),
+
+      ---------------------------------------------------------------------------
+      -- Higher-level integration interface (PMC, SNIFFER_V5)
+      ---------------------------------------------------------------------------
+      fofb_userclk_o                             => fofb_userclk(c_FOFB_CC_RTM_ID),
+      fofb_userrst_o                             => fofb_userrst(c_FOFB_CC_RTM_ID),
+      timeframe_start_o                          => timeframe_start(c_FOFB_CC_RTM_ID),
+      timeframe_end_o                            => timeframe_end(c_FOFB_CC_RTM_ID),
+      fofb_dma_ok_i                              => fofb_dma_ok(c_FOFB_CC_RTM_ID),
+      fofb_node_mask_o                           => fofb_node_mask(c_FOFB_CC_RTM_ID),
+      fofb_timestamp_val_o                       => fofb_timestamp_val(c_FOFB_CC_RTM_ID),
+      fofb_link_status_o                         => fofb_link_status(c_FOFB_CC_RTM_ID),
+      fofb_fod_dat_o                             => fofb_fod_dat(c_FOFB_CC_RTM_ID),
+      fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_RTM_ID)
+    );
+
+    fofb_sysreset_n(c_FOFB_CC_RTM_ID) <= clk_sys_rstn and rtm_reconfig_rst_n;
+    fofb_userrst_n(c_FOFB_CC_RTM_ID) <= not fofb_userrst(c_FOFB_CC_RTM_ID);
+
+    -- CDC between FOFB clock and ACQ clock
+    cmp_inferred_async_fwft_fifo : inferred_async_fwft_fifo
+    generic map
+    (
+      g_data_width                              => c_FOFB_DCC_DATA_WIDTH,
+      g_size                                    => 8,
+      g_almost_empty_threshold                  => 1,
+      g_almost_full_threshold                   => 7,
+      g_async                                   => true
+    )
+    port map
+    (
+      -- Write clock
+      wr_clk_i                                  => fofb_userclk(c_FOFB_CC_RTM_ID),
+      wr_rst_n_i                                => fofb_userrst_n(c_FOFB_CC_RTM_ID),
+
+      wr_data_i                                 => fofb_fod_dat(c_FOFB_CC_RTM_ID),
+      wr_en_i                                   => fofb_fod_dat_val(c_FOFB_CC_RTM_ID)(0),
+
+      -- Read clock
+      rd_clk_i                                  => fs1_clk,
+      rd_rst_n_i                                => fs1_rstn,
+
+      rd_data_o                                 => fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID),
+      rd_valid_o                                => fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID)(0),
+      rd_en_i                                   => '1'
+    );
+
+  end generate;
+
+  gen_without_fofb_dcc: if (not g_WITH_FOFB_DCC) generate
+
+    fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
+    fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
+
+  end generate;
 
   ----------------------------------------------------------------------
   --                      Acquisition Core                            --
@@ -3246,6 +3825,14 @@ begin
                                                                  std_logic_vector(resize(signed(dsp1_monit_pos_x), 32));
   acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).dvalid  <= dsp1_monit_pos_valid;
   acq_chan_array(c_acq_core_0_id, c_acq_monit_pos_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_acq_monit_pos_id).pulse;
+
+  --------------------
+  -- FOFB DCC data
+  --------------------
+  acq_chan_array(c_acq_core_0_id, c_ACQ_DCC_ID).val(to_integer(c_facq_channels(c_ACQ_DCC_ID).width)-1 downto 0) <=
+                                                              fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID);
+  acq_chan_array(c_acq_core_0_id, c_ACQ_DCC_ID).dvalid  <= fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID)(0);
+  acq_chan_array(c_acq_core_0_id, c_ACQ_DCC_ID).trig    <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_ACQ_DCC_ID).pulse;
 
   --------------------
   -- ADC 2 data
