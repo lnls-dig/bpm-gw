@@ -41,7 +41,7 @@ machine_pkg = "pbpm_fmcpico1M"
 # other .xdc. We need this as we depend on variables defined
 # on afc_base xdc files.
 xdc_files = [
-    "dbe_pbpm.xdc",
+    "../dbe_common/dbe_pbpm.xdc",
 ]
 
 additional_xdc = []
