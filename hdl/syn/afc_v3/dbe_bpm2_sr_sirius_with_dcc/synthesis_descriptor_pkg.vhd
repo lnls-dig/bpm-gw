@@ -1,0 +1,6 @@
+-- This file will be overwritten prior to synthesis,
+-- by hdlmake "syn_pre_cmd" specified on top Manifest.py.
+--
+-- However, hdlmake requires all files to be present
+-- on parsing-time. So, fool the tool with this dummy
+-- file so we can bypass this requirement.
