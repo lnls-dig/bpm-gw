@@ -1,0 +1,363 @@
+#
+# Carrier FMC pins description file
+#
+# Syntax:
+# carrier carrier_name number_of_fmc_slots
+# pin FMC_Slot signal_name FPGA_pin
+
+carrier afc-v3 2
+
+pin 0 la_p28 T8
+pin 0 la_n26 T2
+pin 0 la_p32 R1
+pin 0 la_n32 P1
+pin 0 la_p33 U2
+pin 0 la_n33 U1
+pin 0 ha_n12 G34
+pin 0 ha_p13 K25
+pin 0 ha_p12 H33
+pin 0 la_n13 G9
+pin 0 la_p13 G10
+pin 0 la_n09 J3
+pin 0 la_p14 H9
+pin 0 la_n14 H8
+pin 0 la_p15 K11
+pin 0 la_n15 J11
+pin 0 la_p09 J4
+# Conflicts with RTM
+# pin 0 clk0m2c_p H16
+# pin 0 clk0m2c_n G16
+pin 0 la_p30 N1
+pin 0 la_n30 M1
+pin 0 la_p31 U7
+pin 0 la_n31 U6
+pin 0 la_p27 R3
+pin 0 la_n27 R2
+pin 0 la_n28 T7
+pin 0 la_p06 L5
+pin 0 la_p10 H2
+pin 0 la_n10 G2
+pin 0 la_n06 K5
+pin 0 la_n16 L9
+pin 0 la_p16 L10
+pin 0 la_p26 T3
+pin 0 la_p17 T5
+pin 0 la_n17 T4
+pin 0 la_p24 M11
+pin 0 la_n24 M10
+pin 0 la_p25 N8
+pin 0 la_n25 N7
+pin 0 la_p21 M7
+pin 0 la_n21 M6
+pin 0 la_p22 M5
+pin 0 la_n22 M4
+pin 0 la_n23 N2
+pin 0 la_n19 U4
+pin 0 la_n18 P3
+pin 0 la_p23 N3
+pin 0 la_n20 P10
+pin 0 la_p19 U5
+pin 0 la_p18 P4
+pin 0 la_p20 R10
+pin 0 la_p29 P9
+pin 0 la_n29 P8
+pin 0 ha_p17 J28
+pin 0 ha_p10 H32
+pin 0 ha_p11 M25
+pin 0 ha_n10 G32
+pin 0 ha_n11 L25
+pin 0 ha_p15 G29
+pin 0 ha_p14 M24
+pin 0 ha_n15 G30
+pin 0 ha_n14 L24
+pin 0 ha_n18 G27
+pin 0 ha_p18 H27
+pin 0 ha_n19 G26
+pin 0 ha_p21 G24
+pin 0 ha_p22 J24
+pin 0 ha_n21 G25
+pin 0 ha_p23 K23
+pin 0 ha_n22 H24
+pin 0 ha_n23 J23
+pin 0 la_p00 K7
+pin 0 la_n00 K6
+pin 0 la_p01 J6
+pin 0 la_p02 G7
+pin 0 la_n01 J5
+pin 0 la_n02 G6
+pin 0 la_n03 G1
+pin 0 la_p03 H1
+pin 0 la_n04 J1
+pin 0 la_p04 K1
+pin 0 la_n05 H3
+pin 0 la_p05 H4
+pin 0 la_n08 F2
+pin 0 la_p08 F3
+pin 0 la_n07 K2
+pin 0 la_p07 K3
+pin 0 la_n12 K8
+pin 0 la_p12 L8
+pin 0 la_p11 M2
+pin 0 la_n11 L2
+pin 0 ha_p01 L28
+pin 0 ha_n00 H29
+pin 0 ha_p00 J29
+pin 0 ha_n05 H34
+pin 0 ha_p05 J33
+pin 0 ha_n04 L34
+pin 0 ha_p04 L33
+pin 0 ha_n09 J31
+pin 0 ha_p09 K31
+pin 0 ha_n03 J30
+pin 0 ha_p03 K30
+pin 0 ha_p08 L29
+pin 0 ha_p02 K33
+pin 0 ha_p07 L32
+pin 0 ha_n02 J34
+pin 0 ha_p06 L27
+pin 0 ha_n07 K32
+pin 0 ha_n06 K27
+# Conflicts with RTM
+#
+# # RX116_3_N MGTPRXN3_116 E17
+# # RX116_3_P MGTPRXP3_116 F17
+# pin 0 dp3_m2c_n E17
+# pin 0 dp3_m2c_p F17
+# # RX116_2_N	MGTPRXN2_116 C16
+# # RX116_2_P	MGTPRXP2_116 D16
+# pin 0 dp2_m2c_n C16
+# pin 0 dp2_m2c_p D16
+# # RX116_1_N MGTPRXN1_116 E15
+# # RX116_1_P MGTPRXP1_116 F15
+# pin 0 dp1_m2c_n E15
+# pin 0 dp1_m2c_p F15
+# # RX116_0_N MGTPRXN0_116 E13
+# # RX116_0_P MGTPRXP0_116 F13
+# pin 0 dp0_m2c_n E13
+# pin 0 dp0_m2c_p F13
+# # TX116_3_N MGTPTXN3_116 A17
+# # TX116_3_P MGTPTXP3_116 B17
+# pin 0 dp3_c2m_n A17
+# pin 0 dp3_c2m_p B17
+# # TX116_2_N MGTPTXN2_116 A15
+# # TX116_2_P MGTPTXP2_116 B15
+# pin 0 dp2_c2m_n A15
+# pin 0 dp2_c2m_p B15
+# # TX116_1_N MGTPTXN1_116 C14
+# # TX116_1_P MGTPTXP1_116 D14
+# pin 0 dp1_c2m_n C14
+# pin 0 dp1_c2m_p D14
+# # TX116_0_N MGTPTXN0_116 A13
+# # TX116_0_P MGTPTXP0_116 B13
+# pin 0 dp0_c2m_n A13
+# pin 0 dp0_c2m_p B13
+
+pin 1 la_p17 AB31
+pin 1 la_n17 AB32
+pin 1 la_p24 Y32
+pin 1 la_n24 Y33
+pin 1 la_p25 AA29
+pin 1 la_n25 AB29
+pin 1 la_p21 AA32
+pin 1 la_n21 AA33
+pin 1 la_p22 AA24
+pin 1 la_n22 AA25
+pin 1 la_n23 Y25
+pin 1 la_n19 AB27
+pin 1 la_n18 W31
+pin 1 la_p23 W25
+pin 1 la_n20 AB25
+pin 1 la_p19 AB26
+pin 1 la_p18 W30
+pin 1 la_p20 AB24
+pin 1 la_p29 AC33
+pin 1 la_n29 AC34
+pin 1 la_p30 W33
+pin 1 la_n30 W34
+pin 1 ha_p17 AJ28
+pin 1 ha_p10 AP25
+pin 1 ha_p11 AK33
+pin 1 ha_n10 AP26
+pin 1 ha_n11 AL33
+pin 1 ha_p15 AJ29
+pin 1 ha_p14 AN34
+pin 1 ha_n15 AK30
+pin 1 ha_n14 AP34
+pin 1 ha_n18 AP33
+pin 1 ha_p18 AN33
+pin 1 ha_n19 AK31
+pin 1 ha_p21 AP29
+pin 1 ha_p22 AL34
+pin 1 ha_n21 AP30
+pin 1 ha_p23 AJ33
+pin 1 ha_n22 AM34
+pin 1 ha_n23 AJ34
+pin 1 la_p00 AE28
+pin 1 la_n00 AF28
+pin 1 la_p01 AF29
+pin 1 la_p02 AG31
+pin 1 la_n01 AF30
+pin 1 la_n02 AH31
+pin 1 la_n03 AH24
+pin 1 la_p03 AG24
+pin 1 la_n04 AC27
+pin 1 la_p04 AC26
+pin 1 la_n05 AH34
+pin 1 la_p05 AH33
+pin 1 la_n08 AE25
+pin 1 la_p08 AD25
+pin 1 la_n07 AH27
+pin 1 la_p07 AG27
+pin 1 la_n12 AF27
+pin 1 la_p12 AE27
+pin 1 la_p11 AD30
+pin 1 la_n11 AE30
+pin 1 ha_p01 AL28
+pin 1 ha_n00 AM30
+pin 1 ha_p00 AL30
+pin 1 ha_n05 AM25
+pin 1 ha_p05 AL25
+pin 1 ha_n04 AK25
+pin 1 ha_p04 AJ25
+pin 1 ha_n09 AK26
+pin 1 ha_p09 AJ26
+pin 1 ha_n03 AN26
+pin 1 ha_p03 AM26
+pin 1 ha_p08 AM27
+pin 1 ha_p02 AN31
+pin 1 ha_p07 AM31
+pin 1 ha_n02 AP31
+pin 1 ha_p06 AL32
+pin 1 ha_n07 AN32
+pin 1 ha_n06 AM32
+pin 1 la_p28 W28
+pin 1 la_n26 AC32
+pin 1 la_p32 AA34
+pin 1 la_n32 AB34
+pin 1 la_p33 V33
+pin 1 la_n33 V34
+pin 1 ha_n12 AN29
+pin 1 ha_p13 AN28
+pin 1 ha_p12 AM29
+pin 1 la_n13 AG34
+pin 1 la_p13 AF34
+pin 1 la_n09 AG25
+pin 1 la_p14 AE33
+pin 1 la_n14 AF33
+pin 1 la_p15 AD28
+pin 1 la_n15 AD29
+pin 1 la_p09 AF25
+# Conflicts with RTM
+#
+# pin 1 clk0m2c_p AG20
+# pin 1 clk0m2c_n AH20
+pin 1 la_p31 V31
+pin 1 la_n31 V32
+pin 1 la_p27 AA27
+pin 1 la_n27 AA28
+pin 1 la_n28 W29
+pin 1 la_p06 AE23
+pin 1 la_p10 AG32
+pin 1 la_n10 AH32
+pin 1 la_n06 AF23
+pin 1 la_n16 AD34
+pin 1 la_p16 AD33
+pin 1 la_p26 AC31
+# Conflicts with RTM
+#
+# # RX213_3_P MGTPRXP3_213 AJ21
+# # RX213_3_N MGTPRXN3_213 AK21
+# pin 1 dp3_m2c_p AJ21
+# pin 1 dp3_m2c_n AK21
+# # RX213_2_P MGTPRXP2_213 AL20
+# # RX213_2_N MGTPRXN2_213 AM20
+# pin 1 dp2_m2c_p AL20
+# pin 1 dp2_m2c_n AM20
+# # RX213_1_P MGTPRXP1_213 AJ19
+# # RX213_1_N MGTPRXN1_213 AK19
+# pin 1 dp1_m2c_p AJ19
+# pin 1 dp1_m2c_n AK19
+# # RX213_0_P MGTPRXP0_213 AL18
+# # RX213_0_N MGTPRXN0_213 AM18
+# pin 1 dp0_m2c_p AL18
+# pin 1 dp0_m2c_n AM18
+# # TX213_3_P MGTPTXP3_213 AN23
+# # TX213_3_N MGTPTXN3_213 AP23
+# pin 1 dp3_c2m_p AN23
+# pin 1 dp3_c2m_n AP23
+# # TX213_2_P MGTPTXP2_213 AL22
+# # TX213_2_N MGTPTXN2_213 AM22
+# pin 1 dp2_c2m_p AL22
+# pin 1 dp2_c2m_n AM22
+# # TX213_1_PMGTPTXP1_213 AN21
+# # TX213_1_NMGTPTXN1_213 AP21
+# pin 1 dp1_c2m_p AN21
+# pin 1 dp1_c2m_n AP21
+# # TX213_0_P MGTPTXP0_213 AN19
+# # TX213_0_N MGTPTXN0_213 AP19
+# pin 1 dp0_c2m_p AN19
+# pin 1 dp0_c2m_n AP19
+
+# RTM connections
+
+# Not connected to FPGA
+# pin 0 j6_b3
+# pin 0 j6_a3
+pin 0 j6_c10 R8
+pin 0 j6_c9  U11
+pin 0 j6_c8  AA8
+pin 0 j6_c7  W6
+pin 0 j6_c6  L23
+
+# Not connected to FPGA
+# pin 0 j6_d3
+# pin 0 j6_c3
+
+pin 0 j2_b9 AH20
+pin 0 j2_a9 AG20
+pin 0 j2_b5 G16
+pin 0 j2_a5 H16
+
+pin 0 j2_a1 L4
+
+pin 0 j2_d10 AM18
+pin 0 j2_c10 AL18
+pin 0 j2_d9  AK19
+pin 0 j2_c9  AJ19
+pin 0 j2_d8  AM20
+pin 0 j2_c8  AL20
+pin 0 j2_d7  AK21
+pin 0 j2_c7  AJ21
+pin 0 j2_d6  E17
+pin 0 j2_c6  F17
+pin 0 j2_d5  E13
+pin 0 j2_c5  F13
+pin 0 j2_d4  E15
+pin 0 j2_c4  F15
+pin 0 j2_d3  C16
+pin 0 j2_c3  D16
+
+pin 0 j2_f10  AP19
+pin 0 j2_e10  AN19
+pin 0 j2_f9   AP21
+pin 0 j2_e9   AN21
+pin 0 j2_f8   AM22
+pin 0 j2_e8   AL22
+pin 0 j2_f7   AP23
+pin 0 j2_e7   AN23
+pin 0 j2_f6   A17
+pin 0 j2_e6   B17
+pin 0 j2_f5   A13
+pin 0 j2_e5   B13
+pin 0 j2_f4   C14
+pin 0 j2_e4   D14
+pin 0 j2_f3   A15
+pin 0 j2_e3   B15
+
+pin 0 j2_c2   Y26
+pin 0 j2_c1   AC28
+
+pin 0 j2_e2   AF10
+pin 0 j2_e1   T32
+
+#eof

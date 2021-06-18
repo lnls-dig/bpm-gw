@@ -46,7 +46,7 @@ machine_pkg = "sirius_bo_250M";
 # other .xdc. We need this as we depend on variables defined
 # on afc_base xdc files.
 xdc_files = [
-    "../dbe_bpm2_common/dbe_bpm2.xdc",
+    "../dbe_common/dbe_bpm2.xdc",
 ]
 
 additional_xdc = []
