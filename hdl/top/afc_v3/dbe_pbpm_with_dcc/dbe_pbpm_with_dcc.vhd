@@ -145,30 +145,30 @@ port(
   -- FMC PICO 1M_4CH Ports
   -----------------------------------------
 
-  fmc1_adc_cnv_o                        : out std_logic;
-  fmc1_adc_sck_o                        : out std_logic;
-  fmc1_adc_sck_rtrn_i                   : in std_logic;
-  fmc1_adc_sdo1_i                       : in std_logic;
-  fmc1_adc_sdo2_i                       : in std_logic;
-  fmc1_adc_sdo3_i                       : in std_logic;
-  fmc1_adc_sdo4_i                       : in std_logic;
-  fmc1_adc_busy_cmn_i                   : in std_logic;
+  fmc1_adc_cnv_o                             : out std_logic;
+  fmc1_adc_sck_o                             : out std_logic;
+  fmc1_adc_sck_rtrn_i                        : in std_logic;
+  fmc1_adc_sdo1_i                            : in std_logic;
+  fmc1_adc_sdo2_i                            : in std_logic;
+  fmc1_adc_sdo3_i                            : in std_logic;
+  fmc1_adc_sdo4_i                            : in std_logic;
+  fmc1_adc_busy_cmn_i                        : in std_logic;
 
-  fmc1_rng_r1_o                         : out std_logic;
-  fmc1_rng_r2_o                         : out std_logic;
-  fmc1_rng_r3_o                         : out std_logic;
-  fmc1_rng_r4_o                         : out std_logic;
+  fmc1_rng_r1_o                              : out std_logic;
+  fmc1_rng_r2_o                              : out std_logic;
+  fmc1_rng_r3_o                              : out std_logic;
+  fmc1_rng_r4_o                              : out std_logic;
 
-  fmc1_led1_o                           : out std_logic;
-  fmc1_led2_o                           : out std_logic;
+  fmc1_led1_o                                : out std_logic;
+  fmc1_led2_o                                : out std_logic;
 
   -- EEPROM (Connected to the CPU). Use board I2C pins if needed as they are
   -- behind a I2C switch that can access FMC I2C bus
   -- fmc1_sm_scl_o                         : out std_logic;
   -- fmc1_sm_sda_b                         : inout std_logic;
 
-  fmc1_a_scl_o                          : out std_logic;
-  fmc1_a_sda_b                          : inout std_logic;
+  fmc1_a_scl_o                               : out std_logic;
+  fmc1_a_sda_b                               : inout std_logic;
 
   -----------------------------------------
   -- FMC PICO 1M_4CH Ports
