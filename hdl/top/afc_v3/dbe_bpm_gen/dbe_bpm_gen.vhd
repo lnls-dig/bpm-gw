@@ -69,10 +69,21 @@ use work.fofb_ctrl_pkg.all;
 entity dbe_bpm_gen is
 generic(
   g_fmc_adc_type                             : string := "FMC250M";
+  -- Enable RTM SFP module or not
   g_WITH_RTM_SFP                             : boolean := false;
-  g_NUM_SFPS                                 : integer := 4;
+  -- Number of RTM SFP GTs
+  g_NUM_SFPS                                 : integer := 1;
+  -- Start index of the RTM SFP GTs
   g_SFP_START_ID                             : integer := 4;
-  g_WITH_FOFB_DCC                            : boolean := false
+  -- enables RTM 8SFP FOFB DCC. Is this is "true", g_WITH_P2P_FOFB_DCC is
+  -- automatically true, as well
+  g_WITH_RTM_SFP_FOFB_DCC                    : boolean := false;
+  -- Number of P2P GTs
+  g_NUM_P2P_GTS                              : integer range 1 to 8 := 4;
+  -- Start index of the P2P GTs
+  g_P2P_GT_START_ID                          : integer := 0;
+  -- Enable P2P FOFB DCC or not
+  g_WITH_P2P_FOFB_DCC                        : boolean := false
 );
 port(
   ---------------------------------------------------------------------------
@@ -180,6 +191,15 @@ port(
   -- spi_cs_n_o                              : out std_logic;
   -- spi_mosi_o                              : out std_logic;
   -- spi_miso_i                              : in  std_logic := '0';
+
+  ---------------------------------------------------------------------------
+  -- P2P GT pins
+  ---------------------------------------------------------------------------
+  -- P2P
+  p2p_gt_rx_p_i                              : in    std_logic_vector(g_NUM_P2P_GTS+g_P2P_GT_START_ID-1 downto g_P2P_GT_START_ID) := (others => '0');
+  p2p_gt_rx_n_i                              : in    std_logic_vector(g_NUM_P2P_GTS+g_P2P_GT_START_ID-1 downto g_P2P_GT_START_ID) := (others => '1');
+  p2p_gt_tx_p_o                              : out   std_logic_vector(g_NUM_P2P_GTS+g_P2P_GT_START_ID-1 downto g_P2P_GT_START_ID);
+  p2p_gt_tx_n_o                              : out   std_logic_vector(g_NUM_P2P_GTS+g_P2P_GT_START_ID-1 downto g_P2P_GT_START_ID);
 
   -----------------------------
   -- FMC1_130m_4ch ports
@@ -716,6 +736,35 @@ architecture rtl of dbe_bpm_gen is
     return v_facq_chan;
   end f_acq_channel_mix_param;
 
+  type t_gt_cfg is record
+    with_fp_p2p    : boolean;
+    num_p2p_gts    : integer;
+    max_p2p_gts    : integer;
+    num_fp_p2p_gts : integer;
+    max_fp_p2p_gts : integer;
+  end record;
+
+  function f_extract_gt_cfg(num_p2p : integer) return t_gt_cfg is
+    variable rv : t_gt_cfg;
+  begin
+    rv.max_p2p_gts       := 4;           -- maximum
+    rv.max_fp_p2p_gts    := 4;           -- maximum
+
+    if num_p2p > 4 then
+      rv.with_fp_p2p     := true;
+      rv.num_p2p_gts     := 4;           -- maximum
+      rv.max_p2p_gts     := 4;           -- maximum
+      rv.num_fp_p2p_gts  := num_p2p - 4; -- remaining, up to 4
+      rv.max_fp_p2p_gts  := 4;           -- maximum
+    else
+      rv.with_fp_p2p     := false;
+      rv.num_p2p_gts     := num_p2p; -- up to 4
+      rv.num_fp_p2p_gts  := 0;       -- no FP GT
+    end if;
+
+    return rv;
+  end function;
+
   -----------------------------------------------------------------------------
   -- General constants
   -----------------------------------------------------------------------------
@@ -757,7 +806,7 @@ architecture rtl of dbe_bpm_gen is
   -----------------------------------------------------------------------------
 
   -- RTM 8SFP IDs
-  constant c_NUM_SFPS_FOFB                   : integer := 4; -- maximum of 4 supported
+  constant c_NUM_SFPS_FOFB                   : integer := g_NUM_SFPS;
   constant c_RTM_8SFP_NUM_CORES              : natural := 1;
 
   constant c_RTM_8SFP_0_ID                   : natural := 0;
@@ -827,14 +876,19 @@ architecture rtl of dbe_bpm_gen is
   -----------------------------------------------------------------------------
 
   -- FOFB CC
-  constant c_NUM_FOFB_CC_CORES               : natural := 1;
+  constant c_NUM_FOFB_CC_CORES               : natural := 2; -- Max of RTM SFP + P2P
+
+  -- P2P GT IDs
+  constant c_GT_CFG                          : t_gt_cfg := f_extract_gt_cfg(g_NUM_P2P_GTS);
+  constant c_NUM_P2P_GTS                     : integer := c_GT_CFG.num_p2p_gts + c_GT_CFG.num_fp_p2p_gts;
 
   constant c_FOFB_CC_RTM_ID                  : natural := 0;
+  constant c_FOFB_CC_P2P_ID                  : natural := 1;
 
   constant c_BPMS                            : integer := 1;
   constant c_FAI_DW                          : integer := 16;
   constant c_DMUX                            : integer := 2;
-  constant c_LANE_COUNT                      : integer := c_NUM_SFPS_FOFB;
+  constant c_MAX_LANE_COUNT                  : integer := 8;
   constant c_USE_CHIPSCOPE                   : boolean := false;
   constant c_FOFB_DCC_DATA_WIDTH             : natural := 32*PacketSize;
 
@@ -846,8 +900,8 @@ architecture rtl of dbe_bpm_gen is
   type t_fofb_cc_std32_array is array (natural range <>) of std_logic_vector(31 downto 0);
   type t_fofb_cc_std4_array is array (natural range <>) of std_logic_vector(3 downto 0);
   type t_fofb_cc_fod_data_array is array (natural range <>) of std_logic_vector(c_FOFB_DCC_DATA_WIDTH-1 downto 0);
-  type t_fofb_cc_fod_val_array is array (natural range <>) of std_logic_vector(c_LANE_COUNT-1 downto 0);
-  type t_fofb_cc_rio_array is array (natural range <>) of std_logic_vector(c_LANE_COUNT-1 downto 0);
+  type t_fofb_cc_fod_val_array is array (natural range <>) of std_logic_vector(c_MAX_LANE_COUNT-1 downto 0);
+  type t_fofb_cc_rio_array is array (natural range <>) of std_logic_vector(c_MAX_LANE_COUNT-1 downto 0);
 
   signal fai_fa_block_start                  : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => '0');
@@ -1083,6 +1137,10 @@ architecture rtl of dbe_bpm_gen is
   -- User Signals
   -----------------------------------------------------------------------------
 
+  constant c_WITH_RTM_SFP_FOFB_DCC           : boolean := g_WITH_RTM_SFP_FOFB_DCC;
+  constant c_WITH_P2P_FOFB_DCC               : boolean := g_WITH_P2P_FOFB_DCC or
+                                                            c_WITH_RTM_SFP_FOFB_DCC;
+
   -- FMC_ADC_1, FMC_ADC_2,
   -- Position_calc_1, Posiotion_calc_2,
   -- Orbit Interlock
@@ -1098,6 +1156,7 @@ architecture rtl of dbe_bpm_gen is
   -- Because VHDL doesn't like non-globally static things...
   --constant c_SLV_FOFB_CC_RTM_ID              : natural := c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID);
   constant c_SLV_FOFB_CC_RTM_ID              : natural := 5;
+  constant c_SLV_FOFB_CC_P2P_ID              : natural := 6;
   constant c_SLV_FOFB_END                    : natural := c_SLV_FOFB_CC_RTM_ID + c_NUM_FOFB_CC_CORES -1;
 
   constant c_USER_NUM_CORES                  : natural := c_SLV_FOFB_END+1;
@@ -1116,7 +1175,8 @@ architecture rtl of dbe_bpm_gen is
     c_SLV_POS_CALC_2_ID             => f_sdb_auto_bridge(c_POS_CALC_CORE_BRIDGE_SDB,  true),
     c_SLV_FMC_ADC_2_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
     c_SLV_ORBIT_INTLK_ID            => f_sdb_auto_device(c_XWB_ORBIT_INTLK_SDB,       true),
-    c_SLV_FOFB_CC_RTM_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      g_WITH_FOFB_DCC)
+    c_SLV_FOFB_CC_RTM_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_RTM_SFP_FOFB_DCC),
+    c_SLV_FOFB_CC_P2P_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_P2P_FOFB_DCC)
   );
 
   signal clk_sys                             : std_logic;
@@ -3491,11 +3551,7 @@ begin
   fofb_ref_clk_p(c_FOFB_CC_RTM_ID) <= rtm_clk1_p;
   fofb_ref_clk_n(c_FOFB_CC_RTM_ID) <= rtm_clk1_n;
 
-  -- Trigger signal for DCC timeframe_start.
-  -- Trigger pulses are synch'ed with the respective fs_clk
-  fai_sim_trigger(c_FOFB_CC_RTM_ID) <= trig_pulse_rcv(c_TRIG_MUX_0_ID, c_ACQ_DCC_ID).pulse;
-
-  gen_with_fofb_dcc : if g_WITH_FOFB_DCC generate
+  gen_with_rtm_sfp_fofb_dcc : if c_WITH_RTM_SFP_FOFB_DCC generate
 
     cmp_fofb_ctrl_wrapper_0 : xwb_fofb_ctrl_wrapper
     generic map
@@ -3503,15 +3559,15 @@ begin
       g_INTERFACE_MODE                          => PIPELINED,
       g_ADDRESS_GRANULARITY                     => BYTE,
       g_ID                                      => 0,
-      g_DEVICE                                  => BPM,
+      g_DEVICE                                  => DISTRIBUTOR,
       g_PHYSICAL_INTERFACE                      => "SFP",
       g_REFCLK_INPUT                            => "REFCLK0",
-      g_LANE_COUNT                              => c_LANE_COUNT,
+      g_LANE_COUNT                              => c_NUM_SFPS_FOFB,
       g_USE_CHIPSCOPE                           => c_USE_CHIPSCOPE,
+      -- Data from another DCC
+      g_USE_EXT_CC_IF                           => true,
       -- BPM synthetic data
-      g_SIM_BPM_DATA                            => true,
-      g_SIM_BLOCK_START_PERIOD                  => 10000,
-      g_SIM_BLOCK_VALID_LENGTH                  => 32
+      g_SIM_BPM_DATA                            => false
     )
     port map
     (
@@ -3536,31 +3592,25 @@ begin
       wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID)),
 
       ---------------------------------------------------------------------------
-      -- fast acquisition data interface
-      -- Only used when g_SIM_BPM_DATA = false
+      -- external CC interface for data from another DCC. Used
+      -- when the other DCC is typically in a DISTRIBUTOR mode and
+      -- the other one (using this inteface) is part of another DCC
+      -- network that receives data from both externl GT links and
+      -- DCC. Used when USE_EXT_CC_IF = true. Overrides USE_PARALLEL_FA_IF
       ---------------------------------------------------------------------------
-      fai_fa_block_start_i                       => fai_fa_block_start(c_FOFB_CC_RTM_ID),
-      fai_fa_data_valid_i                        => fai_fa_data_valid(c_FOFB_CC_RTM_ID),
-      fai_fa_d_i                                 => fai_fa_d(c_FOFB_CC_RTM_ID),
-
-      ---------------------------------------------------------------------------
-      -- Synthetic data fast acquisition data interface.
-      -- Only used when g_SIM_BPM_DATA = true
-      ---------------------------------------------------------------------------
-      fai_sim_data_sel_i                         => fai_sim_data_sel(c_FOFB_CC_RTM_ID),
-      fai_sim_enable_i                           => fai_sim_enable(c_FOFB_CC_RTM_ID),
-      fai_sim_trigger_i                          => fai_sim_trigger(c_FOFB_CC_RTM_ID),
-      fai_sim_trigger_internal_i                 => fai_sim_trigger_internal(c_FOFB_CC_RTM_ID),
-      fai_sim_armed_o                            => fai_sim_armed(c_FOFB_CC_RTM_ID),
+      ext_cc_clk_i                               => fofb_userclk(c_FOFB_CC_P2P_ID),
+      ext_cc_rst_n_i                             => fofb_userrst_n(c_FOFB_CC_P2P_ID),
+      ext_cc_dat_i                               => fofb_fod_dat(c_FOFB_CC_P2P_ID),
+      ext_cc_dat_val_i                           => fofb_fod_dat_val(c_FOFB_CC_P2P_ID)(0),
 
       ---------------------------------------------------------------------------
       -- serial I/Os for eight RocketIOs on the Libera
       ---------------------------------------------------------------------------
-      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_RTM_ID),
-      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_RTM_ID),
-      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_RTM_ID),
-      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_RTM_ID),
-      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_RTM_ID),
+      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
+      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
+      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
+      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
+      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
 
       ---------------------------------------------------------------------------
       -- Higher-level integration interface (PMC, SNIFFER_V5)
@@ -3610,10 +3660,181 @@ begin
 
   end generate;
 
-  gen_without_fofb_dcc: if (not g_WITH_FOFB_DCC) generate
+  ----------------------------------------------------------------------
+  --                          FOFB DCC P2P                            --
+  ----------------------------------------------------------------------
 
-    fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
-    fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
+  gen_fofb_p2p_gts: for i in 0 to c_GT_CFG.num_p2p_gts-1 generate
+
+    -- RX lines
+    fofb_rio_rx_p(c_FOFB_CC_P2P_ID)(i) <= p2p_gt_rx_p_i(g_P2P_GT_START_ID+i);
+    fofb_rio_rx_n(c_FOFB_CC_P2P_ID)(i) <= p2p_gt_rx_n_i(g_P2P_GT_START_ID+i);
+
+    -- TX lines
+    p2p_gt_tx_p_o(g_P2P_GT_START_ID+i) <= fofb_rio_tx_p(c_FOFB_CC_P2P_ID)(i);
+    p2p_gt_tx_n_o(g_P2P_GT_START_ID+i) <= fofb_rio_tx_n(c_FOFB_CC_P2P_ID)(i);
+
+  end generate;
+
+  gen_unused_fofb_p2p_gts: for i in c_GT_CFG.num_p2p_gts to c_GT_CFG.max_p2p_gts-1 generate
+
+    -- TX lines
+    p2p_gt_tx_p_o(g_P2P_GT_START_ID+i) <= '0';
+    p2p_gt_tx_n_o(g_P2P_GT_START_ID+i) <= '1';
+
+  end generate;
+
+  gen_with_fofb_fp : if c_GT_CFG.with_fp_p2p generate
+    gen_fofb_fp_p2p_gts: for i in 0 to c_GT_CFG.num_fp_p2p_gts-1 generate
+
+      -- RX lines. Starts after all possible P2P GTs
+      fofb_rio_rx_p(c_FOFB_CC_P2P_ID)(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <=
+          p2p_gt_rx_p_i(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i);
+      fofb_rio_rx_n(c_FOFB_CC_P2P_ID)(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <=
+          p2p_gt_rx_n_i(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i);
+
+      -- TX lines. Starts after all possible P2P GTs
+      p2p_gt_tx_p_o(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <=
+          fofb_rio_tx_p(c_FOFB_CC_P2P_ID)(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i);
+      p2p_gt_tx_n_o(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <=
+          fofb_rio_tx_n(c_FOFB_CC_P2P_ID)(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i);
+
+    end generate;
+
+    gen_unused_fofb_fp_p2p_gts: for i in c_GT_CFG.num_fp_p2p_gts to c_GT_CFG.max_fp_p2p_gts-1 generate
+
+      -- TX lines
+      p2p_gt_tx_p_o(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <= '0';
+      p2p_gt_tx_n_o(g_P2P_GT_START_ID+c_GT_CFG.max_p2p_gts+i) <= '1';
+
+    end generate;
+  end generate;
+
+  -- Only used if FP P2P is not used.
+  fofb_ref_clk_p(c_FOFB_CC_P2P_ID) <= clk_fp2_clk1_p;
+  fofb_ref_clk_n(c_FOFB_CC_P2P_ID) <= clk_fp2_clk1_n;
+
+  gen_with_p2p_fofb_dcc : if c_WITH_P2P_FOFB_DCC generate
+
+    cmp_fofb_ctrl_wrapper_1 : xwb_fofb_ctrl_wrapper
+    generic map
+    (
+      g_INTERFACE_MODE                          => PIPELINED,
+      g_ADDRESS_GRANULARITY                     => BYTE,
+      g_ID                                      => 0,
+      g_DEVICE                                  => BPM,
+      g_PHYSICAL_INTERFACE                      => "BACKPLANE",
+      -- clock from right-side GTP
+      g_REFCLK_INPUT                            => "REFCLK1",
+      -- if FP P2P is used we take ref. clock from it, if not we instantiate
+      -- the clock buffers ourselves
+      g_CLK_BUFFERS                             => true,
+      g_LANE_COUNT                              => c_NUM_P2P_GTS,
+      g_USE_CHIPSCOPE                           => c_USE_CHIPSCOPE,
+      -- BPM synthetic data
+      g_SIM_BPM_DATA                            => false
+    )
+    port map
+    (
+      -- Only used when CLK_BUFFERS := false
+      ---------------------------------------------------------------------------
+      -- differential MGT/GTP clock inputs
+      ---------------------------------------------------------------------------
+      refclk_p_i                                 => fofb_ref_clk_p(c_FOFB_CC_P2P_ID),
+      refclk_n_i                                 => fofb_ref_clk_n(c_FOFB_CC_P2P_ID),
+
+      ---------------------------------------------------------------------------
+      -- clock and reset interface
+      ---------------------------------------------------------------------------
+      adcclk_i                                   => fs_clk_array(c_FOFB_CC_P2P_ID),
+      adcreset_i                                 => fs_rst_array(c_FOFB_CC_P2P_ID),
+      sysclk_i                                   => clk_sys,
+      sysreset_n_i                               => fofb_sysreset_n(c_FOFB_CC_P2P_ID),
+
+      ---------------------------------------------------------------------------
+      -- Wishbone Control Interface signals
+      ---------------------------------------------------------------------------
+      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_P2P_ID)),
+      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_P2P_ID)),
+
+      ---------------------------------------------------------------------------
+      -- serial I/Os for eight RocketIOs on the Libera
+      ---------------------------------------------------------------------------
+      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0),
+      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0),
+      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0),
+      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0),
+      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0),
+
+      ---------------------------------------------------------------------------
+      -- Higher-level integration interface (PMC, SNIFFER_V5)
+      ---------------------------------------------------------------------------
+      fofb_userclk_o                             => fofb_userclk(c_FOFB_CC_P2P_ID),
+      fofb_userrst_o                             => fofb_userrst(c_FOFB_CC_P2P_ID),
+      timeframe_start_o                          => timeframe_start(c_FOFB_CC_P2P_ID),
+      timeframe_end_o                            => timeframe_end(c_FOFB_CC_P2P_ID),
+      fofb_dma_ok_i                              => fofb_dma_ok(c_FOFB_CC_P2P_ID),
+      fofb_node_mask_o                           => fofb_node_mask(c_FOFB_CC_P2P_ID),
+      fofb_timestamp_val_o                       => fofb_timestamp_val(c_FOFB_CC_P2P_ID),
+      fofb_link_status_o                         => fofb_link_status(c_FOFB_CC_P2P_ID),
+      fofb_fod_dat_o                             => fofb_fod_dat(c_FOFB_CC_P2P_ID),
+      fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0)
+    );
+
+    fofb_sysreset_n(c_FOFB_CC_P2P_ID) <= clk_sys_rstn and afc_si57x_reconfig_rst_n;
+    fofb_userrst_n(c_FOFB_CC_P2P_ID) <= not fofb_userrst(c_FOFB_CC_P2P_ID);
+
+    -- CDC between FOFB clock and ACQ clock
+    cmp_inferred_async_fwft_fifo : inferred_async_fwft_fifo
+    generic map
+    (
+      g_data_width                              => c_FOFB_DCC_DATA_WIDTH,
+      g_size                                    => 8,
+      g_almost_empty_threshold                  => 1,
+      g_almost_full_threshold                   => 7,
+      g_async                                   => true
+    )
+    port map
+    (
+      -- Write clock
+      wr_clk_i                                  => fofb_userclk(c_FOFB_CC_P2P_ID),
+      wr_rst_n_i                                => fofb_userrst_n(c_FOFB_CC_P2P_ID),
+
+      wr_data_i                                 => fofb_fod_dat(c_FOFB_CC_P2P_ID),
+      wr_en_i                                   => fofb_fod_dat_val(c_FOFB_CC_P2P_ID)(0),
+
+      -- Read clock
+      rd_clk_i                                  => fs1_clk,
+      rd_rst_n_i                                => fs1_rstn,
+
+      rd_data_o                                 => fofb_fod_dat_fs_sync(c_FOFB_CC_P2P_ID),
+      rd_valid_o                                => fofb_fod_dat_val_fs_sync(c_FOFB_CC_P2P_ID)(0),
+      rd_en_i                                   => '1'
+    );
+
+  end generate;
+
+  gen_without_p2p_fofb_dcc: if (not c_WITH_P2P_FOFB_DCC) generate
+
+    fofb_fod_dat_fs_sync(c_FOFB_CC_P2P_ID) <= (others => '0');
+    fofb_fod_dat_val_fs_sync(c_FOFB_CC_P2P_ID) <= (others => '0');
+
+  end generate;
+
+  -- If only P2P FOFB is available use its acquisition channel so it's easier
+  -- for software, if not, P2P data will be forwarded to the RTM DCC. So, that
+  -- will be eventually stored as well.
+  gen_only_p2p_fofb_dcc : if (not c_WITH_RTM_SFP_FOFB_DCC) generate
+
+    gen_p2p_fofb_dcc : if c_WITH_P2P_FOFB_DCC generate
+      fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID)     <= fofb_fod_dat_fs_sync(c_FOFB_CC_P2P_ID);
+      fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID) <= fofb_fod_dat_val_fs_sync(c_FOFB_CC_P2P_ID);
+    end generate;
+
+    gen_no_fofb_dcc : if (not c_WITH_P2P_FOFB_DCC) generate
+      fofb_fod_dat_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
+      fofb_fod_dat_val_fs_sync(c_FOFB_CC_RTM_ID) <= (others => '0');
+    end generate;
 
   end generate;
 
