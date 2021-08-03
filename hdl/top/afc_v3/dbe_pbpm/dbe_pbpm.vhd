@@ -708,7 +708,7 @@ begin
 
   cmp_dbe_bpm_gen : dbe_bpm_gen
   generic map (
-    g_fmc_adc_type                            => "FMCPICO_1M"
+    g_fmc_adc_type                           => "FMCPICO_1M"
   )
   port map (
     ---------------------------------------------------------------------------

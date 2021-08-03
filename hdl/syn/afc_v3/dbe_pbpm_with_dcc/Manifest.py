@@ -42,7 +42,8 @@ machine_pkg = "pbpm_fmcpico1M"
 # on afc_base xdc files.
 xdc_files = [
     "../dbe_common/dbe_pbpm.xdc",
-    "../dbe_common/afc_rtm_8sfp+_ohwr.xdc",
+    "../dbe_common/afc_p2p_gts.xdc",
+    "../dbe_common/afc_rtm_8sfp+_ohwr_single_gt.xdc",
     "../dbe_common/afc_rtm_8sfp+_ohwr_fofb.xdc",
 ]
 
