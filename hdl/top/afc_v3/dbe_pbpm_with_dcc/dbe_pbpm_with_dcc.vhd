@@ -31,10 +31,6 @@ use work.afc_base_pkg.all;
 
 entity dbe_pbpm_with_dcc is
 generic (
-  -- Number of RTM SFP GTs
-  g_NUM_SFPS                                 : integer := 1;
-  -- Start index of the RTM SFP GTs
-  g_SFP_START_ID                             : integer := 4;
   -- Number of P2P GTs
   g_NUM_P2P_GTS                              : integer := 8;
   -- Start index of the P2P GTs
@@ -223,10 +219,6 @@ begin
   cmp_dbe_bpm_gen : entity work.dbe_bpm_gen
   generic map (
     g_fmc_adc_type                           => "FMCPICO_1M",
-    g_WITH_RTM_SFP                           => false,
-    g_NUM_SFPS                               => 1,
-    g_SFP_START_ID                           => 4,
-    g_WITH_RTM_SFP_FOFB_DCC                  => false,
     g_NUM_P2P_GTS                            => g_NUM_P2P_GTS,
     g_P2P_GT_START_ID                        => g_P2P_GT_START_ID,
     g_WITH_P2P_FOFB_DCC                      => true
@@ -401,60 +393,6 @@ begin
 
     fmcpico_2_a_scl_o                          => fmc2_a_scl_o,
     fmcpico_2_a_sda_b                          => fmc2_a_sda_b
-
-    ---------------------------------------------------------------------------
-    -- RTM board pins
-    ---------------------------------------------------------------------------
-
-    -- SFP
-    rtm_sfp_rx_p_i                             => rtm_sfp_rx_p_i,
-    rtm_sfp_rx_n_i                             => rtm_sfp_rx_n_i,
-    rtm_sfp_tx_p_o                             => rtm_sfp_tx_p_o,
-    rtm_sfp_tx_n_o                             => rtm_sfp_tx_n_o,
-
-    -- RTM I2C.
-    -- SFP configuration pins, behind a I2C MAX7356. I2C addr = 1110_100 & '0' = 0xE8
-    -- Si570 oscillator. Input 0 of CDCLVD1212. I2C addr = 1010101 & '0' = 0x55
-    rtm_scl_b                                  => rtm_scl_b,
-    rtm_sda_b                                  => rtm_sda_b,
-
-    -- Si570 oscillator output enable
-    rtm_si570_oe_o                             => rtm_si570_oe_o,
-
-    ---- Clock to RTM connector. Input 1 of CDCLVD1212. Not connected to FPGA
-    -- rtm_sync_clk_p_o                           => rtm_sync_clk_p_o,
-    -- rtm_sync_clk_n_o                           => rtm_sync_clk_n_o,
-
-    -- Select between input 0 or 1 or CDCLVD1212. 0 is Si570, 1 is RTM sync clock
-    rtm_clk_in_sel_o                           => rtm_clk_in_sel_o,
-
-    -- FPGA clocks from CDCLVD1212
-    rtm_fpga_clk1_p_i                          => rtm_fpga_clk1_p_i,
-    rtm_fpga_clk1_n_i                          => rtm_fpga_clk1_n_i,
-    rtm_fpga_clk2_p_i                          => rtm_fpga_clk2_p_i,
-    rtm_fpga_clk2_n_i                          => rtm_fpga_clk2_n_i,
-
-    -- SFP status bits. Behind 4 74HC165, 8-parallel-in/serial-out. 4 x 8 bits.
-    --
-    -- Parallel load
-    rtm_sfp_status_reg_pl_o                    => rtm_sfp_status_reg_pl_o,
-    -- Clock N
-    rtm_sfp_status_reg_clk_n_o                 => rtm_sfp_status_reg_clk_n_o,
-    -- Serial output
-    rtm_sfp_status_reg_out_i                   => rtm_sfp_status_reg_out_i,
-
-    -- SFP control bits. Behind 4 74HC4094D, serial-in/8-parallel-out. 5 x 8 bits.
-    --
-    -- Strobe
-    rtm_sfp_ctl_str_n_o                        => rtm_sfp_ctl_str_n_o,
-    -- Data input
-    rtm_sfp_ctl_din_n_o                        => rtm_sfp_ctl_din_n_o,
-    -- Parallel output enable
-    rtm_sfp_ctl_oe_n_o                         => rtm_sfp_ctl_oe_n_o,
-
-    -- External clock from RTM to FPGA
-    rtm_ext_clk_p_i                            => rtm_ext_clk_p_i,
-    rtm_ext_clk_n_i                            => rtm_ext_clk_n_i
   );
 
 end rtl;

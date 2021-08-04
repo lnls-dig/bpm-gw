@@ -72,7 +72,7 @@ generic(
   -- Enable RTM SFP module or not
   g_WITH_RTM_SFP                             : boolean := false;
   -- Number of RTM SFP GTs
-  g_NUM_SFPS                                 : integer := 1;
+  g_NUM_SFPS                                 : integer := 0;
   -- Start index of the RTM SFP GTs
   g_SFP_START_ID                             : integer := 4;
   -- enables RTM 8SFP FOFB DCC. Is this is "true", g_WITH_P2P_FOFB_DCC is
@@ -3528,6 +3528,12 @@ begin
 
   gen_fofb_sfps: for i in 0 to c_NUM_SFPS_FOFB-1 generate
 
+    -- assign SFPs if WITH_RTM_SFP is false will likely generate
+    -- placer errors
+    assert (g_WITH_RTM_SFP)
+      report "[dbe_bpm_gen] g_WITH_RTM_SFP must be true to use rtm_sfp_rx/tx ports."
+      severity Failure;
+
     -- RX lines
     fofb_rio_rx_p(c_FOFB_CC_RTM_ID)(i) <= rtm_sfp_rx_p(i);
     fofb_rio_rx_n(c_FOFB_CC_RTM_ID)(i) <= rtm_sfp_rx_n(i);
@@ -3538,18 +3544,16 @@ begin
 
   end generate;
 
-  gen_unused_fofb_sfps: for i in c_NUM_SFPS_FOFB to g_NUM_SFPS-1 generate
-
-    -- TX lines
-    rtm_sfp_tx_p(i) <= '0';
-    rtm_sfp_tx_n(i) <= '1';
-
-  end generate;
-
   -- Clocks. Use rtm_clk1_p as this goes to the same bank as SFP 0, 1, 2, 3
   -- transceivers
   fofb_ref_clk_p(c_FOFB_CC_RTM_ID) <= rtm_clk1_p;
   fofb_ref_clk_n(c_FOFB_CC_RTM_ID) <= rtm_clk1_n;
+
+  -- if RTM_SFP_FOFB_DCC is selected, then WITH_RTM_SFP also needs to be selected
+  assert ((c_WITH_RTM_SFP_FOFB_DCC and g_WITH_RTM_SFP) or
+            (not c_WITH_RTM_SFP_FOFB_DCC and not g_WITH_RTM_SFP))
+    report "[dbe_bpm_gen] if g_WITH_RTM_SFP_FOFB_DCC is selected then g_WITH_RTM_SFP must also be seletected"
+    severity Failure;
 
   gen_with_rtm_sfp_fofb_dcc : if c_WITH_RTM_SFP_FOFB_DCC generate
 
