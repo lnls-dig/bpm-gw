@@ -825,16 +825,16 @@ architecture rtl of dbe_bpm_gen is
   signal wb_rtm_master_in                    : t_wishbone_master_in_array(c_RTM_8SFP_NUM_CORES-1 downto 0);
 
   -- Fix SFP inversion from 1 to 8 to 8 to 1
-  signal rtm_sfp_fix_rx_p                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_fix_rx_n                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_fix_tx_p                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_fix_tx_n                    : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_fix_rx_p                    : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_fix_rx_n                    : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_fix_tx_p                    : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_fix_tx_n                    : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
 
   -- SFPs to FOFB controller
-  signal rtm_sfp_rx_p                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_rx_n                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_tx_p                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
-  signal rtm_sfp_tx_n                        : std_logic_vector(g_NUM_SFPS-1 downto 0);
+  signal rtm_sfp_rx_p                        : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_rx_n                        : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_tx_p                        : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
+  signal rtm_sfp_tx_n                        : std_logic_vector(c_NUM_SFPS_FOFB-1 downto 0);
 
   signal rtm_clk1_p                          : std_logic;
   signal rtm_clk1_n                          : std_logic;
@@ -885,7 +885,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_FOFB_CC_RTM_ID                  : natural := 0;
   constant c_FOFB_CC_P2P_ID                  : natural := 1;
 
-  constant c_BPMS                            : integer := 1;
+  constant c_BPMS                            : integer := 2;
   constant c_FAI_DW                          : integer := 16;
   constant c_DMUX                            : integer := 2;
   constant c_MAX_LANE_COUNT                  : integer := 8;
@@ -909,6 +909,10 @@ architecture rtl of dbe_bpm_gen is
                                                     (others => '0');
   signal fai_fa_d                            : t_fofb_cc_data_fai_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => (others => '0'));
+
+  signal fai_fa_pl_data_valid                : std_logic := '0';
+  signal fai_fa_pl_d_x                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
+  signal fai_fa_pl_d_y                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
 
   signal fai_sim_data_sel                    : t_fofb_cc_std4_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => (others => '0'));
@@ -3345,12 +3349,12 @@ begin
   --                          RTM 8SFP OHWR                           --
   ----------------------------------------------------------------------
 
-  gen_fix_inv_sfps: for i in 0 to g_NUM_SFPS-1 generate
+  gen_fix_inv_sfps: for i in 0 to c_NUM_SFPS_FOFB-1 generate
 
-    rtm_sfp_fix_rx_p(g_NUM_SFPS-1-i)  <= rtm_sfp_rx_p_i(g_SFP_START_ID+i);
-    rtm_sfp_fix_rx_n(g_NUM_SFPS-1-i)  <= rtm_sfp_rx_n_i(g_SFP_START_ID+i);
-    rtm_sfp_tx_p_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_p(g_NUM_SFPS-1-i);
-    rtm_sfp_tx_n_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_n(g_NUM_SFPS-1-i);
+    rtm_sfp_fix_rx_p(c_NUM_SFPS_FOFB-1-i)  <= rtm_sfp_rx_p_i(g_SFP_START_ID+i);
+    rtm_sfp_fix_rx_n(c_NUM_SFPS_FOFB-1-i)  <= rtm_sfp_rx_n_i(g_SFP_START_ID+i);
+    rtm_sfp_tx_p_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_p(c_NUM_SFPS_FOFB-1-i);
+    rtm_sfp_tx_n_o(g_SFP_START_ID+i) <= rtm_sfp_fix_tx_n(c_NUM_SFPS_FOFB-1-i);
 
   end generate;
 
@@ -3358,7 +3362,7 @@ begin
 
     cmp_rtm8sfp_ohwr : rtm8sfp_ohwr
     generic map (
-      g_NUM_SFPS                                 => g_NUM_SFPS,
+      g_NUM_SFPS                                 => c_NUM_SFPS_FOFB,
       g_SYS_CLOCK_FREQ                           => c_SYS_CLOCK_FREQ,
       g_SI57x_I2C_FREQ                           => c_RTM_SI57x_I2C_FREQ,
       -- Whether or not to initialize oscilator with the specified values
@@ -3610,11 +3614,11 @@ begin
       ---------------------------------------------------------------------------
       -- serial I/Os for eight RocketIOs on the Libera
       ---------------------------------------------------------------------------
-      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
-      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
-      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
-      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
-      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_RTM_ID)(g_NUM_SFPS-1 downto 0),
+      fai_rio_rdp_i                              => fofb_rio_rx_p(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0),
+      fai_rio_rdn_i                              => fofb_rio_rx_n(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0),
+      fai_rio_tdp_o                              => fofb_rio_tx_p(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0),
+      fai_rio_tdn_o                              => fofb_rio_tx_n(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0),
+      fai_rio_tdis_o                             => fofb_rio_tx_disable(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0),
 
       ---------------------------------------------------------------------------
       -- Higher-level integration interface (PMC, SNIFFER_V5)
@@ -3720,6 +3724,11 @@ begin
 
   gen_with_p2p_fofb_dcc : if c_WITH_P2P_FOFB_DCC generate
 
+    -- BPM interface to DCC
+    fai_fa_pl_data_valid <= dsp1_fofb_pos_valid;
+    fai_fa_pl_d_x        <= dsp2_fofb_pos_x & dsp1_fofb_pos_x;
+    fai_fa_pl_d_y        <= dsp2_fofb_pos_y & dsp1_fofb_pos_y;
+
     cmp_fofb_ctrl_wrapper_1 : xwb_fofb_ctrl_wrapper
     generic map
     (
@@ -3733,7 +3742,9 @@ begin
       -- if FP P2P is used we take ref. clock from it, if not we instantiate
       -- the clock buffers ourselves
       g_CLK_BUFFERS                             => true,
+      g_USE_PARALLEL_FA_IF                      => true,
       g_LANE_COUNT                              => c_NUM_P2P_GTS,
+      g_BPMS                                    => c_BPMS,
       g_USE_CHIPSCOPE                           => c_USE_CHIPSCOPE,
       -- BPM synthetic data
       g_SIM_BPM_DATA                            => false
@@ -3754,6 +3765,10 @@ begin
       adcreset_i                                 => fs_rst_array(c_FOFB_CC_P2P_ID),
       sysclk_i                                   => clk_sys,
       sysreset_n_i                               => fofb_sysreset_n(c_FOFB_CC_P2P_ID),
+
+      fai_fa_pl_data_valid_i                     => fai_fa_pl_data_valid,
+      fai_fa_pl_d_x_i                            => fai_fa_pl_d_x,
+      fai_fa_pl_d_y_i                            => fai_fa_pl_d_y,
 
       ---------------------------------------------------------------------------
       -- Wishbone Control Interface signals
