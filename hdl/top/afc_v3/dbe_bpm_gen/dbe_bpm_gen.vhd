@@ -902,6 +902,7 @@ architecture rtl of dbe_bpm_gen is
   type t_fofb_cc_fod_data_array is array (natural range <>) of std_logic_vector(c_FOFB_DCC_DATA_WIDTH-1 downto 0);
   type t_fofb_cc_fod_val_array is array (natural range <>) of std_logic_vector(c_MAX_LANE_COUNT-1 downto 0);
   type t_fofb_cc_rio_array is array (natural range <>) of std_logic_vector(c_MAX_LANE_COUNT-1 downto 0);
+  type t_fai_fa_pl_state is (IDLE, WAIT_TRIGGER, SEND_BPM_DATA);
 
   signal fai_fa_block_start                  : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => '0');
@@ -913,6 +914,10 @@ architecture rtl of dbe_bpm_gen is
   signal fai_fa_pl_data_valid                : std_logic := '0';
   signal fai_fa_pl_d_x                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
   signal fai_fa_pl_d_y                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
+  signal fai_fa_pl_data_valid_r              : std_logic := '0';
+  signal fai_fa_pl_d_x_r                     : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
+  signal fai_fa_pl_d_y_r                     : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
+  signal fai_fa_pl_state                     : t_fai_fa_pl_state;
 
   signal fai_sim_data_sel                    : t_fofb_cc_std4_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => (others => '0'));
@@ -948,6 +953,8 @@ architecture rtl of dbe_bpm_gen is
                                                     (others => (others => '0'));
   signal fofb_link_status                    : t_fofb_cc_std32_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => (others => '0'));
+  signal fofb_cc_enable                      : t_fofb_cc_logic_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
+                                                    (others => '0');
 
   signal fofb_fod_dat                        : t_fofb_cc_fod_data_array(c_NUM_FOFB_CC_CORES-1 downto 0);
   signal fofb_fod_dat_val                    : t_fofb_cc_fod_val_array(c_NUM_FOFB_CC_CORES-1 downto 0);
@@ -3632,6 +3639,7 @@ begin
       fofb_node_mask_o                           => fofb_node_mask(c_FOFB_CC_RTM_ID),
       fofb_timestamp_val_o                       => fofb_timestamp_val(c_FOFB_CC_RTM_ID),
       fofb_link_status_o                         => fofb_link_status(c_FOFB_CC_RTM_ID),
+      fofb_cc_enable_o                           => fofb_cc_enable(c_FOFB_CC_RTM_ID),
       fofb_fod_dat_o                             => fofb_fod_dat(c_FOFB_CC_RTM_ID),
       fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_RTM_ID)
     );
@@ -3725,10 +3733,56 @@ begin
 
   gen_with_p2p_fofb_dcc : if c_WITH_P2P_FOFB_DCC generate
 
-    -- BPM interface to DCC
     fai_fa_pl_data_valid <= dsp1_fofb_pos_valid;
     fai_fa_pl_d_x        <= dsp2_fofb_pos_x & dsp1_fofb_pos_x;
     fai_fa_pl_d_y        <= dsp2_fofb_pos_y & dsp1_fofb_pos_y;
+
+    -- Trigger signal for DCC timeframe_start.
+    -- Trigger pulses are synch'ed with the respective fs_clk
+    p_sync_start_fofb_dcc : process(fs_clk_array(c_FOFB_CC_P2P_ID))
+    begin
+      if rising_edge(fs_clk_array(c_FOFB_CC_P2P_ID)) then
+        if fs_rst_n_array(c_FOFB_CC_P2P_ID) = '0' then
+          fai_fa_pl_state <= IDLE;
+          fai_fa_pl_data_valid_r <= '0';
+        else
+          case fai_fa_pl_state is
+
+            when IDLE =>
+              fai_fa_pl_data_valid_r <= '0';
+
+              -- we cross domains here, but fofb_cc_enable is pretty much
+              -- static, controlled by software.
+              if fofb_cc_enable(c_FOFB_CC_P2P_ID) = '1' then
+                fai_fa_pl_state <= WAIT_TRIGGER;
+              end if;
+
+            when WAIT_TRIGGER =>
+              if fofb_cc_enable(c_FOFB_CC_P2P_ID) = '0' then
+                fai_fa_pl_state <= IDLE;
+              -- use FOFB CC ID as the TRIGGER_MUX ID
+              elsif trig_pulse_rcv(c_FOFB_CC_P2P_ID, c_ACQ_DCC_ID).pulse = '1' then
+                fai_fa_pl_state <= SEND_BPM_DATA;
+              end if;
+
+            when SEND_BPM_DATA =>
+              fai_fa_pl_data_valid_r <= fai_fa_pl_data_valid;
+              fai_fa_pl_d_x_r        <= fai_fa_pl_d_x;
+              fai_fa_pl_d_y_r        <= fai_fa_pl_d_y;
+
+              if fofb_cc_enable(c_FOFB_CC_P2P_ID) = '0' then
+                fai_fa_pl_data_valid_r <= '0';
+                fai_fa_pl_state <= IDLE;
+              end if;
+
+            when others =>
+              fai_fa_pl_data_valid_r <= '0';
+              fai_fa_pl_state <= IDLE;
+
+          end case;
+        end if;
+      end if;
+    end process;
 
     cmp_fofb_ctrl_wrapper_1 : xwb_fofb_ctrl_wrapper
     generic map
@@ -3767,9 +3821,9 @@ begin
       sysclk_i                                   => clk_sys,
       sysreset_n_i                               => fofb_sysreset_n(c_FOFB_CC_P2P_ID),
 
-      fai_fa_pl_data_valid_i                     => fai_fa_pl_data_valid,
-      fai_fa_pl_d_x_i                            => fai_fa_pl_d_x,
-      fai_fa_pl_d_y_i                            => fai_fa_pl_d_y,
+      fai_fa_pl_data_valid_i                     => fai_fa_pl_data_valid_r,
+      fai_fa_pl_d_x_i                            => fai_fa_pl_d_x_r,
+      fai_fa_pl_d_y_i                            => fai_fa_pl_d_y_r,
 
       ---------------------------------------------------------------------------
       -- Wishbone Control Interface signals
@@ -3797,6 +3851,7 @@ begin
       fofb_node_mask_o                           => fofb_node_mask(c_FOFB_CC_P2P_ID),
       fofb_timestamp_val_o                       => fofb_timestamp_val(c_FOFB_CC_P2P_ID),
       fofb_link_status_o                         => fofb_link_status(c_FOFB_CC_P2P_ID),
+      fofb_cc_enable_o                           => fofb_cc_enable(c_FOFB_CC_P2P_ID),
       fofb_fod_dat_o                             => fofb_fod_dat(c_FOFB_CC_P2P_ID),
       fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_P2P_ID)(c_NUM_P2P_GTS-1 downto 0)
     );
