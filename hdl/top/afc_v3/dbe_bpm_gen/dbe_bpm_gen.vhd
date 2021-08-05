@@ -882,8 +882,8 @@ architecture rtl of dbe_bpm_gen is
   constant c_GT_CFG                          : t_gt_cfg := f_extract_gt_cfg(g_NUM_P2P_GTS);
   constant c_NUM_P2P_GTS                     : integer := c_GT_CFG.num_p2p_gts + c_GT_CFG.num_fp_p2p_gts;
 
-  constant c_FOFB_CC_RTM_ID                  : natural := 0;
-  constant c_FOFB_CC_P2P_ID                  : natural := 1;
+  constant c_FOFB_CC_P2P_ID                  : natural := 0;
+  constant c_FOFB_CC_RTM_ID                  : natural := 1;
 
   constant c_BPMS                            : integer := 2;
   constant c_FAI_DW                          : integer := 16;
@@ -1116,7 +1116,7 @@ architecture rtl of dbe_bpm_gen is
   constant c_TRIG_MUX_1_ID                   : natural := 1;
   constant c_TRIG_MUX_2_ID                   : natural := 2;
   constant c_TRIG_MUX_3_ID                   : natural := 3;
-  constant c_TRIG_MUX_NUM_CORES              : natural  := c_ACQ_NUM_CORES;
+  constant c_TRIG_MUX_NUM_CORES              : natural := c_ACQ_NUM_CORES;
 
   signal trig_rcv_intern                     : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_RCV_INTERN_NUM-1 downto 0);
   signal trig_pulse_transm                   : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
@@ -1157,13 +1157,14 @@ architecture rtl of dbe_bpm_gen is
   constant c_SLV_FOFB_START                  : natural := 5;
   constant c_SLV_FOFB_CC_CORE_IDS           : t_num_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
     f_gen_ramp(c_SLV_FOFB_START, c_SLV_FOFB_START+c_NUM_FOFB_CC_CORES);
-  -- Because VHDL doesn't like non-globally static things...
-  --constant c_SLV_FOFB_CC_RTM_ID              : natural := c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID);
-  constant c_SLV_FOFB_CC_RTM_ID              : natural := 5;
-  constant c_SLV_FOFB_CC_P2P_ID              : natural := 6;
-  constant c_SLV_FOFB_END                    : natural := c_SLV_FOFB_CC_RTM_ID + c_NUM_FOFB_CC_CORES -1;
 
-  constant c_USER_NUM_CORES                  : natural := c_SLV_FOFB_END+1;
+  -- Because VHDL doesn't like non-globally static things...
+  --constant c_SLV_FOFB_CC_P2P_ID              : natural := c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_P2P_ID);
+  --constant c_SLV_FOFB_CC_RTM_ID              : natural := c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID);
+  constant c_SLV_FOFB_CC_P2P_ID              : natural := 5;
+  constant c_SLV_FOFB_CC_RTM_ID              : natural := 6;
+
+  constant c_USER_NUM_CORES                  : natural := 7;
 
   -- FMC_ADC layout. Size (0x00000FFF) is larger than needed. Just to be sure
   -- no address overlaps will occur
@@ -1179,8 +1180,8 @@ architecture rtl of dbe_bpm_gen is
     c_SLV_POS_CALC_2_ID             => f_sdb_auto_bridge(c_POS_CALC_CORE_BRIDGE_SDB,  true),
     c_SLV_FMC_ADC_2_ID              => f_sdb_auto_bridge(c_FMC_ADC_BRIDGE_SDB,        true),
     c_SLV_ORBIT_INTLK_ID            => f_sdb_auto_device(c_XWB_ORBIT_INTLK_SDB,       true),
-    c_SLV_FOFB_CC_RTM_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_RTM_SFP_FOFB_DCC),
-    c_SLV_FOFB_CC_P2P_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_P2P_FOFB_DCC)
+    c_SLV_FOFB_CC_P2P_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_P2P_FOFB_DCC),
+    c_SLV_FOFB_CC_RTM_ID            => f_sdb_auto_device(c_XWB_FOFB_CC_REGS_SDB,      c_WITH_RTM_SFP_FOFB_DCC)
   );
 
   signal clk_sys                             : std_logic;
@@ -3596,8 +3597,8 @@ begin
       ---------------------------------------------------------------------------
       -- Wishbone Control Interface signals
       ---------------------------------------------------------------------------
-      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID)),
-      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_RTM_ID)),
+      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_RTM_ID),
+      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_RTM_ID),
 
       ---------------------------------------------------------------------------
       -- external CC interface for data from another DCC. Used
@@ -3773,8 +3774,8 @@ begin
       ---------------------------------------------------------------------------
       -- Wishbone Control Interface signals
       ---------------------------------------------------------------------------
-      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_P2P_ID)),
-      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_CORE_IDS(c_FOFB_CC_P2P_ID)),
+      wb_slv_i                                   => user_wb_out(c_SLV_FOFB_CC_P2P_ID),
+      wb_slv_o                                   => user_wb_in(c_SLV_FOFB_CC_P2P_ID),
 
       ---------------------------------------------------------------------------
       -- serial I/Os for eight RocketIOs on the Libera
