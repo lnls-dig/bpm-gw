@@ -1,58 +1,6 @@
--- package generated automatically by gen_sdbsyn.py script --
-library ieee;
-use ieee.std_logic_1164.all;
-use work.wishbone_pkg.all;
-package synthesis_descriptor_pkg is
-constant c_sdb_repo_url : t_sdb_repo_url := (
-repo_url => "git@github.com:lnls-dig/bpm-gw.git                             ");
-constant c_sdb_top_syn_info : t_sdb_synthesis := (
-syn_module_name => "bpm-gw-sr-siriu+",
-syn_commit_id => "195b1396246a03bfa3ee3ad1fb86c16f",
-syn_tool_name => "VIVADO  ",
-syn_tool_version => x"00020183",
-syn_date => x"20210811",
-syn_username => "LRusso         ");
-constant c_sdb_CommsCtrlFPGA_syn_info : t_sdb_synthesis := (
-syn_module_name => "CommsCtrlFPGA+  ",
-syn_commit_id => "66f314fff7eb36150c575fae52f9eb52",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-constant c_sdb_afc_gw_syn_info : t_sdb_synthesis := (
-syn_module_name => "afc-gw          ",
-syn_commit_id => "59924aeeb39bc77e4814fb70dee3b0fb",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-constant c_sdb_dsp_cores_syn_info : t_sdb_synthesis := (
-syn_module_name => "dsp-cores       ",
-syn_commit_id => "9437895a59022b83ef574215f03c5b43",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-constant c_sdb_fofb_ctrl_gw_syn_info : t_sdb_synthesis := (
-syn_module_name => "fofb-ctrl-gw    ",
-syn_commit_id => "6c6ed2db53036e85a7c263c92016836a",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-constant c_sdb_general_cores_syn_info : t_sdb_synthesis := (
-syn_module_name => "general-cores+  ",
-syn_commit_id => "20ade77c41bcb981276a3980858fc557",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-constant c_sdb_infra_cores_syn_info : t_sdb_synthesis := (
-syn_module_name => "infra-cores+    ",
-syn_commit_id => "5f8bf2b43dc599aa98547571dd1f0dbb",
-syn_tool_name => "        ",
-syn_tool_version => x"00000000",
-syn_date => x"00000000",
-syn_username => "               ");
-
-end package;
+-- This file will be overwritten prior to synthesis,
+-- by hdlmake "syn_pre_cmd" specified on top Manifest.py.
+--
+-- However, hdlmake requires all files to be present
+-- on parsing-time. So, fool the tool with this dummy
+-- file so we can bypass this requirement.
