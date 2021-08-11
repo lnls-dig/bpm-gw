@@ -3641,7 +3641,7 @@ begin
       fofb_link_status_o                         => fofb_link_status(c_FOFB_CC_RTM_ID),
       fofb_cc_enable_o                           => fofb_cc_enable(c_FOFB_CC_RTM_ID),
       fofb_fod_dat_o                             => fofb_fod_dat(c_FOFB_CC_RTM_ID),
-      fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_RTM_ID)
+      fofb_fod_dat_val_o                         => fofb_fod_dat_val(c_FOFB_CC_RTM_ID)(c_NUM_SFPS_FOFB-1 downto 0)
     );
 
     fofb_sysreset_n(c_FOFB_CC_RTM_ID) <= clk_sys_rstn and rtm_reconfig_rst_n;
