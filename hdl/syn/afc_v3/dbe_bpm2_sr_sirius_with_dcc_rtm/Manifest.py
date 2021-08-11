@@ -11,8 +11,8 @@ if locals().get('fetchto', None) is None:
 syn_device = "xc7a200t"
 syn_grade = "-2"
 syn_package = "ffg1156"
-syn_top = "dbe_bpm2_with_dcc"
-syn_project = "dbe_bpm2_with_dcc"
+syn_top = "dbe_bpm2_with_dcc_rtm"
+syn_project = "dbe_bpm2_with_dcc_rtm"
 syn_tool = "vivado"
 syn_properties = [
     ["steps.synth_design.args.more options", "-verbose"],
@@ -58,6 +58,6 @@ for f in xdc_files:
 
 modules = {
     "local" : [
-        "../../../top/afc_v3/dbe_bpm2_with_dcc"
+        "../../../top/afc_v3/dbe_bpm2_with_dcc_rtm"
     ]
 }
