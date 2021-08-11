@@ -90,4 +90,5 @@ planAhead_run_*/
 *synthesize.tcl
 *translate.tcl
 *project.tcl
+*synthesis_descriptor_pkg.vhd
 *files.tcl
