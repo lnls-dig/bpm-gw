@@ -911,9 +911,6 @@ architecture rtl of dbe_bpm_gen is
   signal fai_fa_d                            : t_fofb_cc_data_fai_array(c_NUM_FOFB_CC_CORES-1 downto 0) :=
                                                     (others => (others => '0'));
 
-  signal fai_fa_pl_data_valid                : std_logic := '0';
-  signal fai_fa_pl_d_x                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
-  signal fai_fa_pl_d_y                       : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
   signal fai_fa_pl_data_valid_r              : std_logic := '0';
   signal fai_fa_pl_d_x_r                     : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
   signal fai_fa_pl_d_y_r                     : std_logic_2d_32(c_BPMS-1 downto 0) := (others => (others => '0'));
@@ -1082,10 +1079,15 @@ architecture rtl of dbe_bpm_gen is
   -- ADC clock
   signal fs1_clk                             : std_logic;
   signal fs1_clk2x                           : std_logic;
+  signal fs_ref_clk                          : std_logic;
+  signal fs_ref_clk2x                        : std_logic;
   signal fs2_clk                             : std_logic;
   signal fs2_clk2x                           : std_logic;
   signal fs1_rstn                            : std_logic;
   signal fs1_rst2xn                          : std_logic;
+  signal fs_ref_rstn                         : std_logic;
+  signal fs_ref_rst                          : std_logic;
+  signal fs_ref_rst2xn                       : std_logic;
   signal fs2_rstn                            : std_logic;
   signal fs2_rst2xn                          : std_logic;
   signal fs_rstn_dbg                         : std_logic;
@@ -1571,9 +1573,58 @@ architecture rtl of dbe_bpm_gen is
   signal dsp2_dbg_adc_ch2_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
   signal dsp2_dbg_adc_ch3_cond               : std_logic_vector(c_num_unprocessed_bits-1 downto 0);
 
+  -- DSP DCC signal
+
+  subtype t_pos_calc_fofb_data is std_logic_vector(c_pos_calc_fofb_decim_width-1 downto 0);
+  type t_pos_calc_fofb_data_array is array(natural range <>) of t_pos_calc_fofb_data;
+
+  signal dsp1_fofb_pos_xy_in_fifo            : t_pos_calc_fofb_data_array(c_BPMS-1 downto 0);
+  signal dsp1_fofb_pos_valid_in_fifo         : std_logic;
+  signal dsp1_fofb_pos_xy_out_fifo_slv       : std_logic_vector(c_BPMS*t_pos_calc_fofb_data'length-1 downto 0);
+  signal dsp1_fofb_pos_xy_out_fifo           : t_pos_calc_fofb_data_array(c_BPMS-1 downto 0);
+  signal dsp1_fofb_pos_x_out_fifo            : t_pos_calc_fofb_data;
+  signal dsp1_fofb_pos_y_out_fifo            : t_pos_calc_fofb_data;
+  signal dsp1_fofb_pos_valid_out_fifo        : std_logic;
+
+  signal dsp2_fofb_pos_xy_in_fifo            : t_pos_calc_fofb_data_array(c_BPMS-1 downto 0);
+  signal dsp2_fofb_pos_valid_in_fifo         : std_logic;
+  signal dsp2_fofb_pos_xy_out_fifo_slv       : std_logic_vector(c_BPMS*t_pos_calc_fofb_data'length-1 downto 0);
+  signal dsp2_fofb_pos_xy_out_fifo           : t_pos_calc_fofb_data_array(c_BPMS-1 downto 0);
+  signal dsp2_fofb_pos_x_out_fifo            : t_pos_calc_fofb_data;
+  signal dsp2_fofb_pos_y_out_fifo            : t_pos_calc_fofb_data;
+  signal dsp2_fofb_pos_valid_out_fifo        : std_logic;
+
+  signal dsp_fofb_pos_fifo_rden              : std_logic;
+  signal dsp_fofb_pos_rstn                   : std_logic;
+  signal dsp_fofb_pos_enable_bpm_data        : std_logic;
+
   -- Interlock signals
   signal intlk_ltc                          : std_logic;
   signal intlk                              : std_logic;
+
+  function f_to_slv(fofb_array : t_pos_calc_fofb_data_array) return std_logic_vector is
+    constant c_FOFB_ARRAY_ELEM_LENGTH : natural := fofb_array(0)'length;
+    variable ret : std_logic_vector((fofb_array'length * c_FOFB_ARRAY_ELEM_LENGTH) - 1 downto 0);
+  begin
+    for i in fofb_array'range loop
+      ret((i+1)*c_FOFB_ARRAY_ELEM_LENGTH-1 downto (i*c_FOFB_ARRAY_ELEM_LENGTH)) :=
+        fofb_array(i);
+    end loop;
+
+    return ret;
+  end function;
+
+  function f_to_fofb_array(fofb_slv : std_logic_vector) return t_pos_calc_fofb_data_array is
+    constant c_FOFB_SLV_LENGTH : natural := fofb_slv'length;
+    constant c_FOFB_ARRAY_LENGTH : natural := (c_FOFB_SLV_LENGTH + t_pos_calc_fofb_data'length -1)/t_pos_calc_fofb_data'length;
+    variable ret : t_pos_calc_fofb_data_array(c_FOFB_ARRAY_LENGTH-1 downto 0);
+  begin
+    for i in ret'range loop
+      ret(i) := fofb_slv((i+1)*t_pos_calc_fofb_data'length-1 downto (i*t_pos_calc_fofb_data'length));
+    end loop;
+
+    return ret;
+  end function;
 
 begin
 
@@ -2897,6 +2948,14 @@ begin
 
   end generate;
 
+  -- Reference FMC ADC clock
+  fs_ref_clk <= fs1_clk;
+  fs_ref_clk2x <= fs1_clk2x;
+  fs_ref_rstn <= fs1_rstn;
+  fs_ref_rst2xn <= fs1_rst2xn;
+
+  fs_ref_rst <= not fs_ref_rstn;
+
   ----------------------------------------------------------------------
   --                      DSP Chain 1 Core                            --
   ----------------------------------------------------------------------
@@ -3733,18 +3792,98 @@ begin
 
   gen_with_p2p_fofb_dcc : if c_WITH_P2P_FOFB_DCC generate
 
-    fai_fa_pl_data_valid <= dsp1_fofb_pos_valid;
-    fai_fa_pl_d_x        <= dsp2_fofb_pos_x & dsp1_fofb_pos_x;
-    fai_fa_pl_d_y        <= dsp2_fofb_pos_y & dsp1_fofb_pos_y;
+    -----------------------------------------
+    -- CDC DSP 1 between ACQ clock and FOFB clock
+    -----------------------------------------
+    dsp1_fofb_pos_xy_in_fifo    <= (dsp1_fofb_pos_x, dsp1_fofb_pos_y);
+    dsp1_fofb_pos_valid_in_fifo <= dsp1_fofb_pos_valid;
+
+    cmp_dsp_1_fofb_fifo : inferred_async_fwft_fifo
+    generic map
+    (
+      g_data_width                              => dsp1_fofb_pos_xy_out_fifo_slv'length,
+      g_size                                    => 8,
+      g_almost_empty_threshold                  => 1,
+      g_almost_full_threshold                   => 7,
+      g_async                                   => true
+    )
+    port map
+    (
+      -- Write clock
+      wr_clk_i                                  => fs1_clk,
+      wr_rst_n_i                                => dsp_fofb_pos_rstn,
+
+      wr_data_i                                 => f_to_slv(dsp1_fofb_pos_xy_in_fifo),
+      wr_en_i                                   => dsp1_fofb_pos_valid_in_fifo,
+
+      -- Read clock
+      rd_clk_i                                  => fs_ref_clk,
+      rd_rst_n_i                                => fs_ref_rstn,
+
+      rd_data_o                                 => dsp1_fofb_pos_xy_out_fifo_slv,
+      rd_valid_o                                => dsp1_fofb_pos_valid_out_fifo,
+      rd_en_i                                   => dsp_fofb_pos_fifo_rden
+    );
+
+    dsp1_fofb_pos_xy_out_fifo <= f_to_fofb_array(dsp1_fofb_pos_xy_out_fifo_slv);
+    (dsp1_fofb_pos_x_out_fifo, dsp1_fofb_pos_y_out_fifo) <= dsp1_fofb_pos_xy_out_fifo;
+
+    -----------------------------------------
+    -- CDC DSP 1 between ACQ clock and FOFB clock
+    -----------------------------------------
+    dsp2_fofb_pos_xy_in_fifo    <= (dsp2_fofb_pos_x, dsp2_fofb_pos_y);
+    dsp2_fofb_pos_valid_in_fifo <= dsp2_fofb_pos_valid;
+
+    cmp_dsp_2_fofb_fifo : inferred_async_fwft_fifo
+    generic map
+    (
+      g_data_width                              => dsp2_fofb_pos_xy_out_fifo_slv'length,
+      g_size                                    => 8,
+      g_almost_empty_threshold                  => 1,
+      g_almost_full_threshold                   => 7,
+      g_async                                   => true
+    )
+    port map
+    (
+      -- Write clock
+      wr_clk_i                                  => fs2_clk,
+      wr_rst_n_i                                => dsp_fofb_pos_rstn,
+
+      wr_data_i                                 => f_to_slv(dsp2_fofb_pos_xy_in_fifo),
+      wr_en_i                                   => dsp2_fofb_pos_valid_in_fifo,
+
+      -- Read clock
+      rd_clk_i                                  => fs_ref_clk,
+      rd_rst_n_i                                => fs_ref_rstn,
+
+      rd_data_o                                 => dsp2_fofb_pos_xy_out_fifo_slv,
+      rd_valid_o                                => dsp2_fofb_pos_valid_out_fifo,
+      rd_en_i                                   => dsp_fofb_pos_fifo_rden
+    );
+
+    dsp2_fofb_pos_xy_out_fifo <= f_to_fofb_array(dsp2_fofb_pos_xy_out_fifo_slv);
+    (dsp2_fofb_pos_x_out_fifo, dsp2_fofb_pos_y_out_fifo) <= dsp2_fofb_pos_xy_out_fifo;
+
+    -----------------------------------------
+    -- FIFO read logic
+    -----------------------------------------
+    dsp_fofb_pos_rstn <= fs_ref_rstn and dsp_fofb_pos_enable_bpm_data;
+    dsp_fofb_pos_fifo_rden <= '1' when dsp1_fofb_pos_valid_out_fifo = '1' and
+                                       dsp2_fofb_pos_valid_out_fifo = '1' else '0';
+
+    -----------------------------------------
+    -- Send data to DCC
+    -----------------------------------------
 
     -- Trigger signal for DCC timeframe_start.
     -- Trigger pulses are synch'ed with the respective fs_clk
-    p_sync_start_fofb_dcc : process(fs_clk_array(c_FOFB_CC_P2P_ID))
+    p_sync_start_fofb_dcc : process(fs_ref_clk)
     begin
-      if rising_edge(fs_clk_array(c_FOFB_CC_P2P_ID)) then
-        if fs_rst_n_array(c_FOFB_CC_P2P_ID) = '0' then
+      if rising_edge(fs_ref_clk) then
+        if fs_ref_rstn = '0' then
           fai_fa_pl_state <= IDLE;
           fai_fa_pl_data_valid_r <= '0';
+          dsp_fofb_pos_enable_bpm_data <= '0';
         else
           case fai_fa_pl_state is
 
@@ -3762,21 +3901,24 @@ begin
                 fai_fa_pl_state <= IDLE;
               -- use FOFB CC ID as the TRIGGER_MUX ID
               elsif trig_pulse_rcv(c_FOFB_CC_P2P_ID, c_ACQ_DCC_ID).pulse = '1' then
+                dsp_fofb_pos_enable_bpm_data <= '1';
                 fai_fa_pl_state <= SEND_BPM_DATA;
               end if;
 
             when SEND_BPM_DATA =>
-              fai_fa_pl_data_valid_r <= fai_fa_pl_data_valid;
-              fai_fa_pl_d_x_r        <= fai_fa_pl_d_x;
-              fai_fa_pl_d_y_r        <= fai_fa_pl_d_y;
+              fai_fa_pl_data_valid_r <= dsp_fofb_pos_fifo_rden;
+              fai_fa_pl_d_x_r        <= dsp2_fofb_pos_x_out_fifo & dsp1_fofb_pos_x_out_fifo;
+              fai_fa_pl_d_y_r        <= dsp2_fofb_pos_y_out_fifo & dsp1_fofb_pos_y_out_fifo;
 
               if fofb_cc_enable(c_FOFB_CC_P2P_ID) = '0' then
                 fai_fa_pl_data_valid_r <= '0';
+                dsp_fofb_pos_enable_bpm_data <= '0';
                 fai_fa_pl_state <= IDLE;
               end if;
 
             when others =>
               fai_fa_pl_data_valid_r <= '0';
+              dsp_fofb_pos_enable_bpm_data <= '0';
               fai_fa_pl_state <= IDLE;
 
           end case;
@@ -3816,8 +3958,8 @@ begin
       ---------------------------------------------------------------------------
       -- clock and reset interface
       ---------------------------------------------------------------------------
-      adcclk_i                                   => fs_clk_array(c_FOFB_CC_P2P_ID),
-      adcreset_i                                 => fs_rst_array(c_FOFB_CC_P2P_ID),
+      adcclk_i                                   => fs_ref_clk,
+      adcreset_i                                 => fs_ref_rst,
       sysclk_i                                   => clk_sys,
       sysreset_n_i                               => fofb_sysreset_n(c_FOFB_CC_P2P_ID),
 
