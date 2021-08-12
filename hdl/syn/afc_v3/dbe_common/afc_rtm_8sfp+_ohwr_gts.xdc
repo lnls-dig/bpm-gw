@@ -138,3 +138,10 @@ set_max_delay -datapath_only -from               [get_clocks clk_pll_i] -to [get
 
 # CDC between clk_pll_i (DDR core clock) and DCC GT
 set_max_delay -datapath_only -from               [get_clocks $gt_rtm_txoutclk_clocks] -to [get_clocks clk_pll_i]    $clk_pll_ddr_period
+
+# CDC between FMC ADC clk1 and DCC. Synched with async FIFO. Give 1 destination clock
+set_max_delay -datapath_only -from               [get_clocks fmc1_ref_clk] -to [get_clocks $gt_rtm_txoutclk_clocks]    $afc_fp2_clk1_period
+set_max_delay -datapath_only -from               [get_clocks fmc2_ref_clk] -to [get_clocks $gt_rtm_txoutclk_clocks]    $afc_fp2_clk1_period
+
+set_max_delay -datapath_only -from               [get_clocks $gt_rtm_txoutclk_clocks] -to [get_clocks fmc1_ref_clk]    $fmc1_ref_clk_period
+set_max_delay -datapath_only -from               [get_clocks $gt_rtm_txoutclk_clocks] -to [get_clocks fmc2_ref_clk]    $fmc2_ref_clk_period
