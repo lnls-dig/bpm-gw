@@ -203,9 +203,9 @@ set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_fmc_a
 # Constrain the PCIe core elements placement, so that it won't fail
 # timing analysis.
 # Comment out because we use nonstandard GTP location
-create_pblock GRP_pcie_core
-add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ *pcie_core_i/*}]
-resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
+#create_pblock GRP_pcie_core
+#add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ *pcie_core_i/*}]
+#resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
 #
 ## Place the DMA design not far from PCIe core, otherwise it also breaks timing
 #create_pblock GRP_ddr_core
@@ -227,13 +227,13 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y
 #resize_pblock [get_pblocks GRP_fmc2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 #
 ## Constraint Position Calc Cores
-create_pblock GRP_position_calc_core1
-add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -hier -filter {NAME =~ *cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
-resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
-
-create_pblock GRP_position_calc_core2
-add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -hier -filter {NAME =~ *cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
-resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
+#create_pblock GRP_position_calc_core1
+#add_cells_to_pblock [get_pblocks GRP_position_calc_core1] [get_cells -hier -filter {NAME =~ *cmp1_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
+#resize_pblock [get_pblocks GRP_position_calc_core1] -add {CLOCKREGION_X1Y2:CLOCKREGION_X1Y4}
+#
+#create_pblock GRP_position_calc_core2
+#add_cells_to_pblock [get_pblocks GRP_position_calc_core2] [get_cells -hier -filter {NAME =~ *cmp2_xwb_position_calc_core/cmp_wb_position_calc_core/*}]
+#resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCKREGION_X0Y2}
 #
 ## Place acquisition core 0
 #create_pblock GRP_acq_core_0
@@ -244,35 +244,46 @@ resize_pblock [get_pblocks GRP_position_calc_core2] -add {CLOCKREGION_X0Y0:CLOCK
 ##                         CE Constraints                            ##
 #######################################################################
 
-## Mixer CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
+## CIC MONIT 1 CE. Uses ce_fofb_cordic as CE
+set monit1_ce_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from a known CE pin on CORDIC design: the PIN that is driving the NET
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_monit1_cic/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_monit1_cic/.*} \
+]]
 
-## CIC TBT CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
+set_multicycle_path 4 -setup -from  $monit1_ce_fanouts
+set_multicycle_path 3 -hold -from   $monit1_ce_fanouts
 
-### TBT CORDIC CE
-#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
-#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
+## CIC MONIT 2 CE. uses ce_monit1 as CE
+set monit2_ce_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from a known CE pin on CORDIC design: the PIN that is driving the NET
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_monit2_cic/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_monit2_cic/.*} \
+]]
 
-## CIC FOFB CE
-#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
-
-### FOFB CORDIC CE
-## FIXME: get CE from VHDL code
-#set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
-#set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
-
-## CIC MONIT 1 CE
-set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
-set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
-
-## CIC MONIT 2 CE
-set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit2_cic/cmp_cic_decim/*}]]
-set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit2_cic/cmp_cic_decim/*}]]
-
-## Delta-Sigma CE (CE_ADC) = 2
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/cmp_fofb_ds/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/cmp_fofb_ds/*}]]
+set_multicycle_path 4 -setup -from  $monit2_ce_fanouts
+set_multicycle_path 3 -hold -from   $monit2_ce_fanouts

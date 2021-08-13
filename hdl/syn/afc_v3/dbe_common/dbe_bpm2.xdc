@@ -1025,9 +1025,9 @@ set_property RAM_STYLE DISTRIBUTED [get_cells -hier -filter {NAME =~ */cmp_fmc_a
 # Constrain the PCIe core elements placement, so that it won't fail
 # timing analysis.
 # Comment out because we use nonstandard GTP location
-create_pblock GRP_pcie_core
-add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ *pcie_core_i/*}]
-resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
+#create_pblock GRP_pcie_core
+#add_cells_to_pblock [get_pblocks GRP_pcie_core] [get_cells -hier -filter {NAME =~ *pcie_core_i/*}]
+#resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y4}
 #
 ## Place the DMA design not far from PCIe core, otherwise it also breaks timing
 #create_pblock GRP_ddr_core
@@ -1066,35 +1066,90 @@ resize_pblock [get_pblocks GRP_pcie_core] -add {CLOCKREGION_X0Y4:CLOCKREGION_X0Y
 ##                         CE Constraints                            ##
 #######################################################################
 
-## Mixer CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_mixer/*}]]
+## TBT CORDIC CE. Uses ce_tbt_cordic as CE
+set tbt_cordic_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from all CE pins on CORDIC design: the PINs that are driving the NET.
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_tbt_cordic/cmp_cordic_core/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_tbt_cordic/.*} \
+]]
 
-## CIC TBT CE
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cic/cmp_cic_decim*/*}]]
+set_multicycle_path 4 -setup -from  $tbt_cordic_fanouts
+set_multicycle_path 3 -hold -from   $tbt_cordic_fanouts
 
-## TBT CORDIC CE
-set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
-set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_tbt_cordic/cmp_cordic_core/*}]]
+## FOFB CORDIC CE. Uses ce_fofb_cordic as CE
+set fofb_cordic_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from all CE pins on CORDIC design: the PINs that are driving the NET.
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_fofb_cordic/cmp_cordic_core/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_fofb_cordic/.*} \
+]]
 
-## CIC FOFB CE
-#set_multicycle_path 2 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
-#set_multicycle_path 1 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cic/cmp_cic_decim*/*}]]
+set_multicycle_path 4 -setup -from  $fofb_cordic_fanouts
+set_multicycle_path 3 -hold -from   $fofb_cordic_fanouts
 
-## FOFB CORDIC CE
-# FIXME: get CE from VHDL code
-set_multicycle_path 4 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
-set_multicycle_path 3 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].*.cmp_fofb_cordic/cmp_cordic_core/*}]]
+## CIC MONIT 1 CE. Uses ce_fofb_cordic as CE
+set monit1_ce_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from a known CE pin on CORDIC design: the PIN that is driving the NET
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_monit1_cic/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_monit1_cic/.*} \
+]]
 
-## CIC MONIT 1 CE
-set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
-set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit1_cic/cmp_cic_decim/*}]]
+set_multicycle_path 4 -setup -from  $monit1_ce_fanouts
+set_multicycle_path 3 -hold -from   $monit1_ce_fanouts
 
-## CIC MONIT 2 CE
-set_multicycle_path 8 -setup -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit2_cic/cmp_cic_decim/*}]]
-set_multicycle_path 7 -hold -from [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/gen_ddc[?].cmp_monit2_cic/cmp_cic_decim/*}]]
+## CIC MONIT 2 CE. uses ce_monit1 as CE
+set monit2_ce_fanouts [get_cells -of_objects [ \
+    filter -regexp [ \
+        all_fanout -flat -endpoints_only -from [ \
+            # Get from a known CE pin on CORDIC design: the PIN that is driving the NET
+            # This is needed (really?) in our case as the CE driver, in the case of
+            # the channel #0 get optimized out and replaced by another NET.
+            get_pins -of_objects [ \
+                get_nets -segments -of_objects [ \
+                    get_pins -hierarchical  -filter { \
+                        NAME =~ *position_calc*cmp_monit2_cic/*CE \
+                    } \
+                ] \
+            ] -filter {IS_LEAF && (DIRECTION == "OUT")} \
+        ] \
+    ] \
+    {NAME =~ .*cmp_monit2_cic/.*} \
+]]
 
-## Delta-Sigma CE (CE_ADC) = 2
-#set_multicycle_path 2 -setup -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/cmp_fofb_ds/*}]]
-#set_multicycle_path 1 -hold -from  [all_fanout -endpoints_only -only_cells -from [get_pins * -hierarchical -filter {NAME =~ *position_calc/cmp_fofb_ds/*}]]
+set_multicycle_path 4 -setup -from  $monit2_ce_fanouts
+set_multicycle_path 3 -hold -from   $monit2_ce_fanouts
