@@ -23,6 +23,9 @@ syn_properties = [
     ["steps.phys_opt_design.args.directive", "Explore"],
     ["steps.phys_opt_design.args.more options", "-verbose"],
     ["steps.phys_opt_design.is_enabled", "1"],
+    ["steps.post_route_phys_opt_design.args.directive", "Explore"],
+    ["steps.post_route_phys_opt_design.args.more options", "-verbose"],
+    ["steps.post_route_phys_opt_design.is_enabled", "1"],
     ["steps.write_bitstream.args.verbose", "1"]]
 
 board = "afc"
