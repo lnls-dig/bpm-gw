@@ -1017,7 +1017,7 @@ architecture rtl of dbe_bpm_gen is
 
   constant c_ACQ_ADDR_WIDTH                 : natural := c_DDR_ADDR_WIDTH;
   -- Post-Mortem Acq Cores dont need Multishot. So, set them to 0
-  constant c_ACQ_MULTISHOT_RAM_SIZE         : t_property_value_array(c_ACQ_NUM_CORES-1 downto 0) := (0, 0, 4096, 4096);
+  constant c_ACQ_MULTISHOT_RAM_SIZE         : t_property_value_array(c_ACQ_NUM_CORES-1 downto 0) := (0, 0, 2048, 2048);
   constant c_ACQ_DDR_ADDR_RES_WIDTH         : natural := 32;
   constant c_ACQ_DDR_ADDR_DIFF              : natural := c_ACQ_DDR_ADDR_RES_WIDTH-c_DDR_ADDR_WIDTH;
 
