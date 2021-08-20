@@ -499,6 +499,7 @@ begin
 
   trans_intlk_bigger <= trans_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_trans_bigger_o  <= trans_intlk_bigger;
+  intlk_trans_bigger_any_o  <= trans_intlk_bigger;
 
   trans_intlk_bigger_ltc_or(0) <= '0';
   -- ORing all trans_bigger_ltc
@@ -520,6 +521,7 @@ begin
 
   trans_intlk_smaller <= trans_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_trans_smaller_o  <= trans_intlk_smaller;
+  intlk_trans_smaller_any_o  <= trans_intlk_smaller;
 
   trans_intlk_smaller_ltc_or(0) <= '0';
   -- ORing all trans_smaller_ltc

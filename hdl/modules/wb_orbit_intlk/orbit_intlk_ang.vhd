@@ -502,6 +502,7 @@ begin
 
   ang_intlk_bigger <= ang_intlk_bigger_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_ang_bigger_o  <= ang_intlk_bigger;
+  intlk_ang_bigger_any_o  <= ang_intlk_bigger;
 
   ang_intlk_bigger_ltc_or(0) <= '0';
   -- ORing all ang_bigger_ltc
@@ -523,6 +524,7 @@ begin
 
   ang_intlk_smaller <= ang_intlk_smaller_or(c_INTLK_GEN_UPTO_CHANNEL+1);
   intlk_ang_smaller_o  <= ang_intlk_smaller;
+  intlk_ang_smaller_any_o  <= ang_intlk_smaller;
 
   ang_intlk_smaller_ltc_or(0) <= '0';
   -- ORing all ang_smaller_ltc
