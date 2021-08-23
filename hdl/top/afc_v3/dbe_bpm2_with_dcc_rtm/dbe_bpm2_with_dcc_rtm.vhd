@@ -32,7 +32,7 @@ use work.afc_base_pkg.all;
 entity dbe_bpm2_with_dcc_rtm is
 generic (
   -- Number of RTM SFP GTs
-  g_NUM_SFPS                                 : integer := 1;
+  g_NUM_SFPS                                 : integer := 4;
   -- Start index of the RTM SFP GTs
   g_SFP_START_ID                             : integer := 4;
   -- Number of P2P GTs
