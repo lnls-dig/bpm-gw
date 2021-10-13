@@ -183,14 +183,12 @@ architecture rtl of orbit_intlk_ang is
   signal ang_bigger_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal ang_smaller            : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_comb       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_n          : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_valid      : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_smaller_reg        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal ang_smaller_valid_reg  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal ang_intlk_det_bigger_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal ang_intlk_bigger_ltc_all : t_bit_array(c_NUM_CHANNELS-1 downto 0);
@@ -368,13 +366,11 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          ang_bigger_valid_reg(i) <= '0';
+          ang_bigger_reg(i) <= '0';
         else
           if ang_bigger_valid(i) = '1' then
             ang_bigger_reg(i) <= ang_bigger(i);
           end if;
-
-          ang_bigger_valid_reg(i) <= ang_bigger_valid(i);
         end if;
       end if;
     end process;
@@ -415,13 +411,11 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          ang_smaller_valid_reg(i) <= '0';
+          ang_smaller_reg(i) <= '0';
         else
           if ang_smaller_valid(i) = '1' then
             ang_smaller_reg(i) <= ang_smaller(i);
           end if;
-
-          ang_smaller_valid_reg(i) <= ang_smaller_valid(i);
         end if;
       end if;
     end process;
@@ -430,8 +424,8 @@ begin
     -- Latch interlocks
     ----------------------------------
 
-    ang_intlk_det_bigger_all(i) <= ang_bigger_reg(i) and ang_bigger_valid_reg(i);
-    ang_intlk_det_smaller_all(i) <= ang_smaller_reg(i) and ang_smaller_valid_reg(i);
+    ang_intlk_det_bigger_all(i) <= ang_bigger_reg(i);
+    ang_intlk_det_smaller_all(i) <= ang_smaller_reg(i);
 
     -- latch all interlocks
     p_latch : process(fs_clk_i)
