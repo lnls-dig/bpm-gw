@@ -284,11 +284,11 @@ begin
   -------------------------------------------------------------------------
   -- Angular interlock detector. Only for X and Y.
   -- Calculation is a simple (us = upstream, ds = downstream):
-  -- x_ang = x_us - x_ds / distance_between_bpms OR
-  -- x_ang * distance_between_bpms = x_us - x_ds
+  -- x_ang = x_ds - x_us / distance_between_bpms OR
+  -- x_ang * distance_between_bpms = x_ds - x_us
   --
   -- y_ang = y_us - y_ds / distance_between_bpms OR
-  -- y_ang * distance_between_bpms = y_us - y_ds
+  -- y_ang * distance_between_bpms = y_ds - y_us
   -------------------------------------------------------------------------
   gen_ang_intlk : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
 
@@ -303,8 +303,8 @@ begin
       clk_i        => fs_clk_i,
       stall_i      => '0',
       valid_i      => decim_pos_valid,
-      a_i          => decim_pos_array(c_BPM_US_IDX, i),
-      b_i          => decim_pos_array_n(c_BPM_DS_IDX, i),
+      a_i          => decim_pos_array(c_BPM_DS_IDX, i),
+      b_i          => decim_pos_array_n(c_BPM_US_IDX, i),
       c_i          => '1',
       x2_o         => ang_sum(i),
       c2x2_valid_o => ang_sum_valid(i)
