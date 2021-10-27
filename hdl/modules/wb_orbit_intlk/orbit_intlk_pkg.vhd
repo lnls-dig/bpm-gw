@@ -130,6 +130,9 @@ package orbit_intlk_pkg is
 
     intlk_trans_bigger_any_o                   : out std_logic;
 
+    intlk_trans_x_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    intlk_trans_y_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
     -- only cleared when intlk_trans_clr_i is asserted
     intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
@@ -161,6 +164,9 @@ package orbit_intlk_pkg is
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
     intlk_ang_bigger_any_o                     : out std_logic;
+
+    intlk_ang_x_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    intlk_ang_y_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
 
     -- only cleared when intlk_ang_clr_i is asserted
     intlk_ang_bigger_ltc_o                     : out std_logic;
@@ -267,6 +273,9 @@ package orbit_intlk_pkg is
 
     intlk_trans_bigger_any_o                   : out std_logic;
 
+    intlk_trans_x_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    intlk_trans_y_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
     -- only cleared when intlk_trans_clr_i is asserted
     intlk_trans_bigger_ltc_o                   : out std_logic;
     -- conditional to intlk_trans_en_i
@@ -361,6 +370,9 @@ package orbit_intlk_pkg is
     intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
     intlk_ang_bigger_any_o                     : out std_logic;
+
+    intlk_ang_x_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+    intlk_ang_y_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
 
     -- only cleared when intlk_ang_clr_i is asserted
     intlk_ang_bigger_ltc_o                     : out std_logic;

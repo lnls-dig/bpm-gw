@@ -225,6 +225,9 @@ architecture rtl of wb_orbit_intlk is
   signal intlk_trans_smaller_ltc            : std_logic;
   signal intlk_trans_smaller                : std_logic;
 
+  signal intlk_trans_x_diff                 : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  signal intlk_trans_y_diff                 : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
   signal intlk_ang_bigger_x                 : std_logic;
   signal intlk_ang_bigger_y                 : std_logic;
   signal intlk_ang_bigger_ltc_x             : std_logic;
@@ -241,8 +244,11 @@ architecture rtl of wb_orbit_intlk is
   signal intlk_ang_smaller_ltc              : std_logic;
   signal intlk_ang_smaller                  : std_logic;
 
-  signal intlk                         : std_logic;
-  signal intlk_ltc                     : std_logic;
+  signal intlk_ang_x_diff                   : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  signal intlk_ang_y_diff                   : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
+  signal intlk                              : std_logic;
+  signal intlk_ltc                          : std_logic;
 
   component wb_orbit_intlk_regs
   port (
@@ -372,6 +378,11 @@ begin
   regs_in.sts_intlk_i               <= intlk;
   regs_in.sts_intlk_ltc_i           <= intlk_ltc;
 
+  regs_in.trans_x_diff_i            <= intlk_trans_x_diff;
+  regs_in.trans_y_diff_i            <= intlk_trans_y_diff;
+  regs_in.ang_x_diff_i              <= intlk_ang_x_diff;
+  regs_in.ang_y_diff_i              <= intlk_ang_y_diff;
+
   -- Unused wishbone signals
   wb_slv_adp_in.err                         <= '0';
   wb_slv_adp_in.rty                         <= '0';
@@ -467,6 +478,9 @@ begin
 
     intlk_trans_bigger_any_o                   => intlk_trans_bigger_any,
 
+    intlk_trans_x_diff_o                       => intlk_trans_x_diff,
+    intlk_trans_y_diff_o                       => intlk_trans_y_diff,
+
     intlk_trans_bigger_ltc_o                   => intlk_trans_bigger_ltc,
     intlk_trans_bigger_o                       => intlk_trans_bigger,
 
@@ -488,6 +502,9 @@ begin
     intlk_ang_bigger_ltc_y_o                   => intlk_ang_bigger_ltc_y,
 
     intlk_ang_bigger_any_o                     => intlk_ang_bigger_any,
+
+    intlk_ang_x_diff_o                         => intlk_ang_x_diff,
+    intlk_ang_y_diff_o                         => intlk_ang_y_diff,
 
     intlk_ang_bigger_ltc_o                     => intlk_ang_bigger_ltc,
     intlk_ang_bigger_o                         => intlk_ang_bigger,

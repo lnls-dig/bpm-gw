@@ -101,6 +101,9 @@ port
 
   intlk_ang_bigger_any_o                     : out std_logic;
 
+  intlk_ang_x_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  intlk_ang_y_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
   -- only cleared when intlk_ang_clr_i is asserted
   intlk_ang_bigger_ltc_o                     : out std_logic;
   -- conditional to intlk_ang_en_i
@@ -480,6 +483,9 @@ begin
 
   intlk_ang_smaller_x_o    <= ang_intlk_smaller_all(c_CHAN_X_IDX);
   intlk_ang_smaller_y_o    <= ang_intlk_smaller_all(c_CHAN_Y_IDX);
+
+  intlk_ang_x_diff_o   <= ang(c_CHAN_X_IDX);
+  intlk_ang_y_diff_o   <= ang(c_CHAN_Y_IDX);
 
   ----------------------------------
   -- Angular interlock merging

@@ -101,6 +101,9 @@ port
 
   intlk_trans_bigger_any_o                   : out std_logic;
 
+  intlk_trans_x_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  intlk_trans_y_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
   -- only cleared when intlk_trans_clr_i is asserted
   intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
@@ -477,6 +480,9 @@ begin
 
   intlk_trans_smaller_x_o    <= trans_intlk_smaller_all(c_CHAN_X_IDX);
   intlk_trans_smaller_y_o    <= trans_intlk_smaller_all(c_CHAN_Y_IDX);
+
+  intlk_trans_x_diff_o   <= trans(c_CHAN_X_IDX);
+  intlk_trans_y_diff_o   <= trans(c_CHAN_Y_IDX);
 
   ----------------------------------
   -- Translation interlock merging
