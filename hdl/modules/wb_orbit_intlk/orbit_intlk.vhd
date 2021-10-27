@@ -120,6 +120,9 @@ port
 
   intlk_trans_bigger_any_o                   : out std_logic;
 
+  intlk_trans_x_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  intlk_trans_y_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
   -- only cleared when intlk_trans_clr_i is asserted
   intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
@@ -151,6 +154,9 @@ port
   intlk_ang_bigger_ltc_y_o                   : out std_logic;
 
   intlk_ang_bigger_any_o                     : out std_logic;
+
+  intlk_ang_x_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  intlk_ang_y_diff_o                         : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
 
   -- only cleared when intlk_ang_clr_i is asserted
   intlk_ang_bigger_ltc_o                     : out std_logic;
@@ -497,6 +503,9 @@ begin
 
     intlk_trans_bigger_any_o                   => intlk_trans_bigger_any_o,
 
+    intlk_trans_x_diff_o                       => intlk_trans_x_diff_o,
+    intlk_trans_y_diff_o                       => intlk_trans_y_diff_o,
+
     intlk_trans_bigger_ltc_o                   => intlk_trans_bigger_ltc,
     intlk_trans_bigger_o                       => intlk_trans_bigger,
 
@@ -602,6 +611,9 @@ begin
     intlk_ang_bigger_ltc_y_o                   => intlk_ang_bigger_ltc_y_o,
 
     intlk_ang_bigger_any_o                     => intlk_ang_bigger_any_o,
+
+    intlk_ang_x_diff_o                         => intlk_ang_x_diff_o,
+    intlk_ang_y_diff_o                         => intlk_ang_y_diff_o,
 
     intlk_ang_bigger_ltc_o                     => intlk_ang_bigger_ltc,
     intlk_ang_bigger_o                         => intlk_ang_bigger,
