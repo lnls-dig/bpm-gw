@@ -515,4 +515,68 @@ peripheral {
     };
   };
 
+  reg {
+    name = "Calculated X translation (DS+US)/2";
+    description = "Calculated X translation (DS+US)/2";
+    prefix = "trans_x_diff";
+
+    field {
+       name = "X translation difference";
+       description = "X translation difference";
+       type = SLV;
+       size = 32;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Calculated Y translation (DS+US)/2";
+    description = "Calculated Y translation (DS+US)/2";
+    prefix = "trans_y_diff";
+
+    field {
+       name = "Y translation difference";
+       description = "Y translation difference";
+       type = SLV;
+       size = 32;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Calculated X angular difference (DS-US)";
+    description = "Calculated X angular difference (DS-US)";
+    prefix = "ang_x_diff";
+
+    field {
+       name = "X angular difference";
+       description = "X angular difference";
+       type = SLV;
+       size = 32;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
+  reg {
+    name = "Calculated Y angular difference (DS-US)";
+    description = "Calculated Y angular difference (DS-US)";
+    prefix = "ang_y_diff";
+
+    field {
+       name = "Y angular difference";
+       description = "Y angular difference";
+       type = SLV;
+       size = 32;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+       clock = "fs_clk_i";
+    };
+  };
+
 };
