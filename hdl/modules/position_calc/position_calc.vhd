@@ -105,7 +105,10 @@ entity position_calc is
     g_offset_width : natural := 32;
 
     --width for IQ output
-    g_IQ_width : natural := 32
+    g_IQ_width : natural := 32;
+
+    -- width of amplitude gain constants
+    g_amp_gain_width : natural := 25
     );
 
   port(
@@ -123,6 +126,11 @@ entity position_calc is
     ksum_i : in std_logic_vector(g_k_width-1 downto 0);
     kx_i   : in std_logic_vector(g_k_width-1 downto 0);
     ky_i   : in std_logic_vector(g_k_width-1 downto 0);
+
+    amp_gain_ch0_i : in std_logic_vector(g_amp_gain_width-1 downto 0);
+    amp_gain_ch1_i : in std_logic_vector(g_amp_gain_width-1 downto 0);
+    amp_gain_ch2_i : in std_logic_vector(g_amp_gain_width-1 downto 0);
+    amp_gain_ch3_i : in std_logic_vector(g_amp_gain_width-1 downto 0);
 
     offset_x_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
     offset_y_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
@@ -358,12 +366,20 @@ architecture rtl of position_calc is
   type t_input is array(3 downto 0) of std_logic_vector(g_input_width-1 downto 0);
   signal adc_input : t_input := (others => (others => '0'));
 
+  type t_amp_input_scaled is array(3 downto 0) of std_logic_vector(g_input_width-1 downto 0);
+  signal adc_amp_scaled : t_amp_input_scaled := (others => (others => '0'));
+
+  type t_amp_gain is array(3 downto 0) of std_logic_vector(g_amp_gain_width-1 downto 0);
+  signal adc_amp_gain : t_amp_gain := (others => (others => '0'));
+
   type t_input_valid is array(3 downto 0) of std_logic;
   signal adc_input_valid : t_input_valid := (others => '0');
   signal iq_valid        : t_input_valid := (others => '0');
+  signal adc_amp_valid   : t_input_valid := (others => '0');
 
   type t_input_tag is array(3 downto 0) of std_logic_vector(c_adc_tag_width-1 downto 0);
   signal adc_input_tag : t_input_tag := (others => (others => '0'));
+  signal adc_amp_tag : t_input_tag := (others => (others => '0'));
 
   type t_input_tag_en is array(3 downto 0) of std_logic;
   signal input_tag_en : t_input_tag_en := (others => '0');
@@ -436,6 +452,11 @@ begin
   adc_input(1) <= adc_ch1_i;
   adc_input(2) <= adc_ch2_i;
   adc_input(3) <= adc_ch3_i;
+
+  adc_amp_gain(0) <= amp_gain_ch0_i;
+  adc_amp_gain(1) <= amp_gain_ch1_i;
+  adc_amp_gain(2) <= amp_gain_ch2_i;
+  adc_amp_gain(3) <= amp_gain_ch3_i;
 
   adc_input_valid(0) <= adc_valid_i;
   adc_input_valid(1) <= adc_valid_i;
@@ -511,6 +532,28 @@ begin
         ratio_i     => c_monit2_cic_ratio_slv,
         strobe_o    => ce_monit2(chan));
 
+    cmp_generic_multiplier : generic_multiplier
+     generic map (
+      g_a_width          => g_input_width,
+      g_b_width          => g_amp_gain_width,
+      g_signed           => true,
+      g_tag_width        => c_adc_tag_width,
+      g_p_width          => g_input_width,
+      g_round_convergent => 1,
+      g_levels           => 1)
+
+    port map (
+      a_i     => adc_input(chan),
+      b_i     => adc_amp_gain(chan),
+      valid_i => adc_input_valid(chan),
+      tag_i   => adc_input_tag(chan),
+      p_o     => adc_amp_scaled(chan),
+      valid_o => adc_amp_valid(chan),
+      tag_o   => adc_amp_tag(chan),
+      ce_i    => '1',
+      clk_i   => clk_i,
+      rst_i   => rst_i);
+
     -- Position calculation
 
     gen_with_downconv : if (g_with_downconv) generate
@@ -528,9 +571,9 @@ begin
           rst_i              => rst_i,
           clk_i              => clk_i,
           ce_i               => ce_adc(chan),
-          signal_i           => adc_input(chan),
-          valid_i            => adc_input_valid(chan),
-          tag_i              => adc_input_tag(chan),
+          signal_i           => adc_amp_scaled(chan),
+          valid_i            => adc_amp_valid(chan),
+          tag_i              => adc_amp_tag(chan),
           I_out              => full_i(chan),
           I_tag_out          => full_i_tag(chan),
           Q_out              => full_q(chan),
@@ -674,8 +717,8 @@ begin
           -- rate, so we don't have to
           -- change them downstream
           ce_out_i                     => ce_tbt_cordic(chan),
-          valid_i                      => adc_input_valid(chan),
-          data_i                       => adc_input(chan),
+          valid_i                      => adc_amp_valid(chan),
+          data_i                       => adc_amp_scaled(chan),
           ratio_i                      => c_tbt_ratio_slv,
           data_tag_i                   => tbt_tag_i,
           data_tag_en_i                => tbt_tag_en_i,
@@ -710,9 +753,9 @@ begin
           rst_i                         => rst_i,
           ce_i                          => ce_adc(chan),
           ce_out_i                      => ce_fofb_cordic(chan),
-          valid_i                       => adc_input_valid(chan),
-          data_i                        => adc_input(chan),
-          data_tag_i                    => adc_input_tag(chan),
+          valid_i                       => adc_amp_valid(chan),
+          data_i                        => adc_amp_scaled(chan),
+          data_tag_i                    => adc_amp_tag(chan),
           -- Don't use CIC synchronization feature
           data_tag_en_i                 => '0',
           data_mask_num_samples_beg_i   => (others => '0'),

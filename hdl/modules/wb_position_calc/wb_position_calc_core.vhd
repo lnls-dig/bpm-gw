@@ -95,6 +95,9 @@ generic
   --width for IQ output
   g_IQ_width                                : natural := 32;
 
+  -- width of amplitude gain constants
+  g_amp_gain_width                          : natural := 25;
+
   -- Swap/de-swap setup
   g_delay_vec_width                         : natural := 8;
   g_swap_div_freq_vec_width                 : natural := 16
@@ -535,6 +538,14 @@ architecture rtl of wb_position_calc_core is
   signal regs_monit_data_mask_samples_end_o  : std_logic_vector(15 downto 0);
   signal regs_pos_calc_offset_x_o            : std_logic_vector(31 downto 0);
   signal regs_pos_calc_offset_y_o            : std_logic_vector(31 downto 0);
+  signal regs_amp_gain_ch0_i                 : std_logic_vector(24 downto 0);
+  signal regs_amp_gain_ch1_i                 : std_logic_vector(24 downto 0);
+  signal regs_amp_gain_ch2_i                 : std_logic_vector(24 downto 0);
+  signal regs_amp_gain_ch3_i                 : std_logic_vector(24 downto 0);
+  signal regs_amp_gain_ch0_reserved_i        : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_amp_gain_ch1_reserved_i        : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_amp_gain_ch2_reserved_i        : std_logic_vector(6 downto 0) := (others => '0');
+  signal regs_amp_gain_ch3_reserved_i        : std_logic_vector(6 downto 0) := (others => '0');
 
   -----------------------------
   -- Wishbone crossbar signals
@@ -986,7 +997,15 @@ architecture rtl of wb_position_calc_core is
       pos_calc_monit_data_mask_samples_beg_o  : out   std_logic_vector(15 downto 0);
       pos_calc_monit_data_mask_samples_end_o  : out   std_logic_vector(15 downto 0);
       pos_calc_offset_x_o                     : out   std_logic_vector(31 downto 0);
-      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0)
+      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0);
+      pos_calc_amp_gain_ch0_data_o            : out   std_logic_vector(24 downto 0);
+      pos_calc_amp_gain_ch0_reserved_i        : in    std_logic_vector(6 downto 0);
+      pos_calc_amp_gain_ch1_data_o            : out   std_logic_vector(24 downto 0);
+      pos_calc_amp_gain_ch1_reserved_i        : in    std_logic_vector(6 downto 0);
+      pos_calc_amp_gain_ch2_data_o            : out   std_logic_vector(24 downto 0);
+      pos_calc_amp_gain_ch2_reserved_i        : in    std_logic_vector(6 downto 0);
+      pos_calc_amp_gain_ch3_data_o            : out   std_logic_vector(24 downto 0);
+      pos_calc_amp_gain_ch3_reserved_i        : in    std_logic_vector(6 downto 0)
   );
   end component wb_pos_calc_regs;
 
@@ -1251,7 +1270,15 @@ begin
     pos_calc_monit_data_mask_samples_beg_o  => regs_monit_data_mask_samples_beg_o,
     pos_calc_monit_data_mask_samples_end_o  => regs_monit_data_mask_samples_end_o,
     pos_calc_offset_x_o                     => regs_pos_calc_offset_x_o,
-    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o
+    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o,
+    pos_calc_amp_gain_ch0_data_o            => regs_amp_gain_ch0_i,
+    pos_calc_amp_gain_ch0_reserved_i        => regs_amp_gain_ch0_reserved_i,
+    pos_calc_amp_gain_ch1_data_o            => regs_amp_gain_ch1_i,
+    pos_calc_amp_gain_ch1_reserved_i        => regs_amp_gain_ch1_reserved_i,
+    pos_calc_amp_gain_ch2_data_o            => regs_amp_gain_ch2_i,
+    pos_calc_amp_gain_ch2_reserved_i        => regs_amp_gain_ch2_reserved_i,
+    pos_calc_amp_gain_ch3_data_o            => regs_amp_gain_ch3_i,
+    pos_calc_amp_gain_ch3_reserved_i        => regs_amp_gain_ch3_reserved_i
   );
 
   -- Unused wishbone signals
@@ -1722,7 +1749,10 @@ begin
     g_offset_width                          => c_offset_width,
 
     --width for IQ output
-    g_IQ_width                              => g_IQ_width
+    g_IQ_width                              => g_IQ_width,
+
+    -- width of amplitude gain constants
+    g_amp_gain_width                        => g_amp_gain_width
   )
   port map
   (
@@ -1740,6 +1770,11 @@ begin
     ksum_i                                  => regs_ksum_val_o(c_k_width-1 downto 0),
     kx_i                                    => regs_kx_val_o(c_k_width-1 downto 0),
     ky_i                                    => regs_ky_val_o(c_k_width-1 downto 0),
+
+    amp_gain_ch0_i                          => regs_amp_gain_ch0_i,
+    amp_gain_ch1_i                          => regs_amp_gain_ch1_i,
+    amp_gain_ch2_i                          => regs_amp_gain_ch2_i,
+    amp_gain_ch3_i                          => regs_amp_gain_ch3_i,
 
     offset_x_i                              => regs_pos_calc_offset_x_o(c_offset_width-1 downto 0),
     offset_y_i                              => regs_pos_calc_offset_y_o(c_offset_width-1 downto 0),
