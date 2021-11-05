@@ -2020,3 +2020,135 @@ memory-map:
         field_description: BPM Y position offset
         field_comment: |
           BPM Y position offset to be subtracted from calculated positions
+# --------------------------------------------
+# --------  Amplitude Gain Registers ---------
+# --------------------------------------------  
+  - reg:
+      name: amp_gain_ch0
+      address: 0x0000011c
+      width: 32
+      access: rw
+      description: Amplitude gain for channel 0
+      comment: |
+        Amplitude gain for channel 0
+      children:
+      - field:
+          name: data
+          range: 24-0
+          description: Amplitude gain for channel 0
+          comment: |
+            Amplitude gain parameter, in SFIX25_24.
+            It effectively multiplies the amplitude
+            with a determined value.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: amp_gain_ch1
+      address: 0x00000120
+      width: 32
+      access: rw
+      description: Amplitude gain for channel 1
+      comment: |
+        Amplitude gain for channel 1
+      children:
+      - field:
+          name: data
+          range: 24-0
+          description: Amplitude gain for channel 1
+          comment: |
+            Amplitude gain parameter, in SFIX25_24.
+            It effectively multiplies the amplitude
+            with a determined value.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: amp_gain_ch2
+      address: 0x00000124
+      width: 32
+      access: rw
+      description: Amplitude gain for channel 2
+      comment: |
+        Amplitude gain for channel 2
+      children:
+      - field:
+          name: data
+          range: 24-0
+          description: Amplitude gain for channel 2
+          comment: |
+            Amplitude gain parameter, in SFIX25_24.
+            It effectively multiplies the amplitude
+            with a determined value.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  - reg:
+      name: amp_gain_ch3
+      address: 0x00000128
+      width: 32
+      access: rw
+      description: Amplitude gain for channel 3
+      comment: |
+        Amplitude gain for channel 3
+      children:
+      - field:
+          name: data
+          range: 24-0
+          description: Amplitude gain for channel 3
+          comment: |
+            Amplitude gain parameter, in SFIX25_24.
+            It effectively multiplies the amplitude
+            with a determined value.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+      - field:
+          name: reserved
+          range: 31-25
+          description: Reserved
+          comment: |
+            Ignore on write, read as 0's
+          x-wbgen:
+            type: SLV
+            access_bus: READ_ONLY
+            access_dev: WRITE_ONLY
+  

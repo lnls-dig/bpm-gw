@@ -1,6 +1,6 @@
 #ifndef __CHEBY__POS_CALC__H__
 #define __CHEBY__POS_CALC__H__
-#define POS_CALC_SIZE 284
+#define POS_CALC_SIZE 300 /* 0x12c */
 
 /* Config divisor threshold TBT register */
 #define POS_CALC_DS_TBT_THRES 0x0UL
@@ -207,7 +207,7 @@
 
 /* AMP FIFO Monitoring */
 #define POS_CALC_AMPFIFO_MONIT 0x98UL
-#define POS_CALC_AMPFIFO_MONIT_SIZE 20
+#define POS_CALC_AMPFIFO_MONIT_SIZE 20 /* 0x14 */
 
 /* FIFO 'AMP FIFO Monitoring' data output register 0 */
 #define POS_CALC_AMPFIFO_MONIT_AMPFIFO_MONIT_R0 0x98UL
@@ -238,7 +238,7 @@
 
 /* POS FIFO Monitoring */
 #define POS_CALC_POSFIFO_MONIT 0xacUL
-#define POS_CALC_POSFIFO_MONIT_SIZE 20
+#define POS_CALC_POSFIFO_MONIT_SIZE 20 /* 0x14 */
 
 /* FIFO 'POS FIFO Monitoring' data output register 0 */
 #define POS_CALC_POSFIFO_MONIT_POSFIFO_MONIT_R0 0xacUL
@@ -269,7 +269,7 @@
 
 /* AMP FIFO Monitoring 1 */
 #define POS_CALC_AMPFIFO_MONIT1 0xc0UL
-#define POS_CALC_AMPFIFO_MONIT1_SIZE 20
+#define POS_CALC_AMPFIFO_MONIT1_SIZE 20 /* 0x14 */
 
 /* FIFO 'AMP FIFO Monitoring 1' data output register 0 */
 #define POS_CALC_AMPFIFO_MONIT1_AMPFIFO_MONIT1_R0 0xc0UL
@@ -300,7 +300,7 @@
 
 /* POS FIFO Monitoring 1 */
 #define POS_CALC_POSFIFO_MONIT1 0xd4UL
-#define POS_CALC_POSFIFO_MONIT1_SIZE 20
+#define POS_CALC_POSFIFO_MONIT1_SIZE 20 /* 0x14 */
 
 /* FIFO 'POS FIFO Monitoring 1' data output register 0 */
 #define POS_CALC_POSFIFO_MONIT1_POSFIFO_MONIT1_R0 0xd4UL
@@ -407,6 +407,34 @@
 
 /* BPM Y position offset parameter register */
 #define POS_CALC_OFFSET_Y 0x118UL
+
+/* Amplitude gain for channel 0 */
+#define POS_CALC_AMP_GAIN_CH0 0x11cUL
+#define POS_CALC_AMP_GAIN_CH0_DATA_MASK 0x1ffffffUL
+#define POS_CALC_AMP_GAIN_CH0_DATA_SHIFT 0
+#define POS_CALC_AMP_GAIN_CH0_RESERVED_MASK 0xfe000000UL
+#define POS_CALC_AMP_GAIN_CH0_RESERVED_SHIFT 25
+
+/* Amplitude gain for channel 1 */
+#define POS_CALC_AMP_GAIN_CH1 0x120UL
+#define POS_CALC_AMP_GAIN_CH1_DATA_MASK 0x1ffffffUL
+#define POS_CALC_AMP_GAIN_CH1_DATA_SHIFT 0
+#define POS_CALC_AMP_GAIN_CH1_RESERVED_MASK 0xfe000000UL
+#define POS_CALC_AMP_GAIN_CH1_RESERVED_SHIFT 25
+
+/* Amplitude gain for channel 2 */
+#define POS_CALC_AMP_GAIN_CH2 0x124UL
+#define POS_CALC_AMP_GAIN_CH2_DATA_MASK 0x1ffffffUL
+#define POS_CALC_AMP_GAIN_CH2_DATA_SHIFT 0
+#define POS_CALC_AMP_GAIN_CH2_RESERVED_MASK 0xfe000000UL
+#define POS_CALC_AMP_GAIN_CH2_RESERVED_SHIFT 25
+
+/* Amplitude gain for channel 3 */
+#define POS_CALC_AMP_GAIN_CH3 0x128UL
+#define POS_CALC_AMP_GAIN_CH3_DATA_MASK 0x1ffffffUL
+#define POS_CALC_AMP_GAIN_CH3_DATA_SHIFT 0
+#define POS_CALC_AMP_GAIN_CH3_RESERVED_MASK 0xfe000000UL
+#define POS_CALC_AMP_GAIN_CH3_RESERVED_SHIFT 25
 
 struct pos_calc {
   /* [0x0]: REG (rw) Config divisor threshold TBT register */
@@ -633,6 +661,18 @@ struct pos_calc {
 
   /* [0x118]: REG (rw) BPM Y position offset parameter register */
   uint32_t offset_y;
+
+  /* [0x11c]: REG (rw) Amplitude gain for channel 0 */
+  uint32_t amp_gain_ch0;
+
+  /* [0x120]: REG (rw) Amplitude gain for channel 1 */
+  uint32_t amp_gain_ch1;
+
+  /* [0x124]: REG (rw) Amplitude gain for channel 2 */
+  uint32_t amp_gain_ch2;
+
+  /* [0x128]: REG (rw) Amplitude gain for channel 3 */
+  uint32_t amp_gain_ch3;
 };
 
 #endif /* __CHEBY__POS_CALC__H__ */

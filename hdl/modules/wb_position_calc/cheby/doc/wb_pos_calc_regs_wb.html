@@ -578,6 +578,34 @@
 <td class="td_code">offset_y</td>
 <td class="td_code">offset_y</td>
 </tr>
+<tr class="tr_even">
+<td class="td_code">0x11c</td>
+<td>REG</td>
+<td><A href="#amp_gain_ch0">amp_gain_ch0</a></td>
+<td class="td_code">amp_gain_ch0</td>
+<td class="td_code">amp_gain_ch0</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x120</td>
+<td>REG</td>
+<td><A href="#amp_gain_ch1">amp_gain_ch1</a></td>
+<td class="td_code">amp_gain_ch1</td>
+<td class="td_code">amp_gain_ch1</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x124</td>
+<td>REG</td>
+<td><A href="#amp_gain_ch2">amp_gain_ch2</a></td>
+<td class="td_code">amp_gain_ch2</td>
+<td class="td_code">amp_gain_ch2</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x128</td>
+<td>REG</td>
+<td><A href="#amp_gain_ch3">amp_gain_ch3</a></td>
+<td class="td_code">amp_gain_ch3</td>
+<td class="td_code">amp_gain_ch3</td>
+</tr>
 </table>
 
 <h3><a name="sect_3_0">2. Register description</a></h3>
@@ -6084,6 +6112,310 @@ BPM Y position offset parameter register
 offset_y
 </b>[<i>rw</i>]: BPM Y position offset parameter register
 <br>BPM Y position offset to be subtracted from calculated positions
+</ul>
+<a name="amp_gain_ch0"></a>
+<h3><a name="sect_3_72">2.72. amp_gain_ch0</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch0</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x11c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch0</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x11c</td></tr>
+</table>
+<p>
+Amplitude gain for channel 0
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">data[24:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: Amplitude gain for channel 0
+<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
+<li><b>
+reserved
+</b>[<i>rw</i>]: Reserved
+<br>Ignore on write, read as 0's
+</ul>
+<a name="amp_gain_ch1"></a>
+<h3><a name="sect_3_73">2.73. amp_gain_ch1</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch1</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x120</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch1</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x120</td></tr>
+</table>
+<p>
+Amplitude gain for channel 1
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">data[24:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: Amplitude gain for channel 1
+<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
+<li><b>
+reserved
+</b>[<i>rw</i>]: Reserved
+<br>Ignore on write, read as 0's
+</ul>
+<a name="amp_gain_ch2"></a>
+<h3><a name="sect_3_74">2.74. amp_gain_ch2</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch2</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x124</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch2</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x124</td></tr>
+</table>
+<p>
+Amplitude gain for channel 2
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">data[24:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: Amplitude gain for channel 2
+<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
+<li><b>
+reserved
+</b>[<i>rw</i>]: Reserved
+<br>Ignore on write, read as 0's
+</ul>
+<a name="amp_gain_ch3"></a>
+<h3><a name="sect_3_75">2.75. amp_gain_ch3</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch3</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x128</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch3</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x128</td></tr>
+</table>
+<p>
+Amplitude gain for channel 3
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">data[24:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: Amplitude gain for channel 3
+<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
+<li><b>
+reserved
+</b>[<i>rw</i>]: Reserved
+<br>Ignore on write, read as 0's
 </ul>
 
 
