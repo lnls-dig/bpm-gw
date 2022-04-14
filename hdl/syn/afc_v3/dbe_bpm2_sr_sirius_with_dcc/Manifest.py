@@ -27,6 +27,7 @@ syn_properties = [
     ["steps.post_route_phys_opt_design.args.more options", "-verbose"],
     ["steps.post_route_phys_opt_design.is_enabled", "1"],
     ["steps.write_bitstream.args.verbose", "1"]]
+syn_post_bitstream_cmd = "./bit_to_nsvf.sh %s" % (syn_project)
 
 board = "afc"
 

@@ -1,0 +1,66 @@
+// Created using Xilinx Cse Software [ISE - 14.6]
+// Date: Thu Aug 21 17:38:25 2014
+
+TRST OFF;
+ENDIR IDLE;
+ENDDR IDLE;
+STATE RESET;
+STATE IDLE;
+FREQUENCY 1E6 HZ;
+//Operation: bsdebug -start
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+//Operation: bsdebug -reset
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+//Operation: bsdebug -scanir 00000000
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDIR IDLE;
+SIR 8 TDI (00) SMASK (ff) MASK (ff) ;
+//Operation: bsdebug -scanir 10100000
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDIR IDLE;
+SIR 8 TDI (a0) ;
+//Operation: bsdebug -scanir 10100101
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDIR IDLE;
+SIR 8 TDI (a5) ;
+//Operation: bsdebug -scandr 01011010
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDDR IDLE;
+SDR 8 TDI (5a) SMASK (ff) MASK (ff) ;
+//Operation: bsdebug -scanir 11000011
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDIR IDLE;
+SIR 8 TDI (c3) ;
+//Operation: bsdebug -scandr 01011010
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
+ENDDR IDLE;
+SDR 8 TDI (5a) ;
+//Operation: bsdebug -stop
+TIR 0 ;
+HIR 0 ;
+TDR 0 ;
+HDR 0 ;
