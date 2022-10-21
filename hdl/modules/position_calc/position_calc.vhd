@@ -425,7 +425,7 @@ architecture rtl of position_calc is
   signal valid_tbt, valid_tbt_cordic, valid_fofb, valid_fofb_cordic, valid_monit1, valid_monit2 : ce_sl := (others => '0');
   signal ce_adc, ce_monit1, ce_monit2, ce_tbt_cordic, ce_fofb_cordic           : ce_sl := (others => '0');
 
-  signal valid_monit1_ds, valid_fofb_ds, valid_tbt_ds : std_logic;
+  signal valid_monit1_pds, valid_fofb_pds, valid_tbt_ds : std_logic;
 
   attribute max_fanout                                                  : string;
   attribute max_fanout of ce_adc, ce_monit1, ce_monit2 : signal is "50";
@@ -794,65 +794,69 @@ begin
 
   end generate gen_ddc;
 
-  -- x, y, and q are fixed point with:
+  -- x and y are fixed point with:
   -- sign bit = MSB
-  -- word length = g_width
-  -- integer length = g_k_width + 1
-  -- fractional length = g_width - (integer length)
-  cmp_fofb_ds : delta_sigma
+  -- word length = g_WIDTH
+  -- integer length = g_K_WIDTH
+  -- fractional length = g_WIDTH - g_K_WIDTH
+  cmp_fofb_pds : part_delta_sigma
     generic map (
-      g_width        => g_fofb_decim_width,
-      g_k_width      => g_k_width,
-      g_offset_width => g_offset_width)
+      g_WIDTH         => g_FOFB_DECIM_WIDTH,
+      g_K_WIDTH       => g_K_WIDTH,
+      g_OFFSET_WIDTH  => g_OFFSET_WIDTH
+    )
     port map (
-      a_i        => fofb_mag(0),
-      b_i        => fofb_mag(1),
-      c_i        => fofb_mag(2),
-      d_i        => fofb_mag(3),
-      kx_i       => kx_i,
-      ky_i       => ky_i,
-      ksum_i     => ksum_i,
-      offset_x_i => offset_x_i,
-      offset_y_i => offset_y_i,
-      clk_i      => clk_i,
-      ce_i       => ce_fofb_cordic(0),
-      valid_i    => valid_fofb_cordic(0),
-      valid_o    => valid_fofb_ds,
-      rst_i      => rst_i,
-      x_o        => fofb_pos_x_int,
-      y_o        => fofb_pos_y_int,
-      q_o        => fofb_pos_q_int,
-      sum_o      => fofb_pos_sum_int);
+      clk_i           => clk_i,
+      rst_i           => rst_i,
+      a_i             => fofb_mag(0),
+      b_i             => fofb_mag(1),
+      c_i             => fofb_mag(2),
+      d_i             => fofb_mag(3),
+      kx_i            => kx_i,
+      ky_i            => ky_i,
+      ksum_i          => ksum_i,
+      offset_x_i      => offset_x_i,
+      offset_y_i      => offset_y_i,
+      ce_i            => ce_fofb_cordic(0),
+      valid_i         => valid_fofb_cordic(0),
+      x_o             => fofb_pos_x_int,
+      y_o             => fofb_pos_y_int,
+      q_o             => fofb_pos_q_int,
+      sum_o           => fofb_pos_sum_int,
+      valid_o         => valid_fofb_pds
+    );
 
-  -- x, y, and q are fixed point with:
+  -- x and y are fixed point with:
   -- sign bit = MSB
-  -- word length = g_width
-  -- integer length = g_k_width + 1
-  -- fractional length = g_width - (integer length)
-  cmp_monit1_ds : delta_sigma
+  -- word length = g_WIDTH
+  -- integer length = g_K_WIDTH
+  -- fractional length = g_WIDTH - g_K_WIDTH
+  cmp_monit1_pds : part_delta_sigma
     generic map (
-      g_width        => g_monit_decim_width,
-      g_k_width      => g_k_width,
-      g_offset_width => g_offset_width)
+      g_WIDTH         => g_MONIT_DECIM_WIDTH,
+      g_K_WIDTH       => g_K_WIDTH,
+      g_OFFSET_WIDTH  => g_OFFSET_WIDTH
+    )
     port map (
-      a_i        => monit1_mag(0),
-      b_i        => monit1_mag(1),
-      c_i        => monit1_mag(2),
-      d_i        => monit1_mag(3),
-      kx_i       => kx_i,
-      ky_i       => ky_i,
-      ksum_i     => ksum_i,
-      offset_x_i => offset_x_i,
-      offset_y_i => offset_y_i,
-      clk_i      => clk_i,
-      ce_i       => ce_monit1(0),
-      valid_i    => valid_monit1(0),
-      valid_o    => valid_monit1_ds,
-      rst_i      => rst_i,
-      x_o        => monit1_pos_x_int,
-      y_o        => monit1_pos_y_int,
-      q_o        => monit1_pos_q_int,
-      sum_o      => monit1_pos_sum_int);
+      clk_i           => clk_i,
+      rst_i           => rst_i,
+      a_i             => monit1_mag(0),
+      b_i             => monit1_mag(1),
+      c_i             => monit1_mag(2),
+      d_i             => monit1_mag(3),
+      kx_i            => kx_i,
+      ky_i            => ky_i,
+      ksum_i          => ksum_i,
+      offset_x_i      => offset_x_i,
+      offset_y_i      => offset_y_i,
+      ce_i            => ce_monit1(0),
+      valid_i         => valid_monit1(0),
+      x_o             => monit1_pos_x_int,
+      y_o             => monit1_pos_y_int,
+      q_o             => monit1_pos_q_int,
+      sum_o           => monit1_pos_sum_int,
+      valid_o         => valid_monit1_pds
+    );
 
   -- desync counters. Use only one of the channels as a sample
   tbt_tag_desync_cnt_o    <= tbt_tag_desync_cnt(0);
@@ -937,7 +941,7 @@ begin
   monit_amp_valid_o <= valid_monit2(0);
   monit_amp_ce_o    <= ce_monit2(0);
 
-  fofb_pos_valid_o <= valid_fofb_ds;
+  fofb_pos_valid_o <= valid_fofb_pds;
   fofb_pos_ce_o    <= ce_fofb_cordic(0);
 
   fofb_pos_x_o   <= std_logic_vector(shift_right(signed(fofb_pos_x_int), g_fofb_decim_width-g_k_width));
@@ -954,7 +958,7 @@ begin
   tbt_pos_q_o   <= (others => '0');
   tbt_pos_sum_o <= (others => '0');
 
-  monit1_pos_valid_o <= valid_monit1_ds;
+  monit1_pos_valid_o <= valid_monit1_pds;
   monit1_pos_ce_o    <= ce_monit1(0);
 
   monit1_pos_x_o   <= std_logic_vector(shift_right(signed(monit1_pos_x_int), g_monit_decim_width-g_k_width));
