@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 ##-----------------------------------------------------------------------------
 ## Title      : SDB Synthesis info autogen
@@ -90,7 +90,7 @@ def write_sdb_info(f, r_name, m_name, commit, dirty, tool, toolv, date, user):
 def git_username():
   # gets username from git config
   temp = subprocess.Popen("git config user.name", stdout=subprocess.PIPE, shell=True)
-  user = temp.stdout.read().split()
+  user = temp.stdout.read().decode('utf-8').split()
   if len(user) == 1:
     #is a single word, so we just use it
     return user[0]
@@ -115,22 +115,22 @@ def main():
   #######
 
   temp = subprocess.Popen("git rev-parse --show-toplevel", stdout=subprocess.PIPE, shell=True)
-  toplevel = temp.stdout.read()[0:-1] #remove trailing \n
+  toplevel = temp.stdout.read().decode('utf-8')[0:-1] #remove trailing \n
   f = open(args.o + PKG_FILE, 'w')
   f.write(PKG_HEADER)
   ### Make the first constant which is repo url
   f.write(REPO_URL)
   temp = subprocess.Popen("git config remote.origin.url", stdout=subprocess.PIPE, shell=True)
-  url = temp.stdout.read()[0:-1]
+  url = temp.stdout.read().decode("utf-8")[0:-1]
   f.write(SDB_URL + " => \"" + url[:URL_LEN].ljust(URL_LEN) + "\");\n")   #truncate or expand string
 
   ### Now generate synthesis info for main repository
   # get commit id
   temp = subprocess.Popen("git log --always --pretty=format:'%H' -n 1", stdout=subprocess.PIPE, shell=True)
-  commit_id = temp.stdout.read()[:32]
+  commit_id = temp.stdout.read().decode('utf-8')[:32]
   dirty = False
   temp = subprocess.Popen(GIT_DIRTY, stdout=subprocess.PIPE, shell=True)
-  if temp.stdout.read()[-2] == '+':
+  if temp.stdout.read().decode('utf-8')[-2] == '+':
     dirty = True #commit_id = commit_id + '+'
   # get date
   day = datetime.datetime.today().day
@@ -138,25 +138,25 @@ def main():
   year = datetime.datetime.today().year
   date = int(str(year*10000 + mon*100 + day), 16)  # strange, I know, but I want to have something like x"20140917"
   # convert version
-  ver = int(args.ver.translate(None, '.,'), 16)
+  ver = int(args.ver.translate(str.maketrans(dict.fromkeys('.,'))), 16)
   # fill this all to the structure
   write_sdb_info(f, MAIN_SYN, args.project, commit_id, dirty, args.tool, ver, date, args.user)
 
   ### Now generate synthesis info for each submodule
   temp = subprocess.Popen("(cd "+toplevel+"; git submodule status)", stdout=subprocess.PIPE, shell=True)
-  submodules = temp.stdout.read()
+  submodules = temp.stdout.read().decode('utf-8')
   submodules = submodules.split('\n')
   for module in submodules[:-1]:
     mod_splited = module.split()
     name = mod_splited[1].split('/')[-1]
     # if submodule is ahead of a set commit it displays additional _+_ at the
     # beginning, get rid of that:
-    commit_id = mod_splited[0].translate(None, '+')[:32]
+    commit_id = mod_splited[0].translate(str.maketrans(dict.fromkeys('+')))[:32]
     # check if dirty
     dirty = False
     temp = subprocess.Popen("(cd "+toplevel+"/"+mod_splited[1]+ ";" + GIT_DIRTY +")",
         stdout=subprocess.PIPE, shell=True)
-    if temp.stdout.read()[-2] == '+':
+    if temp.stdout.read().decode('utf-8')[-2] == '+':
       dirty = True
     write_sdb_info(f, name, name, commit_id, dirty, " ", 0, 0, " ")
 
